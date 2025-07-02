@@ -183,7 +183,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def GetSystemStats(
-        self, _request: empty_pb2.Empty, _context: ServicerContext,
+        self,
+        _request: empty_pb2.Empty,
+        _context: ServicerContext,
     ) -> flext_pb2.SystemStats:
         """Get system statistics for monitoring and dashboard display.
 
@@ -238,7 +240,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def HealthCheck(
-        self, _request: empty_pb2.Empty, _context: ServicerContext,
+        self,
+        _request: empty_pb2.Empty,
+        _context: ServicerContext,
     ) -> flext_pb2.HealthStatus:
         """Perform comprehensive health check across all system components.
 
@@ -280,7 +284,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def GetSystemInfo(
-        self, _request: empty_pb2.Empty, _context: ServicerContext,
+        self,
+        _request: empty_pb2.Empty,
+        _context: ServicerContext,
     ) -> flext_pb2.SystemInfo:
         """Get comprehensive system information and configuration details.
 
@@ -310,7 +316,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def ListPipelines(
-        self, request: flext_pb2.ListPipelinesRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.ListPipelinesRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.ListPipelinesResponse:
         """List all pipelines."""
         self.logger.info(
@@ -351,7 +359,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def GetPipeline(
-        self, request: flext_pb2.GetPipelineRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetPipelineRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Pipeline:
         """Get a single pipeline by ID."""
         self.logger.info("Getting pipeline", pipeline_id=request.id)
@@ -365,7 +375,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return PipelineConverter.from_model(pipeline)
 
     async def CreatePipeline(
-        self, request: flext_pb2.CreatePipelineRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.CreatePipelineRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Pipeline:
         """Create a new pipeline."""
         self.logger.info("Creating pipeline", name=request.name)
@@ -412,7 +424,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return PipelineConverter.from_model(pipeline)
 
     async def UpdatePipeline(
-        self, request: flext_pb2.UpdatePipelineRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.UpdatePipelineRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Pipeline:
         """Update an existing pipeline."""
         self.logger.info("Updating pipeline", pipeline_id=request.id)
@@ -459,7 +473,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return PipelineConverter.from_model(updated_pipeline)
 
     async def DeletePipeline(
-        self, request: flext_pb2.DeletePipelineRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.DeletePipelineRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Delete a pipeline from the system."""
         self.logger.info("Deleting pipeline", pipeline_id=request.id)
@@ -485,7 +501,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return empty_pb2.Empty()
 
     async def RunPipeline(
-        self, request: flext_pb2.RunPipelineRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.RunPipelineRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Execution:
         """Run a pipeline by ID."""
         self.logger.info("Running pipeline", pipeline_id=request.pipeline_id)
@@ -634,7 +652,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
                 )
 
     async def GetExecution(
-        self, request: flext_pb2.GetExecutionRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetExecutionRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Execution:
         """Get a single execution by ID."""
         self.logger.info("Getting execution", execution_id=request.id)
@@ -679,7 +699,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return execution
 
     async def ListExecutions(
-        self, request: flext_pb2.ListExecutionsRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.ListExecutionsRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.ListExecutionsResponse:
         """List pipeline executions with filtering and pagination."""
         self.logger.info("Listing executions", pipeline_id=request.pipeline_id)
@@ -713,7 +735,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def CancelExecution(
-        self, request: flext_pb2.CancelExecutionRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.CancelExecutionRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Cancel a running execution."""
         self.logger.info("Canceling execution", execution_id=request.id)
@@ -748,7 +772,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return empty_pb2.Empty()
 
     async def StreamExecution(
-        self, request: flext_pb2.StreamExecutionRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.StreamExecutionRequest,
+        _context: ServicerContext,
     ) -> AsyncGenerator[flext_pb2.ExecutionUpdate]:
         """Stream real-time execution updates for monitoring."""
         if request.execution_id not in self._executions:
@@ -811,7 +837,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             self.event_bus.unsubscribe("pipeline.execution.completed", handle_event)  # type: ignore[arg-type]
 
     async def ListPlugins(
-        self, request: flext_pb2.ListPluginsRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.ListPluginsRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.ListPluginsResponse:
         """List available Meltano plugins for pipeline configuration."""
         plugin_type = None
@@ -886,7 +914,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def InstallPlugin(
-        self, request: flext_pb2.InstallPluginRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.InstallPluginRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Plugin:
         """Install a Meltano plugin for pipeline use."""
         type_map = {
@@ -918,7 +948,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def UninstallPlugin(
-        self, request: flext_pb2.UninstallPluginRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.UninstallPluginRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Uninstall a Meltano plugin from the system."""
         type_map = {
@@ -943,7 +975,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return empty_pb2.Empty()
 
     async def GetState(
-        self, request: flext_pb2.GetStateRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetStateRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.State:
         """Retrieve pipeline execution state for incremental processing."""
         state_data = await self.meltano_engine.get_state(request.id)
@@ -955,7 +989,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def SetState(
-        self, request: flext_pb2.SetStateRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.SetStateRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Update pipeline execution state for incremental processing."""
         raw_state_data = struct_to_dict(request.data)
@@ -974,7 +1010,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return empty_pb2.Empty()
 
     async def ClearState(
-        self, request: flext_pb2.ClearStateRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.ClearStateRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Clear pipeline execution state for fresh processing."""
         success = await self.meltano_engine.clear_state(request.id)
@@ -1038,7 +1076,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoProject()
 
     async def LoadMeltanoProject(
-        self, request: flext_pb2.LoadMeltanoProjectRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.LoadMeltanoProjectRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoProject:
         """Load an existing Meltano project."""
         self.logger.info(
@@ -1094,7 +1134,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoProject()
 
     async def RunMeltanoPipeline(
-        self, request: flext_pb2.RunMeltanoPipelineRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.RunMeltanoPipelineRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoExecution:
         """Execute a Meltano pipeline with enterprise orchestration."""
         self.logger.info(
@@ -1172,7 +1214,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoExecution()
 
     async def GetMeltanoJobStatus(
-        self, request: flext_pb2.GetMeltanoJobStatusRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetMeltanoJobStatusRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoJobStatus:
         """Retrieve status information for a Meltano job."""
         try:
@@ -1240,7 +1284,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoJobStatus()
 
     async def ListMeltanoJobs(
-        self, request: flext_pb2.ListMeltanoJobsRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.ListMeltanoJobsRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.ListMeltanoJobsResponse:
         """List Meltano jobs with filtering and pagination."""
         try:
@@ -1312,7 +1358,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.ListMeltanoJobsResponse()
 
     async def GetMeltanoState(
-        self, request: flext_pb2.GetMeltanoStateRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetMeltanoStateRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoState:
         """Retrieve Meltano state for incremental data processing."""
         try:
@@ -1373,7 +1421,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoState()
 
     async def SetMeltanoState(
-        self, request: flext_pb2.SetMeltanoStateRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.SetMeltanoStateRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Update Meltano state for incremental data processing."""
         try:
@@ -1427,7 +1477,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return empty_pb2.Empty()
 
     async def GetMeltanoJobStatistics(
-        self, request: flext_pb2.GetMeltanoJobStatisticsRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetMeltanoJobStatisticsRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoJobStatistics:
         """Retrieve Meltano job statistics for performance analysis."""
         try:
@@ -1472,7 +1524,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoJobStatistics()
 
     async def CleanupStaleMeltanoJobs(
-        self, request: flext_pb2.CleanupStaleMeltanoJobsRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.CleanupStaleMeltanoJobsRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoJobCleanupResult:
         """Clean up stale Meltano jobs for system maintenance."""
         try:
@@ -1538,7 +1592,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
             return flext_pb2.MeltanoJobCleanupResult()
 
     async def RunMeltanoCommand(
-        self, request: flext_pb2.RunMeltanoCommandRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.RunMeltanoCommandRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.MeltanoCommandResult:
         """Execute arbitrary Meltano commands with monitoring."""
         try:
@@ -1584,7 +1640,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
     # === SCHEDULE MANAGEMENT METHODS ===
 
     async def CreateSchedule(
-        self, request: flext_pb2.CreateScheduleRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.CreateScheduleRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Schedule:
         """Create a new pipeline schedule."""
         self.logger.info("Creating schedule", name=getattr(request, "name", "unnamed"))
@@ -1622,7 +1680,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return self._convert_schedule_to_pb(schedule)
 
     async def UpdateSchedule(
-        self, request: flext_pb2.UpdateScheduleRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.UpdateScheduleRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.Schedule:
         """Update configuration of an existing pipeline schedule."""
         self.logger.info("Updating schedule", schedule_id=request.id)
@@ -1679,7 +1739,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return self._convert_schedule_to_pb(updated_schedule)
 
     async def DeleteSchedule(
-        self, request: flext_pb2.DeleteScheduleRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.DeleteScheduleRequest,
+        _context: ServicerContext,
     ) -> empty_pb2.Empty:
         """Delete a pipeline schedule from the system."""
         self.logger.info("Deleting schedule", schedule_id=request.id)
@@ -1705,7 +1767,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         return empty_pb2.Empty()
 
     async def ListSchedules(
-        self, request: flext_pb2.ListSchedulesRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.ListSchedulesRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.ListSchedulesResponse:
         """List pipeline schedules with filtering and pagination."""
         self.logger.info("Listing schedules", pipeline_id=request.pipeline_id)
@@ -1758,7 +1822,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
     # === PLUGIN CONFIGURATION METHODS ===
 
     async def GetPluginConfig(
-        self, request: flext_pb2.GetPluginConfigRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.GetPluginConfigRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.PluginConfig:
         """Retrieve configuration settings for a Meltano plugin."""
         try:
@@ -1804,7 +1870,9 @@ class FlextGrpcServer(flext_pb2_grpc.FlextServiceServicer):
         )
 
     async def UpdatePluginConfig(
-        self, request: flext_pb2.UpdatePluginConfigRequest, _context: ServicerContext,
+        self,
+        request: flext_pb2.UpdatePluginConfigRequest,
+        _context: ServicerContext,
     ) -> flext_pb2.PluginConfig:
         """Update configuration settings for a Meltano plugin."""
         try:

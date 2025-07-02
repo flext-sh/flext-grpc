@@ -35,12 +35,12 @@ else:
     from flext_grpc.proto import flext_pb2_grpc
 
 # Python 3.13 type aliases for gRPC domain
-type GrpcConfig = dict[str, Any]
-type ChannelOptions = list[tuple[str, Any]]
-type GrpcResponse = dict[str, Any]
-type DashboardStats = dict[str, int | float]
-type HealthStatus = dict[str, bool | dict[str, Any]]
-type ExecutionData = dict[str, str | None]
+GrpcConfig = dict[str, Any]
+ChannelOptions = list[tuple[str, Any]]
+GrpcResponse = dict[str, Any]
+DashboardStats = dict[str, int | float]
+HealthStatus = dict[str, bool | dict[str, Any]]
+ExecutionData = dict[str, str | None]
 
 logger = structlog.get_logger(__name__)
 
@@ -116,7 +116,9 @@ class FlextGrpcClientBase:
             return grpc.secure_channel(target, credentials, options=options)
         return grpc.insecure_channel(target, options=options)
 
-    def _handle_grpc_error(self, error: grpc.RpcError, operation: str) -> ServiceResult[Any]:
+    def _handle_grpc_error(
+        self, error: grpc.RpcError, operation: str
+    ) -> ServiceResult[Any]:
         """Handle gRPC errors with unified error patterns."""
         try:
             error_details = error.details()

@@ -8,6 +8,7 @@ from flx_grpc import flx_pb2 as flx__pb2
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 GRPC_VERSION = grpc.__version__
+GRPC_GENERATED_VERSION = "1.60.0"  # Default minimum version
 _version_not_supported = False
 
 try:
@@ -31,7 +32,6 @@ if _version_not_supported:
 
 class FlxServiceStub:
     """Main FLX service definition"""
-.
     def __init__(self, channel: object):
         """Constructor.
 
@@ -283,7 +283,6 @@ class FlxServiceStub:
 
 class FlxServiceServicer:
     """Main FLX service definition"""
-.
     def GetSystemStats(self, request: object, context: object):
         """System operations."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -738,7 +737,6 @@ def add_FlxServiceServicer_to_server(servicer: object, server: object) -> None:
 # This class is part of an EXPERIMENTAL API.
 class FlxService:
     """Main FLX service definition"""
-.
     @staticmethod
     def GetSystemStats(
         request,

@@ -1611,7 +1611,9 @@ class FlxServiceImplementation(flx_pb2_grpc.FlxServiceServicer):
                             "trend": (
                                 "increasing"
                                 if trend > 0
-                                else "decreasing" if trend < 0 else "stable"
+                                else "decreasing"
+                                if trend < 0
+                                else "stable"
                             ),
                             "trend_rate": abs(trend),
                             "prediction_horizon": f"next_{granularity}",

@@ -19,12 +19,12 @@ TResponse = TypeVar("TResponse", covariant=True)
 TServicer = TypeVar("TServicer")
 
 # Python 3.13 type aliases for gRPC - with strict validation
-type GrpcMetadata = Sequence[tuple[str, str | bytes]]
-type GrpcStatusCode = int  # grpc.StatusCode values are integers
-type GrpcStatus = object  # grpc.Status object
-type GrpcServerCredentials = object  # grpc.ServerCredentials object
-type GrpcHandlerCallDetails = object  # grpc.HandlerCallDetails object
-type GrpcContinuation = Callable[[object], object]
+GrpcMetadata = Sequence[tuple[str, str | bytes]]
+GrpcStatusCode = int  # grpc.StatusCode values are integers
+GrpcStatus = object  # grpc.Status object
+GrpcServerCredentials = object  # grpc.ServerCredentials object
+GrpcHandlerCallDetails = object  # grpc.HandlerCallDetails object
+GrpcContinuation = Callable[[object], object]
 
 
 class ServicerContext:
@@ -326,7 +326,9 @@ class UnaryStreamMethod[TRequest, TResponse]:
 
     """Protocol for unary-stream RPC method."""
 
-    async def __call__(self, request: TRequest, context: ServicerContext) -> AsyncIterator[TResponse]:
+    async def __call__(
+        self, request: TRequest, context: ServicerContext
+    ) -> AsyncIterator[TResponse]:
         """Handle single request and stream multiple responses.
 
         Processes a single request message and yields multiple response messages
@@ -386,7 +388,9 @@ class StreamUnaryMethod[TRequest, TResponse]:
 
     """Protocol for stream-unary RPC method."""
 
-    async def __call__(self, request_iterator: AsyncIterator[TRequest], context: ServicerContext) -> TResponse:
+    async def __call__(
+        self, request_iterator: AsyncIterator[TRequest], context: ServicerContext
+    ) -> TResponse:
         """Handle streaming requests and return single response.
 
         Processes multiple request messages from a stream and returns
@@ -546,7 +550,9 @@ class GrpcServer:
 
         """
 
-    def add_secure_port(self, address: str, server_credentials: GrpcServerCredentials) -> int:
+    def add_secure_port(
+        self, address: str, server_credentials: GrpcServerCredentials
+    ) -> int:
         """Add a secure TLS port for production deployment.
 
         Configures the server to listen on a secure port with TLS encryption
@@ -605,7 +611,11 @@ class ServerInterceptor:
 
     """Protocol for gRPC server interceptor."""
 
-    def intercept_service(self, continuation: GrpcContinuation, handler_call_details: GrpcHandlerCallDetails) -> object:
+    def intercept_service(
+        self,
+        continuation: GrpcContinuation,
+        handler_call_details: GrpcHandlerCallDetails,
+    ) -> object:
         """Intercept gRPC service calls for middleware processing.
 
         Provides middleware functionality for authentication, logging,

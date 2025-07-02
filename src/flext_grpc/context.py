@@ -23,10 +23,12 @@ if TYPE_CHECKING:
     from flext_core.domain.advanced_types import MetadataDict
 
 # Python 3.13 type aliases - with strict validation
-type ContextValue = str | int | bool | float | None
-type GrpcMetadata = dict[str, str]
-type GrpcMethod = Callable[..., Awaitable]  # Generic simplified for Pydantic compatibility
-type GrpcMethodDecorator = Callable[[GrpcMethod], GrpcMethod]
+ContextValue = str | int | bool | float | None
+GrpcMetadata = dict[str, str]
+GrpcMethod = Callable[
+    ..., Awaitable
+]  # Generic simplified for Pydantic compatibility
+GrpcMethodDecorator = Callable[[GrpcMethod], GrpcMethod]
 
 # Context variables for thread-safe user propagation
 current_user: contextvars.ContextVar[User | None] = contextvars.ContextVar(
@@ -362,7 +364,9 @@ class Authenticator:
                 user_roles = await self.role_repo.find_by_names(user.roles)
 
                 # Check permissions across all roles
-                has_permission = any(self.permission in role.permissions for role in user_roles)
+                has_permission = any(
+                    self.permission in role.permissions for role in user_roles
+                )
 
                 if not has_permission:
                     # If permission is not found, deny access

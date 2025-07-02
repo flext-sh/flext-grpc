@@ -627,7 +627,9 @@ class ListPluginsRequest(_message.Message):
     type: PluginType
     installed_only: bool
     def __init__(
-        self, type: PluginType | str | None = ..., installed_only: bool = ...,
+        self,
+        type: PluginType | str | None = ...,
+        installed_only: bool = ...,
     ) -> None: ...
 
 class ListPluginsResponse(_message.Message):
@@ -664,7 +666,9 @@ class UninstallPluginRequest(_message.Message):
     name: str
     type: PluginType
     def __init__(
-        self, name: str | None = ..., type: PluginType | str | None = ...,
+        self,
+        name: str | None = ...,
+        type: PluginType | str | None = ...,
     ) -> None: ...
 
 class GetPluginConfigRequest(_message.Message):
@@ -674,7 +678,9 @@ class GetPluginConfigRequest(_message.Message):
     name: str
     type: PluginType
     def __init__(
-        self, name: str | None = ..., type: PluginType | str | None = ...,
+        self,
+        name: str | None = ...,
+        type: PluginType | str | None = ...,
     ) -> None: ...
 
 class UpdatePluginConfigRequest(_message.Message):
@@ -779,7 +785,9 @@ class ListSchedulesRequest(_message.Message):
     pipeline_id: str
     active_only: bool
     def __init__(
-        self, pipeline_id: str | None = ..., active_only: bool = ...,
+        self,
+        pipeline_id: str | None = ...,
+        active_only: bool = ...,
     ) -> None: ...
 
 class ListSchedulesResponse(_message.Message):
@@ -801,7 +809,9 @@ class CreateScheduleRequest(_message.Message):
     pipeline_id: str
     cron: str
     def __init__(
-        self, pipeline_id: str | None = ..., cron: str | None = ...,
+        self,
+        pipeline_id: str | None = ...,
+        cron: str | None = ...,
     ) -> None: ...
 
 class UpdateScheduleRequest(_message.Message):
@@ -886,7 +896,9 @@ class LoadMeltanoProjectRequest(_message.Message):
     project_name: str
     environment: str
     def __init__(
-        self, project_name: str | None = ..., environment: str | None = ...,
+        self,
+        project_name: str | None = ...,
+        environment: str | None = ...,
     ) -> None: ...
 
 class RunMeltanoPipelineRequest(_message.Message):
@@ -983,7 +995,9 @@ class GetMeltanoJobStatusRequest(_message.Message):
     project_name: str
     job_id: str
     def __init__(
-        self, project_name: str | None = ..., job_id: str | None = ...,
+        self,
+        project_name: str | None = ...,
+        job_id: str | None = ...,
     ) -> None: ...
 
 class MeltanoJobStatus(_message.Message):
@@ -1127,7 +1141,9 @@ class GetMeltanoJobStatisticsRequest(_message.Message):
     project_name: str
     days: int
     def __init__(
-        self, project_name: str | None = ..., days: int | None = ...,
+        self,
+        project_name: str | None = ...,
+        days: int | None = ...,
     ) -> None: ...
 
 class MeltanoJobStatistics(_message.Message):

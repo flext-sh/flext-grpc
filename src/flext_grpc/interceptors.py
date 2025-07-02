@@ -66,7 +66,9 @@ class MetricsInterceptor(ServerInterceptor):
         self.logger = logger.bind(component="metrics_interceptor")
 
     async def intercept_service(
-        self, continuation: Callable, handler_call_details: grpc.HandlerCallDetails,
+        self,
+        continuation: Callable,
+        handler_call_details: grpc.HandlerCallDetails,
     ) -> ServiceHandler:
         """Intercept gRPC calls to collect metrics."""
         method = handler_call_details.method
@@ -155,7 +157,9 @@ class TracingInterceptor(ServerInterceptor):
     """
 
     async def intercept_service(
-        self, continuation: Callable, handler_call_details: grpc.HandlerCallDetails,
+        self,
+        continuation: Callable,
+        handler_call_details: grpc.HandlerCallDetails,
     ) -> ServiceHandler:
         """Intercept gRPC calls to add tracing information."""
         # Get current span if tracing is active
@@ -236,7 +240,9 @@ class AuthenticationInterceptor(ServerInterceptor):
         self.logger = logger.bind(component="auth_interceptor")
 
     async def intercept_service(
-        self, continuation: Callable, handler_call_details: grpc.HandlerCallDetails,
+        self,
+        continuation: Callable,
+        handler_call_details: grpc.HandlerCallDetails,
     ) -> ServiceHandler:
         """Intercept gRPC calls to verify authentication."""
         # Skip auth for health check and reflection
@@ -362,7 +368,9 @@ class RateLimitingInterceptor(ServerInterceptor):
         self.logger = logger.bind(component="rate_limiter_interceptor")
 
     async def intercept_service(
-        self, continuation: Callable, handler_call_details: grpc.HandlerCallDetails,
+        self,
+        continuation: Callable,
+        handler_call_details: grpc.HandlerCallDetails,
     ) -> ServiceHandler:
         """Intercept gRPC calls to apply rate limiting."""
         # Skip rate limiting for health check

@@ -57,7 +57,9 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
     """
 
     def __init__(
-        self, command_bus: ReflectionCommandBus, container: ApplicationContainer,
+        self,
+        command_bus: ReflectionCommandBus,
+        container: ApplicationContainer,
     ) -> None:
         """Initialize gRPC service with command bus and DI container."""
         self.command_bus = command_bus
@@ -1611,7 +1613,9 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
                             "trend": (
                                 "increasing"
                                 if trend > 0
-                                else "decreasing" if trend < 0 else "stable"
+                                else "decreasing"
+                                if trend < 0
+                                else "stable"
                             ),
                             "trend_rate": abs(trend),
                             "prediction_horizon": f"next_{granularity}",
@@ -1764,7 +1768,8 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         max_age_days = parameters.get("max_age_days", 30)
         max_size_mb = parameters.get("max_size_mb", 1000)
         log_paths_param = parameters.get(
-            "log_paths", ["/var/log/flext", "/opt/flext/logs"],
+            "log_paths",
+            ["/var/log/flext", "/opt/flext/logs"],
         )
 
         # Convert protobuf ListValue to Python list properly
@@ -1885,7 +1890,10 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         return True, status_message, details, warnings
 
     def _execute_restart_services(
-        self, parameters: object, dry_run: object, force: object,
+        self,
+        parameters: object,
+        dry_run: object,
+        force: object,
     ):
         """Execute service restart maintenance operation."""
         # Default parameters - handle protobuf list properly
@@ -2100,7 +2108,10 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         return True, status_message, details, warnings
 
     def _execute_health_check_maintenance(
-        self, parameters: object, dry_run: object, force: object,
+        self,
+        parameters: object,
+        dry_run: object,
+        force: object,
     ):
         """Execute comprehensive health check maintenance operation."""
         # Handle protobuf list parameters properly
@@ -2189,7 +2200,10 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         return True, status_message, details, warnings
 
     def _execute_update_config(
-        self, parameters: object, dry_run: object, force: object,
+        self,
+        parameters: object,
+        dry_run: object,
+        force: object,
     ):
         """Execute configuration update maintenance operation."""
         config_changes = parameters.get("config_changes", {})
@@ -3178,7 +3192,10 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         return True, result, warnings, "valid", backup_id
 
     def _execute_config_delete(
-        self, config_path: object, environment: object, create_backup: object,
+        self,
+        config_path: object,
+        environment: object,
+        create_backup: object,
     ):
         """Execute configuration delete operation."""
         if not config_path:
@@ -3211,7 +3228,10 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         return True, result, warnings, "valid", backup_id
 
     def _execute_config_validate(
-        self, config_path: object, config_data: object, environment: object,
+        self,
+        config_path: object,
+        config_data: object,
+        environment: object,
     ):
         """Execute configuration validation operation."""
         # Simulate validation checks
@@ -3281,7 +3301,10 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
         return True, result, warnings, "valid", backup_id
 
     def _execute_config_restore(
-        self, config_path: object, config_data: object, environment: object,
+        self,
+        config_path: object,
+        config_data: object,
+        environment: object,
     ):
         """Execute configuration restore operation."""
         backup_id = config_data.get("backup_id", "")
@@ -3373,7 +3396,8 @@ class FlextServiceImplementation(flext_pb2_grpc.FlextServiceServicer):
 
 
 def create_grpc_service(
-    command_bus: ReflectionCommandBus, container: ApplicationContainer,
+    command_bus: ReflectionCommandBus,
+    container: ApplicationContainer,
 ) -> FlextServiceImplementation:
     """Factory function to create gRPC service implementation with dependencies."""
     return FlextServiceImplementation(command_bus, container)
