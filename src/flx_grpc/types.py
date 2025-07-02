@@ -6,10 +6,11 @@ direct dependency on untyped gRPC modules while maintaining type safety.
 
 from __future__ import annotations
 
+from collections.abc import Callable, Sequence
 from typing import TYPE_CHECKING, TypeVar
 
 if TYPE_CHECKING:
-    from collections.abc import AsyncIterator, Callable, Sequence
+    from collections.abc import AsyncIterator
 
     from flx_core.domain.advanced_types import MetadataDict
 

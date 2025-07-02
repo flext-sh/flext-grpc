@@ -69,13 +69,13 @@ MELTANO_EXECUTION_MODE_ASYNC: MeltanoExecutionMode
 
 class SystemStats(_message.Message):
     __slots__ = (
+        "active_connections",
         "active_pipelines",
-        "total_executions",
-        "success_rate",
-        "uptime_seconds",
         "cpu_usage",
         "memory_usage",
-        "active_connections",
+        "success_rate",
+        "total_executions",
+        "uptime_seconds",
     )
     ACTIVE_PIPELINES_FIELD_NUMBER: _ClassVar[int]
     TOTAL_EXECUTIONS_FIELD_NUMBER: _ClassVar[int]
@@ -103,7 +103,7 @@ class SystemStats(_message.Message):
     ) -> None: ...
 
 class HealthStatus(_message.Message):
-    __slots__ = ("healthy", "components", "timestamp")
+    __slots__ = ("components", "healthy", "timestamp")
 
     class ComponentsEntry(_message.Message):
         __slots__ = ("key", "value")
@@ -131,7 +131,7 @@ class HealthStatus(_message.Message):
     ) -> None: ...
 
 class ComponentHealth(_message.Message):
-    __slots__ = ("name", "healthy", "message", "metadata")
+    __slots__ = ("healthy", "message", "metadata", "name")
 
     class MetadataEntry(_message.Message):
         __slots__ = ("key", "value")
@@ -159,11 +159,11 @@ class ComponentHealth(_message.Message):
 
 class SystemInfo(_message.Message):
     __slots__ = (
-        "version",
         "environment",
-        "python_version",
-        "meltano_version",
         "features",
+        "meltano_version",
+        "python_version",
+        "version",
     )
 
     class FeaturesEntry(_message.Message):
@@ -195,20 +195,20 @@ class SystemInfo(_message.Message):
 
 class Pipeline(_message.Message):
     __slots__ = (
-        "id",
-        "name",
+        "config",
+        "created_at",
+        "created_by",
         "description",
         "extractor",
-        "loader",
-        "transform",
-        "config",
-        "schedule",
+        "id",
         "is_active",
-        "created_by",
-        "created_at",
-        "updated_at",
-        "last_status",
         "last_run",
+        "last_status",
+        "loader",
+        "name",
+        "schedule",
+        "transform",
+        "updated_at",
     )
     ID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -261,7 +261,7 @@ class Pipeline(_message.Message):
     ) -> None: ...
 
 class ListPipelinesRequest(_message.Message):
-    __slots__ = ("limit", "offset", "filter", "sort_by", "descending")
+    __slots__ = ("descending", "filter", "limit", "offset", "sort_by")
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     OFFSET_FIELD_NUMBER: _ClassVar[int]
     FILTER_FIELD_NUMBER: _ClassVar[int]
@@ -282,7 +282,7 @@ class ListPipelinesRequest(_message.Message):
     ) -> None: ...
 
 class ListPipelinesResponse(_message.Message):
-    __slots__ = ("pipelines", "total", "limit", "offset")
+    __slots__ = ("limit", "offset", "pipelines", "total")
     PIPELINES_FIELD_NUMBER: _ClassVar[int]
     TOTAL_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
@@ -307,13 +307,13 @@ class GetPipelineRequest(_message.Message):
 
 class CreatePipelineRequest(_message.Message):
     __slots__ = (
-        "name",
+        "config",
         "description",
         "extractor",
         "loader",
-        "transform",
-        "config",
+        "name",
         "schedule",
+        "transform",
     )
     NAME_FIELD_NUMBER: _ClassVar[int]
     DESCRIPTION_FIELD_NUMBER: _ClassVar[int]
@@ -342,15 +342,15 @@ class CreatePipelineRequest(_message.Message):
 
 class UpdatePipelineRequest(_message.Message):
     __slots__ = (
-        "id",
-        "name",
+        "config",
         "description",
         "extractor",
-        "loader",
-        "transform",
-        "config",
-        "schedule",
+        "id",
         "is_active",
+        "loader",
+        "name",
+        "schedule",
+        "transform",
     )
     ID_FIELD_NUMBER: _ClassVar[int]
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -390,7 +390,7 @@ class DeletePipelineRequest(_message.Message):
     def __init__(self, id: str | None = ...) -> None: ...
 
 class RunPipelineRequest(_message.Message):
-    __slots__ = ("pipeline_id", "full_refresh", "env_vars")
+    __slots__ = ("env_vars", "full_refresh", "pipeline_id")
 
     class EnvVarsEntry(_message.Message):
         __slots__ = ("key", "value")
@@ -415,15 +415,15 @@ class RunPipelineRequest(_message.Message):
 
 class Execution(_message.Message):
     __slots__ = (
-        "id",
-        "pipeline_id",
-        "status",
-        "started_at",
-        "finished_at",
         "duration_seconds",
         "error_message",
+        "finished_at",
+        "id",
         "metadata",
+        "pipeline_id",
         "records_processed",
+        "started_at",
+        "status",
         "triggered_by",
     )
 
@@ -480,7 +480,7 @@ class GetExecutionRequest(_message.Message):
     def __init__(self, id: str | None = ...) -> None: ...
 
 class ListExecutionsRequest(_message.Message):
-    __slots__ = ("pipeline_id", "limit", "offset", "status", "start_date", "end_date")
+    __slots__ = ("end_date", "limit", "offset", "pipeline_id", "start_date", "status")
     PIPELINE_ID_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
     OFFSET_FIELD_NUMBER: _ClassVar[int]
@@ -506,7 +506,7 @@ class ListExecutionsRequest(_message.Message):
     ) -> None: ...
 
 class ListExecutionsResponse(_message.Message):
-    __slots__ = ("executions", "total", "limit", "offset")
+    __slots__ = ("executions", "limit", "offset", "total")
     EXECUTIONS_FIELD_NUMBER: _ClassVar[int]
     TOTAL_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
@@ -538,12 +538,12 @@ class StreamExecutionRequest(_message.Message):
 class ExecutionUpdate(_message.Message):
     __slots__ = (
         "execution_id",
-        "type",
         "message",
-        "timestamp",
+        "metadata",
         "progress",
         "status",
-        "metadata",
+        "timestamp",
+        "type",
     )
 
     class MetadataEntry(_message.Message):
@@ -581,14 +581,14 @@ class ExecutionUpdate(_message.Message):
 
 class Plugin(_message.Message):
     __slots__ = (
+        "description",
+        "installed",
+        "installed_at",
         "name",
+        "settings",
         "type",
         "variant",
         "version",
-        "description",
-        "installed",
-        "settings",
-        "installed_at",
     )
     NAME_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
@@ -621,7 +621,7 @@ class Plugin(_message.Message):
     ) -> None: ...
 
 class ListPluginsRequest(_message.Message):
-    __slots__ = ("type", "installed_only")
+    __slots__ = ("installed_only", "type")
     TYPE_FIELD_NUMBER: _ClassVar[int]
     INSTALLED_ONLY_FIELD_NUMBER: _ClassVar[int]
     type: PluginType
@@ -678,7 +678,7 @@ class GetPluginConfigRequest(_message.Message):
     ) -> None: ...
 
 class UpdatePluginConfigRequest(_message.Message):
-    __slots__ = ("name", "type", "config")
+    __slots__ = ("config", "name", "type")
     NAME_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     CONFIG_FIELD_NUMBER: _ClassVar[int]
@@ -693,7 +693,7 @@ class UpdatePluginConfigRequest(_message.Message):
     ) -> None: ...
 
 class PluginConfig(_message.Message):
-    __slots__ = ("name", "type", "config")
+    __slots__ = ("config", "name", "type")
     NAME_FIELD_NUMBER: _ClassVar[int]
     TYPE_FIELD_NUMBER: _ClassVar[int]
     CONFIG_FIELD_NUMBER: _ClassVar[int]
@@ -708,7 +708,7 @@ class PluginConfig(_message.Message):
     ) -> None: ...
 
 class State(_message.Message):
-    __slots__ = ("id", "data", "updated_at")
+    __slots__ = ("data", "id", "updated_at")
     ID_FIELD_NUMBER: _ClassVar[int]
     DATA_FIELD_NUMBER: _ClassVar[int]
     UPDATED_AT_FIELD_NUMBER: _ClassVar[int]
@@ -731,7 +731,7 @@ class GetStateRequest(_message.Message):
     def __init__(self, id: str | None = ...) -> None: ...
 
 class SetStateRequest(_message.Message):
-    __slots__ = ("id", "data")
+    __slots__ = ("data", "id")
     ID_FIELD_NUMBER: _ClassVar[int]
     DATA_FIELD_NUMBER: _ClassVar[int]
     id: str
@@ -749,7 +749,7 @@ class ClearStateRequest(_message.Message):
     def __init__(self, id: str | None = ...) -> None: ...
 
 class Schedule(_message.Message):
-    __slots__ = ("id", "pipeline_id", "cron", "is_active", "next_run", "last_run")
+    __slots__ = ("cron", "id", "is_active", "last_run", "next_run", "pipeline_id")
     ID_FIELD_NUMBER: _ClassVar[int]
     PIPELINE_ID_FIELD_NUMBER: _ClassVar[int]
     CRON_FIELD_NUMBER: _ClassVar[int]
@@ -773,7 +773,7 @@ class Schedule(_message.Message):
     ) -> None: ...
 
 class ListSchedulesRequest(_message.Message):
-    __slots__ = ("pipeline_id", "active_only")
+    __slots__ = ("active_only", "pipeline_id")
     PIPELINE_ID_FIELD_NUMBER: _ClassVar[int]
     ACTIVE_ONLY_FIELD_NUMBER: _ClassVar[int]
     pipeline_id: str
@@ -795,7 +795,7 @@ class ListSchedulesResponse(_message.Message):
     ) -> None: ...
 
 class CreateScheduleRequest(_message.Message):
-    __slots__ = ("pipeline_id", "cron")
+    __slots__ = ("cron", "pipeline_id")
     PIPELINE_ID_FIELD_NUMBER: _ClassVar[int]
     CRON_FIELD_NUMBER: _ClassVar[int]
     pipeline_id: str
@@ -805,7 +805,7 @@ class CreateScheduleRequest(_message.Message):
     ) -> None: ...
 
 class UpdateScheduleRequest(_message.Message):
-    __slots__ = ("id", "cron", "is_active")
+    __slots__ = ("cron", "id", "is_active")
     ID_FIELD_NUMBER: _ClassVar[int]
     CRON_FIELD_NUMBER: _ClassVar[int]
     IS_ACTIVE_FIELD_NUMBER: _ClassVar[int]
@@ -827,12 +827,12 @@ class DeleteScheduleRequest(_message.Message):
 
 class MeltanoProject(_message.Message):
     __slots__ = (
-        "name",
-        "environment",
-        "project_root",
         "configuration",
-        "is_initialized",
         "created_at",
+        "environment",
+        "is_initialized",
+        "name",
+        "project_root",
         "updated_at",
     )
     NAME_FIELD_NUMBER: _ClassVar[int]
@@ -865,7 +865,7 @@ class MeltanoProject(_message.Message):
     ) -> None: ...
 
 class InitializeMeltanoProjectRequest(_message.Message):
-    __slots__ = ("project_name", "environment", "force")
+    __slots__ = ("environment", "force", "project_name")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     ENVIRONMENT_FIELD_NUMBER: _ClassVar[int]
     FORCE_FIELD_NUMBER: _ClassVar[int]
@@ -880,7 +880,7 @@ class InitializeMeltanoProjectRequest(_message.Message):
     ) -> None: ...
 
 class LoadMeltanoProjectRequest(_message.Message):
-    __slots__ = ("project_name", "environment")
+    __slots__ = ("environment", "project_name")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     ENVIRONMENT_FIELD_NUMBER: _ClassVar[int]
     project_name: str
@@ -891,11 +891,11 @@ class LoadMeltanoProjectRequest(_message.Message):
 
 class RunMeltanoPipelineRequest(_message.Message):
     __slots__ = (
-        "project_name",
-        "pipeline_definition",
+        "env_vars",
         "environment",
         "execution_mode",
-        "env_vars",
+        "pipeline_definition",
+        "project_name",
     )
 
     class EnvVarsEntry(_message.Message):
@@ -927,16 +927,16 @@ class RunMeltanoPipelineRequest(_message.Message):
 
 class MeltanoExecution(_message.Message):
     __slots__ = (
-        "execution_id",
-        "project_name",
-        "pipeline_name",
-        "state",
-        "started_at",
-        "finished_at",
         "duration_seconds",
-        "error_message",
-        "result_data",
         "environment",
+        "error_message",
+        "execution_id",
+        "finished_at",
+        "pipeline_name",
+        "project_name",
+        "result_data",
+        "started_at",
+        "state",
     )
     EXECUTION_ID_FIELD_NUMBER: _ClassVar[int]
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
@@ -977,7 +977,7 @@ class MeltanoExecution(_message.Message):
     ) -> None: ...
 
 class GetMeltanoJobStatusRequest(_message.Message):
-    __slots__ = ("project_name", "job_id")
+    __slots__ = ("job_id", "project_name")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     JOB_ID_FIELD_NUMBER: _ClassVar[int]
     project_name: str
@@ -989,12 +989,12 @@ class GetMeltanoJobStatusRequest(_message.Message):
 class MeltanoJobStatus(_message.Message):
     __slots__ = (
         "job_id",
-        "run_id",
-        "state",
-        "started_at",
         "last_heartbeat_at",
-        "payload",
         "metadata",
+        "payload",
+        "run_id",
+        "started_at",
+        "state",
     )
     JOB_ID_FIELD_NUMBER: _ClassVar[int]
     RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -1026,7 +1026,7 @@ class MeltanoJobStatus(_message.Message):
     ) -> None: ...
 
 class ListMeltanoJobsRequest(_message.Message):
-    __slots__ = ("project_name", "state", "run_id", "limit", "offset")
+    __slots__ = ("limit", "offset", "project_name", "run_id", "state")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     STATE_FIELD_NUMBER: _ClassVar[int]
     RUN_ID_FIELD_NUMBER: _ClassVar[int]
@@ -1047,7 +1047,7 @@ class ListMeltanoJobsRequest(_message.Message):
     ) -> None: ...
 
 class ListMeltanoJobsResponse(_message.Message):
-    __slots__ = ("jobs", "total", "limit", "offset")
+    __slots__ = ("jobs", "limit", "offset", "total")
     JOBS_FIELD_NUMBER: _ClassVar[int]
     TOTAL_FIELD_NUMBER: _ClassVar[int]
     LIMIT_FIELD_NUMBER: _ClassVar[int]
@@ -1080,7 +1080,7 @@ class GetMeltanoStateRequest(_message.Message):
     ) -> None: ...
 
 class MeltanoState(_message.Message):
-    __slots__ = ("state_id", "state_data", "version", "updated_at", "backend")
+    __slots__ = ("backend", "state_data", "state_id", "updated_at", "version")
     STATE_ID_FIELD_NUMBER: _ClassVar[int]
     STATE_DATA_FIELD_NUMBER: _ClassVar[int]
     VERSION_FIELD_NUMBER: _ClassVar[int]
@@ -1103,7 +1103,7 @@ class MeltanoState(_message.Message):
     ) -> None: ...
 
 class SetMeltanoStateRequest(_message.Message):
-    __slots__ = ("project_name", "state_id", "state_data", "create_backup")
+    __slots__ = ("create_backup", "project_name", "state_data", "state_id")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     STATE_ID_FIELD_NUMBER: _ClassVar[int]
     STATE_DATA_FIELD_NUMBER: _ClassVar[int]
@@ -1121,7 +1121,7 @@ class SetMeltanoStateRequest(_message.Message):
     ) -> None: ...
 
 class GetMeltanoJobStatisticsRequest(_message.Message):
-    __slots__ = ("project_name", "days")
+    __slots__ = ("days", "project_name")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     DAYS_FIELD_NUMBER: _ClassVar[int]
     project_name: str
@@ -1132,12 +1132,12 @@ class GetMeltanoJobStatisticsRequest(_message.Message):
 
 class MeltanoJobStatistics(_message.Message):
     __slots__ = (
+        "cutoff_date",
+        "generated_at",
         "period_days",
-        "total_jobs",
         "state_counts",
         "success_rate",
-        "generated_at",
-        "cutoff_date",
+        "total_jobs",
     )
 
     class StateCountsEntry(_message.Message):
@@ -1173,7 +1173,7 @@ class MeltanoJobStatistics(_message.Message):
     ) -> None: ...
 
 class CleanupStaleMeltanoJobsRequest(_message.Message):
-    __slots__ = ("project_name", "heartbeat_timeout_minutes", "dry_run")
+    __slots__ = ("dry_run", "heartbeat_timeout_minutes", "project_name")
     PROJECT_NAME_FIELD_NUMBER: _ClassVar[int]
     HEARTBEAT_TIMEOUT_MINUTES_FIELD_NUMBER: _ClassVar[int]
     DRY_RUN_FIELD_NUMBER: _ClassVar[int]
@@ -1189,12 +1189,12 @@ class CleanupStaleMeltanoJobsRequest(_message.Message):
 
 class MeltanoJobCleanupResult(_message.Message):
     __slots__ = (
-        "dry_run",
-        "stale_jobs_found",
-        "jobs_cleaned",
-        "heartbeat_timeout_minutes",
         "cleaned_at",
         "cleaned_job_ids",
+        "dry_run",
+        "heartbeat_timeout_minutes",
+        "jobs_cleaned",
+        "stale_jobs_found",
     )
     DRY_RUN_FIELD_NUMBER: _ClassVar[int]
     STALE_JOBS_FOUND_FIELD_NUMBER: _ClassVar[int]
@@ -1221,7 +1221,7 @@ class MeltanoJobCleanupResult(_message.Message):
     ) -> None: ...
 
 class RunMeltanoCommandRequest(_message.Message):
-    __slots__ = ("project_name", "command_args", "environment", "env_vars")
+    __slots__ = ("command_args", "env_vars", "environment", "project_name")
 
     class EnvVarsEntry(_message.Message):
         __slots__ = ("key", "value")
@@ -1248,7 +1248,7 @@ class RunMeltanoCommandRequest(_message.Message):
     ) -> None: ...
 
 class MeltanoCommandResult(_message.Message):
-    __slots__ = ("return_code", "stdout", "stderr", "duration_seconds", "command")
+    __slots__ = ("command", "duration_seconds", "return_code", "stderr", "stdout")
     RETURN_CODE_FIELD_NUMBER: _ClassVar[int]
     STDOUT_FIELD_NUMBER: _ClassVar[int]
     STDERR_FIELD_NUMBER: _ClassVar[int]
