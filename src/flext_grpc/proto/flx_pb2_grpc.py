@@ -31,7 +31,6 @@ if _version_not_supported:
 
 class FlextServiceStub:
     """Main FLEXT service definition"""
-.
     def __init__(self, channel: object):
         """Constructor.
 
@@ -283,7 +282,6 @@ class FlextServiceStub:
 
 class FlextServiceServicer:
     """Main FLEXT service definition"""
-.
     def GetSystemStats(self, request: object, context: object):
         """System operations."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -738,7 +736,6 @@ def add_FlxServiceServicer_to_server(servicer: object, server: object) -> None:
 # This class is part of an EXPERIMENTAL API.
 class FlextService:
     """Main FLEXT service definition"""
-.
     @staticmethod
     def GetSystemStats(
         request,

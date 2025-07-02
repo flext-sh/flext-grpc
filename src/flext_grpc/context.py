@@ -25,9 +25,7 @@ if TYPE_CHECKING:
 # Python 3.13 type aliases - with strict validation
 ContextValue = str | int | bool | float | None
 GrpcMetadata = dict[str, str]
-GrpcMethod = Callable[
-    ..., Awaitable
-]  # Generic simplified for Pydantic compatibility
+GrpcMethod = Callable[..., Awaitable]  # Generic simplified for Pydantic compatibility
 GrpcMethodDecorator = Callable[[GrpcMethod], GrpcMethod]
 
 # Context variables for thread-safe user propagation
