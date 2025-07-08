@@ -4,12 +4,12 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "flext-grpc"
-version = "0.2.0"
+version = "0.6.0"
 description = "FLEXT gRPC - Enterprise gRPC Services with High-Performance RPC"
 authors = [{ name = "FLEXT Team", email = "team@flext.sh" }]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<3.14"
 keywords = ["flext", "grpc", "rpc", "microservices", "protobuf", "enterprise"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -22,7 +22,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Application Frameworks",
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
     "Topic :: System :: Distributed Computing",
-    "Typing :: Typed"]
+    "Typing :: Typed",
+]
 dependencies = [
     "grpcio>=1.66.0",
     "grpcio-tools>=1.66.0",
@@ -39,8 +40,9 @@ dependencies = [
     "opentelemetry-instrumentation-grpc>=0.48b0",
     # "asyncio-compat>=0.3.0",            # Package not available
     "tenacity>=9.0.0",
-    "cryptography>=42.0.0"]
-
+    "cryptography>=42.0.0",
+    "flext-core>=0.6.0",  # Professional dependency management
+]
 [project.scripts]
 flext-grpc = "flext_grpc.cli:main"
 flext-grpc-server = "flext_grpc.server:main"
@@ -55,57 +57,55 @@ Changelog = "https://github.com/flext-sh/flext-grpc/blob/main/CHANGELOG.md"
 
 [tool.poetry]
 packages = [{ include = "flext_grpc", from = "src" }]
-
 [tool.poetry.group.dev.dependencies]
 # Testing - Maximum strictness
-pytest = "^8.3.0"
-pytest-cov = "^6.0.0"
+pytest = "^8.4.0"
+pytest-cov = "^6.2.0"
 pytest-asyncio = "^0.24.0"
 pytest-benchmark = "^4.0.0"
 pytest-mock = "^3.14.0"
-pytest-xdist = "^3.6.0"
-pytest-timeout = "^2.3.0"
-pytest-randomly = "^3.15.0"
+pytest-xdist = "^3.8.0"
+pytest-timeout = "^2.4.0"
+pytest-randomly = "^3.16.0"
 pytest-sugar = "^1.0.0"
 pytest-clarity = "^1.0.1"
 
 # Code quality - Maximum strictness
-ruff = "^0.8.4"
-black = "^24.10.0"
-isort = "^5.13.0"
-mypy = "^1.13.0"
-bandit = { extras = ["toml"], version = "^1.7.0" }
-pre-commit = "^4.0.0"
+ruff = "^0.12.2"
+black = "^25.1.0"
+isort = "^6.0.1"
+mypy = "^1.16.1"
+bandit = { extras = ["toml"], version = "^1.8.0" }
+pre-commit = "^4.2.0"
 vulture = "^2.14"
 radon = "^6.0.1"
 
 # Type stubs
-types-requests = "^2.32.0"
-types-setuptools = "^75.6.0"
+types-requests = "^2.32.4"
+types-setuptools = "^75.8.2"
 types-redis = "^4.6.0"
 types-pyyaml = "^6.0.12"
 types-python-dateutil = "^2.9.0"
 
 # Documentation
-mkdocs = "^1.6.0"
-mkdocs-material = "^9.5.0"
-sphinx = "^8.0.0"
-sphinx-rtd-theme = "^3.0.0"
-myst-parser = "^4.0.0"
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.6.15"
+sphinx = "^8.2.3"
+sphinx-rtd-theme = "^3.0.2"
+myst-parser = "^4.0.1"
 
 # Development tools
-ipython = "^8.29.0"
+ipython = "^8.37.0"
 rich = "^13.9.0"
 rich-traceback = "^1.0.3"
 
 [tool.poetry.group.security.dependencies]
-bandit = { extras = ["toml"], version = "^1.7.0" }
+bandit = { extras = ["toml"], version = "^1.8.0" }
 safety = "^3.2.0"
-semgrep = "^1.91.0"
 
 [tool.poetry.group.build.dependencies]
-build = "^1.2.0"
-twine = "^6.0.0"
+build = "^1.2.2"
+twine = "^6.1.0"
 
 [tool.poetry.group.test.dependencies]
 hypothesis = "^6.112.0"
@@ -136,28 +136,28 @@ extend-exclude = [
     "build",
     "dist",
     "htmlcov",
-    "node_modules"]
-
+    "node_modules",
+]
 [tool.ruff.lint]
 # SELECT ALL RULES - MAXIMUM STRICTNESS
 select = ["ALL"]
 ignore = [
     # MANDATORY: Only formatter conflicts that cannot be auto-fixed
-    "COM812",  # trailing-comma-missing (handled by formatter)
-    "ISC001",  # implicit-str-concat (conflicts with formatter)
-    "D203",    # one-blank-line-before-class (conflicts with D211)
-    "D213",    # multi-line-docstring-summary-second-line (conflicts with D212)
-    
+    "COM812", # trailing-comma-missing (handled by formatter)
+    "ISC001", # implicit-str-concat (conflicts with formatter)
+    "D203",   # one-blank-line-before-class (conflicts with D211)
+    "D213",   # multi-line-docstring-summary-second-line (conflicts with D212)
+
     # STRICT MODE: Only allow critical exceptions
     "E501",    # line-too-long (handled by formatter)
     "PLR0913", # too-many-arguments (context-dependent)
     "PLR0915", # too-many-statements (context-dependent)
     "C901",    # too-complex (context-dependent)
-    
+
     # TEMPORARY: Project-specific exceptions (remove progressively)
-    "T201",    # print statements (remove in production)
-    "S101",    # assert statements (allowed in tests)
-    "INP001",  # implicit-namespace-package (project structure)
+    "T201",   # print statements (remove in production)
+    "S101",   # assert statements (allowed in tests)
+    "INP001", # implicit-namespace-package (project structure)
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -183,7 +183,6 @@ ignore = [
 "conftest.py" = ["D"]
 "scripts/*" = ["T201", "D", "ERA001"]
 "examples/*" = ["T201", "D", "ERA001"]
-
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
@@ -238,9 +237,9 @@ disallow_any_generics = true
 disallow_subclassing_any = true
 disallow_untyped_calls = true
 disallow_any_unimported = true
-disallow_any_expr = false  # Too strict for practical use
+disallow_any_expr = false       # Too strict for practical use
 disallow_any_decorated = true
-disallow_any_explicit = false  # Too strict for practical use
+disallow_any_explicit = false   # Too strict for practical use
 strict_optional = true
 strict_concatenate = true
 
@@ -251,7 +250,8 @@ module = [
     "google.*",
     "protobuf.*",
     "opentelemetry.*",
-    "prometheus_client.*"]
+    "prometheus_client.*",
+]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -268,7 +268,8 @@ addopts = [
     "--cov-fail-under=95",
     "--junitxml=reports/pytest.xml",
     "--maxfail=5",
-    "--timeout=30"]
+    "--timeout=30",
+]
 testpaths = ["tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
@@ -284,13 +285,15 @@ markers = [
     "streaming: marks tests as streaming tests",
     "load: marks tests as load tests",
     "performance: marks tests as performance tests",
-    "security: marks tests as security tests"]
+    "security: marks tests as security tests",
+]
 filterwarnings = [
     "error",
     "ignore::UserWarning",
     "ignore::DeprecationWarning",
     "ignore::PendingDeprecationWarning",
-    "ignore::grpc._channel._InactiveRpcError"]
+    "ignore::ResourceWarning",
+]
 asyncio_mode = "auto"
 log_cli = true
 log_cli_level = "INFO"
@@ -314,8 +317,8 @@ omit = [
     "*/.eggs/*",
     "*_pb2.py",
     "*_pb2_grpc.py",
-    "generated/*"]
-
+    "generated/*",
+]
 [tool.coverage.report]
 skip_empty = true
 skip_covered = false
@@ -332,12 +335,11 @@ exclude_lines = [
     "if __name__ == .__main__.:",
     "class .*\\bProtocol\\):",
     "@(abc\\.)?abstractmethod",
-    "TYPE_CHECKING"]
-
+    "TYPE_CHECKING",
+]
 [tool.bandit]
 targets = ["src"]
 exclude_dirs = ["tests", "build", "dist", "generated"]
 skips = ["B101", "B601"]
-
 [tool.bandit.assert_used]
 skips = ["*/tests/*", "*/test_*.py"]

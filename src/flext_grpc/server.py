@@ -12,9 +12,8 @@ import asyncio
 import json
 import sys
 import uuid
-from collections import namedtuple
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING, Any, TypeVar
+from typing import TYPE_CHECKING, Any, NamedTuple, TypeVar
 
 import grpc
 import jwt
@@ -57,18 +56,16 @@ from flext_grpc.converters import datetime_to_timestamp, dict_to_struct, struct_
 from flext_grpc.models import ExecutionModel, PipelineModel, ScheduleModel
 from flext_grpc.proto import flext_pb2, flext_pb2_grpc
 
-# ZERO TOLERANCE: Python 3.13 - Use collections.namedtuple for better performance
-MeltanoState = namedtuple(
-    "MeltanoState",
-    [
-        "state_id",
-        "state_data",
-        "version",
-        "updated_at",
-        "backend",
-    ],
-    defaults=[None, None, None],
-)
+
+# ZERO TOLERANCE: Python 3.13 - Use typing.NamedTuple for better type safety
+class MeltanoState(NamedTuple):
+    """Meltano state representation."""
+
+    state_id: str
+    state_data: dict[str, Any] | None = None
+    version: str | None = None
+    updated_at: str | None = None
+    backend: str | None = None
 
 
 if TYPE_CHECKING:
@@ -89,14 +86,14 @@ logger = structlog.get_logger()
 
 
 # Generic converter types
-T = TypeVar("T", contravariant=True)
-P = TypeVar("P", covariant=True)
+T_contra = TypeVar("T_contra", contravariant=True)
+P_co = TypeVar("P_co", covariant=True)
 
 
-class EntityToProtobufConverter[T, P]:
+class EntityToProtobufConverter[T_contra, P_co]:
     """Protocol for converting entities to protobuf messages."""
 
-    def convert(self, entity: T) -> P:
+    def convert(self, entity: T_contra) -> P_co:
         """Convert entity to protobuf message."""
         error_msg = (
             f"EntityToProtobufConverter.convert() must be implemented by concrete classes. "

@@ -11,6 +11,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+# Import flext-core base classes for consistency
+from flext_core import Entity, ServiceResult, ValueObject
 from flext_core.domain.business_types import (
     CronExpression,
     ExecutionNumber,
@@ -21,7 +23,7 @@ from flext_core.domain.business_types import (
     Timezone,
     Username,
 )
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 if TYPE_CHECKING:
     from datetime import datetime
@@ -35,11 +37,13 @@ if TYPE_CHECKING:
     )
 
 
-class PipelineGrpcModel(BaseModel):
+class PipelineGrpcModel(Entity):
     """Enterprise Pydantic model for gRPC Pipeline serialization with validated domain types.
 
     ZERO TOLERANCE: All fields use domain value objects for type safety and validation.
     Renamed from PipelineModel to avoid conflict with persistence PipelineModel.
+
+    Uses flext-core Entity as base for identity-based equality and domain modeling.
     """
 
     id: PipelineId
@@ -57,10 +61,12 @@ class PipelineGrpcModel(BaseModel):
     timeout: TimeoutSeconds | None = None
 
 
-class ExecutionModel(BaseModel):
+class ExecutionModel(Entity):
     """Enterprise Pydantic model for in-memory Execution with validated domain types.
 
     ZERO TOLERANCE: All fields use domain value objects for type safety and validation.
+
+    Uses flext-core Entity as base for identity-based equality.
     """
 
     id: ExecutionId
@@ -76,22 +82,43 @@ class ExecutionModel(BaseModel):
     records_processed: RecordCount | None = None
 
 
-class ScheduleModel(BaseModel):
-    """Enterprise Pydantic model for in-memory Schedule with validated domain types.
+class ScheduleModel(ValueObject):
+    """Enterprise Pydantic model for Schedule with domain value objects.
 
     ZERO TOLERANCE: All fields use domain value objects for type safety and validation.
+
+    Uses flext-core ValueObject as base for immutability.
     """
 
     id: ScheduleId
     pipeline_id: PipelineId
-    cron_expression: CronExpression
-    timezone: Timezone = Timezone(value="UTC")
+    cron: CronExpression
+    timezone: Timezone | None = None
     is_active: bool = True
-    created_by: Username = Username(value="grpc-system")
+    created_by: Username
     created_at: datetime
     updated_at: datetime
+    next_run: datetime | None = None
+    last_run: datetime | None = None
 
 
-# ZERO TOLERANCE CONSOLIDATION: Backward compatibility alias for PipelineModel
-# Use PipelineGrpcModel for new code, this is for legacy compatibility only
-PipelineModel = PipelineGrpcModel
+# Example of using ServiceResult for error handling
+def create_pipeline_result(pipeline_data: dict) -> ServiceResult[PipelineGrpcModel]:
+    """Create pipeline using flext-core ServiceResult pattern.
+
+    Demonstrates integration with flext-core error handling patterns.
+    """
+    try:
+        pipeline = PipelineGrpcModel(**pipeline_data)
+        return ServiceResult.success(pipeline)
+    except Exception as e:
+        return ServiceResult.failure(f"Failed to create pipeline: {e}")
+
+
+# Export models for use in gRPC service
+__all__ = [
+    "ExecutionModel",
+    "PipelineGrpcModel",
+    "ScheduleModel",
+    "create_pipeline_result",
+]

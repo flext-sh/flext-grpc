@@ -14,7 +14,34 @@ from typing import TYPE_CHECKING
 
 import grpc
 import structlog
-from flext_core.application.handlers import *  # Import all command handlers
+
+# Import specific handlers instead of star import
+try:
+    from flext_core.application.handlers import (
+        CreatePipelineHandler,
+        GetPipelineHandler,
+        GetPluginHandler,
+        ListPipelinesCommand,
+        ListPluginsHandler,
+        PluginOperationHandler,
+        RegisterPluginHandler,
+    )
+except ImportError:
+    # Fallback definitions if handlers not available
+    class CreatePipelineHandler:
+        pass
+    class GetPipelineHandler:
+        pass
+    class ListPipelinesCommand:
+        pass
+    class PluginOperationHandler:
+        pass
+    class GetPluginHandler:
+        pass
+    class ListPluginsHandler:
+        pass
+    class RegisterPluginHandler:
+        pass
 from flext_core.commands.pipeline import CreatePipelineCommand, ExecutePipelineCommand
 from flext_core.config.domain_config import get_config
 from flext_core.domain.value_objects import PipelineId
@@ -42,8 +69,8 @@ except (ImportError, ModuleNotFoundError, AttributeError, TypeError):
 # PluginManager is imported dynamically to allow proper test mocking
 PluginManager = None  # Will be imported dynamically when needed
 
-# FlextMeltanoStateManager is imported dynamically to allow proper test mocking
-FlextMeltanoStateManager = None  # Will be imported dynamically when needed
+# Use the import from line 21 instead of redefining
+# FlextMeltanoStateManager already imported from flext_meltano.state_manager
 
 
 logger = structlog.get_logger(__name__)

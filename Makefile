@@ -1,89 +1,44 @@
-# FLEXT-GRPC Makefile - Enterprise gRPC Services
-# ===============================================
+# FLEXT-GRPC Makefile - API Service
+# ====================================
 
-.PHONY: help install test clean lint format build docs dev server proto security grpc-test
+.PHONY: help install test clean lint format build docs dev security type-check pre-commit
 
 # Default target
 help: ## Show this help message
-	@echo "📡 FLEXT-GRPC - Enterprise gRPC Services"
-	@echo "========================================="
+	@echo "🏗️  Flext Grpc - API Service"
+	@echo "=========================="
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 # Installation & Setup
 install: ## Install dependencies with Poetry
-	@echo "📦 Installing dependencies for flext-grpc services..."
+	@echo "📦 Installing dependencies for flext-grpc..."
 	poetry install --all-extras
 
 install-dev: ## Install with dev dependencies
 	@echo "🛠️  Installing dev dependencies..."
 	poetry install --all-extras --group dev --group test --group security
 
-# gRPC Server Management
-server: ## Run gRPC development server
-	@echo "🚀 Starting gRPC development server..."
-	poetry run python -m flext_grpc.server --port 50051 --workers 4 --debug
-
-server-prod: ## Run gRPC production server
-	@echo "🏭 Starting gRPC production server..."
-	poetry run python -m flext_grpc.server --port 50051 --workers 10 --ssl
-
-# Protocol Buffers Management
-proto-generate: ## Generate Python code from .proto files
-	@echo "⚙️  Generating Python code from proto files..."
-	poetry run python -m grpc_tools.protoc \
-		-I src/flext_grpc/proto \
-		--python_out=src/flext_grpc/proto \
-		--grpc_python_out=src/flext_grpc/proto \
-		--mypy_out=src/flext_grpc/proto \
-		src/flext_grpc/proto/*.proto
-	@echo "✅ Proto files generated"
-
-proto-validate: ## Validate .proto files
-	@echo "🔍 Validating proto files..."
-	@for proto in src/flext_grpc/proto/*.proto; do \
-		echo "Validating $$proto..."; \
-		poetry run python -c "import grpc_tools.protoc; grpc_tools.protoc.main(['-I', 'src/flext_grpc/proto', '--python_out=/tmp', '$$proto'])" || exit 1; \
-	done
-	@echo "✅ Proto validation complete"
-
-# gRPC Testing
-grpc-test: ## Test gRPC endpoints
-	@echo "🔍 Testing gRPC endpoints..."
-	poetry run pytest tests/grpc/ -v --grpc-server=localhost:50051
-
-grpc-health: ## Check gRPC server health
-	@echo "💓 Checking gRPC server health..."
-	@command -v grpcurl >/dev/null 2>&1 && poetry run grpcurl -plaintext localhost:50051 grpc.health.v1.Health/Check || echo "grpcurl not installed or server not running"
-
-grpc-list: ## List available gRPC services
-	@echo "📋 Listing gRPC services..."
-	@command -v grpcurl >/dev/null 2>&1 && poetry run grpcurl -plaintext localhost:50051 list || echo "grpcurl not installed or server not running"
-
-load-test: ## Run gRPC load tests
-	@echo "⚡ Running gRPC load tests..."
-	@if [ -f tests/load/grpc_load_test.py ]; then \
-		poetry run python tests/load/grpc_load_test.py; \
+# Testing
+test: ## Run tests
+	@echo "🧪 Running tests for flext-grpc..."
+	@if [ -d tests ]; then \
+		python -m pytest tests/ -v; \
 	else \
-		echo "Load tests not configured"; \
+		echo "No tests directory found"; \
 	fi
 
-# Testing
-test: ## Run gRPC tests
-	@echo "🧪 Running gRPC tests..."
-	poetry run pytest tests/ -v --tb=short
-
 test-coverage: ## Run tests with coverage
-	@echo "📊 Running tests with coverage..."
-	poetry run pytest tests/ --cov=src/flext_grpc --cov-report=html:reports/coverage --cov-report=xml:reports/coverage.xml --cov-fail-under=95
+	@echo "🧪 Running tests with coverage for flext-grpc..."
+	@python -m pytest tests/ --cov=src --cov-report=html --cov-report=term
 
 # Code Quality - Maximum Strictness
 lint: ## Run all linters with maximum strictness
-	@echo "🔍 Running maximum strictness linting for gRPC services..."
+	@echo "🔍 Running maximum strictness linting for flext-grpc..."
 	poetry run ruff check . --output-format=verbose
 	@echo "✅ Ruff linting complete"
 
 format: ## Format code with strict standards
-	@echo "🎨 Formatting gRPC code..."
+	@echo "🎨 Formatting code with strict standards..."
 	poetry run black .
 	poetry run ruff check --fix .
 	@echo "✅ Code formatting complete"
@@ -94,55 +49,77 @@ type-check: ## Run strict type checking
 	@echo "✅ Type checking complete"
 
 security: ## Run security analysis
-	@echo "🔒 Running security analysis for gRPC..."
+	@echo "🔒 Running security analysis..."
 	poetry run bandit -r src/ -f json -o reports/security.json || true
 	poetry run bandit -r src/ -f txt
 	@echo "✅ Security analysis complete"
+
+pre-commit: ## Run pre-commit hooks
+	@echo "🎣 Running pre-commit hooks..."
+	poetry run pre-commit run --all-files
+	@echo "✅ Pre-commit checks complete"
 
 check: lint type-check security test ## Run all quality checks
 	@echo "✅ All quality checks complete for flext-grpc!"
 
 # Build & Distribution
-build: ## Build the gRPC package
+build: ## Build the package with Poetry
 	@echo "🔨 Building flext-grpc package..."
 	poetry build
 	@echo "📦 Package built successfully"
 
-# Development Workflow
-dev-setup: install-dev proto-generate ## Complete development setup
-	@echo "🎯 Setting up gRPC development environment..."
-	poetry run pre-commit install
-	mkdir -p reports logs
-	@echo "📡 Run 'make server' to start gRPC server"
-	@echo "💓 Run 'make grpc-health' to check server health"
-	@echo "✅ Development setup complete!"
+build-clean: clean build ## Clean then build
+	@echo "🔄 Clean build for flext-grpc..."
 
-dev: server ## Alias for development server
+publish-test: build ## Publish to TestPyPI
+	@echo "🚀 Publishing to TestPyPI..."
+	poetry publish --repository testpypi
 
-# Client Tools
-client-test: ## Test gRPC client
-	@echo "📞 Testing gRPC client..."
-	poetry run python -c "
-from flext_grpc.client import FlextGrpcClient
-client = FlextGrpcClient('localhost:50051')
-try:
-    health = client.health_check()
-    print(f'✅ Server health: {health}')
-except Exception as e:
-    print(f'❌ Connection failed: {e}')
-"
+publish: build ## Publish to PyPI
+	@echo "🚀 Publishing flext-grpc to PyPI..."
+	poetry publish
+
+# Documentation
+docs: ## Generate documentation
+	@echo "📚 Generating documentation for flext-grpc..."
+	@if [ -f docs/conf.py ]; then \
+		cd docs && make html; \
+	else \
+		echo "No docs configuration found"; \
+	fi
 
 # Cleanup
-clean: ## Clean build artifacts and generated files
-	@echo "🧹 Cleaning build artifacts..."
+clean: ## Clean build artifacts
+	@echo "🧹 Cleaning build artifacts for flext-grpc..."
 	@rm -rf build/ dist/ *.egg-info/
-	@rm -rf reports/ logs/ .coverage htmlcov/
 	@find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
 	@find . -name "*.pyc" -delete 2>/dev/null || true
 	@find . -name "*.pyo" -delete 2>/dev/null || true
 
+# Development Workflow
+dev-setup: install-dev ## Complete development setup
+	@echo "🎯 Setting up development environment for flext-grpc..."
+	poetry run pre-commit install
+	mkdir -p reports
+	@echo "✅ Development setup complete!"
+
+dev: ## Run in development mode
+	@echo "🔧 Starting flext-grpc in development mode..."
+	PYTHONPATH=src poetry run python -m flext_grpc --debug
+
+dev-test: ## Quick development test cycle
+	@echo "⚡ Quick test cycle for development..."
+	poetry run pytest tests/ -v --tb=short
+
 # Environment variables
 export PYTHONPATH := $(PWD)/src:$(PYTHONPATH)
-export GRPC_PORT := 50051
-export GRPC_DEBUG := true
 export FLEXT_GRPC_DEV := true
+
+# API-specific commands
+api-dev: ## Run API in development mode
+	@echo "🚀 Starting API development server..."
+	PYTHONPATH=src poetry run uvicorn {project_name.replace('-', '_')}.main:app --reload --host 0.0.0.0 --port 8000
+
+api-test: ## Test API endpoints
+	@echo "🧪 Testing API endpoints..."
+	poetry run pytest tests/ -v -m "not slow"

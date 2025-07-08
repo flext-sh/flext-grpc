@@ -9,6 +9,7 @@ from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 from flext_grpc import flext_pb2 as flext__pb2
 
 GRPC_VERSION = grpc.__version__
+GRPC_GENERATED_VERSION = "1.60.0"  # Version used to generate this file
 _version_not_supported = False
 
 try:
