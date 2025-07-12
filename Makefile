@@ -118,7 +118,7 @@ export FLEXT_GRPC_DEV := true
 # API-specific commands
 api-dev: ## Run API in development mode
 	@echo "🚀 Starting API development server..."
-	PYTHONPATH=src poetry run uvicorn {project_name.replace('-', '_')}.main:app --reload --host 0.0.0.0 --port 8000
+	PYTHONPATH=src poetry run uvicorn flext_grpc.main:app --reload --host 0.0.0.0 --port 8000
 
 api-test: ## Test API endpoints
 	@echo "🧪 Testing API endpoints..."

@@ -23,8 +23,11 @@ import grpc
 
 # Unified configuration management
 from flext_core.domain.types import ServiceResult
+from flext_core.domain.types import ServiceError
+from flext_core.config.domain_config import get_config
+from flext_observability.logging import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 if TYPE_CHECKING:
             from flext_grpc.proto import flext_pb2_grpc
@@ -40,7 +43,52 @@ DashboardStats = dict[str, int | float]
 HealthStatus = dict[str, bool | dict[str, Any]]
 ExecutionData = dict[str, str | None]
 
-logger = get_logger(__name__)
+
+def get_grpc_channel_target() -> str:
+    """Get the gRPC channel target from configuration.
+    
+    Returns:
+        Target string in format "host:port"
+    """
+    config = get_config()
+    grpc_config = config.get_service_config("grpc")
+    host = grpc_config.get("host", "localhost")
+    port = grpc_config.get("port", 50051)
+    return f"{host}:{port}"
+
+
+def _create_ssl_credentials(cert_file: str | None = None, 
+                          key_file: str | None = None,
+                          ca_file: str | None = None) -> grpc.ChannelCredentials:
+    """Create SSL channel credentials for secure gRPC connections.
+    
+    Args:
+        cert_file: Path to client certificate file
+        key_file: Path to client private key file  
+        ca_file: Path to CA certificate file
+        
+    Returns:
+        gRPC channel credentials for SSL/TLS
+    """
+    root_certificates = None
+    private_key = None
+    certificate_chain = None
+    
+    if ca_file:
+        with open(ca_file, 'rb') as f:
+            root_certificates = f.read()
+            
+    if key_file and cert_file:
+        with open(key_file, 'rb') as f:
+            private_key = f.read()
+        with open(cert_file, 'rb') as f:
+            certificate_chain = f.read()
+            
+    return grpc.ssl_channel_credentials(
+        root_certificates=root_certificates,
+        private_key=private_key,
+        certificate_chain=certificate_chain
+    )
 
 
 class FlextGrpcClientBase:
