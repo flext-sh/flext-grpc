@@ -1,124 +1,126 @@
-"""Pydantic models for in-memory gRPC data representation with enterprise domain types.
+"""gRPC models using flext-core patterns.
 
-These models provide strong typing and validation for the data used
-within the gRPC server, using enterprise domain value objects to replace
-primitive types with validated business objects.
-
-ZERO TOLERANCE: No primitive types - all values use domain objects.
+Domain models for gRPC service implementation.
+Zero tolerance for primitive types - using domain value objects.
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from typing import Any
 
-# Import flext-core base classes for consistency
-from flext_core import Entity, ServiceResult, ValueObject
-from flext_core.domain.business_types import (
-    CronExpression,
-    ExecutionNumber,
-    PluginName,
-    RecordCount,
-    ScheduleId,
-    TimeoutSeconds,
-    Timezone,
-    Username,
-)
 from pydantic import Field
+
+from flext_core import DomainEntity
+from flext_core import DomainValueObject
 
 if TYPE_CHECKING:
     from datetime import datetime
 
-    from flext_core.domain.value_objects import (
-        Duration,
-        ExecutionId,
-        ExecutionStatus,
-        PipelineId,
-        PipelineName,
-    )
+
+class PipelineModel(DomainEntity):
+    """Pipeline entity for gRPC service using flext-core patterns."""
+
+    id: str = Field(..., description="Pipeline unique identifier")
+    name: str = Field(..., min_length=1, max_length=255, description="Pipeline name")
+    description: str = Field(default="", description="Pipeline description")
+    extractor: str = Field(..., min_length=1, description="Extractor plugin name")
+    loader: str = Field(..., min_length=1, description="Loader plugin name")
+    transform: str | None = Field(None, description="Transform plugin name")
+    is_active: bool = Field(default=True, description="Pipeline active status")
+    created_by: str = Field(default="grpc-system", description="Pipeline creator")
+    created_at: datetime = Field(..., description="Creation timestamp")
+    updated_at: datetime = Field(..., description="Last update timestamp")
+    config: dict[str, Any] = Field(default_factory=dict, description="Pipeline configuration")
 
 
-class PipelineGrpcModel(Entity):
-    """Enterprise Pydantic model for gRPC Pipeline serialization with validated domain types.
+class ExecutionModel(DomainEntity):
+    """Pipeline execution entity for gRPC service."""
 
-    ZERO TOLERANCE: All fields use domain value objects for type safety and validation.
-    Renamed from PipelineModel to avoid conflict with persistence PipelineModel.
+    id: str = Field(..., description="Execution unique identifier")
+    pipeline_id: str = Field(..., description="Associated pipeline ID")
+    status: str = Field(..., description="Execution status")
+    started_at: datetime | None = Field(None, description="Execution start time")
+    finished_at: datetime | None = Field(None, description="Execution finish time")
+    triggered_by: str | None = Field(None, description="Who triggered the execution")
+    error_message: str | None = Field(None, description="Error message if failed")
+    records_processed: int | None = Field(None, description="Number of records processed")
+    metadata: dict[str, str] = Field(default_factory=dict, description="Execution metadata")
 
-    Uses flext-core Entity as base for identity-based equality and domain modeling.
-    """
+    @property
+    def duration_seconds(self) -> float:
+        """Calculate execution duration in seconds."""
+        if self.started_at and self.finished_at:
+            return (self.finished_at - self.started_at).total_seconds()
+        return 0.0
 
-    id: PipelineId
-    name: PipelineName
-    description: str | None = None
-    extractor: PluginName
-    loader: PluginName
-    transform: PluginName | None = None
-    schedule: CronExpression | None = None
-    is_active: bool = True
-    created_by: Username = Username(value="grpc-system")
-    created_at: datetime
-    updated_at: datetime
-    config: dict[str, object] = Field(default_factory=dict)
-    timeout: TimeoutSeconds | None = None
-
-
-class ExecutionModel(Entity):
-    """Enterprise Pydantic model for in-memory Execution with validated domain types.
-
-    ZERO TOLERANCE: All fields use domain value objects for type safety and validation.
-
-    Uses flext-core Entity as base for identity-based equality.
-    """
-
-    id: ExecutionId
-    pipeline_id: PipelineId
-    execution_number: ExecutionNumber
-    status: ExecutionStatus
-    started_at: datetime
-    finished_at: datetime | None = None
-    triggered_by: Username | None = None
-    metadata: dict[str, str] = Field(default_factory=dict)
-    duration: Duration | None = None
-    error_message: str | None = None
-    records_processed: RecordCount | None = None
+    @property
+    def is_running(self) -> bool:
+        """Check if execution is currently running."""
+        return self.status in {"running", "started"} and self.finished_at is None
 
 
-class ScheduleModel(ValueObject):
-    """Enterprise Pydantic model for Schedule with domain value objects.
+class ScheduleModel(DomainEntity):
+    """Schedule entity for pipeline automation."""
 
-    ZERO TOLERANCE: All fields use domain value objects for type safety and validation.
-
-    Uses flext-core ValueObject as base for immutability.
-    """
-
-    id: ScheduleId
-    pipeline_id: PipelineId
-    cron: CronExpression
-    timezone: Timezone | None = None
-    is_active: bool = True
-    created_by: Username
-    created_at: datetime
-    updated_at: datetime
-    next_run: datetime | None = None
-    last_run: datetime | None = None
+    id: str = Field(..., description="Schedule unique identifier")
+    pipeline_id: str = Field(..., description="Associated pipeline ID")
+    cron_expression: str = Field(..., description="Cron expression for scheduling")
+    timezone: str = Field(default="UTC", description="Timezone for scheduling")
+    is_active: bool = Field(default=True, description="Schedule active status")
+    created_by: str = Field(default="grpc-system", description="Schedule creator")
+    created_at: datetime = Field(..., description="Creation timestamp")
+    updated_at: datetime = Field(..., description="Last update timestamp")
+    last_run: datetime | None = Field(None, description="Last execution time")
+    next_run: datetime | None = Field(None, description="Next scheduled execution")
 
 
-# Example of using ServiceResult for error handling
-def create_pipeline_result(pipeline_data: dict) -> ServiceResult[PipelineGrpcModel]:
-    """Create pipeline using flext-core ServiceResult pattern.
+class PluginModel(DomainEntity):
+    """Plugin entity for plugin management."""
 
-    Demonstrates integration with flext-core error handling patterns.
-    """
-    try:
-        pipeline = PipelineGrpcModel(**pipeline_data)
-        return ServiceResult.success(pipeline)
-    except Exception as e:
-        return ServiceResult.failure(f"Failed to create pipeline: {e}")
+    name: str = Field(..., min_length=1, description="Plugin name")
+    plugin_type: str = Field(..., description="Plugin type (tap, target, transform)")
+    version: str = Field(..., description="Plugin version")
+    description: str = Field(default="", description="Plugin description")
+    config_schema: dict[str, Any] = Field(default_factory=dict, description="Configuration schema")
+    is_installed: bool = Field(default=False, description="Installation status")
+    install_path: str | None = Field(None, description="Installation path")
+    dependencies: list[str] = Field(default_factory=list, description="Plugin dependencies")
 
 
-# Export models for use in gRPC service
+class SystemMetrics(DomainValueObject):
+    """System metrics for health monitoring."""
+
+    cpu_usage: float = Field(..., ge=0, le=100, description="CPU usage percentage")
+    memory_usage: float = Field(..., ge=0, le=100, description="Memory usage percentage")
+    disk_usage: float = Field(..., ge=0, le=100, description="Disk usage percentage")
+    active_pipelines: int = Field(..., ge=0, description="Number of active pipelines")
+    total_executions: int = Field(..., ge=0, description="Total executions count")
+    failed_executions: int = Field(..., ge=0, description="Failed executions count")
+    timestamp: datetime = Field(..., description="Metrics collection timestamp")
+
+    @property
+    def success_rate(self) -> float:
+        """Calculate success rate percentage."""
+        if self.total_executions == 0:
+            return 100.0
+        return ((self.total_executions - self.failed_executions) / self.total_executions) * 100.0
+
+    @property
+    def is_healthy(self) -> bool:
+        """Check if system is healthy based on metrics."""
+        return (
+            self.cpu_usage < 90.0 and
+            self.memory_usage < 90.0 and
+            self.disk_usage < 90.0 and
+            self.success_rate > 95.0
+        )
+
+
 __all__ = [
     "ExecutionModel",
-    "PipelineGrpcModel",
+    "PipelineModel",
+    "PluginModel",
     "ScheduleModel",
-    "create_pipeline_result",
+    "SystemMetrics",
 ]

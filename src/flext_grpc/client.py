@@ -4,34 +4,32 @@ This module provides the canonical gRPC client implementation that eliminates
 duplication between CLI and Web interfaces while maintaining specialized functionality.
 
 Features:
-- Unified configuration through domain_config.py
-- SSL/TLS security with enterprise-grade certificates
-- Connection pooling and resource management
-- Error handling with ServiceResult patterns
-- Python 3.13 type system throughout
-- Strategic TYPE_CHECKING for optimal imports
+    - Unified configuration through domain_config.py
+    - SSL/TLS security with enterprise-grade certificates
+    - Connection pooling and resource management
+    - Error handling with ServiceResult patterns
+    - Python 3.13 type system throughout
+    - Strategic TYPE_CHECKING for optimal imports
 """
 
 from __future__ import annotations
 
 import functools
-from typing import TYPE_CHECKING, Any
+import logging
+from typing import TYPE_CHECKING
+from typing import Any
 
 import grpc
-import structlog
 
 # Unified configuration management
-from flext_core.config.domain_config import get_config
-from flext_core.domain.advanced_types import ServiceError, ServiceResult
-from flext_core.security.ssl_utils import (
-    _create_ssl_credentials,
-    get_grpc_channel_target,
-)
+from flext_core.domain.types import ServiceResult
+
+logger = logging.getLogger(__name__)
 
 if TYPE_CHECKING:
-    from flext_grpc.proto import flext_pb2_grpc
+            from flext_grpc.proto import flext_pb2_grpc
 else:
-    # Real imports at runtime - NO LAZY LOADING VIOLATIONS
+            # Real imports at runtime - NO LAZY LOADING VIOLATIONS
     from flext_grpc.proto import flext_pb2_grpc
 
 # Python 3.13 type aliases for gRPC domain
@@ -42,7 +40,7 @@ DashboardStats = dict[str, int | float]
 HealthStatus = dict[str, bool | dict[str, Any]]
 ExecutionData = dict[str, str | None]
 
-logger = structlog.get_logger(__name__)
+logger = get_logger(__name__)
 
 
 class FlextGrpcClientBase:
@@ -52,29 +50,22 @@ class FlextGrpcClientBase:
     CLI and Web gRPC clients while providing shared functionality.
 
     Features:
-    - Unified domain configuration
-    - Enterprise SSL/TLS security
-    - Connection pooling
-    - Error handling patterns
-    - Resource management
+        - Unified domain configuration
+        - Enterprise SSL/TLS security
+        - Connection pooling
+        - Error handling patterns
+        - Resource management
     """
 
     def __init__(self) -> None:
-        """Initialize base gRPC client with unified configuration.
-
-        Creates a gRPC client instance using the unified domain configuration
-        for secure connection to the FLEXT gRPC server with proper resource management.
-        """
         self._config = get_config()
         self._grpc_config = self._config.get_service_config("grpc")
         self._logger = logger.bind(component="grpc_client")
 
     def _get_grpc_message_size(self) -> int:
-        """Get gRPC message size from domain configuration - ZERO TOLERANCE."""
         return self._config.business.GRPC_DEFAULT_MAX_MESSAGE_SIZE_MB * 1024 * 1024
 
     def _get_channel_options(self) -> ChannelOptions:
-        """Get gRPC channel options with unified configuration - ZERO TOLERANCE UNIFICATION."""
         return [
             (
                 "grpc.max_send_message_length",
@@ -103,7 +94,6 @@ class FlextGrpcClientBase:
         ]
 
     def _create_channel(self) -> grpc.Channel:
-        """Create gRPC channel with unified configuration - ZERO TOLERANCE SECURITY."""
         target = get_grpc_channel_target()
         options = self._get_channel_options()
 
@@ -116,10 +106,7 @@ class FlextGrpcClientBase:
             return grpc.secure_channel(target, credentials, options=options)
         return grpc.insecure_channel(target, options=options)
 
-    def _handle_grpc_error(
-        self, error: grpc.RpcError, operation: str
-    ) -> ServiceResult[Any]:
-        """Handle gRPC errors with unified error patterns."""
+    def _handle_grpc_error(self, error: grpc.RpcError, operation: str) -> ServiceResult[Any]:
         try:
             error_details = error.details()
         except AttributeError:
@@ -144,24 +131,9 @@ class FlextGrpcClientBase:
         return ServiceResult.fail(service_error)
 
     def _create_stub(self, channel: grpc.Channel) -> flext_pb2_grpc.FlextServiceStub:
-        """Create gRPC service stub with the given channel."""
         return flext_pb2_grpc.FlextServiceStub(channel)
 
 
 @functools.lru_cache(maxsize=1)
 def get_grpc_client_base() -> FlextGrpcClientBase:
-    """Get global base gRPC client instance.
-
-    This function provides a singleton pattern for base gRPC client access,
-    ensuring efficient resource usage and connection pooling.
-
-    Returns:
-    -------
-        FlextGrpcClientBase: Configured base gRPC client instance.
-
-    Note:
-    ----
-        Uses modern Python 3.13 functools.lru_cache for thread-safe singleton pattern.
-
-    """
-    return FlextGrpcClientBase()
+        return FlextGrpcClientBase()

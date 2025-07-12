@@ -85,7 +85,7 @@ src/flext_core/grpc/proto/reports/
 | Library        | Version  | Purpose        | Usage Pattern                              |
 | -------------- | -------- | -------------- | ------------------------------------------ |
 | **pytest**     | `latest` | Test Framework | Protocol buffer and gRPC service testing   |
-| **pytest-xml** | `latest` | XML Reporting  | CI/CD integration with XML test reports    |
+| **pytest-XML** | `latest` | XML Reporting  | CI/CD integration with XML test reports    |
 | **mypy**       | `latest` | Type Checking  | Static analysis and type safety validation |
 
 ### 🔒 Enterprise Testing Features
@@ -108,7 +108,7 @@ src/flext_core/grpc/proto/reports/
 
 ## 🧪 DETAILED COMPONENT ARCHITECTURE
 
-### 🧪 **pytest.xml** - Test Execution Report
+### 🧪 **pytest.XML** - Test Execution Report
 
 **Purpose**: Comprehensive test report for protocol buffer validation and gRPC service testing
 
