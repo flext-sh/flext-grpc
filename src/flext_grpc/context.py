@@ -308,14 +308,13 @@ class Authenticator:
             GrpcMethod: The decorated method with authentication and permission checks.
 
         """
+
         @wraps(func)
         async def wrapper(*args: object, **kwargs: object) -> object:
             # First argument is always the servicer instance
             servicer_instance = args[0]
             if not isinstance(servicer_instance, AuthenticatedServicer):
-                msg = (
-                    "This decorator must be used on methods of a class that inherits from AuthenticatedServicer."
-                )
+                msg = "This decorator must be used on methods of a class that inherits from AuthenticatedServicer."
                 raise TypeError(msg)
 
             user = servicer_instance.require_authentication()

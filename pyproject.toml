@@ -192,6 +192,14 @@ select = [
 ]
 ignore = [
     "E501",    # line too long (handled by formatter)
+    "PTH118",  # os.path.join() should be replaced by / operator - Legacy code uses os.path extensively
+    "ANN401",  # Dynamically typed expressions (typing.Any) - Sometimes Any is necessary
+    "PLR0913", # Too many arguments in function definition - Complex gRPC handlers need many params
+    "S104",    # Possible binding to all interfaces - gRPC servers need to bind to 0.0.0.0
+    "D100",    # Missing docstring in public module - Legacy code
+    "D101",    # Missing docstring in public class - Legacy code
+    "D102",    # Missing docstring in public method - Legacy code
+    "D103",    # Missing docstring in public function - Legacy code
 ]
 
 [tool.ruff.lint.per-file-ignores]

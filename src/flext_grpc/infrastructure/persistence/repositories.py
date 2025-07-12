@@ -251,7 +251,9 @@ class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
         except Exception as e:
             return ServiceResult.fail(f"Failed to get method: {e!s}")
 
-    async def get_by_service_id(self, service_id: UUID) -> ServiceResult[list[RPCMethod]]:
+    async def get_by_service_id(
+        self, service_id: UUID,
+    ) -> ServiceResult[list[RPCMethod]]:
         """Get all RPC methods for a specific service.
 
         Args:
@@ -275,7 +277,9 @@ class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
         except Exception as e:
             return ServiceResult.fail(f"Failed to get methods by service: {e!s}")
 
-    async def get_by_name(self, service_id: UUID, name: str) -> ServiceResult[RPCMethod | None]:
+    async def get_by_name(
+        self, service_id: UUID, name: str,
+    ) -> ServiceResult[RPCMethod | None]:
         """Get an RPC method by service ID and method name.
 
         Args:
@@ -389,7 +393,9 @@ class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
         except Exception as e:
             return ServiceResult.fail(f"Failed to get call: {e!s}")
 
-    async def get_by_method_id(self, method_id: UUID, limit: int = 100) -> ServiceResult[list[RPCCall]]:
+    async def get_by_method_id(
+        self, method_id: UUID, limit: int = 100,
+    ) -> ServiceResult[list[RPCCall]]:
         """Get RPC calls for a specific method with optional limit.
 
         Args:

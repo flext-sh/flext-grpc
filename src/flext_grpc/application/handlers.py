@@ -514,9 +514,9 @@ class GetServiceMetricsHandler(QueryHandler):
                 "cpu_usage_percent": 12.4,
                 "last_updated": datetime.now(UTC).isoformat(),
                 "time_range": {
-                    "start": command.start_time.isoformat()
-                    if command.start_time
-                    else None,
+                    "start": (
+                        command.start_time.isoformat() if command.start_time else None
+                    ),
                     "end": command.end_time.isoformat() if command.end_time else None,
                 },
             }

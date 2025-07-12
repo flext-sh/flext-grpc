@@ -15,24 +15,24 @@ Features:
 from __future__ import annotations
 
 import functools
-import logging
 from typing import TYPE_CHECKING
 from typing import Any
 
 import grpc
 
+from flext_core.config.domain_config import get_config
+from flext_core.domain.types import ServiceError
+
 # Unified configuration management
 from flext_core.domain.types import ServiceResult
-from flext_core.domain.types import ServiceError
-from flext_core.config.domain_config import get_config
 from flext_observability.logging import get_logger
 
 logger = get_logger(__name__)
 
 if TYPE_CHECKING:
-            from flext_grpc.proto import flext_pb2_grpc
+    from flext_grpc.proto import flext_pb2_grpc
 else:
-            # Real imports at runtime - NO LAZY LOADING VIOLATIONS
+    # Real imports at runtime - NO LAZY LOADING VIOLATIONS
     from flext_grpc.proto import flext_pb2_grpc
 
 # Python 3.13 type aliases for gRPC domain
@@ -46,9 +46,10 @@ ExecutionData = dict[str, str | None]
 
 def get_grpc_channel_target() -> str:
     """Get the gRPC channel target from configuration.
-    
+
     Returns:
         Target string in format "host:port"
+
     """
     config = get_config()
     grpc_config = config.get_service_config("grpc")
@@ -57,37 +58,40 @@ def get_grpc_channel_target() -> str:
     return f"{host}:{port}"
 
 
-def _create_ssl_credentials(cert_file: str | None = None, 
-                          key_file: str | None = None,
-                          ca_file: str | None = None) -> grpc.ChannelCredentials:
+def _create_ssl_credentials(
+    cert_file: str | None = None,
+    key_file: str | None = None,
+    ca_file: str | None = None,
+) -> grpc.ChannelCredentials:
     """Create SSL channel credentials for secure gRPC connections.
-    
+
     Args:
         cert_file: Path to client certificate file
-        key_file: Path to client private key file  
+        key_file: Path to client private key file
         ca_file: Path to CA certificate file
-        
+
     Returns:
         gRPC channel credentials for SSL/TLS
+
     """
     root_certificates = None
     private_key = None
     certificate_chain = None
-    
+
     if ca_file:
-        with open(ca_file, 'rb') as f:
+        with open(ca_file, "rb") as f:
             root_certificates = f.read()
-            
+
     if key_file and cert_file:
-        with open(key_file, 'rb') as f:
+        with open(key_file, "rb") as f:
             private_key = f.read()
-        with open(cert_file, 'rb') as f:
+        with open(cert_file, "rb") as f:
             certificate_chain = f.read()
-            
+
     return grpc.ssl_channel_credentials(
         root_certificates=root_certificates,
         private_key=private_key,
-        certificate_chain=certificate_chain
+        certificate_chain=certificate_chain,
     )
 
 
@@ -154,7 +158,9 @@ class FlextGrpcClientBase:
             return grpc.secure_channel(target, credentials, options=options)
         return grpc.insecure_channel(target, options=options)
 
-    def _handle_grpc_error(self, error: grpc.RpcError, operation: str) -> ServiceResult[Any]:
+    def _handle_grpc_error(
+        self, error: grpc.RpcError, operation: str,
+    ) -> ServiceResult[Any]:
         try:
             error_details = error.details()
         except AttributeError:
@@ -184,4 +190,4 @@ class FlextGrpcClientBase:
 
 @functools.lru_cache(maxsize=1)
 def get_grpc_client_base() -> FlextGrpcClientBase:
-        return FlextGrpcClientBase()
+    return FlextGrpcClientBase()

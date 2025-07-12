@@ -24,4 +24,4 @@ def dict_to_struct(data: dict[str, object]) -> struct_pb2.Struct:
 
 
 def struct_to_dict(struct: struct_pb2.Struct) -> dict[str, object]:
-        return dict(struct)
+    return dict(struct)

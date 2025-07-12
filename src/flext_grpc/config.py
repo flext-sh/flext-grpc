@@ -140,8 +140,8 @@ class GRPCSettings(BaseSettings):
         """Check if SSL credentials are available."""
         try:
             return (
-                pathlib.Path(self.ssl_cert_path).is_file() and
-                pathlib.Path(self.ssl_key_path).is_file()
+                pathlib.Path(self.ssl_cert_path).is_file()
+                and pathlib.Path(self.ssl_key_path).is_file()
             )
         except Exception:
             return False

@@ -14,24 +14,30 @@ except ImportError:
 
     # Add basic mock classes
     class MockHealthResponse:
-        def __init__(self, **kwargs) -> None: pass
+        def __init__(self, **kwargs) -> None:
+            pass
 
     class MockCreatePipelineResponse:
-        def __init__(self, **kwargs) -> None: pass
+        def __init__(self, **kwargs) -> None:
+            pass
 
     class MockGetPipelineResponse:
-        def __init__(self, **kwargs) -> None: pass
+        def __init__(self, **kwargs) -> None:
+            pass
 
     class MockListPipelinesResponse:
-        def __init__(self, **kwargs) -> None: pass
+        def __init__(self, **kwargs) -> None:
+            pass
 
     class MockPipeline:
-        def __init__(self, **kwargs) -> None: pass
+        def __init__(self, **kwargs) -> None:
+            pass
 
     class MockFlextServiceServicer:
         pass
 
-    def mock_add_servicer_to_server(servicer, server) -> None: pass
+    def mock_add_servicer_to_server(servicer, server) -> None:
+        pass
 
     flext_pb2.HealthResponse = MockHealthResponse
     flext_pb2.CreatePipelineResponse = MockCreatePipelineResponse

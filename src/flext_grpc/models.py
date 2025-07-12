@@ -31,7 +31,9 @@ class PipelineModel(DomainEntity):
     created_by: str = Field(default="grpc-system", description="Pipeline creator")
     created_at: datetime = Field(..., description="Creation timestamp")
     updated_at: datetime = Field(..., description="Last update timestamp")
-    config: dict[str, Any] = Field(default_factory=dict, description="Pipeline configuration")
+    config: dict[str, Any] = Field(
+        default_factory=dict, description="Pipeline configuration",
+    )
 
 
 class ExecutionModel(DomainEntity):
@@ -44,8 +46,12 @@ class ExecutionModel(DomainEntity):
     finished_at: datetime | None = Field(None, description="Execution finish time")
     triggered_by: str | None = Field(None, description="Who triggered the execution")
     error_message: str | None = Field(None, description="Error message if failed")
-    records_processed: int | None = Field(None, description="Number of records processed")
-    metadata: dict[str, str] = Field(default_factory=dict, description="Execution metadata")
+    records_processed: int | None = Field(
+        None, description="Number of records processed",
+    )
+    metadata: dict[str, str] = Field(
+        default_factory=dict, description="Execution metadata",
+    )
 
     @property
     def duration_seconds(self) -> float:
@@ -82,17 +88,23 @@ class PluginModel(DomainEntity):
     plugin_type: str = Field(..., description="Plugin type (tap, target, transform)")
     version: str = Field(..., description="Plugin version")
     description: str = Field(default="", description="Plugin description")
-    config_schema: dict[str, Any] = Field(default_factory=dict, description="Configuration schema")
+    config_schema: dict[str, Any] = Field(
+        default_factory=dict, description="Configuration schema",
+    )
     is_installed: bool = Field(default=False, description="Installation status")
     install_path: str | None = Field(None, description="Installation path")
-    dependencies: list[str] = Field(default_factory=list, description="Plugin dependencies")
+    dependencies: list[str] = Field(
+        default_factory=list, description="Plugin dependencies",
+    )
 
 
 class SystemMetrics(DomainValueObject):
     """System metrics for health monitoring."""
 
     cpu_usage: float = Field(..., ge=0, le=100, description="CPU usage percentage")
-    memory_usage: float = Field(..., ge=0, le=100, description="Memory usage percentage")
+    memory_usage: float = Field(
+        ..., ge=0, le=100, description="Memory usage percentage",
+    )
     disk_usage: float = Field(..., ge=0, le=100, description="Disk usage percentage")
     active_pipelines: int = Field(..., ge=0, description="Number of active pipelines")
     total_executions: int = Field(..., ge=0, description="Total executions count")
@@ -104,16 +116,18 @@ class SystemMetrics(DomainValueObject):
         """Calculate success rate percentage."""
         if self.total_executions == 0:
             return 100.0
-        return ((self.total_executions - self.failed_executions) / self.total_executions) * 100.0
+        return (
+            (self.total_executions - self.failed_executions) / self.total_executions
+        ) * 100.0
 
     @property
     def is_healthy(self) -> bool:
         """Check if system is healthy based on metrics."""
         return (
-            self.cpu_usage < 90.0 and
-            self.memory_usage < 90.0 and
-            self.disk_usage < 90.0 and
-            self.success_rate > 95.0
+            self.cpu_usage < 90.0
+            and self.memory_usage < 90.0
+            and self.disk_usage < 90.0
+            and self.success_rate > 95.0
         )
 
 

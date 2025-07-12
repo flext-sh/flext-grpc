@@ -203,12 +203,15 @@ class FlextGrpcServer:
             # Store pipeline
             self._pipelines[pipeline_id] = pipeline
 
-            self.logger.info("Pipeline created", extra={
-                "pipeline_id": pipeline_id,
-                "name": request.name,
-                "extractor": request.extractor,
-                "loader": request.loader,
-            })
+            self.logger.info(
+                "Pipeline created",
+                extra={
+                    "pipeline_id": pipeline_id,
+                    "name": request.name,
+                    "extractor": request.extractor,
+                    "loader": request.loader,
+                },
+            )
 
             # Convert to protobuf Pipeline message
             return self._convert_pipeline_to_pb(pipeline)
@@ -255,15 +258,14 @@ class FlextGrpcServer:
             # Apply filters if provided
             if request.filter:
                 pipelines = [
-                    p for p in pipelines
-                    if request.filter.lower() in p.name.lower()
+                    p for p in pipelines if request.filter.lower() in p.name.lower()
                 ]
 
             # Apply pagination
             offset = request.offset or 0
             limit = request.limit or 50
             total = len(pipelines)
-            pipelines = pipelines[offset:offset + limit]
+            pipelines = pipelines[offset : offset + limit]
 
             # Convert to protobuf
             pb_pipelines = [self._convert_pipeline_to_pb(p) for p in pipelines]
@@ -316,11 +318,14 @@ class FlextGrpcServer:
             # Update pipeline last run
             pipeline.updated_at = now
 
-            self.logger.info("Pipeline execution started", extra={
-                "pipeline_id": request.pipeline_id,
-                "execution_id": execution_id,
-                "full_refresh": request.full_refresh,
-            })
+            self.logger.info(
+                "Pipeline execution started",
+                extra={
+                    "pipeline_id": request.pipeline_id,
+                    "execution_id": execution_id,
+                    "full_refresh": request.full_refresh,
+                },
+            )
 
             # Convert to protobuf
             return self._convert_execution_to_pb(execution)
@@ -348,7 +353,9 @@ class FlextGrpcServer:
                     flext_pb2.PLUGIN_TYPE_TRANSFORMER: "transformer",
                 }
                 if request.type in type_map:
-                    plugins = [p for p in plugins if p.plugin_type == type_map[request.type]]
+                    plugins = [
+                        p for p in plugins if p.plugin_type == type_map[request.type]
+                    ]
 
             # Filter installed only
             if request.installed_only:
@@ -415,7 +422,9 @@ class FlextGrpcServer:
             updated_at=updated_ts,
         )
 
-    def _convert_execution_to_pb(self, execution: ExecutionModel) -> flext_pb2.Execution:
+    def _convert_execution_to_pb(
+        self, execution: ExecutionModel,
+    ) -> flext_pb2.Execution:
         """Convert execution model to protobuf."""
         # Convert timestamps
         started_ts = Timestamp()
@@ -515,7 +524,9 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         return await self.server.ListPlugins(request, context)
 
 
-async def create_grpc_server(app: FlextApplication | None = None, port: int = 50051) -> grpc.aio.Server:
+async def create_grpc_server(
+    app: FlextApplication | None = None, port: int = 50051,
+) -> grpc.aio.Server:
     """Create and configure gRPC server with enterprise features."""
     server = grpc.aio.server()
 
@@ -530,16 +541,23 @@ async def create_grpc_server(app: FlextApplication | None = None, port: int = 50
     listen_addr = f"[::]:{port}"
     server.add_insecure_port(listen_addr)
 
-    logger.info("gRPC server configured", extra={"address": listen_addr, "features": "enterprise"})
+    logger.info(
+        "gRPC server configured",
+        extra={"address": listen_addr, "features": "enterprise"},
+    )
 
     return server
 
 
-async def run_grpc_server(app: FlextApplication | None = None, port: int = 50051) -> None:
+async def run_grpc_server(
+    app: FlextApplication | None = None, port: int = 50051,
+) -> None:
     """Run gRPC server with enterprise functionality."""
     server = await create_grpc_server(app, port)
 
-    logger.info("Starting FLEXT gRPC server", extra={"port": port, "version": __version__})
+    logger.info(
+        "Starting FLEXT gRPC server", extra={"port": port, "version": __version__},
+    )
     await server.start()
 
     try:

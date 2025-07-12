@@ -4,18 +4,23 @@ from __future__ import annotations
 
 import asyncio
 from concurrent import futures
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock
+from unittest.mock import MagicMock
+from unittest.mock import patch
 
 import grpc
 import pytest
 from grpc import aio
 
 # Mock the proto imports since they may not be generated yet
-with patch.dict("sys.modules", {
-    "flext_grpc.proto": MagicMock(),
-    "flext_grpc.proto.flext_pb2": MagicMock(),
-    "flext_grpc.proto.flext_pb2_grpc": MagicMock(),
-}):
+with patch.dict(
+    "sys.modules",
+    {
+        "flext_grpc.proto": MagicMock(),
+        "flext_grpc.proto.flext_pb2": MagicMock(),
+        "flext_grpc.proto.flext_pb2_grpc": MagicMock(),
+    },
+):
     from flext_grpc.server import FlextGRPCServer
     from flext_grpc.server_implementation import FlextServiceServicer
 
@@ -34,7 +39,9 @@ class TestFlextServiceServicer:
         return AsyncMock()
 
     @pytest.fixture
-    def servicer(self, mock_command_bus: AsyncMock, mock_query_bus: AsyncMock) -> FlextServiceServicer:
+    def servicer(
+        self, mock_command_bus: AsyncMock, mock_query_bus: AsyncMock,
+    ) -> FlextServiceServicer:
         """Create a servicer instance with mocked dependencies."""
         return FlextServiceServicer(
             command_bus=mock_command_bus,
@@ -47,10 +54,10 @@ class TestFlextServiceServicer:
         # Mock request and context
         request = MagicMock()
         context = MagicMock()
-        
+
         # Call health check
         response = await servicer.HealthCheck(request, context)
-        
+
         # Verify response
         assert response is not None
         assert hasattr(response, "status")
@@ -68,28 +75,28 @@ class TestFlextServiceServicer:
         request.name = "test-pipeline"
         request.pipeline_type = "DATABASE_SYNC"
         request.config = {"tap": "tap-postgres", "target": "target-snowflake"}
-        
+
         # Mock context
         context = MagicMock()
         context.set_code = MagicMock()
         context.set_details = MagicMock()
-        
+
         # Mock command bus response
         mock_result = MagicMock()
         mock_result.success = True
         mock_result.value = MagicMock(id="pipeline-123")
         mock_command_bus.execute.return_value = mock_result
-        
+
         # Call create pipeline
         response = await servicer.CreatePipeline(request, context)
-        
+
         # Verify command bus was called
         mock_command_bus.execute.assert_called_once()
-        
+
         # Verify response
         assert response is not None
         assert response.pipeline_id == "pipeline-123"
-        
+
         # Verify context not set to error
         context.set_code.assert_not_called()
 
@@ -103,21 +110,21 @@ class TestFlextServiceServicer:
         # Mock request
         request = MagicMock()
         request.name = "invalid-pipeline"
-        
+
         # Mock context
         context = MagicMock()
         context.set_code = MagicMock()
         context.set_details = MagicMock()
-        
+
         # Mock command bus error response
         mock_result = MagicMock()
         mock_result.success = False
         mock_result.error = MagicMock(message="Invalid pipeline configuration")
         mock_command_bus.execute.return_value = mock_result
-        
+
         # Call create pipeline
         response = await servicer.CreatePipeline(request, context)
-        
+
         # Verify error handling
         context.set_code.assert_called_with(grpc.StatusCode.INVALID_ARGUMENT)
         context.set_details.assert_called_with("Invalid pipeline configuration")
@@ -133,7 +140,7 @@ class TestFlextServiceServicer:
         request = MagicMock()
         request.page_size = 10
         request.page_token = ""
-        
+
         # Mock query bus response
         mock_pipelines = [
             MagicMock(id="p1", name="Pipeline 1"),
@@ -143,11 +150,11 @@ class TestFlextServiceServicer:
         mock_result.success = True
         mock_result.value = mock_pipelines
         mock_query_bus.execute.return_value = mock_result
-        
+
         # Call list pipelines
         context = MagicMock()
         response = await servicer.ListPipelines(request, context)
-        
+
         # Verify response
         assert response is not None
         assert len(response.pipelines) == 2
@@ -165,7 +172,7 @@ class TestFlextServiceServicer:
         request = MagicMock()
         request.pipeline_id = "pipeline-123"
         request.parameters = {"full_refresh": True}
-        
+
         # Mock execution result
         mock_result = MagicMock()
         mock_result.success = True
@@ -174,11 +181,11 @@ class TestFlextServiceServicer:
             status="RUNNING",
         )
         mock_command_bus.execute.return_value = mock_result
-        
+
         # Call execute pipeline
         context = MagicMock()
         response = await servicer.ExecutePipeline(request, context)
-        
+
         # Verify response
         assert response is not None
         assert response.execution_id == "exec-456"
@@ -191,27 +198,33 @@ class TestFlextServiceServicer:
         request = MagicMock()
         request.execution_id = "exec-123"
         request.follow = True
-        
+
         # Mock log service
         mock_log_entries = [
-            MagicMock(timestamp="2025-01-01T00:00:00", level="INFO", message="Starting"),
-            MagicMock(timestamp="2025-01-01T00:00:01", level="INFO", message="Processing"),
-            MagicMock(timestamp="2025-01-01T00:00:02", level="INFO", message="Completed"),
+            MagicMock(
+                timestamp="2025-01-01T00:00:00", level="INFO", message="Starting",
+            ),
+            MagicMock(
+                timestamp="2025-01-01T00:00:01", level="INFO", message="Processing",
+            ),
+            MagicMock(
+                timestamp="2025-01-01T00:00:02", level="INFO", message="Completed",
+            ),
         ]
-        
+
         async def mock_stream():
             for entry in mock_log_entries:
                 yield entry
-        
+
         with patch.object(servicer, "_log_service") as mock_log_service:
             mock_log_service.stream.return_value = mock_stream()
-            
+
             # Collect streamed logs
             context = MagicMock()
             logs = []
             async for log_entry in servicer.StreamLogs(request, context):
                 logs.append(log_entry)
-            
+
             # Verify logs
             assert len(logs) == 3
             assert logs[0].message == "Starting"
@@ -242,18 +255,18 @@ class TestFlextGRPCServer:
         """Test server start and stop."""
         # Mock the actual gRPC server
         mock_grpc_server = AsyncMock()
-        
+
         with patch("grpc.aio.server", return_value=mock_grpc_server):
             # Start server
             await server.start()
-            
+
             # Verify server was created and started
             assert server._server is not None
             mock_grpc_server.start.assert_called_once()
-            
+
             # Stop server
             await server.stop()
-            
+
             # Verify server was stopped
             mock_grpc_server.stop.assert_called_once()
 
@@ -265,7 +278,7 @@ class TestFlextGRPCServer:
             tls_cert_path="/path/to/cert.pem",
             tls_key_path="/path/to/key.pem",
         )
-        
+
         assert server.tls_enabled
         assert server.tls_cert_path == "/path/to/cert.pem"
         assert server.tls_key_path == "/path/to/key.pem"
@@ -277,36 +290,36 @@ class TestGRPCInterceptors:
     def test_auth_interceptor(self) -> None:
         """Test authentication interceptor."""
         from flext_grpc.interceptors import AuthInterceptor
-        
+
         interceptor = AuthInterceptor(
             public_key_path="/path/to/public.pem",
             skip_auth_methods=["HealthCheck"],
         )
-        
+
         assert interceptor.public_key_path == "/path/to/public.pem"
         assert "HealthCheck" in interceptor.skip_auth_methods
 
     def test_logging_interceptor(self) -> None:
         """Test logging interceptor."""
         from flext_grpc.interceptors import LoggingInterceptor
-        
+
         interceptor = LoggingInterceptor(
             log_level="DEBUG",
             log_request_body=True,
         )
-        
+
         assert interceptor.log_level == "DEBUG"
         assert interceptor.log_request_body is True
 
     def test_metrics_interceptor(self) -> None:
         """Test metrics interceptor."""
         from flext_grpc.interceptors import MetricsInterceptor
-        
+
         interceptor = MetricsInterceptor(
             prometheus_enabled=True,
             metrics_port=9090,
         )
-        
+
         assert interceptor.prometheus_enabled is True
         assert interceptor.metrics_port == 9090
 

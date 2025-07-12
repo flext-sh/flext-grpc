@@ -157,7 +157,9 @@ class UnaryStreamMethod[TRequest, TResponse]:
     """
 
     async def __call__(
-        self, request: TRequest, context: ServicerContext,
+        self,
+        request: TRequest,
+        context: ServicerContext,
     ) -> AsyncIterator[TResponse]:
         """Call the unary-stream method.
 
@@ -179,7 +181,9 @@ class StreamUnaryMethod[TRequest, TResponse]:
     """
 
     async def __call__(
-        self, request_iterator: AsyncIterator[TRequest], context: ServicerContext,
+        self,
+        request_iterator: AsyncIterator[TRequest],
+        context: ServicerContext,
     ) -> TResponse:
         """Call the stream-unary method.
 
@@ -201,7 +205,9 @@ class StreamStreamMethod[TRequest, TResponse]:
     """
 
     async def __call__(
-        self, request_iterator: AsyncIterator[TRequest], context: ServicerContext,
+        self,
+        request_iterator: AsyncIterator[TRequest],
+        context: ServicerContext,
     ) -> AsyncIterator[TResponse]:
         """Call the stream-stream method.
 
