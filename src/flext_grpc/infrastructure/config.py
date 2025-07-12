@@ -6,6 +6,7 @@ Zero tolerance for duplication.
 
 from __future__ import annotations
 
+import pathlib
 from typing import Any
 
 from pydantic import field_validator
@@ -166,10 +167,9 @@ class GRPCConfig(BaseSettings):
     def ssl_credentials_available(self) -> bool:
         """Check if SSL credentials are available."""
         try:
-            import os
             return (
-                os.path.isfile(self.ssl_cert_path) and
-                os.path.isfile(self.ssl_key_path)
+                pathlib.Path(self.ssl_cert_path).is_file() and
+                pathlib.Path(self.ssl_key_path).is_file()
             )
         except Exception:
             return False

@@ -311,7 +311,7 @@ class FlextServiceImplementation:
             operation: Name of the operation that failed.
 
         """
-        self.logger.exception(f"Failed to {operation}", error=str(error))
+        self.logger.error(f"Failed to {operation}", error=str(error))
         context.set_code(internal.invalid)
         context.set_details(f"Internal error: {error}")
 
