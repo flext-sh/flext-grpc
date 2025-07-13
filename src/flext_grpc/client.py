@@ -21,8 +21,8 @@ from typing import Any
 
 import grpc
 
-from flext_core.config.domain_config import get_config
-from flext_core.domain.types import ServiceError
+from flext_core.config import get_config
+from flext_core.domain import DomainError
 
 # Unified configuration management
 from flext_core.domain.types import ServiceResult
@@ -210,14 +210,95 @@ class FlextGrpcClientBase:
             code=error_code,
         )
 
-        service_error = ServiceError(
-            code=f"GRPC_{error_code.name}" if error_code else "GRPC_ERROR",
-            message=f"gRPC {operation} failed: {error_details}",
+        service_error = DomainError(
+            f"gRPC {operation} failed: {error_details}",
         )
         return ServiceResult.fail(service_error)
 
     def _create_stub(self, channel: grpc.Channel) -> flext_pb2_grpc.FlextServiceStub:
         return flext_pb2_grpc.FlextServiceStub(channel)
+
+
+class ConnectionPool:
+    """gRPC connection pool for managing multiple channels."""
+
+    def __init__(self, max_size: int = 10) -> None:
+        """Initialize connection pool.
+
+        Args:
+            max_size: Maximum number of connections in the pool.
+
+        """
+        self.max_size = max_size
+        self._channels: list[grpc.Channel] = []
+        self._logger = get_logger(__name__)
+
+    def get_channel(self, target: str, credentials: grpc.ChannelCredentials | None = None) -> grpc.Channel:
+        """Get a channel from the pool or create a new one.
+
+        Args:
+            target: The server address.
+            credentials: Optional channel credentials.
+
+        Returns:
+            A gRPC channel.
+
+        """
+        # Simple implementation - just return a new channel
+        # In production, this would manage a pool of reusable channels
+        if credentials:
+            return grpc.secure_channel(target, credentials)
+        return grpc.insecure_channel(target)
+
+    def close(self) -> None:
+        """Close all channels in the pool."""
+        for channel in self._channels:
+            channel.close()
+        self._channels.clear()
+
+
+class FlextGRPCClient(FlextGrpcClientBase):
+    """High-level gRPC client with simplified interface."""
+
+    def __init__(
+        self,
+        host: str = "localhost",
+        port: int = 50051,
+        tls_enabled: bool = False,
+        token: str | None = None,
+        timeout: int = 30,
+        max_retries: int = 3,
+        tls_cert_path: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize gRPC client.
+
+        Args:
+            host: Server hostname.
+            port: Server port.
+            tls_enabled: Whether to use TLS.
+            token: Optional authentication token.
+            timeout: Request timeout in seconds.
+            max_retries: Maximum number of retries.
+            tls_cert_path: Path to TLS certificate.
+            **kwargs: Additional keyword arguments.
+
+        """
+        super().__init__()
+        self.host = host
+        self.port = port
+        self.tls_enabled = tls_enabled
+        self.token = token
+        self.timeout = timeout
+        self.max_retries = max_retries
+        self.tls_cert_path = tls_cert_path
+
+        # Override base class attributes
+        self._server_address = f"{host}:{port}"
+
+    def connect(self) -> ServiceResult[bool]:
+        """Establish connection to gRPC server."""
+        return super().connect()
 
 
 @functools.lru_cache(maxsize=1)

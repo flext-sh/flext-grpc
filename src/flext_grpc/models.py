@@ -6,7 +6,6 @@ Zero tolerance for primitive types - using domain value objects.
 
 from __future__ import annotations
 
-from datetime import datetime
 from typing import TYPE_CHECKING
 from typing import Any
 
@@ -14,6 +13,9 @@ from pydantic import Field
 
 from flext_core import DomainEntity
 from flext_core import DomainValueObject
+
+if TYPE_CHECKING:
+    from datetime import datetime
 
 
 class PipelineModel(DomainEntity):

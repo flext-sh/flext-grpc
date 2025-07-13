@@ -25,7 +25,8 @@ with patch.dict(
         "flext_grpc.proto.flext_pb2_grpc": MagicMock(),
     },
 ):
-    from flext_grpc.server import FlextGrpcServer, FlextGrpcServicer
+    from flext_grpc.server import FlextGrpcServer
+    from flext_grpc.server import FlextGrpcServicer
 
 
 class TestFlextGrpcServicer:
@@ -65,7 +66,7 @@ class TestFlextGrpcServicer:
         mock_response = MagicMock()
         mock_response.status = "SERVING"
         servicer.server.health_check = AsyncMock(return_value=mock_response)
-        
+
         # Call health check
         response = await servicer.HealthCheck(request, context)
 
@@ -202,7 +203,7 @@ class TestFlextGrpcServicer:
         assert response.status == "RUNNING"
 
     @pytest.mark.asyncio
-    async def test_stream_logs(self, servicer: FlextServiceServicer) -> None:
+    async def test_stream_logs(self, servicer: FlextGrpcServicer) -> None:
         """Test log streaming."""
         # Mock request
         request = MagicMock()
@@ -255,33 +256,33 @@ class TestFlextGRPCServer:
         """Test server initialization."""
         # Test with minimal initialization
         server = FlextGrpcServer(app=None)
-        
+
         # Basic attributes should exist
-        assert hasattr(server, 'app')
-        assert hasattr(server, 'logger')
-        assert hasattr(server, '_pipelines')
-        assert hasattr(server, '_plugins')
+        assert hasattr(server, "app")
+        assert hasattr(server, "logger")
+        assert hasattr(server, "_pipelines")
+        assert hasattr(server, "_plugins")
 
     @pytest.mark.skip(reason="Server requires protobuf dependencies")
     def test_server_basic_functionality(self) -> None:
         """Test basic server functionality."""
         server = FlextGrpcServer(app=None)
-        
+
         # Server should be able to store models
         assert isinstance(server._pipelines, dict)
         assert isinstance(server._plugins, dict)
-        
+
         # Should have version
         from flext_grpc.server import __version__
         assert __version__ == "0.7.0"
-        
+
     def test_models_import(self) -> None:
         """Test that models can be imported."""
-        from flext_grpc.models import PipelineModel
         from flext_grpc.models import ExecutionModel
+        from flext_grpc.models import PipelineModel
         from flext_grpc.models import PluginModel
         from flext_grpc.models import SystemMetrics
-        
+
         # Just verify they can be imported
         assert PipelineModel is not None
         assert ExecutionModel is not None
@@ -297,9 +298,9 @@ class TestGRPCInterceptors:
         try:
             from flext_grpc.interceptors import AuthenticationInterceptor
             from flext_grpc.interceptors import MetricsInterceptor
-            from flext_grpc.interceptors import TracingInterceptor
             from flext_grpc.interceptors import RateLimitingInterceptor
-            
+            from flext_grpc.interceptors import TracingInterceptor
+
             # Just verify they can be imported
             assert AuthenticationInterceptor is not None
             assert MetricsInterceptor is not None
