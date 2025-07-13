@@ -19,8 +19,8 @@ if TYPE_CHECKING:
     from flext_core.domain.types import ConfigMapping
 
 # Type variables for generic protocols
-TRequest = TypeVar("TRequest", contravariant=True)
-TResponse = TypeVar("TResponse", covariant=True)
+TRequestContra_contra = TypeVar("TRequestContra_contra", contravariant=True)
+TResponseCo_co = TypeVar("TResponseCo_co", covariant=True)
 TServicer = TypeVar("TServicer")
 
 # Python 3.13 compatible type aliases for gRPC
@@ -297,7 +297,7 @@ class GrpcChannel:
     def close(self) -> None:
         """Close the channel."""
 
-    def get_state(self, try_to_connect: bool = False) -> int:
+    def get_state(self, *, try_to_connect: bool = False) -> int:
         """Get channel state.
 
         Args:
@@ -346,8 +346,8 @@ __all__ = [
     "ServicerContext",
     "StreamStreamMethod",
     "StreamUnaryMethod",
-    "TRequest",
-    "TResponse",
+    "TRequestContra_contra",
+    "TResponseCo_co",
     "TServicer",
     "UnaryStreamMethod",
     "UnaryUnaryMethod",

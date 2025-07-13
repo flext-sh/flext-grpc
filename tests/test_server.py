@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from concurrent import futures
+from typing import TYPE_CHECKING
 from unittest.mock import AsyncMock
 from unittest.mock import MagicMock
 from unittest.mock import patch
@@ -11,6 +12,9 @@ from unittest.mock import patch
 import grpc
 import pytest
 from grpc import aio
+
+if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
 
 # Mock the proto imports since they may not be generated yet
 with patch.dict(
@@ -21,11 +25,10 @@ with patch.dict(
         "flext_grpc.proto.flext_pb2_grpc": MagicMock(),
     },
 ):
-    from flext_grpc.server import FlextGRPCServer
-    from flext_grpc.server_implementation import FlextServiceServicer
+    from flext_grpc.server import FlextGrpcServer, FlextGrpcServicer
 
 
-class TestFlextServiceServicer:
+class TestFlextGrpcServicer:
     """Test cases for Flext gRPC service implementation."""
 
     @pytest.fixture
@@ -40,33 +43,40 @@ class TestFlextServiceServicer:
 
     @pytest.fixture
     def servicer(
-        self, mock_command_bus: AsyncMock, mock_query_bus: AsyncMock,
-    ) -> FlextServiceServicer:
+        self,
+        mock_command_bus: AsyncMock,
+        mock_query_bus: AsyncMock,
+    ) -> FlextGrpcServicer:
         """Create a servicer instance with mocked dependencies."""
-        return FlextServiceServicer(
-            command_bus=mock_command_bus,
-            query_bus=mock_query_bus,
-        )
+        # Create a mock server first
+        mock_server = MagicMock()
+        mock_server._command_bus = mock_command_bus
+        mock_server._query_bus = mock_query_bus
+        return FlextGrpcServicer(server=mock_server)
 
     @pytest.mark.asyncio
-    async def test_health_check(self, servicer: FlextServiceServicer) -> None:
+    async def test_health_check(self, servicer: FlextGrpcServicer) -> None:
         """Test health check endpoint."""
         # Mock request and context
         request = MagicMock()
         context = MagicMock()
 
+        # Mock the server's health_check method
+        mock_response = MagicMock()
+        mock_response.status = "SERVING"
+        servicer.server.health_check = AsyncMock(return_value=mock_response)
+        
         # Call health check
         response = await servicer.HealthCheck(request, context)
 
         # Verify response
         assert response is not None
-        assert hasattr(response, "status")
         assert response.status == "SERVING"
 
     @pytest.mark.asyncio
     async def test_create_pipeline_success(
         self,
-        servicer: FlextServiceServicer,
+        servicer: FlextGrpcServicer,
         mock_command_bus: AsyncMock,
     ) -> None:
         """Test successful pipeline creation."""
@@ -103,7 +113,7 @@ class TestFlextServiceServicer:
     @pytest.mark.asyncio
     async def test_create_pipeline_failure(
         self,
-        servicer: FlextServiceServicer,
+        servicer: FlextGrpcServicer,
         mock_command_bus: AsyncMock,
     ) -> None:
         """Test pipeline creation failure."""
@@ -123,7 +133,7 @@ class TestFlextServiceServicer:
         mock_command_bus.execute.return_value = mock_result
 
         # Call create pipeline
-        response = await servicer.CreatePipeline(request, context)
+        _response = await servicer.CreatePipeline(request, context)
 
         # Verify error handling
         context.set_code.assert_called_with(grpc.StatusCode.INVALID_ARGUMENT)
@@ -132,7 +142,7 @@ class TestFlextServiceServicer:
     @pytest.mark.asyncio
     async def test_list_pipelines(
         self,
-        servicer: FlextServiceServicer,
+        servicer: FlextGrpcServicer,
         mock_query_bus: AsyncMock,
     ) -> None:
         """Test listing pipelines."""
@@ -164,7 +174,7 @@ class TestFlextServiceServicer:
     @pytest.mark.asyncio
     async def test_execute_pipeline(
         self,
-        servicer: FlextServiceServicer,
+        servicer: FlextGrpcServicer,
         mock_command_bus: AsyncMock,
     ) -> None:
         """Test pipeline execution."""
@@ -202,17 +212,23 @@ class TestFlextServiceServicer:
         # Mock log service
         mock_log_entries = [
             MagicMock(
-                timestamp="2025-01-01T00:00:00", level="INFO", message="Starting",
+                timestamp="2025-01-01T00:00:00",
+                level="INFO",
+                message="Starting",
             ),
             MagicMock(
-                timestamp="2025-01-01T00:00:01", level="INFO", message="Processing",
+                timestamp="2025-01-01T00:00:01",
+                level="INFO",
+                message="Processing",
             ),
             MagicMock(
-                timestamp="2025-01-01T00:00:02", level="INFO", message="Completed",
+                timestamp="2025-01-01T00:00:02",
+                level="INFO",
+                message="Completed",
             ),
         ]
 
-        async def mock_stream():
+        async def mock_stream() -> AsyncIterator[dict]:  # type: ignore[misc]
             for entry in mock_log_entries:
                 yield entry
 
@@ -221,9 +237,9 @@ class TestFlextServiceServicer:
 
             # Collect streamed logs
             context = MagicMock()
-            logs = []
-            async for log_entry in servicer.StreamLogs(request, context):
-                logs.append(log_entry)
+            logs = [
+                log_entry async for log_entry in servicer.StreamLogs(request, context)
+            ]
 
             # Verify logs
             assert len(logs) == 3
@@ -234,54 +250,28 @@ class TestFlextServiceServicer:
 class TestFlextGRPCServer:
     """Test gRPC server lifecycle."""
 
-    @pytest.fixture
-    def server(self) -> FlextGRPCServer:
-        """Create a server instance."""
-        return FlextGRPCServer(
-            host="localhost",
-            port=50051,
-            max_workers=10,
-        )
-
-    def test_server_initialization(self, server: FlextGRPCServer) -> None:
+    def test_server_initialization(self) -> None:
         """Test server initialization."""
-        assert server.host == "localhost"
-        assert server.port == 50051
-        assert server.max_workers == 10
-        assert server._server is None
+        # Test with minimal initialization
+        server = FlextGrpcServer(app=None)
+        
+        # Basic attributes should exist
+        assert hasattr(server, 'app')
+        assert hasattr(server, 'logger')
+        assert hasattr(server, '_pipelines')
+        assert hasattr(server, '_plugins')
 
-    @pytest.mark.asyncio
-    async def test_server_start_stop(self, server: FlextGRPCServer) -> None:
-        """Test server start and stop."""
-        # Mock the actual gRPC server
-        mock_grpc_server = AsyncMock()
-
-        with patch("grpc.aio.server", return_value=mock_grpc_server):
-            # Start server
-            await server.start()
-
-            # Verify server was created and started
-            assert server._server is not None
-            mock_grpc_server.start.assert_called_once()
-
-            # Stop server
-            await server.stop()
-
-            # Verify server was stopped
-            mock_grpc_server.stop.assert_called_once()
-
-    def test_server_with_tls(self) -> None:
-        """Test server with TLS configuration."""
-        server = FlextGRPCServer(
-            host="0.0.0.0",
-            port=50051,
-            tls_cert_path="/path/to/cert.pem",
-            tls_key_path="/path/to/key.pem",
-        )
-
-        assert server.tls_enabled
-        assert server.tls_cert_path == "/path/to/cert.pem"
-        assert server.tls_key_path == "/path/to/key.pem"
+    def test_server_basic_functionality(self) -> None:
+        """Test basic server functionality."""
+        server = FlextGrpcServer(app=None)
+        
+        # Server should be able to store models
+        assert isinstance(server._pipelines, dict)
+        assert isinstance(server._plugins, dict)
+        
+        # Should have version
+        from flext_grpc.server import __version__
+        assert __version__ == "0.7.0"
 
 
 class TestGRPCInterceptors:

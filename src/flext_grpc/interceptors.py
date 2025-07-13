@@ -69,7 +69,7 @@ class MetricsInterceptor(ServerInterceptor):
         start_time = time.time()
 
         # Log request start
-        self.logger.info(f"gRPC request started: {method_name}")
+        self.logger.info("gRPC request started: %s", method_name)
 
         try:
             # Call the next handler
@@ -91,13 +91,11 @@ class MetricsInterceptor(ServerInterceptor):
                 )
 
             self.logger.info(
-                f"gRPC request completed: {method_name} "
-                f"(duration: {duration:.3f}s)",
+                "gRPC request completed: %s (duration: %.3fs)",
+                method_name, duration,
             )
 
-            return response
-
-        except Exception as e:
+        except Exception:
             # Calculate duration for failed requests
             duration = time.time() - start_time
 
@@ -114,11 +112,13 @@ class MetricsInterceptor(ServerInterceptor):
                 )
 
             self.logger.exception(
-                f"gRPC request failed: {method_name} "
-                f"(duration: {duration:.3f}s, error: {e})",
+                "gRPC request failed: %s (duration: %.3fs)",
+                method_name, duration,
             )
 
             raise
+        else:
+            return response
 
 
 class TracingInterceptor(ServerInterceptor):
@@ -161,14 +161,14 @@ class TracingInterceptor(ServerInterceptor):
             if span:
                 span.set_attribute("grpc.status", "success")
 
-            return response
-
         except Exception as e:
             if span:
                 span.set_attribute("grpc.status", "error")
                 span.set_attribute("error.message", str(e))
 
             raise
+        else:
+            return response
 
 
 class AuthenticationInterceptor(ServerInterceptor):
@@ -211,6 +211,13 @@ class AuthenticationInterceptor(ServerInterceptor):
             grpc.RpcError: If authentication fails.
 
         """
+        def _raise_auth_error(message: str) -> None:
+            """Raise authentication error."""
+            raise grpc.RpcError(
+                grpc.StatusCode.UNAUTHENTICATED,
+                message,
+            )
+
         method_name = handler_call_details.method
 
         # Skip authentication for public methods
@@ -222,11 +229,8 @@ class AuthenticationInterceptor(ServerInterceptor):
         auth_header = metadata.get("authorization")
 
         if not auth_header:
-            self.logger.warning(f"Missing authorization header for {method_name}")
-            raise grpc.RpcError(
-                grpc.StatusCode.UNAUTHENTICATED,
-                "Missing authorization header",
-            )
+            self.logger.warning("Missing authorization header for %s", method_name)
+            _raise_auth_error("Missing authorization header")
 
         # Validate token
         try:
@@ -234,24 +238,21 @@ class AuthenticationInterceptor(ServerInterceptor):
             user = await self.auth_service.validate_token(token)
 
             if not user:
-                self.logger.warning(f"Invalid token for {method_name}")
-                raise grpc.RpcError(
-                    grpc.StatusCode.UNAUTHENTICATED,
-                    "Invalid token",
-                )
+                self.logger.warning("Invalid token for %s", method_name)
+                _raise_auth_error("Invalid token")
 
             # Add user context to metadata for downstream handlers
             # This would typically be done through context propagation
-            self.logger.info(f"Authenticated user {user.id} for {method_name}")
+            self.logger.info("Authenticated user %s for %s", user.id, method_name)
 
             return await continuation(handler_call_details)
 
-        except Exception as e:
-            self.logger.exception(f"Authentication error for {method_name}: {e}")
+        except Exception:
+            self.logger.exception("Authentication error for %s", method_name)
             raise grpc.RpcError(
                 grpc.StatusCode.UNAUTHENTICATED,
                 "Authentication failed",
-            )
+            ) from None
 
 
 class RateLimitingInterceptor(ServerInterceptor):
@@ -293,7 +294,7 @@ class RateLimitingInterceptor(ServerInterceptor):
 
         # Check rate limit
         if not self.rate_limiter.is_allowed():
-            self.logger.warning(f"Rate limit exceeded for {method_name}")
+            self.logger.warning("Rate limit exceeded for %s", method_name)
             raise grpc.RpcError(
                 grpc.StatusCode.RESOURCE_EXHAUSTED,
                 "Rate limit exceeded",

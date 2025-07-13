@@ -223,6 +223,9 @@ ignore = [
 "**/*_pb2.py" = ["ALL"]
 "**/*_pb2_grpc.py" = ["ALL"]
 "**/generated/**/*.py" = ["ALL"]
+# TypeStubs generated files - exclude from ALL linting
+"**/*.pyi" = ["ALL"]
+"**/proto/*.pyi" = ["ALL"]
 [tool.ruff.lint.isort]
 known-first-party = [
     "flext_grpc",

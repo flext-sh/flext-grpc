@@ -123,11 +123,14 @@ class SystemMetrics(DomainValueObject):
     @property
     def is_healthy(self) -> bool:
         """Check if system is healthy based on metrics."""
+        max_usage_threshold = 90.0
+        min_success_rate = 95.0
+
         return (
-            self.cpu_usage < 90.0
-            and self.memory_usage < 90.0
-            and self.disk_usage < 90.0
-            and self.success_rate > 95.0
+            self.cpu_usage < max_usage_threshold
+            and self.memory_usage < max_usage_threshold
+            and self.disk_usage < max_usage_threshold
+            and self.success_rate >= min_success_rate
         )
 
 

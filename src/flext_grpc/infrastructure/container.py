@@ -17,6 +17,7 @@ class GRPCContainerConfig:
     """gRPC container configuration using flext-core patterns."""
 
     def __init__(self, config: GRPCConfig) -> None:
+        """Initialize the container with gRPC configuration."""
         self.config = config
 
     def configure_dependencies(self) -> None:

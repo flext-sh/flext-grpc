@@ -76,59 +76,67 @@ class GRPCSettings(BaseSettings):
 
     # SSL/TLS configuration
     ssl_enabled: bool = Field(
-        False,
+        default=False,
         description="Enable SSL/TLS encryption",
     )
     ssl_cert_path: str = Field(
-        "/etc/ssl/certs/server.crt",
+        default="",
         description="Path to SSL certificate file",
     )
     ssl_key_path: str = Field(
-        "/etc/ssl/private/server.key",
+        default="",
         description="Path to SSL private key file",
+    )
+    ssl_ca_cert_path: str = Field(
+        default="",
+        description="Path to SSL CA certificate file",
     )
 
     # Authentication
     auth_enabled: bool = Field(
-        True,
+        default=True,
         description="Enable authentication for gRPC endpoints",
     )
-    jwt_secret_key: str = Field(
-        "your-secret-key-here",
-        description="JWT secret key for token validation",
+    auth_secret_key: str = Field(
+        default="",
+        description="Secret key for JWT authentication",
+    )
+    auth_token_expiry: int = Field(
+        default=3600,
+        description="Token expiry time in seconds",
     )
 
     # Metrics and monitoring
     metrics_enabled: bool = Field(
-        True,
+        default=True,
         description="Enable Prometheus metrics collection",
     )
     metrics_port: int = Field(
-        9090,
-        ge=1024,
-        le=65535,
-        description="Metrics server port",
+        default=9090,
+        description="Prometheus metrics port",
     )
     tracing_enabled: bool = Field(
-        True,
+        default=True,
         description="Enable distributed tracing",
     )
-
-    # Database settings
-    database_url: str = Field(
-        "postgresql://localhost/flext_grpc",
-        description="Database connection URL",
+    tracing_endpoint: str = Field(
+        default="http://localhost:14268/api/traces",
+        description="Jaeger tracing endpoint",
     )
-    database_pool_size: int = Field(
-        20,
-        ge=1,
-        le=100,
-        description="Database connection pool size",
+
+    # Connection settings
+    max_connections: int = Field(
+        default=1000,
+        description="Maximum number of concurrent connections",
+    )
+    connection_timeout: int = Field(
+        default=30,
+        description="Connection timeout in seconds",
     )
 
     # Environment and debugging
-    environment: str = Field("development", description="Environment name")
-    debug: bool = Field(False, description="Debug mode")
+    environment: str = Field(default="development", description="Environment name")
+    debug: bool = Field(default=False, description="Debug mode")
 
     @property
     def address(self) -> str:
@@ -137,13 +145,16 @@ class GRPCSettings(BaseSettings):
 
     @property
     def ssl_credentials_available(self) -> bool:
-        """Check if SSL credentials are available."""
+        """Check if SSL credentials are available and valid."""
         try:
             return (
-                pathlib.Path(self.ssl_cert_path).is_file()
+                self.ssl_enabled
+                and self.ssl_cert_path
+                and self.ssl_key_path
+                and pathlib.Path(self.ssl_cert_path).is_file()
                 and pathlib.Path(self.ssl_key_path).is_file()
             )
-        except Exception:
+        except (OSError, FileNotFoundError, PermissionError):
             return False
 
     @field_validator("database_url")

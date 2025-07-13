@@ -15,6 +15,7 @@ Features:
 from __future__ import annotations
 
 import functools
+from pathlib import Path
 from typing import TYPE_CHECKING
 from typing import Any
 
@@ -79,13 +80,13 @@ def _create_ssl_credentials(
     certificate_chain = None
 
     if ca_file:
-        with open(ca_file, "rb") as f:
+        with Path(ca_file).open("rb") as f:
             root_certificates = f.read()
 
     if key_file and cert_file:
-        with open(key_file, "rb") as f:
+        with Path(key_file).open("rb") as f:
             private_key = f.read()
-        with open(cert_file, "rb") as f:
+        with Path(cert_file).open("rb") as f:
             certificate_chain = f.read()
 
     return grpc.ssl_channel_credentials(
@@ -93,6 +94,36 @@ def _create_ssl_credentials(
         private_key=private_key,
         certificate_chain=certificate_chain,
     )
+
+
+def create_secure_channel(
+    target: str,
+    ca_file: str | None = None,
+    key_file: str | None = None,
+    cert_file: str | None = None,
+) -> grpc.Channel:
+    """Create a secure gRPC channel with SSL/TLS support."""
+    root_certificates = None
+    private_key = None
+    certificate_chain = None
+
+    if ca_file:
+        with Path(ca_file).open("rb") as f:
+            root_certificates = f.read()
+
+    if key_file and cert_file:
+        with Path(key_file).open("rb") as f:
+            private_key = f.read()
+        with Path(cert_file).open("rb") as f:
+            certificate_chain = f.read()
+
+    credentials = grpc.ssl_channel_credentials(
+        root_certificates=root_certificates,
+        private_key=private_key,
+        certificate_chain=certificate_chain,
+    )
+
+    return grpc.secure_channel(target, credentials)
 
 
 class FlextGrpcClientBase:
@@ -110,6 +141,7 @@ class FlextGrpcClientBase:
     """
 
     def __init__(self) -> None:
+        """Initialize the FlextGRPCClient with default configuration."""
         self._config = get_config()
         self._grpc_config = self._config.get_service_config("grpc")
         self._logger = logger.bind(component="grpc_client")

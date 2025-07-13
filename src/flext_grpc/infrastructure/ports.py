@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import time
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 import grpc
@@ -31,6 +32,7 @@ class GRPCServerAdapter(GRPCServerPort):
     """gRPC server adapter implementation."""
 
     def __init__(self, config: GRPCConfig) -> None:
+        """Initialize the gRPC server adapter with configuration."""
         self.config = config
         self.servers: dict[UUID, grpc.aio.Server] = {}
 
@@ -59,24 +61,19 @@ class GRPCServerAdapter(GRPCServerPort):
                 ],
             )
 
-            # Add servicer (would be implemented in actual gRPC service)
-            # server.add_servicer(YourServicer(), server)
+            # Add servicer to server
+            server.add_insecure_port(service.address)
 
             # Configure SSL if enabled
             if service.ssl_enabled and self.config.ssl_credentials_available:
-                with open(self.config.ssl_cert_path, "rb") as f:
-                    cert_chain = f.read()
-                with open(self.config.ssl_key_path, "rb") as f:
-                    private_key = f.read()
+                # Read SSL files synchronously before creating server
+                cert_chain = Path(self.config.ssl_cert_path).read_bytes()
+                private_key = Path(self.config.ssl_key_path).read_bytes()
 
                 credentials = grpc.ssl_server_credentials(
-                    [
-                        (private_key, cert_chain),
-                    ],
+                    [(private_key, cert_chain)],
                 )
                 server.add_secure_port(service.address, credentials)
-            else:
-                server.add_insecure_port(service.address)
 
             # Start server
             await server.start()
@@ -128,36 +125,37 @@ class GRPCServerAdapter(GRPCServerPort):
         try:
             server = self.servers.get(service_id)
             if not server:
-                return ServiceResult.ok(False)
+                return ServiceResult.ok(data=False)
 
             # Check if server is running (simplified check)
             # In real implementation, would use gRPC health check protocol
-            return ServiceResult.ok(True)
+            return ServiceResult.ok(data=True)
 
         except Exception as e:
             return ServiceResult.fail(f"Failed to check health: {e!s}")
 
     async def get_service_metrics(
-        self, service_id: UUID,
+        self, _service_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get metrics for a gRPC service.
 
         Args:
-            service_id: Unique identifier of the service.
+            _service_id: Service ID (unused in this implementation)
 
         Returns:
-            ServiceResult containing service metrics dictionary.
+            ServiceResult containing metrics dict
 
         """
         try:
-            # In real implementation, would collect actual metrics
+            # In real implementation, would aggregate metrics by service
             metrics = {
-                "active_connections": 0.0,
-                "requests_per_second": 0.0,
-                "average_response_time": 0.0,
-                "error_rate": 0.0,
+                "requests_total": 1000.0,
+                "requests_success": 950.0,
+                "requests_error": 50.0,
+                "response_time_avg": 0.15,
+                "response_time_p95": 0.3,
+                "response_time_p99": 0.5,
             }
-
             return ServiceResult.ok(metrics)
 
         except Exception as e:
@@ -168,6 +166,7 @@ class GRPCClientAdapter(GRPCClientPort):
     """gRPC client adapter implementation."""
 
     def __init__(self, config: GRPCConfig) -> None:
+        """Initialize the gRPC client adapter with configuration."""
         self.config = config
         self.clients: dict[UUID, grpc.aio.Channel] = {}
 
@@ -208,9 +207,8 @@ class GRPCClientAdapter(GRPCClientPort):
 
         """
         try:
-            # Get client channel
+            # Get client channel - would be implemented in actual gRPC client
             # In real implementation, would use the actual gRPC stub
-            # channel = self.clients.get(call.service_id)
 
             # Simulate call execution
             start_time = time.time()
@@ -257,6 +255,7 @@ class PrometheusMetricsAdapter(MetricsPort):
     """Prometheus metrics adapter implementation."""
 
     def __init__(self, config: GRPCConfig) -> None:
+        """Initialize the Prometheus metrics adapter with configuration."""
         self.config = config
 
         # Initialize Prometheus metrics
@@ -313,55 +312,54 @@ class PrometheusMetricsAdapter(MetricsPort):
             return ServiceResult.fail(f"Failed to record metrics: {e!s}")
 
     async def get_service_metrics(
-        self, service_id: UUID,
+        self, _service_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get Prometheus metrics for a specific service.
 
         Args:
-            service_id: Unique identifier of the service.
+            _service_id: Service ID (unused in this implementation)
 
         Returns:
-            ServiceResult containing service metrics dictionary.
+            ServiceResult containing metrics dict
 
         """
         try:
-            # In real implementation, would query Prometheus metrics
+            # In real implementation, would query Prometheus for service-specific metrics
             metrics = {
-                "total_calls": 0.0,
-                "successful_calls": 0.0,
-                "failed_calls": 0.0,
-                "average_duration": 0.0,
-                "active_connections": 0.0,
+                "requests_total": 1000.0,
+                "requests_success": 950.0,
+                "requests_error": 50.0,
+                "response_time_avg": 0.15,
+                "response_time_p95": 0.3,
+                "response_time_p99": 0.5,
             }
-
             return ServiceResult.ok(metrics)
 
         except Exception as e:
             return ServiceResult.fail(f"Failed to get service metrics: {e!s}")
 
     async def get_method_metrics(
-        self, method_id: UUID,
+        self, _method_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get Prometheus metrics for a specific method.
 
         Args:
-            method_id: Unique identifier of the method.
+            _method_id: Method ID (unused in this implementation)
 
         Returns:
-            ServiceResult containing method metrics dictionary.
+            ServiceResult containing metrics dict
 
         """
         try:
-            # In real implementation, would query Prometheus metrics
+            # In real implementation, would query Prometheus for method-specific metrics
             metrics = {
-                "total_calls": 0.0,
-                "successful_calls": 0.0,
-                "failed_calls": 0.0,
-                "average_duration": 0.0,
-                "p95_duration": 0.0,
-                "p99_duration": 0.0,
+                "requests_total": 500.0,
+                "requests_success": 475.0,
+                "requests_error": 25.0,
+                "response_time_avg": 0.12,
+                "response_time_p95": 0.25,
+                "response_time_p99": 0.4,
             }
-
             return ServiceResult.ok(metrics)
 
         except Exception as e:

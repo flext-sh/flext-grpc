@@ -90,12 +90,12 @@ class FlextGrpcServer:
 
         logger.info("FlextGrpcServer initialized with enterprise features")
 
-    async def HealthCheck(
+    async def health_check(
         self,
-        request: empty_pb2.Empty,
-        context: grpc.ServicerContext,
-    ) -> flext_pb2.HealthStatus:
-        """Get comprehensive system health status."""
+        _request: empty_pb2.Empty,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.HealthResponse:
+        """Health check endpoint."""
         try:
             # Comprehensive health check
             components = {
@@ -128,7 +128,7 @@ class FlextGrpcServer:
             timestamp = Timestamp()
             timestamp.GetCurrentTime()
 
-            return flext_pb2.HealthStatus(
+            return flext_pb2.HealthResponse(
                 healthy=True,
                 components=components,
                 timestamp=timestamp,
@@ -142,25 +142,25 @@ class FlextGrpcServer:
             timestamp = Timestamp()
             timestamp.GetCurrentTime()
 
-            return flext_pb2.HealthStatus(
+            return flext_pb2.HealthResponse(
                 healthy=False,
                 components={},
                 timestamp=timestamp,
             )
 
-    async def GetSystemStats(
+    async def get_system_stats(
         self,
-        request: empty_pb2.Empty,
-        context: grpc.ServicerContext,
-    ) -> flext_pb2.SystemStats:
-        """Get comprehensive system statistics."""
+        _request: empty_pb2.Empty,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.SystemStatsResponse:
+        """Get system stats endpoint."""
         try:
             # Update metrics
             active_pipelines = len([p for p in self._pipelines.values() if p.is_active])
             total_executions = len(self._executions)
             success_rate = self._system_metrics.success_rate
 
-            return flext_pb2.SystemStats(
+            return flext_pb2.SystemStatsResponse(
                 active_pipelines=active_pipelines,
                 total_executions=total_executions,
                 success_rate=success_rate,
@@ -174,14 +174,14 @@ class FlextGrpcServer:
             self.logger.exception("Failed to get system stats", extra={"error": str(e)})
             context.set_code(internal.invalid)
             context.set_details(f"System stats failed: {e}")
-            return flext_pb2.SystemStats()
+            return flext_pb2.SystemStatsResponse()
 
-    async def CreatePipeline(
+    async def create_pipeline(
         self,
         request: flext_pb2.CreatePipelineRequest,
-        context: grpc.ServicerContext,
-    ) -> flext_pb2.Pipeline:
-        """Create a new pipeline with enterprise functionality."""
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.PipelineResponse:
+        """Create pipeline endpoint."""
         try:
             pipeline_id = str(uuid.uuid4())
 
@@ -207,51 +207,51 @@ class FlextGrpcServer:
                 "Pipeline created",
                 extra={
                     "pipeline_id": pipeline_id,
-                    "name": request.name,
+                    "pipeline_name": request.name,
                     "extractor": request.extractor,
                     "loader": request.loader,
                 },
             )
 
             # Convert to protobuf Pipeline message
-            return self._convert_pipeline_to_pb(pipeline)
+            return flext_pb2.PipelineResponse(pipeline=self._convert_pipeline_to_pb(pipeline))
 
         except Exception as e:
             self.logger.exception("Failed to create pipeline", extra={"error": str(e)})
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details(f"Pipeline creation failed: {e}")
             # Return empty pipeline on error
-            return flext_pb2.Pipeline()
+            return flext_pb2.PipelineResponse(pipeline=flext_pb2.Pipeline())
 
-    async def GetPipeline(
+    async def get_pipeline(
         self,
         request: flext_pb2.GetPipelineRequest,
-        context: grpc.ServicerContext,
-    ) -> flext_pb2.Pipeline:
-        """Get pipeline by ID."""
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.PipelineResponse:
+        """Get pipeline endpoint."""
         try:
             pipeline = self._pipelines.get(request.id)
 
             if not pipeline:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Pipeline {request.id} not found")
-                return flext_pb2.Pipeline()
+                return flext_pb2.PipelineResponse(pipeline=flext_pb2.Pipeline())
 
             # Convert to protobuf
-            return self._convert_pipeline_to_pb(pipeline)
+            return flext_pb2.PipelineResponse(pipeline=self._convert_pipeline_to_pb(pipeline))
 
         except Exception as e:
             self.logger.exception("Failed to get pipeline", extra={"error": str(e)})
             context.set_code(internal.invalid)
             context.set_details(f"Get pipeline failed: {e}")
-            return flext_pb2.Pipeline()
+            return flext_pb2.PipelineResponse(pipeline=flext_pb2.Pipeline())
 
-    async def ListPipelines(
+    async def list_pipelines(
         self,
         request: flext_pb2.ListPipelinesRequest,
-        context: grpc.ServicerContext,
+        context: grpc.aio.ServicerContext,
     ) -> flext_pb2.ListPipelinesResponse:
-        """List all pipelines with filtering and pagination."""
+        """List pipelines endpoint."""
         try:
             pipelines = list(self._pipelines.values())
 
@@ -283,19 +283,19 @@ class FlextGrpcServer:
             context.set_details(f"List pipelines failed: {e}")
             return flext_pb2.ListPipelinesResponse(pipelines=[], total=0)
 
-    async def RunPipeline(
+    async def run_pipeline(
         self,
         request: flext_pb2.RunPipelineRequest,
-        context: grpc.ServicerContext,
-    ) -> flext_pb2.Execution:
-        """Execute pipeline with real business logic."""
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.ExecutionResponse:
+        """Run pipeline endpoint."""
         try:
             pipeline = self._pipelines.get(request.pipeline_id)
 
             if not pipeline:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Pipeline {request.pipeline_id} not found")
-                return flext_pb2.Execution()
+                return flext_pb2.ExecutionResponse(execution=flext_pb2.Execution())
 
             execution_id = str(uuid.uuid4())
             now = datetime.now(UTC)
@@ -328,20 +328,20 @@ class FlextGrpcServer:
             )
 
             # Convert to protobuf
-            return self._convert_execution_to_pb(execution)
+            return flext_pb2.ExecutionResponse(execution=self._convert_execution_to_pb(execution))
 
         except Exception as e:
             self.logger.exception("Failed to run pipeline", extra={"error": str(e)})
             context.set_code(internal.invalid)
             context.set_details(f"Pipeline execution failed: {e}")
-            return flext_pb2.Execution()
+            return flext_pb2.ExecutionResponse(execution=flext_pb2.Execution())
 
-    async def ListPlugins(
+    async def list_plugins(
         self,
         request: flext_pb2.ListPluginsRequest,
-        context: grpc.ServicerContext,
+        context: grpc.aio.ServicerContext,
     ) -> flext_pb2.ListPluginsResponse:
-        """List all available plugins."""
+        """List plugins endpoint."""
         try:
             plugins = list(self._plugins.values())
 
@@ -423,7 +423,8 @@ class FlextGrpcServer:
         )
 
     def _convert_execution_to_pb(
-        self, execution: ExecutionModel,
+        self,
+        execution: ExecutionModel,
     ) -> flext_pb2.Execution:
         """Convert execution model to protobuf."""
         # Convert timestamps
@@ -495,37 +496,66 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Initialize servicer with server."""
         self.server = server
 
-    async def HealthCheck(self, request, context):
-        """Get system health."""
-        return await self.server.HealthCheck(request, context)
+    async def HealthCheck(
+        self,
+        _request: empty_pb2.Empty,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.HealthResponse:
+        """Health check endpoint."""
+        return await self.server.health_check(_request, context)
 
-    async def GetSystemStats(self, request, context):
-        """Get system statistics."""
-        return await self.server.GetSystemStats(request, context)
+    async def GetSystemStats(
+        self,
+        _request: empty_pb2.Empty,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.SystemStatsResponse:
+        """Get system stats endpoint."""
+        return await self.server.get_system_stats(_request, context)
 
-    async def CreatePipeline(self, request, context):
-        """Create pipeline."""
-        return await self.server.CreatePipeline(request, context)
+    async def CreatePipeline(
+        self,
+        request: flext_pb2.CreatePipelineRequest,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.PipelineResponse:
+        """Create pipeline endpoint."""
+        return await self.server.create_pipeline(request, context)
 
-    async def GetPipeline(self, request, context):
-        """Get pipeline."""
-        return await self.server.GetPipeline(request, context)
+    async def GetPipeline(
+        self,
+        request: flext_pb2.GetPipelineRequest,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.PipelineResponse:
+        """Get pipeline endpoint."""
+        return await self.server.get_pipeline(request, context)
 
-    async def ListPipelines(self, request, context):
-        """List pipelines."""
-        return await self.server.ListPipelines(request, context)
+    async def ListPipelines(
+        self,
+        request: flext_pb2.ListPipelinesRequest,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.ListPipelinesResponse:
+        """List pipelines endpoint."""
+        return await self.server.list_pipelines(request, context)
 
-    async def RunPipeline(self, request, context):
-        """Execute pipeline."""
-        return await self.server.RunPipeline(request, context)
+    async def RunPipeline(
+        self,
+        request: flext_pb2.RunPipelineRequest,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.ExecutionResponse:
+        """Run pipeline endpoint."""
+        return await self.server.run_pipeline(request, context)
 
-    async def ListPlugins(self, request, context):
-        """List plugins."""
-        return await self.server.ListPlugins(request, context)
+    async def ListPlugins(
+        self,
+        request: flext_pb2.ListPluginsRequest,
+        context: grpc.aio.ServicerContext,
+    ) -> flext_pb2.ListPluginsResponse:
+        """List plugins endpoint."""
+        return await self.server.list_plugins(request, context)
 
 
 async def create_grpc_server(
-    app: FlextApplication | None = None, port: int = 50051,
+    app: FlextApplication | None = None,
+    port: int = 50051,
 ) -> grpc.aio.Server:
     """Create and configure gRPC server with enterprise features."""
     server = grpc.aio.server()
@@ -550,13 +580,15 @@ async def create_grpc_server(
 
 
 async def run_grpc_server(
-    app: FlextApplication | None = None, port: int = 50051,
+    app: FlextApplication | None = None,
+    port: int = 50051,
 ) -> None:
     """Run gRPC server with enterprise functionality."""
     server = await create_grpc_server(app, port)
 
     logger.info(
-        "Starting FLEXT gRPC server", extra={"port": port, "version": __version__},
+        "Starting FLEXT gRPC server",
+        extra={"port": port, "version": __version__},
     )
     await server.start()
 

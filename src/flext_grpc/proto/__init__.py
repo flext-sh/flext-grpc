@@ -1,5 +1,7 @@
 """Protocol buffer definitions for FLEXT gRPC services."""
 
+from typing import Any
+
 # Import generated protobuf modules
 try:
     from flext_grpc.proto import flext_pb2
@@ -14,29 +16,29 @@ except ImportError:
 
     # Add basic mock classes
     class MockHealthResponse:
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs: Any) -> None:
             pass
 
     class MockCreatePipelineResponse:
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs: Any) -> None:
             pass
 
     class MockGetPipelineResponse:
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs: Any) -> None:
             pass
 
     class MockListPipelinesResponse:
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs: Any) -> None:
             pass
 
     class MockPipeline:
-        def __init__(self, **kwargs) -> None:
+        def __init__(self, **kwargs: Any) -> None:
             pass
 
     class MockFlextServiceServicer:
         pass
 
-    def mock_add_servicer_to_server(servicer, server) -> None:
+    def mock_add_servicer_to_server(servicer: Any, server: Any) -> None:
         pass
 
     flext_pb2.HealthResponse = MockHealthResponse

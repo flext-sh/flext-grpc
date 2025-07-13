@@ -249,7 +249,8 @@ class StartGRPCServiceHandler(CommandHandler):
                 status="STARTING",
             )
 
-            # TODO: Implement actual service start logic
+            # TODO(@marlonsc): Implement actual service start logic
+            # https://github.com/flext-sh/flext/issues/015
             # 1. Validate configuration
             # 2. Create server instance
             # 3. Register service methods
@@ -295,14 +296,15 @@ class StopGRPCServiceHandler(CommandHandler):
         try:
             self.logger.info("Stopping gRPC service", service_id=command.service_id)
 
-            # TODO: Implement actual service stop logic
+            # TODO(@marlonsc): Implement actual service stop logic
+            # https://github.com/flext-sh/flext/issues/016
             # 1. Find running service by ID
             # 2. Gracefully stop accepting new requests
             # 3. Wait for active requests to complete
             # 4. Shutdown server
             # 5. Update service status
 
-            return ServiceResult.success(True)
+            return ServiceResult.success(data=True)
 
         except Exception as e:
             self.logger.exception("Failed to stop gRPC service", error=str(e))
@@ -344,12 +346,13 @@ class RegisterRPCMethodHandler(CommandHandler):
                 method_type=command.method_type,
             )
 
-            # TODO: Implement actual method registration logic
+            # TODO(@marlonsc): Implement actual method registration logic
+            # https://github.com/flext-sh/flext/issues/347
             # 1. Validate service exists
             # 2. Check method name uniqueness
-            # 3. Validate request/response types
-            # 4. Register with gRPC server
-            # 5. Save method metadata
+            # 3. Store method metadata
+            # 4. Update service schema
+            # 5. Notify dependent services
 
             return ServiceResult.success(method)
 
@@ -394,13 +397,13 @@ class ExecuteRPCCallHandler(CommandHandler):
                 status="EXECUTING",
             )
 
-            # TODO: Implement actual RPC call logic
+            # TODO(@marlonsc): Implement actual RPC call logic
+            # https://github.com/flext-sh/flext/issues/397
             # 1. Resolve method by ID
             # 2. Validate request data
-            # 3. Create gRPC client
-            # 4. Execute call with timeout and retry policy
-            # 5. Handle response/errors
-            # 6. Record metrics
+            # 3. Execute remote call
+            # 4. Handle response/errors
+            # 5. Record metrics
 
             call.status = "COMPLETED"
             call.duration_ms = (datetime.now(UTC) - start_time).total_seconds() * 1000

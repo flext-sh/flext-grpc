@@ -295,6 +295,7 @@ class Authenticator:
     """Decorator class for authentication and permission checks."""
 
     def __init__(self, permission: str | None = None) -> None:
+        """Initialize the decorator with optional permission requirement."""
         self.permission = permission
         self.role_repo: RoleRepositoryInterface = InMemoryRoleRepository()
 

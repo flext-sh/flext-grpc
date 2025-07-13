@@ -16,7 +16,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy import Text
-from sqlalchemy.dialects.postgresql import UUID as PostgreSQLUUID
+from sqlalchemy.dialects.postgresql import UUID as POSTGRESQL_UUID
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
@@ -36,7 +36,7 @@ class GRPCServiceModel(Base):
     __tablename__ = "grpc_services"
 
     # Primary key
-    id: Mapped[UUID] = mapped_column(PostgreSQLUUID(as_uuid=True), primary_key=True)
+    id: Mapped[UUID] = mapped_column(POSTGRESQL_UUID(as_uuid=True), primary_key=True)
 
     # Basic info
     name: Mapped[str] = mapped_column(String(255), nullable=False, unique=True)
@@ -129,11 +129,11 @@ class RPCMethodModel(Base):
     __tablename__ = "rpc_methods"
 
     # Primary key
-    id: Mapped[UUID] = mapped_column(PostgreSQLUUID(as_uuid=True), primary_key=True)
+    id: Mapped[UUID] = mapped_column(POSTGRESQL_UUID(as_uuid=True), primary_key=True)
 
     # Foreign key
     service_id: Mapped[UUID] = mapped_column(
-        PostgreSQLUUID(as_uuid=True),
+        POSTGRESQL_UUID(as_uuid=True),
         ForeignKey("grpc_services.id"),
         nullable=False,
     )
@@ -214,11 +214,11 @@ class RPCCallModel(Base):
     __tablename__ = "rpc_calls"
 
     # Primary key
-    id: Mapped[UUID] = mapped_column(PostgreSQLUUID(as_uuid=True), primary_key=True)
+    id: Mapped[UUID] = mapped_column(POSTGRESQL_UUID(as_uuid=True), primary_key=True)
 
     # Foreign key
     method_id: Mapped[UUID] = mapped_column(
-        PostgreSQLUUID(as_uuid=True),
+        POSTGRESQL_UUID(as_uuid=True),
         ForeignKey("rpc_methods.id"),
         nullable=False,
     )

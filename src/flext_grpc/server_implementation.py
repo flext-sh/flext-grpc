@@ -124,7 +124,7 @@ flext_pb2 = MockFlextPb2()
 class CreatePipelineHandler(CommandHandler):
     """Handler for creating pipelines."""
 
-    async def handle(self, command: Any) -> ServiceResult:
+    async def handle(self, _command: Any) -> ServiceResult:
         """Handle pipeline creation command.
 
         Args:
@@ -134,14 +134,15 @@ class CreatePipelineHandler(CommandHandler):
             Service result with pipeline ID.
 
         """
-        # TODO: Implement actual pipeline creation logic
+        # TODO(@marlonsc): Implement actual pipeline creation logic
+        # https://github.com/flext-sh/flext/issues/001
         return ServiceResult.success({"pipeline_id": "temp_id"})
 
 
 class GetPipelineHandler(QueryHandler):
     """Handler for retrieving pipelines."""
 
-    async def handle(self, query: Any) -> ServiceResult:
+    async def handle(self, _query: Any) -> ServiceResult:
         """Handle pipeline retrieval query.
 
         Args:
@@ -151,14 +152,15 @@ class GetPipelineHandler(QueryHandler):
             Service result with pipeline data.
 
         """
-        # TODO: Implement actual pipeline retrieval logic
+        # TODO(@marlonsc): Implement actual pipeline retrieval logic
+        # https://github.com/flext-sh/flext/issues/002
         return ServiceResult.success({"pipeline": {}})
 
 
 class GetPluginHandler(QueryHandler):
     """Handler for retrieving plugins."""
 
-    async def handle(self, query: Any) -> ServiceResult:
+    async def handle(self, _query: Any) -> ServiceResult:
         """Handle plugin retrieval query.
 
         Args:
@@ -168,14 +170,15 @@ class GetPluginHandler(QueryHandler):
             Service result with plugin data.
 
         """
-        # TODO: Implement actual plugin retrieval logic
+        # TODO(@marlonsc): Implement actual plugin retrieval logic
+        # https://github.com/flext-sh/flext/issues/003
         return ServiceResult.success({"plugin": {}})
 
 
 class ListPipelinesHandler(QueryHandler):
     """Handler for listing pipelines."""
 
-    async def handle(self, query: Any) -> ServiceResult:
+    async def handle(self, _query: Any) -> ServiceResult:
         """Handle pipeline listing query.
 
         Args:
@@ -185,14 +188,15 @@ class ListPipelinesHandler(QueryHandler):
             Service result with pipelines list.
 
         """
-        # TODO: Implement actual pipeline listing logic
+        # TODO(@marlonsc): Implement actual pipeline listing logic
+        # https://github.com/flext-sh/flext/issues/004
         return ServiceResult.success({"pipelines": []})
 
 
 class ListPluginsHandler(QueryHandler):
     """Handler for listing plugins."""
 
-    async def handle(self, query: Any) -> ServiceResult:
+    async def handle(self, _query: Any) -> ServiceResult:
         """Handle plugin listing query.
 
         Args:
@@ -202,14 +206,15 @@ class ListPluginsHandler(QueryHandler):
             Service result with plugins list.
 
         """
-        # TODO: Implement actual plugin listing logic
+        # TODO(@marlonsc): Implement actual plugin listing logic
+        # https://github.com/flext-sh/flext/issues/005
         return ServiceResult.success({"plugins": []})
 
 
 class PluginOperationHandler(CommandHandler):
     """Handler for plugin operations."""
 
-    async def handle(self, command: Any) -> ServiceResult:
+    async def handle(self, _command: Any) -> ServiceResult:
         """Handle plugin operation command.
 
         Args:
@@ -219,14 +224,15 @@ class PluginOperationHandler(CommandHandler):
             Service result with operation ID.
 
         """
-        # TODO: Implement actual plugin operation logic
+        # TODO(@marlonsc): Implement actual plugin operation logic
+        # https://github.com/flext-sh/flext/issues/006
         return ServiceResult.success({"operation_id": "temp_id"})
 
 
 class RegisterPluginHandler(CommandHandler):
     """Handler for registering plugins."""
 
-    async def handle(self, command: Any) -> ServiceResult:
+    async def handle(self, _command: Any) -> ServiceResult:
         """Handle plugin registration command.
 
         Args:
@@ -236,7 +242,8 @@ class RegisterPluginHandler(CommandHandler):
             Service result with plugin ID.
 
         """
-        # TODO: Implement actual plugin registration logic
+        # TODO(@marlonsc): Implement actual plugin registration logic
+        # https://github.com/flext-sh/flext/issues/007
         return ServiceResult.success({"plugin_id": "temp_id"})
 
 
@@ -311,11 +318,11 @@ class FlextServiceImplementation:
             operation: Name of the operation that failed.
 
         """
-        self.logger.error(f"Failed to {operation}", error=str(error))
+        self.logger.error("Failed to %s", operation, error=str(error))
         context.set_code(internal.invalid)
         context.set_details(f"Internal error: {error}")
 
-    def GetSystemStats(self, request: object, context: ServicerContext) -> Any:
+    def get_system_stats(self, _request: object, context: ServicerContext) -> Any:
         """Get system statistics.
 
         Args:
@@ -344,7 +351,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "get system stats")
             raise
 
-    def HealthCheck(self, request: object, context: ServicerContext) -> Any:
+    def health_check(self, _request: object, context: ServicerContext) -> Any:
         """Perform health check.
 
         Args:
@@ -386,7 +393,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "perform health check")
             raise
 
-    def CreatePipeline(self, request: object, context: ServicerContext) -> Any:
+    def create_pipeline(self, request: object, context: ServicerContext) -> Any:
         """Create a new pipeline.
 
         Args:
@@ -417,7 +424,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "create pipeline")
             raise
 
-    def GetPipeline(self, request: object, context: ServicerContext) -> Any:
+    def get_pipeline(self, request: object, context: ServicerContext) -> Any:
         """Get pipeline by ID.
 
         Args:
@@ -448,7 +455,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "get pipeline")
             raise
 
-    def UpdatePipeline(self, request: object, context: ServicerContext) -> Any:
+    def update_pipeline(self, _request: object, context: ServicerContext) -> Any:
         """Update an existing pipeline.
 
         Args:
@@ -463,7 +470,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual pipeline update logic
+            # TODO(@marlonsc): Implement actual pipeline update logic
+            # https://github.com/flext-sh/flext/issues/008
             return flext_pb2.PipelineResponse(
                 pipeline_id="updated_id",
                 status="UPDATED",
@@ -473,7 +481,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "update pipeline")
             raise
 
-    def DeletePipeline(self, request: object, context: ServicerContext) -> Any:
+    def delete_pipeline(self, _request: object, context: ServicerContext) -> Any:
         """Delete a pipeline.
 
         Args:
@@ -488,7 +496,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual pipeline deletion logic
+            # TODO(@marlonsc): Implement actual pipeline deletion logic
+            # https://github.com/flext-sh/flext/issues/009
             return flext_pb2.PipelineResponse(
                 pipeline_id="deleted_id",
                 status="DELETED",
@@ -498,7 +507,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "delete pipeline")
             raise
 
-    def ListPipelines(self, request: object, context: ServicerContext) -> Any:
+    def list_pipelines(self, request: object, context: ServicerContext) -> Any:
         """List all pipelines.
 
         Args:
@@ -518,7 +527,7 @@ class FlextServiceImplementation:
 
             if result.is_success:
                 # Mock pipeline list
-                return [
+                pipelines = [
                     flext_pb2.PipelineResponse(
                         pipeline_id=f"pipeline_{i}",
                         status="ACTIVE",
@@ -526,14 +535,18 @@ class FlextServiceImplementation:
                     )
                     for i in range(1, 6)
                 ]
-            context.set_code(internal.invalid)
-            context.set_details("Failed to list pipelines")
-            return []
+            else:
+                context.set_code(internal.invalid)
+                context.set_details("Failed to list pipelines")
+                pipelines = []
+
         except Exception as e:
             self._handle_grpc_error(context, e, "list pipelines")
             raise
+        else:
+            return pipelines
 
-    def ExecutePipeline(self, request: object, context: ServicerContext) -> Any:
+    def execute_pipeline(self, _request: object, context: ServicerContext) -> Any:
         """Execute a pipeline.
 
         Args:
@@ -548,7 +561,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual pipeline execution logic
+            # TODO(@marlonsc): Implement actual pipeline execution logic
+            # https://github.com/flext-sh/flext/issues/010
             return flext_pb2.ExecutionResponse(
                 execution_id="exec_123",
                 status="RUNNING",
@@ -559,7 +573,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "execute pipeline")
             raise
 
-    def GetPipelineStatus(self, request: object, context: ServicerContext) -> Any:
+    def get_pipeline_status(self, _request: object, context: ServicerContext) -> Any:
         """Get pipeline execution status.
 
         Args:
@@ -574,7 +588,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual status retrieval logic
+            # TODO(@marlonsc): Implement actual status retrieval logic
+            # https://github.com/flext-sh/flext/issues/011
             return flext_pb2.ExecutionResponse(
                 execution_id="exec_123",
                 status="COMPLETED",
@@ -587,7 +602,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "get pipeline status")
             raise
 
-    def StopPipeline(self, request: object, context: ServicerContext) -> Any:
+    def stop_pipeline(self, _request: object, context: ServicerContext) -> Any:
         """Stop a running pipeline.
 
         Args:
@@ -602,7 +617,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual pipeline stop logic
+            # TODO(@marlonsc): Implement actual pipeline stop logic
+            # https://github.com/flext-sh/flext/issues/012
             return flext_pb2.ExecutionResponse(
                 execution_id="exec_123",
                 status="STOPPED",
@@ -613,7 +629,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "stop pipeline")
             raise
 
-    def ListPlugins(self, request: object, context: ServicerContext) -> Any:
+    def list_plugins(self, request: object, context: ServicerContext) -> Any:
         """List all available plugins.
 
         Args:
@@ -633,24 +649,26 @@ class FlextServiceImplementation:
 
             if result.is_success:
                 # Mock plugin list
-                return [
+                plugins = [
                     flext_pb2.PluginResponse(
                         plugin_id=f"plugin_{i}",
-                        name=f"Plugin {i}",
-                        version="1.0.0",
                         status="ACTIVE",
-                        description=f"Plugin {i} description",
+                        message=f"Plugin {i}",
                     )
-                    for i in range(1, 4)
+                    for i in range(1, 6)
                 ]
-            context.set_code(internal.invalid)
-            context.set_details("Failed to list plugins")
-            return []
+            else:
+                context.set_code(internal.invalid)
+                context.set_details("Failed to list plugins")
+                plugins = []
+
         except Exception as e:
             self._handle_grpc_error(context, e, "list plugins")
             raise
+        else:
+            return plugins
 
-    def InstallPlugin(self, request: object, context: ServicerContext) -> Any:
+    def install_plugin(self, request: object, context: ServicerContext) -> Any:
         """Install a new plugin.
 
         Args:
@@ -683,7 +701,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "install plugin")
             raise
 
-    def UpdatePlugin(self, request: object, context: ServicerContext) -> Any:
+    def update_plugin(self, _request: object, context: ServicerContext) -> Any:
         """Update an existing plugin.
 
         Args:
@@ -698,7 +716,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual plugin update logic
+            # TODO(@marlonsc): Implement actual plugin update logic
+            # https://github.com/flext-sh/flext/issues/013
             return flext_pb2.PluginResponse(
                 plugin_id="updated_plugin_id",
                 name="Updated Plugin",
@@ -710,7 +729,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "update plugin")
             raise
 
-    def UninstallPlugin(self, request: object, context: ServicerContext) -> Any:
+    def uninstall_plugin(self, _request: object, context: ServicerContext) -> Any:
         """Uninstall a plugin.
 
         Args:
@@ -725,7 +744,8 @@ class FlextServiceImplementation:
 
         """
         try:
-            # TODO: Implement actual plugin uninstallation logic
+            # TODO(@marlonsc): Implement actual plugin uninstallation logic
+            # https://github.com/flext-sh/flext/issues/014
             return flext_pb2.PluginResponse(
                 plugin_id="uninstalled_plugin_id",
                 status="UNINSTALLED",
@@ -735,7 +755,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "uninstall plugin")
             raise
 
-    def GetPlugin(self, request: object, context: ServicerContext) -> Any:
+    def get_plugin(self, request: object, context: ServicerContext) -> Any:
         """Get plugin details by ID.
 
         Args:
@@ -768,7 +788,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "get plugin")
             raise
 
-    def RegisterPlugin(self, request: object, context: ServicerContext) -> Any:
+    def register_plugin(self, request: object, context: ServicerContext) -> Any:
         """Register a new plugin.
 
         Args:
@@ -799,9 +819,9 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "register plugin")
             raise
 
-    async def StreamLogs(
+    async def stream_logs(
         self,
-        request: object,
+        _request: object,
         context: ServicerContext,
     ) -> AsyncIterator[Any]:
         """Stream logs in real-time.
@@ -832,9 +852,9 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "stream logs")
             raise
 
-    async def StreamMetrics(
+    async def stream_metrics(
         self,
-        request: object,
+        _request: object,
         context: ServicerContext,
     ) -> AsyncIterator[Any]:
         """Stream metrics in real-time.
@@ -864,7 +884,7 @@ class FlextServiceImplementation:
             self._handle_grpc_error(context, e, "stream metrics")
             raise
 
-    def GetServiceInfo(self, request: object, context: ServicerContext) -> Any:
+    def get_service_info(self, _request: object, context: ServicerContext) -> Any:
         """Get service information.
 
         Args:

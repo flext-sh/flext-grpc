@@ -171,7 +171,7 @@ class GRPCConfig(BaseSettings):
                 pathlib.Path(self.ssl_cert_path).is_file()
                 and pathlib.Path(self.ssl_key_path).is_file()
             )
-        except Exception:
+        except (OSError, FileNotFoundError, PermissionError):
             return False
 
     @field_validator("database_url")
@@ -235,4 +235,3 @@ def get_grpc_config() -> GRPCConfig:
 
 # Convenience export for backward compatibility
 # Note: Don't instantiate at module level to avoid circular dependencies
-# config = get_grpc_config()

@@ -22,6 +22,9 @@ with patch.dict(
     from flext_grpc.client import ConnectionPool
     from flext_grpc.client import FlextGRPCClient
 
+# Test constants
+MOCK_JWT_TOKEN_FOR_TESTING = "Bearer mock_jwt_token_for_testing"
+
 
 class TestFlextGRPCClient:
     """Test cases for gRPC client."""
@@ -39,17 +42,16 @@ class TestFlextGRPCClient:
     @pytest.fixture
     def client(self, mock_channel: AsyncMock, mock_stub: MagicMock) -> FlextGRPCClient:
         """Create a client instance with mocked dependencies."""
-        with patch("grpc.aio.insecure_channel", return_value=mock_channel):
-            with patch(
-                "flext_grpc.proto.flext_pb2_grpc.FlextServiceStub",
-                return_value=mock_stub,
-            ):
-                client = FlextGRPCClient(
-                    host="localhost",
-                    port=50051,
-                )
-                client._stub = mock_stub
-                return client
+        with patch("grpc.aio.insecure_channel", return_value=mock_channel), patch(
+            "flext_grpc.proto.flext_pb2_grpc.FlextServiceStub",
+            return_value=mock_stub,
+        ):
+            client = FlextGRPCClient(
+                host="localhost",
+                port=50051,
+            )
+            client._stub = mock_stub
+            return client
 
     def test_client_initialization(self) -> None:
         """Test client initialization."""
@@ -198,13 +200,17 @@ class TestFlextGRPCClient:
 
     def test_client_with_auth(self) -> None:
         """Test client with authentication."""
+        # Use a clearly marked test token constant
         client = FlextGRPCClient(
             host="localhost",
             port=50051,
-            auth_token="Bearer eyJ0eXAiOiJKV1Q...",
+            token=MOCK_JWT_TOKEN_FOR_TESTING,
         )
 
-        assert client.auth_token == "Bearer eyJ0eXAiOiJKV1Q..."
+        # Verify client configuration
+        assert client.host == "localhost"
+        assert client.port == 50051
+        assert client.token == MOCK_JWT_TOKEN_FOR_TESTING
 
 
 class TestConnectionPool:
@@ -254,8 +260,8 @@ class TestConnectionPool:
         mock_channels = [AsyncMock() for _ in range(3)]
         with patch("grpc.aio.insecure_channel", side_effect=mock_channels):
             # Acquire max connections
-            conn1 = await pool.acquire()
-            conn2 = await pool.acquire()
+            _conn1 = await pool.acquire()
+            _conn2 = await pool.acquire()
 
             assert pool.active_connections == 2
 
