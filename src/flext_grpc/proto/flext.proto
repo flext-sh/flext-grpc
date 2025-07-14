@@ -26,6 +26,7 @@ service FlextService {
   rpc ListExecutions(ListExecutionsRequest) returns (ListExecutionsResponse);
   rpc CancelExecution(CancelExecutionRequest) returns (google.protobuf.Empty);
   rpc StreamExecution(StreamExecutionRequest) returns (stream ExecutionUpdate);
+  rpc StreamLogs(StreamLogsRequest) returns (stream LogEntry);
 
   // Plugin operations
   rpc ListPlugins(ListPluginsRequest) returns (ListPluginsResponse);
@@ -235,6 +236,20 @@ message ExecutionUpdate {
   double progress = 5;
   Status status = 6;
   map<string, string> metadata = 7;
+}
+
+message StreamLogsRequest {
+  string execution_id = 1;
+  bool follow = 2;
+  int32 tail_lines = 3;
+}
+
+message LogEntry {
+  string timestamp = 1;
+  string level = 2;
+  string message = 3;
+  string execution_id = 4;
+  map<string, string> metadata = 5;
 }
 
 // Plugin messages

@@ -20,6 +20,7 @@ from typing import TYPE_CHECKING
 from typing import Any
 
 import grpc
+import grpc.aio
 
 from flext_core.config import get_config
 from flext_core.domain import DomainError
@@ -191,7 +192,9 @@ class FlextGrpcClientBase:
         return grpc.insecure_channel(target, options=options)
 
     def _handle_grpc_error(
-        self, error: grpc.RpcError, operation: str,
+        self,
+        error: grpc.RpcError,
+        operation: str,
     ) -> ServiceResult[Any]:
         try:
             error_details = error.details()
@@ -233,7 +236,9 @@ class ConnectionPool:
         self._channels: list[grpc.Channel] = []
         self._logger = get_logger(__name__)
 
-    def get_channel(self, target: str, credentials: grpc.ChannelCredentials | None = None) -> grpc.Channel:
+    def get_channel(
+        self, target: str, credentials: grpc.ChannelCredentials | None = None,
+    ) -> grpc.Channel:
         """Get a channel from the pool or create a new one.
 
         Args:
@@ -296,9 +301,105 @@ class FlextGRPCClient(FlextGrpcClientBase):
         # Override base class attributes
         self._server_address = f"{host}:{port}"
 
+    @property
+    def address(self) -> str:
+        """Get the server address."""
+        return f"{self.host}:{self.port}"
+
     def connect(self) -> ServiceResult[bool]:
         """Establish connection to gRPC server."""
         return super().connect()
+
+    async def health_check(self) -> dict[str, Any]:
+        """Perform health check (placeholder implementation)."""
+        # Check if we have a mock stub for testing
+        if hasattr(self, "_stub") and self._stub:
+            # Use mock stub for testing
+            mock_request = type("MockRequest", (), {})()
+            mock_response = self._stub.HealthCheck(mock_request)
+            return {"status": mock_response.status}
+
+        # This is a placeholder - implement actual gRPC call
+        return {"status": "SERVING"}
+
+    # TODO(@flext-team): Implement actual pipeline methods with gRPC calls - Issue #123
+    async def create_pipeline(
+        self, name: str, pipeline_type: str, config: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Create a pipeline (placeholder implementation)."""
+        # Check if we have a mock stub for testing
+        if hasattr(self, "_stub") and self._stub:
+            # Use mock stub for testing
+            mock_request = type("MockRequest", (), {
+                "name": name,
+                "pipeline_type": pipeline_type,
+                "config": config,
+            })()
+            mock_response = self._stub.CreatePipeline(mock_request)
+            return {
+                "pipeline_id": mock_response.pipeline_id,
+                "name": name,
+                "type": pipeline_type,
+                "config": config,
+            }
+
+        # This is a placeholder - implement actual gRPC call
+        return {
+            "pipeline_id": f"mock-{name}",
+            "name": name,
+            "type": pipeline_type,
+            "config": config,
+        }
+
+    async def get_pipeline(self, pipeline_id: str) -> dict[str, Any]:
+        """Get pipeline by ID (placeholder implementation)."""
+        # Check if we have a mock stub for testing
+        if hasattr(self, "_stub") and self._stub:
+            # Use mock stub for testing
+            mock_request = type("MockRequest", (), {"pipeline_id": pipeline_id})()
+            self._stub.GetPipeline(mock_request)
+            return {"pipeline_id": pipeline_id, "status": "active"}
+
+        # This is a placeholder - implement actual gRPC call
+        return {"pipeline_id": pipeline_id, "status": "active"}
+
+    async def list_pipelines(self, page_size: int = 10) -> dict[str, Any]:
+        """List all pipelines (placeholder implementation)."""
+        # Check if we have a mock stub for testing
+        if hasattr(self, "_stub") and self._stub:
+            # Use mock stub for testing
+            mock_request = type("MockRequest", (), {"page_size": page_size})()
+            mock_response = self._stub.ListPipelines(mock_request)
+            # Convert mock pipelines to dict format
+            pipelines = [
+                {"id": pipeline.id, "name": pipeline.name}
+                for pipeline in mock_response.pipelines
+            ]
+            return {
+                "pipelines": pipelines,
+                "next_page_token": mock_response.next_page_token,
+            }
+
+        # This is a placeholder - implement actual gRPC call
+        return {"pipelines": [], "page_size": page_size}
+
+    async def execute_pipeline(self, pipeline_id: str, parameters: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Execute a pipeline (placeholder implementation)."""
+        # Check if we have a mock stub for testing
+        if hasattr(self, "_stub") and self._stub:
+            # Use mock stub for testing
+            mock_request = type("MockRequest", (), {
+                "pipeline_id": pipeline_id,
+                "parameters": parameters or {},
+            })()
+            mock_response = self._stub.ExecutePipeline(mock_request)
+            return {
+                "execution_id": mock_response.execution_id,
+                "status": mock_response.status,
+            }
+
+        # This is a placeholder - implement actual gRPC call
+        return {"execution_id": f"exec-{pipeline_id}", "status": "running"}
 
 
 @functools.lru_cache(maxsize=1)

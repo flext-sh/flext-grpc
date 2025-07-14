@@ -92,7 +92,8 @@ class MetricsInterceptor(ServerInterceptor):
 
             self.logger.info(
                 "gRPC request completed: %s (duration: %.3fs)",
-                method_name, duration,
+                method_name,
+                duration,
             )
 
         except Exception:
@@ -113,7 +114,8 @@ class MetricsInterceptor(ServerInterceptor):
 
             self.logger.exception(
                 "gRPC request failed: %s (duration: %.3fs)",
-                method_name, duration,
+                method_name,
+                duration,
             )
 
             raise
@@ -211,6 +213,7 @@ class AuthenticationInterceptor(ServerInterceptor):
             grpc.RpcError: If authentication fails.
 
         """
+
         def _raise_auth_error(message: str) -> None:
             """Raise authentication error."""
             raise grpc.RpcError(

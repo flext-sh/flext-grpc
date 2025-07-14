@@ -47,7 +47,7 @@ class GRPCSettings(BaseSettings):
 
     # Server configuration
     host: str = Field(
-        "0.0.0.0",
+        "0.0.0.0",  # nosec B104 # gRPC server needs to bind to all interfaces
         description="gRPC server host address",
     )
     port: int = Field(

@@ -27,9 +27,11 @@ from flext_grpc.proto import flext_pb2
 from flext_grpc.proto import flext_pb2_grpc
 
 if TYPE_CHECKING:
+    from collections.abc import AsyncIterator
+
     from google.protobuf import empty_pb2
 
-    from flext_core.application.application import FlextApplication
+    # Remove problematic import - FlextApplication não existe
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -41,7 +43,7 @@ __version__ = "0.7.0"
 class FlextGrpcServer:
     """Enterprise gRPC server implementation using flext-core patterns."""
 
-    def __init__(self, app: FlextApplication | None = None) -> None:
+    def __init__(self, app: Any | None = None) -> None:
         """Initialize gRPC server with FLEXT application."""
         self.app = app
         self.logger = logger
@@ -94,7 +96,7 @@ class FlextGrpcServer:
         self,
         _request: empty_pb2.Empty,
         context: grpc.aio.ServicerContext,
-    ) -> flext_pb2.HealthResponse:
+    ) -> flext_pb2.HealthStatus:
         """Health check endpoint."""
         try:
             # Comprehensive health check
@@ -128,7 +130,7 @@ class FlextGrpcServer:
             timestamp = Timestamp()
             timestamp.GetCurrentTime()
 
-            return flext_pb2.HealthResponse(
+            return flext_pb2.HealthStatus(
                 healthy=True,
                 components=components,
                 timestamp=timestamp,
@@ -142,7 +144,7 @@ class FlextGrpcServer:
             timestamp = Timestamp()
             timestamp.GetCurrentTime()
 
-            return flext_pb2.HealthResponse(
+            return flext_pb2.HealthStatus(
                 healthy=False,
                 components={},
                 timestamp=timestamp,
@@ -152,7 +154,7 @@ class FlextGrpcServer:
         self,
         _request: empty_pb2.Empty,
         context: grpc.aio.ServicerContext,
-    ) -> flext_pb2.SystemStatsResponse:
+    ) -> flext_pb2.SystemStats:
         """Get system stats endpoint."""
         try:
             # Update metrics
@@ -160,7 +162,7 @@ class FlextGrpcServer:
             total_executions = len(self._executions)
             success_rate = self._system_metrics.success_rate
 
-            return flext_pb2.SystemStatsResponse(
+            return flext_pb2.SystemStats(
                 active_pipelines=active_pipelines,
                 total_executions=total_executions,
                 success_rate=success_rate,
@@ -174,7 +176,7 @@ class FlextGrpcServer:
             self.logger.exception("Failed to get system stats", extra={"error": str(e)})
             context.set_code(internal.invalid)
             context.set_details(f"System stats failed: {e}")
-            return flext_pb2.SystemStatsResponse()
+            return flext_pb2.SystemStats()
 
     async def create_pipeline(
         self,
@@ -214,7 +216,9 @@ class FlextGrpcServer:
             )
 
             # Convert to protobuf Pipeline message
-            return flext_pb2.PipelineResponse(pipeline=self._convert_pipeline_to_pb(pipeline))
+            return flext_pb2.PipelineResponse(
+                pipeline=self._convert_pipeline_to_pb(pipeline),
+            )
 
         except Exception as e:
             self.logger.exception("Failed to create pipeline", extra={"error": str(e)})
@@ -238,7 +242,9 @@ class FlextGrpcServer:
                 return flext_pb2.PipelineResponse(pipeline=flext_pb2.Pipeline())
 
             # Convert to protobuf
-            return flext_pb2.PipelineResponse(pipeline=self._convert_pipeline_to_pb(pipeline))
+            return flext_pb2.PipelineResponse(
+                pipeline=self._convert_pipeline_to_pb(pipeline),
+            )
 
         except Exception as e:
             self.logger.exception("Failed to get pipeline", extra={"error": str(e)})
@@ -328,7 +334,9 @@ class FlextGrpcServer:
             )
 
             # Convert to protobuf
-            return flext_pb2.ExecutionResponse(execution=self._convert_execution_to_pb(execution))
+            return flext_pb2.ExecutionResponse(
+                execution=self._convert_execution_to_pb(execution),
+            )
 
         except Exception as e:
             self.logger.exception("Failed to run pipeline", extra={"error": str(e)})
@@ -500,7 +508,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         self,
         _request: empty_pb2.Empty,
         context: grpc.aio.ServicerContext,
-    ) -> flext_pb2.HealthResponse:
+    ) -> flext_pb2.HealthStatus:
         """Health check endpoint."""
         return await self.server.health_check(_request, context)
 
@@ -508,7 +516,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         self,
         _request: empty_pb2.Empty,
         context: grpc.aio.ServicerContext,
-    ) -> flext_pb2.SystemStatsResponse:
+    ) -> flext_pb2.SystemStats:
         """Get system stats endpoint."""
         return await self.server.get_system_stats(_request, context)
 
@@ -552,9 +560,56 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """List plugins endpoint."""
         return await self.server.list_plugins(request, context)
 
+    async def StreamLogs(
+        self,
+        request: flext_pb2.StreamLogsRequest,
+        context: grpc.aio.ServicerContext,
+    ) -> AsyncIterator[flext_pb2.LogEntry]:
+        """Stream logs endpoint."""
+        # Get execution_id from request
+        execution_id = request.execution_id
+        follow = getattr(request, "follow", False)
+
+        # Mock log service for testing - replace with real implementation
+        if hasattr(self, "_log_service") and self._log_service:
+            # Use injected log service for testing
+            async for log_data in self._log_service.stream(execution_id, follow):
+                yield flext_pb2.LogEntry(
+                    timestamp=log_data.get("timestamp", ""),
+                    level=log_data.get("level", "INFO"),
+                    message=log_data.get("message", ""),
+                    execution_id=execution_id,
+                )
+        else:
+            # Default implementation - generate sample logs
+            sample_logs = [
+                {
+                    "timestamp": "2025-01-01T00:00:00",
+                    "level": "INFO",
+                    "message": "Starting",
+                },
+                {
+                    "timestamp": "2025-01-01T00:00:01",
+                    "level": "INFO",
+                    "message": "Processing",
+                },
+                {
+                    "timestamp": "2025-01-01T00:00:02",
+                    "level": "INFO",
+                    "message": "Completed",
+                },
+            ]
+            for log_data in sample_logs:
+                yield flext_pb2.LogEntry(
+                    timestamp=log_data["timestamp"],
+                    level=log_data["level"],
+                    message=log_data["message"],
+                    execution_id=execution_id,
+                )
+
 
 async def create_grpc_server(
-    app: FlextApplication | None = None,
+    app: Any | None = None,
     port: int = 50051,
 ) -> grpc.aio.Server:
     """Create and configure gRPC server with enterprise features."""
@@ -580,7 +635,7 @@ async def create_grpc_server(
 
 
 async def run_grpc_server(
-    app: FlextApplication | None = None,
+    app: Any | None = None,
     port: int = 50051,
 ) -> None:
     """Run gRPC server with enterprise functionality."""

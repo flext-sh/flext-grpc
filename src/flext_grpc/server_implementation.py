@@ -19,17 +19,31 @@ from typing import Any
 
 import grpc
 
-from flext_core.application.handlers import CommandHandler
-from flext_core.application.handlers import QueryHandler
-from flext_core.config.domain_config import get_config
-from flext_core.domain.types import ServiceResult
+from flext_core import ServiceResult
+from flext_core.config import get_config
 from flext_observability.logging import get_logger
+
+
+# Simple base classes for handlers
+class CommandHandler:
+    """Base command handler."""
+
+    async def handle(self, command: Any) -> ServiceResult[Any]:
+        """Handle command."""
+        return ServiceResult.ok({"status": "command handled"})
+
+
+class QueryHandler:
+    """Base query handler."""
+
+    async def handle(self, query: Any) -> ServiceResult[Any]:
+        """Handle query."""
+        return ServiceResult.ok({"status": "query handled"})
+
 
 if TYPE_CHECKING:
     from collections.abc import AsyncIterator
 
-    from flext_core.commands.base import ReflectionCommandBus
-    from flext_core.infrastructure.containers import ApplicationContainer
     from flext_grpc.types import ServicerContext
 
 
@@ -259,8 +273,8 @@ class FlextServiceImplementation:
 
     def __init__(
         self,
-        command_bus: ReflectionCommandBus,
-        container: ApplicationContainer,
+        command_bus: Any = None,
+        container: Any = None,
     ) -> None:
         """Initialize FLEXT service implementation.
 

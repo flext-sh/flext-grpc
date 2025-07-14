@@ -135,7 +135,8 @@ class GRPCServerAdapter(GRPCServerPort):
             return ServiceResult.fail(f"Failed to check health: {e!s}")
 
     async def get_service_metrics(
-        self, _service_id: UUID,
+        self,
+        _service_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get metrics for a gRPC service.
 
@@ -312,7 +313,8 @@ class PrometheusMetricsAdapter(MetricsPort):
             return ServiceResult.fail(f"Failed to record metrics: {e!s}")
 
     async def get_service_metrics(
-        self, _service_id: UUID,
+        self,
+        _service_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get Prometheus metrics for a specific service.
 
@@ -339,7 +341,8 @@ class PrometheusMetricsAdapter(MetricsPort):
             return ServiceResult.fail(f"Failed to get service metrics: {e!s}")
 
     async def get_method_metrics(
-        self, _method_id: UUID,
+        self,
+        _method_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get Prometheus metrics for a specific method.
 

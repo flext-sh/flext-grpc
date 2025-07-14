@@ -28,7 +28,7 @@ class StartGRPCServiceCommand:
         self,
         service_name: str,
         port: int,
-        host: str = "0.0.0.0",
+        host: str = "0.0.0.0",  # nosec B104 # gRPC server needs to bind to all interfaces
         **kwargs: Any,
     ) -> None:
         """Initialize start service command.

@@ -115,7 +115,8 @@ class RPCMethodRepository(ABC):
 
     @abstractmethod
     async def get_by_service_id(
-        self, service_id: UUID,
+        self,
+        service_id: UUID,
     ) -> ServiceResult[list[RPCMethod]]:
         """Get all RPC methods for a specific service.
 
@@ -130,7 +131,9 @@ class RPCMethodRepository(ABC):
 
     @abstractmethod
     async def get_by_name(
-        self, service_id: UUID, name: str,
+        self,
+        service_id: UUID,
+        name: str,
     ) -> ServiceResult[RPCMethod | None]:
         """Get an RPC method by service ID and method name.
 
@@ -189,7 +192,9 @@ class RPCCallRepository(ABC):
 
     @abstractmethod
     async def get_by_method_id(
-        self, method_id: UUID, limit: int = 100,
+        self,
+        method_id: UUID,
+        limit: int = 100,
     ) -> ServiceResult[list[RPCCall]]:
         """Get RPC calls for a specific method.
 
@@ -271,7 +276,8 @@ class GRPCServerPort(ABC):
 
     @abstractmethod
     async def get_service_metrics(
-        self, service_id: UUID,
+        self,
+        service_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get metrics for a gRPC service.
 
@@ -346,7 +352,8 @@ class MetricsPort(ABC):
 
     @abstractmethod
     async def get_service_metrics(
-        self, service_id: UUID,
+        self,
+        service_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get metrics for a service.
 
@@ -361,7 +368,8 @@ class MetricsPort(ABC):
 
     @abstractmethod
     async def get_method_metrics(
-        self, method_id: UUID,
+        self,
+        method_id: UUID,
     ) -> ServiceResult[dict[str, float]]:
         """Get metrics for an RPC method.
 

@@ -24,7 +24,8 @@ if TYPE_CHECKING:
     from flext_auth.models import User
     from flext_auth.repositories import RoleRepositoryInterface
 
-    from flext_core.domain.advanced_types import MetadataDict
+    # Simple type alias replacement
+    MetadataDict = dict[str, str]
 
 # Python 3.13 type aliases - with strict validation
 ContextValue = str | int | bool | float | None
