@@ -204,7 +204,7 @@ class FlextGrpcClientBase:
         return ServiceResult.fail(f"gRPC {operation} failed: {error_details}")
 
     def _create_stub(self, channel: grpc.Channel) -> flext_pb2_grpc.FlextServiceStub:
-        return flext_pb2_grpc.FlextServiceStub(channel)  # type: ignore[no-untyped-call]
+        return flext_pb2_grpc.FlextServiceStub(channel)
 
 
 class ConnectionPool:

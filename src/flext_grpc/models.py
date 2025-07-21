@@ -6,7 +6,6 @@ Zero tolerance for duplication - using flext-core domain models.
 
 from __future__ import annotations
 
-from datetime import datetime  # noqa: TC003  # Pydantic requires runtime import
 from typing import TYPE_CHECKING
 
 from flext_core.domain.pipeline import Pipeline, PipelineExecution
@@ -18,6 +17,7 @@ from flext_core.domain.shared_models import (
 from pydantic import Field
 
 if TYPE_CHECKING:
+    from datetime import datetime
     from uuid import UUID
 
 # Export flext-core entities for gRPC usage - NO DUPLICATION

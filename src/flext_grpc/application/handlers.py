@@ -53,6 +53,8 @@ def _validate_service_config(service_name: str | None, port: int | None) -> None
     if not port or port <= 0:
         msg = "Valid port number is required"
         raise ValueError(msg)
+    if port < MIN_PORT or port > MAX_PORT:
+        raise ValueError(PORT_RANGE_ERROR)
 
 
 def _validate_method_registration(
@@ -90,8 +92,7 @@ def _validate_rpc_execution(method_id: str | None, request_data: object) -> None
 
     """
     if not method_id:
-        msg = "Method ID is required"
-        raise ValueError(msg)
+        raise ValueError(METHOD_ID_ERROR)
     if not isinstance(request_data, dict):
         msg = "Request data must be a dictionary"
         raise TypeError(msg)
@@ -342,7 +343,7 @@ class StartGRPCServiceHandler(CommandHandler[StartGRPCServiceCommand, Any]):
             # 3. Register service methods - Import servicer from flext-grpc
             flext_server = FlextGrpcServer()
             servicer = FlextGrpcServicer(flext_server)
-            flext_pb2_grpc.add_FlextServiceServicer_to_server(servicer, server)  # type: ignore[no-untyped-call]
+            flext_pb2_grpc.add_FlextServiceServicer_to_server(servicer, server)
 
             # 4. Start listening on port
             listen_addr = f"{command.host}:{command.port}"

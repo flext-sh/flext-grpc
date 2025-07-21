@@ -1711,7 +1711,7 @@ async def create_grpc_server(
     servicer = FlextGrpcServicer(flext_server)
 
     # Add servicer to server
-    flext_pb2_grpc.add_FlextServiceServicer_to_server(servicer, server)  # type: ignore[no-untyped-call]
+    flext_pb2_grpc.add_FlextServiceServicer_to_server(servicer, server)
 
     # Add listening port
     listen_addr = f"[::]:{port}"

@@ -50,6 +50,12 @@ def dict_to_struct(data: dict[str, Any]) -> struct_pb2.Struct:
     import json
     from datetime import datetime
 
+    struct = struct_pb2.Struct()
+
+    # Handle None data gracefully
+    if data is None:
+        return struct
+
     def serialize_value(value: Any) -> Any:
         """Serialize value to be compatible with protobuf Struct."""
         if isinstance(value, datetime):
@@ -58,16 +64,14 @@ def dict_to_struct(data: dict[str, Any]) -> struct_pb2.Struct:
             return {k: serialize_value(v) for k, v in value.items()}
         if isinstance(value, list):
             return [serialize_value(item) for item in value]
-        if hasattr(value, "__dict__"):
-            try:
-                # Test if value is JSON serializable
-                json.dumps(value)
-                return value
-            except (TypeError, ValueError):
-                return str(value)
-        return None
+        # Check if value is JSON serializable (covers str, int, float, bool, None)
+        try:
+            json.dumps(value)
+            return value
+        except (TypeError, ValueError):
+            # If not JSON serializable, convert to string
+            return str(value)
 
-    struct = struct_pb2.Struct()
     try:
         serialized_data = serialize_value(data)
         struct.update(serialized_data)
@@ -121,4 +125,14 @@ def safe_string_from_protobuf(value: Any) -> str:
         except UnicodeDecodeError:
             return str(value)
 
-    return str(value)
+    # Check for protobuf string_value attribute (common in protobuf Value objects)
+    if hasattr(value, "string_value"):
+        try:
+            return str(value.string_value)
+        except (ValueError, TypeError, Exception):
+            return ""
+
+    try:
+        return str(value)
+    except (ValueError, TypeError, Exception):
+        return ""

@@ -11,8 +11,13 @@ from typing import TYPE_CHECKING, Any
 
 import grpc
 from flext_observability.logging import get_logger
-from flext_observability.tracing import get_current_span
 from grpc.aio import ServerInterceptor
+
+
+# Tracing functionality placeholder - flext-observability doesn't have tracing module yet
+def get_current_span() -> Any | None:
+    """Get current tracing span - placeholder implementation."""
+    return None
 
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
@@ -24,7 +29,7 @@ if TYPE_CHECKING:
 logger = get_logger(__name__)
 
 
-class MetricsInterceptor(ServerInterceptor):  # type: ignore[type-arg]
+class MetricsInterceptor(ServerInterceptor):
     """gRPC server interceptor for metrics collection.
 
     Intercepts gRPC service calls to collect performance metrics,
@@ -123,7 +128,7 @@ class MetricsInterceptor(ServerInterceptor):  # type: ignore[type-arg]
             return response
 
 
-class TracingInterceptor(ServerInterceptor):  # type: ignore[type-arg]
+class TracingInterceptor(ServerInterceptor):
     """gRPC server interceptor for distributed tracing.
 
     Creates spans for each gRPC request to enable distributed tracing
@@ -171,7 +176,7 @@ class TracingInterceptor(ServerInterceptor):  # type: ignore[type-arg]
             return response
 
 
-class AuthenticationInterceptor(ServerInterceptor):  # type: ignore[type-arg]
+class AuthenticationInterceptor(ServerInterceptor):
     """gRPC server interceptor for authentication.
 
     Validates authentication tokens for secured gRPC endpoints.
@@ -256,7 +261,7 @@ class AuthenticationInterceptor(ServerInterceptor):  # type: ignore[type-arg]
         return await continuation(handler_call_details)
 
 
-class RateLimitingInterceptor(ServerInterceptor):  # type: ignore[type-arg]
+class RateLimitingInterceptor(ServerInterceptor):
     """gRPC server interceptor for rate limiting.
 
     Implements rate limiting using token bucket algorithm to prevent
@@ -310,7 +315,7 @@ def create_interceptors(
     auth_service: AuthenticationService | None = None,
     rate_limiter: TokenBucketLimiter | None = None,
     enable_tracing: bool = True,
-) -> list[ServerInterceptor[Any, Any]]:
+) -> list[ServerInterceptor]:
     """Create list of gRPC interceptors for enterprise features.
 
     Args:
@@ -323,7 +328,7 @@ def create_interceptors(
         List of configured interceptors in proper order.
 
     """
-    interceptors: list[ServerInterceptor[Any, Any]] = []
+    interceptors: list[ServerInterceptor] = []
 
     # Rate limiting should be first to protect other interceptors
     if rate_limiter:

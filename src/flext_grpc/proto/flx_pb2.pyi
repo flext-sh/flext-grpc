@@ -114,7 +114,7 @@ class HealthStatus(_message.Message):
         def __init__(
             self,
             key: str | None = ...,
-            value: ComponentHealth | _Mapping | None = ...,
+            value: ComponentHealth | _Mapping[str, object] | None = ...,
         ) -> None: ...
 
     HEALTHY_FIELD_NUMBER: _ClassVar[int]
@@ -127,7 +127,7 @@ class HealthStatus(_message.Message):
         self,
         healthy: bool = ...,
         components: _Mapping[str, ComponentHealth] | None = ...,
-        timestamp: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None = ...,
+        timestamp: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class ComponentHealth(_message.Message):
@@ -246,18 +246,18 @@ class Pipeline(_message.Message):
         extractor: str | None = ...,
         loader: str | None = ...,
         transform: str | None = ...,
-        config: _struct_pb2.Struct | _Mapping | None = ...,
+        config: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         schedule: str | None = ...,
         is_active: bool = ...,
         created_by: str | None = ...,
         created_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         updated_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         last_status: Status | str | None = ...,
-        last_run: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None = ...,
+        last_run: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class ListPipelinesRequest(_message.Message):
@@ -293,7 +293,7 @@ class ListPipelinesResponse(_message.Message):
     offset: int
     def __init__(
         self,
-        pipelines: _Iterable[Pipeline | _Mapping] | None = ...,
+        pipelines: _Iterable[Pipeline | _Mapping[str, object]] | None = ...,
         total: int | None = ...,
         limit: int | None = ...,
         offset: int | None = ...,
@@ -336,7 +336,7 @@ class CreatePipelineRequest(_message.Message):
         extractor: str | None = ...,
         loader: str | None = ...,
         transform: str | None = ...,
-        config: _struct_pb2.Struct | _Mapping | None = ...,
+        config: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         schedule: str | None = ...,
     ) -> None: ...
 
@@ -378,7 +378,7 @@ class UpdatePipelineRequest(_message.Message):
         extractor: str | None = ...,
         loader: str | None = ...,
         transform: str | None = ...,
-        config: _struct_pb2.Struct | _Mapping | None = ...,
+        config: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         schedule: str | None = ...,
         is_active: bool = ...,
     ) -> None: ...
@@ -461,10 +461,10 @@ class Execution(_message.Message):
         pipeline_id: str | None = ...,
         status: Status | str | None = ...,
         started_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         finished_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         duration_seconds: int | None = ...,
         error_message: str | None = ...,
@@ -500,9 +500,9 @@ class ListExecutionsRequest(_message.Message):
         offset: int | None = ...,
         status: Status | str | None = ...,
         start_date: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
-        end_date: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None = ...,
+        end_date: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class ListExecutionsResponse(_message.Message):
@@ -517,7 +517,7 @@ class ListExecutionsResponse(_message.Message):
     offset: int
     def __init__(
         self,
-        executions: _Iterable[Execution | _Mapping] | None = ...,
+        executions: _Iterable[Execution | _Mapping[str, object]] | None = ...,
         total: int | None = ...,
         limit: int | None = ...,
         offset: int | None = ...,
@@ -573,7 +573,7 @@ class ExecutionUpdate(_message.Message):
         execution_id: str | None = ...,
         type: str | None = ...,
         message: str | None = ...,
-        timestamp: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None = ...,
+        timestamp: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None = ...,
         progress: float | None = ...,
         status: Status | str | None = ...,
         metadata: _Mapping[str, str] | None = ...,
@@ -614,9 +614,9 @@ class Plugin(_message.Message):
         version: str | None = ...,
         description: str | None = ...,
         installed: bool = ...,
-        settings: _struct_pb2.Struct | _Mapping | None = ...,
+        settings: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         installed_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
     ) -> None: ...
 
@@ -640,7 +640,7 @@ class ListPluginsResponse(_message.Message):
     total: int
     def __init__(
         self,
-        plugins: _Iterable[Plugin | _Mapping] | None = ...,
+        plugins: _Iterable[Plugin | _Mapping[str, object]] | None = ...,
         total: int | None = ...,
     ) -> None: ...
 
@@ -695,7 +695,7 @@ class UpdatePluginConfigRequest(_message.Message):
         self,
         name: str | None = ...,
         type: PluginType | str | None = ...,
-        config: _struct_pb2.Struct | _Mapping | None = ...,
+        config: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class PluginConfig(_message.Message):
@@ -710,7 +710,7 @@ class PluginConfig(_message.Message):
         self,
         name: str | None = ...,
         type: PluginType | str | None = ...,
-        config: _struct_pb2.Struct | _Mapping | None = ...,
+        config: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class State(_message.Message):
@@ -724,9 +724,9 @@ class State(_message.Message):
     def __init__(
         self,
         id: str | None = ...,
-        data: _struct_pb2.Struct | _Mapping | None = ...,
+        data: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         updated_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
     ) -> None: ...
 
@@ -745,7 +745,7 @@ class SetStateRequest(_message.Message):
     def __init__(
         self,
         id: str | None = ...,
-        data: _struct_pb2.Struct | _Mapping | None = ...,
+        data: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class ClearStateRequest(_message.Message):
@@ -774,8 +774,8 @@ class Schedule(_message.Message):
         pipeline_id: str | None = ...,
         cron: str | None = ...,
         is_active: bool = ...,
-        next_run: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None = ...,
-        last_run: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None = ...,
+        next_run: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None = ...,
+        last_run: datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class ListSchedulesRequest(_message.Message):
@@ -798,7 +798,7 @@ class ListSchedulesResponse(_message.Message):
     total: int
     def __init__(
         self,
-        schedules: _Iterable[Schedule | _Mapping] | None = ...,
+        schedules: _Iterable[Schedule | _Mapping[str, object]] | None = ...,
         total: int | None = ...,
     ) -> None: ...
 
@@ -864,13 +864,13 @@ class MeltanoProject(_message.Message):
         name: str | None = ...,
         environment: str | None = ...,
         project_root: str | None = ...,
-        configuration: _struct_pb2.Struct | _Mapping | None = ...,
+        configuration: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         is_initialized: bool = ...,
         created_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         updated_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
     ) -> None: ...
 
@@ -931,7 +931,7 @@ class RunMeltanoPipelineRequest(_message.Message):
     def __init__(
         self,
         project_name: str | None = ...,
-        pipeline_definition: _struct_pb2.Struct | _Mapping | None = ...,
+        pipeline_definition: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         environment: str | None = ...,
         execution_mode: MeltanoExecutionMode | str | None = ...,
         env_vars: _Mapping[str, str] | None = ...,
@@ -977,14 +977,14 @@ class MeltanoExecution(_message.Message):
         pipeline_name: str | None = ...,
         state: MeltanoJobState | str | None = ...,
         started_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         finished_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         duration_seconds: int | None = ...,
         error_message: str | None = ...,
-        result_data: _struct_pb2.Struct | _Mapping | None = ...,
+        result_data: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         environment: str | None = ...,
     ) -> None: ...
 
@@ -1030,13 +1030,13 @@ class MeltanoJobStatus(_message.Message):
         run_id: str | None = ...,
         state: MeltanoJobState | str | None = ...,
         started_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         last_heartbeat_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         payload: str | None = ...,
-        metadata: _struct_pb2.Struct | _Mapping | None = ...,
+        metadata: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
     ) -> None: ...
 
 class ListMeltanoJobsRequest(_message.Message):
@@ -1072,7 +1072,7 @@ class ListMeltanoJobsResponse(_message.Message):
     offset: int
     def __init__(
         self,
-        jobs: _Iterable[MeltanoJobStatus | _Mapping] | None = ...,
+        jobs: _Iterable[MeltanoJobStatus | _Mapping[str, object]] | None = ...,
         total: int | None = ...,
         limit: int | None = ...,
         offset: int | None = ...,
@@ -1108,10 +1108,10 @@ class MeltanoState(_message.Message):
     def __init__(
         self,
         state_id: str | None = ...,
-        state_data: _struct_pb2.Struct | _Mapping | None = ...,
+        state_data: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         version: str | None = ...,
         updated_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         backend: str | None = ...,
     ) -> None: ...
@@ -1130,7 +1130,7 @@ class SetMeltanoStateRequest(_message.Message):
         self,
         project_name: str | None = ...,
         state_id: str | None = ...,
-        state_data: _struct_pb2.Struct | _Mapping | None = ...,
+        state_data: _struct_pb2.Struct | _Mapping[str, object] | None = ...,
         create_backup: bool = ...,
     ) -> None: ...
 
@@ -1183,7 +1183,7 @@ class MeltanoJobStatistics(_message.Message):
         state_counts: _Mapping[str, int] | None = ...,
         success_rate: float | None = ...,
         generated_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         cutoff_date: str | None = ...,
     ) -> None: ...
@@ -1231,7 +1231,7 @@ class MeltanoJobCleanupResult(_message.Message):
         jobs_cleaned: int | None = ...,
         heartbeat_timeout_minutes: int | None = ...,
         cleaned_at: (
-            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping | None
+            datetime.datetime | _timestamp_pb2.Timestamp | _Mapping[str, object] | None
         ) = ...,
         cleaned_job_ids: _Iterable[str] | None = ...,
     ) -> None: ...
