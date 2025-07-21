@@ -1,38 +1,45 @@
-"""Type definitions for gRPC using Python 3.13 advanced patterns.
+"""FLEXT gRPC types - Unified typing system using flext-core.
 
-Copyright (c) 2025 Flext. All rights reserved.
+Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
-This module provides protocol definitions for gRPC types to avoid
-direct dependency on untyped gRPC modules while maintaining type safety.
+This module imports from the unified typing system in flext-core and defines
+gRPC-specific protocol types using modern Python 3.13 patterns and Pydantic v2.
+Zero tolerance for mock implementations - real gRPC protocols only.
 """
 
 from __future__ import annotations
 
-from collections.abc import AsyncIterator
-from collections.abc import Callable
-from collections.abc import Sequence
-from typing import TYPE_CHECKING
-from typing import TypeVar
+from collections.abc import AsyncIterator, Callable, Sequence
+from typing import Protocol, TypeVar
 
-if TYPE_CHECKING:
-    from flext_core.domain.types import ConfigMapping
+# Import from unified core typing system
+from flext_core.domain.shared_types import (
+    ConfigMapping,
+    HandlerFunction,
+)
 
-# Type variables for generic protocols
+# Type variables for generic gRPC protocols
 TRequestContra_contra = TypeVar("TRequestContra_contra", contravariant=True)
 TResponseCo_co = TypeVar("TResponseCo_co", covariant=True)
 TServicer = TypeVar("TServicer")
 
-# Python 3.13 compatible type aliases for gRPC
-GrpcMetadata = Sequence[tuple[str, str | bytes]]
-GrpcStatusCode = int  # grpc.StatusCode values are integers
-GrpcStatus = object  # grpc.Status object
-GrpcServerCredentials = object  # grpc.ServerCredentials object
-GrpcHandlerCallDetails = object  # grpc.HandlerCallDetails object
-GrpcContinuation = Callable[[object], object]
+# ==============================================================================
+# GRPC SPECIFIC TYPES - Building on unified types
+# ==============================================================================
+
+# gRPC protocol types using modern Python 3.13 patterns
+type GrpcMetadata = Sequence[tuple[str, str | bytes]]
+type GrpcStatusCode = int  # grpc.StatusCode values are integers
+type GrpcStatus = object  # grpc.Status object
+type GrpcServerCredentials = object  # grpc.ServerCredentials object
+type GrpcHandlerCallDetails = object  # grpc.HandlerCallDetails object
+type GrpcContinuation = Callable[[object], object]
+type GrpcServiceMethod = HandlerFunction[object, object]
+type GrpcStreamingMethod = Callable[[AsyncIterator[object]], AsyncIterator[object]]
 
 
-class ServicerContext:
+class ServicerContext(Protocol):
     """Protocol for gRPC servicer context.
 
     Provides interface for gRPC service context operations including
@@ -129,11 +136,16 @@ class ServicerContext:
         """
 
 
-class UnaryUnaryMethod[TRequest, TResponse]:
+# ==============================================================================
+# GRPC METHOD PROTOCOLS - Using modern Python 3.13 generic syntax
+# ==============================================================================
+
+
+class UnaryUnaryMethod[TRequest, TResponse](Protocol):
     """Protocol for unary-unary gRPC method.
 
     Defines the interface for gRPC methods that take a single request
-    and return a single response.
+    and return a single response using modern Python 3.13 generic syntax.
     """
 
     async def __call__(self, request: TRequest, context: ServicerContext) -> TResponse:
@@ -149,11 +161,11 @@ class UnaryUnaryMethod[TRequest, TResponse]:
         """
 
 
-class UnaryStreamMethod[TRequest, TResponse]:
+class UnaryStreamMethod[TRequest, TResponse](Protocol):
     """Protocol for unary-stream gRPC method.
 
     Defines the interface for gRPC methods that take a single request
-    and return a stream of responses.
+    and return a stream of responses using modern Python 3.13 patterns.
     """
 
     async def __call__(
@@ -173,11 +185,11 @@ class UnaryStreamMethod[TRequest, TResponse]:
         """
 
 
-class StreamUnaryMethod[TRequest, TResponse]:
+class StreamUnaryMethod[TRequest, TResponse](Protocol):
     """Protocol for stream-unary gRPC method.
 
     Defines the interface for gRPC methods that take a stream of requests
-    and return a single response.
+    and return a single response using composition patterns.
     """
 
     async def __call__(
@@ -197,11 +209,11 @@ class StreamUnaryMethod[TRequest, TResponse]:
         """
 
 
-class StreamStreamMethod[TRequest, TResponse]:
+class StreamStreamMethod[TRequest, TResponse](Protocol):
     """Protocol for stream-stream gRPC method.
 
     Defines the interface for gRPC methods that take a stream of requests
-    and return a stream of responses.
+    and return a stream of responses using modern async patterns.
     """
 
     async def __call__(
@@ -236,7 +248,7 @@ class GenericServicer:
         """
 
 
-class GrpcServer:
+class GrpcServer(Protocol):
     """Protocol for gRPC server.
 
     Defines the interface for gRPC server lifecycle management.
@@ -288,7 +300,7 @@ class GrpcServer:
         """Wait for server termination."""
 
 
-class GrpcChannel:
+class GrpcChannel(Protocol):
     """Protocol for gRPC channel.
 
     Defines the interface for gRPC client channels.
@@ -332,7 +344,13 @@ class GrpcInterceptor:
         """
 
 
+# ==============================================================================
+# EXPORTS - ALL GRPC TYPES
+# ==============================================================================
+
 __all__ = [
+    # Core types from unified system
+    "ConfigMapping",
     "GenericServicer",
     "GrpcChannel",
     "GrpcContinuation",
@@ -341,8 +359,11 @@ __all__ = [
     "GrpcMetadata",
     "GrpcServer",
     "GrpcServerCredentials",
+    "GrpcServiceMethod",
     "GrpcStatus",
     "GrpcStatusCode",
+    "GrpcStreamingMethod",
+    "HandlerFunction",
     "ServicerContext",
     "StreamStreamMethod",
     "StreamUnaryMethod",

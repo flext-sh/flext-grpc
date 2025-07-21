@@ -1,35 +1,30 @@
 """Repository implementations for FLEXT-GRPC.
 
-Using flext-core patterns - NO duplication.
+REFACTORED: Uses flext-core Repository pattern - NO duplication.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import delete
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.ext.asyncio import create_async_engine
-from sqlalchemy.orm import sessionmaker
+from flext_core.domain.core import Repository, RepositoryError
+from flext_core.domain.types import ServiceResult
+from sqlalchemy import delete, select
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from flext_core.domain.pydantic_base import ServiceResult
-from flext_grpc.domain.entities import GRPCService
-from flext_grpc.domain.entities import RPCCall
-from flext_grpc.domain.entities import RPCMethod
-from flext_grpc.domain.ports import GRPCServiceRepository
-from flext_grpc.domain.ports import RPCCallRepository
-from flext_grpc.domain.ports import RPCMethodRepository
-from flext_grpc.infrastructure.persistence.models import GRPCServiceModel
-from flext_grpc.infrastructure.persistence.models import RPCCallModel
-from flext_grpc.infrastructure.persistence.models import RPCMethodModel
-
-if TYPE_CHECKING:
-    from uuid import UUID
+from flext_grpc.domain.entities import GRPCService, RPCCall, RPCMethod
+from flext_grpc.infrastructure.persistence.models import (
+    GRPCServiceModel,
+    RPCCallModel,
+    RPCMethodModel,
+)
 
 
-class BaseRepository:
-    """Base repository with common functionality."""
+class BaseRepositoryMixin:
+    """Base repository mixin with common functionality.
+
+    Extending flext-core patterns.
+    """
 
     def __init__(self, database_url: str) -> None:
         """Initialize repository with database URL.
@@ -39,9 +34,8 @@ class BaseRepository:
 
         """
         self.engine = create_async_engine(database_url)
-        self.session_factory = sessionmaker(
+        self.session_factory = async_sessionmaker(
             self.engine,
-            class_=AsyncSession,
             expire_on_commit=False,
         )
 
@@ -59,17 +53,23 @@ class BaseRepository:
         await self.engine.dispose()
 
 
-class PostgreSQLGRPCServiceRepository(BaseRepository, GRPCServiceRepository):
+class PostgreSQLGRPCServiceRepository(
+    BaseRepositoryMixin,
+    Repository[GRPCService, UUID],
+):
     """PostgreSQL implementation of GRPCServiceRepository."""
 
-    async def save(self, service: GRPCService) -> ServiceResult[GRPCService]:
+    async def save(self, service: GRPCService) -> GRPCService:
         """Save a gRPC service to the database.
 
         Args:
             service: The gRPC service to save.
 
         Returns:
-            ServiceResult[GRPCService]: Result containing the saved service.
+            GRPCService: The saved service.
+
+        Raises:
+            RepositoryError: If save operation fails.
 
         """
         try:
@@ -91,20 +91,23 @@ class PostgreSQLGRPCServiceRepository(BaseRepository, GRPCServiceRepository):
                 await session.refresh(model)
 
                 # Convert back to domain entity
-                domain_service = GRPCService(**model.to_dict())
-                return ServiceResult.ok(domain_service)
-
+                return GRPCService(**model.to_dict())
         except Exception as e:
-            return ServiceResult.fail(f"Failed to save service: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
-    async def get_by_id(self, service_id: UUID) -> ServiceResult[GRPCService | None]:
+    async def get_by_id(self, service_id: UUID) -> GRPCService | None:
+        """Get gRPC service by ID - Repository interface method."""
+        return await self._get_by_id_internal(service_id)
+
+    async def _get_by_id_internal(self, service_id: UUID) -> GRPCService | None:
         """Get a gRPC service by its ID.
 
         Args:
             service_id: Unique identifier of the service.
 
         Returns:
-            ServiceResult containing the service or None if not found.
+            The service or None if not found.
 
         """
         try:
@@ -114,13 +117,13 @@ class PostgreSQLGRPCServiceRepository(BaseRepository, GRPCServiceRepository):
                 model = result.scalar_one_or_none()
 
                 if model is None:
-                    return ServiceResult.ok(None)
+                    return None
 
-                domain_service = GRPCService(**model.to_dict())
-                return ServiceResult.ok(domain_service)
+                return GRPCService(**model.to_dict())
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get service: {e!s}")
+            msg = f"Failed to get service: {e!s}"
+            raise RepositoryError(msg) from e
 
     async def get_by_name(self, name: str) -> ServiceResult[GRPCService | None]:
         """Get a gRPC service by its name.
@@ -166,14 +169,17 @@ class PostgreSQLGRPCServiceRepository(BaseRepository, GRPCServiceRepository):
         except Exception as e:
             return ServiceResult.fail(f"Failed to list services: {e!s}")
 
-    async def delete(self, service_id: UUID) -> ServiceResult[bool]:
+    async def delete(self, service_id: UUID) -> bool:
         """Delete a gRPC service by its ID.
 
         Args:
             service_id: Unique identifier of the service to delete.
 
         Returns:
-            ServiceResult containing True if deleted, False if not found.
+            True if deleted, False if not found.
+
+        Raises:
+            RepositoryError: If delete operation fails.
 
         """
         try:
@@ -182,23 +188,26 @@ class PostgreSQLGRPCServiceRepository(BaseRepository, GRPCServiceRepository):
                 result = await session.execute(stmt)
                 await session.commit()
 
-                return ServiceResult.ok(result.rowcount > 0)
-
+                return result.rowcount > 0
         except Exception as e:
-            return ServiceResult.fail(f"Failed to delete service: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
 
-class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
+class PostgreSQLRPCMethodRepository(BaseRepositoryMixin, Repository[RPCMethod, UUID]):
     """PostgreSQL implementation of RPCMethodRepository."""
 
-    async def save(self, method: RPCMethod) -> ServiceResult[RPCMethod]:
+    async def save(self, method: RPCMethod) -> RPCMethod:
         """Save an RPC method to the database.
 
         Args:
             method: The RPC method to save.
 
         Returns:
-            ServiceResult containing the saved method.
+            RPCMethod: The saved method.
+
+        Raises:
+            RepositoryError: If save operation fails.
 
         """
         try:
@@ -220,20 +229,23 @@ class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
                 await session.refresh(model)
 
                 # Convert back to domain entity
-                domain_method = RPCMethod(**model.to_dict())
-                return ServiceResult.ok(domain_method)
-
+                return RPCMethod(**model.to_dict())
         except Exception as e:
-            return ServiceResult.fail(f"Failed to save method: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
-    async def get_by_id(self, method_id: UUID) -> ServiceResult[RPCMethod | None]:
+    async def get(self, method_id: UUID) -> RPCMethod | None:
+        """Get RPC method by ID - Repository interface method."""
+        return await self.get_by_id(method_id)
+
+    async def get_by_id(self, method_id: UUID) -> RPCMethod | None:
         """Get an RPC method by its ID.
 
         Args:
             method_id: Unique identifier of the method.
 
         Returns:
-            ServiceResult containing the method or None if not found.
+            The method or None if not found.
 
         """
         try:
@@ -243,13 +255,13 @@ class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
                 model = result.scalar_one_or_none()
 
                 if model is None:
-                    return ServiceResult.ok(None)
+                    return None
 
-                domain_method = RPCMethod(**model.to_dict())
-                return ServiceResult.ok(domain_method)
+                return RPCMethod(**model.to_dict())
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get method: {e!s}")
+            msg = f"Failed to get method: {e!s}"
+            raise RepositoryError(msg) from e
 
     async def get_by_service_id(
         self,
@@ -311,14 +323,17 @@ class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
         except Exception as e:
             return ServiceResult.fail(f"Failed to get method by name: {e!s}")
 
-    async def delete(self, method_id: UUID) -> ServiceResult[bool]:
+    async def delete(self, method_id: UUID) -> bool:
         """Delete an RPC method by its ID.
 
         Args:
             method_id: Unique identifier of the method to delete.
 
         Returns:
-            ServiceResult containing True if deleted, False if not found.
+            True if deleted, False if not found.
+
+        Raises:
+            RepositoryError: If delete operation fails.
 
         """
         try:
@@ -327,23 +342,47 @@ class PostgreSQLRPCMethodRepository(BaseRepository, RPCMethodRepository):
                 result = await session.execute(stmt)
                 await session.commit()
 
-                return ServiceResult.ok(result.rowcount > 0)
-
+                return result.rowcount > 0
         except Exception as e:
-            return ServiceResult.fail(f"Failed to delete method: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
+
+    async def find_all(self) -> list[RPCMethod]:
+        """Find all RPC methods.
+
+        Returns:
+            List of all RPC methods.
+
+        Raises:
+            RepositoryError: If find operation fails.
+
+        """
+        try:
+            async with await self.get_session() as session:
+                stmt = select(RPCMethodModel)
+                result = await session.execute(stmt)
+                models = result.scalars().all()
+
+                return [RPCMethod(**model.to_dict()) for model in models]
+        except Exception as e:
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
 
-class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
+class PostgreSQLRPCCallRepository(BaseRepositoryMixin, Repository[RPCCall, UUID]):
     """PostgreSQL implementation of RPCCallRepository."""
 
-    async def save(self, call: RPCCall) -> ServiceResult[RPCCall]:
+    async def save(self, call: RPCCall) -> RPCCall:
         """Save an RPC call to the database.
 
         Args:
             call: The RPC call to save.
 
         Returns:
-            ServiceResult containing the saved call.
+            RPCCall: The saved call.
+
+        Raises:
+            RepositoryError: If save operation fails.
 
         """
         try:
@@ -365,20 +404,23 @@ class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
                 await session.refresh(model)
 
                 # Convert back to domain entity
-                domain_call = RPCCall(**model.to_dict())
-                return ServiceResult.ok(domain_call)
-
+                return RPCCall(**model.to_dict())
         except Exception as e:
-            return ServiceResult.fail(f"Failed to save call: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
-    async def get_by_id(self, call_id: UUID) -> ServiceResult[RPCCall | None]:
+    async def get(self, call_id: UUID) -> RPCCall | None:
+        """Get RPC call by ID - Repository interface method."""
+        return await self.get_by_id(call_id)
+
+    async def get_by_id(self, call_id: UUID) -> RPCCall | None:
         """Get an RPC call by its ID.
 
         Args:
             call_id: Unique identifier of the call.
 
         Returns:
-            ServiceResult containing the call or None if not found.
+            The call or None if not found.
 
         """
         try:
@@ -388,13 +430,13 @@ class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
                 model = result.scalar_one_or_none()
 
                 if model is None:
-                    return ServiceResult.ok(None)
+                    return None
 
-                domain_call = RPCCall(**model.to_dict())
-                return ServiceResult.ok(domain_call)
+                return RPCCall(**model.to_dict())
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get call: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
     async def get_by_method_id(
         self,
@@ -426,7 +468,8 @@ class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
                 return ServiceResult.ok(calls)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get calls by method: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
     async def get_active_calls(self) -> ServiceResult[list[RPCCall]]:
         """Get all currently active RPC calls.
@@ -445,16 +488,20 @@ class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
                 return ServiceResult.ok(calls)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get active calls: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
 
-    async def delete(self, call_id: UUID) -> ServiceResult[bool]:
+    async def delete(self, call_id: UUID) -> bool:
         """Delete an RPC call by its ID.
 
         Args:
             call_id: Unique identifier of the call to delete.
 
         Returns:
-            ServiceResult containing True if deleted, False if not found.
+            True if deleted, False if not found.
+
+        Raises:
+            RepositoryError: If delete operation fails.
 
         """
         try:
@@ -463,7 +510,28 @@ class PostgreSQLRPCCallRepository(BaseRepository, RPCCallRepository):
                 result = await session.execute(stmt)
                 await session.commit()
 
-                return ServiceResult.ok(result.rowcount > 0)
-
+                return result.rowcount > 0
         except Exception as e:
-            return ServiceResult.fail(f"Failed to delete call: {e!s}")
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e
+
+    async def find_all(self) -> list[RPCCall]:
+        """Find all RPC calls.
+
+        Returns:
+            List of all RPC calls.
+
+        Raises:
+                RepositoryError: If find operation fails.
+
+        """
+        try:
+            async with await self.get_session() as session:
+                stmt = select(RPCCallModel)
+                result = await session.execute(stmt)
+                models = result.scalars().all()
+
+                return [RPCCall(**model.to_dict()) for model in models]
+        except Exception as e:
+            msg = f"Error in operation: {e}"
+            raise RepositoryError(msg) from e

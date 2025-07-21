@@ -1,75 +1,36 @@
 """gRPC models using flext-core patterns.
 
 Domain models for gRPC service implementation.
-Zero tolerance for primitive types - using domain value objects.
+Zero tolerance for duplication - using flext-core domain models.
 """
 
 from __future__ import annotations
 
 from datetime import datetime  # noqa: TC003  # Pydantic requires runtime import
-from typing import Any
+from typing import TYPE_CHECKING
 
+from flext_core.domain.pipeline import Pipeline, PipelineExecution
+from flext_core.domain.pydantic_base import DomainEntity, DomainValueObject
+from flext_core.domain.shared_models import (
+    PluginMetadata,  # Use flext-core PluginMetadata
+    PluginType,  # Use flext-core PluginType
+)
 from pydantic import Field
 
-from flext_core import DomainEntity
-from flext_core import DomainValueObject
+if TYPE_CHECKING:
+    from uuid import UUID
 
-
-class PipelineModel(DomainEntity):
-    """Pipeline entity for gRPC service using flext-core patterns."""
-
-    id: str = Field(..., description="Pipeline unique identifier")
-    name: str = Field(..., min_length=1, max_length=255, description="Pipeline name")
-    description: str = Field(default="", description="Pipeline description")
-    extractor: str = Field(..., min_length=1, description="Extractor plugin name")
-    loader: str = Field(..., min_length=1, description="Loader plugin name")
-    transform: str | None = Field(None, description="Transform plugin name")
-    is_active: bool = Field(default=True, description="Pipeline active status")
-    created_by: str = Field(default="grpc-system", description="Pipeline creator")
-    created_at: datetime = Field(..., description="Creation timestamp")
-    updated_at: datetime = Field(..., description="Last update timestamp")
-    config: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Pipeline configuration",
-    )
-
-
-class ExecutionModel(DomainEntity):
-    """Pipeline execution entity for gRPC service."""
-
-    id: str = Field(..., description="Execution unique identifier")
-    pipeline_id: str = Field(..., description="Associated pipeline ID")
-    status: str = Field(..., description="Execution status")
-    started_at: datetime | None = Field(None, description="Execution start time")
-    finished_at: datetime | None = Field(None, description="Execution finish time")
-    triggered_by: str | None = Field(None, description="Who triggered the execution")
-    error_message: str | None = Field(None, description="Error message if failed")
-    records_processed: int | None = Field(
-        None,
-        description="Number of records processed",
-    )
-    metadata: dict[str, str] = Field(
-        default_factory=dict,
-        description="Execution metadata",
-    )
-
-    @property
-    def duration_seconds(self) -> float:
-        """Calculate execution duration in seconds."""
-        if self.started_at and self.finished_at:
-            return (self.finished_at - self.started_at).total_seconds()
-        return 0.0
-
-    @property
-    def is_running(self) -> bool:
-        """Check if execution is currently running."""
-        return self.status in {"running", "started"} and self.finished_at is None
+# Export flext-core entities for gRPC usage - NO DUPLICATION
+PipelineModel = Pipeline  # Use flext-core Pipeline aggregate
+ExecutionModel = PipelineExecution  # Use flext-core PipelineExecution
+PluginModel = PluginMetadata  # Use flext-core PluginMetadata
 
 
 class ScheduleModel(DomainEntity):
     """Schedule entity for pipeline automation."""
 
-    id: str = Field(..., description="Schedule unique identifier")
+    id: UUID = Field(..., description="Schedule unique identifier")
+    name: str = Field(..., description="Schedule name")
     pipeline_id: str = Field(..., description="Associated pipeline ID")
     cron_expression: str = Field(..., description="Cron expression for scheduling")
     timezone: str = Field(default="UTC", description="Timezone for scheduling")
@@ -81,23 +42,7 @@ class ScheduleModel(DomainEntity):
     next_run: datetime | None = Field(None, description="Next scheduled execution")
 
 
-class PluginModel(DomainEntity):
-    """Plugin entity for plugin management."""
-
-    name: str = Field(..., min_length=1, description="Plugin name")
-    plugin_type: str = Field(..., description="Plugin type (tap, target, transform)")
-    version: str = Field(..., description="Plugin version")
-    description: str = Field(default="", description="Plugin description")
-    config_schema: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Configuration schema",
-    )
-    is_installed: bool = Field(default=False, description="Installation status")
-    install_path: str | None = Field(None, description="Installation path")
-    dependencies: list[str] = Field(
-        default_factory=list,
-        description="Plugin dependencies",
-    )
+# PluginModel removed - using flext-core PluginMetadata instead
 
 
 class SystemMetrics(DomainValueObject):
@@ -140,9 +85,12 @@ class SystemMetrics(DomainValueObject):
 
 
 __all__ = [
-    "ExecutionModel",
-    "PipelineModel",
-    "PluginModel",
+    "ExecutionModel",  # = flext_core.domain.pipeline.PipelineExecution
+    # flext-core entities (aliases for backward compatibility)
+    "PipelineModel",  # = flext_core.domain.pipeline.Pipeline
+    "PluginModel",  # = flext_core.domain.shared_models.PluginMetadata
+    "PluginType",  # = flext_core.domain.shared_models.PluginType
+    # gRPC-specific models
     "ScheduleModel",
     "SystemMetrics",
 ]

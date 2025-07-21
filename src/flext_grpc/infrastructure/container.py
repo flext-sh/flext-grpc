@@ -6,13 +6,12 @@ REFACTORED:
 
 from __future__ import annotations
 
-from flext_core.config import get_container
-from flext_core.config import singleton
-from flext_grpc.infrastructure.config import GRPCConfig
-from flext_grpc.infrastructure.config import get_grpc_config
+from flext_core.config import get_container, singleton
+
+from flext_grpc.infrastructure.config import GRPCConfig, get_grpc_config
 
 
-@singleton()
+@singleton
 class GRPCContainerConfig:
     """gRPC container configuration using flext-core patterns."""
 
@@ -35,11 +34,10 @@ def setup_grpc_container(config: GRPCConfig | None = None) -> GRPCContainerConfi
     if config is None:
         config = get_grpc_config()
 
-        container_config = GRPCContainerConfig(config)
-        container_config.configure_dependencies()
+    container_config = GRPCContainerConfig(config)
+    container_config.configure_dependencies()
 
-        return container_config
-    return None
+    return container_config
 
 
 def get_grpc_container() -> GRPCContainerConfig:

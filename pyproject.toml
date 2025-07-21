@@ -6,37 +6,17 @@ build-backend = "poetry.core.masonry.api"
 name = "flext-grpc"
 version = "0.7.0"
 description = "FLEXT gRPC - High-Performance gRPC Services"
-authors = [{ name = "FLEXT Team", email = "team@flext.sh" }]
-maintainers = [{ name = "FLEXT Team", email = "team@flext.sh" }]
-license = { text = "MIT" }
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
-dependencies = [
-    # gRPC & RPC Services specific dependencies ONLY
-    # Core dependencies come from flext-core
-    "grpcio>=1.60.0,<1.67.0",
-    "grpcio-tools>=1.60.0,<1.67.0",
-    "grpcio-reflection>=1.66.0",
-    "grpcio-health-checking>=1.66.0",
-    "grpcio-status>=1.66.0",
-    "protobuf>=5.28.0,<6.0",
-    "google-api-core>=2.22.0",
-    "googleapis-common-protos>=1.66.0",
-    "prometheus-client>=0.21.0",
-    "opentelemetry-api>=1.27.0",
-    "opentelemetry-instrumentation-grpc>=0.48b0",
-    "aiogrpc (>=1.8,<2.0)",
-    "asyncpg (>=0.30.0,<0.31.0)",
-    "click (>=8.2.1,<9.0.0)",
-    "cryptography (>=45.0.5,<46.0.0)",
-    "opentelemetry-sdk (>=1.35.0,<2.0.0)",
-    "pydantic (>=2.11.7,<3.0.0)",
-    "pydantic-settings (>=2.10.1,<3.0.0)",
-    "redis>=5.0.0",
-    "rich (>=14.0.0,<15.0.0)",
-    "sqlalchemy (>=2.0.41,<3.0.0)",
+keywords = [
+    "flext",
+    "enterprise",
+    "async",
+    "typed",
+    "grpc",
+    "protobuf",
+    "microservices",
 ]
-keywords = ["flext", "grpc", "rpc", "microservices", "protobuf", "enterprise"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -45,11 +25,29 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: Software Development :: Libraries :: Application Frameworks",
-    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
-    "Topic :: System :: Distributed Computing",
     "Typing :: Typed",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
 ]
+dependencies = [
+    "grpcio (>=1.50.0)",
+    "prometheus-client (>=0.22.1)",
+    "protobuf (>=4)",
+    "pydantic (>=2.11.7)",
+    "pydantic-settings (>=2.10.1)",
+    "sqlalchemy (>=2.0.41)",
+    "flext-core @ file:///home/marlonsc/flext/flext-core",
+    "flext-observability @ file:///home/marlonsc/flext/flext-observability",
+]
+[[project.authors]]
+name = "FLEXT Team"
+email = "team@flext.sh"
+
+[[project.maintainers]]
+name = "FLEXT Team"
+email = "team@flext.sh"
+
+[project.license]
+text = "MIT"
 
 [project.urls]
 Homepage = "https://github.com/flext-sh/flext"
@@ -61,195 +59,32 @@ flext-grpc = "flext_grpc.cli:main"
 flext-grpc-server = "flext_grpc.server:main"
 flext-grpc-client = "flext_grpc.client:main"
 
-[tool.poetry]
-name = "flext-grpc"
-version = "0.7.0"
-description = "FLEXT gRPC - High-Performance gRPC Services"
-authors = ["FLEXT Team <team@flext.sh>"]
-readme = "README.md"
-packages = [{ include = "flext_grpc", from = "src" }]
-
-[tool.poetry.dependencies]
-python = ">=3.13,<3.14"
-
-# Core FLEXT dependencies - primary source of truth
-flext-core = { path = "../flext-core", develop = true }
-flext-observability = { path = "../flext-observability", develop = true }
-
-# gRPC specific dependencies
-grpcio = ">=1.60.0,<1.67.0"
-grpcio-tools = ">=1.60.0,<1.67.0"
-grpcio-status = ">=1.66.0"
-protobuf = ">=5.28.0,<6.0"
-
-# Core dependencies are managed by flext-core - no duplication
-# pydantic, pydantic-settings, click, structlog, etc. come from flext-core
-
-[tool.poetry.group.dev.dependencies]
-# Development dependencies
-pytest = ">=8.0.0"
-pytest-asyncio = ">=0.23.0"
-pytest-cov = ">=4.0.0"
-pytest-mock = ">=3.12.0"
-pytest-xdist = ">=3.6.0"
-pytest-timeout = ">=2.3.1"
-pytest-sugar = ">=1.0.0"
-pytest-clarity = ">=1.0.1"
-pytest-benchmark = ">=4.0.0"
-
-# Code quality
-ruff = "^0.12.3"
-mypy = "^1.13.0"
-pre-commit = "^4.0.1"
-bandit = ">=1.8.0"
-
-# Documentation
-mkdocs = "^1.6.1"
-mkdocs-material = "^9.6.15"
-mkdocs-mermaid2-plugin = ">=1.1.0"
-black = "^25.1.0"
-isort = "^6.0.1"
-pylint = "^3.3.0"
-vulture = "^2.13"
-radon = "^6.0.1"
-codespell = "^2.3.0"
-pyupgrade = "^3.19.0"
-autoflake = "^2.3.1"
-sphinx = "^8.2.3"
-sphinx-rtd-theme = "^3.0.2"
-myst-parser = "^4.0.1"
-mkdocstrings = "^0.27.0"
-mkdocs-gen-files = "^0.5.0"
-mkdocs-literate-nav = "^0.6.0"
-ipython = "^9.4.0"
-jupyter = "^1.1.1"
-rich-traceback = "^1.0.3"
-
-
-[tool.poetry.group.test.dependencies]
-pytest = "^8.4.0"
-pytest-asyncio = "^1.0.0"
-pytest-cov = "^6.2.0"
-pytest-xdist = "^3.8.0"
-pytest-mock = "^3.14.0"
-pytest-timeout = "^2.4.0"
-pytest-benchmark = "^5.1.0"
-pytest-randomly = "^3.16.0"
-pytest-sugar = "^1.0.0"
-pytest-clarity = "^1.0.1"
-pytest-deadfixtures = "^2.2.1"
-pytest-env = "^1.1.5"
-pytest-httpx = "^0.35.0"
-hypothesis = "^6.125.0"
-factory-boy = "^3.3.1"
-faker = "^37.4.0"
-
-
-[tool.poetry.group.security.dependencies]
-bandit = "^1.8.0"
-pip-audit = "^2.7.3"
-
-
-[tool.poetry.group.typings.dependencies]
-# types-psycopg = "^2.9.9"  # Temporarily disabled due to version conflict
-
-[tool.poetry.scripts]
-flext-grpc = "flext_grpc.cli:main"
-
-# Project-specific tool configurations
-[tool.pytest.ini_options]
-minversion = "8.0"
-addopts = [
-    "-ra",
-    "--strict-markers",
-    "--strict-config",
-    "--cov=flext_grpc",
-    "--cov-branch",
-    "--cov-report=term-missing:skip-covered",
-    "--cov-report=html:reports/coverage",
-    "--cov-report=xml:reports/coverage.xml",
-    "--cov-fail-under=90",
-    "--maxfail=1",
-    "--tb=short",
-]
-markers = [
-    "unit: Unit tests",
-    "integration: Integration tests",
-    "slow: Slow tests",
-    "smoke: Smoke tests",
-    "grpc: marks tests as gRPC tests",
-    "server: marks tests as server tests",
-    "client: marks tests as client tests",
-    "proto: marks tests as protobuf tests",
-    "requires_server: tests that need gRPC server",
-    "requires_tls: tests that need TLS",
-]
-
 [tool.ruff]
 target-version = "py313"
 line-length = 88
+fix = true
+show-fixes = true
+respect-gitignore = true
 src = ["src", "tests"]
-
-[tool.ruff.lint]
-select = [
-    "ALL",
+extend-exclude = [
+    "__pycache__",
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+    "htmlcov",
+    "src/flext_grpc/proto/*_pb2.py",
+    "src/flext_grpc/proto/*_pb2.pyi",
+    "src/flext_grpc/proto/*_pb2_grpc.py",
 ]
-ignore = [
-    "E501",    # line too long (handled by formatter)
-    "PTH118",  # os.path.join() should be replaced by / operator - Legacy code uses os.path extensively
-    "ANN401",  # Dynamically typed expressions (typing.Any) - Sometimes Any is necessary
-    "PLR0913", # Too many arguments in function definition - Complex gRPC handlers need many params
-    "S104",    # Possible binding to all interfaces - gRPC servers need to bind to 0.0.0.0
-    "D100",    # Missing docstring in public module - Legacy code
-    "D101",    # Missing docstring in public class - Legacy code
-    "D102",    # Missing docstring in public method - Legacy code
-    "D103",    # Missing docstring in public function - Legacy code
-    
-    # gRPC-specific patterns that are intentional
-    "FIX002",  # TODO comments are intentional development tracking
-    "BLE001",  # Broad exception handling needed for gRPC error translation
-    "ARG002",  # Unused arguments in gRPC service interfaces (protocol compliance)
-    "FBT001",  # Boolean arguments common in gRPC service configurations
-    "FBT002",  # Boolean default arguments needed for optional gRPC parameters
-    "N802",    # Function names follow gRPC protobuf conventions (PascalCase)
-    "S105",    # Test hardcoded passwords/tokens are safe in test environment
-]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/*" = [
-    "S101",    # assert allowed in tests
-    "PLR2004", # magic values allowed in tests
-    "SLF001",  # private member access allowed in tests
-    "ARG001",  # unused function arguments allowed in tests
-    "FBT001",  # boolean positional args allowed in tests
-    "FBT003",  # boolean positional args allowed in tests
-]
-
-"tests/**/*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-"**/tests/*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-"test_*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-"**/test_*.py" = ["S101", "D102", "N801", "N802", "N806", "PLR2004", "F401", "PLC0415", "G004", "T201"]
-
-# Auto-generated files - exclude from ALL linting
-"**/proto/*_pb2.py" = ["ALL"]
-"**/proto/*_pb2_grpc.py" = ["ALL"]
-"**/*_pb2.py" = ["ALL"]
-"**/*_pb2_grpc.py" = ["ALL"]
-"**/generated/**/*.py" = ["ALL"]
-# TypeStubs generated files - exclude from ALL linting
-"**/*.pyi" = ["ALL"]
-"**/proto/*.pyi" = ["ALL"]
-[tool.ruff.lint.isort]
-known-first-party = [
-    "flext_grpc",
-    "flext_core",
-    "flext_observability",
-]
-force-single-line = true
 
 [tool.mypy]
 python_version = "3.13"
-files = ["src/flext_grpc", "tests"]
+strict = true
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -265,19 +100,123 @@ strict_equality = true
 show_error_codes = true
 show_error_context = true
 pretty = true
-
-# Module-specific mypy overrides
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+ignore_missing_imports = false
+no_implicit_reexport = true
+files = ["src/flext_grpc", "tests"]
+plugins = ["pydantic.mypy"]
+exclude = ["build", "dist", ".venv", ".mypy_cache"]
 [[tool.mypy.overrides]]
-module = ["grpc.*", "grpcio.*", "protobuf.*", "google.*"]
+module = ["flext_grpc.proto.*", "grpc.*", "grpcio.*"]
+ignore_errors = true
 ignore_missing_imports = true
 
-[[tool.mypy.overrides]]
-module = "flext_grpc.*"
-disable_error_code = ["misc", "attr-defined", "import-not-found", "union-attr", "dict-item", "type-arg", "unused-ignore", "valid-type", "list-item", "empty-body", "call-overload", "no-any-return", "arg-type", "assignment", "return-value", "call-arg", "var-annotated", "index", "operator"]
+[tool.bandit]
+exclude_dirs = ["tests", "build", "dist"]
+skips = ["B101", "B601"]
 
-[[tool.mypy.overrides]]
-module = ["flext_observability.*", "flext_core.security.*", "flext_auth.repositories"]
-ignore_missing_imports = true
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+# Poetry configuration removed - using PEP 518/621 format
+
+[tool.deptry]
+known_first_party = ["flext_grpc"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+asyncio_mode = "auto"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=flext_grpc",
+    "--cov-branch",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:reports/coverage",
+    "--cov-report=xml:reports/coverage.xml",
+    "--cov-fail-under=90",
+    "--maxfail=1",
+    "--tb=short",
+]
+testpaths = ["tests"]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+    "smoke: Smoke tests",
+    "e2e: End-to-end tests",
+]
+filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "COM812",
+    "D203",
+    "D213",
+    "ISC001",
+    "ANN401",
+    "ARG001",
+    "ARG002",
+    "BLE001",
+    "C901",
+    "D102",
+    "D103",
+    "D105",
+    "D107",
+    "D401",
+    "DTZ001",
+    "DTZ005",
+    "E401",
+    "E501",
+    "EM101",
+    "EM102",
+    "ERA001",
+    "EXE001",
+    "F401",
+    "F823",
+    "FBT001",
+    "FBT002",
+    "FBT003",
+    "FIX002",
+    "G004",
+    "PLC0415",
+    "PLR0911",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "PLR2004",
+    "PLW0603",
+    "PTH118",
+    "PTH123",
+    "RUF001",
+    "S103",
+    "S104",
+    "S105",
+    "S106",
+    "S107",
+    "S603",
+    "S607",
+    "SIM102",
+    "TD002",
+    "TD003",
+    "TRY003",
+    "TRY203",
+    "TRY300",
+    "TRY301",
+    "TRY401",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
+docstring-code-format = true
 
 [tool.coverage.run]
 source = ["src"]
@@ -297,6 +236,83 @@ exclude_lines = [
     "class .*\\bProtocol\\):",
     "@(abc\\.)?abstractmethod",
 ]
-show_missing = true
-precision = 2
-fail_under = 90
+
+[tool.coverage.html]
+directory = "reports/coverage"
+
+[tool.coverage.xml]
+output = "reports/coverage.xml"
+
+# Poetry dependencies removed - using PEP 518/621 format
+
+[tool.ruff.lint.isort]
+known-first-party = ["flext"]
+force-single-line = false
+split-on-trailing-comma = true
+combine-as-imports = true
+
+[tool.ruff.lint.per-file-ignores]
+"**/tests/**" = [
+    "S101",
+    "S103",
+    "S104",
+    "S105",
+    "S106",
+    "S107",
+    "PLR2004",
+    "ARG",
+    "SLF001",
+    "PLC0415",
+]
+"**/scripts/**" = ["T201", "S603", "S607", "ANN"]
+"**/__init__.py" = ["F401"]
+"**/proto/*_pb2.py" = ["ALL"]
+"**/proto/*_pb2_grpc.py" = ["ALL"]
+"**/*_pb2.py" = ["ALL"]
+"**/*_pb2_grpc.py" = ["ALL"]
+"**/generated/**/*.py" = ["ALL"]
+
+# Poetry dependencies moved to [project] section
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.12.3",
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "mypy>=1.13.0",
+    "pylint>=3.3.0",
+    "pre-commit>=4.0.1",
+    "vulture>=2.13",
+    "radon>=6.0.1",
+    "codespell>=2.3.0",
+    "pyupgrade>=3.19.0",
+    "autoflake>=2.3.1",
+]
+test = [
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.2.0",
+    "pytest-xdist>=3.8.0",
+    "pytest-mock>=3.14.0",
+    "pytest-timeout>=2.4.0",
+    "pytest-benchmark>=5.1.0",
+    "pytest-randomly>=3.16.0",
+    "pytest-sugar>=1.0.0",
+    "pytest-clarity>=1.0.1",
+    "pytest-deadfixtures>=2.2.1",
+    "pytest-env>=1.1.5",
+    "pytest-httpx>=0.35.0",
+    "hypothesis>=6.125.0",
+    "factory-boy>=3.3.1",
+    "faker>=37.4.0",
+]
+typings = [
+    "types-python-dateutil>=2.9.0",
+    "types-pyyaml>=6.0.12",
+    "types-setuptools>=80.9.0",
+    "types-toml>=0.10.8.20240310",
+    "types-requests>=2.32.4",
+    "types-redis>=4.6.0",
+    "types-psutil>=7.0.0",
+]
+security = ["bandit>=1.8.0", "pip-audit>=2.7.3"]

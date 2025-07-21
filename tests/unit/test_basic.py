@@ -1,8 +1,8 @@
-"""Basic tests for flext-grpc package structure."""
+"""Basic tests for flext-api.grpc.flext-grpc package structure."""
+
+from __future__ import annotations
 
 import pathlib
-
-import pytest
 
 
 def test_import_main_package() -> None:

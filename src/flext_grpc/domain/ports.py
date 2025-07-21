@@ -1,51 +1,24 @@
 """Domain ports (interfaces) for FLEXT-GRPC.
 
-Using flext-core patterns - NO duplication.
+REFACTORED: Uses flext-core Repository base class - NO duplication.
 """
 
 from __future__ import annotations
 
-from abc import ABC
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+from uuid import UUID
+
+from flext_core.infrastructure.persistence.base import Repository
+
+from flext_grpc.domain.entities import GRPCService, RPCCall, RPCMethod
 
 if TYPE_CHECKING:
-    from uuid import UUID
-
-    from flext_core.domain.pydantic_base import ServiceResult
-    from flext_grpc.domain.entities import GRPCService
-    from flext_grpc.domain.entities import RPCCall
-    from flext_grpc.domain.entities import RPCMethod
+    from flext_core.domain.types import ServiceResult
 
 
-class GRPCServiceRepository(ABC):
-    """Repository interface for gRPC services."""
-
-    @abstractmethod
-    async def save(self, service: GRPCService) -> ServiceResult[GRPCService]:
-        """Save a gRPC service.
-
-        Args:
-            service: The gRPC service to save.
-
-        Returns:
-            ServiceResult[GRPCService]: Result containing the saved service.
-
-        """
-        ...
-
-    @abstractmethod
-    async def get_by_id(self, service_id: UUID) -> ServiceResult[GRPCService | None]:
-        """Get a gRPC service by its ID.
-
-        Args:
-            service_id: The unique identifier of the service.
-
-        Returns:
-            ServiceResult[GRPCService | None]: Result containing the service or None if not found.
-
-        """
-        ...
+class GRPCServiceRepository(Repository[GRPCService, UUID]):
+    """Repository interface for gRPC services - extends flext-core Repository."""
 
     @abstractmethod
     async def get_by_name(self, name: str) -> ServiceResult[GRPCService | None]:
@@ -55,63 +28,15 @@ class GRPCServiceRepository(ABC):
             name: The name of the service.
 
         Returns:
-            ServiceResult[GRPCService | None]: Result containing the service or None if not found.
-
-        """
-        ...
-
-    @abstractmethod
-    async def list_all(self) -> ServiceResult[list[GRPCService]]:
-        """List all gRPC services.
-
-        Returns:
-            ServiceResult[list[GRPCService]]: Result containing list of all services.
-
-        """
-        ...
-
-    @abstractmethod
-    async def delete(self, service_id: UUID) -> ServiceResult[bool]:
-        """Delete a gRPC service by its ID.
-
-        Args:
-            service_id: The unique identifier of the service to delete.
-
-        Returns:
-            ServiceResult[bool]: Result containing True if deleted successfully.
+            ServiceResult[GRPCService | None]: Result containing the service or None
+            if not found.
 
         """
         ...
 
 
-class RPCMethodRepository(ABC):
-    """Repository interface for RPC methods."""
-
-    @abstractmethod
-    async def save(self, method: RPCMethod) -> ServiceResult[RPCMethod]:
-        """Save an RPC method.
-
-        Args:
-            method: The RPC method to save.
-
-        Returns:
-            ServiceResult[RPCMethod]: Result containing the saved method.
-
-        """
-        ...
-
-    @abstractmethod
-    async def get_by_id(self, method_id: UUID) -> ServiceResult[RPCMethod | None]:
-        """Get an RPC method by its ID.
-
-        Args:
-            method_id: The unique identifier of the method.
-
-        Returns:
-            ServiceResult[RPCMethod | None]: Result containing the method or None if not found.
-
-        """
-        ...
+class RPCMethodRepository(Repository[RPCMethod, UUID]):
+    """Repository interface for RPC methods - extends flext-core Repository."""
 
     @abstractmethod
     async def get_by_service_id(
@@ -124,7 +49,8 @@ class RPCMethodRepository(ABC):
             service_id: The unique identifier of the service.
 
         Returns:
-            ServiceResult[list[RPCMethod]]: Result containing list of methods for the service.
+            ServiceResult[list[RPCMethod]]: Result containing list of methods
+            for the service.
 
         """
         ...
@@ -142,53 +68,15 @@ class RPCMethodRepository(ABC):
             name: The name of the method.
 
         Returns:
-            ServiceResult[RPCMethod | None]: Result containing the method or None if not found.
-
-        """
-        ...
-
-    @abstractmethod
-    async def delete(self, method_id: UUID) -> ServiceResult[bool]:
-        """Delete an RPC method by its ID.
-
-        Args:
-            method_id: The unique identifier of the method to delete.
-
-        Returns:
-            ServiceResult[bool]: Result containing True if deleted successfully.
+            ServiceResult[RPCMethod | None]: Result containing the method or None
+            if not found.
 
         """
         ...
 
 
-class RPCCallRepository(ABC):
-    """Repository interface for RPC calls."""
-
-    @abstractmethod
-    async def save(self, call: RPCCall) -> ServiceResult[RPCCall]:
-        """Save an RPC call.
-
-        Args:
-            call: The RPC call to save.
-
-        Returns:
-            ServiceResult[RPCCall]: Result containing the saved call.
-
-        """
-        ...
-
-    @abstractmethod
-    async def get_by_id(self, call_id: UUID) -> ServiceResult[RPCCall | None]:
-        """Get an RPC call by its ID.
-
-        Args:
-            call_id: The unique identifier of the call.
-
-        Returns:
-            ServiceResult[RPCCall | None]: Result containing the call or None if not found.
-
-        """
-        ...
+class RPCCallRepository(Repository[RPCCall, UUID]):
+    """Repository interface for RPC calls - extends flext-core Repository."""
 
     @abstractmethod
     async def get_by_method_id(
@@ -203,7 +91,8 @@ class RPCCallRepository(ABC):
             limit: Maximum number of calls to return.
 
         Returns:
-            ServiceResult[list[RPCCall]]: Result containing list of calls for the method.
+            ServiceResult[list[RPCCall]]: Result containing list of calls
+            for the method.
 
         """
         ...
@@ -214,19 +103,6 @@ class RPCCallRepository(ABC):
 
         Returns:
             ServiceResult[list[RPCCall]]: Result containing list of active calls.
-
-        """
-        ...
-
-    @abstractmethod
-    async def delete(self, call_id: UUID) -> ServiceResult[bool]:
-        """Delete an RPC call by its ID.
-
-        Args:
-            call_id: The unique identifier of the call to delete.
-
-        Returns:
-            ServiceResult[bool]: Result containing True if deleted successfully.
 
         """
         ...

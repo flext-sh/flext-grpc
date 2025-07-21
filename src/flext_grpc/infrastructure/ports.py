@@ -7,24 +7,20 @@ from __future__ import annotations
 
 import asyncio
 import time
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
 import grpc
-from prometheus_client import Counter
-from prometheus_client import Gauge
-from prometheus_client import Histogram
+from flext_core.domain.shared_types import ServiceResult
+from prometheus_client import Counter, Gauge, Histogram
 
-from flext_core.domain.pydantic_base import ServiceResult
-from flext_grpc.domain.ports import GRPCClientPort
-from flext_grpc.domain.ports import GRPCServerPort
-from flext_grpc.domain.ports import MetricsPort
+from flext_grpc.domain.ports import GRPCClientPort, GRPCServerPort, MetricsPort
 
 if TYPE_CHECKING:
     from uuid import UUID
 
-    from flext_grpc.domain.entities import GRPCService
-    from flext_grpc.domain.entities import RPCCall
+    from flext_grpc.domain.entities import GRPCService, RPCCall
     from flext_grpc.infrastructure.config import GRPCConfig
 
 
@@ -218,15 +214,16 @@ class GRPCClientAdapter(GRPCClientPort):
             await asyncio.sleep(0.1)
 
             # Update call with results
-            call.completed_at = time.time()
-            call.duration_ms = (call.completed_at - start_time) * 1000
-            call.status = "completed"
+            end_time = time.time()
+            call.completed_at = datetime.fromtimestamp(end_time, tz=UTC)
+            call.duration_ms = (end_time - start_time) * 1000
+            call.call_status = "completed"
             call.response_size_bytes = 1024  # Simulated
 
             return ServiceResult.ok(call)
 
         except Exception as e:
-            call.status = "failed"
+            call.call_status = "failed"
             call.error_message = str(e)
             return ServiceResult.fail(f"RPC call failed: {e!s}")
 
@@ -326,7 +323,8 @@ class PrometheusMetricsAdapter(MetricsPort):
 
         """
         try:
-            # In real implementation, would query Prometheus for service-specific metrics
+            # In real implementation, would query Prometheus for service-specific
+            # metrics
             metrics = {
                 "requests_total": 1000.0,
                 "requests_success": 950.0,

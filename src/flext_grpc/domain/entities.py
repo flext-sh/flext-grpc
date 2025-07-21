@@ -8,14 +8,13 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import StrEnum
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from flext_core.domain.pydantic_base import DomainEntity
-from flext_core.domain.pydantic_base import DomainEvent
-from flext_core.domain.pydantic_base import Field
-from flext_core.domain.types import EntityId
-from flext_core.domain.types import FlextConstants
-from flext_core.domain.types import Version
+from flext_core.domain.constants import ConfigDefaults
+from flext_core.domain.pydantic_base import DomainEntity, DomainEvent, Field
+
+if TYPE_CHECKING:
+    from flext_core.domain.types import EntityId, Version
 
 
 class ServiceStatus(StrEnum):
@@ -43,17 +42,17 @@ class GRPCService(DomainEntity):
     name: str = Field(
         ...,
         min_length=1,
-        max_length=FlextConstants.MAX_ENTITY_NAME_LENGTH,
+        max_length=ConfigDefaults.MAX_ENTITY_NAME_LENGTH,
     )
     version: Version = Field(
-        FlextConstants.FRAMEWORK_VERSION,
+        "0.7.0",
         description="Service version",
     )
     service_status: ServiceStatus = Field(default=ServiceStatus.STOPPED)
     host: str = Field(
         ...,
         min_length=1,
-        max_length=FlextConstants.MAX_ENTITY_NAME_LENGTH,
+        max_length=ConfigDefaults.MAX_ENTITY_NAME_LENGTH,
     )
     port: int = Field(..., ge=1, le=65535)
 
@@ -61,10 +60,10 @@ class GRPCService(DomainEntity):
     max_workers: int = Field(
         default=10,
         ge=1,
-        le=FlextConstants.MAX_PAGE_SIZE,
+        le=ConfigDefaults.MAX_PAGE_SIZE,
     )
     max_concurrent_rpcs: int = Field(
-        default=FlextConstants.MAX_PAGE_SIZE,
+        default=ConfigDefaults.MAX_PAGE_SIZE,
         ge=1,
         le=1000,
     )
@@ -108,7 +107,7 @@ class RPCMethod(DomainEntity):
     name: str = Field(
         ...,
         min_length=1,
-        max_length=FlextConstants.MAX_ENTITY_NAME_LENGTH,
+        max_length=ConfigDefaults.MAX_ENTITY_NAME_LENGTH,
     )
     service_id: EntityId = Field(..., description="Associated service ID")
     method_type: RPCMethodType = Field(default=RPCMethodType.UNARY)
@@ -117,17 +116,17 @@ class RPCMethod(DomainEntity):
     request_type: str = Field(
         ...,
         min_length=1,
-        max_length=FlextConstants.MAX_ENTITY_NAME_LENGTH,
+        max_length=ConfigDefaults.MAX_ENTITY_NAME_LENGTH,
     )
     response_type: str = Field(
         ...,
         min_length=1,
-        max_length=FlextConstants.MAX_ENTITY_NAME_LENGTH,
+        max_length=ConfigDefaults.MAX_ENTITY_NAME_LENGTH,
     )
 
     # Method configuration
     timeout_seconds: float = Field(
-        default=FlextConstants.DEFAULT_TIMEOUT,
+        default=ConfigDefaults.DEFAULT_TIMEOUT,
         ge=0.1,
         le=3600.0,
     )
@@ -168,7 +167,7 @@ class RPCCall(DomainEntity):
     client_id: str = Field(
         ...,
         min_length=1,
-        max_length=FlextConstants.MAX_ENTITY_NAME_LENGTH,
+        max_length=ConfigDefaults.MAX_ENTITY_NAME_LENGTH,
     )
 
     # Call details
@@ -180,7 +179,7 @@ class RPCCall(DomainEntity):
     call_status: str = Field(..., min_length=1, max_length=50)
     error_message: str | None = Field(
         None,
-        max_length=FlextConstants.MAX_ERROR_MESSAGE_LENGTH,
+        max_length=ConfigDefaults.MAX_ERROR_MESSAGE_LENGTH,
     )
 
     # Metadata - inherits from MetadataMixin in EntityMixin

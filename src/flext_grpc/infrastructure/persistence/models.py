@@ -5,29 +5,20 @@ Using flext-core patterns - NO duplication.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from sqlalchemy import JSON
-from sqlalchemy import Boolean
-from sqlalchemy import DateTime
-from sqlalchemy import Float
-from sqlalchemy import ForeignKey
-from sqlalchemy import Integer
-from sqlalchemy import String
-from sqlalchemy import Text
+from sqlalchemy import JSON, Boolean, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID as POSTGRESQL_UUID
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Mapped
-from sqlalchemy.orm import mapped_column
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 
 if TYPE_CHECKING:
     from datetime import datetime
     from uuid import UUID
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    """Base class for all SQLAlchemy models."""
 
 
 class GRPCServiceModel(Base):
@@ -243,7 +234,11 @@ class RPCCallModel(Base):
     # Metadata
     request_size_bytes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     response_size_bytes: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    metadata: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False, default={})
+    call_metadata: Mapped[dict[str, Any]] = mapped_column(
+        JSON,
+        nullable=False,
+        default={},
+    )
 
     # Timestamps
     created_at: Mapped[datetime] = mapped_column(
