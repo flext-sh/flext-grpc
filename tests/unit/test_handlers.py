@@ -111,7 +111,6 @@ class TestMethodRegistrationValidation:
             "Pipeline123",
             "get_pipeline_status",
         ]
-
         for name in valid_names:
             # Should not raise exception
             _validate_method_registration("service-123", name)
@@ -163,7 +162,6 @@ class TestCommandClasses:
     def test_start_grpc_service_command_creation(self) -> None:
         """Test StartGRPCServiceCommand creation."""
         command = StartGRPCServiceCommand(service_name="test-service", port=8080)
-
         assert command.service_name == "test-service"
         assert command.port == 8080
         assert command.host == "0.0.0.0"  # Default value
@@ -176,7 +174,6 @@ class TestCommandClasses:
             port=8080,
             host="127.0.0.1",
         )
-
         assert command.host == "127.0.0.1"
 
     def test_start_grpc_service_command_with_config(self) -> None:
@@ -187,14 +184,12 @@ class TestCommandClasses:
             max_workers=10,
             timeout=30,
         )
-
         assert command.config["max_workers"] == 10
         assert command.config["timeout"] == 30
 
     def test_stop_grpc_service_command_creation(self) -> None:
         """Test StopGRPCServiceCommand creation."""
         command = StopGRPCServiceCommand(service_id="service-123")
-
         assert command.service_id == "service-123"
 
     def test_register_rpc_method_command_creation(self) -> None:
@@ -206,7 +201,6 @@ class TestCommandClasses:
             request_type="CreatePipelineRequest",
             response_type="CreatePipelineResponse",
         )
-
         assert command.service_id == "service-123"
         assert command.name == "CreatePipeline"
         assert command.method_type == "unary"
@@ -227,7 +221,6 @@ class TestCommandClasses:
             timeout_seconds=60,
             retry_policy=retry_policy,
         )
-
         assert command.timeout_seconds == 60
         assert command.retry_policy == retry_policy
 
@@ -238,7 +231,6 @@ class TestCommandClasses:
             method_id="CreatePipeline",
             request_data=request_data,
         )
-
         assert command.method_id == "CreatePipeline"
         assert command.request_data == request_data
         assert command.timeout_seconds is None  # Default
@@ -253,7 +245,6 @@ class TestCommandClasses:
             timeout_seconds=45,
             metadata=metadata,
         )
-
         assert command.timeout_seconds == 45
         assert command.metadata == metadata
 
@@ -321,11 +312,9 @@ class TestStartGRPCServiceHandler:
     async def test_handle_valid_command(self, handler: StartGRPCServiceHandler) -> None:
         """Test handling valid start service command."""
         command = StartGRPCServiceCommand(service_name="test-service", port=8080)
-
         result = await handler.handle(command)
-
         assert isinstance(result, ServiceResult)
-        assert result.is_success
+        assert result.success
 
     @pytest.mark.asyncio
     async def test_handle_command_with_custom_config(
@@ -339,10 +328,8 @@ class TestStartGRPCServiceHandler:
             max_workers=20,
             host="127.0.0.1",
         )
-
         result = await handler.handle(command)
-
-        assert result.is_success
+        assert result.success
 
 
 class TestStopGRPCServiceHandler:
@@ -357,11 +344,9 @@ class TestStopGRPCServiceHandler:
     async def test_handle_valid_command(self, handler: StopGRPCServiceHandler) -> None:
         """Test handling valid stop service command."""
         command = StopGRPCServiceCommand(service_id="test-service-123")
-
         result = await handler.handle(command)
-
         assert isinstance(result, ServiceResult)
-        assert result.is_success
+        assert result.success
 
 
 class TestRegisterRPCMethodHandler:
@@ -385,11 +370,9 @@ class TestRegisterRPCMethodHandler:
             request_type="CreatePipelineRequest",
             response_type="CreatePipelineResponse",
         )
-
         result = await handler.handle(command)
-
         assert isinstance(result, ServiceResult)
-        assert result.is_success
+        assert result.success
 
     @pytest.mark.asyncio
     async def test_handle_streaming_method_command(
@@ -404,10 +387,8 @@ class TestRegisterRPCMethodHandler:
             request_type="StreamLogsRequest",
             response_type="LogEntry",
         )
-
         result = await handler.handle(command)
-
-        assert result.is_success
+        assert result.success
 
 
 class TestExecuteRPCCallHandler:
@@ -429,11 +410,9 @@ class TestExecuteRPCCallHandler:
                 "loader": "target-snowflake",
             },
         )
-
         result = await handler.handle(command)
-
         assert isinstance(result, ServiceResult)
-        assert result.is_success
+        assert result.success
 
     @pytest.mark.asyncio
     async def test_handle_command_with_metadata(
@@ -446,10 +425,8 @@ class TestExecuteRPCCallHandler:
             request_data={"name": "test"},
             metadata={"authorization": "Bearer token123"},
         )
-
         result = await handler.handle(command)
-
-        assert result.is_success
+        assert result.success
 
     @pytest.mark.asyncio
     async def test_handle_command_with_timeout(
@@ -462,10 +439,8 @@ class TestExecuteRPCCallHandler:
             request_data={"name": "test"},
             timeout_seconds=60,
         )
-
         result = await handler.handle(command)
-
-        assert result.is_success
+        assert result.success
 
 
 class TestHealthCheckHandler:
@@ -483,11 +458,9 @@ class TestHealthCheckHandler:
     ) -> None:
         """Test handling health check command."""
         command = HealthCheckCommand()
-
         result = await handler.handle(command)
-
         assert isinstance(result, ServiceResult)
-        assert result.is_success
+        assert result.success
 
 
 class TestGetServiceMetricsHandler:
@@ -505,11 +478,9 @@ class TestGetServiceMetricsHandler:
     ) -> None:
         """Test handling get service metrics command."""
         command = GetServiceMetricsCommand(service_id="test-service")
-
         result = await handler.handle(command)
-
         assert isinstance(result, ServiceResult)
-        assert result.is_success
+        assert result.success
 
 
 class TestHandlerIntegration:
@@ -525,8 +496,7 @@ class TestHandlerIntegration:
             port=8080,
         )
         start_result = await start_handler.handle(start_command)
-        assert start_result.is_success
-
+        assert start_result.success
         # Register method
         register_handler = RegisterRPCMethodHandler()
         register_command = RegisterRPCMethodCommand(
@@ -537,8 +507,7 @@ class TestHandlerIntegration:
             response_type="CreatePipelineResponse",
         )
         register_result = await register_handler.handle(register_command)
-        assert register_result.is_success
-
+        assert register_result.success
         # Execute RPC call
         execute_handler = ExecuteRPCCallHandler()
         execute_command = ExecuteRPCCallCommand(
@@ -546,25 +515,22 @@ class TestHandlerIntegration:
             request_data={"name": "integration-pipeline"},
         )
         execute_result = await execute_handler.handle(execute_command)
-        assert execute_result.is_success
-
+        assert execute_result.success
         # Health check
         health_handler = HealthCheckHandler()
         health_command = HealthCheckCommand()
         health_result = await health_handler.handle(health_command)
-        assert health_result.is_success
-
+        assert health_result.success
         # Get metrics
         metrics_handler = GetServiceMetricsHandler()
         metrics_command = GetServiceMetricsCommand(service_id="integration-test")
         metrics_result = await metrics_handler.handle(metrics_command)
-        assert metrics_result.is_success
-
+        assert metrics_result.success
         # Stop service
         stop_handler = StopGRPCServiceHandler()
         stop_command = StopGRPCServiceCommand(service_id="integration-test")
         stop_result = await stop_handler.handle(stop_command)
-        assert stop_result.is_success
+        assert stop_result.success
 
     @pytest.mark.asyncio
     async def test_error_handling_chain(self) -> None:
@@ -578,11 +544,10 @@ class TestHandlerIntegration:
                 RegisterRPCMethodCommand("", "", "", "", ""),
             ),  # Invalid
         ]
-
         for handler, command in handlers_and_commands:
             # Commands with invalid data should still return ServiceResult
             # but with is_success = False
-            result = await handler.handle(command)  # type: ignore[attr-defined]
+            result = await handler.handle(command)
             assert isinstance(result, ServiceResult)
             # Note: We don't assert failure here because handlers might
             # handle edge cases differently

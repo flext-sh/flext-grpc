@@ -37,7 +37,7 @@ def datetime_to_timestamp(dt: datetime | str | None) -> timestamp_pb2.Timestamp:
     return timestamp
 
 
-def dict_to_struct(data: dict[str, Any]) -> struct_pb2.Struct:
+def dict_to_struct(data: dict[str, Any] | None) -> struct_pb2.Struct:
     """Convert Python dict to protobuf Struct.
 
     Args:
@@ -51,10 +51,6 @@ def dict_to_struct(data: dict[str, Any]) -> struct_pb2.Struct:
     from datetime import datetime
 
     struct = struct_pb2.Struct()
-
-    # Handle None data gracefully
-    if data is None:
-        return struct
 
     def serialize_value(value: Any) -> Any:
         """Serialize value to be compatible with protobuf Struct."""
@@ -71,6 +67,9 @@ def dict_to_struct(data: dict[str, Any]) -> struct_pb2.Struct:
         except (TypeError, ValueError):
             # If not JSON serializable, convert to string
             return str(value)
+
+    if data is None:
+        return struct  # Return empty struct for None data
 
     try:
         serialized_data = serialize_value(data)

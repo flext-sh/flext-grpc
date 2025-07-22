@@ -5,7 +5,7 @@ import grpc
 import warnings
 
 from . import flext_pb2 as flext__pb2
-from flext_core.domain.types import ServiceResult
+from flext_core import ServiceResult
 from google.protobuf import empty_pb2 as google_dot_protobuf_dot_empty__pb2
 
 GRPC_GENERATED_VERSION = "1.68.0"

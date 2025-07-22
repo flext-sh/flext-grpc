@@ -8,7 +8,8 @@ Uses REAL gRPC implementation without any mock/fake implementations.
 from __future__ import annotations
 
 import pytest
-from flext_core.infrastructure.grpc_base import BaseGrpcService
+
+from flext_grpc.infrastructure.grpc_base import BaseGrpcService
 
 
 class TestBaseGrpcServiceErrorHandling:

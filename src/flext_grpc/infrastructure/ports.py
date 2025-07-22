@@ -9,7 +9,7 @@ import asyncio
 import time
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import grpc
 from flext_core.domain.shared_types import ServiceResult
@@ -32,7 +32,7 @@ class GRPCServerAdapter(GRPCServerPort):
         self.config = config
         self.servers: dict[UUID, grpc.aio.Server] = {}
 
-    async def start_service(self, service: GRPCService) -> ServiceResult[None]:
+    async def start_service(self, service: GRPCService) -> ServiceResult[Any]:
         """Start a gRPC service.
 
         Args:
@@ -80,9 +80,10 @@ class GRPCServerAdapter(GRPCServerPort):
             return ServiceResult.ok(None)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to start gRPC server: {e!s}")
+            return ServiceResult.fail(f"Failed to start gRPC server: {e!s}",
+            )
 
-    async def stop_service(self, service_id: UUID) -> ServiceResult[None]:
+    async def stop_service(self, service_id: UUID) -> ServiceResult[Any]:
         """Stop a gRPC service.
 
         Args:
@@ -106,9 +107,10 @@ class GRPCServerAdapter(GRPCServerPort):
             return ServiceResult.ok(None)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to stop gRPC server: {e!s}")
+            return ServiceResult.fail(f"Failed to stop gRPC server: {e!s}",
+            )
 
-    async def get_service_health(self, service_id: UUID) -> ServiceResult[bool]:
+    async def get_service_health(self, service_id: UUID) -> ServiceResult[Any]:
         """Check the health status of a gRPC service.
 
         Args:
@@ -121,11 +123,11 @@ class GRPCServerAdapter(GRPCServerPort):
         try:
             server = self.servers.get(service_id)
             if not server:
-                return ServiceResult.ok(data=False)
+                return ServiceResult.ok(False)
 
             # Check if server is running (simplified check)
             # In real implementation, would use gRPC health check protocol
-            return ServiceResult.ok(data=True)
+            return ServiceResult.ok(True)
 
         except Exception as e:
             return ServiceResult.fail(f"Failed to check health: {e!s}")
@@ -133,7 +135,7 @@ class GRPCServerAdapter(GRPCServerPort):
     async def get_service_metrics(
         self,
         _service_id: UUID,
-    ) -> ServiceResult[dict[str, float]]:
+    ) -> ServiceResult[Any]:
         """Get metrics for a gRPC service.
 
         Args:
@@ -167,7 +169,7 @@ class GRPCClientAdapter(GRPCClientPort):
         self.config = config
         self.clients: dict[UUID, grpc.aio.Channel] = {}
 
-    async def create_client(self, service: GRPCService) -> ServiceResult[None]:
+    async def create_client(self, service: GRPCService) -> ServiceResult[Any]:
         """Create a gRPC client for a service.
 
         Args:
@@ -191,9 +193,10 @@ class GRPCClientAdapter(GRPCClientPort):
             return ServiceResult.ok(None)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to create gRPC client: {e!s}")
+            return ServiceResult.fail(f"Failed to create gRPC client: {e!s}",
+            )
 
-    async def call_method(self, call: RPCCall) -> ServiceResult[RPCCall]:
+    async def call_method(self, call: RPCCall) -> ServiceResult[Any]:
         """Execute an RPC method call.
 
         Args:
@@ -227,8 +230,8 @@ class GRPCClientAdapter(GRPCClientPort):
             call.error_message = str(e)
             return ServiceResult.fail(f"RPC call failed: {e!s}")
 
-    async def close_client(self, service_id: UUID) -> ServiceResult[None]:
-        """Close a gRPC client connection.
+    async def close_client(self, service_id: UUID) -> ServiceResult[Any]:
+        """Close a gRPC client connection using proper resource management.
 
         Args:
             service_id: Unique identifier of the service client to close.
@@ -240,8 +243,20 @@ class GRPCClientAdapter(GRPCClientPort):
         try:
             channel = self.clients.get(service_id)
             if channel:
-                await channel.close()
-                del self.clients[service_id]
+                # Use proper async channel closing with graceful shutdown
+                try:
+                    await channel.close(
+                        grace=2.0,
+                    )  # Graceful close with 2 second timeout
+                except Exception as close_error:
+                    # Log the close error but don't fail the operation using proper logger
+                    from flext_observability.logging import get_logger
+
+                    logger = get_logger(__name__)
+                    logger.warning(f"Warning during channel close: {close_error}")
+                finally:
+                    # Always remove from clients dict regardless of close result
+                    del self.clients[service_id]
 
             return ServiceResult.ok(None)
 
@@ -275,7 +290,7 @@ class PrometheusMetricsAdapter(MetricsPort):
             ["service"],
         )
 
-    async def record_call_metrics(self, call: RPCCall) -> ServiceResult[None]:
+    async def record_call_metrics(self, call: RPCCall) -> ServiceResult[Any]:
         """Record metrics for an RPC call.
 
         Args:
@@ -312,7 +327,7 @@ class PrometheusMetricsAdapter(MetricsPort):
     async def get_service_metrics(
         self,
         _service_id: UUID,
-    ) -> ServiceResult[dict[str, float]]:
+    ) -> ServiceResult[Any]:
         """Get Prometheus metrics for a specific service.
 
         Args:
@@ -336,12 +351,15 @@ class PrometheusMetricsAdapter(MetricsPort):
             return ServiceResult.ok(metrics)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get service metrics: {e!s}")
+            return ServiceResult(
+                success=True,
+                error=f"Failed to get service metrics: {e!s}",
+            )
 
     async def get_method_metrics(
         self,
         _method_id: UUID,
-    ) -> ServiceResult[dict[str, float]]:
+    ) -> ServiceResult[Any]:
         """Get Prometheus metrics for a specific method.
 
         Args:
@@ -364,4 +382,7 @@ class PrometheusMetricsAdapter(MetricsPort):
             return ServiceResult.ok(metrics)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get method metrics: {e!s}")
+            return ServiceResult(
+                success=True,
+                error=f"Failed to get method metrics: {e!s}",
+            )

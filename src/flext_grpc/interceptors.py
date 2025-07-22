@@ -1,9 +1,7 @@
 """gRPC interceptors for monitoring and tracing.
-
 Provides interceptors for collecting metrics and distributed tracing
 information from gRPC requests.
 """
-
 from __future__ import annotations
 
 import time
@@ -11,7 +9,6 @@ from typing import TYPE_CHECKING, Any
 
 import grpc
 from flext_observability.logging import get_logger
-from grpc.aio import ServerInterceptor
 
 
 # Tracing functionality placeholder - flext-observability doesn't have tracing module yet
@@ -19,19 +16,23 @@ def get_current_span() -> Any | None:
     """Get current tracing span - placeholder implementation."""
     return None
 
+
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
+    from typing import Protocol
+    # Use dependency injection to access authentication service when needed
+    class AuthenticationServiceProtocol(Protocol):
+        """Abstract authentication service interface for DI - no concrete project imports."""
 
-    from flext_auth.service import AuthenticationService
-    from flext_core.security.rate_limiting import TokenBucketLimiter
+        async def authenticate(self, token: str) -> Any: ...
     from flext_observability.metrics import MetricsCollector
-
+# Type alias for rate limiter until flext-core security module is implemented
+TokenBucketLimiter = Any
 logger = get_logger(__name__)
 
 
-class MetricsInterceptor(ServerInterceptor):
+class MetricsInterceptor(grpc.aio.ServerInterceptor):
     """gRPC server interceptor for metrics collection.
-
     Intercepts gRPC service calls to collect performance metrics,
     request counts, duration, and success/failure rates for enterprise monitoring.
 
@@ -68,16 +69,13 @@ class MetricsInterceptor(ServerInterceptor):
         """
         method_name = handler_call_details.method
         start_time = time.time()
-
         # Log request start
         self.logger.info("gRPC request started: %s", method_name)
         try:
             # Call the next handler
             response = await continuation(handler_call_details)
-
             # Calculate duration
             duration = time.time() - start_time
-
             # Collect success metrics
             if self.metrics_collector:
                 # Use simple method access since metrics_collector is a simple object
@@ -92,17 +90,14 @@ class MetricsInterceptor(ServerInterceptor):
                         duration,
                         labels={"method": method_name},
                     )
-
             self.logger.info(
                 "gRPC request completed: %s (duration: %.3fs)",
                 method_name,
                 duration,
             )
-
         except Exception:
             # Calculate duration for failed requests
             duration = time.time() - start_time
-
             # Collect error metrics
             if self.metrics_collector:
                 if hasattr(self.metrics_collector, "increment_counter"):
@@ -116,21 +111,18 @@ class MetricsInterceptor(ServerInterceptor):
                         duration,
                         labels={"method": method_name},
                     )
-
             self.logger.exception(
                 "gRPC request failed: %s (duration: %.3fs)",
                 method_name,
                 duration,
             )
-
             raise
         else:
             return response
 
 
-class TracingInterceptor(ServerInterceptor):
+class TracingInterceptor(grpc.aio.ServerInterceptor):
     """gRPC server interceptor for distributed tracing.
-
     Creates spans for each gRPC request to enable distributed tracing
     across the enterprise platform.
     """
@@ -155,7 +147,6 @@ class TracingInterceptor(ServerInterceptor):
 
         """
         method_name = handler_call_details.method
-
         # Start tracing span
         span = get_current_span()
         if span:
@@ -163,26 +154,23 @@ class TracingInterceptor(ServerInterceptor):
             span.set_attribute("component", "grpc_server")
         try:
             response = await continuation(handler_call_details)
-
             if span:
                 span.set_attribute("grpc.status", "success")
         except Exception as e:
             if span:
                 span.set_attribute("grpc.status", "error")
                 span.set_attribute("error.message", str(e))
-
             raise
         else:
             return response
 
 
-class AuthenticationInterceptor(ServerInterceptor):
+class AuthenticationInterceptor(grpc.aio.ServerInterceptor):
     """gRPC server interceptor for authentication.
-
     Validates authentication tokens for secured gRPC endpoints.
     """
 
-    def __init__(self, auth_service: AuthenticationService) -> None:
+    def __init__(self, auth_service: AuthenticationServiceProtocol) -> None:
         """Initialize authentication interceptor.
 
         Args:
@@ -191,7 +179,6 @@ class AuthenticationInterceptor(ServerInterceptor):
         """
         self.auth_service = auth_service
         self.logger = get_logger(f"{__name__}.AuthenticationInterceptor")
-
         # Methods that don't require authentication
         self.public_methods = {
             "/grpc.health.v1.Health/Check",
@@ -216,54 +203,48 @@ class AuthenticationInterceptor(ServerInterceptor):
             grpc.RpcError: If authentication fails.
 
         """
-
         def _raise_auth_error(message: str) -> None:
             """Raise authentication error."""
             raise grpc.RpcError(
                 grpc.StatusCode.UNAUTHENTICATED,
                 message,
             )
-
         method_name = handler_call_details.method
-
         # Skip authentication for public methods
         if method_name in self.public_methods:
             return await continuation(handler_call_details)
-
         # Extract metadata
         metadata = dict(handler_call_details.invocation_metadata)
         auth_header = metadata.get("authorization")
-
         if not auth_header:
             self.logger.warning("Missing authorization header for %s", method_name)
             _raise_auth_error("Missing authorization header")
 
-            # Handle both string and bytes auth headers
-            if isinstance(auth_header, bytes):
-                token = auth_header.decode("utf-8").replace("Bearer ", "")
-            else:
-                token = auth_header.replace("Bearer ", "") if auth_header else ""
-            # Use hasattr to check if validate_token method exists
-            if hasattr(self.auth_service, "validate_token"):
-                user = await self.auth_service.validate_token(token)
-            else:
-                # Simple mock validation for development
-                user = {"id": "mock_user"} if token == "valid_token" else None  # nosec B105
+        # Handle both string and bytes auth headers
+        if isinstance(auth_header, bytes):
+            token = auth_header.decode("utf-8").replace("Bearer ", "")
+        else:
+            token = auth_header.replace("Bearer ", "") if auth_header else ""
 
-            if not user:
-                self.logger.warning("Invalid token for %s", method_name)
-                _raise_auth_error("Invalid token")
+        # Use hasattr to check if validate_token method exists
+        if hasattr(self.auth_service, "validate_token"):
+            user = await self.auth_service.validate_token(token)
+        else:
+            # Simple mock validation for development
+            user = {"id": "mock_user"} if token == "valid_token" else None  # nosec B105
 
-            # Add user context to metadata for downstream handlers
-            # This would typically be done through context propagation
-            self.logger.info("Authenticated user %s for %s", user.id, method_name)
+        if not user:
+            self.logger.warning("Invalid token for %s", method_name)
+            _raise_auth_error("Invalid token")
 
+        # Add user context to metadata for downstream handlers
+        # This would typically be done through context propagation
+        self.logger.info("Authenticated user %s for %s", user.get("id", "unknown"), method_name)
         return await continuation(handler_call_details)
 
 
-class RateLimitingInterceptor(ServerInterceptor):
+class RateLimitingInterceptor(grpc.aio.ServerInterceptor):
     """gRPC server interceptor for rate limiting.
-
     Implements rate limiting using token bucket algorithm to prevent
     abuse and ensure service stability.
     """
@@ -297,7 +278,6 @@ class RateLimitingInterceptor(ServerInterceptor):
 
         """
         method_name = handler_call_details.method
-
         # Check rate limit
         if not self.rate_limiter.is_allowed():
             self.logger.warning("Rate limit exceeded for %s", method_name)
@@ -305,17 +285,16 @@ class RateLimitingInterceptor(ServerInterceptor):
                 grpc.StatusCode.RESOURCE_EXHAUSTED,
                 "Rate limit exceeded",
             )
-
         return await continuation(handler_call_details)
 
 
 def create_interceptors(
     *,
     metrics_collector: MetricsCollector | None = None,
-    auth_service: AuthenticationService | None = None,
+    auth_service: AuthenticationServiceProtocol | None = None,
     rate_limiter: TokenBucketLimiter | None = None,
     enable_tracing: bool = True,
-) -> list[ServerInterceptor]:
+) -> list[Any]:
     """Create list of gRPC interceptors for enterprise features.
 
     Args:
@@ -328,22 +307,17 @@ def create_interceptors(
         List of configured interceptors in proper order.
 
     """
-    interceptors: list[ServerInterceptor] = []
-
+    interceptors: list[Any] = []
     # Rate limiting should be first to protect other interceptors
     if rate_limiter:
         interceptors.append(RateLimitingInterceptor(rate_limiter))
-
     # Authentication before business logic
     if auth_service:
         interceptors.append(AuthenticationInterceptor(auth_service))
-
     # Tracing for observability
     if enable_tracing:
         interceptors.append(TracingInterceptor())
-
     # Metrics collection last to capture all request data
     if metrics_collector:
         interceptors.append(MetricsInterceptor(metrics_collector))
-
     return interceptors

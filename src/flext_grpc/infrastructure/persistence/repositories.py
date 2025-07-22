@@ -5,10 +5,11 @@ REFACTORED: Uses flext-core Repository pattern - NO duplication.
 
 from __future__ import annotations
 
+from typing import Any
 from uuid import UUID
 
 from flext_core.domain.core import Repository, RepositoryError
-from flext_core.domain.types import ServiceResult
+from flext_core.domain.shared_types import ServiceResult
 from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
@@ -125,7 +126,7 @@ class PostgreSQLGRPCServiceRepository(
             msg = f"Failed to get service: {e!s}"
             raise RepositoryError(msg) from e
 
-    async def get_by_name(self, name: str) -> ServiceResult[GRPCService | None]:
+    async def get_by_name(self, name: str) -> ServiceResult[Any]:
         """Get a gRPC service by its name.
 
         Args:
@@ -148,9 +149,10 @@ class PostgreSQLGRPCServiceRepository(
                 return ServiceResult.ok(domain_service)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get service by name: {e!s}")
+            return ServiceResult.fail(f"Failed to get service by name: {e!s}",
+            )
 
-    async def list_all(self) -> ServiceResult[list[GRPCService]]:
+    async def list_all(self) -> ServiceResult[Any]:
         """List all gRPC services.
 
         Returns:
@@ -266,7 +268,7 @@ class PostgreSQLRPCMethodRepository(BaseRepositoryMixin, Repository[RPCMethod, U
     async def get_by_service_id(
         self,
         service_id: UUID,
-    ) -> ServiceResult[list[RPCMethod]]:
+    ) -> ServiceResult[Any]:
         """Get all RPC methods for a specific service.
 
         Args:
@@ -288,13 +290,14 @@ class PostgreSQLRPCMethodRepository(BaseRepositoryMixin, Repository[RPCMethod, U
                 return ServiceResult.ok(methods)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get methods by service: {e!s}")
+            return ServiceResult.fail(f"Failed to get methods by service: {e!s}",
+            )
 
     async def get_by_name(
         self,
         service_id: UUID,
         name: str,
-    ) -> ServiceResult[RPCMethod | None]:
+    ) -> ServiceResult[Any]:
         """Get an RPC method by service ID and method name.
 
         Args:
@@ -321,7 +324,8 @@ class PostgreSQLRPCMethodRepository(BaseRepositoryMixin, Repository[RPCMethod, U
                 return ServiceResult.ok(domain_method)
 
         except Exception as e:
-            return ServiceResult.fail(f"Failed to get method by name: {e!s}")
+            return ServiceResult.fail(f"Failed to get method by name: {e!s}",
+            )
 
     async def delete(self, method_id: UUID) -> bool:
         """Delete an RPC method by its ID.
@@ -442,7 +446,7 @@ class PostgreSQLRPCCallRepository(BaseRepositoryMixin, Repository[RPCCall, UUID]
         self,
         method_id: UUID,
         limit: int = 100,
-    ) -> ServiceResult[list[RPCCall]]:
+    ) -> ServiceResult[Any]:
         """Get RPC calls for a specific method with optional limit.
 
         Args:
@@ -471,7 +475,7 @@ class PostgreSQLRPCCallRepository(BaseRepositoryMixin, Repository[RPCCall, UUID]
             msg = f"Error in operation: {e}"
             raise RepositoryError(msg) from e
 
-    async def get_active_calls(self) -> ServiceResult[list[RPCCall]]:
+    async def get_active_calls(self) -> ServiceResult[Any]:
         """Get all currently active RPC calls.
 
         Returns:

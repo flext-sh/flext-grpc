@@ -10,14 +10,21 @@ import contextvars
 from collections.abc import Awaitable, Callable
 from functools import wraps
 from typing import TYPE_CHECKING
+from uuid import UUID
 
 import grpc
 from flext_core.domain.pydantic_base import DomainBaseModel, Field
 
 if TYPE_CHECKING:
-    from uuid import UUID
+    # Use dependency injection to access User when needed
+    from typing import Protocol
 
-    from flext_auth.models import User
+    class UserProtocol(Protocol):
+        """Abstract User interface for DI - no concrete project imports."""
+
+        user_id: UUID
+        username: str
+        roles: list[str]
 
     # Simple type alias replacement
     MetadataDict = dict[str, str]
@@ -32,7 +39,7 @@ GrpcMethod = Callable[
 GrpcMethodDecorator = Callable[[GrpcMethod], GrpcMethod]
 
 # Context variables for thread-safe user propagation
-current_user: contextvars.ContextVar[User | None] = contextvars.ContextVar(
+current_user: contextvars.ContextVar[UserProtocol | None] = contextvars.ContextVar(
     "current_user",
     default=None,
 )
@@ -51,7 +58,7 @@ current_trace_id: contextvars.ContextVar[str | None] = contextvars.ContextVar(
 class GrpcRequestContext(DomainBaseModel):
     """Complete gRPC request context with user information."""
 
-    user: User | None = Field(
+    user: UserProtocol | None = Field(
         default=None,
         description="Authenticated user for this request",
     )
@@ -88,7 +95,7 @@ class GrpcRequestContext(DomainBaseModel):
             UUID | None: User ID if authenticated, None otherwise.
 
         """
-        return self.user.user_id if self.user else None
+        return UUID(str(self.user.user_id)) if self.user else None
 
     @property
     def username(self) -> str | None:
@@ -122,7 +129,7 @@ class GrpcContextManager:
     """Manages gRPC context propagation and access."""
 
     @staticmethod
-    def set_user(user: User) -> None:
+    def set_user(user: UserProtocol) -> None:
         """Set the current user in the context.
 
         Args:
@@ -132,7 +139,7 @@ class GrpcContextManager:
         current_user.set(user)
 
     @staticmethod
-    def get_user() -> User | None:
+    def get_user() -> UserProtocol | None:
         """Get the current user from the context.
 
         Returns:
@@ -212,7 +219,7 @@ class AuthenticatedServicer:
     Provides authentication utilities for gRPC service implementations.
     """
 
-    def require_authentication(self) -> User:
+    def require_authentication(self) -> UserProtocol:
         """Require user authentication for the current request.
 
         Returns:
@@ -274,12 +281,12 @@ class AuthenticatedServicer:
             )
 
 
-def get_current_user() -> User | None:
+def get_current_user() -> UserProtocol | None:
     """Get current user from context."""
     return GrpcContextManager.get_user()
 
 
-def require_current_user() -> User:
+def require_current_user() -> UserProtocol:
     """Get current user from context, raising error if not authenticated."""
     user = GrpcContextManager.get_user()
     if not user:

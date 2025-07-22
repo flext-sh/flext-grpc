@@ -1,5 +1,4 @@
 """FLEXT gRPC Server - Enterprise Implementation.
-
 Complete gRPC server using flext-core patterns with REAL protobuf.
 Zero tolerance for mock or fake code implementations.
 """
@@ -15,7 +14,6 @@ from uuid import UUID
 
 import grpc
 from flext_core.domain.pipeline import ExecutionStatus, PipelineId
-from flext_core.infrastructure.grpc_base import BaseGrpcService
 
 # Import shared utilities for Phase 1 refactoring
 from google.protobuf.timestamp_pb2 import Timestamp
@@ -26,6 +24,7 @@ from flext_grpc.converters import (
     dict_to_struct,
     struct_to_dict,
 )
+from flext_grpc.infrastructure.grpc_base import BaseGrpcService
 from flext_grpc.models import ExecutionModel, PipelineModel, PluginModel, ScheduleModel
 
 # Direct protobuf imports - no mock code
@@ -33,11 +32,9 @@ from flext_grpc.proto import flext_pb2, flext_pb2_grpc
 
 if TYPE_CHECKING:
     from google.protobuf.struct_pb2 import Struct
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
 __version__ = "0.7.0"
 
 
@@ -48,19 +45,15 @@ class FlextGrpcServer(BaseGrpcService):
         """Initialize gRPC server with FLEXT application."""
         super().__init__("FlextGrpcServer")
         self.app = app
-
         # Enterprise storage using flext-core ServiceResult patterns
         self._pipelines: dict[str, PipelineModel] = {}
         self._plugins: dict[str, PluginModel] = {}
         self._executions: dict[str, ExecutionModel] = {}
         self._schedules: dict[str, ScheduleModel] = {}
-
         # gRPC-specific metadata storage for pipeline extractor/loader/config
         self._pipeline_grpc_metadata: dict[str, dict[str, Any]] = {}
-
         # gRPC-specific metadata storage for plugin status/installed_at/config
         self._plugin_grpc_metadata: dict[str, dict[str, Any]] = {}
-
         # System metrics storage using REAL models
         self._system_metrics: dict[str, float | int | datetime] = {
             "cpu_usage": 45.2,
@@ -82,34 +75,33 @@ class FlextGrpcServer(BaseGrpcService):
         async def _health_check_handler() -> Any:
             # Comprehensive health check using REAL protobuf
             components = {
-                "api": flext_pb2.ComponentHealth(  # type: ignore[attr-defined]
+                "api": flext_pb2.ComponentHealth(
                     name="api",
                     healthy=True,
                     message="API server operational",
                     metadata={"version": __version__},
                 ),
-                "grpc": flext_pb2.ComponentHealth(  # type: ignore[attr-defined]
+                "grpc": flext_pb2.ComponentHealth(
                     name="grpc",
                     healthy=True,
                     message="gRPC server operational",
                     metadata={"port": "50051"},
                 ),
-                "database": flext_pb2.ComponentHealth(  # type: ignore[attr-defined]
+                "database": flext_pb2.ComponentHealth(
                     name="database",
                     healthy=True,
                     message="Database connection healthy",
                     metadata={"type": "postgresql"},
                 ),
             }
-
-            return flext_pb2.HealthStatus(  # type: ignore[attr-defined]
+            return flext_pb2.HealthStatus(
                 healthy=True,
                 components=components,
                 timestamp=self.get_current_timestamp(),
             )
 
         def _error_response() -> Any:
-            return flext_pb2.HealthStatus(  # type: ignore[attr-defined]
+            return flext_pb2.HealthStatus(
                 healthy=False,
                 components={},
                 timestamp=self.get_current_timestamp(),
@@ -143,8 +135,7 @@ class FlextGrpcServer(BaseGrpcService):
                 if total_executions > 0
                 else 100.0
             )
-
-            return flext_pb2.SystemStats(  # type: ignore[attr-defined]
+            return flext_pb2.SystemStats(
                 active_pipelines=active_pipelines,
                 total_executions=total_executions,
                 success_rate=success_rate,
@@ -159,7 +150,7 @@ class FlextGrpcServer(BaseGrpcService):
             )
 
         def _error_response() -> Any:
-            return flext_pb2.SystemStats()  # type: ignore[attr-defined]
+            return flext_pb2.SystemStats()
 
         return await self.execute_with_error_handling(
             "get system stats",
@@ -178,19 +169,17 @@ class FlextGrpcServer(BaseGrpcService):
         async def _create_pipeline_handler() -> Any:
             # Validate required fields
             if not self.validate_required_field(request.name, "name", context):
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
+                return flext_pb2.Pipeline()
             if not self.validate_required_field(
                 request.extractor,
                 "extractor",
                 context,
             ):
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
+                return flext_pb2.Pipeline()
             if not self.validate_required_field(request.loader, "loader", context):
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
-
+                return flext_pb2.Pipeline()
             pipeline_uuid = uuid.uuid4()
             pipeline_id = str(pipeline_uuid)
-
             # Create flext-core Pipeline model with gRPC data stored in config
             from flext_core.domain.pipeline import PipelineName
 
@@ -200,7 +189,6 @@ class FlextGrpcServer(BaseGrpcService):
                 pipeline_description=request.description or "",
                 pipeline_is_active=True,
             )
-
             # Store gRPC-specific fields in separate metadata storage
             self._pipeline_grpc_metadata[pipeline_id] = {
                 "extractor": request.extractor,
@@ -211,12 +199,9 @@ class FlextGrpcServer(BaseGrpcService):
                 if request.config
                 else {},
             }
-
             pipeline.create()  # This sets created_at/updated_at
-
             # Store pipeline
             self._pipelines[pipeline_id] = pipeline
-
             self.log_operation(
                 "Pipeline created",
                 pipeline_id,
@@ -224,12 +209,11 @@ class FlextGrpcServer(BaseGrpcService):
                 extractor=request.extractor,
                 loader=request.loader,
             )
-
             # Convert to protobuf Pipeline message
             return self._convert_pipeline_to_pb(pipeline)
 
         def _error_response() -> Any:
-            return flext_pb2.Pipeline()  # type: ignore[attr-defined]
+            return flext_pb2.Pipeline()
 
         return await self.execute_with_error_handling(
             "create pipeline",
@@ -247,18 +231,16 @@ class FlextGrpcServer(BaseGrpcService):
 
         async def _get_pipeline_handler() -> Any:
             if not self.validate_required_field(request.id, "id", context):
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
-
+                return flext_pb2.Pipeline()
             pipeline = self._pipelines.get(request.id)
             if not pipeline:
                 self.handle_not_found("Pipeline", request.id, context)
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
-
+                return flext_pb2.Pipeline()
             self.log_operation("Pipeline retrieved", request.id)
             return self._convert_pipeline_to_pb(pipeline)
 
         def _error_response() -> Any:
-            return flext_pb2.Pipeline()  # type: ignore[attr-defined]
+            return flext_pb2.Pipeline()
 
         return await self.execute_with_error_handling(
             "get pipeline",
@@ -276,7 +258,6 @@ class FlextGrpcServer(BaseGrpcService):
 
         async def _list_pipelines_handler() -> Any:
             pipelines = list(self._pipelines.values())
-
             # Apply filters if provided
             if request.filter:
                 pipelines = [
@@ -284,24 +265,20 @@ class FlextGrpcServer(BaseGrpcService):
                     for p in pipelines
                     if request.filter.lower() in str(p.pipeline_name).lower()
                 ]
-
             # Apply pagination
             offset = request.offset or 0
             limit = request.limit or 50
             total = len(pipelines)
             pipelines = pipelines[offset : offset + limit]
-
             # Convert to protobuf
             pb_pipelines = [self._convert_pipeline_to_pb(p) for p in pipelines]
-
             self.log_operation(
                 "Pipelines listed",
                 total=total,
                 returned=len(pb_pipelines),
                 filter=request.filter or None,
             )
-
-            return flext_pb2.ListPipelinesResponse(  # type: ignore[attr-defined]
+            return flext_pb2.ListPipelinesResponse(
                 pipelines=pb_pipelines,
                 total=total,
                 limit=limit,
@@ -309,7 +286,7 @@ class FlextGrpcServer(BaseGrpcService):
             )
 
         def _error_response() -> Any:
-            return flext_pb2.ListPipelinesResponse(pipelines=[], total=0)  # type: ignore[attr-defined]
+            return flext_pb2.ListPipelinesResponse(pipelines=[], total=0)
 
         return await self.execute_with_error_handling(
             "list pipelines",
@@ -331,16 +308,13 @@ class FlextGrpcServer(BaseGrpcService):
                 "pipeline_id",
                 context,
             ):
-                return flext_pb2.Execution()  # type: ignore[attr-defined]
-
+                return flext_pb2.Execution()
             pipeline = self._pipelines.get(request.pipeline_id)
             if not pipeline:
                 self.handle_not_found("Pipeline", request.pipeline_id, context)
-                return flext_pb2.Execution()  # type: ignore[attr-defined]
-
+                return flext_pb2.Execution()
             execution_id = self.generate_id()
             now = self.get_utc_now()
-
             # Create execution model
             execution = ExecutionModel(
                 id=UUID(execution_id),
@@ -352,24 +326,20 @@ class FlextGrpcServer(BaseGrpcService):
                     "env_vars": dict(request.env_vars) if request.env_vars else {},
                 },
             )
-
             self._executions[execution_id] = execution
-
             # Update pipeline last run
             pipeline.updated_at = now
-
             self.log_operation(
                 "Pipeline execution started",
                 execution_id,
                 pipeline_id=request.pipeline_id,
                 full_refresh=request.full_refresh,
             )
-
             # Convert to protobuf
             return self._convert_execution_to_pb(execution)
 
         def _error_response() -> Any:
-            return flext_pb2.Execution()  # type: ignore[attr-defined]
+            return flext_pb2.Execution()
 
         return await self.execute_with_error_handling(
             "run pipeline",
@@ -389,14 +359,13 @@ class FlextGrpcServer(BaseGrpcService):
             # TODO: Implement real plugin discovery using original libraries only
             # This is a placeholder until real plugin discovery is implemented
             self.log_operation("Plugins listed", total=0, returned=0)
-
-            return flext_pb2.ListPluginsResponse(  # type: ignore[attr-defined]
+            return flext_pb2.ListPluginsResponse(
                 plugins=[],
                 total=0,
             )
 
         def _error_response() -> Any:
-            return flext_pb2.ListPluginsResponse(plugins=[], total=0)  # type: ignore[attr-defined]
+            return flext_pb2.ListPluginsResponse(plugins=[], total=0)
 
         return await self.execute_with_error_handling(
             "list plugins",
@@ -417,14 +386,11 @@ class FlextGrpcServer(BaseGrpcService):
         # Convert timestamps using shared utility
         created_ts = datetime_to_timestamp(pipeline.created_at)
         updated_ts = datetime_to_timestamp(pipeline.updated_at)
-
         # Extract gRPC-specific data from separate metadata storage
         grpc_config = self._pipeline_grpc_metadata.get(str(pipeline.pipeline_id), {})
-
         # Convert config dict to Struct using shared utility
         config_struct = dict_to_struct(grpc_config.get("config", {}))
-
-        return flext_pb2.Pipeline(  # type: ignore[attr-defined]
+        return flext_pb2.Pipeline(
             id=str(pipeline.pipeline_id),
             name=str(pipeline.pipeline_name),
             description=pipeline.pipeline_description,
@@ -454,17 +420,15 @@ class FlextGrpcServer(BaseGrpcService):
             if execution.completed_at
             else Timestamp()
         )
-
         # Map status
         status_map = {
-            "pending": flext_pb2.STATUS_PENDING,  # type: ignore[attr-defined]
-            "running": flext_pb2.STATUS_RUNNING,  # type: ignore[attr-defined]
-            "success": flext_pb2.STATUS_SUCCESS,  # type: ignore[attr-defined]
-            "failed": flext_pb2.STATUS_FAILED,  # type: ignore[attr-defined]
-            "cancelled": flext_pb2.STATUS_CANCELLED,  # type: ignore[attr-defined]
+            "pending": flext_pb2.STATUS_PENDING,
+            "running": flext_pb2.STATUS_RUNNING,
+            "success": flext_pb2.STATUS_SUCCESS,
+            "failed": flext_pb2.STATUS_FAILED,
+            "cancelled": flext_pb2.STATUS_CANCELLED,
         }
-
-        return flext_pb2.Execution(  # type: ignore[attr-defined]
+        return flext_pb2.Execution(
             id=str(execution.execution_id),
             pipeline_id=str(execution.pipeline_id),
             status=status_map.get(
@@ -481,7 +445,6 @@ class FlextGrpcServer(BaseGrpcService):
         )
 
     # COMPLETE SERVER IMPLEMENTATIONS - ZERO TOLERANCE FOR NotImplementedError
-
     async def get_system_info(
         self,
         _request: Any,
@@ -499,8 +462,7 @@ class FlextGrpcServer(BaseGrpcService):
                 "environment": "production",
                 "uptime_seconds": 3600,
             }
-
-            return flext_pb2.SystemInfo(  # type: ignore[attr-defined]
+            return flext_pb2.SystemInfo(
                 version=system_info["version"],
                 build_date=system_info["build_date"],
                 platform=system_info["platform"],
@@ -514,7 +476,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get system info")
             context.set_code(internal.invalid)
             context.set_details(f"System info error: {e}")
-            return flext_pb2.SystemInfo()  # type: ignore[attr-defined]
+            return flext_pb2.SystemInfo()
 
     async def update_pipeline(
         self,
@@ -527,40 +489,32 @@ class FlextGrpcServer(BaseGrpcService):
             if pipeline_id not in self._pipelines:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Pipeline {pipeline_id} not found")
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
-
+                return flext_pb2.Pipeline()
             # Update pipeline
             pipeline = self._pipelines[pipeline_id]
-
             # Update basic pipeline fields
             if request.name:
                 from flext_core.domain.pipeline import PipelineName
 
                 pipeline.pipeline_name = PipelineName(value=request.name)
-
             if request.description:
                 pipeline.pipeline_description = request.description
-
             # Update gRPC-specific fields in separate metadata storage
             if pipeline_id not in self._pipeline_grpc_metadata:
                 self._pipeline_grpc_metadata[pipeline_id] = {}
-
             grpc_config = self._pipeline_grpc_metadata[pipeline_id]
-
             if request.extractor:
                 grpc_config["extractor"] = request.extractor
             if request.loader:
                 grpc_config["loader"] = request.loader
             if request.transform:
                 grpc_config["transform"] = request.transform
-
             pipeline.updated_at = datetime.now(UTC)
-
         except Exception as e:
             self.logger.exception("Failed to update pipeline")
             context.set_code(internal.invalid)
             context.set_details(f"Update pipeline error: {e}")
-            return flext_pb2.Pipeline()  # type: ignore[attr-defined]
+            return flext_pb2.Pipeline()
 
     async def delete_pipeline(
         self,
@@ -573,15 +527,14 @@ class FlextGrpcServer(BaseGrpcService):
             if pipeline_id not in self._pipelines:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Pipeline {pipeline_id} not found")
-                return flext_pb2.Pipeline()  # type: ignore[attr-defined]
-
+                return flext_pb2.Pipeline()
             # Delete pipeline
             self._pipelines.pop(pipeline_id)
         except Exception as e:
             self.logger.exception("Failed to delete pipeline")
             context.set_code(internal.invalid)
             context.set_details(f"Delete pipeline error: {e}")
-            return flext_pb2.Pipeline()  # type: ignore[attr-defined]
+            return flext_pb2.Pipeline()
 
     async def get_execution(
         self,
@@ -594,14 +547,13 @@ class FlextGrpcServer(BaseGrpcService):
             if execution_id not in self._executions:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Execution {execution_id} not found")
-                return flext_pb2.Execution()  # type: ignore[attr-defined]
-
+                return flext_pb2.Execution()
             self._executions[execution_id]
         except Exception as e:
             self.logger.exception("Failed to get execution")
             context.set_code(internal.invalid)
             context.set_details(f"Get execution error: {e}")
-            return flext_pb2.Execution()  # type: ignore[attr-defined]
+            return flext_pb2.Execution()
 
     async def list_executions(
         self,
@@ -614,8 +566,7 @@ class FlextGrpcServer(BaseGrpcService):
                 self._convert_execution_to_pb(execution)
                 for execution in self._executions.values()
             ]
-
-            return flext_pb2.ListExecutionsResponse(  # type: ignore[attr-defined]
+            return flext_pb2.ListExecutionsResponse(
                 executions=executions,
                 total_count=len(executions),
             )
@@ -623,7 +574,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to list executions")
             context.set_code(internal.invalid)
             context.set_details(f"List executions error: {e}")
-            return flext_pb2.ListExecutionsResponse()  # type: ignore[attr-defined]
+            return flext_pb2.ListExecutionsResponse()
 
     async def cancel_execution(
         self,
@@ -636,18 +587,16 @@ class FlextGrpcServer(BaseGrpcService):
             if execution_id not in self._executions:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Execution {execution_id} not found")
-                return flext_pb2.Execution()  # type: ignore[attr-defined]
-
+                return flext_pb2.Execution()
             execution = self._executions[execution_id]
             execution.execution_status = ExecutionStatus.CANCELLED
             execution.completed_at = datetime.now(UTC)
             execution.error_message = "Cancelled by user request"
-
         except Exception as e:
             self.logger.exception("Failed to cancel execution")
             context.set_code(internal.invalid)
             context.set_details(f"Cancel execution error: {e}")
-            return flext_pb2.Execution()  # type: ignore[attr-defined]
+            return flext_pb2.Execution()
 
     async def stream_execution(
         self,
@@ -657,7 +606,6 @@ class FlextGrpcServer(BaseGrpcService):
         """Stream execution."""
         try:
             execution_id = request.execution_id
-
             # Sample execution updates
             updates = [
                 {"status": "RUNNING", "progress": 0.0, "message": "Starting execution"},
@@ -669,9 +617,8 @@ class FlextGrpcServer(BaseGrpcService):
                     "message": "Execution completed",
                 },
             ]
-
             for update in updates:
-                yield flext_pb2.ExecutionUpdate(  # type: ignore[attr-defined]
+                yield flext_pb2.ExecutionUpdate(
                     execution_id=execution_id,
                     status=update["status"],
                     progress=update["progress"],
@@ -684,7 +631,6 @@ class FlextGrpcServer(BaseGrpcService):
             context.set_details(f"Stream execution error: {e}")
 
     # Plugin Management Methods
-
     async def install_plugin(
         self,
         request: Any,
@@ -693,7 +639,6 @@ class FlextGrpcServer(BaseGrpcService):
         """Install plugin."""
         try:
             plugin_id = str(uuid.uuid4())
-
             # Create real PluginMetadata object
             plugin = PluginModel(
                 name=request.name,
@@ -703,7 +648,6 @@ class FlextGrpcServer(BaseGrpcService):
                 requirements=[],
                 config_schema={},
             )
-
             # Store gRPC-specific metadata separately
             self._plugin_grpc_metadata[plugin_id] = {
                 "id": plugin_id,
@@ -712,13 +656,10 @@ class FlextGrpcServer(BaseGrpcService):
                 "status": "installed",
                 "config": {},
             }
-
             self._plugins[plugin_id] = plugin
-
             # Get metadata for protobuf conversion
             metadata = self._plugin_grpc_metadata[plugin_id]
-
-            return flext_pb2.Plugin(  # type: ignore[attr-defined]
+            return flext_pb2.Plugin(
                 id=metadata["id"],
                 name=plugin.name,
                 version=plugin.version or "1.0.0",
@@ -731,7 +672,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to install plugin")
             context.set_code(internal.invalid)
             context.set_details(f"Install plugin error: {e}")
-            return flext_pb2.Plugin()  # type: ignore[attr-defined]
+            return flext_pb2.Plugin()
 
     async def uninstall_plugin(
         self,
@@ -744,15 +685,12 @@ class FlextGrpcServer(BaseGrpcService):
             if plugin_id not in self._plugins:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Plugin {plugin_id} not found")
-                return flext_pb2.Plugin()  # type: ignore[attr-defined]
-
+                return flext_pb2.Plugin()
             plugin = self._plugins.pop(plugin_id)
-
             # Update metadata status
             metadata = self._plugin_grpc_metadata.get(plugin_id, {})
             metadata["status"] = "uninstalled"
-
-            return flext_pb2.Plugin(  # type: ignore[attr-defined]
+            return flext_pb2.Plugin(
                 id=metadata.get("id", plugin_id),
                 name=plugin.name,
                 version=plugin.version or "1.0.0",
@@ -767,7 +705,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to uninstall plugin")
             context.set_code(internal.invalid)
             context.set_details(f"Uninstall plugin error: {e}")
-            return flext_pb2.Plugin()  # type: ignore[attr-defined]
+            return flext_pb2.Plugin()
 
     async def get_plugin_config(
         self,
@@ -780,11 +718,9 @@ class FlextGrpcServer(BaseGrpcService):
             if plugin_id not in self._plugins:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Plugin {plugin_id} not found")
-                return flext_pb2.PluginConfig()  # type: ignore[attr-defined]
-
+                return flext_pb2.PluginConfig()
             metadata = self._plugin_grpc_metadata.get(plugin_id, {})
-
-            return flext_pb2.PluginConfig(  # type: ignore[attr-defined]
+            return flext_pb2.PluginConfig(
                 plugin_id=plugin_id,
                 config=dict_to_struct(metadata.get("config", {})),
             )
@@ -792,7 +728,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get plugin config")
             context.set_code(internal.invalid)
             context.set_details(f"Get plugin config error: {e}")
-            return flext_pb2.PluginConfig()  # type: ignore[attr-defined]
+            return flext_pb2.PluginConfig()
 
     async def update_plugin_config(
         self,
@@ -805,16 +741,14 @@ class FlextGrpcServer(BaseGrpcService):
             if plugin_id not in self._plugins:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Plugin {plugin_id} not found")
-                return flext_pb2.PluginConfig()  # type: ignore[attr-defined]
-
+                return flext_pb2.PluginConfig()
             # Update config in metadata storage
             if plugin_id not in self._plugin_grpc_metadata:
                 self._plugin_grpc_metadata[plugin_id] = {}
             self._plugin_grpc_metadata[plugin_id]["config"] = struct_to_dict(
                 request.config,
             )
-
-            return flext_pb2.PluginConfig(  # type: ignore[attr-defined]
+            return flext_pb2.PluginConfig(
                 plugin_id=plugin_id,
                 config=dict_to_struct(self._plugin_grpc_metadata[plugin_id]["config"]),
             )
@@ -822,10 +756,9 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to update plugin config")
             context.set_code(internal.invalid)
             context.set_details(f"Update plugin config error: {e}")
-            return flext_pb2.PluginConfig()  # type: ignore[attr-defined]
+            return flext_pb2.PluginConfig()
 
     # State Management Methods
-
     async def get_state(
         self,
         request: Any,
@@ -840,8 +773,7 @@ class FlextGrpcServer(BaseGrpcService):
                 "version": 1,
                 "updated_at": datetime.now(UTC),
             }
-
-            return flext_pb2.State(  # type: ignore[attr-defined]
+            return flext_pb2.State(
                 key=state_key,
                 value=mock_state["value"],
                 version=mock_state["version"],
@@ -855,7 +787,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get state")
             context.set_code(internal.invalid)
             context.set_details(f"Get state error: {e}")
-            return flext_pb2.State()  # type: ignore[attr-defined]
+            return flext_pb2.State()
 
     async def set_state(
         self,
@@ -864,7 +796,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Set state."""
         try:
-            return flext_pb2.State(  # type: ignore[attr-defined]
+            return flext_pb2.State(
                 key=request.key,
                 value=request.value,
                 version=request.version + 1,
@@ -874,7 +806,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to set state")
             context.set_code(internal.invalid)
             context.set_details(f"Set state error: {e}")
-            return flext_pb2.State()  # type: ignore[attr-defined]
+            return flext_pb2.State()
 
     async def clear_state(
         self,
@@ -883,7 +815,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Clear state."""
         try:
-            return flext_pb2.State(  # type: ignore[attr-defined]
+            return flext_pb2.State(
                 key=request.key,
                 value="",
                 version=0,
@@ -893,10 +825,9 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to clear state")
             context.set_code(internal.invalid)
             context.set_details(f"Clear state error: {e}")
-            return flext_pb2.State()  # type: ignore[attr-defined]
+            return flext_pb2.State()
 
     # Schedule Management Methods
-
     async def list_schedules(
         self,
         request: Any,
@@ -908,8 +839,7 @@ class FlextGrpcServer(BaseGrpcService):
                 self._convert_schedule_to_pb(schedule)
                 for schedule in self._schedules.values()
             ]
-
-            return flext_pb2.ListSchedulesResponse(  # type: ignore[attr-defined]
+            return flext_pb2.ListSchedulesResponse(
                 schedules=schedules,
                 total_count=len(schedules),
             )
@@ -917,7 +847,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to list schedules")
             context.set_code(internal.invalid)
             context.set_details(f"List schedules error: {e}")
-            return flext_pb2.ListSchedulesResponse()  # type: ignore[attr-defined]
+            return flext_pb2.ListSchedulesResponse()
 
     async def create_schedule(
         self,
@@ -938,14 +868,13 @@ class FlextGrpcServer(BaseGrpcService):
                 last_run=None,
                 next_run=None,
             )
-
             # Store schedule - convert UUID to string for dictionary key
             self._schedules[str(schedule_id)] = schedule
         except Exception as e:
             self.logger.exception("Failed to create schedule")
             context.set_code(internal.invalid)
             context.set_details(f"Create schedule error: {e}")
-            return flext_pb2.Schedule()  # type: ignore[attr-defined]
+            return flext_pb2.Schedule()
 
     async def update_schedule(
         self,
@@ -958,19 +887,17 @@ class FlextGrpcServer(BaseGrpcService):
             if schedule_id not in self._schedules:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Schedule {schedule_id} not found")
-                return flext_pb2.Schedule()  # type: ignore[attr-defined]
-
+                return flext_pb2.Schedule()
             schedule = self._schedules[schedule_id]
             # UpdateScheduleRequest only has cron and is_active fields
             schedule.cron_expression = request.cron or schedule.cron_expression
             schedule.is_active = request.is_active
             schedule.updated_at = datetime.now(UTC)
-
         except Exception as e:
             self.logger.exception("Failed to update schedule")
             context.set_code(internal.invalid)
             context.set_details(f"Update schedule error: {e}")
-            return flext_pb2.Schedule()  # type: ignore[attr-defined]
+            return flext_pb2.Schedule()
 
     async def delete_schedule(
         self,
@@ -983,17 +910,15 @@ class FlextGrpcServer(BaseGrpcService):
             if schedule_id not in self._schedules:
                 context.set_code(grpc.StatusCode.NOT_FOUND)
                 context.set_details(f"Schedule {schedule_id} not found")
-                return flext_pb2.Schedule()  # type: ignore[attr-defined]
-
+                return flext_pb2.Schedule()
             self._schedules.pop(schedule_id)
         except Exception as e:
             self.logger.exception("Failed to delete schedule")
             context.set_code(internal.invalid)
             context.set_details(f"Delete schedule error: {e}")
-            return flext_pb2.Schedule()  # type: ignore[attr-defined]
+            return flext_pb2.Schedule()
 
     # Meltano Integration Methods (Enterprise Features)
-
     async def initialize_meltano_project(
         self,
         request: Any,
@@ -1008,8 +933,7 @@ class FlextGrpcServer(BaseGrpcService):
                 "status": "initialized",
                 "created_at": datetime.now(UTC),
             }
-
-            return flext_pb2.MeltanoProject(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoProject(
                 id=project["id"],
                 name=project["name"],
                 path=project["path"],
@@ -1020,7 +944,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to initialize Meltano project")
             context.set_code(internal.invalid)
             context.set_details(f"Initialize Meltano project error: {e}")
-            return flext_pb2.MeltanoProject()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoProject()
 
     async def load_meltano_project(
         self,
@@ -1029,7 +953,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Load Meltano project."""
         try:
-            return flext_pb2.MeltanoProject(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoProject(
                 id=request.project_id,
                 name="loaded_project",
                 path=request.path,
@@ -1040,7 +964,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to load Meltano project")
             context.set_code(internal.invalid)
             context.set_details(f"Load Meltano project error: {e}")
-            return flext_pb2.MeltanoProject()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoProject()
 
     async def run_meltano_pipeline(
         self,
@@ -1056,8 +980,7 @@ class FlextGrpcServer(BaseGrpcService):
                 "status": "running",
                 "started_at": datetime.now(UTC),
             }
-
-            return flext_pb2.MeltanoJob(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoJob(
                 id=job["id"],
                 pipeline_name=job["pipeline_name"],
                 project_id=job["project_id"],
@@ -1068,7 +991,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to run Meltano pipeline")
             context.set_code(internal.invalid)
             context.set_details(f"Run Meltano pipeline error: {e}")
-            return flext_pb2.MeltanoJob()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoJob()
 
     async def get_meltano_job_status(
         self,
@@ -1077,7 +1000,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Get Meltano job status."""
         try:
-            return flext_pb2.MeltanoJobStatus(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoJobStatus(
                 job_id=request.job_id,
                 status="completed",
                 progress=1.0,
@@ -1087,7 +1010,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get Meltano job status")
             context.set_code(internal.invalid)
             context.set_details(f"Get Meltano job status error: {e}")
-            return flext_pb2.MeltanoJobStatus()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoJobStatus()
 
     async def list_meltano_jobs(
         self,
@@ -1096,7 +1019,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """List Meltano jobs."""
         try:
-            return flext_pb2.ListMeltanoJobsResponse(  # type: ignore[attr-defined]
+            return flext_pb2.ListMeltanoJobsResponse(
                 jobs=[],
                 total_count=0,
             )
@@ -1104,7 +1027,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to list Meltano jobs")
             context.set_code(internal.invalid)
             context.set_details(f"List Meltano jobs error: {e}")
-            return flext_pb2.ListMeltanoJobsResponse()  # type: ignore[attr-defined]
+            return flext_pb2.ListMeltanoJobsResponse()
 
     async def get_meltano_state(
         self,
@@ -1113,7 +1036,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Get Meltano state."""
         try:
-            return flext_pb2.MeltanoState(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoState(
                 tap_name=request.tap_name,
                 state_data=dict_to_struct({"singer_state": {}}),
                 last_updated=datetime_to_timestamp(datetime.now(UTC)),
@@ -1122,7 +1045,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get Meltano state")
             context.set_code(internal.invalid)
             context.set_details(f"Get Meltano state error: {e}")
-            return flext_pb2.MeltanoState()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoState()
 
     async def set_meltano_state(
         self,
@@ -1131,7 +1054,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Set Meltano state."""
         try:
-            return flext_pb2.MeltanoState(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoState(
                 tap_name=request.tap_name,
                 state_data=request.state_data,
                 last_updated=datetime_to_timestamp(datetime.now(UTC)),
@@ -1140,7 +1063,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to set Meltano state")
             context.set_code(internal.invalid)
             context.set_details(f"Set Meltano state error: {e}")
-            return flext_pb2.MeltanoState()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoState()
 
     async def get_meltano_job_statistics(
         self,
@@ -1149,7 +1072,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Get Meltano job statistics."""
         try:
-            return flext_pb2.MeltanoJobStatistics(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoJobStatistics(
                 job_id=request.job_id,
                 records_processed=1000,
                 execution_time_seconds=120,
@@ -1160,7 +1083,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get Meltano job statistics")
             context.set_code(internal.invalid)
             context.set_details(f"Get Meltano job statistics error: {e}")
-            return flext_pb2.MeltanoJobStatistics()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoJobStatistics()
 
     async def cleanup_stale_meltano_jobs(
         self,
@@ -1169,7 +1092,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Cleanup stale Meltano jobs."""
         try:
-            return flext_pb2.CleanupResult(  # type: ignore[attr-defined]
+            return flext_pb2.CleanupResult(
                 cleaned_count=5,
                 success=True,
                 message="Cleaned up 5 stale jobs",
@@ -1178,7 +1101,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to cleanup stale Meltano jobs")
             context.set_code(internal.invalid)
             context.set_details(f"Cleanup stale Meltano jobs error: {e}")
-            return flext_pb2.CleanupResult()  # type: ignore[attr-defined]
+            return flext_pb2.CleanupResult()
 
     async def run_meltano_command(
         self,
@@ -1187,7 +1110,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Run Meltano command."""
         try:
-            return flext_pb2.MeltanoCommandResult(  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoCommandResult(
                 command=request.command,
                 exit_code=0,
                 output="Command executed successfully",
@@ -1198,10 +1121,9 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to run Meltano command")
             context.set_code(internal.invalid)
             context.set_details(f"Run Meltano command error: {e}")
-            return flext_pb2.MeltanoCommandResult()  # type: ignore[attr-defined]
+            return flext_pb2.MeltanoCommandResult()
 
     # Enterprise Advanced Operations
-
     async def batch_operations(
         self,
         request: Any,
@@ -1209,7 +1131,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Batch operations."""
         try:
-            return flext_pb2.BatchOperationsResult(  # type: ignore[attr-defined]
+            return flext_pb2.BatchOperationsResult(
                 success_count=len(request.operations),
                 failure_count=0,
                 total_operations=len(request.operations),
@@ -1220,7 +1142,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to execute batch operations")
             context.set_code(internal.invalid)
             context.set_details(f"Batch operations error: {e}")
-            return flext_pb2.BatchOperationsResult()  # type: ignore[attr-defined]
+            return flext_pb2.BatchOperationsResult()
 
     async def get_advanced_metrics(
         self,
@@ -1239,8 +1161,7 @@ class FlextGrpcServer(BaseGrpcService):
                 "error_rate": 0.02,
                 "response_time_p99": 250.0,
             }
-
-            return flext_pb2.AdvancedMetrics(  # type: ignore[attr-defined]
+            return flext_pb2.AdvancedMetrics(
                 cpu_usage=metrics["cpu_usage"],
                 memory_usage=metrics["memory_usage"],
                 disk_usage=metrics["disk_usage"],
@@ -1255,7 +1176,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to get advanced metrics")
             context.set_code(internal.invalid)
             context.set_details(f"Get advanced metrics error: {e}")
-            return flext_pb2.AdvancedMetrics()  # type: ignore[attr-defined]
+            return flext_pb2.AdvancedMetrics()
 
     async def system_maintenance(
         self,
@@ -1264,7 +1185,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """System maintenance."""
         try:
-            return flext_pb2.MaintenanceResult(  # type: ignore[attr-defined]
+            return flext_pb2.MaintenanceResult(
                 operation=request.operation,
                 success=True,
                 message=(
@@ -1278,7 +1199,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to perform system maintenance")
             context.set_code(internal.invalid)
             context.set_details(f"System maintenance error: {e}")
-            return flext_pb2.MaintenanceResult()  # type: ignore[attr-defined]
+            return flext_pb2.MaintenanceResult()
 
     async def manage_plugins(
         self,
@@ -1287,7 +1208,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Manage plugins."""
         try:
-            return flext_pb2.PluginManagementResult(  # type: ignore[attr-defined]
+            return flext_pb2.PluginManagementResult(
                 operation=request.operation,
                 plugin_id=request.plugin_id,
                 success=True,
@@ -1298,7 +1219,7 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to manage plugins")
             context.set_code(internal.invalid)
             context.set_details(f"Manage plugins error: {e}")
-            return flext_pb2.PluginManagementResult()  # type: ignore[attr-defined]
+            return flext_pb2.PluginManagementResult()
 
     async def manage_configuration(
         self,
@@ -1307,7 +1228,7 @@ class FlextGrpcServer(BaseGrpcService):
     ) -> Any:
         """Manage configuration."""
         try:
-            return flext_pb2.ConfigurationManagementResult(  # type: ignore[attr-defined]
+            return flext_pb2.ConfigurationManagementResult(
                 operation=request.operation,
                 config_key=request.config_key,
                 success=True,
@@ -1322,11 +1243,11 @@ class FlextGrpcServer(BaseGrpcService):
             self.logger.exception("Failed to manage configuration")
             context.set_code(internal.invalid)
             context.set_details(f"Manage configuration error: {e}")
-            return flext_pb2.ConfigurationManagementResult()  # type: ignore[attr-defined]
+            return flext_pb2.ConfigurationManagementResult()
 
     def _convert_schedule_to_pb(self, schedule: ScheduleModel) -> Any:
         """Convert schedule model to protobuf."""
-        return flext_pb2.Schedule(  # type: ignore[attr-defined]
+        return flext_pb2.Schedule(
             id=str(schedule.id),
             cron=schedule.cron_expression,
             pipeline_id=schedule.pipeline_id,
@@ -1343,7 +1264,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Initialize servicer with server."""
         self.server = server
 
-    async def HealthCheck(  # noqa: N802
+    async def HealthCheck(
         self,
         _request: Any,  # empty_pb2.Empty
         context: Any,  # grpc.aio.ServicerContext
@@ -1351,7 +1272,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Health check endpoint."""
         return await self.server.health_check(_request, context)
 
-    async def GetSystemStats(  # noqa: N802
+    async def GetSystemStats(
         self,
         _request: Any,  # empty_pb2.Empty
         context: Any,  # grpc.aio.ServicerContext
@@ -1359,7 +1280,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get system stats endpoint."""
         return await self.server.get_system_stats(_request, context)
 
-    async def CreatePipeline(  # noqa: N802
+    async def CreatePipeline(
         self,
         request: Any,  # flext_pb2.CreatePipelineRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1367,7 +1288,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Create pipeline endpoint."""
         return await self.server.create_pipeline(request, context)
 
-    async def GetPipeline(  # noqa: N802
+    async def GetPipeline(
         self,
         request: Any,  # flext_pb2.GetPipelineRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1375,7 +1296,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get pipeline endpoint."""
         return await self.server.get_pipeline(request, context)
 
-    async def ListPipelines(  # noqa: N802
+    async def ListPipelines(
         self,
         request: Any,  # flext_pb2.ListPipelinesRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1383,7 +1304,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """List pipelines endpoint."""
         return await self.server.list_pipelines(request, context)
 
-    async def RunPipeline(  # noqa: N802
+    async def RunPipeline(
         self,
         request: Any,  # flext_pb2.RunPipelineRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1391,7 +1312,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Run pipeline endpoint."""
         return await self.server.run_pipeline(request, context)
 
-    async def ListPlugins(  # noqa: N802
+    async def ListPlugins(
         self,
         request: Any,  # flext_pb2.ListPluginsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1399,7 +1320,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """List plugins endpoint."""
         return await self.server.list_plugins(request, context)
 
-    async def StreamLogs(  # noqa: N802
+    async def StreamLogs(
         self,
         request: Any,  # flext_pb2.StreamLogsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1424,7 +1345,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
             },
         ]
         for log_data in sample_logs:
-            yield flext_pb2.LogEntry(  # type: ignore[attr-defined]
+            yield flext_pb2.LogEntry(
                 timestamp=log_data["timestamp"],
                 level=log_data["level"],
                 message=log_data["message"],
@@ -1432,8 +1353,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
             )
 
     # COMPLETE REAL IMPLEMENTATIONS - ZERO TOLERANCE FOR NotImplementedError
-
-    async def GetSystemInfo(  # noqa: N802
+    async def GetSystemInfo(
         self,
         _request: Any,  # empty_pb2.Empty
         context: Any,  # grpc.aio.ServicerContext
@@ -1441,7 +1361,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get system info endpoint with real implementation."""
         return await self.server.get_system_info(_request, context)
 
-    async def UpdatePipeline(  # noqa: N802
+    async def UpdatePipeline(
         self,
         request: Any,  # flext_pb2.UpdatePipelineRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1449,7 +1369,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Update pipeline endpoint with real implementation."""
         return await self.server.update_pipeline(request, context)
 
-    async def DeletePipeline(  # noqa: N802
+    async def DeletePipeline(
         self,
         request: Any,  # flext_pb2.DeletePipelineRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1457,7 +1377,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Delete pipeline endpoint with real implementation."""
         return await self.server.delete_pipeline(request, context)
 
-    async def GetExecution(  # noqa: N802
+    async def GetExecution(
         self,
         request: Any,  # flext_pb2.GetExecutionRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1465,7 +1385,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get execution endpoint with real implementation."""
         return await self.server.get_execution(request, context)
 
-    async def ListExecutions(  # noqa: N802
+    async def ListExecutions(
         self,
         request: Any,  # flext_pb2.ListExecutionsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1473,7 +1393,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """List executions endpoint with real implementation."""
         return await self.server.list_executions(request, context)
 
-    async def CancelExecution(  # noqa: N802
+    async def CancelExecution(
         self,
         request: Any,  # flext_pb2.CancelExecutionRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1481,7 +1401,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Cancel execution endpoint with real implementation."""
         return await self.server.cancel_execution(request, context)
 
-    async def StreamExecution(  # noqa: N802
+    async def StreamExecution(
         self,
         request: Any,  # flext_pb2.StreamExecutionRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1490,7 +1410,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         async for update in self.server.stream_execution(request, context):
             yield update
 
-    async def InstallPlugin(  # noqa: N802
+    async def InstallPlugin(
         self,
         request: Any,  # flext_pb2.InstallPluginRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1498,7 +1418,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Install plugin endpoint with real implementation."""
         return await self.server.install_plugin(request, context)
 
-    async def UninstallPlugin(  # noqa: N802
+    async def UninstallPlugin(
         self,
         request: Any,  # flext_pb2.UninstallPluginRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1506,7 +1426,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Uninstall plugin endpoint with real implementation."""
         return await self.server.uninstall_plugin(request, context)
 
-    async def GetPluginConfig(  # noqa: N802
+    async def GetPluginConfig(
         self,
         request: Any,  # flext_pb2.GetPluginConfigRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1514,7 +1434,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get plugin config endpoint with real implementation."""
         return await self.server.get_plugin_config(request, context)
 
-    async def UpdatePluginConfig(  # noqa: N802
+    async def UpdatePluginConfig(
         self,
         request: Any,  # flext_pb2.UpdatePluginConfigRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1522,7 +1442,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Update plugin config endpoint with real implementation."""
         return await self.server.update_plugin_config(request, context)
 
-    async def GetState(  # noqa: N802
+    async def GetState(
         self,
         request: Any,  # flext_pb2.GetStateRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1530,7 +1450,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get state endpoint with real implementation."""
         return await self.server.get_state(request, context)
 
-    async def SetState(  # noqa: N802
+    async def SetState(
         self,
         request: Any,  # flext_pb2.SetStateRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1538,7 +1458,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Set state endpoint with real implementation."""
         return await self.server.set_state(request, context)
 
-    async def ClearState(  # noqa: N802
+    async def ClearState(
         self,
         request: Any,  # flext_pb2.ClearStateRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1546,7 +1466,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Clear state endpoint with real implementation."""
         return await self.server.clear_state(request, context)
 
-    async def ListSchedules(  # noqa: N802
+    async def ListSchedules(
         self,
         request: Any,  # flext_pb2.ListSchedulesRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1554,7 +1474,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """List schedules endpoint with real implementation."""
         return await self.server.list_schedules(request, context)
 
-    async def CreateSchedule(  # noqa: N802
+    async def CreateSchedule(
         self,
         request: Any,  # flext_pb2.CreateScheduleRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1562,7 +1482,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Create schedule endpoint with real implementation."""
         return await self.server.create_schedule(request, context)
 
-    async def UpdateSchedule(  # noqa: N802
+    async def UpdateSchedule(
         self,
         request: Any,  # flext_pb2.UpdateScheduleRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1570,7 +1490,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Update schedule endpoint with real implementation."""
         return await self.server.update_schedule(request, context)
 
-    async def DeleteSchedule(  # noqa: N802
+    async def DeleteSchedule(
         self,
         request: Any,  # flext_pb2.DeleteScheduleRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1578,7 +1498,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Delete schedule endpoint with real implementation."""
         return await self.server.delete_schedule(request, context)
 
-    async def InitializeMeltanoProject(  # noqa: N802
+    async def InitializeMeltanoProject(
         self,
         request: Any,  # flext_pb2.InitializeMeltanoProjectRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1586,7 +1506,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Initialize Meltano project endpoint with real implementation."""
         return await self.server.initialize_meltano_project(request, context)
 
-    async def LoadMeltanoProject(  # noqa: N802
+    async def LoadMeltanoProject(
         self,
         request: Any,  # flext_pb2.LoadMeltanoProjectRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1594,7 +1514,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Load Meltano project endpoint with real implementation."""
         return await self.server.load_meltano_project(request, context)
 
-    async def RunMeltanoPipeline(  # noqa: N802
+    async def RunMeltanoPipeline(
         self,
         request: Any,  # flext_pb2.RunMeltanoPipelineRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1602,7 +1522,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Run Meltano pipeline endpoint with real implementation."""
         return await self.server.run_meltano_pipeline(request, context)
 
-    async def GetMeltanoJobStatus(  # noqa: N802
+    async def GetMeltanoJobStatus(
         self,
         request: Any,  # flext_pb2.GetMeltanoJobStatusRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1610,7 +1530,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get Meltano job status endpoint with real implementation."""
         return await self.server.get_meltano_job_status(request, context)
 
-    async def ListMeltanoJobs(  # noqa: N802
+    async def ListMeltanoJobs(
         self,
         request: Any,  # flext_pb2.ListMeltanoJobsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1618,7 +1538,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """List Meltano jobs endpoint with real implementation."""
         return await self.server.list_meltano_jobs(request, context)
 
-    async def GetMeltanoState(  # noqa: N802
+    async def GetMeltanoState(
         self,
         request: Any,  # flext_pb2.GetMeltanoStateRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1626,7 +1546,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get Meltano state endpoint with real implementation."""
         return await self.server.get_meltano_state(request, context)
 
-    async def SetMeltanoState(  # noqa: N802
+    async def SetMeltanoState(
         self,
         request: Any,  # flext_pb2.SetMeltanoStateRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1634,7 +1554,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Set Meltano state endpoint with real implementation."""
         return await self.server.set_meltano_state(request, context)
 
-    async def GetMeltanoJobStatistics(  # noqa: N802
+    async def GetMeltanoJobStatistics(
         self,
         request: Any,  # flext_pb2.GetMeltanoJobStatisticsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1642,7 +1562,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get Meltano job statistics endpoint with real implementation."""
         return await self.server.get_meltano_job_statistics(request, context)
 
-    async def CleanupStaleMeltanoJobs(  # noqa: N802
+    async def CleanupStaleMeltanoJobs(
         self,
         request: Any,  # flext_pb2.CleanupStaleMeltanoJobsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1650,7 +1570,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Cleanup stale Meltano jobs endpoint with real implementation."""
         return await self.server.cleanup_stale_meltano_jobs(request, context)
 
-    async def RunMeltanoCommand(  # noqa: N802
+    async def RunMeltanoCommand(
         self,
         request: Any,  # flext_pb2.RunMeltanoCommandRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1658,7 +1578,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Run Meltano command endpoint with real implementation."""
         return await self.server.run_meltano_command(request, context)
 
-    async def BatchOperations(  # noqa: N802
+    async def BatchOperations(
         self,
         request: Any,  # flext_pb2.BatchOperationsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1666,7 +1586,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Batch operations endpoint with real implementation."""
         return await self.server.batch_operations(request, context)
 
-    async def GetAdvancedMetrics(  # noqa: N802
+    async def GetAdvancedMetrics(
         self,
         request: Any,  # flext_pb2.GetAdvancedMetricsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1674,7 +1594,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Get advanced metrics endpoint with real implementation."""
         return await self.server.get_advanced_metrics(request, context)
 
-    async def SystemMaintenance(  # noqa: N802
+    async def SystemMaintenance(
         self,
         request: Any,  # flext_pb2.SystemMaintenanceRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1682,7 +1602,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """System maintenance endpoint with real implementation."""
         return await self.server.system_maintenance(request, context)
 
-    async def ManagePlugins(  # noqa: N802
+    async def ManagePlugins(
         self,
         request: Any,  # flext_pb2.ManagePluginsRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1690,7 +1610,7 @@ class FlextGrpcServicer(flext_pb2_grpc.FlextServiceServicer):
         """Manage plugins endpoint with real implementation."""
         return await self.server.manage_plugins(request, context)
 
-    async def ManageConfiguration(  # noqa: N802
+    async def ManageConfiguration(
         self,
         request: Any,  # flext_pb2.ManageConfigurationRequest
         context: Any,  # grpc.aio.ServicerContext
@@ -1705,23 +1625,18 @@ async def create_grpc_server(
 ) -> grpc.aio.Server:
     """Create and configure gRPC server with enterprise features."""
     server = grpc.aio.server()
-
     # Create FLEXT gRPC server
     flext_server = FlextGrpcServer(app)
     servicer = FlextGrpcServicer(flext_server)
-
     # Add servicer to server
     flext_pb2_grpc.add_FlextServiceServicer_to_server(servicer, server)
-
     # Add listening port
     listen_addr = f"[::]:{port}"
     server.add_insecure_port(listen_addr)
-
     logger.info(
         "gRPC server configured",
         extra={"address": listen_addr, "features": "enterprise"},
     )
-
     return server
 
 
@@ -1731,7 +1646,6 @@ async def run_grpc_server(
 ) -> None:
     """Run gRPC server with enterprise functionality."""
     server = await create_grpc_server(app, port)
-
     logger.info(
         "Starting FLEXT gRPC server",
         extra={"port": port, "version": __version__},

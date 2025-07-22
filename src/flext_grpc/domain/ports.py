@@ -6,7 +6,7 @@ REFACTORED: Uses flext-core Repository base class - NO duplication.
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 from uuid import UUID
 
 from flext_core.infrastructure.persistence.base import Repository
@@ -14,14 +14,13 @@ from flext_core.infrastructure.persistence.base import Repository
 from flext_grpc.domain.entities import GRPCService, RPCCall, RPCMethod
 
 if TYPE_CHECKING:
-    from flext_core.domain.types import ServiceResult
-
+    from flext_core.domain.shared_types import ServiceResult
 
 class GRPCServiceRepository(Repository[GRPCService, UUID]):
     """Repository interface for gRPC services - extends flext-core Repository."""
 
     @abstractmethod
-    async def get_by_name(self, name: str) -> ServiceResult[GRPCService | None]:
+    async def get_by_name(self, name: str) -> ServiceResult[Any]:
         """Get a gRPC service by its name.
 
         Args:
@@ -42,7 +41,7 @@ class RPCMethodRepository(Repository[RPCMethod, UUID]):
     async def get_by_service_id(
         self,
         service_id: UUID,
-    ) -> ServiceResult[list[RPCMethod]]:
+    ) -> ServiceResult[Any]:
         """Get all RPC methods for a specific service.
 
         Args:
@@ -60,7 +59,7 @@ class RPCMethodRepository(Repository[RPCMethod, UUID]):
         self,
         service_id: UUID,
         name: str,
-    ) -> ServiceResult[RPCMethod | None]:
+    ) -> ServiceResult[Any]:
         """Get an RPC method by service ID and method name.
 
         Args:
@@ -83,7 +82,7 @@ class RPCCallRepository(Repository[RPCCall, UUID]):
         self,
         method_id: UUID,
         limit: int = 100,
-    ) -> ServiceResult[list[RPCCall]]:
+    ) -> ServiceResult[Any]:
         """Get RPC calls for a specific method.
 
         Args:
@@ -98,7 +97,7 @@ class RPCCallRepository(Repository[RPCCall, UUID]):
         ...
 
     @abstractmethod
-    async def get_active_calls(self) -> ServiceResult[list[RPCCall]]:
+    async def get_active_calls(self) -> ServiceResult[Any]:
         """Get all currently active RPC calls.
 
         Returns:
@@ -112,7 +111,7 @@ class GRPCServerPort(ABC):
     """Port interface for gRPC server operations."""
 
     @abstractmethod
-    async def start_service(self, service: GRPCService) -> ServiceResult[None]:
+    async def start_service(self, service: GRPCService) -> ServiceResult[Any]:
         """Start a gRPC service.
 
         Args:
@@ -125,7 +124,7 @@ class GRPCServerPort(ABC):
         ...
 
     @abstractmethod
-    async def stop_service(self, service_id: UUID) -> ServiceResult[None]:
+    async def stop_service(self, service_id: UUID) -> ServiceResult[Any]:
         """Stop a gRPC service.
 
         Args:
@@ -138,7 +137,7 @@ class GRPCServerPort(ABC):
         ...
 
     @abstractmethod
-    async def get_service_health(self, service_id: UUID) -> ServiceResult[bool]:
+    async def get_service_health(self, service_id: UUID) -> ServiceResult[Any]:
         """Get the health status of a gRPC service.
 
         Args:
@@ -154,7 +153,7 @@ class GRPCServerPort(ABC):
     async def get_service_metrics(
         self,
         service_id: UUID,
-    ) -> ServiceResult[dict[str, float]]:
+    ) -> ServiceResult[Any]:
         """Get metrics for a gRPC service.
 
         Args:
@@ -171,7 +170,7 @@ class GRPCClientPort(ABC):
     """Port interface for gRPC client operations."""
 
     @abstractmethod
-    async def create_client(self, service: GRPCService) -> ServiceResult[None]:
+    async def create_client(self, service: GRPCService) -> ServiceResult[Any]:
         """Create a gRPC client for a service.
 
         Args:
@@ -184,7 +183,7 @@ class GRPCClientPort(ABC):
         ...
 
     @abstractmethod
-    async def call_method(self, call: RPCCall) -> ServiceResult[RPCCall]:
+    async def call_method(self, call: RPCCall) -> ServiceResult[Any]:
         """Execute an RPC method call.
 
         Args:
@@ -197,7 +196,7 @@ class GRPCClientPort(ABC):
         ...
 
     @abstractmethod
-    async def close_client(self, service_id: UUID) -> ServiceResult[None]:
+    async def close_client(self, service_id: UUID) -> ServiceResult[Any]:
         """Close a gRPC client for a service.
 
         Args:
@@ -214,7 +213,7 @@ class MetricsPort(ABC):
     """Port interface for metrics collection."""
 
     @abstractmethod
-    async def record_call_metrics(self, call: RPCCall) -> ServiceResult[None]:
+    async def record_call_metrics(self, call: RPCCall) -> ServiceResult[Any]:
         """Record metrics for an RPC call.
 
         Args:
@@ -230,7 +229,7 @@ class MetricsPort(ABC):
     async def get_service_metrics(
         self,
         service_id: UUID,
-    ) -> ServiceResult[dict[str, float]]:
+    ) -> ServiceResult[Any]:
         """Get metrics for a service.
 
         Args:
@@ -246,7 +245,7 @@ class MetricsPort(ABC):
     async def get_method_metrics(
         self,
         method_id: UUID,
-    ) -> ServiceResult[dict[str, float]]:
+    ) -> ServiceResult[Any]:
         """Get metrics for an RPC method.
 
         Args:

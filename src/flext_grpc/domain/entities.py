@@ -14,7 +14,7 @@ from flext_core.domain.constants import ConfigDefaults
 from flext_core.domain.pydantic_base import DomainEntity, DomainEvent, Field
 
 if TYPE_CHECKING:
-    from flext_core.domain.types import EntityId, Version
+    from flext_core.domain.shared_types import EntityId, Version
 
 
 class ServiceStatus(StrEnum):

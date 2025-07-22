@@ -14,7 +14,7 @@ from typing import Any
 
 import grpc.aio
 from flext_core.application.handlers import CommandHandler, QueryHandler
-from flext_core.domain.types import ServiceResult
+from flext_core.domain.shared_types import ServiceResult
 from flext_observability.logging import get_logger
 
 from flext_grpc.proto import flext_pb2_grpc
@@ -47,11 +47,8 @@ def _validate_service_config(service_name: str | None, port: int | None) -> None
         ValueError: If service name or port is invalid
 
     """
-    if not service_name:
-        msg = "Service name is required"
-        raise ValueError(msg)
-    if not port or port <= 0:
-        msg = "Valid port number is required"
+    if not service_name or not port or port <= 0:
+        msg = "Service name and port are required"
         raise ValueError(msg)
     if port < MIN_PORT or port > MAX_PORT:
         raise ValueError(PORT_RANGE_ERROR)
@@ -72,10 +69,13 @@ def _validate_method_registration(
 
     """
     if not service_id:
-        msg = "Service ID is required"
+        msg = "Service ID is required for method registration"
         raise ValueError(msg)
-    if not method_name:
-        msg = "Method name is required"
+    if not method_name or not method_name.strip():
+        msg = "Method name cannot be empty"
+        raise ValueError(msg)
+    if not method_name.replace("-", "").replace("_", "").isalnum():
+        msg = "Method name must be alphanumeric"
         raise ValueError(msg)
 
 
@@ -432,7 +432,7 @@ class StopGRPCServiceHandler(CommandHandler[StopGRPCServiceCommand, Any]):
                     extra={"service_id": command.service_id},
                 )
 
-                return ServiceResult.ok(data=True)
+                return ServiceResult.ok(True)
 
             except Exception as e:
                 self.logger.exception(
