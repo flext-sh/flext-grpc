@@ -188,7 +188,7 @@ server-test: ## Test gRPC server endpoints
 # 📦 BUILD & DISTRIBUTION
 # ============================================================================
 
-build: clean proto-gen ## Build distribution packages
+build: clean ## Build distribution packages (simple library - no protobuf needed)
 	@echo "🔨 Building distribution..."
 	@poetry build
 	@echo "✅ Build complete - packages in dist/"

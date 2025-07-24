@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import pytest
-from flext_core.domain.shared_types import ServiceResult
 
 from flext_grpc.application.handlers import (
     ExecuteRPCCallCommand,
@@ -22,6 +21,12 @@ from flext_grpc.application.handlers import (
     _validate_rpc_execution,
     _validate_service_config,
 )
+
+# 🚨 ARCHITECTURAL COMPLIANCE: Tests can import directly for verification
+from flext_grpc.infrastructure.di_container import get_service_result
+
+# Initialize types via DI container for tests
+ServiceResult = get_service_result()
 
 
 class TestServiceConfigValidation:

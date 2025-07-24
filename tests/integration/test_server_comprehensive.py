@@ -10,9 +10,14 @@ import asyncio
 from datetime import UTC, datetime
 
 import pytest
-from flext_core.domain.pipeline import PipelineName
 
+# 🚨 ARCHITECTURAL COMPLIANCE: Tests can use DI container for types
+from flext_grpc.infrastructure.di_container import get_domain_types
 from flext_grpc.server import FlextGrpcServer
+
+# Initialize types for tests
+domain_types = get_domain_types()
+PipelineName = domain_types.get("PipelineName", str)  # Fallback to str if not available
 
 
 class TestFlextGrpcServerComprehensive:

@@ -37,6 +37,7 @@ dependencies = [
     "sqlalchemy (>=2.0.41)",
     "flext-core @ file:///home/marlonsc/flext/flext-core",
     "flext-observability @ file:///home/marlonsc/flext/flext-observability",
+    "grpcio-tools (==1.71.2)",
 ]
 [[project.authors]]
 name = "FLEXT Team"
@@ -273,6 +274,11 @@ combine-as-imports = true
 "**/generated/**/*.py" = ["ALL"]
 
 # Poetry dependencies moved to [project] section
+
+
+[tool.poetry.group.dev.dependencies]
+detect-secrets = "^1.5.0"
+commitizen = "^4.8.3"
 
 [project.optional-dependencies]
 dev = [
