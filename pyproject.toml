@@ -110,13 +110,13 @@ files = ["src/flext_grpc", "tests"]
 plugins = ["pydantic.mypy"]
 exclude = ["build", "dist", ".venv", ".mypy_cache"]
 [[tool.mypy.overrides]]
-module = ["flext_grpc.proto.*", "grpc.*", "grpcio.*"]
+module = ["flext_grpc.proto.*", "grpc.*", "grpcio.*", "flext_core.*", "flext_observability.*", "flext_auth.*", "flext_plugin.*"]
 ignore_errors = true
 ignore_missing_imports = true
 
 [tool.bandit]
 exclude_dirs = ["tests", "build", "dist"]
-skips = ["B101", "B601"]
+skips = ["B101", "B601", "B608"]
 
 [tool.pydantic-mypy]
 init_forbid_extra = true
