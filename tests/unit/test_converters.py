@@ -1,4 +1,5 @@
 """Tests for Protocol Buffer utility functions."""
+
 from __future__ import annotations
 
 from datetime import UTC, datetime
@@ -97,10 +98,12 @@ class TestDictToStruct:
 
     def test_dict_to_struct_with_object(self) -> None:
         """Test conversion with custom object having __dict__."""
+
         class TestObject:
             def __init__(self) -> None:
                 self.name = "test"
                 self.value = 42
+
         obj = TestObject()
         data = {"object": obj}
         result = dict_to_struct(data)
@@ -109,9 +112,11 @@ class TestDictToStruct:
 
     def test_dict_to_struct_with_non_json_serializable(self) -> None:
         """Test conversion with non-JSON serializable values."""
+
         class NonSerializable:
             def __str__(self) -> str:
                 return "non-serializable"
+
         data = {"item": NonSerializable()}
         result = dict_to_struct(data)
         assert isinstance(result, struct_pb2.Struct)
@@ -140,6 +145,7 @@ class TestDictToStruct:
         def mock_update(self: struct_pb2.Struct, data: dict[str, Any]) -> Never:
             msg = "Conversion failed"
             raise ValueError(msg)
+
         struct_pb2.Struct.update = mock_update
         try:
             result = dict_to_struct(data)
@@ -187,9 +193,11 @@ class TestStructToDict:
 
     def test_struct_to_dict_conversion_failure(self) -> None:
         """Test handling of conversion failures."""
+
         # Create an invalid struct-like object
         class InvalidStruct:
             pass
+
         invalid_struct = InvalidStruct()
         result = struct_to_dict(invalid_struct)
         assert isinstance(result, dict)
@@ -225,18 +233,22 @@ class TestSafeStringFromProtobuf:
 
     def test_safe_string_with_protobuf_string_value(self) -> None:
         """Test extraction from protobuf with string_value attribute."""
+
         class MockProtobufValue:
             def __init__(self, value: str) -> None:
                 self.string_value = value
+
         mock_value = MockProtobufValue("protobuf string")
         result = safe_string_from_protobuf(mock_value)
         assert result == "protobuf string"
 
     def test_safe_string_with_no_string_value_attribute(self) -> None:
         """Test extraction from object without string_value attribute."""
+
         class MockObject:
             def __str__(self) -> str:
                 return "mock object string"
+
         mock_obj = MockObject()
         result = safe_string_from_protobuf(mock_obj)
         assert result == "mock object string"
@@ -255,10 +267,12 @@ class TestSafeStringFromProtobuf:
 
     def test_safe_string_with_exception_in_str(self) -> None:
         """Test extraction when str() raises exception."""
+
         class ProblematicObject:
             def __str__(self) -> str:
                 msg = "Cannot convert to string"
                 raise ValueError(msg)
+
         obj = ProblematicObject()
         result = safe_string_from_protobuf(obj)
         assert result == ""

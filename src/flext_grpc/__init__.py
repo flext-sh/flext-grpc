@@ -3,40 +3,16 @@
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
-Enterprise-grade gRPC communication platform built on flext-core foundation.
-Provides unified client/server management, streaming, and service discovery.
-
-Simple usage:
->>> from flext_grpc import FlextGrpcServer, FlextGrpcClient
->>> from flext_grpc import create_flext_grpc_platform
->>>
->>> # Create unified platform
->>> platform = create_flext_grpc_platform()
->>>
->>> # Use modern gRPC services
->>> server = platform.get_grpc_server()
->>> client = platform.get_grpc_client()
->>> result = server.start(host="localhost", port=50051)
+Modern gRPC communication platform following Clean Architecture and Domain-Driven Design.
+Built on Python 3.13 with unified client/server management and streaming capabilities.
 """
 
 from __future__ import annotations
 
-import contextlib
 import importlib.metadata
-from typing import TYPE_CHECKING
 
-# Import from flext-core for foundational patterns (standardized)
-from flext_core import (
-    FlextConstants,
-    FlextContainer,
-    FlextCoreSettings as BaseConfig,
-    FlextEntity as DomainEntity,
-    FlextField as Field,
-    FlextResult,
-    FlextValueObject as BaseModel,
-    FlextValueObject as DomainBaseModel,
-    FlextValueObject as DomainValueObject,
-)
+# Import from flext-core for foundational patterns
+from flext_core import FlextContainer, FlextResult
 
 try:
     __version__ = importlib.metadata.version("flext-grpc")
@@ -45,49 +21,51 @@ except importlib.metadata.PackageNotFoundError:
 
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
-if TYPE_CHECKING:
-    from flext_grpc.platform import FlextGrpcPlatform
+# Application services
+from flext_grpc.application.services import (
+    FlextGrpcClientService,
+    FlextGrpcServerService,
+    FlextGrpcStreamService,
+)
 
-# ================================
-# SIMPLIFIED PUBLIC API EXPORTS
-# ================================
+# Configuration
+from flext_grpc.config import (
+    FlextGrpcClientConfig,
+    FlextGrpcServerConfig,
+)
 
-# Application services - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_grpc.application.services import (
-        FlextGrpcClientService,
-        FlextGrpcServerService,
-        FlextGrpcStreamService,
-    )
+# Domain entities
+from flext_grpc.domain.entities import (
+    FlextGrpcChannel,
+    FlextGrpcClient,
+    FlextGrpcServer,
+    FlextGrpcService,
+    FlextGrpcStream,
+)
 
-# Configuration and connection management - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_grpc.config import (
-        FlextGrpcClientConfig,
-        FlextGrpcServerConfig,
-    )
+# Platform
+from flext_grpc.platform import FlextGrpcPlatform
 
-# Core domain entities - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_grpc.domain.entities import (
-        FlextGrpcChannel,
-        FlextGrpcClient,
-        FlextGrpcServer,
-        FlextGrpcService,
-        FlextGrpcStream,
-    )
+# Simple API
+from flext_grpc.simple_api import (
+    create_flext_grpc_channel,
+    create_flext_grpc_client,
+    create_flext_grpc_server,
+    validate_flext_grpc_address,
+)
 
-# Simple API for common operations - simplified imports
-with contextlib.suppress(ImportError):
-    from flext_grpc.simple_api import (
-        create_flext_grpc_channel,
-        create_flext_grpc_client,
-        create_flext_grpc_server,
-        validate_flext_grpc_address,
-    )
+# Main FlextGrpc aliases
+FlextGrpc = FlextGrpcPlatform
+FlextGrpcResult = FlextResult
+
+# Prefixed helper functions
+flext_grpc_create_channel = create_flext_grpc_channel
+flext_grpc_create_client = create_flext_grpc_client
+flext_grpc_create_server = create_flext_grpc_server
+flext_grpc_create_service = create_flext_grpc_server  # Alias for backward compatibility
+flext_grpc_validate_address = validate_flext_grpc_address
 
 
-# Platform factory function
 def create_flext_grpc_platform(
     config: dict[str, object] | None = None,
 ) -> FlextGrpcPlatform:
@@ -100,45 +78,20 @@ def create_flext_grpc_platform(
         Configured FlextGrpcPlatform instance
 
     """
-    from flext_grpc.platform import FlextGrpcPlatform
-
     return FlextGrpcPlatform(config or {})
 
 
-# Backwards compatibility aliases
-FlextGrpc = FlextGrpcServer if "FlextGrpcServer" in locals() else None
-
-# Function aliases for backward compatibility
-create_client_config = (
-    create_flext_grpc_client if "create_flext_grpc_client" in locals() else None
-)
-create_server_config = (
-    create_flext_grpc_server if "create_flext_grpc_server" in locals() else None
-)
-validate_address = (
-    validate_flext_grpc_address if "validate_flext_grpc_address" in locals() else None
-)
-
-# ================================
-# PUBLIC API EXPORTS
-# ================================
+flext_grpc_create_platform = create_flext_grpc_platform
 
 __all__ = [
-    # Core patterns from flext-core
-    "BaseConfig",
-    "BaseModel",
-    "DomainBaseModel",
-    "DomainEntity",
-    "DomainValueObject",
-    "Field",
-    "FlextConstants",
     "FlextContainer",
-    # gRPC Components
     "FlextGrpc",
     "FlextGrpcChannel",
     "FlextGrpcClient",
     "FlextGrpcClientConfig",
     "FlextGrpcClientService",
+    "FlextGrpcPlatform",
+    "FlextGrpcResult",
     "FlextGrpcServer",
     "FlextGrpcServerConfig",
     "FlextGrpcServerService",
@@ -146,17 +99,20 @@ __all__ = [
     "FlextGrpcStream",
     "FlextGrpcStreamService",
     "FlextResult",
-    # Metadata
     "__version__",
     "__version_info__",
-    # Backward compatibility
-    "create_client_config",
-    # Simple API helpers
     "create_flext_grpc_channel",
     "create_flext_grpc_client",
     "create_flext_grpc_platform",
     "create_flext_grpc_server",
-    "create_server_config",
-    "validate_address",
+    "flext_grpc_create_channel",
+    "flext_grpc_create_client",
+    "flext_grpc_create_platform",
+    "flext_grpc_create_server",
+    "flext_grpc_create_service",
+    "flext_grpc_validate_address",
     "validate_flext_grpc_address",
 ]
+
+# Module metadata
+__architecture__ = "Clean Architecture + DDD"

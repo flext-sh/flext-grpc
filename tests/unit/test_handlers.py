@@ -26,7 +26,7 @@ from flext_grpc.application.handlers import (
 from flext_grpc.infrastructure.di_container import get_service_result
 
 # Initialize types via DI container for tests
-ServiceResult = get_service_result()
+FlextResult = get_service_result()
 
 
 class TestServiceConfigValidation:
@@ -318,7 +318,7 @@ class TestStartGRPCServiceHandler:
         """Test handling valid start service command."""
         command = StartGRPCServiceCommand(service_name="test-service", port=8080)
         result = await handler.handle(command)
-        assert isinstance(result, ServiceResult)
+        assert isinstance(result, FlextResult)
         assert result.success
 
     @pytest.mark.asyncio
@@ -350,7 +350,7 @@ class TestStopGRPCServiceHandler:
         """Test handling valid stop service command."""
         command = StopGRPCServiceCommand(service_id="test-service-123")
         result = await handler.handle(command)
-        assert isinstance(result, ServiceResult)
+        assert isinstance(result, FlextResult)
         assert result.success
 
 
@@ -376,7 +376,7 @@ class TestRegisterRPCMethodHandler:
             response_type="CreatePipelineResponse",
         )
         result = await handler.handle(command)
-        assert isinstance(result, ServiceResult)
+        assert isinstance(result, FlextResult)
         assert result.success
 
     @pytest.mark.asyncio
@@ -416,7 +416,7 @@ class TestExecuteRPCCallHandler:
             },
         )
         result = await handler.handle(command)
-        assert isinstance(result, ServiceResult)
+        assert isinstance(result, FlextResult)
         assert result.success
 
     @pytest.mark.asyncio
@@ -464,7 +464,7 @@ class TestHealthCheckHandler:
         """Test handling health check command."""
         command = HealthCheckCommand()
         result = await handler.handle(command)
-        assert isinstance(result, ServiceResult)
+        assert isinstance(result, FlextResult)
         assert result.success
 
 
@@ -484,7 +484,7 @@ class TestGetServiceMetricsHandler:
         """Test handling get service metrics command."""
         command = GetServiceMetricsCommand(service_id="test-service")
         result = await handler.handle(command)
-        assert isinstance(result, ServiceResult)
+        assert isinstance(result, FlextResult)
         assert result.success
 
 
@@ -550,9 +550,9 @@ class TestHandlerIntegration:
             ),  # Invalid
         ]
         for handler, command in handlers_and_commands:
-            # Commands with invalid data should still return ServiceResult
+            # Commands with invalid data should still return FlextResult
             # but with is_success = False
             result = await handler.handle(command)
-            assert isinstance(result, ServiceResult)
+            assert isinstance(result, FlextResult)
             # Note: We don't assert failure here because handlers might
             # handle edge cases differently

@@ -71,7 +71,6 @@ async def grpc_client(grpc_server_config: dict[str, Any]) -> Any:
 @pytest.fixture
 def pipeline_service_stub() -> Any:
     """Pipeline service stub for testing."""
-    # from flext_grpc.services.pipeline_pb2_grpc import PipelineServiceStub
     # TODO: Implement when protobuf services are generated
     return None
 
@@ -79,7 +78,6 @@ def pipeline_service_stub() -> Any:
 @pytest.fixture
 def plugin_service_stub() -> Any:
     """Plugin service stub for testing."""
-    # from flext_grpc.services.plugin_pb2_grpc import PluginServiceStub
     # TODO: Implement when protobuf services are generated
     return None
 
@@ -87,7 +85,6 @@ def plugin_service_stub() -> Any:
 @pytest.fixture
 def monitoring_service_stub() -> Any:
     """Monitoring service stub for testing."""
-    # from flext_grpc.services.monitoring_pb2_grpc import MonitoringServiceStub
     # TODO: Implement when protobuf services are generated
     return None
 
@@ -141,7 +138,6 @@ def sample_execution_request() -> dict[str, Any]:
 @pytest.fixture
 def auth_interceptor() -> Any:
     """Authentication interceptor for testing."""
-    # from flext_grpc.interceptors.auth import AuthInterceptor
     # TODO: Implement when interceptors are created
     return None
 
@@ -149,7 +145,6 @@ def auth_interceptor() -> Any:
 @pytest.fixture
 def logging_interceptor() -> Any:
     """Logging interceptor for testing."""
-    # from flext_grpc.interceptors.logging import LoggingInterceptor
     # TODO: Implement when interceptors are created
     return None
 
@@ -157,7 +152,6 @@ def logging_interceptor() -> Any:
 @pytest.fixture
 def metrics_interceptor() -> Any:
     """Metrics interceptor for testing."""
-    # from flext_grpc.interceptors.metrics import MetricsInterceptor
     # TODO: Implement when interceptors are created
     return None
 

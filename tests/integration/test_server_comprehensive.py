@@ -50,7 +50,7 @@ class TestFlextGrpcServerComprehensive:
         server = FlextGrpcServer(app=None)
 
         # Create a test pipeline using flext-core Pipeline model
-        from flext_core.domain.pipeline import PipelineName
+        from flext_core import PipelineName
 
         pipeline_name = PipelineName(value="test-pipeline")
         pipeline = PipelineModel(
@@ -105,7 +105,7 @@ class TestFlextGrpcServerComprehensive:
         server = FlextGrpcServer(app=None)
 
         # Create a test execution using flext-core PipelineExecution model
-        from flext_core.domain.pipeline import ExecutionStatus, PipelineId
+        from flext_core import ExecutionStatus, PipelineId
 
         pipeline_id = PipelineId()
         execution = ExecutionModel(
@@ -157,7 +157,7 @@ class TestFlextGrpcServerComprehensive:
             server._plugins[str(plugin_id)] = plugin
 
             # Execution
-            from flext_core.domain.pipeline import ExecutionStatus
+            from flext_core import ExecutionStatus
 
             execution = ExecutionModel(
                 pipeline_id=pipeline_id,
@@ -305,7 +305,7 @@ class TestGRPCServerIntegration:
 
             await asyncio.sleep(0.001)  # Simulate async work
 
-            from flext_core.domain.pipeline import PipelineId, PipelineName
+            from flext_core import PipelineId, PipelineName
 
             pipeline_id = PipelineId()
             pipeline = PipelineModel(

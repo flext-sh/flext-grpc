@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Any
 # 🚨 ARCHITECTURAL COMPLIANCE: Using DI container for flext-core imports
 from flext_grpc.infrastructure.di_container import get_service_result
 
-ServiceResult = get_service_result()
+FlextResult = get_service_result()
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -30,10 +30,10 @@ class SimpleLogInterceptor:
 
     def intercept_unary_unary(
         self,
-        continuation: Callable[..., Any],
+        continuation: Callable[..., grpc.Call],
         client_call_details: grpc.ClientCallDetails,
-        request: Any,
-    ) -> Any:
+        request: object,
+    ) -> grpc.Call:
         """Intercept unary-unary calls with simple logging."""
         self.request_count += 1
 
@@ -55,10 +55,10 @@ class SimpleAuthInterceptor:
 
     def intercept_unary_unary(
         self,
-        continuation: Callable[..., Any],
+        continuation: Callable[..., grpc.Call],
         client_call_details: grpc.ClientCallDetails,
-        request: Any,
-    ) -> Any:
+        request: object,
+    ) -> grpc.Call:
         """Intercept unary-unary calls with simple authentication."""
         if self.api_key:
             # Add authentication metadata
@@ -82,10 +82,10 @@ class SimpleMetricsInterceptor:
 
     def intercept_unary_unary(
         self,
-        continuation: Callable[..., Any],
+        continuation: Callable[..., grpc.Call],
         client_call_details: grpc.ClientCallDetails,
-        request: Any,
-    ) -> Any:
+        request: object,
+    ) -> grpc.Call:
         """Intercept unary-unary calls with simple metrics."""
         self.total_requests += 1
 

@@ -78,13 +78,13 @@ class TestFlextGRPCClient:
         assert client.port == 443
 
     def test_client_connection_result(self) -> None:
-        """Test client connection returns ServiceResult."""
+        """Test client connection returns FlextResult."""
         from flext_grpc.client import FlextGRPCClientOld
 
         client = FlextGRPCClientOld()
         result = client.connect()
 
-        # Verify ServiceResult structure
+        # Verify FlextResult structure
         assert result is not None
         assert hasattr(result, "is_success")
 

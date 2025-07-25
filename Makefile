@@ -1,9 +1,10 @@
 # FLEXT GRPC - High-Performance gRPC Service Layer
-# =================================================
-# Real Protocol Buffers with enterprise gRPC server implementation
+# ================================================
+# Enterprise gRPC service with real Protocol Buffers implementation
+# PROJECT_TYPE: grpc-service
 # Python 3.13 + gRPC + Protobuf + Zero Tolerance Quality Gates
 
-.PHONY: help check validate test lint type-check security format format-check fix
+.PHONY: help info diagnose check validate test lint type-check security format format-check fix
 .PHONY: install dev-install setup pre-commit build clean
 .PHONY: coverage coverage-html test-unit test-integration test-grpc
 .PHONY: deps-update deps-audit deps-tree deps-outdated
@@ -23,6 +24,37 @@ help: ## Show this help message
 	@echo "🧪 90%+ test coverage requirement with real gRPC testing"
 	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+
+info: ## Mostrar informações do projeto
+	@echo "📊 Informações do Projeto"
+	@echo "======================"
+	@echo "Nome: flext-grpc"
+	@echo "Título: FLEXT GRPC"
+	@echo "Versão: $(shell poetry version -s 2>/dev/null || echo "0.7.0")"
+	@echo "Python: $(shell python3.13 --version 2>/dev/null || echo "Não encontrado")"
+	@echo "Poetry: $(shell poetry --version 2>/dev/null || echo "Não instalado")"
+	@echo "Venv: $(shell poetry env info --path 2>/dev/null || echo "Não ativado")"
+	@echo "Diretório: $(CURDIR)"
+	@echo "Git Branch: $(shell git branch --show-current 2>/dev/null || echo "Não é repo git")"
+	@echo "Git Status: $(shell git status --porcelain 2>/dev/null | wc -l | xargs echo) arquivos alterados"
+
+diagnose: ## Executar diagnósticos completos
+	@echo "🔍 Executando diagnósticos para flext-grpc..."
+	@echo "Informações do Sistema:"
+	@echo "OS: $(shell uname -s)"
+	@echo "Arquitetura: $(shell uname -m)"
+	@echo "Python: $(shell python3.13 --version 2>/dev/null || echo "Não encontrado")"
+	@echo "Poetry: $(shell poetry --version 2>/dev/null || echo "Não instalado")"
+	@echo ""
+	@echo "Estrutura do Projeto:"
+	@ls -la
+	@echo ""
+	@echo "Configuração Poetry:"
+	@poetry config --list 2>/dev/null || echo "Poetry não configurado"
+	@echo ""
+	@echo "Status das Dependências:"
+	@poetry show --outdated 2>/dev/null || echo "Nenhuma dependência desatualizada"
 
 # ============================================================================
 # 🎯 CORE QUALITY GATES - ZERO TOLERANCE
@@ -178,11 +210,19 @@ run-server: ## Start production gRPC server
 
 server-health: ## Check gRPC server health
 	@echo "🔍 Checking gRPC server health..."
-	@poetry run python -c "import asyncio; from flext_grpc.client import FlextGrpcClient; exec(\"async def check(): client = FlextGrpcClient(); await client.connect(); health = await client.health_check(); print(f'Health: {health.healthy}'); await client.close()\"); asyncio.run(check())"
+	@poetry run python -m flext_grpc.health.check
 
 server-test: ## Test gRPC server endpoints
 	@echo "🧪 Testing gRPC server endpoints..."
-	@poetry run python -c "import asyncio; from flext_grpc.client import FlextGrpcClient; exec(\"async def test(): client = FlextGrpcClient(); await client.connect(); print('✅ gRPC server responding'); await client.close()\"); asyncio.run(test())"
+	@poetry run python -m flext_grpc.testing.endpoint_test
+
+server-metrics: ## Display server metrics
+	@echo "📊 Displaying server metrics..."
+	@poetry run python -m flext_grpc.monitoring.metrics
+
+server-logs: ## Display server logs
+	@echo "📄 Displaying server logs..."
+	@tail -f logs/grpc-server.log || echo "No log file found"
 
 # ============================================================================
 # 📦 BUILD & DISTRIBUTION
@@ -249,6 +289,9 @@ export FLEXT_GRPC_HOST := localhost
 export FLEXT_GRPC_PORT := 50051
 export FLEXT_GRPC_DEV_MODE := true
 export FLEXT_GRPC_MAX_WORKERS := 10
+export FLEXT_GRPC_REFLECTION := true
+export FLEXT_GRPC_HEALTH_CHECK := true
+export FLEXT_GRPC_COMPRESSION := gzip
 
 # Protocol Buffer settings
 export PROTOBUF_PYTHON_IMPLEMENTATION := python
@@ -267,25 +310,44 @@ export RUFF_CACHE_DIR := .ruff_cache
 
 # Project information
 PROJECT_NAME := flext-grpc
+PROJECT_TYPE := python-library
 PROJECT_VERSION := $(shell poetry version -s)
 PROJECT_DESCRIPTION := FLEXT gRPC - High-Performance gRPC Service Layer
 
 .DEFAULT_GOAL := help
 
 # ============================================================================
-# 🎯 GRPC VALIDATION COMMANDS
+# 🎯 GRPC SPECIFIC OPERATIONS
 # ============================================================================
+
+grpc-generate: proto-gen ## Alias for protobuf generation
+
+grpc-test: test-grpc ## Alias for gRPC-specific testing
+
+grpc-serve: run-server ## Alias for production server startup
 
 grpc-validate: proto-check server-health ## Validate complete gRPC setup
 	@echo "✅ gRPC setup validation complete"
 
 grpc-performance: ## Test gRPC performance
 	@echo "⚡ Testing gRPC performance..."
-	@poetry run python -c "print('❌ Performance test requires running server - start with make dev-server first')"
+	@poetry run python -m flext_grpc.testing.performance_test
+	@echo "✅ gRPC performance test complete"
 
 grpc-stress-test: ## Run gRPC stress testing
 	@echo "💪 Running gRPC stress test..."
-	@poetry run python -c "print('❌ Stress test requires running server - start with make dev-server first')"
+	@poetry run python -m flext_grpc.testing.stress_test
+	@echo "✅ gRPC stress test complete"
+
+grpc-benchmark: ## Benchmark gRPC operations
+	@echo "📊 Benchmarking gRPC operations..."
+	@poetry run python -m flext_grpc.testing.benchmark_test
+	@echo "✅ gRPC benchmark complete"
+
+grpc-security-test: ## Test gRPC security features
+	@echo "🔒 Testing gRPC security..."
+	@poetry run python -m flext_grpc.testing.security_test
+	@echo "✅ gRPC security test complete"
 
 # ============================================================================
 # 🎯 FLEXT ECOSYSTEM INTEGRATION
