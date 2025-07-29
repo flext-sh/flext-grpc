@@ -273,12 +273,12 @@ class FlextGrpcEntityFactory:
         defaults={"state": "idle", "options": {}},
     )
 
-    _service_factory = FlextEntityFactory.create_entity_factory(
+    _service_factory: object = FlextEntityFactory.create_entity_factory(
         FlextGrpcService,
         defaults={"methods": []},
     )
 
-    _stream_factory = FlextEntityFactory.create_entity_factory(
+    _stream_factory: object = FlextEntityFactory.create_entity_factory(
         FlextGrpcStream,
         defaults={"stream_type": "unary"},
     )
@@ -308,7 +308,7 @@ class FlextGrpcEntityFactory:
         """Create a validated gRPC client."""
         channel_result = cls.create_channel(target)
         if channel_result.is_failure:
-            return channel_result
+            return FlextResult.fail(f"Failed to create client: {channel_result.error}")
 
         return cls._client_factory(
             channel=channel_result.data,

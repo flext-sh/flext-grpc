@@ -11,14 +11,14 @@ from flext_core import get_flext_container
 
 
 @pytest.fixture(autouse=True)
-def clean_container():
+def clean_container() -> object:
     """Clean global container before each test."""
     return get_flext_container()
     # Container isolation is handled by flext-core
 
 
 @pytest.fixture
-def sample_grpc_config():
+def sample_grpc_config() -> dict[str, object]:
     """Sample gRPC configuration for tests."""
     return {
         "host": "localhost",
@@ -29,7 +29,7 @@ def sample_grpc_config():
 
 
 @pytest.fixture
-def test_addresses():
+def test_addresses() -> dict[str, list[str]]:
     """Test addresses for validation."""
     return {
         "valid": [

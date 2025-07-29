@@ -192,13 +192,13 @@ class TestAPIFunctions:
             )
 
         # Invalid parsing should raise ValueError
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="Invalid address format"):
             parse_address("invalid:address")
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=".*port.*"):
             parse_address("missing_port")
 
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=".*port.*"):
             parse_address("invalid_port:abc")
 
     def test_create_complete_setup(self) -> None:

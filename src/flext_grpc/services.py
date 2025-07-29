@@ -21,26 +21,32 @@ if TYPE_CHECKING:
 class FlextGrpcServerService(FlextDomainService):
     """Domain service for gRPC server lifecycle management."""
 
-    def execute(
-        self, operation: str, server: FlextGrpcServer, **options: object,
-    ) -> FlextResult[object]:
+    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute server operation.
 
         Args:
-            operation: Operation to perform (start, stop, add_service, status)
-            server: Target server entity
-            **options: Additional options
+            *args: Arguments (expected: operation, server)
+            **kwargs: Additional options
 
         Returns:
             FlextResult with operation result
 
         """
+        if len(args) < 2:
+            return FlextResult.fail("Missing required arguments: operation and server")
+
+        operation = args[0]
+        server = args[1]
+
+        if not isinstance(operation, str):
+            return FlextResult.fail("Operation must be a string")
+
         # Validate server first
         validation = server.validate_domain_rules()
         if validation.is_failure:
             return FlextResult.fail(f"Invalid server: {validation.error}")
 
-        return self._execute_server_operation(operation, server, **options)
+        return self._execute_server_operation(operation, server, **kwargs)
 
     def _execute_server_operation(
         self, operation: str, server: FlextGrpcServer, **options: object,
@@ -110,20 +116,26 @@ class FlextGrpcServerService(FlextDomainService):
 class FlextGrpcClientService(FlextDomainService):
     """Domain service for gRPC client operations."""
 
-    def execute(
-        self, operation: str, client: FlextGrpcClient, **options: object,
-    ) -> FlextResult[object]:
+    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute client operation.
 
         Args:
-            operation: Operation to perform (connect, disconnect, call, status)
-            client: Target client entity
-            **options: Additional options
+            *args: Arguments (expected: operation, client)
+            **kwargs: Additional options
 
         Returns:
             FlextResult with operation result
 
         """
+        if len(args) < 2:
+            return FlextResult.fail("Missing required arguments: operation and client")
+
+        operation = args[0]
+        client = args[1]
+
+        if not isinstance(operation, str):
+            return FlextResult.fail("Operation must be a string")
+
         # Validate client first
         validation = client.validate_domain_rules()
         if validation.is_failure:
@@ -135,8 +147,8 @@ class FlextGrpcClientService(FlextDomainService):
             case "disconnect":
                 return self._disconnect_client(client)
             case "call":
-                method_name = options.get("method_name")
-                request_data = options.get("request_data")
+                method_name = kwargs.get("method_name")
+                request_data = kwargs.get("request_data")
                 return self._call_method(client, method_name, request_data)
             case "status":
                 return self._get_client_status(client)
@@ -216,29 +228,37 @@ class FlextGrpcClientService(FlextDomainService):
 class FlextGrpcStreamService(FlextDomainService):
     """Domain service for gRPC streaming operations."""
 
-    def execute(self, operation: str, **options: object) -> FlextResult[object]:
+    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute stream operation.
 
         Args:
-            operation: Operation to perform (create, send, close)
-            **options: Additional options including stream, client, method_name, etc.
+            *args: Arguments (expected: operation)
+            **kwargs: Additional options including stream, client, method_name, etc.
 
         Returns:
             FlextResult with operation result
 
         """
+        if len(args) < 1:
+            return FlextResult.fail("Missing required argument: operation")
+
+        operation = args[0]
+
+        if not isinstance(operation, str):
+            return FlextResult.fail("Operation must be a string")
+
         match operation:
             case "create":
-                client = options.get("client")
-                method_name = options.get("method_name")
-                stream_type = options.get("stream_type", "unary")
+                client = kwargs.get("client")
+                method_name = kwargs.get("method_name")
+                stream_type = kwargs.get("stream_type", "unary")
                 return self._create_stream(client, method_name, stream_type)
             case "send":
-                stream = options.get("stream")
-                data = options.get("data")
+                stream = kwargs.get("stream")
+                data = kwargs.get("data")
                 return self._send_data(stream, data)
             case "close":
-                stream = options.get("stream")
+                stream = kwargs.get("stream")
                 return self._close_stream(stream)
             case _:
                 return FlextResult.fail(f"Unknown stream operation: {operation}")
