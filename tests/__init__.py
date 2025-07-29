@@ -1,3 +1,5 @@
-"""Test package for flext-api.grpc.flext-grpc."""
+"""FLEXT gRPC Tests.
 
-from __future__ import annotations
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+"""

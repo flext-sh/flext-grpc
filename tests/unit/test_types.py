@@ -1,0 +1,128 @@
+"""Unit tests for FLEXT gRPC types.
+
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from flext_grpc.types import (
+    TGrpcTarget,
+    flext_grpc_parse_target,
+    flext_grpc_validate_target,
+)
+
+
+class TestGrpcTypes:
+    """Test gRPC type definitions and validation."""
+
+    def test_grpc_target_type(self) -> None:
+        """Test TGrpcTarget type."""
+        target = TGrpcTarget("localhost:50051")
+        assert target == "localhost:50051"
+        assert isinstance(target, str)
+
+    def test_validate_target_valid_cases(self) -> None:
+        """Test valid target validation cases."""
+        valid_targets = [
+            "localhost:50051",
+            "127.0.0.1:8080",
+            "example.com:443",
+            "api-server:9000",
+            "test.domain.com:50051",
+        ]
+        
+        for target in valid_targets:
+            assert flext_grpc_validate_target(target), f"Target {target} should be valid"
+
+    def test_validate_target_invalid_cases(self) -> None:
+        """Test invalid target validation cases."""
+        invalid_targets = [
+            "",  # Empty
+            "localhost",  # No port
+            ":50051",  # No host
+            "localhost:",  # Empty port
+            "localhost:abc",  # Non-numeric port
+            "localhost:-1",  # Negative port
+            "localhost:0",  # Port 0
+            "localhost:70000",  # Port too high
+            "invalid host:50051",  # Invalid host with space
+            "localhost:50051:extra",  # Too many colons
+        ]
+        
+        for target in invalid_targets:
+            assert not flext_grpc_validate_target(target), f"Target {target} should be invalid"
+
+    def test_parse_target_valid_cases(self) -> None:
+        """Test valid target parsing cases."""
+        test_cases = [
+            ("localhost:50051", ("localhost", 50051)),
+            ("127.0.0.1:8080", ("127.0.0.1", 8080)),
+            ("example.com:443", ("example.com", 443)),
+            ("api-server:9000", ("api-server", 9000)),
+        ]
+        
+        for target, expected in test_cases:
+            result = flext_grpc_parse_target(target)
+            assert result == expected, f"Parsing {target} should return {expected}"
+
+    def test_parse_target_invalid_cases(self) -> None:
+        """Test invalid target parsing cases."""
+        invalid_targets = [
+            "",
+            "localhost",
+            ":50051",
+            "localhost:",
+            "localhost:abc",
+            "localhost:-1",
+            "localhost:70000",
+        ]
+        
+        for target in invalid_targets:
+            result = flext_grpc_parse_target(target)
+            assert result is None, f"Parsing {target} should return None"
+
+    def test_edge_cases(self) -> None:
+        """Test edge cases for validation and parsing."""
+        # Minimum valid port
+        assert flext_grpc_validate_target("localhost:1")
+        result = flext_grpc_parse_target("localhost:1")
+        assert result == ("localhost", 1)
+        
+        # Maximum valid port
+        assert flext_grpc_validate_target("localhost:65535")
+        result = flext_grpc_parse_target("localhost:65535")
+        assert result == ("localhost", 65535)
+        
+        # Port boundaries
+        assert not flext_grpc_validate_target("localhost:0")
+        assert not flext_grpc_validate_target("localhost:65536")
+
+    def test_hostname_patterns(self) -> None:
+        """Test various hostname patterns."""
+        valid_hostnames = [
+            "localhost",
+            "127.0.0.1",
+            "api.example.com",
+            "sub-domain.example.com",
+            "host123",
+            "123host",
+            "host.123",
+        ]
+        
+        for hostname in valid_hostnames:
+            target = f"{hostname}:50051"
+            assert flext_grpc_validate_target(target), f"Hostname {hostname} should be valid"
+            
+        invalid_hostnames = [
+            "host with space",
+            "host@invalid",
+            "host#invalid",
+            "host/invalid",
+        ]
+        
+        for hostname in invalid_hostnames:
+            target = f"{hostname}:50051"
+            assert not flext_grpc_validate_target(target), f"Hostname {hostname} should be invalid"
