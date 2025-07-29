@@ -3,7 +3,7 @@
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
-Modern gRPC communication platform following Clean Architecture and Domain-Driven Design.
+Modern gRPC communication platform following Clean Architecture and DDD.
 Built on Python 3.13 with unified client/server management and streaming capabilities.
 """
 
@@ -25,11 +25,11 @@ __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 from flext_grpc.api import (
     create_channel,
     create_client,
+    create_complete_setup,
     create_config,
     create_server,
     create_service,
     create_stream,
-    create_complete_setup,
     parse_address,
     validate_address,
 )
@@ -60,8 +60,8 @@ from flext_grpc.platform import FlextGrpcPlatform
 
 # Domain Services
 from flext_grpc.services import (
+    FlextGrpcClientService,
     FlextGrpcServerService,
-    FlextGrpcClientService, 
     FlextGrpcStreamService,
 )
 
@@ -83,56 +83,50 @@ from flext_grpc.types import (
 __all__ = [
     # Core
     "FlextContainer",
-    "FlextGrpcPlatform", 
-    "FlextResult",
-    "__version__",
-    "__version_info__",
-    
-    # Configuration
-    "FlextGrpcConfig",
-    
     # Domain Entities
     "FlextGrpcChannel",
     "FlextGrpcClient",
-    "FlextGrpcServer", 
-    "FlextGrpcService",
-    "FlextGrpcStream",
-    
-    # Domain Services
-    "FlextGrpcServerService",
     "FlextGrpcClientService",
-    "FlextGrpcStreamService",
-    
+    # Configuration
+    "FlextGrpcConfig",
     # Errors
     "FlextGrpcConfigurationError",
-    "FlextGrpcConnectionError", 
+    "FlextGrpcConnectionError",
     "FlextGrpcError",
+    "FlextGrpcPlatform",
+    "FlextGrpcServer",
+    # Domain Services
+    "FlextGrpcServerService",
+    "FlextGrpcService",
+    "FlextGrpcStream",
+    "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",
     "FlextGrpcValidationError",
-    
-    # API Functions
-    "create_channel",
-    "create_client",
-    "create_config", 
-    "create_server",
-    "create_service",
-    "create_stream",
-    "create_complete_setup",
-    "parse_address",
-    "validate_address",
-    
+    "FlextResult",
     # Types
     "TGrpcChannelState",
     "TGrpcHost",
-    "TGrpcMethodName", 
+    "TGrpcMethodName",
     "TGrpcPort",
     "TGrpcServerState",
     "TGrpcServiceName",
     "TGrpcStreamType",
     "TGrpcTarget",
     "TGrpcTimeout",
+    "__version__",
+    "__version_info__",
+    # API Functions
+    "create_channel",
+    "create_client",
+    "create_complete_setup",
+    "create_config",
+    "create_server",
+    "create_service",
+    "create_stream",
     "flext_grpc_parse_target",
     "flext_grpc_validate_target",
+    "parse_address",
+    "validate_address",
 ]
 
 # Module metadata

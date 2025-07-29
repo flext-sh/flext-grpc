@@ -7,10 +7,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
+    FlextComparableMixin,
     FlextEntity,
     FlextEntityFactory,
     FlextResult,
-    FlextComparableMixin,
 )
 from pydantic import Field
 
@@ -25,7 +25,7 @@ from flext_grpc.types import (
 
 class FlextGrpcEntity(FlextEntity, FlextComparableMixin):
     """Base gRPC entity with common behavior."""
-    
+
     @property
     def entity_type(self) -> str:
         """Get entity type name."""
@@ -40,10 +40,12 @@ class FlextGrpcChannel(FlextGrpcEntity):
     options: dict[str, object] = Field(default_factory=dict)
 
     def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate channel domain rules."""
         if not self.target or not str(self.target).strip():
             return FlextResult.fail("Channel target cannot be empty")
-        
-        if self.state not in {"idle", "connecting", "ready", "transient_failure", "shutdown"}:
+
+        valid_states = {"idle", "connecting", "ready", "transient_failure", "shutdown"}
+        if self.state not in valid_states:
             return FlextResult.fail(f"Invalid channel state: {self.state}")
         return FlextResult.ok(None)
 
@@ -78,15 +80,19 @@ class FlextGrpcServer(FlextGrpcEntity):
     services: list[object] = Field(default_factory=list)
 
     def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate server domain rules."""
         if not self.host or not self.host.strip():
             return FlextResult.fail("Server host cannot be empty")
-        
+
         if not (FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT):
-            return FlextResult.fail(f"Invalid port: {self.port} (must be {FLEXT_GRPC_MIN_PORT}-{FLEXT_GRPC_MAX_PORT})")
-        
+            return FlextResult.fail(
+                f"Invalid port: {self.port} "
+                f"(must be {FLEXT_GRPC_MIN_PORT}-{FLEXT_GRPC_MAX_PORT})",
+            )
+
         if self.max_workers < 1:
             return FlextResult.fail("Max workers must be >= 1")
-        
+
         if self.state not in {"stopped", "starting", "running", "stopping"}:
             return FlextResult.fail(f"Invalid server state: {self.state}")
         return FlextResult.ok(None)
@@ -128,10 +134,13 @@ class FlextGrpcServer(FlextGrpcEntity):
     def add_service(self, service: FlextGrpcService) -> FlextResult[FlextGrpcServer]:
         """Add a service to the server."""
         for existing_service in self.services:
-            if hasattr(existing_service, 'name') and existing_service.name == service.name:
+            if (
+                hasattr(existing_service, "name")
+                and existing_service.name == service.name
+            ):
                 return FlextResult.fail("Service already exists")
-        
-        return self.copy_with(services=self.services + [service])
+
+        return self.copy_with(services=[*self.services, service])
 
 
 class FlextGrpcService(FlextGrpcEntity):
@@ -141,16 +150,17 @@ class FlextGrpcService(FlextGrpcEntity):
     methods: list[str] = Field(default_factory=list)
 
     def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate service domain rules."""
         if not self.name or not self.name.strip():
             return FlextResult.fail("Service name cannot be empty")
-        
+
         if not self.methods:
             return FlextResult.fail("Service must have at least one method")
-        
+
         for method in self.methods:
             if not method or not method.strip():
                 return FlextResult.fail("Method name cannot be empty")
-        
+
         return FlextResult.ok(None)
 
     def has_method(self, method_name: str) -> bool:
@@ -161,11 +171,11 @@ class FlextGrpcService(FlextGrpcEntity):
         """Add a method to the service."""
         if not method_name or not method_name.strip():
             return FlextResult.fail("Method name cannot be empty")
-        
+
         if method_name in self.methods:
             return FlextResult.fail("Method already exists")
-        
-        return self.copy_with(methods=self.methods + [method_name])
+
+        return self.copy_with(methods=[*self.methods, method_name])
 
 
 class FlextGrpcClient(FlextGrpcEntity):
@@ -175,6 +185,7 @@ class FlextGrpcClient(FlextGrpcEntity):
     options: dict[str, object] = Field(default_factory=dict)
 
     def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate client domain rules."""
         if self.channel is not None:
             channel_validation = self.channel.validate_domain_rules()
             if channel_validation.is_failure:
@@ -195,8 +206,8 @@ class FlextGrpcClient(FlextGrpcEntity):
         """Connect client to a target."""
         channel_result = FlextGrpcEntityFactory.create_channel(target)
         if channel_result.is_failure:
-            return channel_result
-        
+            return FlextResult.fail(channel_result.error or "Channel creation failed")
+
         return self.copy_with(channel=channel_result.data)
 
 
@@ -207,10 +218,12 @@ class FlextGrpcStream(FlextGrpcEntity):
     stream_type: TGrpcStreamType = "unary"
 
     def validate_domain_rules(self) -> FlextResult[None]:
+        """Validate stream domain rules."""
         if not self.method_name or not self.method_name.strip():
             return FlextResult.fail("Stream method name cannot be empty")
-        
-        if self.stream_type not in {"unary", "server_streaming", "client_streaming", "bidirectional"}:
+
+        valid_types = {"unary", "server_streaming", "client_streaming", "bidirectional"}
+        if self.stream_type not in valid_types:
             return FlextResult.fail(f"Invalid stream type: {self.stream_type}")
         return FlextResult.ok(None)
 
@@ -237,31 +250,37 @@ class FlextGrpcStream(FlextGrpcEntity):
 
 class FlextGrpcEntityFactory:
     """Factory for creating gRPC entities with validation."""
-    
+
     # Create factory functions for each entity type
-    _server_factory = FlextEntityFactory.create_entity_factory(
+    _server_factory: object = FlextEntityFactory.create_entity_factory(
         FlextGrpcServer,
-        defaults={"state": "stopped", "services": [], "host": "localhost", "port": 50051, "max_workers": 10}
+        defaults={
+            "state": "stopped",
+            "services": [],
+            "host": "localhost",
+            "port": 50051,
+            "max_workers": 10,
+        },
     )
-    
-    _client_factory = FlextEntityFactory.create_entity_factory(
+
+    _client_factory: object = FlextEntityFactory.create_entity_factory(
         FlextGrpcClient,
-        defaults={"options": {}}
+        defaults={"options": {}},
     )
-    
-    _channel_factory = FlextEntityFactory.create_entity_factory(
+
+    _channel_factory: object = FlextEntityFactory.create_entity_factory(
         FlextGrpcChannel,
-        defaults={"state": "idle", "options": {}}
+        defaults={"state": "idle", "options": {}},
     )
-    
+
     _service_factory = FlextEntityFactory.create_entity_factory(
         FlextGrpcService,
-        defaults={"methods": []}
+        defaults={"methods": []},
     )
-    
+
     _stream_factory = FlextEntityFactory.create_entity_factory(
         FlextGrpcStream,
-        defaults={"stream_type": "unary"}
+        defaults={"stream_type": "unary"},
     )
 
     @classmethod

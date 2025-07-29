@@ -10,11 +10,11 @@ from __future__ import annotations
 
 import re
 from datetime import UTC, datetime
-from typing import Any
 
 from flext_core import FlextResult
 from flext_core.utilities import FlextGenerators
 
+from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -22,15 +22,18 @@ from flext_grpc.entities import (
     FlextGrpcService as FlextGrpcServiceEntity,
     FlextGrpcStream,
 )
-from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.types import TGrpcTarget
+
+# Constants for validation
+MIN_PORT = 1
+MAX_PORT = 65535
+ADDRESS_PARTS_COUNT = 2
 
 
 def create_server(
     host: str = "localhost",
     port: int = 50051,
     max_workers: int = 10,
-    options: dict[str, Any] | None = None,
 ) -> FlextGrpcServer:
     """Create a new gRPC server."""
     return FlextGrpcServer(
@@ -46,11 +49,11 @@ def create_server(
 
 def create_client(
     target: str,
-    options: dict[str, Any] | None = None,
+    options: dict[str, object] | None = None,
 ) -> FlextGrpcClient:
     """Create a new gRPC client."""
     channel = create_channel(target, options)
-    
+
     return FlextGrpcClient(
         id=FlextGenerators.generate_entity_id(),
         channel=channel,
@@ -61,7 +64,7 @@ def create_client(
 
 def create_channel(
     target: str,
-    options: dict[str, Any] | None = None,
+    options: dict[str, object] | None = None,
 ) -> FlextGrpcChannel:
     """Create a new gRPC channel."""
     return FlextGrpcChannel(
@@ -104,7 +107,6 @@ def create_config(
     port: int = 50051,
     max_workers: int = 10,
     timeout: float = 30.0,
-    **options: Any,
 ) -> FlextGrpcConfig:
     """Create a new gRPC configuration."""
     return FlextGrpcConfig(
@@ -118,38 +120,57 @@ def create_config(
 def validate_address(address: str) -> FlextResult[bool]:
     """Validate a gRPC address format."""
     try:
-        if not address:
-            return FlextResult.fail("Address cannot be empty")
+        # Validate basic address format
+        validation_error = _validate_address_format(address)
+        if validation_error:
+            return FlextResult.fail(validation_error)
 
-        if ":" not in address:
-            return FlextResult.fail("Address must be in host:port format")
+        # Parse and validate components
+        host, port_str = address.split(":")
+        validation_error = _validate_host_and_port(host, port_str)
+        if validation_error:
+            return FlextResult.fail(validation_error)
 
-        parts = address.split(":")
-        if len(parts) != 2:
-            return FlextResult.fail("Address must be in host:port format")
+        return FlextResult.ok(value=True)
 
-        host, port_str = parts
-
-        if not host:
-            return FlextResult.fail("Host cannot be empty")
-
-        if not re.match(r"^[a-zA-Z0-9.-]+$", host):
-            return FlextResult.fail("Invalid host format")
-
-        try:
-            port = int(port_str)
-            if not (1 <= port <= 65535):
-                return FlextResult.fail("Port must be between 1 and 65535")
-        except ValueError:
-            return FlextResult.fail("Port must be a number")
-
-        return FlextResult.ok(True)
-
-    except Exception as e:
+    except (ValueError, AttributeError) as e:
         return FlextResult.fail(f"Address validation error: {e}")
 
 
-def parse_address(address: str) -> dict[str, Any]:
+def _validate_address_format(address: str) -> str | None:
+    """Validate basic address format. Returns error message or None."""
+    if not address:
+        return "Address cannot be empty"
+
+    if ":" not in address:
+        return "Address must be in host:port format"
+
+    parts = address.split(":")
+    if len(parts) != ADDRESS_PARTS_COUNT:
+        return "Address must be in host:port format"
+
+    return None
+
+
+def _validate_host_and_port(host: str, port_str: str) -> str | None:
+    """Validate host and port components. Returns error message or None."""
+    if not host:
+        return "Host cannot be empty"
+
+    if not re.match(r"^[a-zA-Z0-9.-]+$", host):
+        return "Invalid host format"
+
+    try:
+        port = int(port_str)
+        if not (MIN_PORT <= port <= MAX_PORT):
+            return f"Port must be between {MIN_PORT} and {MAX_PORT}"
+    except ValueError:
+        return "Port must be a number"
+
+    return None
+
+
+def parse_address(address: str) -> dict[str, int | str]:
     """Parse a gRPC address into components."""
     validation_result = validate_address(address)
     if not validation_result.is_success:
@@ -165,18 +186,18 @@ def parse_address(address: str) -> dict[str, Any]:
 def create_complete_setup(
     host: str = "localhost",
     port: int = 50051,
-    service_name: str = "DefaultService", 
+    service_name: str = "DefaultService",
     methods: list[str] | None = None,
-) -> dict[str, Any]:
+) -> dict[str, FlextGrpcServer | FlextGrpcClient | FlextGrpcServiceEntity | str]:
     """Create a complete gRPC setup with server, client and service."""
     server = create_server(host=host, port=port)
     target = f"{host}:{port}"
     client = create_client(target=target)
     service = create_service(name=service_name, methods=methods)
-    
+
     return {
         "server": server,
-        "client": client,  
+        "client": client,
         "service": service,
         "target": target,
     }

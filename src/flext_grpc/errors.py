@@ -42,7 +42,12 @@ class FlextGrpcTimeoutError(FlextTimeoutError):
 class FlextGrpcConfigurationError(FlextConfigurationError):
     """gRPC configuration error with config context."""
 
-    def __init__(self, message: str, config_key: str | None = None, config_value: object = None) -> None:
+    def __init__(
+        self,
+        message: str,
+        config_key: str | None = None,
+        config_value: object = None,
+    ) -> None:
         super().__init__(message)
         self.config_key = config_key
         self.config_value = config_value

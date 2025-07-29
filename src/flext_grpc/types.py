@@ -9,6 +9,10 @@ from __future__ import annotations
 import re
 from typing import Literal, NewType, Protocol, runtime_checkable
 
+# Constants for port validation
+MIN_PORT = 1
+MAX_PORT = 65535
+
 # =============================================================================
 # DOMAIN TYPES - Clean and focused
 # =============================================================================
@@ -19,9 +23,13 @@ TGrpcMethodName = NewType("TGrpcMethodName", str)  # service/method format
 TGrpcServiceName = NewType("TGrpcServiceName", str)  # service identifier
 
 # State Types
-TGrpcChannelState = Literal["idle", "connecting", "ready", "transient_failure", "shutdown"]
+TGrpcChannelState = Literal[
+    "idle", "connecting", "ready", "transient_failure", "shutdown",
+]
 TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
-TGrpcStreamType = Literal["unary", "server_streaming", "client_streaming", "bidirectional"]
+TGrpcStreamType = Literal[
+    "unary", "server_streaming", "client_streaming", "bidirectional",
+]
 
 # Configuration Types
 TGrpcHost = NewType("TGrpcHost", str)
@@ -31,6 +39,7 @@ TGrpcTimeout = NewType("TGrpcTimeout", float)
 # =============================================================================
 # PROTOCOLS - For gRPC library integration
 # =============================================================================
+
 
 @runtime_checkable
 class TGrpcChannel(Protocol):
@@ -73,20 +82,20 @@ def flext_grpc_validate_target(target: str) -> bool:
     """Validate gRPC target format (host:port)."""
     if not target or ":" not in target:
         return False
-    
+
     try:
         host, port_str = target.split(":", 1)
         if not host or not port_str:
             return False
-        
+
         # Basic hostname validation
         if not re.match(r"^[a-zA-Z0-9.-]+$", host):
             return False
-            
+
         # Port validation
         port = int(port_str)
-        return 1 <= port <= 65535
-        
+        return MIN_PORT <= port <= MAX_PORT
+
     except (ValueError, AttributeError):
         return False
 
@@ -95,6 +104,6 @@ def flext_grpc_parse_target(target: str) -> tuple[str, int] | None:
     """Parse gRPC target into host and port."""
     if not flext_grpc_validate_target(target):
         return None
-        
+
     host, port_str = target.split(":", 1)
     return (host, int(port_str))

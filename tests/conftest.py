@@ -13,9 +13,8 @@ from flext_core import get_flext_container
 @pytest.fixture(autouse=True)
 def clean_container():
     """Clean global container before each test."""
-    container = get_flext_container()
+    return get_flext_container()
     # Container isolation is handled by flext-core
-    yield container
 
 
 @pytest.fixture
@@ -35,7 +34,7 @@ def test_addresses():
     return {
         "valid": [
             "localhost:50051",
-            "127.0.0.1:8080", 
+            "127.0.0.1:8080",
             "example.com:443",
             "api-server:9000",
         ],
@@ -47,5 +46,5 @@ def test_addresses():
             "localhost:abc",
             "localhost:-1",
             "localhost:70000",
-        ]
+        ],
     }
