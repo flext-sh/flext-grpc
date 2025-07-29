@@ -20,7 +20,7 @@ class TestGrpcTypes:
         """Test TGrpcTarget type."""
         target = TGrpcTarget("localhost:50051")
         if target != "localhost:50051":
-            raise AssertionError(f"Expected {"localhost:50051"}, got {target}")
+            raise AssertionError(f"Expected {'localhost:50051'}, got {target}")
         assert isinstance(target, str)
 
     def test_validate_target_valid_cases(self) -> None:
@@ -34,7 +34,9 @@ class TestGrpcTypes:
         ]
 
         for target in valid_targets:
-            assert flext_grpc_validate_target(target), f"Target {target} should be valid"
+            assert flext_grpc_validate_target(target), (
+                f"Target {target} should be valid"
+            )
 
     def test_validate_target_invalid_cases(self) -> None:
         """Test invalid target validation cases."""
@@ -52,7 +54,9 @@ class TestGrpcTypes:
         ]
 
         for target in invalid_targets:
-            assert not flext_grpc_validate_target(target), f"Target {target} should be invalid"
+            assert not flext_grpc_validate_target(target), (
+                f"Target {target} should be invalid"
+            )
 
     def test_parse_target_valid_cases(self) -> None:
         """Test valid target parsing cases."""
@@ -65,8 +69,10 @@ class TestGrpcTypes:
 
         for target, expected in test_cases:
             result = flext_grpc_parse_target(target)
-            if result != expected, f"Parsing {target} should return {expected}":
-                raise AssertionError(f"Expected {expected, f"Parsing {target} should return {expected}"}, got {result}")
+            if result != expected:
+                raise AssertionError(
+                    f"Expected {expected}, got {result}. Parsing {target} should return {expected}"
+                )
 
     def test_parse_target_invalid_cases(self) -> None:
         """Test invalid target parsing cases."""
@@ -90,13 +96,13 @@ class TestGrpcTypes:
         assert flext_grpc_validate_target("localhost:1")
         result = flext_grpc_parse_target("localhost:1")
         if result != ("localhost", 1):
-            raise AssertionError(f"Expected {("localhost", 1)}, got {result}")
+            raise AssertionError(f"Expected {('localhost', 1)}, got {result}")
 
         # Maximum valid port
         assert flext_grpc_validate_target("localhost:65535")
         result = flext_grpc_parse_target("localhost:65535")
         if result != ("localhost", 65535):
-            raise AssertionError(f"Expected {("localhost", 65535)}, got {result}")
+            raise AssertionError(f"Expected {('localhost', 65535)}, got {result}")
 
         # Port boundaries
         assert not flext_grpc_validate_target("localhost:0")
@@ -116,7 +122,9 @@ class TestGrpcTypes:
 
         for hostname in valid_hostnames:
             target = f"{hostname}:50051"
-            assert flext_grpc_validate_target(target), f"Hostname {hostname} should be valid"
+            assert flext_grpc_validate_target(target), (
+                f"Hostname {hostname} should be valid"
+            )
 
         invalid_hostnames = [
             "host with space",
@@ -127,4 +135,6 @@ class TestGrpcTypes:
 
         for hostname in invalid_hostnames:
             target = f"{hostname}:50051"
-            assert not flext_grpc_validate_target(target), f"Hostname {hostname} should be invalid"
+            assert not flext_grpc_validate_target(target), (
+                f"Hostname {hostname} should be invalid"
+            )

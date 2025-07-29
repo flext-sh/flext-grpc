@@ -1,8 +1,5 @@
 """Unit tests for FLEXT gRPC entities.
 
-# Constants
-EXPECTED_BULK_SIZE = 2
-
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 """
@@ -22,6 +19,9 @@ from flext_grpc.entities import (
 )
 from flext_grpc.types import TGrpcTarget
 
+# Constants
+EXPECTED_BULK_SIZE = 2
+
 
 class TestFlextGrpcChannel:
     """Test FlextGrpcChannel entity."""
@@ -38,7 +38,7 @@ class TestFlextGrpcChannel:
         validation = channel.validate_domain_rules()
         assert validation.is_success
         if channel.target != "localhost:50051":
-            msg = f"Expected {"localhost:50051"}, got {channel.target}"
+            msg = f"Expected {'localhost:50051'}, got {channel.target}"
             raise AssertionError(msg)
         assert channel.state == "idle"
 
@@ -53,7 +53,7 @@ class TestFlextGrpcChannel:
         validation = channel.validate_domain_rules()
         assert validation.is_failure
         if "target cannot be empty" not in validation.error:
-            msg = f"Expected {"target cannot be empty"} in {validation.error}"
+            msg = f"Expected {'target cannot be empty'} in {validation.error}"
             raise AssertionError(msg)
 
     def test_invalid_channel_state(self) -> None:
@@ -68,7 +68,7 @@ class TestFlextGrpcChannel:
         validation = channel.validate_domain_rules()
         assert validation.is_failure
         if "Invalid channel state" not in validation.error:
-            msg = f"Expected {"Invalid channel state"} in {validation.error}"
+            msg = f"Expected {'Invalid channel state'} in {validation.error}"
             raise AssertionError(msg)
 
     def test_channel_connection_lifecycle(self) -> None:
@@ -85,7 +85,7 @@ class TestFlextGrpcChannel:
         assert connecting_result.is_success
         connecting_channel = connecting_result.data
         if connecting_channel.state != "connecting":
-            msg = f"Expected {"connecting"}, got {connecting_channel.state}"
+            msg = f"Expected {'connecting'}, got {connecting_channel.state}"
             raise AssertionError(msg)
 
         # Mark ready
@@ -93,7 +93,7 @@ class TestFlextGrpcChannel:
         assert ready_result.is_success
         ready_channel = ready_result.data
         if ready_channel.state != "ready":
-            msg = f"Expected {"ready"}, got {ready_channel.state}"
+            msg = f"Expected {'ready'}, got {ready_channel.state}"
             raise AssertionError(msg)
         assert ready_channel.is_ready()
 
@@ -102,7 +102,7 @@ class TestFlextGrpcChannel:
         assert idle_result.is_success
         idle_channel = idle_result.data
         if idle_channel.state != "idle":
-            msg = f"Expected {"idle"}, got {idle_channel.state}"
+            msg = f"Expected {'idle'}, got {idle_channel.state}"
             raise AssertionError(msg)
         assert not idle_channel.is_ready()
 
@@ -119,14 +119,14 @@ class TestFlextGrpcChannel:
         connect_result = channel.connect()
         assert connect_result.is_failure
         if "Cannot connect from state: ready" not in connect_result.error:
-            msg = f"Expected {"Cannot connect from state: ready"} in {connect_result.error}"
+            msg = f"Expected {'Cannot connect from state: ready'} in {connect_result.error}"
             raise AssertionError(msg)
 
         # Cannot mark ready from ready state
         ready_result = channel.mark_ready()
         assert ready_result.is_failure
         if "Cannot mark ready from state: ready" not in ready_result.error:
-            msg = f"Expected {"Cannot mark ready from state: ready"} in {ready_result.error}"
+            msg = f"Expected {'Cannot mark ready from state: ready'} in {ready_result.error}"
             raise AssertionError(msg)
 
 
@@ -146,7 +146,7 @@ class TestFlextGrpcServer:
         validation = server.validate_domain_rules()
         assert validation.is_success
         if server.get_address() != "localhost:50051":
-            msg = f"Expected {"localhost:50051"}, got {server.get_address()}"
+            msg = f"Expected {'localhost:50051'}, got {server.get_address()}"
             raise AssertionError(msg)
         assert not server.is_running()
 
@@ -162,7 +162,7 @@ class TestFlextGrpcServer:
         validation1 = server1.validate_domain_rules()
         assert validation1.is_failure
         if "host cannot be empty" not in validation1.error:
-            msg = f"Expected {"host cannot be empty"} in {validation1.error}"
+            msg = f"Expected {'host cannot be empty'} in {validation1.error}"
             raise AssertionError(msg)
 
         # Invalid port
@@ -175,7 +175,7 @@ class TestFlextGrpcServer:
         validation2 = server2.validate_domain_rules()
         assert validation2.is_failure
         if "Invalid port" not in validation2.error:
-            msg = f"Expected {"Invalid port"} in {validation2.error}"
+            msg = f"Expected {'Invalid port'} in {validation2.error}"
             raise AssertionError(msg)
 
         # Invalid max_workers
@@ -189,7 +189,7 @@ class TestFlextGrpcServer:
         validation3 = server3.validate_domain_rules()
         assert validation3.is_failure
         if "Max workers must be < 1" in validation3.error:
-            msg = f"Expected {"Max workers must be} >= {1" in validation3.error}"
+            msg = f"Expected {'Max workers must be} >= {1' in validation3.error}"
             raise AssertionError(msg)
 
     def test_server_lifecycle(self) -> None:
@@ -206,7 +206,7 @@ class TestFlextGrpcServer:
         assert starting_result.is_success
         starting_server = starting_result.data
         if starting_server.state != "starting":
-            msg = f"Expected {"starting"}, got {starting_server.state}"
+            msg = f"Expected {'starting'}, got {starting_server.state}"
             raise AssertionError(msg)
 
         # Mark running
@@ -214,7 +214,7 @@ class TestFlextGrpcServer:
         assert running_result.is_success
         running_server = running_result.data
         if running_server.state != "running":
-            msg = f"Expected {"running"}, got {running_server.state}"
+            msg = f"Expected {'running'}, got {running_server.state}"
             raise AssertionError(msg)
         assert running_server.is_running()
 
@@ -223,7 +223,7 @@ class TestFlextGrpcServer:
         assert stopping_result.is_success
         stopping_server = stopping_result.data
         if stopping_server.state != "stopping":
-            msg = f"Expected {"stopping"}, got {stopping_server.state}"
+            msg = f"Expected {'stopping'}, got {stopping_server.state}"
             raise AssertionError(msg)
 
         # Mark stopped
@@ -231,7 +231,7 @@ class TestFlextGrpcServer:
         assert stopped_result.is_success
         stopped_server = stopped_result.data
         if stopped_server.state != "stopped":
-            msg = f"Expected {"stopped"}, got {stopped_server.state}"
+            msg = f"Expected {'stopped'}, got {stopped_server.state}"
             raise AssertionError(msg)
         assert not stopped_server.is_running()
 
@@ -263,7 +263,7 @@ class TestFlextGrpcServer:
         duplicate_result = updated_server.add_service(service)
         assert duplicate_result.is_failure
         if "Service already exists" not in duplicate_result.error:
-            msg = f"Expected {"Service already exists"} in {duplicate_result.error}"
+            msg = f"Expected {'Service already exists'} in {duplicate_result.error}"
             raise AssertionError(msg)
 
 
@@ -297,7 +297,7 @@ class TestFlextGrpcService:
         validation1 = service1.validate_domain_rules()
         assert validation1.is_failure
         if "name cannot be empty" not in validation1.error:
-            msg = f"Expected {"name cannot be empty"} in {validation1.error}"
+            msg = f"Expected {'name cannot be empty'} in {validation1.error}"
             raise AssertionError(msg)
 
         # No methods
@@ -310,7 +310,7 @@ class TestFlextGrpcService:
         validation2 = service2.validate_domain_rules()
         assert validation2.is_failure
         if "must have at least one method" not in validation2.error:
-            msg = f"Expected {"must have at least one method"} in {validation2.error}"
+            msg = f"Expected {'must have at least one method'} in {validation2.error}"
             raise AssertionError(msg)
 
     def test_add_method(self) -> None:
@@ -335,7 +335,7 @@ class TestFlextGrpcService:
         duplicate_result = updated_service.add_method("method1")
         assert duplicate_result.is_failure
         if "Method already exists" not in duplicate_result.error:
-            msg = f"Expected {"Method already exists"} in {duplicate_result.error}"
+            msg = f"Expected {'Method already exists'} in {duplicate_result.error}"
             raise AssertionError(msg)
 
 
@@ -361,7 +361,7 @@ class TestFlextGrpcClient:
         assert validation.is_success
         assert client.is_connected()
         if client.get_target() != "localhost:50051":
-            msg = f"Expected {"localhost:50051"}, got {client.get_target()}"
+            msg = f"Expected {'localhost:50051'}, got {client.get_target()}"
             raise AssertionError(msg)
 
     def test_client_without_channel(self) -> None:
@@ -390,7 +390,7 @@ class TestFlextGrpcClient:
         connected_client = connected_result.data
         assert connected_client.channel is not None
         if connected_client.get_target() != "localhost:8080":
-            msg = f"Expected {"localhost:8080"}, got {connected_client.get_target()}"
+            msg = f"Expected {'localhost:8080'}, got {connected_client.get_target()}"
             raise AssertionError(msg)
 
 
@@ -425,7 +425,7 @@ class TestFlextGrpcStream:
         validation1 = stream1.validate_domain_rules()
         assert validation1.is_failure
         if "method name cannot be empty" not in validation1.error:
-            msg = f"Expected {"method name cannot be empty"} in {validation1.error}"
+            msg = f"Expected {'method name cannot be empty'} in {validation1.error}"
             raise AssertionError(msg)
 
         # Invalid stream type
@@ -438,7 +438,7 @@ class TestFlextGrpcStream:
         validation2 = stream2.validate_domain_rules()
         assert validation2.is_failure
         if "Invalid stream type" not in validation2.error:
-            msg = f"Expected {"Invalid stream type"} in {validation2.error}"
+            msg = f"Expected {'Invalid stream type'} in {validation2.error}"
             raise AssertionError(msg)
 
     def test_stream_type_detection(self) -> None:
