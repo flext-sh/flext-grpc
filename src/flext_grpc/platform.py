@@ -98,6 +98,7 @@ class FlextGrpcPlatform:
             return FlextResult.fail(result.error or "Start server failed")
         # Safe cast since we know server operations return FlextGrpcServer
         from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+
         if isinstance(result.data, FlextGrpcServer):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid server result type")
@@ -109,6 +110,7 @@ class FlextGrpcPlatform:
             return FlextResult.fail(result.error or "Stop server failed")
         # Safe cast since we know server operations return FlextGrpcServer
         from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+
         if isinstance(result.data, FlextGrpcServer):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid server result type")
@@ -120,6 +122,7 @@ class FlextGrpcPlatform:
             return FlextResult.fail(result.error or "Connect client failed")
         # Safe cast since we know client operations return FlextGrpcClient
         from flext_grpc.entities import FlextGrpcClient  # noqa: PLC0415
+
         if isinstance(result.data, FlextGrpcClient):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid client result type")
@@ -185,6 +188,7 @@ class FlextGrpcPlatform:
             return FlextResult.fail(result.error or "Create stream failed")
         # Safe cast since we know stream operations return FlextGrpcStream
         from flext_grpc.entities import FlextGrpcStream  # noqa: PLC0415
+
         if isinstance(result.data, FlextGrpcStream):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid stream result type")

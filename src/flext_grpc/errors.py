@@ -52,6 +52,7 @@ class FlextGrpcConfigurationError(FlextConfigurationError):
         self.config_key = config_key
         self.config_value = config_value
 
+
 # =============================================================================
 # EXPORTS - Only minimal gRPC-specific errors
 # =============================================================================

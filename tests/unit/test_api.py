@@ -214,11 +214,12 @@ class TestAPIFunctions:
         assert "target" in setup
 
         # Check types
-        from flext_grpc.entities import (  # noqa: PLC0415
+        from flext_grpc.entities import (
             FlextGrpcClient,
             FlextGrpcServer,
             FlextGrpcService,
         )
+
         assert isinstance(setup["server"], FlextGrpcServer)
         assert isinstance(setup["client"], FlextGrpcClient)
         assert isinstance(setup["service"], FlextGrpcService)
@@ -245,18 +246,18 @@ class TestAPIFunctions:
         )
         # Type-safe access to server
         custom_server = custom_setup["server"]
-        from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+        from flext_grpc.entities import FlextGrpcServer
+
         if not isinstance(custom_server, FlextGrpcServer):
             raise TypeError(f"Expected FlextGrpcServer, got {type(custom_server)}")
         if custom_server.host != "0.0.0.0":
-            raise AssertionError(
-                f"Expected {'0.0.0.0'}, got {custom_server.host}"
-            )
+            raise AssertionError(f"Expected {'0.0.0.0'}, got {custom_server.host}")
         assert custom_server.port == 8080
 
         # Type-safe access to service
         custom_service = custom_setup["service"]
-        from flext_grpc.entities import FlextGrpcService  # noqa: PLC0415
+        from flext_grpc.entities import FlextGrpcService
+
         if not isinstance(custom_service, FlextGrpcService):
             raise TypeError(f"Expected FlextGrpcService, got {type(custom_service)}")
         if custom_service.name != "CustomService":

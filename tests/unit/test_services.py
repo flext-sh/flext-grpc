@@ -7,8 +7,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
-from flext_core import FlextResult
 from flext_core.utilities import FlextGenerators
 
 from flext_grpc.entities import (
@@ -20,6 +20,9 @@ from flext_grpc.entities import (
 )
 from flext_grpc.services import FlextGrpcService
 from flext_grpc.types import TGrpcTarget
+
+if TYPE_CHECKING:
+    from flext_core import FlextResult
 
 
 def _assert_error_contains(result: FlextResult[object], expected_text: str) -> None:
@@ -110,7 +113,8 @@ class TestFlextGrpcService:
     def test_server_start_invalid_server_fails(self) -> None:
         """Test starting invalid server fails."""
         # Create invalid server directly - copy_with will fail validation
-        from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+        from flext_grpc.entities import FlextGrpcServer
+
         invalid_server = FlextGrpcServer(
             id=self.server.id,
             host="",  # Invalid empty host
@@ -181,7 +185,8 @@ class TestFlextGrpcService:
         result = self.service.execute("client", "connect", self.client)
         connected_client = _assert_client_result(result)
         if connected_client.channel is None:
-            raise AssertionError("Expected channel to be present")
+            msg = "Expected channel to be present"
+            raise AssertionError(msg)
         if connected_client.channel.state != "ready":
             raise AssertionError(
                 f"Expected {'ready'}, got {connected_client.channel.state}"
@@ -216,7 +221,8 @@ class TestFlextGrpcService:
         result = self.service.execute("client", "disconnect", connected_client)
         disconnected_client = _assert_client_result(result)
         if disconnected_client.channel is None:
-            raise AssertionError("Expected channel to be present")
+            msg = "Expected channel to be present"
+            raise AssertionError(msg)
         if disconnected_client.channel.state != "idle":
             raise AssertionError(
                 f"Expected {'idle'}, got {disconnected_client.channel.state}"
@@ -308,7 +314,8 @@ class TestFlextGrpcService:
         assert result.is_success
         assert result.data is not None
         # Type-safe cast since we know stream operations return FlextGrpcStream
-        from flext_grpc.entities import FlextGrpcStream  # noqa: PLC0415
+        from flext_grpc.entities import FlextGrpcStream
+
         if not isinstance(result.data, FlextGrpcStream):
             raise TypeError(f"Expected FlextGrpcStream, got {type(result.data)}")
         stream = result.data
@@ -322,8 +329,13 @@ class TestFlextGrpcService:
         """Test stream create without client fails."""
         result = self.service.execute("stream", "create", method_name="test")
         assert result.is_failure
-        if result.error is None or "Client must be a FlextGrpcClient instance" not in result.error:
-            raise AssertionError(f"Expected {'Client must be a FlextGrpcClient instance'} in {result.error}")
+        if (
+            result.error is None
+            or "Client must be a FlextGrpcClient instance" not in result.error
+        ):
+            raise AssertionError(
+                f"Expected {'Client must be a FlextGrpcClient instance'} in {result.error}"
+            )
 
     def test_stream_create_client_not_connected_fails(self) -> None:
         """Test stream create with disconnected client fails."""
@@ -381,7 +393,10 @@ class TestFlextGrpcService:
         """Test stream unknown operation fails."""
         result = self.service.execute("stream", "unknown_op")
         assert result.is_failure
-        if result.error is None or "Unknown stream operation: unknown_op" not in result.error:
+        if (
+            result.error is None
+            or "Unknown stream operation: unknown_op" not in result.error
+        ):
             raise AssertionError(
                 f"Expected {'Unknown stream operation: unknown_op'} in {result.error}"
             )

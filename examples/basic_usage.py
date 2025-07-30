@@ -161,7 +161,9 @@ def example_3_operations() -> None:
         print(f"Client connected: {connected_client.is_connected()}")
 
         # Call method
-        call_result = ops.call_method(connected_client, "GetServerInfo", {"request_id": "12345"})
+        call_result = ops.call_method(
+            connected_client, "GetServerInfo", {"request_id": "12345"}
+        )
         if call_result.is_success:
             response = call_result.data
             print(f"Method call successful: {response['method']}")
@@ -196,7 +198,7 @@ def example_4_validation() -> None:
         invalid_server = FlextGrpcServer(
             id="invalid-server",
             host="",  # Invalid empty host
-            port=0,   # Invalid port
+            port=0,  # Invalid port
             max_workers=0,  # Invalid workers
             created_at=datetime.now(UTC),
         )

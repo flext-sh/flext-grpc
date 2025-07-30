@@ -24,11 +24,18 @@ TGrpcServiceName = NewType("TGrpcServiceName", str)  # service identifier
 
 # State Types
 TGrpcChannelState = Literal[
-    "idle", "connecting", "ready", "transient_failure", "shutdown",
+    "idle",
+    "connecting",
+    "ready",
+    "transient_failure",
+    "shutdown",
 ]
 TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
 TGrpcStreamType = Literal[
-    "unary", "server_streaming", "client_streaming", "bidirectional",
+    "unary",
+    "server_streaming",
+    "client_streaming",
+    "bidirectional",
 ]
 
 # Configuration Types
@@ -77,6 +84,7 @@ class TGrpcStub(Protocol):
 # =============================================================================
 # VALIDATION FUNCTIONS
 # =============================================================================
+
 
 def flext_grpc_validate_target(target: str) -> bool:
     """Validate gRPC target format (host:port)."""

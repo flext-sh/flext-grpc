@@ -96,6 +96,7 @@ def create_stream(
     """Create a new gRPC stream."""
     # Type-safe cast to TGrpcStreamType
     from flext_grpc.types import TGrpcStreamType  # noqa: PLC0415
+
     valid_types = ("unary", "server_streaming", "client_streaming", "bidirectional")
     if stream_type not in valid_types:
         invalid_stream_type_msg = f"Invalid stream type: {stream_type}"

@@ -59,8 +59,8 @@ class TestFlextGrpcChannel:
     def test_invalid_channel_state(self) -> None:
         """Test channel with invalid state fails validation."""
         # Pydantic validates types at creation time
-        import pytest  # noqa: PLC0415
-        from pydantic_core import ValidationError  # noqa: PLC0415
+        import pytest
+        from pydantic_core import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcChannel(
@@ -126,14 +126,20 @@ class TestFlextGrpcChannel:
         # Cannot connect from ready state
         connect_result = channel.connect()
         assert connect_result.is_failure
-        if connect_result.error is None or "Cannot connect from state: ready" not in connect_result.error:
+        if (
+            connect_result.error is None
+            or "Cannot connect from state: ready" not in connect_result.error
+        ):
             msg = f"Expected {'Cannot connect from state: ready'} in {connect_result.error}"
             raise AssertionError(msg)
 
         # Cannot mark ready from ready state
         ready_result = channel.mark_ready()
         assert ready_result.is_failure
-        if ready_result.error is None or "Cannot mark ready from state: ready" not in ready_result.error:
+        if (
+            ready_result.error is None
+            or "Cannot mark ready from state: ready" not in ready_result.error
+        ):
             msg = f"Expected {'Cannot mark ready from state: ready'} in {ready_result.error}"
             raise AssertionError(msg)
 
@@ -196,7 +202,10 @@ class TestFlextGrpcServer:
         )
         validation3 = server3.validate_domain_rules()
         assert validation3.is_failure
-        if validation3.error is None or "Max workers must be >= 1" not in validation3.error:
+        if (
+            validation3.error is None
+            or "Max workers must be >= 1" not in validation3.error
+        ):
             msg = f"Expected {'Max workers must be >= 1'} in {validation3.error}"
             raise AssertionError(msg)
 
@@ -275,7 +284,10 @@ class TestFlextGrpcServer:
         # Cannot add same service twice
         duplicate_result = updated_server.add_service(service)
         assert duplicate_result.is_failure
-        if duplicate_result.error is None or "Service already exists" not in duplicate_result.error:
+        if (
+            duplicate_result.error is None
+            or "Service already exists" not in duplicate_result.error
+        ):
             msg = f"Expected {'Service already exists'} in {duplicate_result.error}"
             raise AssertionError(msg)
 
@@ -322,7 +334,10 @@ class TestFlextGrpcService:
         )
         validation2 = service2.validate_domain_rules()
         assert validation2.is_failure
-        if validation2.error is None or "must have at least one method" not in validation2.error:
+        if (
+            validation2.error is None
+            or "must have at least one method" not in validation2.error
+        ):
             msg = f"Expected {'must have at least one method'} in {validation2.error}"
             raise AssertionError(msg)
 
@@ -348,7 +363,10 @@ class TestFlextGrpcService:
         # Cannot add existing method
         duplicate_result = updated_service.add_method("method1")
         assert duplicate_result.is_failure
-        if duplicate_result.error is None or "Method already exists" not in duplicate_result.error:
+        if (
+            duplicate_result.error is None
+            or "Method already exists" not in duplicate_result.error
+        ):
             msg = f"Expected {'Method already exists'} in {duplicate_result.error}"
             raise AssertionError(msg)
 
@@ -439,13 +457,16 @@ class TestFlextGrpcStream:
         )
         validation1 = stream1.validate_domain_rules()
         assert validation1.is_failure
-        if validation1.error is None or "method name cannot be empty" not in validation1.error:
+        if (
+            validation1.error is None
+            or "method name cannot be empty" not in validation1.error
+        ):
             msg = f"Expected {'method name cannot be empty'} in {validation1.error}"
             raise AssertionError(msg)
 
         # Invalid stream type - Pydantic validates at creation time
-        import pytest  # noqa: PLC0415
-        from pydantic_core import ValidationError  # noqa: PLC0415
+        import pytest
+        from pydantic_core import ValidationError
 
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcStream(

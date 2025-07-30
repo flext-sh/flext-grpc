@@ -45,6 +45,7 @@ class FlextGrpcServerService(FlextDomainService):
 
         # Type validation for server
         from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+
         if not isinstance(server, FlextGrpcServer):
             return FlextResult.fail("Server must be a FlextGrpcServer instance")
 
@@ -56,7 +57,10 @@ class FlextGrpcServerService(FlextDomainService):
         return self._execute_server_operation(operation, server, **kwargs)
 
     def _execute_server_operation(
-        self, operation: str, server: FlextGrpcServer, **options: object,
+        self,
+        operation: str,
+        server: FlextGrpcServer,
+        **options: object,
     ) -> FlextResult[object]:
         """Execute specific server operation."""
         # Use match for better type inference
@@ -82,7 +86,9 @@ class FlextGrpcServerService(FlextDomainService):
                 return FlextResult.fail(f"Unknown server operation: {operation}")
 
     def _handle_add_service(
-        self, server: FlextGrpcServer, options: dict[str, object],
+        self,
+        server: FlextGrpcServer,
+        options: dict[str, object],
     ) -> FlextResult[object]:
         """Handle add_service operation."""
         service = options.get("service")
@@ -91,6 +97,7 @@ class FlextGrpcServerService(FlextDomainService):
 
         # Type validation for service
         from flext_grpc.entities import FlextGrpcService  # noqa: PLC0415
+
         if not isinstance(service, FlextGrpcService):
             return FlextResult.fail("Service must be a FlextGrpcService instance")
 
@@ -133,18 +140,21 @@ class FlextGrpcServerService(FlextDomainService):
         return stopping_server.mark_stopped()
 
     def _get_server_status(
-        self, server: FlextGrpcServer,
+        self,
+        server: FlextGrpcServer,
     ) -> FlextResult[dict[str, object]]:
         """Get comprehensive server status."""
-        return FlextResult.ok({
-            "id": server.id,
-            "address": server.address,
-            "state": server.state,
-            "is_running": server.is_running,
-            "service_count": len(server.services),
-            "max_workers": server.max_workers,
-            "version": server.version,
-        })
+        return FlextResult.ok(
+            {
+                "id": server.id,
+                "address": server.address,
+                "state": server.state,
+                "is_running": server.is_running,
+                "service_count": len(server.services),
+                "max_workers": server.max_workers,
+                "version": server.version,
+            },
+        )
 
 
 class FlextGrpcClientService(FlextDomainService):
@@ -172,6 +182,7 @@ class FlextGrpcClientService(FlextDomainService):
 
         # Type validation for client
         from flext_grpc.entities import FlextGrpcClient  # noqa: PLC0415
+
         if not isinstance(client, FlextGrpcClient):
             return FlextResult.fail("Client must be a FlextGrpcClient instance")
 
@@ -186,7 +197,7 @@ class FlextGrpcClientService(FlextDomainService):
         self,
         operation: str,
         client: FlextGrpcClient,
-        **kwargs: object
+        **kwargs: object,
     ) -> FlextResult[object]:
         """Execute specific client operation - SOLID principle pattern."""
         # Use match for better type inference
@@ -245,7 +256,8 @@ class FlextGrpcClientService(FlextDomainService):
         return client.copy_with(channel=ready_channel)
 
     def _disconnect_client(
-        self, client: FlextGrpcClient,
+        self,
+        client: FlextGrpcClient,
     ) -> FlextResult[FlextGrpcClient]:
         """Disconnect client with proper channel state management."""
         if not client.is_connected:
@@ -278,25 +290,30 @@ class FlextGrpcClientService(FlextDomainService):
         if not method_name:
             return FlextResult.fail("Method name is required")
 
-        return FlextResult.ok({
-            "status": "success",
-            "method": method_name,
-            "client_id": client.id,
-            "data": request_data,
-            "target": client.target,
-        })
+        return FlextResult.ok(
+            {
+                "status": "success",
+                "method": method_name,
+                "client_id": client.id,
+                "data": request_data,
+                "target": client.target,
+            },
+        )
 
     def _get_client_status(
-        self, client: FlextGrpcClient,
+        self,
+        client: FlextGrpcClient,
     ) -> FlextResult[dict[str, object]]:
         """Get comprehensive client status."""
-        return FlextResult.ok({
-            "id": client.id,
-            "is_connected": client.is_connected,
-            "target": client.target,
-            "channel_state": client.channel.state if client.channel else None,
-            "version": client.version,
-        })
+        return FlextResult.ok(
+            {
+                "id": client.id,
+                "is_connected": client.is_connected,
+                "target": client.target,
+                "channel_state": client.channel.state if client.channel else None,
+                "version": client.version,
+            },
+        )
 
 
 class FlextGrpcStreamService(FlextDomainService):
@@ -329,6 +346,7 @@ class FlextGrpcStreamService(FlextDomainService):
 
                 # Type validation and conversion
                 from flext_grpc.entities import FlextGrpcClient  # noqa: PLC0415
+
                 if not isinstance(client, FlextGrpcClient):
                     return FlextResult.fail("Client must be a FlextGrpcClient instance")
 
@@ -345,6 +363,7 @@ class FlextGrpcStreamService(FlextDomainService):
 
                 # Type validation
                 from flext_grpc.entities import FlextGrpcStream  # noqa: PLC0415
+
                 if not isinstance(stream, FlextGrpcStream):
                     return FlextResult.fail("Stream must be a FlextGrpcStream instance")
 
@@ -357,6 +376,7 @@ class FlextGrpcStreamService(FlextDomainService):
 
                 # Type validation
                 from flext_grpc.entities import FlextGrpcStream  # noqa: PLC0415
+
                 if not isinstance(stream, FlextGrpcStream):
                     return FlextResult.fail("Stream must be a FlextGrpcStream instance")
 
@@ -386,10 +406,13 @@ class FlextGrpcStreamService(FlextDomainService):
 
         # Use entity factory for proper creation
         from flext_grpc.entities import FlextGrpcEntityFactory  # noqa: PLC0415
+
         return FlextGrpcEntityFactory.create_stream(method_name, stream_type)
 
     def _send_data(
-        self, stream: FlextGrpcStream, data: object,
+        self,
+        stream: FlextGrpcStream,
+        data: object,
     ) -> FlextResult[bool]:
         """Send data through stream."""
         validation = stream.validate_domain_rules()

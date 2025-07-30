@@ -35,13 +35,13 @@ class TestPlatformIntegration:
         assert status_result.is_success
         status = status_result.data
         if status["address"] != "localhost:9000":
-            msg = f"Expected {"localhost:9000"}, got {status["address"]}"
+            msg = f"Expected {'localhost:9000'}, got {status['address']}"
             raise AssertionError(msg)
         if not (status["is_running"]):
-            msg = f"Expected True, got {status["is_running"]}"
+            msg = f"Expected True, got {status['is_running']}"
             raise AssertionError(msg)
         if status["state"] != "running":
-            msg = f"Expected {"running"}, got {status["state"]}"
+            msg = f"Expected {'running'}, got {status['state']}"
             raise AssertionError(msg)
 
         # Stop server
@@ -66,21 +66,23 @@ class TestPlatformIntegration:
         assert status_result.is_success
         status = status_result.data
         if not (status["is_connected"]):
-            msg = f"Expected True, got {status["is_connected"]}"
+            msg = f"Expected True, got {status['is_connected']}"
             raise AssertionError(msg)
         if status["target"] != "localhost:9001":
-            msg = f"Expected {"localhost:9001"}, got {status["target"]}"
+            msg = f"Expected {'localhost:9001'}, got {status['target']}"
             raise AssertionError(msg)
         assert status["channel_state"] == "ready"
 
         # Make call
         call_result = self.platform.make_call(
-            connected_client, "test_method", {"data": "test"},
+            connected_client,
+            "test_method",
+            {"data": "test"},
         )
         assert call_result.is_success
         response = call_result.data
         if response["status"] != "success":
-            msg = f"Expected {"success"}, got {response["status"]}"
+            msg = f"Expected {'success'}, got {response['status']}"
             raise AssertionError(msg)
         assert response["method"] == "test_method"
 
@@ -93,12 +95,14 @@ class TestPlatformIntegration:
 
         # Create stream
         stream_result = self.platform.create_stream(
-            connected_client, "stream_method", "server_streaming",
+            connected_client,
+            "stream_method",
+            "server_streaming",
         )
         assert stream_result.is_success
         stream = stream_result.data
         if stream.method_name != "stream_method":
-            msg = f"Expected {"stream_method"}, got {stream.method_name}"
+            msg = f"Expected {'stream_method'}, got {stream.method_name}"
             raise AssertionError(msg)
         assert stream.stream_type == "server_streaming"
         assert stream.is_server_streaming
@@ -132,7 +136,9 @@ class TestPlatformIntegration:
         # 2. Add service to server
         service_entity = create_service("IntegrationService", ["integration_method"])
         add_service_result = self.platform.server_operation(
-            "add_service", started_server, service=service_entity,
+            "add_service",
+            started_server,
+            service=service_entity,
         )
         assert add_service_result.is_success
         server_with_service = add_service_result.data
@@ -154,15 +160,17 @@ class TestPlatformIntegration:
         assert call_result.is_success
         response = call_result.data
         if response["method"] != "integration_method":
-            msg = f"Expected {"integration_method"}, got {response["method"]}"
+            msg = f"Expected {'integration_method'}, got {response['method']}"
             raise AssertionError(msg)
         if not (response["data"]["integration"]):
-            msg = f"Expected True, got {response["data"]["integration"]}"
+            msg = f"Expected True, got {response['data']['integration']}"
             raise AssertionError(msg)
 
         # 5. Create stream
         stream_result = self.platform.create_stream(
-            connected_client, "integration_stream", "bidirectional",
+            connected_client,
+            "integration_stream",
+            "bidirectional",
         )
         assert stream_result.is_success
         stream = stream_result.data
@@ -173,10 +181,10 @@ class TestPlatformIntegration:
         assert final_status.is_success
         status = final_status.data
         if status["service_count"] != 1:
-            msg = f"Expected {1}, got {status["service_count"]}"
+            msg = f"Expected {1}, got {status['service_count']}"
             raise AssertionError(msg)
         if not (status["is_running"]):
-            msg = f"Expected True, got {status["is_running"]}"
+            msg = f"Expected True, got {status['is_running']}"
             raise AssertionError(msg)
 
     def test_error_propagation_integration(self) -> None:
@@ -188,14 +196,14 @@ class TestPlatformIntegration:
         service_result = self.service.execute("server", "start", invalid_server)
         assert service_result.is_failure
         if "Invalid server" not in service_result.error:
-            msg = f"Expected {"Invalid server"} in {service_result.error}"
+            msg = f"Expected {'Invalid server'} in {service_result.error}"
             raise AssertionError(msg)
 
         # Platform level
         platform_result = self.platform.start_server(invalid_server)
         assert platform_result.is_failure
         if "Invalid server" not in platform_result.error:
-            msg = f"Expected {"Invalid server"} in {platform_result.error}"
+            msg = f"Expected {'Invalid server'} in {platform_result.error}"
             raise AssertionError(msg)
 
     def test_state_consistency_across_operations(self) -> None:
@@ -213,19 +221,16 @@ class TestPlatformIntegration:
         # States should be consistent
         assert service_server.is_running
         if not (status["is_running"]):
-            msg = f"Expected True, got {status["is_running"]}"
+            msg = f"Expected True, got {status['is_running']}"
             raise AssertionError(msg)
         if status["state"] != "running":
-            msg = f"Expected {"running"}, got {status["state"]}"
+            msg = f"Expected {'running'}, got {status['state']}"
             raise AssertionError(msg)
 
     def test_concurrent_operations(self) -> None:
         """Test concurrent operations don't interfere."""
         # Create multiple servers
-        servers = [
-            create_server("localhost", 9006 + i)
-            for i in range(3)
-        ]
+        servers = [create_server("localhost", 9006 + i) for i in range(3)]
 
         # Start all servers
         started_servers = []
@@ -240,7 +245,7 @@ class TestPlatformIntegration:
             status_result = self.platform.get_server_status(server)
             assert status_result.is_success
             if not (status_result.data["is_running"]):
-                msg = f"Expected True, got {status_result.data["is_running"]}"
+                msg = f"Expected True, got {status_result.data['is_running']}"
                 raise AssertionError(msg)
 
     def test_configuration_propagation(self) -> None:
@@ -249,7 +254,6 @@ class TestPlatformIntegration:
         platform = FlextGrpcPlatform(config)
 
         if platform.config != config:
-
             msg = f"Expected {config}, got {platform.config}"
             raise AssertionError(msg)
 

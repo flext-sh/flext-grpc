@@ -388,11 +388,12 @@ class TestCompleteGrpcWorkflow:
 
         # 4. Validate types work
         target_str = "localhost:9106"
-        target = TGrpcTarget(target_str)
-        from flext_grpc import (  # noqa: PLC0415
+        TGrpcTarget(target_str)
+        from flext_grpc import (
             flext_grpc_parse_target,
             flext_grpc_validate_target,
         )
+
         assert flext_grpc_validate_target(target_str)
         parsed = flext_grpc_parse_target(target_str)
         if parsed != ("localhost", 9106):

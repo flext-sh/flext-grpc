@@ -9,6 +9,7 @@ FLEXT gRPC is a high-performance gRPC communication platform built with Python 3
 ## Architecture
 
 ### Core Patterns
+
 - **Clean Architecture**: Clear separation between domain entities, services, and infrastructure
 - **Domain-Driven Design (DDD)**: Rich domain entities with business logic and validation
 - **Result Pattern**: Using `FlextResult` for robust error handling throughout the codebase
@@ -18,6 +19,7 @@ FLEXT gRPC is a high-performance gRPC communication platform built with Python 3
 ### Key Components
 
 #### Domain Entities (`src/flext_grpc/entities.py`)
+
 - **FlextGrpcServer**: Server lifecycle management with state transitions (stopped → starting → running → stopping)
 - **FlextGrpcClient**: Client connection management with channel state tracking
 - **FlextGrpcChannel**: gRPC channel with connection states (idle → connecting → ready → shutdown)
@@ -25,16 +27,19 @@ FLEXT gRPC is a high-performance gRPC communication platform built with Python 3
 - **FlextGrpcStream**: Streaming operations support (unary, server_streaming, client_streaming, bidirectional)
 
 #### Domain Services (`src/flext_grpc/services.py`)
+
 - **FlextGrpcServerService**: Server operations (start, stop, add_service, status)
 - **FlextGrpcClientService**: Client operations (connect, disconnect, call, status)
 - **FlextGrpcStreamService**: Stream operations (create, send, close)
 
 #### Platform Layer (`src/flext_grpc/platform.py`)
+
 - **FlextGrpcPlatform**: Unified facade providing high-level gRPC operations
 - Integrates with global container for service management
 - Convenience methods for common operations
 
 #### Configuration (`src/flext_grpc/config.py`)
+
 - **FlextGrpcConfig**: Settings management using `FlextBaseSettings`
 - Validation for host, port, workers, and timeout
 - Environment variable support
@@ -42,6 +47,7 @@ FLEXT gRPC is a high-performance gRPC communication platform built with Python 3
 ## Development Commands
 
 ### Essential Commands
+
 ```bash
 # Development setup
 make setup                    # Complete development environment setup
@@ -70,6 +76,7 @@ make fix                     # Auto-fix all issues
 ```
 
 ### Protocol Buffers
+
 ```bash
 make proto-gen               # Generate protobuf code from .proto files
 make proto-clean             # Clean generated protobuf files
@@ -78,6 +85,7 @@ make proto-check             # Check if generation is needed
 ```
 
 ### gRPC Server Operations
+
 ```bash
 make dev-server              # Start development gRPC server (port 50051)
 make run-server              # Start production gRPC server
@@ -87,6 +95,7 @@ make server-metrics          # Display server metrics
 ```
 
 ### Build and Distribution
+
 ```bash
 make build                   # Build distribution packages
 make clean                   # Remove all artifacts
@@ -95,16 +104,19 @@ make clean                   # Remove all artifacts
 ## Testing Strategy
 
 ### Test Structure
+
 - **Unit Tests** (`tests/unit/`): Test individual components in isolation
 - **Integration Tests** (`tests/integration/`): Test component interactions
 - **E2E Tests** (`tests/e2e/`): Test complete workflows
 
 ### Coverage Requirements
+
 - **Minimum 90% coverage** enforced by `make test`
 - Current coverage: 76% across core modules
 - Focus on domain entities and services
 
 ### Test Configuration
+
 - Uses pytest with comprehensive plugins
 - Auto-cleanup of global container between tests
 - Fixtures for common test data and configurations
@@ -112,11 +124,12 @@ make clean                   # Remove all artifacts
 ## Key Development Patterns
 
 ### Entity Creation and Validation
+
 ```python
 # Create entities using direct instantiation
 server = FlextGrpcServer(
     id="server-1",
-    host="localhost", 
+    host="localhost",
     port=50051,
     max_workers=10,
     created_at=datetime.now(UTC)
@@ -129,6 +142,7 @@ if validation.is_failure:
 ```
 
 ### State Transitions
+
 ```python
 # Use copy_with() for immutable state changes
 start_result = server.start()  # stopped → starting
@@ -137,6 +151,7 @@ if start_result.is_success:
 ```
 
 ### Service Operations
+
 ```python
 # Use domain services for business logic
 server_service = FlextGrpcServerService()
@@ -146,6 +161,7 @@ if result.is_success:
 ```
 
 ### Result Pattern Usage
+
 ```python
 # Always use FlextResult for operations that can fail
 def risky_operation() -> FlextResult[str]:
@@ -164,6 +180,7 @@ else:
 ## Configuration Management
 
 ### Environment Variables
+
 ```bash
 # gRPC settings
 export FLEXT_GRPC_HOST=localhost
@@ -176,6 +193,7 @@ export PROTOBUF_PYTHON_IMPLEMENTATION=python
 ```
 
 ### Configuration Classes
+
 ```python
 # Use FlextGrpcConfig for settings
 config = FlextGrpcConfig(
@@ -189,6 +207,7 @@ config = FlextGrpcConfig(
 ## Dependencies
 
 ### Core Dependencies
+
 - **flext-core**: Foundation library providing base patterns, entities, and container
 - **flext-observability**: Monitoring, metrics, and health checks
 - **grpcio (>=1.50.0)**: Core gRPC functionality
@@ -197,6 +216,7 @@ config = FlextGrpcConfig(
 - **protobuf (>=4)**: Protocol buffer support
 
 ### Development Tools
+
 - **pytest**: Testing framework with comprehensive plugins
 - **ruff**: Linting and formatting (ALL rules enabled)
 - **mypy**: Strict type checking
@@ -206,12 +226,13 @@ config = FlextGrpcConfig(
 ## Common Issues and Solutions
 
 ### Quality Gate Failures
+
 ```bash
 # If lint fails
 make fix                     # Auto-fix issues
 make format                  # Format code
 
-# If type check fails  
+# If type check fails
 mypy src/ tests/ --show-error-codes  # See specific errors
 
 # If tests fail
@@ -220,6 +241,7 @@ pytest tests/ --lf           # Run only last failed
 ```
 
 ### Protocol Buffer Issues
+
 ```bash
 # Regenerate protobuf files
 make proto-clean
@@ -230,6 +252,7 @@ make proto-check
 ```
 
 ### Container and Service Issues
+
 ```bash
 # Clean container state in tests
 pytest tests/ --clean-container
@@ -241,6 +264,7 @@ python -c "from flext_core import get_flext_container; print(get_flext_container
 ## Integration with FLEXT Ecosystem
 
 This library is part of the larger FLEXT ecosystem and follows established patterns:
+
 - Uses `flext-core` for foundational patterns
 - Integrates with `flext-observability` for monitoring
 - Provides gRPC communication layer for other FLEXT services
@@ -249,39 +273,48 @@ This library is part of the larger FLEXT ecosystem and follows established patte
 ## TODO: GAPS DE ARQUITETURA IDENTIFICADOS - PRIORIDADE ALTA
 
 ### 🚨 GAP 1: Go Integration Missing
+
 **Status**: ALTO - gRPC bridge com FlexCore (Go) não especificado
 **Problema**:
+
 - FlexCore (Go) usa gRPC mas integração com flext-grpc não documentada
 - Protocol buffers não compartilhados entre Go e Python services
 - Type safety não garantida entre Go e Python gRPC calls
 
 **TODO**:
+
 - [ ] Criar shared Protocol Buffer definitions para Go/Python integration
 - [ ] Documentar gRPC client patterns para Go services
 - [ ] Implementar type-safe serialization entre Go/Python
 - [ ] Criar integration testing com FlexCore service
 
 ### 🚨 GAP 2: Service Discovery Integration Gap
+
 **Status**: ALTO - Service discovery não integrado com ecosystem
 **Problema**:
+
 - gRPC clients precisam conhecer hosts/ports manualmente
 - Não integra com service registry do ecosystem
 - Load balancing entre services não implementado
 
 **TODO**:
+
 - [ ] Implementar service discovery integration
 - [ ] Criar client-side load balancing patterns
 - [ ] Integrar com ecosystem service registry
 - [ ] Documentar service discovery patterns para deployment
 
 ### 🚨 GAP 3: Coverage de Testes Baixa (76%)
+
 **Status**: ALTO - Cobertura abaixo do mínimo ecosystem (90%)
 **Problema**:
+
 - Coverage atual 76% vs 90% mínimo exigido pelo ecosystem
 - Domain entities e services não completamente testados
 - Integration tests insuficientes
 
 **TODO**:
+
 - [ ] Aumentar coverage para 90%+ seguindo padrões ecosystem
 - [ ] Criar comprehensive integration tests
 - [ ] Implementar property-based testing para entities
@@ -290,5 +323,6 @@ This library is part of the larger FLEXT ecosystem and follows established patte
 ## Examples
 
 See `examples/` directory for comprehensive usage examples:
+
 - `basic_usage.py`: Core functionality and entity usage
 - `advanced_usage.py`: Complex scenarios with streaming and service management

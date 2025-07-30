@@ -26,7 +26,9 @@ class GrpcServerManager:
         self.servers: dict[str, FlextGrpcServer] = {}
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
-    def create_server_pool(self, base_port: int = 8000, count: int = 3) -> list[FlextGrpcServer]:
+    def create_server_pool(
+        self, base_port: int = 8000, count: int = 3
+    ) -> list[FlextGrpcServer]:
         """Create a pool of servers on consecutive ports."""
         servers = []
 
@@ -117,7 +119,9 @@ class GrpcClientPool:
         self.clients: dict[str, FlextGrpcClient] = {}
         self.connection_status: dict[str, bool] = {}
 
-    def create_clients_for_servers(self, servers: list[FlextGrpcServer]) -> list[FlextGrpcClient]:
+    def create_clients_for_servers(
+        self, servers: list[FlextGrpcServer]
+    ) -> list[FlextGrpcClient]:
         """Create clients for a list of servers."""
         clients = []
 
@@ -156,7 +160,9 @@ class GrpcClientPool:
                 print(f"✅ Connected client {client_id} to {client.channel.target}")
             else:
                 results[client_id] = False
-                print(f"❌ Failed to connect client {client_id}: {connect_result.error}")
+                print(
+                    f"❌ Failed to connect client {client_id}: {connect_result.error}"
+                )
 
         return results
 
@@ -172,7 +178,9 @@ class GrpcClientPool:
                     print(f"✅ Called {method_name} on {client_id}")
                 else:
                     results[client_id] = {"error": call_result.error}
-                    print(f"❌ Failed to call {method_name} on {client_id}: {call_result.error}")
+                    print(
+                        f"❌ Failed to call {method_name} on {client_id}: {call_result.error}"
+                    )
             else:
                 results[client_id] = {"error": "Client not connected"}
                 print(f"⚠️ Client {client_id} not connected")
@@ -221,11 +229,13 @@ class ServiceRegistry:
         for service_id, service in self.services.items():
             if service.has_method(method_name):
                 server_id = self.service_servers[service_id]
-                matches.append({
-                    "service_id": service_id,
-                    "service_name": service.name,
-                    "server_id": server_id,
-                })
+                matches.append(
+                    {
+                        "service_id": service_id,
+                        "service_name": service.name,
+                        "server_id": server_id,
+                    }
+                )
 
         return matches
 
@@ -249,7 +259,9 @@ def example_1_server_pool() -> None:
     status = manager.get_server_status()
     print("\nServer Status:")
     for server_id, info in status.items():
-        print(f"  {server_id}: {info['address']} ({info['state']}) - {info['max_workers']} workers")
+        print(
+            f"  {server_id}: {info['address']} ({info['state']}) - {info['max_workers']} workers"
+        )
 
     # Stop all servers
     stop_results = manager.stop_all_servers()
@@ -280,7 +292,9 @@ def example_2_client_pool() -> None:
 
     # Broadcast method calls
     print("\nBroadcasting 'GetStatus' call:")
-    broadcast_results = client_pool.broadcast_call("GetStatus", {"timestamp": datetime.now(UTC).isoformat()})
+    broadcast_results = client_pool.broadcast_call(
+        "GetStatus", {"timestamp": datetime.now(UTC).isoformat()}
+    )
 
     for client_id, result in broadcast_results.items():
         if "error" not in result:
@@ -331,7 +345,9 @@ def example_3_service_registry() -> None:
     discovery = registry.discover_services()
     print("Registered Services:")
     for info in discovery.values():
-        print(f"  {info['name']}: {info['method_count']} methods on {info['server_id']}")
+        print(
+            f"  {info['name']}: {info['method_count']} methods on {info['server_id']}"
+        )
 
     # Find services by method
     get_services = registry.find_service_by_method("GetUser")
@@ -406,7 +422,7 @@ def example_5_error_handling() -> None:
         invalid_server = FlextGrpcServer(
             id="invalid-server",
             host="",  # Invalid
-            port=0,   # Invalid
+            port=0,  # Invalid
             created_at=datetime.now(UTC),
         )
         validation = invalid_server.validate_domain_rules()
