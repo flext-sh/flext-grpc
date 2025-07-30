@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+from flext_core import FlextResult
 from flext_core.utilities import FlextGenerators
 
 from flext_grpc.entities import (
@@ -19,6 +20,40 @@ from flext_grpc.entities import (
 )
 from flext_grpc.services import FlextGrpcService
 from flext_grpc.types import TGrpcTarget
+
+
+def _assert_error_contains(result: FlextResult[object], expected_text: str) -> None:
+    """Helper to assert error contains expected text - DRY principle."""
+    assert result.is_failure
+    if result.error is None or expected_text not in result.error:
+        raise AssertionError(f"Expected '{expected_text}' in {result.error}")
+
+
+def _assert_server_result(result: FlextResult[object]) -> FlextGrpcServer:
+    """Helper to validate and return server result - DRY principle."""
+    assert result.is_success
+    assert result.data is not None
+    if not isinstance(result.data, FlextGrpcServer):
+        raise TypeError(f"Expected FlextGrpcServer, got {type(result.data)}")
+    return result.data
+
+
+def _assert_client_result(result: FlextResult[object]) -> FlextGrpcClient:
+    """Helper to validate and return client result - DRY principle."""
+    assert result.is_success
+    assert result.data is not None
+    if not isinstance(result.data, FlextGrpcClient):
+        raise TypeError(f"Expected FlextGrpcClient, got {type(result.data)}")
+    return result.data
+
+
+def _assert_dict_result(result: FlextResult[object]) -> dict[str, object]:
+    """Helper to validate and return dict result - DRY principle."""
+    assert result.is_success
+    assert result.data is not None
+    if not isinstance(result.data, dict):
+        raise TypeError(f"Expected dict, got {type(result.data)}")
+    return result.data
 
 
 class TestFlextGrpcService:
@@ -51,64 +86,53 @@ class TestFlextGrpcService:
     def test_execute_without_operation_type_fails(self) -> None:
         """Test execute without operation type fails."""
         result = self.service.execute()
-        assert result.is_failure
-        if "Missing operation type" not in result.error:
-            raise AssertionError(
-                f"Expected {'Missing operation type'} in {result.error}"
-            )
+        _assert_error_contains(result, "Missing required argument: service_type")
 
     def test_execute_with_unknown_operation_type_fails(self) -> None:
         """Test execute with unknown operation type fails."""
         result = self.service.execute("unknown_type")
-        assert result.is_failure
-        if "Unknown operation type: unknown_type" not in result.error:
-            raise AssertionError(
-                f"Expected {'Unknown operation type: unknown_type'} in {result.error}"
-            )
+        _assert_error_contains(result, "Unknown service type: unknown_type")
 
     def test_server_start_operation(self) -> None:
         """Test server start operation."""
         result = self.service.execute("server", "start", self.server)
-        assert result.is_success
-        started_server = result.data
+        started_server = _assert_server_result(result)
         if started_server.state != "running":
-            raise AssertionError(f"Expected {'running'}, got {started_server.state}")
+            raise AssertionError(f"Expected 'running', got {started_server.state}")
 
     def test_server_start_already_running_fails(self) -> None:
         """Test starting already running server fails."""
         running_server = self.server.copy_with(state="running").data
+        assert running_server is not None
         result = self.service.execute("server", "start", running_server)
-        assert result.is_failure
-        if "Server is already running" not in result.error:
-            raise AssertionError(
-                f"Expected {'Server is already running'} in {result.error}"
-            )
+        _assert_error_contains(result, "Server is already running")
 
     def test_server_start_invalid_server_fails(self) -> None:
         """Test starting invalid server fails."""
-        invalid_server = self.server.copy_with(host="").data
+        # Create invalid server directly - copy_with will fail validation
+        from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+        invalid_server = FlextGrpcServer(
+            id=self.server.id,
+            host="",  # Invalid empty host
+            port=self.server.port,
+            created_at=self.server.created_at,
+        )
         result = self.service.execute("server", "start", invalid_server)
-        assert result.is_failure
-        if "Invalid server" not in result.error:
-            raise AssertionError(f"Expected {'Invalid server'} in {result.error}")
+        _assert_error_contains(result, "Invalid server")
 
     def test_server_stop_operation(self) -> None:
         """Test server stop operation."""
         running_server = self.server.copy_with(state="running").data
+        assert running_server is not None
         result = self.service.execute("server", "stop", running_server)
-        assert result.is_success
-        stopped_server = result.data
+        stopped_server = _assert_server_result(result)
         if stopped_server.state != "stopped":
-            raise AssertionError(f"Expected {'stopped'}, got {stopped_server.state}")
+            raise AssertionError(f"Expected 'stopped', got {stopped_server.state}")
 
     def test_server_stop_not_running_fails(self) -> None:
         """Test stopping non-running server fails."""
         result = self.service.execute("server", "stop", self.server)
-        assert result.is_failure
-        if "Server is not running" not in result.error:
-            raise AssertionError(
-                f"Expected {'Server is not running'} in {result.error}"
-            )
+        _assert_error_contains(result, "Server is not running")
 
     def test_server_add_service_operation(self) -> None:
         """Test server add service operation."""
@@ -122,23 +146,19 @@ class TestFlextGrpcService:
         result = self.service.execute(
             "server", "add_service", self.server, service=service_entity
         )
-        assert result.is_success
-        updated_server = result.data
+        updated_server = _assert_server_result(result)
         if len(updated_server.services) != 1:
-            raise AssertionError(f"Expected {1}, got {len(updated_server.services)}")
+            raise AssertionError(f"Expected 1, got {len(updated_server.services)}")
 
     def test_server_add_service_without_service_fails(self) -> None:
         """Test server add service without service fails."""
         result = self.service.execute("server", "add_service", self.server)
-        assert result.is_failure
-        if "Service required" not in result.error:
-            raise AssertionError(f"Expected {'Service required'} in {result.error}")
+        _assert_error_contains(result, "Service required")
 
     def test_server_status_operation(self) -> None:
         """Test server status operation."""
         result = self.service.execute("server", "status", self.server)
-        assert result.is_success
-        status = result.data
+        status = _assert_dict_result(result)
         if status["address"] != "localhost:50051":
             raise AssertionError(
                 f"Expected {'localhost:50051'}, got {status['address']}"
@@ -154,16 +174,14 @@ class TestFlextGrpcService:
         """Test server unknown operation fails."""
         result = self.service.execute("server", "unknown_op", self.server)
         assert result.is_failure
-        if "Unknown server operation: unknown_op" not in result.error:
-            raise AssertionError(
-                f"Expected {'Unknown server operation: unknown_op'} in {result.error}"
-            )
+        _assert_error_contains(result, "Unknown server operation: unknown_op")
 
     def test_client_connect_operation(self) -> None:
         """Test client connect operation."""
         result = self.service.execute("client", "connect", self.client)
-        assert result.is_success
-        connected_client = result.data
+        connected_client = _assert_client_result(result)
+        if connected_client.channel is None:
+            raise AssertionError("Expected channel to be present")
         if connected_client.channel.state != "ready":
             raise AssertionError(
                 f"Expected {'ready'}, got {connected_client.channel.state}"
@@ -172,33 +190,33 @@ class TestFlextGrpcService:
     def test_client_connect_already_connected_fails(self) -> None:
         """Test connecting already connected client fails."""
         ready_channel = self.channel.copy_with(state="ready").data
+        assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
+        assert connected_client is not None
 
         result = self.service.execute("client", "connect", connected_client)
         assert result.is_failure
-        if "Client is already connected" not in result.error:
-            raise AssertionError(
-                f"Expected {'Client is already connected'} in {result.error}"
-            )
+        _assert_error_contains(result, "Client is already connected")
 
     def test_client_connect_no_channel_fails(self) -> None:
         """Test connecting client without channel fails."""
         no_channel_client = self.client.copy_with(channel=None).data
+        assert no_channel_client is not None
         result = self.service.execute("client", "connect", no_channel_client)
         assert result.is_failure
-        if "Client has no channel" not in result.error:
-            raise AssertionError(
-                f"Expected {'Client has no channel'} in {result.error}"
-            )
+        _assert_error_contains(result, "Client has no channel")
 
     def test_client_disconnect_operation(self) -> None:
         """Test client disconnect operation."""
         ready_channel = self.channel.copy_with(state="ready").data
+        assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
+        assert connected_client is not None
 
         result = self.service.execute("client", "disconnect", connected_client)
-        assert result.is_success
-        disconnected_client = result.data
+        disconnected_client = _assert_client_result(result)
+        if disconnected_client.channel is None:
+            raise AssertionError("Expected channel to be present")
         if disconnected_client.channel.state != "idle":
             raise AssertionError(
                 f"Expected {'idle'}, got {disconnected_client.channel.state}"
@@ -208,15 +226,14 @@ class TestFlextGrpcService:
         """Test disconnecting non-connected client fails."""
         result = self.service.execute("client", "disconnect", self.client)
         assert result.is_failure
-        if "Client is not connected" not in result.error:
-            raise AssertionError(
-                f"Expected {'Client is not connected'} in {result.error}"
-            )
+        _assert_error_contains(result, "Client is not connected")
 
     def test_client_call_operation(self) -> None:
         """Test client call operation."""
         ready_channel = self.channel.copy_with(state="ready").data
+        assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
+        assert connected_client is not None
 
         result = self.service.execute(
             "client",
@@ -225,11 +242,11 @@ class TestFlextGrpcService:
             method_name="test_method",
             request_data={"key": "value"},
         )
-        assert result.is_success
-        response = result.data
+        response = _assert_dict_result(result)
         if response["status"] != "success":
-            raise AssertionError(f"Expected {'success'}, got {response['status']}")
+            raise AssertionError(f"Expected 'success', got {response['status']}")
         assert response["method"] == "test_method"
+        assert connected_client is not None
         if response["client_id"] != connected_client.id:
             raise AssertionError(
                 f"Expected {connected_client.id}, got {response['client_id']}"
@@ -245,31 +262,26 @@ class TestFlextGrpcService:
             method_name="test_method",
         )
         assert result.is_failure
-        if "Client is not connected" not in result.error:
-            raise AssertionError(
-                f"Expected {'Client is not connected'} in {result.error}"
-            )
+        _assert_error_contains(result, "Client is not connected")
 
     def test_client_call_no_method_name_fails(self) -> None:
         """Test calling without method name fails."""
         ready_channel = self.channel.copy_with(state="ready").data
+        assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
+        assert connected_client is not None
 
         result = self.service.execute("client", "call", connected_client)
         assert result.is_failure
-        if "Method name is required" not in result.error:
-            raise AssertionError(
-                f"Expected {'Method name is required'} in {result.error}"
-            )
+        _assert_error_contains(result, "Method name is required")
 
     def test_client_status_operation(self) -> None:
         """Test client status operation."""
         result = self.service.execute("client", "status", self.client)
-        assert result.is_success
-        status = result.data
+        status = _assert_dict_result(result)
         if status["is_connected"]:
             raise AssertionError(f"Expected False, got {status['is_connected']}")
-        assert status["channel_target"] == "localhost:50051"
+        assert status["target"] == "localhost:50051"
         if status["channel_state"] != "idle":
             raise AssertionError(f"Expected {'idle'}, got {status['channel_state']}")
 
@@ -277,15 +289,14 @@ class TestFlextGrpcService:
         """Test client unknown operation fails."""
         result = self.service.execute("client", "unknown_op", self.client)
         assert result.is_failure
-        if "Unknown client operation: unknown_op" not in result.error:
-            raise AssertionError(
-                f"Expected {'Unknown client operation: unknown_op'} in {result.error}"
-            )
+        _assert_error_contains(result, "Unknown client operation: unknown_op")
 
     def test_stream_create_operation(self) -> None:
         """Test stream create operation."""
         ready_channel = self.channel.copy_with(state="ready").data
+        assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
+        assert connected_client is not None
 
         result = self.service.execute(
             "stream",
@@ -295,6 +306,11 @@ class TestFlextGrpcService:
             stream_type="server_streaming",
         )
         assert result.is_success
+        assert result.data is not None
+        # Type-safe cast since we know stream operations return FlextGrpcStream
+        from flext_grpc.entities import FlextGrpcStream  # noqa: PLC0415
+        if not isinstance(result.data, FlextGrpcStream):
+            raise TypeError(f"Expected FlextGrpcStream, got {type(result.data)}")
         stream = result.data
         if stream.method_name != "stream_method":
             raise AssertionError(
@@ -306,8 +322,8 @@ class TestFlextGrpcService:
         """Test stream create without client fails."""
         result = self.service.execute("stream", "create", method_name="test")
         assert result.is_failure
-        if "Client required" not in result.error:
-            raise AssertionError(f"Expected {'Client required'} in {result.error}")
+        if result.error is None or "Client must be a FlextGrpcClient instance" not in result.error:
+            raise AssertionError(f"Expected {'Client must be a FlextGrpcClient instance'} in {result.error}")
 
     def test_stream_create_client_not_connected_fails(self) -> None:
         """Test stream create with disconnected client fails."""
@@ -318,22 +334,18 @@ class TestFlextGrpcService:
             method_name="test",
         )
         assert result.is_failure
-        if "Client is not connected" not in result.error:
-            raise AssertionError(
-                f"Expected {'Client is not connected'} in {result.error}"
-            )
+        _assert_error_contains(result, "Client is not connected")
 
     def test_stream_create_no_method_name_fails(self) -> None:
         """Test stream create without method name fails."""
         ready_channel = self.channel.copy_with(state="ready").data
+        assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
+        assert connected_client is not None
 
         result = self.service.execute("stream", "create", client=connected_client)
         assert result.is_failure
-        if "Method name is required" not in result.error:
-            raise AssertionError(
-                f"Expected {'Method name is required'} in {result.error}"
-            )
+        _assert_error_contains(result, "Method name is required")
 
     def test_stream_send_operation(self) -> None:
         """Test stream send operation."""
@@ -369,7 +381,7 @@ class TestFlextGrpcService:
         """Test stream unknown operation fails."""
         result = self.service.execute("stream", "unknown_op")
         assert result.is_failure
-        if "Unknown stream operation: unknown_op" not in result.error:
+        if result.error is None or "Unknown stream operation: unknown_op" not in result.error:
             raise AssertionError(
                 f"Expected {'Unknown stream operation: unknown_op'} in {result.error}"
             )

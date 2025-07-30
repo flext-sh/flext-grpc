@@ -94,10 +94,17 @@ def create_stream(
     stream_type: str = "unary",
 ) -> FlextGrpcStream:
     """Create a new gRPC stream."""
+    # Type-safe cast to TGrpcStreamType
+    from flext_grpc.types import TGrpcStreamType  # noqa: PLC0415
+    valid_types = ("unary", "server_streaming", "client_streaming", "bidirectional")
+    if stream_type not in valid_types:
+        invalid_stream_type_msg = f"Invalid stream type: {stream_type}"
+        raise ValueError(invalid_stream_type_msg)
+    valid_stream_type: TGrpcStreamType = stream_type  # type: ignore[assignment]
     return FlextGrpcStream(
         id=FlextGenerators.generate_entity_id(),
         method_name=method_name,
-        stream_type=stream_type,
+        stream_type=valid_stream_type,
         created_at=datetime.now(UTC),
     )
 
@@ -131,7 +138,7 @@ def validate_address(address: str) -> FlextResult[bool]:
         if validation_error:
             return FlextResult.fail(validation_error)
 
-        return FlextResult.ok(value=True)
+        return FlextResult.ok(data=True)
 
     except (ValueError, AttributeError) as e:
         return FlextResult.fail(f"Address validation error: {e}")

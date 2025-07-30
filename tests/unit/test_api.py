@@ -72,7 +72,7 @@ class TestAPIFunctions:
         assert client.channel.state == "idle"
 
         # Test with options
-        options = {"timeout": 30}
+        options: dict[str, object] = {"timeout": 30}
         client_with_options = create_client("localhost:50051", options)
         if client_with_options.options != options:
             raise AssertionError(
@@ -88,7 +88,7 @@ class TestAPIFunctions:
         assert channel.state == "idle"
 
         # Test with options
-        options = {"compression": "gzip"}
+        options: dict[str, object] = {"compression": "gzip"}
         channel_with_options = create_channel("localhost:50051", options)
         if channel_with_options.options != options:
             raise AssertionError(
@@ -192,13 +192,13 @@ class TestAPIFunctions:
             )
 
         # Invalid parsing should raise ValueError
-        with pytest.raises(ValueError, match="Invalid address format"):
+        with pytest.raises(ValueError, match="Port must be a number"):
             parse_address("invalid:address")
 
-        with pytest.raises(ValueError, match=".*port.*"):
+        with pytest.raises(ValueError, match="Address must be in host:port format"):
             parse_address("missing_port")
 
-        with pytest.raises(ValueError, match=".*port.*"):
+        with pytest.raises(ValueError, match="Invalid host format"):
             parse_address("invalid_port:abc")
 
     def test_create_complete_setup(self) -> None:
@@ -214,6 +214,11 @@ class TestAPIFunctions:
         assert "target" in setup
 
         # Check types
+        from flext_grpc.entities import (  # noqa: PLC0415
+            FlextGrpcClient,
+            FlextGrpcServer,
+            FlextGrpcService,
+        )
         assert isinstance(setup["server"], FlextGrpcServer)
         assert isinstance(setup["client"], FlextGrpcClient)
         assert isinstance(setup["service"], FlextGrpcService)
@@ -223,9 +228,9 @@ class TestAPIFunctions:
         if setup["server"].host != "localhost":
             raise AssertionError(f"Expected {'localhost'}, got {setup['server'].host}")
         assert setup["server"].port == 50051
-        if setup["client"].get_target() != "localhost:50051":
+        if setup["client"].target != "localhost:50051":
             raise AssertionError(
-                f"Expected {'localhost:50051'}, got {setup['client'].get_target()}"
+                f"Expected {'localhost:50051'}, got {setup['client'].target}"
             )
         assert setup["service"].name == "DefaultService"
         if setup["target"] != "localhost:50051":
@@ -238,16 +243,27 @@ class TestAPIFunctions:
             "CustomService",
             ["method1", "method2"],
         )
-        if custom_setup["server"].host != "0.0.0.0":
+        # Type-safe access to server
+        custom_server = custom_setup["server"]
+        from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+        if not isinstance(custom_server, FlextGrpcServer):
+            raise TypeError(f"Expected FlextGrpcServer, got {type(custom_server)}")
+        if custom_server.host != "0.0.0.0":
             raise AssertionError(
-                f"Expected {'0.0.0.0'}, got {custom_setup['server'].host}"
+                f"Expected {'0.0.0.0'}, got {custom_server.host}"
             )
-        assert custom_setup["server"].port == 8080
-        if custom_setup["service"].name != "CustomService":
+        assert custom_server.port == 8080
+
+        # Type-safe access to service
+        custom_service = custom_setup["service"]
+        from flext_grpc.entities import FlextGrpcService  # noqa: PLC0415
+        if not isinstance(custom_service, FlextGrpcService):
+            raise TypeError(f"Expected FlextGrpcService, got {type(custom_service)}")
+        if custom_service.name != "CustomService":
             raise AssertionError(
-                f"Expected {'CustomService'}, got {custom_setup['service'].name}"
+                f"Expected {'CustomService'}, got {custom_service.name}"
             )
-        assert custom_setup["service"].methods == ["method1", "method2"]
+        assert custom_service.methods == ["method1", "method2"]
         if custom_setup["target"] != "0.0.0.0:8080":
             raise AssertionError(
                 f"Expected {'0.0.0.0:8080'}, got {custom_setup['target']}"

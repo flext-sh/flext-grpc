@@ -18,6 +18,14 @@ from flext_grpc import (
     validate_address,
 )
 
+from .test_helpers import (
+    assert_client_from_result,
+    assert_client_from_setup,
+    assert_server_from_result,
+    assert_server_from_setup,
+    assert_service_from_setup,
+)
+
 # Constants
 EXPECTED_DATA_COUNT = 3
 
@@ -43,24 +51,27 @@ class TestCompleteGrpcWorkflow:
         # 3. Initialize platform
         platform = FlextGrpcPlatform()
 
-        # 4. Start server with service
-        server_start = platform.start_server(setup["server"])
+        # 4. Start server with service - using DRY helper functions
+        server_entity = assert_server_from_setup(setup)
+        server_start = platform.start_server(server_entity)
         assert server_start.is_success
-        running_server = server_start.data
+        running_server = assert_server_from_result(server_start.data)
 
-        # Add service to server
+        # Add service to server - using DRY helper functions
+        service_entity = assert_service_from_setup(setup)
         service_add = platform.server_operation(
             "add_service",
             running_server,
-            service=setup["service"],
+            service=service_entity,
         )
         assert service_add.is_success
         server_with_service = service_add.data
 
-        # 5. Connect client
-        client_connect = platform.connect_client(setup["client"])
+        # 5. Connect client - using DRY helper functions
+        client_entity = assert_client_from_setup(setup)
+        client_connect = platform.connect_client(client_entity)
         assert client_connect.is_success
-        connected_client = client_connect.data
+        connected_client = assert_client_from_result(client_connect.data)
 
         # 6. Execute enterprise workflow
 
@@ -71,9 +82,14 @@ class TestCompleteGrpcWorkflow:
             {"username": "enterprise_user", "token": "secure_token"},
         )
         assert auth_result.is_success
-        if auth_result.data["method"] != "authenticate":
+        assert auth_result.data is not None
+        # Type-safe cast since we know call results return dict
+        if not isinstance(auth_result.data, dict):
+            raise TypeError(f"Expected dict, got {type(auth_result.data)}")
+        auth_data = auth_result.data
+        if auth_data["method"] != "authenticate":
             raise AssertionError(
-                f"Expected {'authenticate'}, got {auth_result.data['method']}"
+                f"Expected {'authenticate'}, got {auth_data['method']}"
             )
 
         # Data processing
@@ -142,8 +158,8 @@ class TestCompleteGrpcWorkflow:
         )
         assert server_stream.is_success
         s_stream = server_stream.data
-        assert s_stream.is_server_streaming()
-        assert not s_stream.is_client_streaming()
+        assert s_stream.is_server_streaming
+        assert not s_stream.is_client_streaming
 
         # Client streaming
         client_stream = platform.create_stream(
@@ -153,8 +169,8 @@ class TestCompleteGrpcWorkflow:
         )
         assert client_stream.is_success
         c_stream = client_stream.data
-        assert not c_stream.is_server_streaming()
-        assert c_stream.is_client_streaming()
+        assert not c_stream.is_server_streaming
+        assert c_stream.is_client_streaming
 
         # Bidirectional streaming
         bi_stream = platform.create_stream(
@@ -164,7 +180,7 @@ class TestCompleteGrpcWorkflow:
         )
         assert bi_stream.is_success
         b_stream = bi_stream.data
-        assert b_stream.is_bidirectional()
+        assert b_stream.is_bidirectional
 
     def test_error_handling_workflow(self) -> None:
         """Test comprehensive error handling workflow."""
@@ -342,20 +358,17 @@ class TestCompleteGrpcWorkflow:
         """Test integration of all library components."""
         # Import everything to test no missing dependencies
         from flext_grpc import (
-            # Services
-            FlextGrpcApplicationService,
             # Entities
             FlextGrpcPlatform,
+            # Types
             TGrpcTarget,
             # API
             create_client,
             create_config,
             create_server,
             create_service,
-            flext_grpc_parse_target,
-            # Validation
-            flext_grpc_validate_target,
         )
+        from flext_grpc.services import FlextGrpcService
 
         # 1. Create using API functions
         server = create_server("localhost", 9106)
@@ -374,14 +387,19 @@ class TestCompleteGrpcWorkflow:
         assert client_result.is_success
 
         # 4. Validate types work
-        target = TGrpcTarget("localhost:9106")
-        assert flext_grpc_validate_target(target)
-        parsed = flext_grpc_parse_target(target)
+        target_str = "localhost:9106"
+        target = TGrpcTarget(target_str)
+        from flext_grpc import (  # noqa: PLC0415
+            flext_grpc_parse_target,
+            flext_grpc_validate_target,
+        )
+        assert flext_grpc_validate_target(target_str)
+        parsed = flext_grpc_parse_target(target_str)
         if parsed != ("localhost", 9106):
             raise AssertionError(f"Expected {('localhost', 9106)}, got {parsed}")
 
         # 5. Test service works
-        app_service = FlextGrpcApplicationService()
+        app_service = FlextGrpcService()
         service_result = app_service.execute("server", "status", server_result.data)
         assert service_result.is_success
 

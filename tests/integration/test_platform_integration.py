@@ -28,7 +28,7 @@ class TestPlatformIntegration:
         start_result = self.platform.start_server(server)
         assert start_result.is_success
         started_server = start_result.data
-        assert started_server.is_running()
+        assert started_server.is_running
 
         # Get server status
         status_result = self.platform.get_server_status(started_server)
@@ -48,7 +48,7 @@ class TestPlatformIntegration:
         stop_result = self.platform.stop_server(started_server)
         assert stop_result.is_success
         stopped_server = stop_result.data
-        assert not stopped_server.is_running()
+        assert not stopped_server.is_running
 
     def test_platform_client_lifecycle(self) -> None:
         """Test complete client lifecycle through platform."""
@@ -59,7 +59,7 @@ class TestPlatformIntegration:
         connect_result = self.platform.connect_client(client)
         assert connect_result.is_success
         connected_client = connect_result.data
-        assert connected_client.is_connected()
+        assert connected_client.is_connected
 
         # Get client status
         status_result = self.platform.get_client_status(connected_client)
@@ -68,8 +68,8 @@ class TestPlatformIntegration:
         if not (status["is_connected"]):
             msg = f"Expected True, got {status["is_connected"]}"
             raise AssertionError(msg)
-        if status["channel_target"] != "localhost:9001":
-            msg = f"Expected {"localhost:9001"}, got {status["channel_target"]}"
+        if status["target"] != "localhost:9001":
+            msg = f"Expected {"localhost:9001"}, got {status["target"]}"
             raise AssertionError(msg)
         assert status["channel_state"] == "ready"
 
@@ -101,7 +101,7 @@ class TestPlatformIntegration:
             msg = f"Expected {"stream_method"}, got {stream.method_name}"
             raise AssertionError(msg)
         assert stream.stream_type == "server_streaming"
-        assert stream.is_server_streaming()
+        assert stream.is_server_streaming
 
     def test_service_integration_with_platform(self) -> None:
         """Test direct service integration with platform."""
@@ -166,7 +166,7 @@ class TestPlatformIntegration:
         )
         assert stream_result.is_success
         stream = stream_result.data
-        assert stream.is_bidirectional()
+        assert stream.is_bidirectional
 
         # 6. Get final status
         final_status = self.platform.get_server_status(server_with_service)
@@ -211,7 +211,7 @@ class TestPlatformIntegration:
         status = platform_status.data
 
         # States should be consistent
-        assert service_server.is_running()
+        assert service_server.is_running
         if not (status["is_running"]):
             msg = f"Expected True, got {status["is_running"]}"
             raise AssertionError(msg)
@@ -236,7 +236,7 @@ class TestPlatformIntegration:
 
         # All servers should be running independently
         for server in started_servers:
-            assert server.is_running()
+            assert server.is_running
             status_result = self.platform.get_server_status(server)
             assert status_result.is_success
             if not (status_result.data["is_running"]):

@@ -51,7 +51,14 @@ class FlextGrpcPlatform:
             service = FlextGrpcService()
             self.container.register("flext_grpc_service", service)
             return service
-        return result.data
+
+        # Safe cast since we registered it as FlextGrpcService
+        if isinstance(result.data, FlextGrpcService):
+            return result.data
+        # Fallback: create new service if wrong type
+        service = FlextGrpcService()
+        self.container.register("flext_grpc_service", service)
+        return service
 
     def server_operation(
         self,
@@ -86,15 +93,36 @@ class FlextGrpcPlatform:
         **options: object,
     ) -> FlextResult[FlextGrpcServer]:
         """Start a gRPC server."""
-        return self.server_operation("start", server, **options)
+        result = self.server_operation("start", server, **options)
+        if result.is_failure:
+            return FlextResult.fail(result.error or "Start server failed")
+        # Safe cast since we know server operations return FlextGrpcServer
+        from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+        if isinstance(result.data, FlextGrpcServer):
+            return FlextResult.ok(result.data)
+        return FlextResult.fail("Invalid server result type")
 
     def stop_server(self, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
         """Stop a gRPC server."""
-        return self.server_operation("stop", server)
+        result = self.server_operation("stop", server)
+        if result.is_failure:
+            return FlextResult.fail(result.error or "Stop server failed")
+        # Safe cast since we know server operations return FlextGrpcServer
+        from flext_grpc.entities import FlextGrpcServer  # noqa: PLC0415
+        if isinstance(result.data, FlextGrpcServer):
+            return FlextResult.ok(result.data)
+        return FlextResult.fail("Invalid server result type")
 
     def connect_client(self, client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
         """Connect a gRPC client."""
-        return self.client_operation("connect", client)
+        result = self.client_operation("connect", client)
+        if result.is_failure:
+            return FlextResult.fail(result.error or "Connect client failed")
+        # Safe cast since we know client operations return FlextGrpcClient
+        from flext_grpc.entities import FlextGrpcClient  # noqa: PLC0415
+        if isinstance(result.data, FlextGrpcClient):
+            return FlextResult.ok(result.data)
+        return FlextResult.fail("Invalid client result type")
 
     def make_call(
         self,
@@ -117,14 +145,26 @@ class FlextGrpcPlatform:
         server: FlextGrpcServer,
     ) -> FlextResult[dict[str, object]]:
         """Get server status."""
-        return self.server_operation("status", server)
+        result = self.server_operation("status", server)
+        if result.is_failure:
+            return FlextResult.fail(result.error or "Get server status failed")
+        # Safe cast since we know status operations return dict
+        if isinstance(result.data, dict):
+            return FlextResult.ok(result.data)
+        return FlextResult.fail("Invalid status result type")
 
     def get_client_status(
         self,
         client: FlextGrpcClient,
     ) -> FlextResult[dict[str, object]]:
         """Get client status."""
-        return self.client_operation("status", client)
+        result = self.client_operation("status", client)
+        if result.is_failure:
+            return FlextResult.fail(result.error or "Get client status failed")
+        # Safe cast since we know status operations return dict
+        if isinstance(result.data, dict):
+            return FlextResult.ok(result.data)
+        return FlextResult.fail("Invalid status result type")
 
     def create_stream(
         self,
@@ -134,10 +174,17 @@ class FlextGrpcPlatform:
         **options: object,
     ) -> FlextResult[FlextGrpcStream]:
         """Create a gRPC stream."""
-        return self.stream_operation(
+        result = self.stream_operation(
             "create",
             client=client,
             method_name=method_name,
             stream_type=stream_type,
             **options,
         )
+        if result.is_failure:
+            return FlextResult.fail(result.error or "Create stream failed")
+        # Safe cast since we know stream operations return FlextGrpcStream
+        from flext_grpc.entities import FlextGrpcStream  # noqa: PLC0415
+        if isinstance(result.data, FlextGrpcStream):
+            return FlextResult.ok(result.data)
+        return FlextResult.fail("Invalid stream result type")

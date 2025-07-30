@@ -292,7 +292,13 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcServer]:
         """Create a validated gRPC server."""
-        return cls._server_factory(
+        # Use typed factory method to create server instance
+        factory_fn = cls._server_factory
+        if not callable(factory_fn):
+            return FlextResult.fail("Server factory is not callable")
+
+        # Type-safe return - the factory returns FlextResult[FlextGrpcServer]
+        return factory_fn(  # type: ignore[no-any-return]
             host=host,
             port=port,
             max_workers=max_workers,
@@ -310,7 +316,13 @@ class FlextGrpcEntityFactory:
         if channel_result.is_failure:
             return FlextResult.fail(f"Failed to create client: {channel_result.error}")
 
-        return cls._client_factory(
+        # Use typed factory method to create client instance
+        factory_fn = cls._client_factory
+        if not callable(factory_fn):
+            return FlextResult.fail("Client factory is not callable")
+
+        # Type-safe return - the factory returns FlextResult[FlextGrpcClient]
+        return factory_fn(  # type: ignore[no-any-return]
             channel=channel_result.data,
             options=options,
         )
@@ -322,7 +334,13 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcChannel]:
         """Create a validated gRPC channel."""
-        return cls._channel_factory(
+        # Use typed factory method to create channel instance
+        factory_fn = cls._channel_factory
+        if not callable(factory_fn):
+            return FlextResult.fail("Channel factory is not callable")
+
+        # Type-safe return - the factory returns FlextResult[FlextGrpcChannel]
+        return factory_fn(  # type: ignore[no-any-return]
             target=TGrpcTarget(target),
             options=options,
         )
@@ -335,7 +353,13 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcService]:
         """Create a validated gRPC service."""
-        return cls._service_factory(
+        # Use typed factory method to create service instance
+        factory_fn = cls._service_factory
+        if not callable(factory_fn):
+            return FlextResult.fail("Service factory is not callable")
+
+        # Type-safe return - the factory returns FlextResult[FlextGrpcService]
+        return factory_fn(  # type: ignore[no-any-return]
             name=name,
             methods=methods or [],
             **options,
@@ -349,7 +373,13 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcStream]:
         """Create a validated gRPC stream."""
-        return cls._stream_factory(
+        # Use typed factory method to create stream instance
+        factory_fn = cls._stream_factory
+        if not callable(factory_fn):
+            return FlextResult.fail("Stream factory is not callable")
+
+        # Type-safe return - the factory returns FlextResult[FlextGrpcStream]
+        return factory_fn(  # type: ignore[no-any-return]
             method_name=method_name,
             stream_type=stream_type,
             **options,
