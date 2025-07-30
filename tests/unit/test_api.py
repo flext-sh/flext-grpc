@@ -204,14 +204,17 @@ class TestAPIFunctions:
     def test_create_complete_setup(self) -> None:
         """Test create_complete_setup function."""
         setup = create_complete_setup()
+        self._validate_setup_components(setup)
+        self._validate_default_values(setup)
+        self._validate_custom_setup()
 
+    def _validate_setup_components(self, setup: dict[str, object]) -> None:
+        """Validate setup components are present and correct types."""
         # Check all components are created
-        if "server" not in setup:
-            raise AssertionError(f"Expected {'server'} in {setup}")
-        assert "client" in setup
-        if "service" not in setup:
-            raise AssertionError(f"Expected {'service'} in {setup}")
-        assert "target" in setup
+        required_keys = ["server", "client", "service", "target"]
+        for key in required_keys:
+            if key not in setup:
+                raise AssertionError(f"Expected {key} in {setup}")
 
         # Check types
         from flext_grpc.entities import (
@@ -225,50 +228,54 @@ class TestAPIFunctions:
         assert isinstance(setup["service"], FlextGrpcService)
         assert isinstance(setup["target"], str)
 
-        # Check default values
-        if setup["server"].host != "localhost":
-            raise AssertionError(f"Expected {'localhost'}, got {setup['server'].host}")
-        assert setup["server"].port == 50051
-        if setup["client"].target != "localhost:50051":
-            raise AssertionError(
-                f"Expected {'localhost:50051'}, got {setup['client'].target}"
-            )
-        assert setup["service"].name == "DefaultService"
-        if setup["target"] != "localhost:50051":
-            raise AssertionError(f"Expected {'localhost:50051'}, got {setup['target']}")
+    def _validate_default_values(self, setup: dict[str, object]) -> None:
+        """Validate default values in setup."""
+        from flext_grpc.entities import (
+            FlextGrpcClient,
+            FlextGrpcServer,
+            FlextGrpcService,
+        )
 
-        # Test with custom parameters
+        server = setup["server"]
+        client = setup["client"]
+        service = setup["service"]
+        target = setup["target"]
+
+        assert isinstance(server, FlextGrpcServer)
+        assert isinstance(client, FlextGrpcClient)
+        assert isinstance(service, FlextGrpcService)
+
+        if server.host != "localhost":
+            raise AssertionError(f"Expected localhost, got {server.host}")
+        assert server.port == 50051
+        if client.target != "localhost:50051":
+            raise AssertionError(f"Expected localhost:50051, got {client.target}")
+        assert service.name == "DefaultService"
+        if target != "localhost:50051":
+            raise AssertionError(f"Expected localhost:50051, got {target}")
+
+    def _validate_custom_setup(self) -> None:
+        """Validate custom setup parameters."""
         custom_setup = create_complete_setup(
             "0.0.0.0",
             8080,
             "CustomService",
             ["method1", "method2"],
         )
-        # Type-safe access to server
-        custom_server = custom_setup["server"]
-        from flext_grpc.entities import FlextGrpcServer
 
-        if not isinstance(custom_server, FlextGrpcServer):
-            raise TypeError(f"Expected FlextGrpcServer, got {type(custom_server)}")
-        if custom_server.host != "0.0.0.0":
-            raise AssertionError(f"Expected {'0.0.0.0'}, got {custom_server.host}")
+        from flext_grpc.entities import FlextGrpcServer, FlextGrpcService
+
+        custom_server = custom_setup["server"]
+        custom_service = custom_setup["service"]
+
+        assert isinstance(custom_server, FlextGrpcServer)
+        assert custom_server.host == "0.0.0.0"
         assert custom_server.port == 8080
 
-        # Type-safe access to service
-        custom_service = custom_setup["service"]
-        from flext_grpc.entities import FlextGrpcService
-
-        if not isinstance(custom_service, FlextGrpcService):
-            raise TypeError(f"Expected FlextGrpcService, got {type(custom_service)}")
-        if custom_service.name != "CustomService":
-            raise AssertionError(
-                f"Expected {'CustomService'}, got {custom_service.name}"
-            )
+        assert isinstance(custom_service, FlextGrpcService)
+        assert custom_service.name == "CustomService"
         assert custom_service.methods == ["method1", "method2"]
-        if custom_setup["target"] != "0.0.0.0:8080":
-            raise AssertionError(
-                f"Expected {'0.0.0.0:8080'}, got {custom_setup['target']}"
-            )
+        assert custom_setup["target"] == "0.0.0.0:8080"
 
     def test_factory_functions_create_valid_entities(self) -> None:
         """Test that all factory functions create valid entities."""
