@@ -24,7 +24,9 @@ class FlextGrpcServerService(FlextDomainService):
     """Domain service for gRPC server lifecycle management."""
 
     def _handle_result(
-        self, result: FlextResult[object], error_msg: str,
+        self,
+        result: FlextResult[object],
+        error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
         if result.is_success:
@@ -175,7 +177,9 @@ class FlextGrpcClientService(FlextDomainService):
     """Domain service for gRPC client operations."""
 
     def _handle_result(
-        self, result: FlextResult[object], error_msg: str,
+        self,
+        result: FlextResult[object],
+        error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
         if result.is_success:
@@ -253,7 +257,9 @@ class FlextGrpcClientService(FlextDomainService):
                 return FlextResult.fail(f"Unknown client operation: {operation}")
 
     def _handle_call_operation(
-        self, client: FlextGrpcClient, kwargs: dict[str, object],
+        self,
+        client: FlextGrpcClient,
+        kwargs: dict[str, object],
     ) -> FlextResult[object]:
         """Handle call operation with proper parameter extraction."""
         method_name_arg = kwargs.get("method_name")
@@ -283,7 +289,8 @@ class FlextGrpcClientService(FlextDomainService):
         return client.copy_with(channel=channel_result.data)
 
     def _validate_client_for_connection(
-        self, client: FlextGrpcClient,
+        self,
+        client: FlextGrpcClient,
     ) -> FlextResult[None]:
         """Validate client state for connection."""
         if client.is_connected:
@@ -377,7 +384,9 @@ class FlextGrpcStreamService(FlextDomainService):
     """Domain service for gRPC streaming operations."""
 
     def _handle_result(
-        self, result: FlextResult[object], error_msg: str,
+        self,
+        result: FlextResult[object],
+        error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
         if result.is_success:

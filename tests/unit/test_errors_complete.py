@@ -202,16 +202,13 @@ class TestErrorIntegration:
         """Test errors in complex real-world scenarios."""
         # Validation error with Unicode field name
         unicode_error = FlextGrpcValidationError(
-            "Invalid value for field 'データ'",
-            "データ"
+            "Invalid value for field 'データ'", "データ"
         )
         assert unicode_error.field_name == "データ"
 
         # Configuration error with complex object
         complex_config = {"nested": {"key": "value"}, "list": [1, 2, 3]}
         config_error = FlextGrpcConfigurationError(
-            "Complex config failed",
-            "complex_setting",
-            complex_config
+            "Complex config failed", "complex_setting", complex_config
         )
         assert config_error.config_value == complex_config

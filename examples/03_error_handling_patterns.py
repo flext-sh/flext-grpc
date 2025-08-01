@@ -32,26 +32,16 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
     try:
         if not username:
             msg = "Username cannot be empty"
-            raise FlextGrpcValidationError(
-                msg,
-                field_name="username"
-            )
+            raise FlextGrpcValidationError(msg, field_name="username")
 
         if not email or "@" not in email:
             msg = "Invalid email format"
-            raise FlextGrpcValidationError(
-                msg,
-                field_name="email"
-            )
+            raise FlextGrpcValidationError(msg, field_name="email")
 
         return FlextResult.ok({"username": username, "email": email})
 
     except FlextGrpcValidationError as e:
-        logger.exception(
-            "Validation failed",
-            field=e.field_name,
-            error=str(e)
-        )
+        logger.exception("Validation failed", field=e.field_name, error=str(e))
         return FlextResult.fail(f"Validation error: {e}")
 
 
@@ -60,40 +50,25 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
     try:
         if port < 1 or port > 65535:
             msg = "Port must be between 1 and 65535"
-            raise FlextGrpcConfigurationError(
-                msg,
-                config_key="port",
-                config_value=port
-            )
+            raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)
 
         if workers < 1:
             msg = "Workers must be positive"
             raise FlextGrpcConfigurationError(
-                msg,
-                config_key="max_workers",
-                config_value=workers
+                msg, config_key="max_workers", config_value=workers
             )
 
-        config_result = create_config(
-            host="localhost",
-            port=port,
-            max_workers=workers
-        )
+        config_result = create_config(host="localhost", port=port, max_workers=workers)
 
         if config_result.is_failure:
             msg = f"Failed to create config: {config_result.error}"
-            raise FlextGrpcConfigurationError(
-                msg
-            )
+            raise FlextGrpcConfigurationError(msg)
 
         return config_result
 
     except FlextGrpcConfigurationError as e:
         logger.exception(
-            "Configuration error",
-            key=e.config_key,
-            value=e.config_value,
-            error=str(e)
+            "Configuration error", key=e.config_key, value=e.config_value, error=str(e)
         )
         return FlextResult.fail(f"Configuration error: {e}")
 
@@ -141,14 +116,18 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     # Step 1: Validate user input
     validation_result = validate_user_input("john_doe", "john@example.com")
     if validation_result.is_failure:
-        return FlextResult.fail(f"Pipeline failed at validation: {validation_result.error}")
+        return FlextResult.fail(
+            f"Pipeline failed at validation: {validation_result.error}"
+        )
 
     logger.info("✅ User input validation passed")
 
     # Step 2: Create server configuration
     config_result = create_server_config(50051, 4)
     if config_result.is_failure:
-        return FlextResult.fail(f"Pipeline failed at configuration: {config_result.error}")
+        return FlextResult.fail(
+            f"Pipeline failed at configuration: {config_result.error}"
+        )
 
     logger.info("✅ Server configuration created")
 
@@ -162,7 +141,9 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     for scenario_name, scenario_func in scenarios:
         result = scenario_func()
         if result.is_failure:
-            logger.warning(f"⚠️ {scenario_name} scenario failed as expected: {result.error}")
+            logger.warning(
+                f"⚠️ {scenario_name} scenario failed as expected: {result.error}"
+            )
 
     return FlextResult.ok("Pipeline completed with graceful error handling")
 
@@ -203,14 +184,13 @@ def demonstrate_error_context() -> None:
 
     # Create errors with rich context
     validation_error = FlextGrpcValidationError(
-        "Email format is invalid - missing @ symbol",
-        field_name="user_email"
+        "Email format is invalid - missing @ symbol", field_name="user_email"
     )
 
     config_error = FlextGrpcConfigurationError(
         "Invalid port configuration for production environment",
         config_key="server_port",
-        config_value=0
+        config_value=0,
     )
 
     # Log errors with context
@@ -219,7 +199,7 @@ def demonstrate_error_context() -> None:
         error_type=type(validation_error).__name__,
         error_message=str(validation_error),
         field_name=validation_error.field_name,
-        error_category="validation"
+        error_category="validation",
     )
 
     logger.error(
@@ -228,7 +208,7 @@ def demonstrate_error_context() -> None:
         error_message=str(config_error),
         config_key=config_error.config_key,
         config_value=config_error.config_value,
-        error_category="configuration"
+        error_category="configuration",
     )
 
 
