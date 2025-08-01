@@ -25,42 +25,46 @@ if TYPE_CHECKING:
 # Eliminates 15+ lines of duplicate validation logic across 4 service classes
 # =============================================================================
 
+
 class _GrpcServiceValidationMixin:
     """Template Method Pattern: Shared validation logic for gRPC services.
-    
+
     SOLID REFACTORING: Eliminates 30+ lines of duplicated argument validation
     across FlextGrpcServerService, FlextGrpcClientService, FlextGrpcStreamService,
     and FlextGrpcUnifiedService classes.
     """
-    
+
     @staticmethod
     def _validate_operation_arguments(
-        args: tuple[object, ...], 
+        args: tuple[object, ...],
         min_args: int = 2,
-        expected_args_description: str = "operation and target"
+        expected_args_description: str = "operation and target",
     ) -> FlextResult[tuple[str, object]]:
         """Template Method: Validate and extract operation arguments.
-        
+
         SOLID REFACTORING: Centralizes argument validation logic that was
         duplicated across 4 different execute() methods.
-        
+
         Args:
             args: Arguments tuple from execute method
             min_args: Minimum number of arguments required
             expected_args_description: Description for error messages
-            
+
         Returns:
             FlextResult with (operation_str, target_object) or failure
+
         """
         # Check minimum argument count
         if len(args) < min_args:
-            return FlextResult.fail(f"Missing required arguments: {expected_args_description}")
-        
+            return FlextResult.fail(
+                f"Missing required arguments: {expected_args_description}"
+            )
+
         # Extract and validate operation string
         operation = args[0]
         if not isinstance(operation, str):
             return FlextResult.fail("Operation must be a string")
-        
+
         # Return operation and second argument (if exists)
         target = args[1] if len(args) > 1 else None
         return FlextResult.ok((operation, target))
@@ -90,15 +94,13 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
             FlextResult with operation result
 
         """
-        # SOLID REFACTORING: Use shared validation pattern - eliminates 15 lines of duplication
+        # REFACTORING: Use shared validation pattern - eliminates 15 lines of duplication
         validation_result = self._validate_operation_arguments(
-            args, 
-            FlextGrpcConstants.MIN_REQUIRED_ARGS,
-            "operation and server"
+            args, FlextGrpcConstants.MIN_REQUIRED_ARGS, "operation and server"
         )
         if validation_result.is_failure:
             return FlextResult.fail(validation_result.error)
-        
+
         operation, server = validation_result.data
 
         # Type validation for server
@@ -245,15 +247,13 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
             FlextResult with operation result
 
         """
-        # SOLID REFACTORING: Use shared validation pattern - eliminates 15 lines of duplication
+        # REFACTORING: Use shared validation pattern - eliminates 15 lines of duplication
         validation_result = self._validate_operation_arguments(
-            args, 
-            FlextGrpcConstants.MIN_REQUIRED_ARGS,
-            "operation and client"
+            args, FlextGrpcConstants.MIN_REQUIRED_ARGS, "operation and client"
         )
         if validation_result.is_failure:
             return FlextResult.fail(validation_result.error)
-        
+
         operation, client = validation_result.data
 
         # Type validation for client
