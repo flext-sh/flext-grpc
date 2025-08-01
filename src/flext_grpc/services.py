@@ -24,7 +24,7 @@ class FlextGrpcServerService(FlextDomainService):
     """Domain service for gRPC server lifecycle management."""
 
     def _handle_result(
-        self, result: FlextResult[object], error_msg: str
+        self, result: FlextResult[object], error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
         if result.is_success:
@@ -175,7 +175,7 @@ class FlextGrpcClientService(FlextDomainService):
     """Domain service for gRPC client operations."""
 
     def _handle_result(
-        self, result: FlextResult[object], error_msg: str
+        self, result: FlextResult[object], error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
         if result.is_success:
@@ -237,7 +237,7 @@ class FlextGrpcClientService(FlextDomainService):
                     FlextResult.ok(disconnect_result.data)
                     if disconnect_result.is_success
                     else FlextResult.fail(
-                        disconnect_result.error or "Disconnect failed"
+                        disconnect_result.error or "Disconnect failed",
                     )
                 )
             case "call":
@@ -253,7 +253,7 @@ class FlextGrpcClientService(FlextDomainService):
                 return FlextResult.fail(f"Unknown client operation: {operation}")
 
     def _handle_call_operation(
-        self, client: FlextGrpcClient, kwargs: dict[str, object]
+        self, client: FlextGrpcClient, kwargs: dict[str, object],
     ) -> FlextResult[object]:
         """Handle call operation with proper parameter extraction."""
         method_name_arg = kwargs.get("method_name")
@@ -272,7 +272,7 @@ class FlextGrpcClientService(FlextDomainService):
         connection_validation = self._validate_client_for_connection(client)
         if connection_validation.is_failure:
             return FlextResult.fail(
-                connection_validation.error or "Connection validation failed"
+                connection_validation.error or "Connection validation failed",
             )
 
         # Connect and transition channel
@@ -283,7 +283,7 @@ class FlextGrpcClientService(FlextDomainService):
         return client.copy_with(channel=channel_result.data)
 
     def _validate_client_for_connection(
-        self, client: FlextGrpcClient
+        self, client: FlextGrpcClient,
     ) -> FlextResult[None]:
         """Validate client state for connection."""
         if client.is_connected:
@@ -377,7 +377,7 @@ class FlextGrpcStreamService(FlextDomainService):
     """Domain service for gRPC streaming operations."""
 
     def _handle_result(
-        self, result: FlextResult[object], error_msg: str
+        self, result: FlextResult[object], error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
         if result.is_success:
