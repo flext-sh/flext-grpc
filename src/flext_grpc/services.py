@@ -94,7 +94,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
             FlextResult with operation result
 
         """
-        # REFACTORING: Use shared validation pattern - eliminates 15 lines of duplication
+        # REFACTORING: Use shared validation - eliminates 15 lines duplication
         validation_result = self._validate_operation_arguments(
             args, FlextGrpcConstants.MIN_REQUIRED_ARGS, "operation and server"
         )
@@ -247,7 +247,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
             FlextResult with operation result
 
         """
-        # REFACTORING: Use shared validation pattern - eliminates 15 lines of duplication
+        # REFACTORING: Use shared validation - eliminates 15 lines duplication
         validation_result = self._validate_operation_arguments(
             args, FlextGrpcConstants.MIN_REQUIRED_ARGS, "operation and client"
         )
