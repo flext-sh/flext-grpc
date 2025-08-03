@@ -1,10 +1,61 @@
-"""Unit tests for FLEXT gRPC API functions.
+"""FLEXT gRPC API Testing - Comprehensive unit tests for public API functions.
 
-# Constants
-EXPECTED_BULK_SIZE = 2
-EXPECTED_TOTAL_PAGES = 8
-EXPECTED_DATA_COUNT = 3
+This module provides comprehensive unit testing for all FLEXT gRPC public API functions,
+following enterprise testing standards with factory function validation, configuration
+testing, and integration pattern verification.
 
+Test Coverage:
+    The module ensures comprehensive coverage of all public API functions:
+    - Factory Functions: create_server, create_client, create_channel, create_service
+    - Configuration Functions: create_config with validation and defaults
+    - Validation Functions: validate_address, parse_address with error handling
+    - Utility Functions: create_complete_setup for rapid development scenarios
+    - Stream Functions: create_stream with type validation and configuration
+
+Testing Architecture:
+    API testing follows enterprise testing principles:
+    - Function Isolation: Each API function tested independently
+    - Parameter Validation: All parameter combinations and edge cases tested
+    - Return Value Validation: Entity creation and configuration verification
+    - Error Handling: Invalid input handling and error reporting validation
+    - Integration Testing: API function coordination and entity compatibility
+
+Testing Patterns:
+    All API tests follow enterprise testing standards:
+    - AAA Pattern: Arrange, Act, Assert structure for clarity
+    - Boundary Testing: Valid and invalid parameter boundary conditions
+    - Default Validation: Default parameter behavior verification
+    - Error Scenarios: Comprehensive failure case testing and error messages
+    - Factory Pattern: Entity creation validation through factory functions
+
+# Test Constants - Configuration values for consistent testing
+EXPECTED_BULK_SIZE = 2         # Expected size for bulk operations
+EXPECTED_TOTAL_PAGES = 8       # Expected pagination count
+EXPECTED_DATA_COUNT = 3        # Expected data elements in test scenarios
+
+Example:
+    Standard API function testing pattern used throughout module:
+
+    >>> def test_create_entity_with_valid_parameters():
+    ...     # Arrange: Set up valid parameters
+    ...     params = create_valid_parameters()
+    ...
+    ...     # Act: Call API function
+    ...     entity = create_server(**params)
+    ...
+    ...     # Assert: Verify entity creation and validation
+    ...     assert entity is not None
+    ...     assert entity.validate_domain_rules().is_success
+
+Integration:
+    - Tests API functions from flext_grpc.api module
+    - Validates entity creation through factory patterns
+    - Uses flext-core patterns for consistent entity behavior
+    - Integrates with pytest framework for execution and coverage
+
+Author: FLEXT Development Team
+Version: 0.9.0
+License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 """
@@ -126,6 +177,11 @@ class TestAPIFunctions:
                 f"Expected {'server_streaming'}, got {server_stream.stream_type}"
             )
 
+    def test_create_stream_invalid_type(self) -> None:
+        """Test create_stream with invalid stream type raises ValueError."""
+        with pytest.raises(ValueError, match="Invalid stream type: invalid_type"):
+            create_stream("test_method", "invalid_type")  # type: ignore[arg-type]
+
     def test_create_config(self) -> None:
         """Test create_config function."""
         config = create_config()
@@ -170,11 +226,21 @@ class TestAPIFunctions:
             "localhost:abc",
             "localhost:-1",
             "localhost:70000",
+            "host:port:extra",  # Test line 796 - too many parts
         ]
 
         for address in invalid_addresses:
             result = validate_address(address)
             assert result.is_failure, f"Address {address} should be invalid"
+
+    def test_validate_address_exception_handling(self) -> None:
+        """Test validate_address exception handling for lines 769-770."""
+        # Test with an address that might cause AttributeError or ValueError
+        result = validate_address(None)  # type: ignore[arg-type]
+        assert result.is_failure
+        # The error should either be empty address error or exception error
+        assert ("Address cannot be empty" in result.error or
+                "Address validation error:" in result.error)
 
     def test_parse_address(self) -> None:
         """Test parse_address function."""

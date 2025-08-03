@@ -1,10 +1,66 @@
-"""FLEXT gRPC Error Handling Patterns Example.
+"""FLEXT gRPC Error Handling Patterns - Comprehensive error management and recovery strategies.
 
-Demonstrates comprehensive error handling patterns using FLEXT gRPC error classes
-and FlextResult pattern for robust gRPC operations.
+This module demonstrates comprehensive error handling patterns and recovery strategies
+for the FLEXT gRPC communication platform, showcasing robust error management,
+validation error handling, and enterprise-grade error recovery patterns following
+Clean Architecture and Domain-Driven Design principles.
 
+Error Handling Categories:
+    The module provides comprehensive examples of FLEXT gRPC error handling:
+    - Validation Errors: Entity validation failures and field-specific error handling
+    - Configuration Errors: Configuration validation and setup error management
+    - Connection Errors: Network and communication error handling patterns
+    - Service Errors: Service operation failures and recovery strategies
+    - FlextResult Patterns: Comprehensive success/failure pattern usage
+
+Error Management Patterns:
+    - FlextResult Pattern: Railway-oriented programming for error handling
+    - Error Context: Detailed error information with context and recovery guidance
+    - Error Recovery: Strategies for handling and recovering from various error types
+    - Validation Patterns: Domain rule validation and error reporting
+    - Enterprise Logging: Error logging and monitoring integration patterns
+
+Key Features Demonstrated:
+    - Comprehensive Error Types: All FLEXT gRPC error classes with examples
+    - Context Information: Error-specific context and debugging information
+    - Recovery Strategies: Error recovery and fallback mechanisms
+    - Validation Patterns: Domain validation error handling
+    - Monitoring Integration: Error reporting and monitoring patterns
+
+Example:
+    Comprehensive error handling pattern:
+
+    >>> from flext_grpc import create_server, FlextGrpcConfig
+    >>> from flext_grpc.errors import FlextGrpcValidationError, FlextGrpcConfigurationError
+    >>>
+    >>> try:
+    ...     # Attempt configuration with invalid values
+    ...     config = FlextGrpcConfig(port=-1, max_workers=0)
+    ... except FlextGrpcConfigurationError as e:
+    ...     print(f"Configuration error: {e}")
+    ...     print(f"Invalid field: {e.config_key}")
+    ...     print(f"Invalid value: {e.config_value}")
+    ...     # Implement recovery strategy
+    ...     config = FlextGrpcConfig()  # Use defaults
+
+Current Implementation Status:
+    - ✅ Error Classes: Complete error hierarchy with contextual information
+    - ✅ FlextResult Integration: Comprehensive result pattern usage
+    - ✅ Validation Errors: Domain validation error handling examples
+    - ✅ Recovery Strategies: Error recovery and fallback implementations
+    - ✅ Enterprise Patterns: Production-ready error handling patterns
+
+Usage:
+    Run this example to see FLEXT gRPC error handling patterns:
+
+    >>> poetry run python examples/03_error_handling_patterns.py
+
+Author: FLEXT Development Team
+Version: 0.9.0
+License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations

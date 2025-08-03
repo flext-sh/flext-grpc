@@ -1,5 +1,57 @@
-"""Unit tests for FLEXT gRPC entities.
+"""FLEXT gRPC Entity Testing - Comprehensive unit tests for domain entities.
 
+This module provides comprehensive unit testing for all FLEXT gRPC domain entities,
+following enterprise testing standards with isolated component testing, comprehensive
+validation coverage, and Clean Architecture testing principles.
+
+Test Coverage:
+    The module ensures comprehensive coverage of all entity behaviors:
+    - FlextGrpcChannel: Network channel lifecycle and state management testing
+    - FlextGrpcServer: Server entity validation and lifecycle operation testing
+    - FlextGrpcClient: Client entity creation and connection management testing
+    - FlextGrpcService: Service definition and method specification testing
+    - FlextGrpcStream: Stream entity creation and type validation testing
+
+Testing Architecture:
+    Entity testing follows Clean Architecture testing principles:
+    - Domain Logic Testing: Pure business logic validation without external dependencies
+    - Entity Validation: Comprehensive domain rule validation and constraint testing
+    - State Management: Complete lifecycle and state transition validation
+    - Boundary Conditions: Edge cases and invalid input handling
+    - Error Scenarios: Comprehensive failure case testing and error reporting
+
+Testing Patterns:
+    All tests follow enterprise testing standards:
+    - AAA Pattern: Arrange, Act, Assert structure for clarity
+    - Isolation: No external dependencies or side effects
+    - Deterministic: Consistent results across multiple runs
+    - Fast Execution: Sub-100ms execution for rapid feedback
+    - Descriptive Names: Clear test intent and coverage description
+
+Example:
+    Standard entity testing pattern used throughout module:
+
+    >>> def test_entity_creation_and_validation():
+    ...     # Arrange: Set up test data and dependencies
+    ...     entity_data = create_valid_entity_data()
+    ...
+    ...     # Act: Execute the operation under test
+    ...     entity = FlextGrpcServer(**entity_data)
+    ...     result = entity.validate_domain_rules()
+    ...
+    ...     # Assert: Verify expected behavior and state
+    ...     assert result.is_success
+    ...     assert entity.state == expected_state
+
+Integration:
+    - Validates entities created by flext_grpc.entities module
+    - Uses flext-core testing utilities for data generation
+    - Integrates with pytest framework for execution and reporting
+    - Supports coverage analysis and quality gate enforcement
+
+Author: FLEXT Development Team
+Version: 0.9.0
+License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 """
@@ -24,10 +76,39 @@ EXPECTED_BULK_SIZE = 2
 
 
 class TestFlextGrpcChannel:
-    """Test FlextGrpcChannel entity."""
+    """Comprehensive unit tests for FlextGrpcChannel entity with enterprise testing standards.
+
+    Test suite for FlextGrpcChannel domain entity covering creation, validation,
+    state management, and business rule enforcement. Ensures entity behaves
+    correctly across all scenarios including edge cases and error conditions.
+
+    Test Categories:
+        - Creation Testing: Valid and invalid channel creation scenarios
+        - Validation Testing: Domain rule validation and constraint enforcement
+        - State Management: Channel state transitions and lifecycle validation
+        - Error Handling: Invalid input handling and error reporting
+        - Business Rules: Channel-specific business logic validation
+
+    Coverage Focus:
+        - Target address validation and format compliance
+        - Channel state management and transition rules
+        - Options configuration and validation
+        - Entity lifecycle and immutable state handling
+        - Integration with type system and validation utilities
+    """
 
     def test_create_valid_channel(self) -> None:
-        """Test creating a valid channel."""
+        """Test creating a valid gRPC channel entity with proper configuration.
+
+        Validates that FlextGrpcChannel can be created with valid parameters
+        and passes domain rule validation. Tests fundamental entity creation
+        pattern with proper target address and state initialization.
+
+        Test Flow:
+            1. Arrange: Create channel with valid target and state
+            2. Act: Validate domain rules
+            3. Assert: Validation succeeds and properties are correct
+        """
         channel = FlextGrpcChannel(
             id=FlextGenerators.generate_entity_id(),
             target=TGrpcTarget("localhost:50051"),
@@ -43,7 +124,17 @@ class TestFlextGrpcChannel:
         assert channel.state == "idle"
 
     def test_invalid_empty_target(self) -> None:
-        """Test channel with empty target fails validation."""
+        """Test channel creation with empty target fails domain validation.
+
+        Validates that FlextGrpcChannel properly enforces target validation
+        rules and rejects empty target addresses. Tests boundary condition
+        handling and proper error reporting for invalid configurations.
+
+        Test Flow:
+            1. Arrange: Create channel with empty target
+            2. Act: Validate domain rules
+            3. Assert: Validation fails with appropriate error message
+        """
         channel = FlextGrpcChannel(
             id=FlextGenerators.generate_entity_id(),
             target=TGrpcTarget(""),

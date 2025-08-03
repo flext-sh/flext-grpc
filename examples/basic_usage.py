@@ -1,7 +1,57 @@
-"""Basic usage examples for FLEXT gRPC library.
+"""FLEXT gRPC Basic Usage Examples - Core functionality and entity management patterns.
 
-This example demonstrates the core functionality of the refactored
-flext-grpc library with clean, simple API usage.
+This module demonstrates the fundamental operations and patterns of the FLEXT gRPC
+communication platform, showcasing entity creation, validation, configuration,
+and basic service operations following Clean Architecture and Domain-Driven Design principles.
+
+Example Categories:
+    The module provides comprehensive examples of core FLEXT gRPC functionality:
+    - Entity Creation: Server, Client, Channel, Service entity creation and validation
+    - Configuration Management: FlextGrpcConfig usage with validation and defaults
+    - Domain Validation: Entity validation rules and business logic verification
+    - Service Operations: Basic service operations and state management
+    - Error Handling: FlextResult pattern usage for robust error handling
+
+Current Implementation Status:
+    - ✅ Entity Creation: Complete entity lifecycle and validation examples
+    - ✅ Configuration: Configuration management with validation examples
+    - ✅ Domain Logic: Domain rule validation and business logic examples
+    - ✅ Error Handling: FlextResult pattern usage and error scenarios
+    - ⚠️ Network Communication: Limited by lack of Protocol Buffer implementation
+
+Key Patterns Demonstrated:
+    - Entity Factory Functions: Using create_server(), create_client() API functions
+    - Domain Validation: validate_domain_rules() pattern with FlextResult handling
+    - State Management: Entity state transitions and lifecycle management
+    - Configuration Patterns: FlextGrpcConfig creation and validation
+    - Error Handling: Comprehensive FlextResult success/failure pattern usage
+
+Example:
+    Standard entity creation and validation pattern:
+
+    >>> from flext_grpc import create_server, create_client
+    >>> from flext_grpc.entities import FlextGrpcServer
+    >>>
+    >>> # Create server entity with validation
+    >>> server = create_server(host="localhost", port=50051, max_workers=10)
+    >>> validation_result = server.validate_domain_rules()
+    >>>
+    >>> if validation_result.is_success:
+    ...     print(f"Server created successfully: {server.address}")
+    ... else:
+    ...     print(f"Validation failed: {validation_result.error}")
+
+Usage:
+    Run this example to see FLEXT gRPC core functionality:
+
+    >>> poetry run python examples/basic_usage.py
+
+Author: FLEXT Development Team
+Version: 0.9.0
+License: MIT
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+
 """
 
 from datetime import UTC, datetime

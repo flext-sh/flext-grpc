@@ -1,7 +1,63 @@
-"""Advanced usage examples for FLEXT gRPC library.
+"""FLEXT gRPC Advanced Usage Examples - Complex scenarios and enterprise patterns.
 
-This example demonstrates advanced patterns and real-world scenarios
-using the refactored flext-grpc library.
+This module demonstrates advanced usage patterns and enterprise-grade scenarios
+for the FLEXT gRPC communication platform, showcasing complex entity management,
+service coordination, streaming patterns, and production-ready configurations
+following Clean Architecture and Domain-Driven Design principles.
+
+Advanced Example Categories:
+    The module provides comprehensive examples of advanced FLEXT gRPC functionality:
+    - Complex Entity Management: Multi-entity coordination and lifecycle management
+    - Service Coordination: Cross-service operations and dependency management
+    - Streaming Patterns: Stream entity usage and streaming type validation
+    - Platform Integration: FlextGrpcPlatform usage for unified operations
+    - Production Configurations: Enterprise-grade configuration and deployment patterns
+
+Current Implementation Status:
+    - ✅ Complex Entity Patterns: Advanced entity lifecycle and coordination examples
+    - ✅ Service Integration: Service coordination and platform integration examples
+    - ✅ Stream Entities: Stream creation and type validation examples
+    - ✅ Production Patterns: Enterprise configuration and deployment examples
+    - ⚠️ Real Streaming: Limited by lack of Protocol Buffer implementation
+
+Advanced Patterns Demonstrated:
+    - Multi-Entity Coordination: Server, client, and service coordination patterns
+    - Platform Operations: FlextGrpcPlatform facade usage for unified management
+    - Stream Management: Stream entity creation with type safety validation
+    - Configuration Management: Advanced configuration patterns for production
+    - Error Recovery: Advanced error handling and recovery strategies
+
+Example:
+    Advanced platform integration pattern:
+
+    >>> from flext_grpc import FlextGrpcPlatform, create_complete_setup
+    >>> from flext_grpc.services import FlextGrpcService
+    >>>
+    >>> # Create complete setup with platform integration
+    >>> setup = create_complete_setup(
+    ...     host="api.production.com",
+    ...     port=443,
+    ...     service_name="ProductionService",
+    ...     methods=["ProcessData", "GetStatus"]
+    ... )
+    >>>
+    >>> platform = FlextGrpcPlatform()
+    >>> server_result = platform.service.execute("validate", setup["server"])
+    >>>
+    >>> if server_result.is_success:
+    ...     print("Advanced setup validated successfully")
+
+Usage:
+    Run this example to see FLEXT gRPC advanced functionality:
+
+    >>> poetry run python examples/advanced_usage.py
+
+Author: FLEXT Development Team
+Version: 0.9.0
+License: MIT
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+
 """
 
 from datetime import UTC, datetime

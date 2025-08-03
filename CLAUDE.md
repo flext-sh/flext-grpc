@@ -52,7 +52,7 @@ FLEXT gRPC is a high-performance gRPC communication platform built with Python 3
 # Development setup
 make setup                    # Complete development environment setup
 make install                  # Install dependencies with Poetry
-make dev-install             # Install with development extras
+make install-dev              # Install with development extras
 
 # Quality Gates (run before committing)
 make validate                # Complete validation (lint + type + security + test) - MUST PASS
@@ -66,8 +66,8 @@ make test                    # Run tests with 90% coverage minimum
 make test-unit               # Unit tests only
 make test-integration        # Integration tests only
 make test-grpc               # gRPC-specific tests
-make coverage                # Generate coverage report
-make coverage-html           # Open HTML coverage report
+make test-fast               # Run tests without coverage for quick feedback
+make coverage-html           # Generate HTML coverage report
 
 # Code Formatting
 make format                  # Format code with ruff
@@ -79,26 +79,45 @@ make fix                     # Auto-fix all issues
 
 ```bash
 make proto-gen               # Generate protobuf code from .proto files
-make proto-clean             # Clean generated protobuf files
-make proto-validate          # Validate protobuf definitions
-make proto-check             # Check if generation is needed
+# Note: Proto files are located in proto/ directory when available
 ```
 
 ### gRPC Server Operations
 
 ```bash
 make dev-server              # Start development gRPC server (port 50051)
-make run-server              # Start production gRPC server
-make server-health           # Check server health
-make server-test             # Test server endpoints
-make server-metrics          # Display server metrics
+# Server operations are handled through the FlextGrpcPlatform API
 ```
 
 ### Build and Distribution
 
 ```bash
 make build                   # Build distribution packages
+make build-clean             # Clean and build
 make clean                   # Remove all artifacts
+make clean-all               # Deep clean including virtual environment
+make reset                   # Reset project (clean-all + setup)
+```
+
+### Diagnostics and Utilities
+
+```bash
+make diagnose                # Show Python, Poetry, and gRPC versions
+make doctor                  # Health check (diagnose + check)
+make shell                   # Open Poetry Python shell
+make pre-commit              # Run pre-commit hooks manually
+make deps-update             # Update all dependencies
+make deps-show               # Show dependency tree
+make deps-audit              # Security audit of dependencies
+
+# Convenient aliases for common commands
+make t                       # test
+make l                       # lint
+make f                       # format
+make tc                      # type-check
+make c                       # clean
+make i                       # install
+make v                       # validate
 ```
 
 ## Testing Strategy
@@ -112,8 +131,8 @@ make clean                   # Remove all artifacts
 ### Coverage Requirements
 
 - **Minimum 90% coverage** enforced by `make test`
-- Current coverage: 76% across core modules
-- Focus on domain entities and services
+- Focus on domain entities and services in `src/flext_grpc/`
+- Use `make coverage-html` to identify gaps
 
 ### Test Configuration
 
@@ -243,22 +262,40 @@ pytest tests/ --lf           # Run only last failed
 ### Protocol Buffer Issues
 
 ```bash
-# Regenerate protobuf files
-make proto-clean
+# Regenerate protobuf files (if proto/ directory exists)
 make proto-gen
 
-# Validate protobuf setup
-make proto-check
+# Check protobuf dependencies
+poetry run python -c "import grpc; print(f'gRPC version: {grpc.__version__}')"
 ```
 
 ### Container and Service Issues
 
 ```bash
-# Clean container state in tests
-pytest tests/ --clean-container
+# Debug service registration with flext-core
+poetry run python -c "from flext_core import get_flext_container; print(get_flext_container().list_services())"
 
-# Debug service registration
-python -c "from flext_core import get_flext_container; print(get_flext_container().list_services())"
+# Check gRPC functionality
+poetry run python -c "import grpc; print('gRPC imported successfully')"
+
+# Test entity creation
+poetry run python -c "from flext_grpc.entities import FlextGrpcServer; print('Entities working')"
+```
+
+### Development Environment Issues
+
+```bash
+# Full project health check
+make doctor                  # Runs diagnose + check
+
+# Reset development environment completely
+make reset                   # clean-all + setup
+
+# Check Python and Poetry versions
+make diagnose
+
+# Update and audit dependencies
+make deps-update && make deps-audit
 ```
 
 ## Integration with FLEXT Ecosystem

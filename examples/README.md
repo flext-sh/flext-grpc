@@ -1,0 +1,435 @@
+# FLEXT gRPC Examples
+
+Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
+
+## Example Structure
+
+### Available Examples
+
+```
+examples/
+├── basic_usage.py              # Core functionality and entity usage
+├── advanced_usage.py           # Complex scenarios with streaming
+├── 03_error_handling_patterns.py # Comprehensive error handling
+└── README.md                   # This documentation
+```
+
+### Example Categories
+
+- **Basic Usage**: Fundamental operations and entity management
+- **Advanced Scenarios**: Complex workflows and streaming operations
+- **Error Handling**: Comprehensive error handling patterns
+- **Integration Patterns**: FLEXT ecosystem integration examples
+
+## Basic Usage Examples
+
+### Server Lifecycle Management
+
+**File**: `basic_usage.py`  
+**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
+
+**Key Concepts**:
+
+- FlextGrpcServer entity creation and validation
+- Domain rule validation patterns
+- State transition management
+- FlextResult pattern usage
+
+**Usage**:
+
+```bash
+# Run basic usage example
+poetry run python examples/basic_usage.py
+
+# Run with debug output
+FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
+```
+
+### Client Connection Management
+
+**File**: `basic_usage.py`  
+**Purpose**: Shows client entity creation, channel management, and connection patterns
+
+**Key Concepts**:
+
+- FlextGrpcClient entity lifecycle
+- FlextGrpcChannel state management
+- Connection establishment and teardown
+- SSL/TLS configuration examples
+
+## Advanced Usage Examples
+
+### Streaming Operations
+
+**File**: `advanced_usage.py`  
+**Purpose**: Demonstrates gRPC streaming patterns and advanced communication scenarios
+
+**Key Concepts**:
+
+- FlextGrpcStream entity usage
+- Bidirectional streaming patterns
+- Stream state management
+- Performance optimization techniques
+
+**Usage**:
+
+```bash
+# Run advanced usage example
+poetry run python examples/advanced_usage.py
+
+# Run with performance monitoring
+FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
+```
+
+### Platform Integration
+
+**File**: `advanced_usage.py`  
+**Purpose**: Shows integration with FlextGrpcPlatform for unified operations
+
+**Key Concepts**:
+
+- FlextGrpcPlatform usage patterns
+- Service registration and discovery
+- Dependency injection integration
+- Cross-service communication
+
+## Error Handling Examples
+
+### Comprehensive Error Patterns
+
+**File**: `03_error_handling_patterns.py`  
+**Purpose**: Demonstrates enterprise-grade error handling using FlextResult patterns
+
+**Key Concepts**:
+
+- FlextResult success/failure handling
+- Domain validation error management
+- Error propagation patterns
+- Logging and monitoring integration
+
+**Usage**:
+
+```bash
+# Run error handling examples
+poetry run python examples/03_error_handling_patterns.py
+
+# Run with error tracing
+FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
+```
+
+### Recovery Strategies
+
+**File**: `03_error_handling_patterns.py`  
+**Purpose**: Shows error recovery and resilience patterns
+
+**Key Concepts**:
+
+- Connection retry mechanisms
+- Circuit breaker patterns
+- Graceful degradation strategies
+- Health check integration
+
+## Integration Examples
+
+### FLEXT Ecosystem Integration
+
+**Purpose**: Demonstrates integration with other FLEXT ecosystem components
+
+**Key Integration Points**:
+
+- FlexCore (Go) service communication (port 8080)
+- FLEXT Service (Go/Python) integration (port 8081)
+- flext-core foundation pattern usage
+- flext-observability monitoring integration
+
+**Example Usage**:
+
+```python
+from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
+from flext_core import get_flext_container
+from datetime import datetime, timezone
+
+# Integration with FLEXT ecosystem
+container = get_flext_container()
+platform = FlextGrpcPlatform(container=container)
+
+# Client for FlexCore service
+flexcore_client = FlextGrpcClient(
+    id="flexcore-client",
+    host="localhost",
+    port=8080,  # FlexCore gRPC port
+    created_at=datetime.now(timezone.utc)
+)
+
+# Service operations (when Protocol Buffers are implemented)
+# result = platform.service.execute("connect", flexcore_client)
+```
+
+### Configuration Management
+
+**Purpose**: Shows enterprise configuration patterns and environment management
+
+**Key Concepts**:
+
+- FlextGrpcConfig usage patterns
+- Environment variable configuration
+- Development vs production settings
+- Security configuration management
+
+**Example Usage**:
+
+```python
+from flext_grpc import FlextGrpcConfig
+
+# Production configuration
+prod_config = FlextGrpcConfig(
+    host="0.0.0.0",
+    port=50051,
+    max_workers=20,
+    timeout=30.0,
+    use_ssl=True,
+    cert_file="/etc/ssl/certs/server.pem",
+    key_file="/etc/ssl/private/server.key"
+)
+
+# Development configuration
+dev_config = FlextGrpcConfig(
+    host="localhost",
+    port=50051,
+    max_workers=4,
+    timeout=10.0,
+    dev_mode=True
+)
+```
+
+## Running Examples
+
+### Development Environment
+
+**Prerequisites**:
+
+- Poetry installed and configured
+- Python 3.13+ environment
+- FLEXT workspace properly set up
+
+**Setup**:
+
+```bash
+# Install dependencies
+make install-dev
+
+# Set up development environment
+make setup
+
+# Verify installation
+make diagnose
+```
+
+### Execution Commands
+
+**Basic Examples**:
+
+```bash
+# Run all examples
+for example in examples/*.py; do
+    echo "Running $example"
+    poetry run python "$example"
+done
+
+# Run specific example
+poetry run python examples/basic_usage.py
+```
+
+**Debug Mode**:
+
+```bash
+# Run with comprehensive debugging
+FLEXT_LOG_LEVEL=debug \
+GRPC_VERBOSITY=debug \
+GRPC_TRACE=all \
+poetry run python examples/basic_usage.py
+```
+
+**Performance Monitoring**:
+
+```bash
+# Run with performance metrics
+FLEXT_GRPC_MONITOR=true \
+FLEXT_PERFORMANCE_METRICS=true \
+poetry run python examples/advanced_usage.py
+```
+
+## Example Patterns
+
+### Entity Creation Pattern
+
+```python
+from flext_grpc import FlextGrpcServer
+from datetime import datetime, timezone
+
+# Standard entity creation with validation
+server = FlextGrpcServer(
+    id="example-server",
+    host="localhost",
+    port=50051,
+    max_workers=10,
+    created_at=datetime.now(timezone.utc)
+)
+
+# Always validate before use
+validation = server.validate_domain_rules()
+if validation.is_failure:
+    print(f"Validation failed: {validation.error}")
+    exit(1)
+
+print(f"Server created: {server.id}")
+```
+
+### Service Operation Pattern
+
+```python
+from flext_grpc import FlextGrpcServerService
+
+# Service operations with FlextResult handling
+service = FlextGrpcServerService()
+result = service.execute("start", server)
+
+if result.is_success:
+    started_server = result.data
+    print(f"Server started: {started_server.state}")
+else:
+    print(f"Start failed: {result.error}")
+```
+
+### Platform Usage Pattern
+
+```python
+from flext_grpc import FlextGrpcPlatform
+
+# Platform operations for unified management
+platform = FlextGrpcPlatform()
+
+# High-level operations through platform
+server_result = platform.service.execute("create_server", server)
+if server_result.is_success:
+    print(f"Platform operation successful")
+```
+
+## Current Status and Limitations
+
+### Development Status (Honest Assessment)
+
+**Currently Working Examples**:
+
+- ✅ Entity creation and validation (basic_usage.py)
+- ✅ Domain service operations and state management
+- ✅ Error handling patterns with FlextResult
+- ✅ Configuration management and validation
+- ✅ Factory function usage (API functions)
+
+**Current Implementation Gaps**:
+
+- ❌ **Real gRPC Communication**: No actual network communication yet
+- ❌ **Protocol Buffers**: No .proto files or generated code
+- ❌ **Client-Server Interaction**: Examples only show entity creation
+- ❌ **Streaming Operations**: Stream entities exist but no actual streaming
+- ❌ **Network Communication**: No actual gRPC calls or responses
+
+**Example Documentation Status**:
+
+- ✅ **examples/README.md**: Updated with honest status assessment
+- ⚠️ **examples/*.py files**: Basic docstrings, need enterprise enhancement
+- ⚠️ **Working Code**: Examples run but don't demonstrate real gRPC features
+
+### What Examples Actually Demonstrate
+
+**Current Working Functionality** (Real, not aspirational):
+
+1. **Entity Creation**: FlextGrpcServer, FlextGrpcClient entities with validation
+2. **Domain Validation**: Entity.validate_domain_rules() with FlextResult patterns
+3. **State Management**: Entity state transitions (stopped → starting → running)
+4. **Configuration**: FlextGrpcConfig with validation and defaults
+5. **Error Handling**: FlextResult success/failure patterns
+6. **API Functions**: create_server(), create_client() factory functions
+
+**What Examples DON'T Demonstrate** (Missing functionality):
+
+1. **Network Communication**: No actual socket connections or gRPC calls
+2. **Protocol Buffers**: No .proto files, no generated stubs
+3. **Streaming**: Stream entities exist but no actual data streaming
+4. **Client-Server Communication**: No request/response examples
+5. **Service Methods**: No actual gRPC service method implementations
+
+### Planned Enhancements (Realistic Timeline)
+
+**Documentation Enhancement** (Immediate - 1-2 days):
+
+- Update all example .py files with enterprise-level docstrings
+- Add comprehensive code comments and explanations
+- Create working code examples that demonstrate existing functionality
+
+**Implementation Enhancement** (Future - requires significant development):
+
+- Protocol Buffer definition and code generation
+- Actual gRPC server/client communication implementation
+- Real streaming examples with data flow
+- Integration with external gRPC services
+
+For current development gaps and realistic timelines, see [../docs/TODO.md](../docs/TODO.md).
+
+## Contributing Examples
+
+### Adding New Examples
+
+1. **Follow Naming Convention**: Use descriptive names with numbered prefixes
+2. **Include Documentation**: Add comprehensive docstrings and comments
+3. **Test Examples**: Ensure examples run without errors
+4. **Update README**: Add new examples to this documentation
+
+### Example Quality Standards
+
+- **Professional Code**: Enterprise-grade code quality
+- **Comprehensive Comments**: Clear explanations for complex concepts
+- **Error Handling**: Proper FlextResult pattern usage
+- **Performance Awareness**: Efficient resource usage
+- **Security Conscious**: No hardcoded secrets or insecure patterns
+
+### Example Template
+
+```python
+"""
+Example: [Brief Description]
+
+Purpose:
+    [Detailed description of what this example demonstrates]
+
+Key Concepts:
+    - [Concept 1]: [Brief explanation]
+    - [Concept 2]: [Brief explanation]
+
+Usage:
+    poetry run python examples/[filename].py
+
+Author: FLEXT Development Team
+Version: 0.9.0
+"""
+
+from flext_grpc import (
+    FlextGrpcPlatform,
+    FlextGrpcServer,
+    FlextGrpcConfig
+)
+from flext_core import FlextResult
+from datetime import datetime, timezone
+
+def main() -> None:
+    """Main example execution function."""
+    print("Starting FLEXT gRPC example...")
+
+    # Example implementation here
+
+    print("Example completed successfully")
+
+if __name__ == "__main__":
+    main()
+```

@@ -1,5 +1,57 @@
-"""Unit tests for FLEXT gRPC services.
+"""FLEXT gRPC Service Testing - Comprehensive unit tests for domain services.
 
+This module provides comprehensive unit testing for all FLEXT gRPC domain services,
+following enterprise testing standards with service operation validation, business
+logic testing, and comprehensive error handling verification.
+
+Test Coverage:
+    The module ensures comprehensive coverage of all service operations:
+    - FlextGrpcService: Unified service operations and command handling
+    - Server Operations: Server lifecycle management and state transitions
+    - Client Operations: Client connection management and communication
+    - Stream Operations: Stream management and type validation
+    - Error Handling: Comprehensive failure scenario testing
+
+Testing Architecture:
+    Service testing follows Clean Architecture and Domain-Driven Design principles:
+    - Business Logic Testing: Service operations and business rule enforcement
+    - Command Handling: Service command execution and result validation
+    - State Management: Entity state transitions through service operations
+    - Error Propagation: Service error handling and failure recovery
+    - Integration Testing: Service coordination and dependency management
+
+Testing Patterns:
+    All service tests follow enterprise testing standards:
+    - AAA Pattern: Arrange, Act, Assert structure for clarity
+    - Service Isolation: Services tested with mocked dependencies
+    - Operation Validation: Each service operation thoroughly tested
+    - Error Scenarios: Comprehensive failure case testing
+    - Result Pattern: FlextResult pattern validation throughout
+
+Example:
+    Standard service testing pattern used throughout module:
+
+    >>> def test_service_operation_success():
+    ...     # Arrange: Set up service and test data
+    ...     service = FlextGrpcService()
+    ...     entity = create_valid_entity()
+    ...
+    ...     # Act: Execute service operation
+    ...     result = service.execute("operation", entity)
+    ...
+    ...     # Assert: Verify successful execution and state
+    ...     assert result.is_success
+    ...     assert result.data.state == expected_state
+
+Integration:
+    - Tests services from flext_grpc.services module
+    - Validates service operations on entities from flext_grpc.entities
+    - Uses flext-core FlextResult patterns for operation validation
+    - Integrates with pytest framework for execution and reporting
+
+Author: FLEXT Development Team
+Version: 0.9.0
+License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 """
