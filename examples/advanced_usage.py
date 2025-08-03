@@ -38,7 +38,7 @@ Example:
     ...     host="api.production.com",
     ...     port=443,
     ...     service_name="ProductionService",
-    ...     methods=["ProcessData", "GetStatus"]
+    ...     methods=["ProcessData", "GetStatus"],
     ... )
     >>>
     >>> platform = FlextGrpcPlatform()
@@ -52,13 +52,12 @@ Usage:
 
     >>> poetry run python examples/advanced_usage.py
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
 """
+
+from __future__ import annotations
 
 from datetime import UTC, datetime
 

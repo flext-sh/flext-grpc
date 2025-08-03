@@ -53,9 +53,6 @@ Integration:
     - Supports enterprise configuration management systems
     - Enables consistent behavior across all gRPC operations
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
@@ -65,7 +62,6 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-# Import flext-core constants for inheritance
 from flext_core.constants import FlextConstants
 
 

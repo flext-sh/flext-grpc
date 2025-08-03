@@ -36,9 +36,6 @@ Integration:
     - Integrates with flext-observability for monitoring and health checks
     - Provides domain model for gRPC communication across FLEXT ecosystem
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 

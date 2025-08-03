@@ -75,9 +75,6 @@ Version Information:
     - Python Requirements: 3.13+
     - gRPC Integration: Modern gRPC Python libraries
 
-Author: FLEXT Development Team
-Version: Dynamic (from package metadata)
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
@@ -87,17 +84,8 @@ from __future__ import annotations
 
 import importlib.metadata
 
-# Import from flext-core for foundational patterns
 from flext_core import FlextContainer, FlextResult
 
-try:
-    __version__ = importlib.metadata.version("flext-grpc")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "1.0.0"
-
-__version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
-
-# API functions
 from flext_grpc.api import (
     create_channel,
     create_client,
@@ -109,11 +97,7 @@ from flext_grpc.api import (
     parse_address,
     validate_address,
 )
-
-# Configuration
 from flext_grpc.config import FlextGrpcConfig
-
-# Domain entities
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -121,8 +105,6 @@ from flext_grpc.entities import (
     FlextGrpcService,
     FlextGrpcStream,
 )
-
-# Errors
 from flext_grpc.errors import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
@@ -130,18 +112,12 @@ from flext_grpc.errors import (
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
-
-# Platform
 from flext_grpc.platform import FlextGrpcPlatform
-
-# Domain Services
 from flext_grpc.services import (
     FlextGrpcClientService,
     FlextGrpcServerService,
     FlextGrpcStreamService,
 )
-
-# Types
 from flext_grpc.types import (
     TGrpcChannelState,
     TGrpcHost,
@@ -155,6 +131,13 @@ from flext_grpc.types import (
     flext_grpc_parse_target,
     flext_grpc_validate_target,
 )
+
+try:
+    __version__ = importlib.metadata.version("flext-grpc")
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "1.0.0"
+
+__version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 __all__ = [
     # Core

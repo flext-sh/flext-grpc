@@ -20,11 +20,9 @@ Testing Architecture:
     - Default Testing: Default value behavior validation
     - Integration Testing: Configuration usage in entity creation
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -62,10 +60,7 @@ class TestFlextGrpcConfig:
     def test_create_valid_config_with_custom_values(self) -> None:
         """Test creating configuration with custom values."""
         config = FlextGrpcConfig(
-            host="api.example.com",
-            port=8080,
-            max_workers=20,
-            timeout=30.0
+            host="api.example.com", port=8080, max_workers=20, timeout=30.0
         )
 
         assert config.host == "api.example.com"
@@ -121,9 +116,9 @@ class TestFlextGrpcConfig:
         """Test configuration with boundary values passes validation."""
         config = FlextGrpcConfig(
             host="a",  # Minimum valid host
-            port=1,    # Minimum valid port
+            port=1,  # Minimum valid port
             max_workers=1,  # Minimum valid workers
-            timeout=0.1     # Minimum meaningful timeout
+            timeout=0.1,  # Minimum meaningful timeout
         )
 
         assert config.host == "a"

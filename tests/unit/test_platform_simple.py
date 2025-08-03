@@ -1,4 +1,11 @@
-"""Simple platform tests to improve coverage without complex mocking."""
+"""Simple platform tests to improve coverage without complex mocking.
+
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+
+"""
+
+from __future__ import annotations
 
 from datetime import UTC, datetime
 
@@ -41,18 +48,14 @@ class TestFlextGrpcPlatformSimple:
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         channel = FlextGrpcChannel(
-            id="test-channel",
-            target="localhost:50051",
-            created_at=datetime.now(UTC)
+            id="test-channel", target="localhost:50051", created_at=datetime.now(UTC)
         )
         client = FlextGrpcClient(
-            id="test-client",
-            channel=channel,
-            created_at=datetime.now(UTC)
+            id="test-client", channel=channel, created_at=datetime.now(UTC)
         )
 
         # Test operations - these will likely fail but we're testing the error paths

@@ -1,9 +1,10 @@
 """FLEXT gRPC Platform - Unified gRPC communication platform.
 
+Platform class providing unified access to gRPC communication services.
+
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
-Platform class providing unified access to gRPC communication services.
 """
 
 from __future__ import annotations

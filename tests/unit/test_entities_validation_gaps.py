@@ -14,12 +14,12 @@ Coverage Target Lines:
     entities.py: 101, 177, 391, 467, 494, 521, 549, 670, 727, 805, 889, 967,
     1122-1127, 1141-1151, 1166, 1183-1188, 1205
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
+
+from __future__ import annotations
 
 from datetime import UTC, datetime
 
@@ -42,7 +42,7 @@ class TestEntityValidationGaps:
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         # Line 101: return self.__class__.__name__
@@ -57,7 +57,7 @@ class TestEntityValidationGaps:
                 id=f"test-channel-{state}",
                 target="localhost:50051",
                 state=state,
-                created_at=datetime.now(UTC)
+                created_at=datetime.now(UTC),
             )
 
             validation = channel.validate_domain_rules()
@@ -74,7 +74,7 @@ class TestEntityValidationGaps:
                 port=50051,
                 max_workers=10,
                 state=state,
-                created_at=datetime.now(UTC)
+                created_at=datetime.now(UTC),
             )
 
             validation = server.validate_domain_rules()
@@ -85,7 +85,7 @@ class TestEntityValidationGaps:
         client = FlextGrpcClient(
             id="test-client",
             channel=None,  # No channel
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         # Test validation with no channel
@@ -99,7 +99,7 @@ class TestEntityValidationGaps:
             id="test-service",
             name="test-service",
             methods=[],  # Empty methods list
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         validation = service.validate_domain_rules()
@@ -114,7 +114,7 @@ class TestEntityValidationGaps:
                 id=f"test-stream-{stream_type}",
                 method_name="test_method",
                 stream_type=stream_type,
-                created_at=datetime.now(UTC)
+                created_at=datetime.now(UTC),
             )
 
             validation = stream.validate_domain_rules()
@@ -127,7 +127,7 @@ class TestEntityValidationGaps:
             host="localhost",
             port=50051,
             max_workers=0,  # Invalid: zero workers
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         validation = server.validate_domain_rules()
@@ -139,7 +139,7 @@ class TestEntityValidationGaps:
         channel = FlextGrpcChannel(
             id="test-channel",
             target="",  # Empty target
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         validation = channel.validate_domain_rules()
@@ -150,29 +150,33 @@ class TestEntityValidationGaps:
         """Test entity_type property for all entities to improve coverage."""
         entities = [
             FlextGrpcServer(
-                id="server", host="localhost", port=50051, max_workers=10,
-                created_at=datetime.now(UTC)
+                id="server",
+                host="localhost",
+                port=50051,
+                max_workers=10,
+                created_at=datetime.now(UTC),
             ),
             FlextGrpcChannel(
-                id="channel", target="localhost:50051",
-                created_at=datetime.now(UTC)
+                id="channel", target="localhost:50051", created_at=datetime.now(UTC)
             ),
-            FlextGrpcClient(
-                id="client", created_at=datetime.now(UTC)
-            ),
+            FlextGrpcClient(id="client", created_at=datetime.now(UTC)),
             FlextGrpcService(
-                id="service", name="test-service",
-                created_at=datetime.now(UTC)
+                id="service", name="test-service", created_at=datetime.now(UTC)
             ),
             FlextGrpcStream(
-                id="stream", method_name="test_method", stream_type="unary",
-                created_at=datetime.now(UTC)
+                id="stream",
+                method_name="test_method",
+                stream_type="unary",
+                created_at=datetime.now(UTC),
             ),
         ]
 
         expected_types = [
-            "FlextGrpcServer", "FlextGrpcChannel", "FlextGrpcClient",
-            "FlextGrpcService", "FlextGrpcStream"
+            "FlextGrpcServer",
+            "FlextGrpcChannel",
+            "FlextGrpcClient",
+            "FlextGrpcService",
+            "FlextGrpcStream",
         ]
 
         for entity, expected_type in zip(entities, expected_types, strict=False):

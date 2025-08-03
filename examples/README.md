@@ -338,7 +338,7 @@ if server_result.is_success:
 **Example Documentation Status**:
 
 - ✅ **examples/README.md**: Updated with honest status assessment
-- ⚠️ **examples/*.py files**: Basic docstrings, need enterprise enhancement
+- ⚠️ **examples/\*.py files**: Basic docstrings, need enterprise enhancement
 - ⚠️ **Working Code**: Examples run but don't demonstrate real gRPC features
 
 ### What Examples Actually Demonstrate

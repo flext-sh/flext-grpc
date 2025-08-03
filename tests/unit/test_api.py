@@ -53,11 +53,9 @@ Integration:
     - Uses flext-core patterns for consistent entity behavior
     - Integrates with pytest framework for execution and coverage
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
@@ -239,8 +237,10 @@ class TestAPIFunctions:
         result = validate_address(None)  # type: ignore[arg-type]
         assert result.is_failure
         # The error should either be empty address error or exception error
-        assert ("Address cannot be empty" in result.error or
-                "Address validation error:" in result.error)
+        assert (
+            "Address cannot be empty" in result.error
+            or "Address validation error:" in result.error
+        )
 
     def test_parse_address(self) -> None:
         """Test parse_address function."""

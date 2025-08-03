@@ -41,11 +41,9 @@ Integration:
     - Supports all test categories (unit, integration, e2e)
     - Enables consistent test data across test suites
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations

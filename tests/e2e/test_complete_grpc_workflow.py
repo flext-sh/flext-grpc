@@ -57,11 +57,9 @@ Integration:
     - Uses real entity and service integration for workflow testing
     - Integrates with pytest framework for execution and reporting
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations

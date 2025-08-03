@@ -46,13 +46,12 @@ Usage:
 
     >>> poetry run python examples/basic_usage.py
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
 """
+
+from __future__ import annotations
 
 from datetime import UTC, datetime
 

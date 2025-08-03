@@ -15,12 +15,12 @@ Coverage Target Lines (services.py):
     741-743, 763, 766, 774, 779, 848, 868, 872, 876, 879, 892, 897, 901,
     1042-1044, 1058, 1062, 1105, 1122, 1140, 1161, 1172, 1356
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
+
 """
+
+from __future__ import annotations
 
 from datetime import UTC, datetime
 
@@ -48,7 +48,7 @@ class TestServicesValidationGaps:
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         # Line 114: Operation must be a string error path
@@ -64,7 +64,7 @@ class TestServicesValidationGaps:
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         # Test with invalid service type
@@ -80,7 +80,7 @@ class TestServicesValidationGaps:
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC)
+            created_at=datetime.now(UTC),
         )
 
         # Test with invalid operation
@@ -92,9 +92,7 @@ class TestServicesValidationGaps:
         """Test service execute with wrong entity type for operation."""
         service = FlextGrpcService()
         channel = FlextGrpcChannel(
-            id="test-channel",
-            target="localhost:50051",
-            created_at=datetime.now(UTC)
+            id="test-channel", target="localhost:50051", created_at=datetime.now(UTC)
         )
 
         # Try to use channel with server operation

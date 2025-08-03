@@ -2,9 +2,10 @@
 
 This package contains comprehensive integration tests for FLEXT gRPC platform components,
 validating component interactions, service coordination, and cross-layer integration
-following enterprise testing standards.
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+
 """
+
+from __future__ import annotations

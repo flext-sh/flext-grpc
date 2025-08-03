@@ -31,7 +31,10 @@ Example:
     Comprehensive error handling pattern:
 
     >>> from flext_grpc import create_server, FlextGrpcConfig
-    >>> from flext_grpc.errors import FlextGrpcValidationError, FlextGrpcConfigurationError
+    >>> from flext_grpc.errors import (
+    ...     FlextGrpcValidationError,
+    ...     FlextGrpcConfigurationError,
+    ... )
     >>>
     >>> try:
     ...     # Attempt configuration with invalid values
@@ -55,9 +58,6 @@ Usage:
 
     >>> poetry run python examples/03_error_handling_patterns.py
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 

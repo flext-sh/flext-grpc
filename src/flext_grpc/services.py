@@ -44,9 +44,6 @@ Integration:
     - Coordinates with platform layer for unified gRPC communication management
     - Supports FLEXT ecosystem service orchestration and cross-service communication
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 

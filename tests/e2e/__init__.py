@@ -4,7 +4,9 @@ This package contains comprehensive end-to-end tests for complete FLEXT gRPC wor
 validating full system integration, performance testing, and production-like scenarios
 following enterprise testing standards.
 
-Author: FLEXT Development Team
-Version: 0.9.0
-License: MIT
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
+
 """
+
+from __future__ import annotations
