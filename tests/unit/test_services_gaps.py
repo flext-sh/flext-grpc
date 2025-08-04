@@ -150,7 +150,7 @@ class TestServicesValidationGaps:
 
         # Test with empty string operation
         result = service.execute("server", "", "dummy")
-        assert result.is_failure or result.is_success  # Either is acceptable
+        assert result.is_failure or result.success  # Either is acceptable
 
         # Test with numeric operation
         result = service.execute("server", 42, "dummy")

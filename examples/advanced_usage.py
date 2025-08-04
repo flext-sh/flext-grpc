@@ -44,7 +44,7 @@ Example:
     >>> platform = FlextGrpcPlatform()
     >>> server_result = platform.service.execute("validate", setup["server"])
     >>>
-    >>> if server_result.is_success:
+    >>> if server_result.success:
     ...     print("Advanced setup validated successfully")
 
 Usage:
@@ -118,7 +118,7 @@ class GrpcServerManager:
 
         for server_id, server in self.servers.items():
             start_result = self.operations.start_server(server)
-            if start_result.is_success:
+            if start_result.success:
                 self.servers[server_id] = start_result.data
                 results[server_id] = True
                 print(f"✅ Started server {server_id} on {server.get_address()}")
@@ -135,7 +135,7 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             if server.is_running():
                 stop_result = self.operations.stop_server(server)
-                if stop_result.is_success:
+                if stop_result.success:
                     self.servers[server_id] = stop_result.data
                     results[server_id] = True
                     print(f"✅ Stopped server {server_id}")
@@ -144,7 +144,7 @@ class GrpcServerManager:
                     print(f"❌ Failed to stop server {server_id}: {stop_result.error}")
             else:
                 results[server_id] = True
-                print(f"ℹ️ Server {server_id} already stopped")
+                print(f"i Server {server_id} already stopped")
 
         return results
 
@@ -208,7 +208,7 @@ class GrpcClientPool:
 
         for client_id, client in self.clients.items():
             connect_result = self.operations.connect_client(client)
-            if connect_result.is_success:
+            if connect_result.success:
                 self.clients[client_id] = connect_result.data
                 self.connection_status[client_id] = True
                 results[client_id] = True
@@ -221,20 +221,23 @@ class GrpcClientPool:
 
         return results
 
-    def broadcast_call(self, method_name: str, data=None) -> dict[str, object]:
+    def broadcast_call(
+        self, method_name: str, data: object = None
+    ) -> dict[str, object]:
         """Broadcast a method call to all connected clients."""
         results = {}
 
         for client_id, client in self.clients.items():
             if self.connection_status[client_id] and client.is_connected():
                 call_result = self.operations.call_method(client, method_name, data)
-                if call_result.is_success:
+                if call_result.success:
                     results[client_id] = call_result.data
                     print(f"✅ Called {method_name} on {client_id}")
                 else:
                     results[client_id] = {"error": call_result.error}
                     print(
-                        f"❌ Failed to call {method_name} on {client_id}: {call_result.error}"
+                        f"❌ Failed to call {method_name} on {client_id}: "
+                        f"{call_result.error}"
                     )
             else:
                 results[client_id] = {"error": "Client not connected"}
@@ -315,7 +318,8 @@ def example_1_server_pool() -> None:
     print("\nServer Status:")
     for server_id, info in status.items():
         print(
-            f"  {server_id}: {info['address']} ({info['state']}) - {info['max_workers']} workers"
+            f"  {server_id}: {info['address']} ({info['state']}) - "
+            f"{info['max_workers']} workers"
         )
 
     # Stop all servers
@@ -455,7 +459,7 @@ def example_4_streaming() -> None:
     for stream in streams:
         validation = stream.validate_domain_rules()
         print(f"  {stream.method_name} ({stream.stream_type}):")
-        print(f"    Valid: {validation.is_success}")
+        print(f"    Valid: {validation.success}")
         print(f"    Is Streaming: {stream.is_streaming()}")
         if validation.is_failure:
             print(f"    Error: {validation.error}")
@@ -492,7 +496,7 @@ def example_5_error_handling() -> None:
     )
 
     start1 = ops.start_server(server)
-    if start1.is_success:
+    if start1.success:
         running_server = start1.data
         start2 = ops.start_server(running_server)
         print(f"  Double start error: {start2.error}")

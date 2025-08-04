@@ -35,7 +35,7 @@ Example:
     >>> client = create_test_client_with_options()
     >>> # Validate complete workflows
     >>> workflow_result = validate_complete_workflow(server, client)
-    >>> assert workflow_result.is_success
+    >>> assert workflow_result.success
 
 Integration:
     - Provides utilities for all FLEXT gRPC E2E testing scenarios

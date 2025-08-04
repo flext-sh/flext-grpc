@@ -193,7 +193,7 @@ FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcConstants.DEFAULT_CONFIG
 # EXPORTS
 # =============================================================================
 
-__all__ = [
+__all__: list[str] = [
     # Legacy constants for backward compatibility
     "FLEXT_GRPC_DEFAULT_CONFIG",
     "FLEXT_GRPC_DEFAULT_HOST",

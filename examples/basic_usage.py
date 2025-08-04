@@ -2,7 +2,8 @@
 
 This module demonstrates the fundamental operations and patterns of the FLEXT gRPC
 communication platform, showcasing entity creation, validation, configuration,
-and basic service operations following Clean Architecture and Domain-Driven Design principles.
+and basic service operations following Clean Architecture and Domain-Driven
+Design principles.
 
 Example Categories:
     The module provides comprehensive examples of core FLEXT gRPC functionality:
@@ -36,7 +37,7 @@ Example:
     >>> server = create_server(host="localhost", port=50051, max_workers=10)
     >>> validation_result = server.validate_domain_rules()
     >>>
-    >>> if validation_result.is_success:
+    >>> if validation_result.success:
     ...     print(f"Server created successfully: {server.address}")
     ... else:
     ...     print(f"Validation failed: {validation_result.error}")
@@ -173,16 +174,16 @@ def example_3_operations() -> None:
 
     # Start server
     start_result = ops.start_server(server)
-    if start_result.is_success:
+    if start_result.success:
         running_server = start_result.data
         print(f"Server started: {running_server.state}")
     else:
         print(f"Failed to start server: {start_result.error}")
 
     # Stop server
-    if start_result.is_success:
+    if start_result.success:
         stop_result = ops.stop_server(running_server)
-        if stop_result.is_success:
+        if stop_result.success:
             stopped_server = stop_result.data
             print(f"Server stopped: {stopped_server.state}")
         else:
@@ -205,7 +206,7 @@ def example_3_operations() -> None:
 
     # Connect client
     connect_result = ops.connect_client(client)
-    if connect_result.is_success:
+    if connect_result.success:
         connected_client = connect_result.data
         print(f"Client connected: {connected_client.is_connected()}")
 
@@ -213,7 +214,7 @@ def example_3_operations() -> None:
         call_result = ops.call_method(
             connected_client, "GetServerInfo", {"request_id": "12345"}
         )
-        if call_result.is_success:
+        if call_result.success:
             response = call_result.data
             print(f"Method call successful: {response['method']}")
             print(f"Response status: {response['status']}")
@@ -240,7 +241,7 @@ def example_4_validation() -> None:
     )
 
     validation = valid_server.validate_domain_rules()
-    print(f"Valid server validation: {validation.is_success}")
+    print(f"Valid server validation: {validation.success}")
 
     # Invalid entities
     try:
@@ -253,7 +254,7 @@ def example_4_validation() -> None:
         )
 
         validation = invalid_server.validate_domain_rules()
-        print(f"Invalid server validation: {validation.is_success}")
+        print(f"Invalid server validation: {validation.success}")
         if validation.is_failure:
             print(f"Validation error: {validation.error}")
     except (RuntimeError, ValueError, TypeError) as e:
@@ -268,7 +269,7 @@ def example_4_validation() -> None:
     )
 
     channel_validation = valid_channel.validate_domain_rules()
-    print(f"Valid channel validation: {channel_validation.is_success}")
+    print(f"Valid channel validation: {channel_validation.success}")
 
     invalid_channel = FlextGrpcChannel(
         id="invalid-channel",
@@ -277,7 +278,7 @@ def example_4_validation() -> None:
     )
 
     invalid_validation = invalid_channel.validate_domain_rules()
-    print(f"Invalid channel validation: {invalid_validation.is_success}")
+    print(f"Invalid channel validation: {invalid_validation.success}")
     if invalid_validation.is_failure:
         print(f"Channel validation error: {invalid_validation.error}")
 
@@ -300,13 +301,13 @@ def example_5_state_transitions() -> None:
 
     # Connect channel
     connect_result = channel.connect()
-    if connect_result.is_success:
+    if connect_result.success:
         connecting_channel = connect_result.data
         print(f"After connect: {connecting_channel.state}")
 
         # Mark ready
         ready_result = connecting_channel.mark_ready()
-        if ready_result.is_success:
+        if ready_result.success:
             ready_channel = ready_result.data
             print(f"After mark ready: {ready_channel.state}")
             print(f"Channel is ready: {ready_channel.is_ready()}")
@@ -328,7 +329,7 @@ def example_5_state_transitions() -> None:
 
     # Start server
     start_result = ops.start_server(server)
-    if start_result.is_success:
+    if start_result.success:
         running_server = start_result.data
         print(f"After start: {running_server.state}")
         print(f"Server is running: {running_server.is_running()}")

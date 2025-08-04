@@ -165,7 +165,7 @@ if validation.is_failure:
 ```python
 # Use copy_with() for immutable state changes
 start_result = server.start()  # stopped → starting
-if start_result.is_success:
+if start_result.success:
     running_server = start_result.data.mark_running()  # starting → running
 ```
 
@@ -175,7 +175,7 @@ if start_result.is_success:
 # Use domain services for business logic
 server_service = FlextGrpcServerService()
 result = server_service.execute("start", server)
-if result.is_success:
+if result.success:
     started_server = result.data
 ```
 
@@ -190,7 +190,7 @@ def risky_operation() -> FlextResult[str]:
 
 # Handle results properly
 result = risky_operation()
-if result.is_success:
+if result.success:
     process_data(result.data)
 else:
     log_error(result.error)

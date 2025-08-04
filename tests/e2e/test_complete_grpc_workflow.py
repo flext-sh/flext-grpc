@@ -47,9 +47,9 @@ Example:
     ...     server_result = start_server(server)
     ...     client_result = connect_client(client)
     ...
-    ...     # Assert: Verify end-to-end success
-    ...     assert server_result.is_success
-    ...     assert client_result.is_success
+    ...     # Assert: Verify end-to-end success:
+    ...     assert server_result.success
+    ...     assert client_result.success
 
 Integration:
     - Tests complete workflows across all FLEXT gRPC components
@@ -95,7 +95,7 @@ class TestCompleteGrpcWorkflow:
         # 1. Validate addresses
         server_address = "localhost:9100"
         address_validation = validate_address(server_address)
-        assert address_validation.is_success
+        assert address_validation.success
 
         # 2. Create complete setup
         setup = create_complete_setup(
@@ -111,7 +111,7 @@ class TestCompleteGrpcWorkflow:
         # 4. Start server with service - using DRY helper functions
         server_entity = assert_server_from_setup(setup)
         server_start = platform.start_server(server_entity)
-        assert server_start.is_success
+        assert server_start.success
         running_server = assert_server_from_result(server_start.data)
 
         # Add service to server - using DRY helper functions
@@ -121,13 +121,13 @@ class TestCompleteGrpcWorkflow:
             running_server,
             service=service_entity,
         )
-        assert service_add.is_success
+        assert service_add.success
         server_with_service = service_add.data
 
         # 5. Connect client - using DRY helper functions
         client_entity = assert_client_from_setup(setup)
         client_connect = platform.connect_client(client_entity)
-        assert client_connect.is_success
+        assert client_connect.success
         connected_client = assert_client_from_result(client_connect.data)
 
         # 6. Execute enterprise workflow
@@ -138,7 +138,7 @@ class TestCompleteGrpcWorkflow:
             "authenticate",
             {"username": "enterprise_user", "token": "secure_token"},
         )
-        assert auth_result.is_success
+        assert auth_result.success
         assert auth_result.data is not None
         # Type-safe cast since we know call results return dict
         if not isinstance(auth_result.data, dict):
@@ -159,7 +159,7 @@ class TestCompleteGrpcWorkflow:
                 "priority": "high",
             },
         )
-        assert process_result.is_success
+        assert process_result.success
         if process_result.data["method"] != "process_data":
             raise AssertionError(
                 f"Expected {'process_data'}, got {process_result.data['method']}"
@@ -171,7 +171,7 @@ class TestCompleteGrpcWorkflow:
             "get_status",
             {"request_id": "req_12345"},
         )
-        assert status_result.is_success
+        assert status_result.success
         if status_result.data["method"] != "get_status":
             raise AssertionError(
                 f"Expected {'get_status'}, got {status_result.data['method']}"
@@ -179,7 +179,7 @@ class TestCompleteGrpcWorkflow:
 
         # 7. Server status verification
         final_status = platform.get_server_status(server_with_service)
-        assert final_status.is_success
+        assert final_status.success
         status_data = final_status.data
         if status_data["address"] != "localhost:9100":
             raise AssertionError(
@@ -213,7 +213,7 @@ class TestCompleteGrpcWorkflow:
             "server_data_stream",
             "server_streaming",
         )
-        assert server_stream.is_success
+        assert server_stream.success
         s_stream = server_stream.data
         assert s_stream.is_server_streaming
         assert not s_stream.is_client_streaming
@@ -224,7 +224,7 @@ class TestCompleteGrpcWorkflow:
             "client_upload_stream",
             "client_streaming",
         )
-        assert client_stream.is_success
+        assert client_stream.success
         c_stream = client_stream.data
         assert not c_stream.is_server_streaming
         assert c_stream.is_client_streaming
@@ -235,7 +235,7 @@ class TestCompleteGrpcWorkflow:
             "bidirectional_chat",
             "bidirectional",
         )
-        assert bi_stream.is_success
+        assert bi_stream.success
         b_stream = bi_stream.data
         assert b_stream.is_bidirectional
 
@@ -263,7 +263,7 @@ class TestCompleteGrpcWorkflow:
         # Don't start server
 
         status_result = platform.get_server_status(valid_server)
-        assert status_result.is_success  # Status check works even if not running
+        assert status_result.success  # Status check works even if not running
         status = status_result.data
         if status["is_running"]:
             raise AssertionError(f"Expected False, got {status['is_running']}")
@@ -293,12 +293,12 @@ class TestCompleteGrpcWorkflow:
                 running_server,
                 service=service,
             )
-            assert add_result.is_success
+            assert add_result.success
             running_server = add_result.data
 
         # 4. Verify all services are added
         final_status = platform.get_server_status(running_server)
-        assert final_status.is_success
+        assert final_status.success
         if final_status.data["service_count"] != EXPECTED_DATA_COUNT:
             raise AssertionError(
                 f"Expected {3}, got {final_status.data['service_count']}"
@@ -315,7 +315,7 @@ class TestCompleteGrpcWorkflow:
             "login",
             {"user": "test", "pass": "secret"},
         )
-        assert auth_call.is_success
+        assert auth_call.success
         if auth_call.data["method"] != "login":
             raise AssertionError(f"Expected {'login'}, got {auth_call.data['method']}")
 
@@ -325,7 +325,7 @@ class TestCompleteGrpcWorkflow:
             "create",
             {"entity": "user", "data": {"name": "John"}},
         )
-        assert data_call.is_success
+        assert data_call.success
         if data_call.data["method"] != "create":
             raise AssertionError(f"Expected {'create'}, got {data_call.data['method']}")
 
@@ -335,7 +335,7 @@ class TestCompleteGrpcWorkflow:
             "send",
             {"recipient": "user@example.com", "message": "Hello"},
         )
-        assert notify_call.is_success
+        assert notify_call.success, "Notification call should succeed"
         if notify_call.data["method"] != "send":
             raise AssertionError(f"Expected {'send'}, got {notify_call.data['method']}")
 
@@ -360,10 +360,10 @@ class TestCompleteGrpcWorkflow:
 
         # 4. Test that configured components work
         start_result = platform.start_server(server)
-        assert start_result.is_success
+        assert start_result.success
 
         connect_result = platform.connect_client(client)
-        assert connect_result.is_success
+        assert connect_result.success
 
     def test_concurrent_clients_workflow(self) -> None:
         """Test workflow with concurrent clients."""
@@ -390,7 +390,7 @@ class TestCompleteGrpcWorkflow:
         connected_clients = []
         for client in clients:
             connect_result = platform.connect_client(client)
-            assert connect_result.is_success
+            assert connect_result.success
             connected_clients.append(connect_result.data)
 
         # 4. Make concurrent calls
@@ -400,7 +400,7 @@ class TestCompleteGrpcWorkflow:
                 "process",
                 {"client_id": i, "data": f"data_{i}"},
             )
-            assert call_result.is_success
+            assert call_result.success
             if call_result.data["data"]["client_id"] != i:
                 raise AssertionError(
                     f"Expected {i}, got {call_result.data['data']['client_id']}"
@@ -408,7 +408,7 @@ class TestCompleteGrpcWorkflow:
 
         # 5. Verify server handled all clients
         status_result = platform.get_server_status(server_with_service)
-        assert status_result.is_success
+        assert status_result.success
         # Server should still be running and healthy
 
     def test_full_library_integration(self) -> None:
@@ -440,8 +440,8 @@ class TestCompleteGrpcWorkflow:
         server_result = platform.start_server(server)
         client_result = platform.connect_client(client)
 
-        assert server_result.is_success
-        assert client_result.is_success
+        assert server_result.success
+        assert client_result.success
 
         # 4. Validate types work
         target_str = "localhost:9106"
@@ -459,7 +459,7 @@ class TestCompleteGrpcWorkflow:
         # 5. Test service works
         app_service = FlextGrpcService()
         service_result = app_service.execute("server", "status", server_result.data)
-        assert service_result.is_success
+        assert service_result.success
 
     def test_performance_workflow(self) -> None:
         """Test basic performance characteristics."""
@@ -473,7 +473,7 @@ class TestCompleteGrpcWorkflow:
         start_result = platform.start_server(server)
         startup_time = time.time() - start_time
 
-        assert start_result.is_success
+        assert start_result.success
         assert startup_time < 1.0  # Should start quickly
 
         # 2. Measure client connection time
@@ -483,7 +483,7 @@ class TestCompleteGrpcWorkflow:
         connect_result = platform.connect_client(client)
         connect_time = time.time() - connect_start
 
-        assert connect_result.is_success
+        assert connect_result.success
         assert connect_time < 1.0  # Should connect quickly
 
         # 3. Measure call performance
@@ -500,7 +500,7 @@ class TestCompleteGrpcWorkflow:
             call_time = time.time() - call_start
             call_times.append(call_time)
 
-            assert call_result.is_success
+            assert call_result.success
 
         # Average call time should be reasonable
         avg_call_time = sum(call_times) / len(call_times)

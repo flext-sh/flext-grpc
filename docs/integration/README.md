@@ -81,7 +81,7 @@ flexcore_client = FlextGrpcClient(
 platform = FlextGrpcPlatform()
 connect_result = platform.service.execute("connect", flexcore_client)
 
-if connect_result.is_success:
+if connect_result.success:
     print("Connected to FlexCore service")
     # Perform operations through gRPC
 else:
@@ -467,7 +467,7 @@ async def discover_services():
         environment="production"
     )
 
-    if discovery_result.is_success:
+    if discovery_result.success:
         services = discovery_result.data
         for service in services:
             print(f"Found service: {service.name} at {service.host}:{service.port}")

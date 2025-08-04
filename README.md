@@ -109,7 +109,7 @@ platform = FlextGrpcPlatform()
 
 # Server operations through platform
 server_result = platform.service.execute("create_server", server)
-if server_result.is_success:
+if server_result.success:
     print(f"Server created: {server_result.data.state}")
 ```
 

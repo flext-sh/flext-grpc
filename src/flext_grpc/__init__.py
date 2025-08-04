@@ -50,9 +50,9 @@ Example:
     >>>
     >>> # Start server and connect client
     >>> start_result = platform.start_server(server)
-    >>> if start_result.is_success:
+    >>> if start_result.success:
     ...     connect_result = platform.connect_client(client)
-    ...     if connect_result.is_success:
+    ...     if connect_result.success:
     ...         # Make remote call
     ...         response = platform.make_call(
     ...             connect_result.data, "GetData", {"query": "latest"}
@@ -139,7 +139,7 @@ except importlib.metadata.PackageNotFoundError:
 
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
-__all__ = [
+__all__: list[str] = [
     # Core
     "FlextContainer",
     # Domain Entities

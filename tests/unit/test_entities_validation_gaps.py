@@ -61,7 +61,7 @@ class TestEntityValidationGaps:
             )
 
             validation = channel.validate_domain_rules()
-            assert validation.is_success
+            assert validation.success
 
     def test_server_valid_states_coverage(self) -> None:
         """Test server validation with all valid states for coverage."""
@@ -78,7 +78,7 @@ class TestEntityValidationGaps:
             )
 
             validation = server.validate_domain_rules()
-            assert validation.is_success
+            assert validation.success
 
     def test_client_channel_none_validation(self) -> None:
         """Test client validation edge cases for missing coverage."""
@@ -91,7 +91,7 @@ class TestEntityValidationGaps:
         # Test validation with no channel
         validation = client.validate_domain_rules()
         # Should either pass or fail gracefully
-        assert validation.is_success or validation.is_failure
+        assert validation.success or validation.is_failure
 
     def test_service_empty_methods_validation(self) -> None:
         """Test service validation with edge cases."""
@@ -103,7 +103,7 @@ class TestEntityValidationGaps:
         )
 
         validation = service.validate_domain_rules()
-        assert validation.is_success or validation.is_failure
+        assert validation.success or validation.is_failure
 
     def test_stream_all_types_coverage(self) -> None:
         """Test stream validation with all valid stream types for coverage."""
@@ -118,7 +118,7 @@ class TestEntityValidationGaps:
             )
 
             validation = stream.validate_domain_rules()
-            assert validation.is_success
+            assert validation.success
 
     def test_server_zero_workers_validation(self) -> None:
         """Test server validation with zero workers for coverage."""
@@ -132,7 +132,7 @@ class TestEntityValidationGaps:
 
         validation = server.validate_domain_rules()
         # Should catch max_workers validation
-        assert validation.is_success or validation.is_failure
+        assert validation.success or validation.is_failure
 
     def test_channel_empty_target_validation(self) -> None:
         """Test channel validation with empty target."""

@@ -35,7 +35,7 @@ Example:
     ...     created_at=datetime.now(timezone.utc),
     ... )
     >>> result = service.execute("start", server)
-    >>> print(result.is_success)
+    >>> print(result.success)
     True
 
 Integration:
@@ -168,13 +168,13 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
         >>>
         >>> # Start server
         >>> start_result = service.execute("start", server)
-        >>> if start_result.is_success:
+        >>> if start_result.success:
         ...     running_server = start_result.data
         ...     print(f"Server started on {running_server.address}")
         >>>
         >>> # Check server status
         >>> status_result = service.execute("status", running_server)
-        >>> if status_result.is_success:
+        >>> if status_result.success:
         ...     status = status_result.data
         ...     print(f"Server {status['id']} is {status['state']}")
 
@@ -223,7 +223,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
             - Ensures no None values in success cases for downstream processing
 
         """
-        if result.is_success:
+        if result.success:
             return FlextResult.ok(result.data if result.data is not None else {})
         return FlextResult.fail(result.error or error_msg)
 
@@ -271,7 +271,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
             >>>
             >>> # Start server operation
             >>> result = service.execute("start", server)
-            >>> if result.is_success:
+            >>> if result.success:
             ...     started_server = result.data
             ...     print(f"Server {started_server.id} started successfully")
             >>> else:
@@ -325,7 +325,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
 
         return self._execute_server_operation(operation, server, **kwargs)
 
-    def _execute_server_operation(
+    def _execute_server_operation(  # noqa: PLR0911
         self,
         operation: str,
         server: FlextGrpcServer,
@@ -356,27 +356,21 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
         match operation:
             case "start":
                 start_result = self._start_server(server)
-                return (
-                    FlextResult.ok(start_result.data)
-                    if start_result.is_success
-                    else FlextResult.fail(start_result.error or "Start failed")
-                )
+                if start_result.success:
+                    return FlextResult.ok(start_result.data)
+                return FlextResult.fail(start_result.error or "Start failed")
             case "stop":
                 stop_result = self._stop_server(server)
-                return (
-                    FlextResult.ok(stop_result.data)
-                    if stop_result.is_success
-                    else FlextResult.fail(stop_result.error or "Stop failed")
-                )
+                if stop_result.success:
+                    return FlextResult.ok(stop_result.data)
+                return FlextResult.fail(stop_result.error or "Stop failed")
             case "add_service":
                 return self._handle_add_service(server, options)
             case "status":
                 status_result = self._get_server_status(server)
-                return (
-                    FlextResult.ok(status_result.data)
-                    if status_result.is_success
-                    else FlextResult.fail(status_result.error or "Status failed")
-                )
+                if status_result.success:
+                    return FlextResult.ok(status_result.data)
+                return FlextResult.fail(status_result.error or "Status failed")
             case _:
                 return FlextResult.fail(f"Unknown server operation: {operation}")
 
@@ -423,7 +417,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
 
         result = server.add_service(service)
         # Convert to object result to match return type
-        if result.is_success:
+        if result.success:
             return FlextResult.ok(result.data)
         return FlextResult.fail(result.error or "Add service failed")
 
@@ -613,7 +607,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         >>>
         >>> # Connect to server
         >>> connect_result = service.execute("connect", client)
-        >>> if connect_result.is_success:
+        >>> if connect_result.success:
         ...     connected_client = connect_result.data
         ...     print(f"Connected to {connected_client.target}")
         >>>
@@ -624,7 +618,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         ...     method_name="GetData",
         ...     request_data={"query": "latest"},
         ... )
-        >>> if call_result.is_success:
+        >>> if call_result.success:
         ...     response = call_result.data
         ...     print(f"Method call successful: {response['status']}")
 
@@ -694,7 +688,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         >>>
         >>> # Connect to server
         >>> connect_result = service.execute("connect", client)
-        >>> if connect_result.is_success:
+        >>> if connect_result.success:
         ...     connected_client = connect_result.data
         ...     print(f"Connected to {connected_client.target}")
         >>>
@@ -705,7 +699,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         ...     method_name="GetData",
         ...     request_data={"query": "latest"},
         ... )
-        >>> if call_result.is_success:
+        >>> if call_result.success:
         ...     response = call_result.data
         ...     print(f"Method call successful: {response['status']}")
 
@@ -735,7 +729,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
-        if result.is_success:
+        if result.success:
             return FlextResult.ok(result.data if result.data is not None else {})
         return FlextResult.fail(result.error or error_msg)
 
@@ -777,7 +771,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
 
         return self._execute_client_operation(operation, client, **kwargs)
 
-    def _execute_client_operation(
+    def _execute_client_operation(  # noqa: PLR0911
         self,
         operation: str,
         client: FlextGrpcClient,
@@ -788,29 +782,21 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         match operation:
             case "connect":
                 connect_result = self._connect_client(client)
-                return (
-                    FlextResult.ok(connect_result.data)
-                    if connect_result.is_success
-                    else FlextResult.fail(connect_result.error or "Connect failed")
-                )
+                if connect_result.success:
+                    return FlextResult.ok(connect_result.data)
+                return FlextResult.fail(connect_result.error or "Connect failed")
             case "disconnect":
                 disconnect_result = self._disconnect_client(client)
-                return (
-                    FlextResult.ok(disconnect_result.data)
-                    if disconnect_result.is_success
-                    else FlextResult.fail(
-                        disconnect_result.error or "Disconnect failed",
-                    )
-                )
+                if disconnect_result.success:
+                    return FlextResult.ok(disconnect_result.data)
+                return FlextResult.fail(disconnect_result.error or "Disconnect failed")
             case "call":
                 return self._handle_call_operation(client, kwargs)
             case "status":
                 status_result = self._get_client_status(client)
-                return (
-                    FlextResult.ok(status_result.data)
-                    if status_result.is_success
-                    else FlextResult.fail(status_result.error or "Status failed")
-                )
+                if status_result.success:
+                    return FlextResult.ok(status_result.data)
+                return FlextResult.fail(status_result.error or "Status failed")
             case _:
                 return FlextResult.fail(f"Unknown client operation: {operation}")
 
@@ -824,11 +810,9 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         method_name = str(method_name_arg) if method_name_arg else None
         request_data = kwargs.get("request_data")
         call_result = self._call_method(client, method_name, request_data)
-        return (
-            FlextResult.ok(call_result.data)
-            if call_result.is_success
-            else FlextResult.fail(call_result.error or "Call failed")
-        )
+        if call_result.success:
+            return FlextResult.ok(call_result.data)
+        return FlextResult.fail(call_result.error or "Call failed")
 
     def _connect_client(self, client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
         """Connect client with proper channel state management."""
@@ -995,7 +979,7 @@ class FlextGrpcStreamService(FlextDomainService):
         ...     method_name="ProcessStream",
         ...     stream_type="bidirectional",
         ... )
-        >>> if create_result.is_success:
+        >>> if create_result.success:
         ...     stream = create_result.data
         ...     print(f"Stream created: {stream.method_name}")
         >>>
@@ -1003,7 +987,7 @@ class FlextGrpcStreamService(FlextDomainService):
         >>> send_result = service.execute(
         ...     "send", stream=stream, data={"message": "Hello streaming world"}
         ... )
-        >>> if send_result.is_success:
+        >>> if send_result.success:
         ...     print("Data sent successfully")
         >>>
         >>> # Close stream
@@ -1036,7 +1020,7 @@ class FlextGrpcStreamService(FlextDomainService):
         error_msg: str,
     ) -> FlextResult[object]:
         """Handle result with consistent pattern."""
-        if result.is_success:
+        if result.success:
             return FlextResult.ok(result.data if result.data is not None else {})
         return FlextResult.fail(result.error or error_msg)
 
@@ -1084,11 +1068,9 @@ class FlextGrpcStreamService(FlextDomainService):
         stream_type_str = str(stream_type) if stream_type else "unary"
 
         result = self._create_stream(client, method_name_str, stream_type_str)
-        return (
-            FlextResult.ok(result.data)
-            if result.is_success
-            else FlextResult.fail(result.error or "Create stream failed")
-        )
+        if result.success:
+            return FlextResult.ok(result.data)
+        return FlextResult.fail(result.error or "Create stream failed")
 
     def _handle_send_stream(self, kwargs: dict[str, object]) -> FlextResult[object]:
         """Handle send stream operation."""
@@ -1102,11 +1084,9 @@ class FlextGrpcStreamService(FlextDomainService):
             return FlextResult.fail("Stream must be a FlextGrpcStream instance")
 
         send_result = self._send_data(stream, data)
-        return (
-            FlextResult.ok(send_result.data)
-            if send_result.is_success
-            else FlextResult.fail(send_result.error or "Send data failed")
-        )
+        if send_result.success:
+            return FlextResult.ok(send_result.data)
+        return FlextResult.fail(send_result.error or "Send data failed")
 
     def _handle_close_stream(self, kwargs: dict[str, object]) -> FlextResult[object]:
         """Handle close stream operation."""
@@ -1119,11 +1099,9 @@ class FlextGrpcStreamService(FlextDomainService):
             return FlextResult.fail("Stream must be a FlextGrpcStream instance")
 
         close_result = self._close_stream(stream)
-        return (
-            FlextResult.ok(close_result.data)
-            if close_result.is_success
-            else FlextResult.fail(close_result.error or "Close stream failed")
-        )
+        if close_result.success:
+            return FlextResult.ok(close_result.data)
+        return FlextResult.fail(close_result.error or "Close stream failed")
 
     def _create_stream(
         self,

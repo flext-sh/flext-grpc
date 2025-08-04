@@ -215,7 +215,7 @@ def test_entity_creation_and_validation():
     validation_result = entity.validate_domain_rules()
 
     # Assert
-    assert validation_result.is_success
+    assert validation_result.success
     assert entity.id == "test-entity"
 ```
 
@@ -232,7 +232,7 @@ def test_service_operation_success():
     result = service.execute("start", server)
 
     # Assert
-    assert result.is_success
+    assert result.success
     assert result.data.state == "starting"
 ```
 

@@ -63,22 +63,22 @@ class TestFlextGrpcPlatformSimple:
 
         start_result = platform.start_server(server)
         # Should either succeed or fail gracefully
-        assert start_result.is_success or start_result.is_failure
+        assert start_result.success or start_result.is_failure
 
         stop_result = platform.stop_server(server)
-        assert stop_result.is_success or stop_result.is_failure
+        assert stop_result.success or stop_result.is_failure
 
         connect_result = platform.connect_client(client)
-        assert connect_result.is_success or connect_result.is_failure
+        assert connect_result.success or connect_result.is_failure
 
         call_result = platform.make_call(client, "test_method", {"data": "test"})
-        assert call_result.is_success or call_result.is_failure
+        assert call_result.success or call_result.is_failure
 
         server_status = platform.get_server_status(server)
-        assert server_status.is_success or server_status.is_failure
+        assert server_status.success or server_status.is_failure
 
         client_status = platform.get_client_status(client)
-        assert client_status.is_success or client_status.is_failure
+        assert client_status.success or client_status.is_failure
 
         stream_result = platform.create_stream(client, "test_method")
-        assert stream_result.is_success or stream_result.is_failure
+        assert stream_result.success or stream_result.is_failure

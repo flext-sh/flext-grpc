@@ -38,7 +38,7 @@ Example:
     ...     # Act: Validate type
     ...     result = flext_grpc_validate_target(valid_target)
     ...
-    ...     # Assert: Verify validation success
+    ...     # Assert: Verify validation success:
     ...     assert result is True
 
 Integration:

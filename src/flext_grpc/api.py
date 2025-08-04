@@ -54,7 +54,7 @@ Example:
     >>>
     >>> # Address validation
     >>> result = validate_address("api.example.com:8080")
-    >>> if result.is_success:
+    >>> if result.success:
     ...     print("Valid address")
     >>>
     >>> # Complete setup for rapid prototyping
@@ -559,7 +559,7 @@ def create_stream(
 
     valid_types = ("unary", "server_streaming", "client_streaming", "bidirectional")
     if stream_type not in valid_types:
-        invalid_stream_type_msg = f"Invalid stream type: {stream_type}"
+        invalid_stream_type_msg: str = f"Invalid stream type: {stream_type}"
         raise ValueError(invalid_stream_type_msg)
     valid_stream_type: TGrpcStreamType = stream_type  # type: ignore[assignment]
     return FlextGrpcStream(
@@ -705,11 +705,11 @@ def validate_address(address: str) -> FlextResult[bool]:
 
         >>> # Valid addresses
         >>> result = validate_address("localhost:50051")
-        >>> print(f"Valid: {result.is_success}")
+        >>> print(f"Valid: {result.success}")
         Valid: True
         >>>
         >>> result = validate_address("api.example.com:8080")
-        >>> print(f"Valid: {result.is_success}")
+        >>> print(f"Valid: {result.success}")
         Valid: True
         >>>
         >>> # Invalid addresses with error details
@@ -876,7 +876,7 @@ def parse_address(address: str) -> dict[str, int | str]:
 
     """
     validation_result = validate_address(address)
-    if not validation_result.is_success:
+    if not validation_result.success:
         raise ValueError(validation_result.error)
 
     host, port_str = address.split(":")

@@ -321,7 +321,7 @@ class FlextGrpcConfigurationError(FlextConfigurationError):
 # =============================================================================
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcError",

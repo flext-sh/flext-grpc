@@ -40,7 +40,7 @@ Example:
     ...     result = service.execute("operation", entity)
     ...
     ...     # Assert: Verify successful execution and state
-    ...     assert result.is_success
+    ...     assert result.success
     ...     assert result.data.state == expected_state
 
 Integration:
@@ -84,7 +84,7 @@ def _assert_error_contains(result: FlextResult[object], expected_text: str) -> N
 
 def _assert_server_result(result: FlextResult[object]) -> FlextGrpcServer:
     """Helper to validate and return server result - DRY principle."""
-    assert result.is_success
+    assert result.success
     assert result.data is not None
     if not isinstance(result.data, FlextGrpcServer):
         raise TypeError(f"Expected FlextGrpcServer, got {type(result.data)}")
@@ -93,7 +93,7 @@ def _assert_server_result(result: FlextResult[object]) -> FlextGrpcServer:
 
 def _assert_client_result(result: FlextResult[object]) -> FlextGrpcClient:
     """Helper to validate and return client result - DRY principle."""
-    assert result.is_success
+    assert result.success
     assert result.data is not None
     if not isinstance(result.data, FlextGrpcClient):
         raise TypeError(f"Expected FlextGrpcClient, got {type(result.data)}")
@@ -102,7 +102,7 @@ def _assert_client_result(result: FlextResult[object]) -> FlextGrpcClient:
 
 def _assert_dict_result(result: FlextResult[object]) -> dict[str, object]:
     """Helper to validate and return dict result - DRY principle."""
-    assert result.is_success
+    assert result.success
     assert result.data is not None
     if not isinstance(result.data, dict):
         raise TypeError(f"Expected dict, got {type(result.data)}")
@@ -361,7 +361,7 @@ class TestFlextGrpcService:
             method_name="stream_method",
             stream_type="server_streaming",
         )
-        assert result.is_success
+        assert result.success
         assert result.data is not None
         # Type-safe cast since we know stream operations return FlextGrpcStream
         from flext_grpc.entities import FlextGrpcStream
@@ -420,7 +420,7 @@ class TestFlextGrpcService:
         )
 
         result = self.service.execute("stream", "send", stream=stream)
-        assert result.is_success
+        assert result.success
         if not (result.data):
             raise AssertionError(f"Expected True, got {result.data}")
 
@@ -435,7 +435,7 @@ class TestFlextGrpcService:
         )
 
         result = self.service.execute("stream", "close", stream=stream)
-        assert result.is_success
+        assert result.success
         if not (result.data):
             raise AssertionError(f"Expected True, got {result.data}")
 

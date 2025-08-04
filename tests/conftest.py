@@ -33,7 +33,7 @@ Example:
     >>> def test_server_operations(sample_server, clean_container):
     ...     # Test automatically gets clean container and sample server
     ...     result = sample_server.validate_domain_rules()
-    ...     assert result.is_success
+    ...     assert result.success
 
 Integration:
     - Integrates with pytest framework for test execution

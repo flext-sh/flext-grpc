@@ -45,7 +45,7 @@ Example:
     ...
     ...     # Assert: Verify entity creation and validation
     ...     assert entity is not None
-    ...     assert entity.validate_domain_rules().is_success
+    ...     assert entity.validate_domain_rules().success
 
 Integration:
     - Tests API functions from flext_grpc.api module
@@ -211,7 +211,7 @@ class TestAPIFunctions:
 
         for address in valid_addresses:
             result = validate_address(address)
-            assert result.is_success, f"Address {address} should be valid"
+            assert result.success, f"Address {address} should be valid"
             if not (result.data):
                 raise AssertionError(f"Expected True, got {result.data}")
 
@@ -353,11 +353,11 @@ class TestAPIFunctions:
         stream = create_stream("test_method", "server_streaming")
 
         # Validate all entities
-        assert server.validate_domain_rules().is_success
-        assert client.validate_domain_rules().is_success
-        assert channel.validate_domain_rules().is_success
-        assert service.validate_domain_rules().is_success
-        assert stream.validate_domain_rules().is_success
+        assert server.validate_domain_rules().success
+        assert client.validate_domain_rules().success
+        assert channel.validate_domain_rules().success
+        assert service.validate_domain_rules().success
+        assert stream.validate_domain_rules().success
 
     def test_factory_functions_use_proper_ids(self) -> None:
         """Test that factory functions generate proper IDs."""

@@ -67,4 +67,4 @@ class FlextGrpcConfig(FlextBaseSettings):
         return f"{self.host}:{self.port}"
 
 
-__all__ = ["FlextGrpcConfig"]
+__all__: list[str] = ["FlextGrpcConfig"]

@@ -234,7 +234,7 @@ Example:
     ...     created_at=datetime.now(timezone.utc)
     ... )
     >>> validation = server.validate_domain_rules()
-    >>> print(validation.is_success)
+    >>> print(validation.success)
     True
 
 Integration:
@@ -294,7 +294,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         ...     created_at=datetime.now(timezone.utc)
         ... )
         >>> validation = server.validate_domain_rules()
-        >>> print(validation.is_success)
+        >>> print(validation.success)
         True
         >>> start_result = server.start()
         >>> print(start_result.data.state)
@@ -345,7 +345,7 @@ def validate_domain_rules(self) -> FlextResult[None]:
         ...     created_at=datetime.now(timezone.utc)
         ... )
         >>> result = valid_server.validate_domain_rules()
-        >>> print(result.is_success)
+        >>> print(result.success)
         True
 
     Integration:
@@ -578,7 +578,7 @@ from flext_grpc.types import (
 )
 
 # Organized public API exports
-__all__ = [
+__all__: list[str] = [
     # Core Foundation
     "FlextContainer",
     "FlextResult",
@@ -777,7 +777,7 @@ class TestFlextGrpcServer:
         assert server.host == expected_host
         assert server.port == expected_port
         assert server.state == "stopped"  # Default initial state
-        assert validation_result.is_success
+        assert validation_result.success
         assert server.entity_type == "FlextGrpcServer"
 
         # Additional behavioral tests

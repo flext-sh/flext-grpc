@@ -294,7 +294,7 @@ from flext_grpc import FlextGrpcServerService
 service = FlextGrpcServerService()
 result = service.execute("start", server)
 
-if result.is_success:
+if result.success:
     started_server = result.data
     print(f"Server started: {started_server.state}")
 else:
@@ -311,7 +311,7 @@ platform = FlextGrpcPlatform()
 
 # High-level operations through platform
 server_result = platform.service.execute("create_server", server)
-if server_result.is_success:
+if server_result.success:
     print(f"Platform operation successful")
 ```
 

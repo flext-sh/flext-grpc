@@ -1,4 +1,4 @@
-"""FLEXT gRPC Error Handling Patterns - Comprehensive error management and recovery strategies.
+"""FLEXT gRPC Error Handling Patterns - Comprehensive error management and recovery.
 
 This module demonstrates comprehensive error handling patterns and recovery strategies
 for the FLEXT gRPC communication platform, showcasing robust error management,
@@ -88,11 +88,11 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
     try:
         if not username:
             msg = "Username cannot be empty"
-            raise FlextGrpcValidationError(msg, field_name="username")
+            raise FlextGrpcValidationError(msg, field_name="username")  # noqa: TRY301
 
         if not email or "@" not in email:
             msg = "Invalid email format"
-            raise FlextGrpcValidationError(msg, field_name="email")
+            raise FlextGrpcValidationError(msg, field_name="email")  # noqa: TRY301
 
         return FlextResult.ok({"username": username, "email": email})
 
@@ -104,21 +104,22 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
 def create_server_config(port: int, workers: int) -> FlextResult[Any]:
     """Create server configuration with proper error handling."""
     try:
-        if port < 1 or port > 65535:
-            msg = "Port must be between 1 and 65535"
-            raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)
+        max_port = 65535
+        if port < 1 or port > max_port:
+            msg = f"Port must be between 1 and {max_port}"
+            raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)  # noqa: TRY301
 
         if workers < 1:
             msg = "Workers must be positive"
-            raise FlextGrpcConfigurationError(
+            raise FlextGrpcConfigurationError(  # noqa: TRY301
                 msg, config_key="max_workers", config_value=workers
             )
 
         config_result = create_config(host="localhost", port=port, max_workers=workers)
 
         if config_result.is_failure:
-            msg = f"Failed to create config: {config_result.error}"
-            raise FlextGrpcConfigurationError(msg)
+            msg: str = f"Failed to create config: {config_result.error}"
+            raise FlextGrpcConfigurationError(msg)  # noqa: TRY301
 
         return config_result
 
@@ -134,7 +135,7 @@ def simulate_connection_error() -> FlextResult[str]:
     try:
         # Simulate connection failure
         msg = "Failed to connect to gRPC server"
-        raise FlextGrpcConnectionError(msg)
+        raise FlextGrpcConnectionError(msg)  # noqa: TRY301
 
     except FlextGrpcConnectionError as e:
         logger.exception("Connection failed", error=str(e))
@@ -146,7 +147,7 @@ def simulate_timeout_error() -> FlextResult[str]:
     try:
         # Simulate timeout
         msg = "Request timed out after 30 seconds"
-        raise FlextGrpcTimeoutError(msg)
+        raise FlextGrpcTimeoutError(msg)  # noqa: TRY301
 
     except FlextGrpcTimeoutError as e:
         logger.exception("Request timed out", error=str(e))
@@ -158,7 +159,7 @@ def handle_generic_grpc_error() -> FlextResult[str]:
     try:
         # Simulate generic error
         msg = "Unknown gRPC error occurred"
-        raise FlextGrpcError(msg)
+        raise FlextGrpcError(msg)  # noqa: TRY301
 
     except FlextGrpcError as e:
         logger.exception("Generic gRPC error", error=str(e))
@@ -211,13 +212,14 @@ def error_recovery_patterns() -> FlextResult[str]:
     # Pattern 1: Retry with backoff
     for attempt in range(3):
         connection_result = simulate_connection_error()
-        if connection_result.is_success:
+        if connection_result.success:
             logger.info(f"✅ Connection succeeded on attempt {attempt + 1}")
             break
 
         logger.warning(f"⚠️ Connection attempt {attempt + 1} failed, retrying...")
 
-        if attempt == 2:  # Last attempt
+        last_attempt = 2
+        if attempt == last_attempt:  # Last attempt
             logger.error("❌ All connection attempts failed")
             return FlextResult.fail("Connection recovery failed after 3 attempts")
 
@@ -227,7 +229,7 @@ def error_recovery_patterns() -> FlextResult[str]:
         logger.warning("Primary config failed, trying fallback")
 
         fallback_config_result = create_server_config(8080, 2)  # Fallback
-        if fallback_config_result.is_success:
+        if fallback_config_result.success:
             logger.info("✅ Fallback configuration successful")
             return FlextResult.ok("Recovery successful with fallback config")
 
@@ -279,7 +281,7 @@ async def async_error_handling() -> FlextResult[str]:
         # Check for error condition
         if True:  # Simulate error condition
             msg = "Async operation timed out"
-            raise FlextGrpcTimeoutError(msg)
+            raise FlextGrpcTimeoutError(msg)  # noqa: TRY301
 
         return FlextResult.ok("Async operation completed")
 
@@ -302,7 +304,7 @@ def main() -> None:
     # Comprehensive pipeline
     logger.info("\n🔄 2. Comprehensive Error Handling Pipeline")
     pipeline_result = comprehensive_error_handling_pipeline()
-    if pipeline_result.is_success:
+    if pipeline_result.success:
         logger.info(f"✅ Pipeline result: {pipeline_result.data}")
     else:
         logger.error(f"❌ Pipeline failed: {pipeline_result.error}")
@@ -310,7 +312,7 @@ def main() -> None:
     # Error recovery patterns
     logger.info("\n🔧 3. Error Recovery Patterns")
     recovery_result = error_recovery_patterns()
-    if recovery_result.is_success:
+    if recovery_result.success:
         logger.info(f"✅ Recovery result: {recovery_result.data}")
     else:
         logger.error(f"❌ Recovery failed: {recovery_result.error}")
@@ -319,12 +321,12 @@ def main() -> None:
     logger.info("\n⚡ 4. Async Error Handling")
     try:
         async_result = asyncio.run(async_error_handling())
-        if async_result.is_success:
+        if async_result.success:
             logger.info(f"✅ Async result: {async_result.data}")
         else:
             logger.error(f"❌ Async failed: {async_result.error}")
-    except Exception as e:
-        logger.exception(f"❌ Async exception: {e}")
+    except Exception:
+        logger.exception("❌ Async exception occurred")
 
     logger.info("\n🎉 Error handling examples completed!")
     logger.info("Key takeaways:")

@@ -28,7 +28,7 @@ Example:
     ...     created_at=datetime.now(timezone.utc),
     ... )
     >>> validation = server.validate_domain_rules()
-    >>> print(validation.is_success)
+    >>> print(validation.success)
     True
 
 Integration:
@@ -128,7 +128,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         ...     created_at=datetime.now(timezone.utc),
         ... )
         >>> connect_result = channel.connect()
-        >>> if connect_result.is_success:
+        >>> if connect_result.success:
         ...     connecting_channel = connect_result.data
         ...     print(connecting_channel.state)
         'connecting'
@@ -208,7 +208,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             ...     id="test", state="idle", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = channel.connect()
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(result.data.state)
             'connecting'
 
@@ -235,7 +235,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             ...     id="test", state="connecting", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = channel.mark_ready()
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(result.data.state)
             'ready'
 
@@ -307,7 +307,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         ...     created_at=datetime.now(timezone.utc),
         ... )
         >>> validation = server.validate_domain_rules()
-        >>> print(validation.is_success)
+        >>> print(validation.success)
         True
         >>> start_result = server.start()
         >>> print(start_result.data.state)
@@ -359,7 +359,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result = valid_server.validate_domain_rules()
-            >>> print(result.is_success)
+            >>> print(result.success)
             True
 
         Integration:
@@ -448,7 +448,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="stopped", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = server.start()
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(result.data.state)
             'starting'
 
@@ -482,7 +482,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="starting", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = server.mark_running()
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(result.data.state)
             'running'
 
@@ -509,7 +509,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="running", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = server.stop()
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(result.data.state)
             'stopping'
 
@@ -537,7 +537,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="stopping", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = server.mark_stopped()
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(result.data.state)
             'stopped'
 
@@ -571,7 +571,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result = server.add_service(service)
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(len(result.data.services))
             1
 
@@ -617,7 +617,7 @@ class FlextGrpcService(FlextGrpcEntity):
         ...     created_at=datetime.now(timezone.utc),
         ... )
         >>> validation = service.validate_domain_rules()
-        >>> print(validation.is_success)
+        >>> print(validation.success)
         True
         >>> print(service.has_method("GetUser"))
         True
@@ -713,7 +713,7 @@ class FlextGrpcService(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result = service.add_method("CreateUser")
-            >>> if result.is_success:
+            >>> if result.success:
             ...     print(len(result.data.methods))
             2
             >>> print(result.data.has_method("CreateUser"))
@@ -756,7 +756,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         ...     id="api-client", created_at=datetime.now(timezone.utc)
         ... )
         >>> connect_result = client.connect_to("localhost:50051")
-        >>> if connect_result.is_success:
+        >>> if connect_result.success:
         ...     connected_client = connect_result.data
         ...     print(connected_client.is_connected)
         True
@@ -871,7 +871,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             ...     id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result = client.connect_to("localhost:50051")
-            >>> if result.is_success:
+            >>> if result.success:
             ...     connected_client = result.data
             ...     print(connected_client.target)
             'localhost:50051'
@@ -1060,14 +1060,14 @@ class FlextGrpcEntityFactory:
     Example:
         >>> # Create server with defaults
         >>> server_result = FlextGrpcEntityFactory.create_server()
-        >>> if server_result.is_success:
+        >>> if server_result.success:
         ...     server = server_result.data
         ...     print(f"Server: {server.host}:{server.port}")
         'Server: localhost:50051'
 
         >>> # Create client with custom target
         >>> client_result = FlextGrpcEntityFactory.create_client("localhost:8080")
-        >>> if client_result.is_success:
+        >>> if client_result.success:
         ...     client = client_result.data
         ...     print(f"Client target: {client.target}")
         'Client target: localhost:8080'
