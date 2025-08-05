@@ -62,139 +62,125 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core.constants import FlextConstants
+from flext_core.constants import FlextSemanticConstants
+
+# =============================================================================
+# GRPC-SPECIFIC SEMANTIC CONSTANTS - Modern Python 3.13 Structure
+# =============================================================================
 
 
-class FlextGrpcConstants(FlextConstants):
-    """Enterprise gRPC constants extending flext-core platform foundation.
+class FlextGrpcSemanticConstants(FlextSemanticConstants):
+    """gRPC-specific semantic constants extending FlextSemanticConstants.
 
-    Comprehensive constant definitions for the FLEXT gRPC platform providing
-    configuration defaults, validation rules, and operational limits.
-    Extends flext-core constants while adding gRPC-specific values for
-    consistent platform behavior and enterprise deployment standards.
-
-    This class serves as the single source of truth for all gRPC-related
-    constants, ensuring consistency across entities, services, configuration,
-    and validation throughout the platform.
-
-    Constant Categories:
-        - Network: Host and port configuration defaults and limits
-        - Service: Worker counts, timeouts, and service operational limits
-        - Validation: String length limits and format validation rules
-        - Operation: Service operation requirements and argument validation
-        - Pattern: Regular expressions for format validation
-        - Configuration: Complete default configuration templates
-
-    Enterprise Compliance:
-        All constants follow enterprise security and performance standards:
-        - Non-privileged port defaults (>= 1024) for security compliance
-        - Reasonable resource limits to prevent system exhaustion
-        - Performance-optimized defaults based on enterprise best practices
-        - Validation boundaries that prevent common configuration errors
-
-    Example:
-        Using constants for validation and configuration:
-
-        >>> # Port validation
-        >>> def is_valid_port(port: int) -> bool:
-        ...     return (
-        ...         FlextGrpcConstants.MIN_PORT <= port <= FlextGrpcConstants.MAX_PORT
-        ...     )
-        >>>
-        >>> # Worker count validation
-        >>> def is_valid_workers(count: int) -> bool:
-        ...     return (
-        ...         FlextGrpcConstants.MIN_WORKERS
-        ...         <= count
-        ...         <= FlextGrpcConstants.MAX_WORKERS
-        ...     )
-        >>>
-        >>> # Use default configuration
-        >>> default_host = FlextGrpcConstants.DEFAULT_HOST
-        >>> default_port = FlextGrpcConstants.DEFAULT_PORT
-        >>> config = f"{default_host}:{default_port}"
-
-    Integration:
-        Constants are used throughout the platform for:
-        - Entity validation and configuration
-        - Service operation parameter validation
-        - Configuration object initialization
-        - Error message generation with consistent limits
-        - Enterprise deployment configuration templates
-
+    Modern Python 3.13 constants following semantic grouping patterns.
+    Extends the FLEXT ecosystem constants with gRPC communication specific
+    values while maintaining full backward compatibility.
     """
 
-    # Network Constants - Host and port configuration standards
-    DEFAULT_HOST = "localhost"  # Development-friendly default host
-    DEFAULT_PORT = 50051  # Standard gRPC port (non-privileged)
-    MIN_PORT = 1  # Minimum valid port number (system minimum)
-    MAX_PORT = 65535  # Maximum valid port number (16-bit maximum)
+    class Network:
+        """Network configuration constants."""
 
-    # Service Constants - Performance and resource management standards
-    DEFAULT_TIMEOUT = 60  # Default operation timeout (seconds)
-    DEFAULT_MAX_WORKERS = 10  # Balanced worker count for standard load
-    MIN_WORKERS = 1  # Minimum workers for functional server
-    MAX_WORKERS = 100  # Maximum workers to prevent resource exhaustion
+        # CONSUME from single source - NO DUPLICATION
+        DEFAULT_HOST = FlextSemanticConstants.Infrastructure.DEFAULT_HOST
+        DEFAULT_PORT = 50051  # gRPC-specific port
+        MIN_PORT = FlextSemanticConstants.Platform.MIN_PORT_NUMBER
+        MAX_PORT = FlextSemanticConstants.Platform.MAX_PORT_NUMBER
+        HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
 
-    # Validation Constants - String length and value limits
-    MAX_SERVICE_NAME_LENGTH = 255  # Maximum service name length (database-safe)
-    MAX_METHOD_NAME_LENGTH = 200  # Maximum method name length (URL-safe)
-    MIN_TIMEOUT_SECONDS = 0.1  # Minimum meaningful timeout (100ms)
-    MAX_TIMEOUT_SECONDS = 600.0  # Maximum timeout (10 minutes)
+    class Service:
+        """Service configuration constants."""
 
-    # Operation Constants - Service operation requirements
-    MIN_REQUIRED_ARGS = (
-        2  # Minimum arguments for service operations (operation + target)
-    )
+        # CONSUME from single source - NO DUPLICATION
+        DEFAULT_TIMEOUT = FlextSemanticConstants.Defaults.TIMEOUT
+        DEFAULT_MAX_WORKERS = 10
+        MIN_WORKERS = 1
+        MAX_WORKERS = 100
+        MIN_REQUIRED_ARGS = 2
 
-    # Validation Patterns - Regular expressions for format validation
-    HOST_NAME_PATTERN = (
-        r"^[a-zA-Z0-9.-]+$"  # Valid hostname pattern (alphanumeric, dots, hyphens)
-    )
+    class Validation:
+        """Validation limits and patterns."""
 
-    # Default Configuration Template - Complete configuration with enterprise defaults
-    DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
-        "host": DEFAULT_HOST,  # localhost for development
-        "port": DEFAULT_PORT,  # 50051 (standard gRPC)
-        "timeout": DEFAULT_TIMEOUT,  # 60 seconds for reliable operations
-        "max_workers": DEFAULT_MAX_WORKERS,  # 10 workers for balanced performance
-    }
+        MAX_SERVICE_NAME_LENGTH = 255
+        MAX_METHOD_NAME_LENGTH = 200
+        MIN_TIMEOUT_SECONDS = 0.1
+        MAX_TIMEOUT_SECONDS = 600.0
+
+    class Config:
+        """Default configuration templates."""
+
+        DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
+            "host": FlextSemanticConstants.Infrastructure.DEFAULT_HOST,
+            "port": 50051,
+            "timeout": FlextSemanticConstants.Defaults.TIMEOUT,
+            "max_workers": 10,
+        }
+
+
+class FlextGrpcConstants(FlextGrpcSemanticConstants):
+    """gRPC constants with backward compatibility.
+
+    Legacy compatibility layer providing both modern semantic access
+    and traditional flat constant access patterns for smooth migration.
+    """
+
+    # Modern semantic access (Primary API) - direct references
+    Network = FlextGrpcSemanticConstants.Network
+    Service = FlextGrpcSemanticConstants.Service
+    Validation = FlextGrpcSemanticConstants.Validation
+    Config = FlextGrpcSemanticConstants.Config
+
+    # Legacy compatibility - flat access patterns (DEPRECATED - use semantic access)
+    DEFAULT_HOST = FlextGrpcSemanticConstants.Network.DEFAULT_HOST
+    DEFAULT_PORT = FlextGrpcSemanticConstants.Network.DEFAULT_PORT
+    MIN_PORT = FlextGrpcSemanticConstants.Network.MIN_PORT
+    MAX_PORT = FlextGrpcSemanticConstants.Network.MAX_PORT
+    HOST_NAME_PATTERN = FlextGrpcSemanticConstants.Network.HOST_NAME_PATTERN
+
+    DEFAULT_TIMEOUT = FlextGrpcSemanticConstants.Service.DEFAULT_TIMEOUT
+    DEFAULT_MAX_WORKERS = FlextGrpcSemanticConstants.Service.DEFAULT_MAX_WORKERS
+    MIN_WORKERS = FlextGrpcSemanticConstants.Service.MIN_WORKERS
+    MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
+    MIN_REQUIRED_ARGS = FlextGrpcSemanticConstants.Service.MIN_REQUIRED_ARGS
+
+    MAX_SERVICE_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+    MAX_METHOD_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+    MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
+    MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
+
+    DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
 
 # =============================================================================
-# LEGACY CONSTANTS - Backward compatibility aliases
+# LEGACY CONSTANTS - Backward compatibility module-level aliases
 # =============================================================================
-# These module-level constants provide backward compatibility for existing code
-# while encouraging migration to the class-based constant organization.
 
-# Network configuration constants
-FLEXT_GRPC_DEFAULT_HOST = FlextGrpcConstants.DEFAULT_HOST
-FLEXT_GRPC_DEFAULT_PORT = FlextGrpcConstants.DEFAULT_PORT
-FLEXT_GRPC_MIN_PORT = FlextGrpcConstants.MIN_PORT
-FLEXT_GRPC_MAX_PORT = FlextGrpcConstants.MAX_PORT
+# Network configuration constants (DEPRECATED - use FlextGrpcConstants.Network.*)
+FLEXT_GRPC_DEFAULT_HOST = FlextGrpcSemanticConstants.Network.DEFAULT_HOST
+FLEXT_GRPC_DEFAULT_PORT = FlextGrpcSemanticConstants.Network.DEFAULT_PORT
+FLEXT_GRPC_MIN_PORT = FlextGrpcSemanticConstants.Network.MIN_PORT
+FLEXT_GRPC_MAX_PORT = FlextGrpcSemanticConstants.Network.MAX_PORT
+FLEXT_GRPC_HOST_NAME_PATTERN = FlextGrpcSemanticConstants.Network.HOST_NAME_PATTERN
 
-# Service configuration constants
-FLEXT_GRPC_DEFAULT_TIMEOUT = FlextGrpcConstants.DEFAULT_TIMEOUT
-FLEXT_GRPC_DEFAULT_MAX_WORKERS = FlextGrpcConstants.DEFAULT_MAX_WORKERS
-FLEXT_GRPC_MIN_WORKERS = FlextGrpcConstants.MIN_WORKERS
-FLEXT_GRPC_MAX_WORKERS = FlextGrpcConstants.MAX_WORKERS
+# Service configuration constants (DEPRECATED - use FlextGrpcConstants.Service.*)
+FLEXT_GRPC_DEFAULT_TIMEOUT = FlextGrpcSemanticConstants.Service.DEFAULT_TIMEOUT
+FLEXT_GRPC_DEFAULT_MAX_WORKERS = FlextGrpcSemanticConstants.Service.DEFAULT_MAX_WORKERS
+FLEXT_GRPC_MIN_WORKERS = FlextGrpcSemanticConstants.Service.MIN_WORKERS
+FLEXT_GRPC_MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
 
-# Validation rule constants
-FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH = FlextGrpcConstants.MAX_SERVICE_NAME_LENGTH
-FLEXT_GRPC_MAX_METHOD_NAME_LENGTH = FlextGrpcConstants.MAX_METHOD_NAME_LENGTH
-FLEXT_GRPC_MIN_TIMEOUT_SECONDS = FlextGrpcConstants.MIN_TIMEOUT_SECONDS
-FLEXT_GRPC_MAX_TIMEOUT_SECONDS = FlextGrpcConstants.MAX_TIMEOUT_SECONDS
+# Validation rule constants (DEPRECATED - use FlextGrpcConstants.Validation.*)
+FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+FLEXT_GRPC_MAX_METHOD_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+FLEXT_GRPC_MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
+FLEXT_GRPC_MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
 
-# Pattern and configuration constants
-FLEXT_GRPC_HOST_NAME_PATTERN = FlextGrpcConstants.HOST_NAME_PATTERN
-FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcConstants.DEFAULT_CONFIG
+# Configuration constants (DEPRECATED - use FlextGrpcConstants.Config.*)
+FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
 # =============================================================================
 # EXPORTS
 # =============================================================================
 
 __all__: list[str] = [
-    # Legacy constants for backward compatibility
     "FLEXT_GRPC_DEFAULT_CONFIG",
     "FLEXT_GRPC_DEFAULT_HOST",
     "FLEXT_GRPC_DEFAULT_MAX_WORKERS",
@@ -209,6 +195,6 @@ __all__: list[str] = [
     "FLEXT_GRPC_MIN_PORT",
     "FLEXT_GRPC_MIN_TIMEOUT_SECONDS",
     "FLEXT_GRPC_MIN_WORKERS",
-    # Main class
     "FlextGrpcConstants",
+    "FlextGrpcSemanticConstants",
 ]
