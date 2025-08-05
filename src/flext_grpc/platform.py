@@ -68,7 +68,7 @@ class FlextGrpcPlatform:
         **options: object,
     ) -> FlextResult[object]:
         """Execute server operation."""
-        return self.service.execute("server", operation, server, **options)
+        return self.service.execute_operation("server", operation, server, **options)
 
     def client_operation(
         self,
@@ -77,7 +77,7 @@ class FlextGrpcPlatform:
         **options: object,
     ) -> FlextResult[object]:
         """Execute client operation."""
-        return self.service.execute("client", operation, client, **options)
+        return self.service.execute_operation("client", operation, client, **options)
 
     def stream_operation(
         self,
@@ -85,7 +85,7 @@ class FlextGrpcPlatform:
         **options: object,
     ) -> FlextResult[object]:
         """Execute stream operation."""
-        return self.service.execute("stream", operation, **options)
+        return self.service.execute_operation("stream", operation, **options)
 
     # Convenience methods for common operations
     def start_server(

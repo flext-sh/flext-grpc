@@ -142,8 +142,12 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
     MIN_REQUIRED_ARGS = FlextGrpcSemanticConstants.Service.MIN_REQUIRED_ARGS
 
-    MAX_SERVICE_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
-    MAX_METHOD_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+    MAX_SERVICE_NAME_LENGTH = (
+        FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+    )
+    MAX_METHOD_NAME_LENGTH = (
+        FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+    )
     MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
     MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
 
@@ -168,10 +172,18 @@ FLEXT_GRPC_MIN_WORKERS = FlextGrpcSemanticConstants.Service.MIN_WORKERS
 FLEXT_GRPC_MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
 
 # Validation rule constants (DEPRECATED - use FlextGrpcConstants.Validation.*)
-FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
-FLEXT_GRPC_MAX_METHOD_NAME_LENGTH = FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
-FLEXT_GRPC_MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
-FLEXT_GRPC_MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
+FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH = (
+    FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+)
+FLEXT_GRPC_MAX_METHOD_NAME_LENGTH = (
+    FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+)
+FLEXT_GRPC_MIN_TIMEOUT_SECONDS = (
+    FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
+)
+FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
+    FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
+)
 
 # Configuration constants (DEPRECATED - use FlextGrpcConstants.Config.*)
 FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG

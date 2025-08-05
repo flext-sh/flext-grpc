@@ -55,13 +55,17 @@ from typing import TYPE_CHECKING
 
 from flext_core import FlextDomainService, FlextResult
 
+from flext_grpc.entities import (
+    FlextGrpcClient,
+    FlextGrpcServer,
+    FlextGrpcStream,
+)
+
 from .constants import FlextGrpcConstants
 
 if TYPE_CHECKING:
     from flext_grpc.entities import (
-        FlextGrpcClient,
-        FlextGrpcServer,
-        FlextGrpcStream,
+        FlextGrpcChannel,
     )
 
 
@@ -115,7 +119,7 @@ class _GrpcServiceValidationMixin:
         return FlextResult.ok((operation, target))
 
 
-class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
+class FlextGrpcServerService(FlextDomainService[FlextGrpcServer], _GrpcServiceValidationMixin):
     """Domain service for gRPC server lifecycle management and operations.
 
     Application layer service implementing server lifecycle management operations
@@ -227,7 +231,11 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
             return FlextResult.ok(result.data if result.data is not None else {})
         return FlextResult.fail(result.error or error_msg)
 
-    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
+    def execute(self) -> FlextResult[FlextGrpcServer]:
+        """Execute default server operation - implementation required by abstract base."""
+        return FlextResult.fail("Use execute_operation(operation, server, **kwargs) instead")
+
+    def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute server management operation with validation and error handling.
 
         Primary entry point for all server operations implementing the Command pattern.
@@ -319,7 +327,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
             return FlextResult.fail("Server must be a FlextGrpcServer instance")
 
         # Validate server first
-        validation = server.validate_domain_rules()
+        validation = server.validate_business_rules()
         if validation.is_failure:
             return FlextResult.fail(f"Invalid server: {validation.error}")
 
@@ -556,7 +564,7 @@ class FlextGrpcServerService(FlextDomainService, _GrpcServiceValidationMixin):
         )
 
 
-class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
+class FlextGrpcClientService(FlextDomainService[FlextGrpcClient], _GrpcServiceValidationMixin):
     """Domain service for gRPC client connection management and communication.
 
     Application layer service implementing client lifecycle management including
@@ -733,7 +741,11 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
             return FlextResult.ok(result.data if result.data is not None else {})
         return FlextResult.fail(result.error or error_msg)
 
-    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
+    def execute(self) -> FlextResult[FlextGrpcClient]:
+        """Execute default client operation - implementation required by abstract base."""
+        return FlextResult.fail("Use execute_operation(operation, client, **kwargs) instead")
+
+    def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute client operation.
 
         Args:
@@ -765,7 +777,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
             return FlextResult.fail("Client must be a FlextGrpcClient instance")
 
         # Validate client first
-        validation = client.validate_domain_rules()
+        validation = client.validate_business_rules()
         if validation.is_failure:
             return FlextResult.fail(f"Invalid client: {validation.error}")
 
@@ -824,6 +836,8 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
             )
 
         # Connect and transition channel
+        if client.channel is None:
+            return FlextResult.fail("Client has no channel to connect")
         channel_result = self._connect_and_ready_channel(client.channel)
         if channel_result.is_failure:
             return FlextResult.fail(channel_result.error or "Channel connection failed")
@@ -841,7 +855,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
             return FlextResult.fail("Client has no channel")
         return FlextResult.ok(None)
 
-    def _connect_and_ready_channel(self, channel: object) -> FlextResult[object]:
+    def _connect_and_ready_channel(self, channel: FlextGrpcChannel) -> FlextResult[FlextGrpcChannel]:
         """Connect channel and mark as ready."""
         # Use proper channel state transitions
         connect_result = channel.connect()
@@ -922,7 +936,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
         )
 
 
-class FlextGrpcStreamService(FlextDomainService):
+class FlextGrpcStreamService(FlextDomainService[FlextGrpcStream]):
     """Domain service for gRPC streaming operations and flow control management.
 
     Application layer service implementing streaming communication patterns including
@@ -1024,7 +1038,11 @@ class FlextGrpcStreamService(FlextDomainService):
             return FlextResult.ok(result.data if result.data is not None else {})
         return FlextResult.fail(result.error or error_msg)
 
-    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
+    def execute(self) -> FlextResult[FlextGrpcStream]:
+        """Execute default stream operation - implementation required by abstract base."""
+        return FlextResult.fail("Use execute_operation(operation, **kwargs) instead")
+
+    def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute stream operation.
 
         Args:
@@ -1110,7 +1128,7 @@ class FlextGrpcStreamService(FlextDomainService):
         stream_type: str,
     ) -> FlextResult[FlextGrpcStream]:
         """Create a new gRPC stream with validation."""
-        validation = client.validate_domain_rules()
+        validation = client.validate_business_rules()
         if validation.is_failure:
             return FlextResult.fail(f"Invalid client: {validation.error}")
 
@@ -1131,7 +1149,7 @@ class FlextGrpcStreamService(FlextDomainService):
         data: object,
     ) -> FlextResult[bool]:
         """Send data through stream."""
-        validation = stream.validate_domain_rules()
+        validation = stream.validate_business_rules()
         if validation.is_failure:
             return FlextResult.fail(f"Invalid stream: {validation.error}")
 
@@ -1142,7 +1160,7 @@ class FlextGrpcStreamService(FlextDomainService):
 
     def _close_stream(self, stream: FlextGrpcStream) -> FlextResult[bool]:
         """Close stream properly."""
-        validation = stream.validate_domain_rules()
+        validation = stream.validate_business_rules()
         if validation.is_failure:
             return FlextResult.fail(f"Invalid stream: {validation.error}")
 
@@ -1150,7 +1168,7 @@ class FlextGrpcStreamService(FlextDomainService):
         return FlextResult.ok(data=True)
 
 
-class FlextGrpcService(FlextDomainService):
+class FlextGrpcService(FlextDomainService[object]):
     """Unified gRPC service orchestrating server, client, and stream operations.
 
     High-level application service providing a unified interface for all gRPC
@@ -1254,7 +1272,11 @@ class FlextGrpcService(FlextDomainService):
         self._client_service = FlextGrpcClientService()
         self._stream_service = FlextGrpcStreamService()
 
-    def execute(self, *args: object, **kwargs: object) -> FlextResult[object]:
+    def execute(self) -> FlextResult[object]:
+        """Execute default unified operation - implementation required by abstract base."""
+        return FlextResult.fail("Use execute_operation(service_type, operation, **kwargs) instead")
+
+    def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute unified gRPC operation with service type routing and delegation.
 
         Primary entry point for all gRPC operations implementing the Facade pattern.
@@ -1333,10 +1355,10 @@ class FlextGrpcService(FlextDomainService):
         # Delegate to appropriate specialized service based on service type
         match service_type:
             case "server":
-                return self._server_service.execute(*args[1:], **kwargs)
+                return self._server_service.execute_operation(*args[1:], **kwargs)
             case "client":
-                return self._client_service.execute(*args[1:], **kwargs)
+                return self._client_service.execute_operation(*args[1:], **kwargs)
             case "stream":
-                return self._stream_service.execute(*args[1:], **kwargs)
+                return self._stream_service.execute_operation(*args[1:], **kwargs)
             case _:
                 return FlextResult.fail(f"Unknown service type: {service_type}")

@@ -27,7 +27,7 @@ Example:
     ...     max_workers=10,
     ...     created_at=datetime.now(timezone.utc),
     ... )
-    >>> validation = server.validate_domain_rules()
+    >>> validation = server.validate_business_rules()
     >>> print(validation.success)
     True
 
@@ -43,12 +43,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import (
-    FlextComparableMixin,
-    FlextEntity,
-    FlextEntityFactory,
-    FlextResult,
-)
+# 🚨 UNIFIED PATTERN MIGRATION: Using modern flext-core patterns
+from flext_core import FlextResult
+from flext_core.models import FlextEntity, FlextFactory
+from flext_core.utilities import FlextGenerators
 from pydantic import Field
 
 from flext_grpc.constants import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
@@ -60,18 +58,16 @@ from flext_grpc.types import (
 )
 
 
-class FlextGrpcEntity(FlextEntity, FlextComparableMixin):
+class FlextGrpcEntity(FlextEntity):
     """Base entity class for all gRPC domain entities.
 
-    Provides common functionality for gRPC entities including comparison capabilities
-    and entity type identification. All gRPC entities inherit from this base class
-    to ensure consistent behavior and patterns.
+    Provides common functionality for gRPC entities following unified FLEXT patterns.
+    All gRPC entities inherit from this base class to ensure consistent behavior.
 
     Features:
-        - Inherits FlextEntity immutable behavior with copy_with() methods
-        - Provides FlextComparableMixin for entity comparison operations
+        - Inherits FlextEntity with immutable behavior and validation
         - Implements entity_type property for runtime type identification
-        - Supports domain validation through validate_domain_rules()
+        - Supports business rule validation through validate_business_rules()
 
     Example:
         >>> entity = FlextGrpcEntity(id="test", created_at=datetime.now(timezone.utc))
@@ -139,7 +135,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
     state: TGrpcChannelState = "idle"
     options: dict[str, object] = Field(default_factory=dict)
 
-    def validate_domain_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[None]:
         """Validate channel domain business rules.
 
         Ensures channel configuration meets business requirements including
@@ -159,7 +155,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             ...     target=TGrpcTarget(""),
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = channel.validate_domain_rules()
+            >>> result = channel.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -306,7 +302,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         ...     max_workers=20,
         ...     created_at=datetime.now(timezone.utc),
         ... )
-        >>> validation = server.validate_domain_rules()
+        >>> validation = server.validate_business_rules()
         >>> print(validation.success)
         True
         >>> start_result = server.start()
@@ -321,7 +317,7 @@ class FlextGrpcServer(FlextGrpcEntity):
     max_workers: int = 10
     services: list[object] = Field(default_factory=list)
 
-    def validate_domain_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[None]:
         """Validate server domain business rules and configuration.
 
         Ensures server configuration meets business requirements including
@@ -345,7 +341,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     port=50051,
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = server.validate_domain_rules()
+            >>> result = server.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -358,7 +354,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     max_workers=10,
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = valid_server.validate_domain_rules()
+            >>> result = valid_server.validate_business_rules()
             >>> print(result.success)
             True
 
@@ -616,7 +612,7 @@ class FlextGrpcService(FlextGrpcEntity):
         ...     methods=["GetUser", "CreateUser", "UpdateUser"],
         ...     created_at=datetime.now(timezone.utc),
         ... )
-        >>> validation = service.validate_domain_rules()
+        >>> validation = service.validate_business_rules()
         >>> print(validation.success)
         True
         >>> print(service.has_method("GetUser"))
@@ -627,7 +623,7 @@ class FlextGrpcService(FlextGrpcEntity):
     name: str = ""
     methods: list[str] = Field(default_factory=list)
 
-    def validate_domain_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[None]:
         """Validate service domain business rules and method definitions.
 
         Ensures service configuration meets gRPC service requirements including
@@ -649,7 +645,7 @@ class FlextGrpcService(FlextGrpcEntity):
             ...     methods=[],
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = service.validate_domain_rules()
+            >>> result = service.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -766,7 +762,7 @@ class FlextGrpcClient(FlextGrpcEntity):
     channel: FlextGrpcChannel | None = None
     options: dict[str, object] = Field(default_factory=dict)
 
-    def validate_domain_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[None]:
         """Validate client domain business rules and configuration.
 
         Ensures client configuration meets business requirements including
@@ -791,13 +787,13 @@ class FlextGrpcClient(FlextGrpcEntity):
             ...     channel=invalid_channel,
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = client.validate_domain_rules()
+            >>> result = client.validate_business_rules()
             >>> print(result.is_failure)
             True
 
         """
         if self.channel is not None:
-            channel_validation = self.channel.validate_domain_rules()
+            channel_validation = self.channel.validate_business_rules()
             if channel_validation.is_failure:
                 return FlextResult.fail(f"Invalid channel: {channel_validation.error}")
         return FlextResult.ok(None)
@@ -928,7 +924,7 @@ class FlextGrpcStream(FlextGrpcEntity):
     method_name: str = ""
     stream_type: TGrpcStreamType = "unary"
 
-    def validate_domain_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[None]:
         """Validate stream domain business rules and configuration.
 
         Ensures stream configuration meets gRPC streaming requirements including
@@ -949,7 +945,7 @@ class FlextGrpcStream(FlextGrpcEntity):
             ...     stream_type="unary",
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = stream.validate_domain_rules()
+            >>> result = stream.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -1074,37 +1070,7 @@ class FlextGrpcEntityFactory:
 
     """
 
-    # Create factory functions for each entity type
-    _server_factory: object = FlextEntityFactory.create_entity_factory(
-        FlextGrpcServer,
-        defaults={
-            "state": "stopped",
-            "services": [],
-            "host": "localhost",
-            "port": 50051,
-            "max_workers": 10,
-        },
-    )
-
-    _client_factory: object = FlextEntityFactory.create_entity_factory(
-        FlextGrpcClient,
-        defaults={"options": {}},
-    )
-
-    _channel_factory: object = FlextEntityFactory.create_entity_factory(
-        FlextGrpcChannel,
-        defaults={"state": "idle", "options": {}},
-    )
-
-    _service_factory: object = FlextEntityFactory.create_entity_factory(
-        FlextGrpcService,
-        defaults={"methods": []},
-    )
-
-    _stream_factory: object = FlextEntityFactory.create_entity_factory(
-        FlextGrpcStream,
-        defaults={"stream_type": "unary"},
-    )
+    # Modern factory pattern using FlextFactory directly
 
     @classmethod
     def create_server(
@@ -1115,16 +1081,14 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcServer]:
         """Create a validated gRPC server."""
-        # Use typed factory method to create server instance
-        factory_fn = cls._server_factory
-        if not callable(factory_fn):
-            return FlextResult.fail("Server factory is not callable")
-
-        # Type-safe return - the factory returns FlextResult[FlextGrpcServer]
-        return factory_fn(
+        return FlextFactory.create_model(
+            FlextGrpcServer,
+            id=FlextGenerators.generate_entity_id(),
             host=host,
             port=port,
             max_workers=max_workers,
+            state="stopped",
+            services=[],
             **options,
         )
 
@@ -1139,15 +1103,11 @@ class FlextGrpcEntityFactory:
         if channel_result.is_failure:
             return FlextResult.fail(f"Failed to create client: {channel_result.error}")
 
-        # Use typed factory method to create client instance
-        factory_fn = cls._client_factory
-        if not callable(factory_fn):
-            return FlextResult.fail("Client factory is not callable")
-
-        # Type-safe return - the factory returns FlextResult[FlextGrpcClient]
-        return factory_fn(
+        return FlextFactory.create_model(
+            FlextGrpcClient,
+            id=FlextGenerators.generate_entity_id(),
             channel=channel_result.data,
-            options=options,
+            options=options or {},
         )
 
     @classmethod
@@ -1158,14 +1118,13 @@ class FlextGrpcEntityFactory:
     ) -> FlextResult[FlextGrpcChannel]:
         """Create a validated gRPC channel."""
         # Use typed factory method to create channel instance
-        factory_fn = cls._channel_factory
-        if not callable(factory_fn):
-            return FlextResult.fail("Channel factory is not callable")
-
-        # Type-safe return - the factory returns FlextResult[FlextGrpcChannel]
-        return factory_fn(
+        # Use FlextFactory directly
+        return FlextFactory.create_model(
+            FlextGrpcChannel,
+            id=FlextGenerators.generate_entity_id(),
             target=TGrpcTarget(target),
-            options=options,
+            state="idle",
+            options=options or {},
         )
 
     @classmethod
@@ -1177,12 +1136,10 @@ class FlextGrpcEntityFactory:
     ) -> FlextResult[FlextGrpcService]:
         """Create a validated gRPC service."""
         # Use typed factory method to create service instance
-        factory_fn = cls._service_factory
-        if not callable(factory_fn):
-            return FlextResult.fail("Service factory is not callable")
-
-        # Type-safe return - the factory returns FlextResult[FlextGrpcService]
-        return factory_fn(
+        # Use FlextFactory directly
+        return FlextFactory.create_model(
+            FlextGrpcService,
+            id=FlextGenerators.generate_entity_id(),
             name=name,
             methods=methods or [],
             **options,
@@ -1197,12 +1154,10 @@ class FlextGrpcEntityFactory:
     ) -> FlextResult[FlextGrpcStream]:
         """Create a validated gRPC stream."""
         # Use typed factory method to create stream instance
-        factory_fn = cls._stream_factory
-        if not callable(factory_fn):
-            return FlextResult.fail("Stream factory is not callable")
-
-        # Type-safe return - the factory returns FlextResult[FlextGrpcStream]
-        return factory_fn(
+        # Use FlextFactory directly
+        return FlextFactory.create_model(
+            FlextGrpcStream,
+            id=FlextGenerators.generate_entity_id(),
             method_name=method_name,
             stream_type=stream_type,
             **options,

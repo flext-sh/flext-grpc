@@ -82,7 +82,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from datetime import UTC, datetime
+from typing import cast
 
 from flext_core import FlextResult
 from flext_core.utilities import FlextGenerators
@@ -177,7 +177,6 @@ def create_server(
         max_workers=max_workers,
         state="stopped",
         services=[],
-        created_at=datetime.now(UTC),
     )
 
 
@@ -275,7 +274,6 @@ def create_client(
         id=FlextGenerators.generate_entity_id(),
         channel=channel,
         options=options or {},
-        created_at=datetime.now(UTC),
     )
 
 
@@ -371,7 +369,6 @@ def create_channel(
         target=TGrpcTarget(target),
         state="idle",
         options=options or {},
-        created_at=datetime.now(UTC),
     )
 
 
@@ -461,7 +458,6 @@ def create_service(
         id=FlextGenerators.generate_entity_id(),
         name=name,
         methods=methods or [],
-        created_at=datetime.now(UTC),
     )
 
 
@@ -561,12 +557,11 @@ def create_stream(
     if stream_type not in valid_types:
         invalid_stream_type_msg: str = f"Invalid stream type: {stream_type}"
         raise ValueError(invalid_stream_type_msg)
-    valid_stream_type: TGrpcStreamType = stream_type
+    # Type is already validated above, safe to cast
     return FlextGrpcStream(
         id=FlextGenerators.generate_entity_id(),
         method_name=method_name,
-        stream_type=valid_stream_type,
-        created_at=datetime.now(UTC),
+        stream_type=cast("TGrpcStreamType", stream_type),
     )
 
 
