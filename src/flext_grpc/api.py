@@ -561,7 +561,7 @@ def create_stream(
     if stream_type not in valid_types:
         invalid_stream_type_msg: str = f"Invalid stream type: {stream_type}"
         raise ValueError(invalid_stream_type_msg)
-    valid_stream_type: TGrpcStreamType = stream_type  # type: ignore[assignment]
+    valid_stream_type: TGrpcStreamType = stream_type
     return FlextGrpcStream(
         id=FlextGenerators.generate_entity_id(),
         method_name=method_name,

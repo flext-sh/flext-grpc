@@ -1121,7 +1121,7 @@ class FlextGrpcEntityFactory:
             return FlextResult.fail("Server factory is not callable")
 
         # Type-safe return - the factory returns FlextResult[FlextGrpcServer]
-        return factory_fn(  # type: ignore[no-any-return]
+        return factory_fn(
             host=host,
             port=port,
             max_workers=max_workers,
@@ -1145,7 +1145,7 @@ class FlextGrpcEntityFactory:
             return FlextResult.fail("Client factory is not callable")
 
         # Type-safe return - the factory returns FlextResult[FlextGrpcClient]
-        return factory_fn(  # type: ignore[no-any-return]
+        return factory_fn(
             channel=channel_result.data,
             options=options,
         )
@@ -1163,7 +1163,7 @@ class FlextGrpcEntityFactory:
             return FlextResult.fail("Channel factory is not callable")
 
         # Type-safe return - the factory returns FlextResult[FlextGrpcChannel]
-        return factory_fn(  # type: ignore[no-any-return]
+        return factory_fn(
             target=TGrpcTarget(target),
             options=options,
         )
@@ -1182,7 +1182,7 @@ class FlextGrpcEntityFactory:
             return FlextResult.fail("Service factory is not callable")
 
         # Type-safe return - the factory returns FlextResult[FlextGrpcService]
-        return factory_fn(  # type: ignore[no-any-return]
+        return factory_fn(
             name=name,
             methods=methods or [],
             **options,
@@ -1202,7 +1202,7 @@ class FlextGrpcEntityFactory:
             return FlextResult.fail("Stream factory is not callable")
 
         # Type-safe return - the factory returns FlextResult[FlextGrpcStream]
-        return factory_fn(  # type: ignore[no-any-return]
+        return factory_fn(
             method_name=method_name,
             stream_type=stream_type,
             **options,

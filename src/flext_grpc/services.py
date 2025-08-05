@@ -844,7 +844,7 @@ class FlextGrpcClientService(FlextDomainService, _GrpcServiceValidationMixin):
     def _connect_and_ready_channel(self, channel: object) -> FlextResult[object]:
         """Connect channel and mark as ready."""
         # Use proper channel state transitions
-        connect_result = channel.connect()  # type: ignore[attr-defined]
+        connect_result = channel.connect()
         if connect_result.is_failure:
             return FlextResult.fail(connect_result.error or "Connect failed")
 

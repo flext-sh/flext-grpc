@@ -178,7 +178,7 @@ class TestAPIFunctions:
     def test_create_stream_invalid_type(self) -> None:
         """Test create_stream with invalid stream type raises ValueError."""
         with pytest.raises(ValueError, match="Invalid stream type: invalid_type"):
-            create_stream("test_method", "invalid_type")  # type: ignore[arg-type]
+            create_stream("test_method", "invalid_type")
 
     def test_create_config(self) -> None:
         """Test create_config function."""
@@ -234,7 +234,7 @@ class TestAPIFunctions:
     def test_validate_address_exception_handling(self) -> None:
         """Test validate_address exception handling for lines 769-770."""
         # Test with an address that might cause AttributeError or ValueError
-        result = validate_address(None)  # type: ignore[arg-type]
+        result = validate_address(None)
         assert result.is_failure
         # The error should either be empty address error or exception error
         assert (
