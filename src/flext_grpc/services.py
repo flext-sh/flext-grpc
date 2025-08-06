@@ -119,7 +119,9 @@ class _GrpcServiceValidationMixin:
         return FlextResult.ok((operation, target))
 
 
-class FlextGrpcServerService(FlextDomainService[FlextGrpcServer], _GrpcServiceValidationMixin):
+class FlextGrpcServerService(
+    FlextDomainService[FlextGrpcServer], _GrpcServiceValidationMixin,
+):
     """Domain service for gRPC server lifecycle management and operations.
 
     Application layer service implementing server lifecycle management operations
@@ -233,7 +235,9 @@ class FlextGrpcServerService(FlextDomainService[FlextGrpcServer], _GrpcServiceVa
 
     def execute(self) -> FlextResult[FlextGrpcServer]:
         """Execute default server operation - implementation required by abstract base."""
-        return FlextResult.fail("Use execute_operation(operation, server, **kwargs) instead")
+        return FlextResult.fail(
+            "Use execute_operation(operation, server, **kwargs) instead",
+        )
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute server management operation with validation and error handling.
@@ -564,7 +568,9 @@ class FlextGrpcServerService(FlextDomainService[FlextGrpcServer], _GrpcServiceVa
         )
 
 
-class FlextGrpcClientService(FlextDomainService[FlextGrpcClient], _GrpcServiceValidationMixin):
+class FlextGrpcClientService(
+    FlextDomainService[FlextGrpcClient], _GrpcServiceValidationMixin,
+):
     """Domain service for gRPC client connection management and communication.
 
     Application layer service implementing client lifecycle management including
@@ -743,7 +749,9 @@ class FlextGrpcClientService(FlextDomainService[FlextGrpcClient], _GrpcServiceVa
 
     def execute(self) -> FlextResult[FlextGrpcClient]:
         """Execute default client operation - implementation required by abstract base."""
-        return FlextResult.fail("Use execute_operation(operation, client, **kwargs) instead")
+        return FlextResult.fail(
+            "Use execute_operation(operation, client, **kwargs) instead",
+        )
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute client operation.
@@ -855,7 +863,9 @@ class FlextGrpcClientService(FlextDomainService[FlextGrpcClient], _GrpcServiceVa
             return FlextResult.fail("Client has no channel")
         return FlextResult.ok(None)
 
-    def _connect_and_ready_channel(self, channel: FlextGrpcChannel) -> FlextResult[FlextGrpcChannel]:
+    def _connect_and_ready_channel(
+        self, channel: FlextGrpcChannel,
+    ) -> FlextResult[FlextGrpcChannel]:
         """Connect channel and mark as ready."""
         # Use proper channel state transitions
         connect_result = channel.connect()
@@ -1274,7 +1284,9 @@ class FlextGrpcService(FlextDomainService[object]):
 
     def execute(self) -> FlextResult[object]:
         """Execute default unified operation - implementation required by abstract base."""
-        return FlextResult.fail("Use execute_operation(service_type, operation, **kwargs) instead")
+        return FlextResult.fail(
+            "Use execute_operation(service_type, operation, **kwargs) instead",
+        )
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
         """Execute unified gRPC operation with service type routing and delegation.
