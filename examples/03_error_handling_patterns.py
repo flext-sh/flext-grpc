@@ -88,11 +88,11 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
     try:
         if not username:
             msg = "Username cannot be empty"
-            raise FlextGrpcValidationError(msg, field_name="username")  # noqa: TRY301
+            raise FlextGrpcValidationError(msg, field_name="username")
 
         if not email or "@" not in email:
             msg = "Invalid email format"
-            raise FlextGrpcValidationError(msg, field_name="email")  # noqa: TRY301
+            raise FlextGrpcValidationError(msg, field_name="email")
 
         return FlextResult.ok({"username": username, "email": email})
 
@@ -107,11 +107,11 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
         max_port = 65535
         if port < 1 or port > max_port:
             msg = f"Port must be between 1 and {max_port}"
-            raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)  # noqa: TRY301
+            raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)
 
         if workers < 1:
             msg = "Workers must be positive"
-            raise FlextGrpcConfigurationError(  # noqa: TRY301
+            raise FlextGrpcConfigurationError(
                 msg, config_key="max_workers", config_value=workers
             )
 
@@ -119,7 +119,7 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
 
         if config_result.is_failure:
             msg: str = f"Failed to create config: {config_result.error}"
-            raise FlextGrpcConfigurationError(msg)  # noqa: TRY301
+            raise FlextGrpcConfigurationError(msg)
 
         return config_result
 
@@ -135,7 +135,7 @@ def simulate_connection_error() -> FlextResult[str]:
     try:
         # Simulate connection failure
         msg = "Failed to connect to gRPC server"
-        raise FlextGrpcConnectionError(msg)  # noqa: TRY301
+        raise FlextGrpcConnectionError(msg)
 
     except FlextGrpcConnectionError as e:
         logger.exception("Connection failed", error=str(e))
@@ -147,7 +147,7 @@ def simulate_timeout_error() -> FlextResult[str]:
     try:
         # Simulate timeout
         msg = "Request timed out after 30 seconds"
-        raise FlextGrpcTimeoutError(msg)  # noqa: TRY301
+        raise FlextGrpcTimeoutError(msg)
 
     except FlextGrpcTimeoutError as e:
         logger.exception("Request timed out", error=str(e))
@@ -159,7 +159,7 @@ def handle_generic_grpc_error() -> FlextResult[str]:
     try:
         # Simulate generic error
         msg = "Unknown gRPC error occurred"
-        raise FlextGrpcError(msg)  # noqa: TRY301
+        raise FlextGrpcError(msg)
 
     except FlextGrpcError as e:
         logger.exception("Generic gRPC error", error=str(e))
@@ -281,7 +281,7 @@ async def async_error_handling() -> FlextResult[str]:
         # Check for error condition
         if True:  # Simulate error condition
             msg = "Async operation timed out"
-            raise FlextGrpcTimeoutError(msg)  # noqa: TRY301
+            raise FlextGrpcTimeoutError(msg)
 
         return FlextResult.ok("Async operation completed")
 
