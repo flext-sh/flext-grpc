@@ -95,7 +95,7 @@ from flext_grpc.entities import (
     FlextGrpcService as FlextGrpcServiceEntity,
     FlextGrpcStream,
 )
-from flext_grpc.types import TGrpcTarget
+from flext_grpc.types import TGrpcStreamType, TGrpcTarget
 
 # Validation constants for network address processing
 MIN_PORT = 1  # Minimum valid port number
@@ -551,7 +551,6 @@ def create_stream(
 
     """
     # Type-safe cast to TGrpcStreamType
-    from flext_grpc.types import TGrpcStreamType
 
     valid_types = ("unary", "server_streaming", "client_streaming", "bidirectional")
     if stream_type not in valid_types:

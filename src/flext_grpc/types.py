@@ -70,6 +70,8 @@ from __future__ import annotations
 import re
 from typing import Literal, NewType, Protocol, runtime_checkable
 
+from flext_core import get_logger
+
 # Network validation constants for port range enforcement
 MIN_PORT = 1  # Minimum valid port number (system minimum)
 MAX_PORT = 65535  # Maximum valid port number (16-bit maximum)
@@ -337,7 +339,11 @@ def flext_grpc_validate_target(target: str) -> bool:
         port = int(port_str)
         return MIN_PORT <= port <= MAX_PORT
 
-    except (ValueError, AttributeError):
+    except (ValueError, AttributeError) as e:
+        # EXPLICIT TRANSPARENCY: gRPC target validation fallback
+        logger = get_logger(__name__)
+        logger.debug(f"Target validation failed for '{target}': {type(e).__name__}: {e}")
+        logger.info("Returning False for invalid target format - expected behavior")
         return False
 
 

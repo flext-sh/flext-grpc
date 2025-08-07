@@ -9,18 +9,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from flext_core import FlextResult, get_flext_container
 
+from flext_grpc.entities import (
+    FlextGrpcClient,
+    FlextGrpcServer,
+    FlextGrpcStream,
+)
 from flext_grpc.services import FlextGrpcService
-
-if TYPE_CHECKING:
-    from flext_grpc.entities import (
-        FlextGrpcClient,
-        FlextGrpcServer,
-        FlextGrpcStream,
-    )
 
 
 class FlextGrpcPlatform:
@@ -98,8 +94,6 @@ class FlextGrpcPlatform:
         if result.is_failure:
             return FlextResult.fail(result.error or "Start server failed")
         # Safe cast since we know server operations return FlextGrpcServer
-        from flext_grpc.entities import FlextGrpcServer
-
         if isinstance(result.data, FlextGrpcServer):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid server result type")
@@ -110,8 +104,6 @@ class FlextGrpcPlatform:
         if result.is_failure:
             return FlextResult.fail(result.error or "Stop server failed")
         # Safe cast since we know server operations return FlextGrpcServer
-        from flext_grpc.entities import FlextGrpcServer
-
         if isinstance(result.data, FlextGrpcServer):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid server result type")
@@ -122,8 +114,6 @@ class FlextGrpcPlatform:
         if result.is_failure:
             return FlextResult.fail(result.error or "Connect client failed")
         # Safe cast since we know client operations return FlextGrpcClient
-        from flext_grpc.entities import FlextGrpcClient
-
         if isinstance(result.data, FlextGrpcClient):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid client result type")
@@ -188,8 +178,6 @@ class FlextGrpcPlatform:
         if result.is_failure:
             return FlextResult.fail(result.error or "Create stream failed")
         # Safe cast since we know stream operations return FlextGrpcStream
-        from flext_grpc.entities import FlextGrpcStream
-
         if isinstance(result.data, FlextGrpcStream):
             return FlextResult.ok(result.data)
         return FlextResult.fail("Invalid stream result type")
