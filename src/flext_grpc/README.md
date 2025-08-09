@@ -70,7 +70,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Purpose**: Type-safe configuration with comprehensive validation
 **Components**:
 
-- `FlextGrpcConfig` - Main configuration class extending `FlextBaseSettings`
+- `FlextGrpcConfig` - Main configuration class extending `FlextSettings`
 - Field validators for host, port, workers, timeout
 - Environment variable integration
 - Address formatting and validation utilities

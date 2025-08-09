@@ -62,15 +62,15 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core.constants import FlextSemanticConstants
+from flext_core.constants import FlextConstants
 
 # =============================================================================
 # GRPC-SPECIFIC SEMANTIC CONSTANTS - Modern Python 3.13 Structure
 # =============================================================================
 
 
-class FlextGrpcSemanticConstants(FlextSemanticConstants):
-    """gRPC-specific semantic constants extending FlextSemanticConstants.
+class FlextGrpcSemanticConstants(FlextConstants):
+    """gRPC-specific semantic constants extending FlextConstants.
 
     Modern Python 3.13 constants following semantic grouping patterns.
     Extends the FLEXT ecosystem constants with gRPC communication specific
@@ -81,17 +81,17 @@ class FlextGrpcSemanticConstants(FlextSemanticConstants):
         """Network configuration constants."""
 
         # CONSUME from single source - NO DUPLICATION
-        DEFAULT_HOST = FlextSemanticConstants.Infrastructure.DEFAULT_HOST
+        DEFAULT_HOST = FlextConstants.Infrastructure.DEFAULT_HOST
         DEFAULT_PORT = 50051  # gRPC-specific port
-        MIN_PORT = FlextSemanticConstants.Platform.MIN_PORT_NUMBER
-        MAX_PORT = FlextSemanticConstants.Platform.MAX_PORT_NUMBER
+        MIN_PORT = FlextConstants.Platform.MIN_PORT_NUMBER
+        MAX_PORT = FlextConstants.Platform.MAX_PORT_NUMBER
         HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
 
     class Service:
         """Service configuration constants."""
 
         # CONSUME from single source - NO DUPLICATION
-        DEFAULT_TIMEOUT = FlextSemanticConstants.Defaults.TIMEOUT
+        DEFAULT_TIMEOUT = FlextConstants.Defaults.TIMEOUT
         DEFAULT_MAX_WORKERS = 10
         MIN_WORKERS = 1
         MAX_WORKERS = 100
@@ -109,9 +109,9 @@ class FlextGrpcSemanticConstants(FlextSemanticConstants):
         """Default configuration templates."""
 
         DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
-            "host": FlextSemanticConstants.Infrastructure.DEFAULT_HOST,
+            "host": FlextConstants.Infrastructure.DEFAULT_HOST,
             "port": 50051,
-            "timeout": FlextSemanticConstants.Defaults.TIMEOUT,
+            "timeout": FlextConstants.Defaults.TIMEOUT,
             "max_workers": 10,
         }
 
