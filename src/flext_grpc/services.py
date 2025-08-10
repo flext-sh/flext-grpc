@@ -1180,7 +1180,7 @@ class FlextGrpcStreamService(FlextDomainService[FlextGrpcStream]):
         # In a real implementation, this would send data through the stream
         # Use data parameter to avoid ARG002
         _ = data  # Mark as used
-        return FlextResult.ok(data=True)
+        return FlextResult.ok(True)
 
     def _close_stream(self, stream: FlextGrpcStream) -> FlextResult[bool]:
         """Close stream properly."""
@@ -1189,7 +1189,7 @@ class FlextGrpcStreamService(FlextDomainService[FlextGrpcStream]):
             return FlextResult.fail(f"Invalid stream: {validation.error}")
 
         # In a real implementation, this would close the stream
-        return FlextResult.ok(data=True)
+        return FlextResult.ok(True)
 
 
 class FlextGrpcPlatformService(FlextDomainService[object]):

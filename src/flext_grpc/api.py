@@ -755,7 +755,7 @@ def validate_address(address: str) -> FlextResult[bool]:
         if validation_error:
             return FlextResult.fail(validation_error)
 
-        return FlextResult.ok(data=True)
+        return FlextResult.ok(True)
 
     except (ValueError, AttributeError) as e:
         return FlextResult.fail(f"Address validation error: {e}")
