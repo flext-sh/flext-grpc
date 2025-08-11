@@ -44,9 +44,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 # 🚨 UNIFIED PATTERN MIGRATION: Using modern flext-core patterns
-from flext_core import FlextResult
+from flext_core import FlextGenerators, FlextResult
 from flext_core.models import FlextEntity, FlextFactory
-from flext_core.utilities import FlextGenerators
 from pydantic import Field
 
 from flext_grpc.constants import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT

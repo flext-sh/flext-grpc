@@ -58,7 +58,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core.utilities import FlextGenerators
+from flext_core import FlextGenerators
 
 from flext_grpc.entities import (
     FlextGrpcChannel,

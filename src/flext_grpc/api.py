@@ -84,8 +84,7 @@ from __future__ import annotations
 import re
 from typing import cast
 
-from flext_core import FlextResult
-from flext_core.utilities import FlextGenerators
+from flext_core import FlextGenerators, FlextResult
 
 from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.entities import (
@@ -755,7 +754,7 @@ def validate_address(address: str) -> FlextResult[bool]:
         if validation_error:
             return FlextResult.fail(validation_error)
 
-        return FlextResult.ok(True)
+        return FlextResult.ok(data=True)
 
     except (ValueError, AttributeError) as e:
         return FlextResult.fail(f"Address validation error: {e}")
