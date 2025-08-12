@@ -49,7 +49,7 @@ from flext_core.models import FlextEntity, FlextFactory
 from pydantic import Field
 
 from flext_grpc.constants import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
-from flext_grpc.types import (
+from flext_grpc.typings import (
     TGrpcChannelState,
     TGrpcServerState,
     TGrpcStreamType,

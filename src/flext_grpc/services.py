@@ -388,7 +388,7 @@ class FlextGrpcServerService(
 
     def _process_server_result(
         self,
-        result: FlextResult[object],
+        result: FlextResult[FlextGrpcServer] | FlextResult[dict[str, object]],
         operation_name: str,
     ) -> FlextResult[object]:
         """Process server operation result with consistent error handling."""
@@ -830,7 +830,7 @@ class FlextGrpcClientService(
 
     def _process_client_result(
         self,
-        result: FlextResult[object],
+        result: FlextResult[FlextGrpcClient] | FlextResult[dict[str, object]],
         operation_name: str,
     ) -> FlextResult[object]:
         """Process client operation result with consistent error handling."""
@@ -1388,3 +1388,9 @@ class FlextGrpcPlatformService(FlextDomainService[object]):
                 return self._stream_service.execute_operation(*args[1:], **kwargs)
             case _:
                 return FlextResult.fail(f"Unknown service type: {service_type}")
+
+
+# Note: Do NOT alias FlextGrpcService here; that name refers to the
+# domain entity defined in flext_grpc.entities. The unified platform
+# service is FlextGrpcPlatformService and should be imported explicitly
+# by consumers (e.g., the platform facade).

@@ -411,7 +411,6 @@ class TestFlextGrpcService:
 
     def test_stream_send_operation(self) -> None:
         """Test stream send operation."""
-
         stream = FlextGrpcStream(
             id=FlextGenerators.generate_entity_id(),
             method_name="test_method",
@@ -426,7 +425,6 @@ class TestFlextGrpcService:
 
     def test_stream_close_operation(self) -> None:
         """Test stream close operation."""
-
         stream = FlextGrpcStream(
             id=FlextGenerators.generate_entity_id(),
             method_name="test_method",

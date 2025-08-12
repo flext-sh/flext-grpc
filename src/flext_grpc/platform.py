@@ -16,7 +16,7 @@ from flext_grpc.entities import (
     FlextGrpcServer,
     FlextGrpcStream,
 )
-from flext_grpc.services import FlextGrpcService
+from flext_grpc.services import FlextGrpcPlatformService
 
 
 class FlextGrpcPlatform:
@@ -38,22 +38,22 @@ class FlextGrpcPlatform:
         # Register unified service in global container
         service_result = self.container.get("flext_grpc_service")
         if service_result.is_failure:
-            self.container.register("flext_grpc_service", FlextGrpcService())
+            self.container.register("flext_grpc_service", FlextGrpcPlatformService())
 
     @property
-    def service(self) -> FlextGrpcService:
+    def service(self) -> FlextGrpcPlatformService:
         """Get unified gRPC service."""
         result = self.container.get("flext_grpc_service")
         if result.is_failure:
-            service = FlextGrpcService()
+            service = FlextGrpcPlatformService()
             self.container.register("flext_grpc_service", service)
             return service
 
-        # Safe cast since we registered it as FlextGrpcService
-        if isinstance(result.data, FlextGrpcService):
+        # Safe cast since we registered it as FlextGrpcPlatformService
+        if isinstance(result.data, FlextGrpcPlatformService):
             return result.data
         # Fallback: create new service if wrong type
-        service = FlextGrpcService()
+        service = FlextGrpcPlatformService()
         self.container.register("flext_grpc_service", service)
         return service
 

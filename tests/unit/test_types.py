@@ -1,4 +1,4 @@
-"""FLEXT gRPC Type Testing - Comprehensive unit tests for type system and validation.
+r"""FLEXT gRPC Type Testing - Comprehensive unit tests for type system and validation.
 
 This module provides comprehensive unit testing for all FLEXT gRPC type definitions,
 validation functions, and type safety utilities, following enterprise testing standards

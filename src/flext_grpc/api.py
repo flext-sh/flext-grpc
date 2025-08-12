@@ -94,7 +94,7 @@ from flext_grpc.entities import (
     FlextGrpcService as FlextGrpcServiceEntity,
     FlextGrpcStream,
 )
-from flext_grpc.types import TGrpcStreamType, TGrpcTarget
+from flext_grpc.typings import TGrpcStreamType, TGrpcTarget
 
 # Validation constants for network address processing
 MIN_PORT = 1  # Minimum valid port number

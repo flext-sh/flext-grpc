@@ -381,7 +381,6 @@ class TestAPIFunctions:
 
     def test_factory_functions_use_proper_timestamps(self) -> None:
         """Test that factory functions generate proper timestamps."""
-
         before = datetime.now(UTC)
 
         server = create_server()

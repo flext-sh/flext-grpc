@@ -463,7 +463,6 @@ class TestCompleteGrpcWorkflow:
 
     def test_performance_workflow(self) -> None:
         """Test basic performance characteristics."""
-
         platform = FlextGrpcPlatform()
 
         # 1. Measure server startup time
