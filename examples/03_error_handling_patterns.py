@@ -309,18 +309,17 @@ async def async_error_handling() -> FlextResult[str]:
     """Demonstrate error handling in async contexts."""
     logger.info("Testing async error handling patterns")
 
+    def _raise_async_timeout() -> NoReturn:
+        msg = "Async operation timed out"
+        raise FlextGrpcTimeoutError(msg)
+
     try:
         # Simulate async operation that might fail
         await asyncio.sleep(0.1)  # Simulate work
 
         # Check for error condition
         if True:  # Simulate error condition
-
-            def _raise_async_timeout() -> NoReturn:
-                msg = "Async operation timed out"
-                raise FlextGrpcTimeoutError(msg)
-
-            _raise_async_timeout()
+            return _raise_async_timeout()
 
         return FlextResult.ok("Async operation completed")
 

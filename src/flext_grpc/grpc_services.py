@@ -63,7 +63,11 @@ class FlextGrpcServerService:
     """
 
     def execute(
-        self, command: str, server: TGrpcServerEntity, *args: object, **kwargs: object,
+        self,
+        command: str,
+        server: TGrpcServerEntity,
+        *args: object,
+        **kwargs: object,
     ) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
         """Execute server command with validation and error handling."""
         # Import here to avoid circular imports
@@ -73,26 +77,43 @@ class FlextGrpcServerService:
         if validation.is_failure:
             return FlextResult.fail(f"Server validation failed: {validation.error}")
 
-        # Execute command
-        if command == "start":
-            return cast("FlextResult[TGrpcServerEntity | dict[str, object]]", self._start_server(server))
-        if command == "stop":
-            return cast("FlextResult[TGrpcServerEntity | dict[str, object]]", self._stop_server(server))
+        # Command mapping to reduce return statements
+        command_handlers = {
+            "start": lambda: cast(
+                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                self._start_server(server),
+            ),
+            "stop": lambda: cast(
+                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                self._stop_server(server),
+            ),
+            "status": lambda: cast(
+                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                self._get_status(server),
+            ),
+        }
+
+        # Handle add_service command with validation
         if command == "add_service":
             service_def = args[0] if args else kwargs.get("service")
             if not isinstance(service_def, FlextGrpcService):
                 return FlextResult.fail(
                     f"Service definition must be FlextGrpcService, got: {type(service_def)}",
                 )
-            return cast("FlextResult[TGrpcServerEntity | dict[str, object]]", self._add_service(server, service_def))
-        if command == "status":
             return cast(
-                "FlextResult[TGrpcServerEntity | dict[str, object]]", self._get_status(server),
+                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                self._add_service(server, service_def),
             )
+
+        # Execute mapped commands
+        if command in command_handlers:
+            return command_handlers[command]()
+
         return FlextResult.fail(f"Unknown server command: {command}")
 
     def _start_server(
-        self, server: TGrpcServerEntity,
+        self,
+        server: TGrpcServerEntity,
     ) -> FlextResult[TGrpcServerEntity]:
         """Start server with state transition validation."""
         # Transition: stopped → starting
@@ -136,7 +157,9 @@ class FlextGrpcServerService:
         return FlextResult.ok(stopped_result.data)
 
     def _add_service(
-        self, server: TGrpcServerEntity, _service_def: TGrpcServiceDef,
+        self,
+        server: TGrpcServerEntity,
+        _service_def: TGrpcServiceDef,
     ) -> FlextResult[TGrpcServerEntity]:
         """Add gRPC service to server."""
         if server.state != "running":
@@ -181,7 +204,11 @@ class FlextGrpcClientService:
     """
 
     def execute(
-        self, command: str, client: TGrpcClientEntity, *args: object, **kwargs: object,
+        self,
+        command: str,
+        client: TGrpcClientEntity,
+        *args: object,
+        **kwargs: object,
     ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
         """Execute client command with validation and error handling."""
         # Validate client entity
@@ -189,17 +216,23 @@ class FlextGrpcClientService:
         if validation.is_failure:
             return FlextResult.fail(f"Client validation failed: {validation.error}")
 
-        # Execute command
-        if command == "connect":
-            return cast(
+        # Command mapping to reduce return statements
+        command_handlers = {
+            "connect": lambda: cast(
                 "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
                 self._connect_client(client),
-            )
-        if command == "disconnect":
-            return cast(
+            ),
+            "disconnect": lambda: cast(
                 "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
                 self._disconnect_client(client),
-            )
+            ),
+            "status": lambda: cast(
+                "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
+                self._get_status(client),
+            ),
+        }
+
+        # Handle call command with validation
         if command == "call":
             method_name = args[0] if args else kwargs.get("method")
             request = args[1] if len(args) > 1 else kwargs.get("request")
@@ -211,15 +244,16 @@ class FlextGrpcClientService:
                 "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
                 self._make_call(client, method_name, request),
             )
-        if command == "status":
-            return cast(
-                "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
-                self._get_status(client),
-            )
+
+        # Execute mapped commands
+        if command in command_handlers:
+            return command_handlers[command]()
+
         return FlextResult.fail(f"Unknown client command: {command}")
 
     def _connect_client(
-        self, client: TGrpcClientEntity,
+        self,
+        client: TGrpcClientEntity,
     ) -> FlextResult[TGrpcClientEntity]:
         """Connect client with state transition validation."""
         # Check if client has a channel
@@ -252,7 +286,8 @@ class FlextGrpcClientService:
         return client.copy_with(channel=ready_result.data)
 
     def _disconnect_client(
-        self, client: TGrpcClientEntity,
+        self,
+        client: TGrpcClientEntity,
     ) -> FlextResult[TGrpcClientEntity]:
         """Disconnect client with graceful shutdown."""
         # Check if client has a channel
@@ -273,7 +308,10 @@ class FlextGrpcClientService:
         return client.copy_with(channel=disconnect_result.data)
 
     def _make_call(
-        self, client: TGrpcClientEntity, method: str, request: object,
+        self,
+        client: TGrpcClientEntity,
+        method: str,
+        request: object,
     ) -> FlextResult[TMethodCallResult]:
         """Execute remote method call."""
         if not client.is_connected:
@@ -309,7 +347,11 @@ class FlextGrpcStreamService:
     """
 
     def execute(
-        self, command: str, stream: TGrpcStreamEntity, *args: object, **kwargs: object,
+        self,
+        command: str,
+        stream: TGrpcStreamEntity,
+        *args: object,
+        **kwargs: object,
     ) -> FlextResult[TGrpcStreamEntity | TMethodCallResult]:
         """Execute stream command with validation and error handling."""
         # Validate stream entity
@@ -325,7 +367,8 @@ class FlextGrpcStreamService:
             data = args[0] if args else kwargs.get("data")
             send_result = self._send_data(stream, data)
             return cast(
-                "FlextResult[TGrpcStreamEntity | TMethodCallResult]", send_result,
+                "FlextResult[TGrpcStreamEntity | TMethodCallResult]",
+                send_result,
             )
         if command == "close":
             result = self._close_stream(stream)
@@ -333,21 +376,25 @@ class FlextGrpcStreamService:
         return FlextResult.fail(f"Unknown stream command: {command}")
 
     def _create_stream(
-        self, stream: TGrpcStreamEntity,
+        self,
+        stream: TGrpcStreamEntity,
     ) -> FlextResult[TGrpcStreamEntity]:
         """Create gRPC stream."""
         # In real implementation, create actual gRPC stream
         return FlextResult.ok(stream)
 
     def _send_data(
-        self, stream: TGrpcStreamEntity, data: object,
+        self,
+        stream: TGrpcStreamEntity,
+        data: object,
     ) -> FlextResult[TMethodCallResult]:
         """Send data through stream."""
         # In real implementation, send data through gRPC stream
         return FlextResult.ok({"sent": data, "stream_type": stream.stream_type})
 
     def _close_stream(
-        self, stream: TGrpcStreamEntity,
+        self,
+        stream: TGrpcStreamEntity,
     ) -> FlextResult[TGrpcStreamEntity]:
         """Close stream gracefully."""
         # In real implementation, close actual gRPC stream
@@ -390,43 +437,52 @@ class FlextGrpcPlatform:
         self._stream_service = FlextGrpcStreamService()
 
     def start_server(
-        self, server: TGrpcServerEntity,
+        self,
+        server: TGrpcServerEntity,
     ) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
         """Start gRPC server with comprehensive lifecycle management."""
         return self._server_service.execute("start", server)
 
     def stop_server(
-        self, server: TGrpcServerEntity,
+        self,
+        server: TGrpcServerEntity,
     ) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
         """Stop gRPC server with graceful shutdown."""
         return self._server_service.execute("stop", server)
 
     def connect_client(
-        self, client: TGrpcClientEntity,
+        self,
+        client: TGrpcClientEntity,
     ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
         """Connect gRPC client with connection management."""
         return self._client_service.execute("connect", client)
 
     def disconnect_client(
-        self, client: TGrpcClientEntity,
+        self,
+        client: TGrpcClientEntity,
     ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
         """Disconnect gRPC client with graceful shutdown."""
         return self._client_service.execute("disconnect", client)
 
     def make_call(
-        self, client: TGrpcClientEntity, method: str, request: object,
+        self,
+        client: TGrpcClientEntity,
+        method: str,
+        request: object,
     ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
         """Execute remote method call through client."""
         return self._client_service.execute("call", client, method, request)
 
     def create_stream(
-        self, stream: TGrpcStreamEntity,
+        self,
+        stream: TGrpcStreamEntity,
     ) -> FlextResult[TGrpcStreamEntity | TMethodCallResult]:
         """Create gRPC stream for streaming operations."""
         return self._stream_service.execute("create", stream)
 
     def get_server_status(
-        self, server: TGrpcServerEntity,
+        self,
+        server: TGrpcServerEntity,
     ) -> FlextResult[dict[str, object]]:
         """Get comprehensive server status information."""
         result = self._server_service.execute("status", server)
@@ -434,7 +490,8 @@ class FlextGrpcPlatform:
         return cast("FlextResult[dict[str, object]]", result)
 
     def get_client_status(
-        self, client: TGrpcClientEntity,
+        self,
+        client: TGrpcClientEntity,
     ) -> FlextResult[dict[str, object]]:
         """Get comprehensive client status information."""
         result = self._client_service.execute("status", client)

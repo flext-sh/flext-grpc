@@ -171,13 +171,13 @@ def create_config(
 
 
 def create_complete_setup(
-    server_id: str = "default-server",
-    client_id: str = "default-client",
+    _server_id: str = "default-server",  # noqa: ARG001
+    _client_id: str = "default-client",  # noqa: ARG001
     host: str = "localhost",
     port: int = 50051,
     max_workers: int = 10,
     *,
-    ssl_enabled: bool = False,
+    _ssl_enabled: bool = False,  # noqa: ARG001
 ) -> FlextResult[dict[str, object]]:
     """Create complete gRPC setup with server and client.
 
