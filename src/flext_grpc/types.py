@@ -51,9 +51,6 @@ class FlextGrpcStatus(Protocol):
     message: str
 
 
-
-
-
 __all__: list[str] = [
     "FlextGrpcError",
     "FlextGrpcRequest",
