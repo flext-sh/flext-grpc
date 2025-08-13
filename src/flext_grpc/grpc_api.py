@@ -35,26 +35,22 @@ from flext_grpc.entities import (
 
 
 def create_server(
-    id: str,
     host: str,
     port: int,
     max_workers: int = 10,
-    ssl_enabled: bool = False,
 ) -> FlextResult[FlextGrpcServer]:
     """Create gRPC server with comprehensive validation.
 
     Args:
-        id: Unique server identifier
         host: Server host address
         port: Server port number
         max_workers: Maximum worker threads (default: 10)
-        ssl_enabled: Enable SSL/TLS encryption (default: False)
 
     Returns:
         FlextResult containing created server or error message
 
     Example:
-        >>> result = create_server("api-server", "localhost", 50051)
+        >>> result = create_server("localhost", 50051)
         >>> if result.success:
         ...     server = result.data
         ...     print(f"Server created: {server.host}:{server.port}")
@@ -68,22 +64,18 @@ def create_server(
 
 
 def create_client(
-    id: str,
     target: str,
-    ssl_enabled: bool = False,
 ) -> FlextResult[FlextGrpcClient]:
     """Create gRPC client with comprehensive validation.
 
     Args:
-        id: Unique client identifier
         target: gRPC target address (host:port format)
-        ssl_enabled: Enable SSL/TLS encryption (default: False)
 
     Returns:
         FlextResult containing created client or error message
 
     Example:
-        >>> result = create_client("api-client", "localhost:50051")
+        >>> result = create_client("localhost:50051")
         >>> if result.success:
         ...     client = result.data
         ...     print(f"Client created: {client.target}")
@@ -93,13 +85,11 @@ def create_client(
 
 
 def create_channel(
-    id: str,
     target: str,
 ) -> FlextResult[FlextGrpcChannel]:
     """Create gRPC channel with validation.
 
     Args:
-        id: Unique channel identifier
         target: gRPC target address (host:port format)
 
     Returns:
@@ -110,14 +100,12 @@ def create_channel(
 
 
 def create_service(
-    id: str,
     name: str,
     methods: list[str] | None = None,
 ) -> FlextResult[FlextGrpcService]:
     """Create gRPC service with validation.
 
     Args:
-        id: Unique service identifier
         name: Service name
         methods: List of method names (default: empty list)
 
@@ -129,14 +117,12 @@ def create_service(
 
 
 def create_stream(
-    id: str,
     stream_type: str,
     method_name: str,
 ) -> FlextResult[FlextGrpcStream]:
     """Create gRPC stream with validation.
 
     Args:
-        id: Unique stream identifier
         stream_type: Type of stream (unary, server_streaming, client_streaming, bidirectional)
         method_name: Associated method name
 
@@ -188,6 +174,7 @@ def create_complete_setup(
     host: str = "localhost",
     port: int = 50051,
     max_workers: int = 10,
+    *,
     ssl_enabled: bool = False,
 ) -> FlextResult[dict[str, object]]:
     """Create complete gRPC setup with server and client.

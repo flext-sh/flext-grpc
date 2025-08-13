@@ -62,7 +62,7 @@ class FlextGrpcServerService:
 
     """
 
-    def execute(self, command: str, server: TGrpcServerEntity, *args: object, **kwargs: object) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
+    def execute(self, command: str, server: TGrpcServerEntity, *args: object, **kwargs: object) -> FlextResult[TGrpcServerEntity | dict[str, object]]:  # noqa: PLR0911
         """Execute server command with validation and error handling."""
         # Import here to avoid circular imports
 
@@ -131,7 +131,7 @@ class FlextGrpcServerService:
             return FlextResult.fail("Failed to get stopped server data")
         return FlextResult.ok(stopped_result.data)
 
-    def _add_service(self, server: TGrpcServerEntity, service_def: TGrpcServiceDef) -> FlextResult[TGrpcServerEntity]:
+    def _add_service(self, server: TGrpcServerEntity, _service_def: TGrpcServiceDef) -> FlextResult[TGrpcServerEntity]:
         """Add gRPC service to server."""
         if server.state != "running":
             return FlextResult.fail(f"Cannot add service to server in state: {server.state}")
@@ -172,7 +172,7 @@ class FlextGrpcClientService:
 
     """
 
-    def execute(self, command: str, client: TGrpcClientEntity, *args: object, **kwargs: object) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
+    def execute(self, command: str, client: TGrpcClientEntity, *args: object, **kwargs: object) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:  # noqa: PLR0911
         """Execute client command with validation and error handling."""
         # Validate client entity
         validation = client.validate_business_rules()

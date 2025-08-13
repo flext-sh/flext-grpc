@@ -123,8 +123,9 @@ class FlextGrpcServer(FlextGrpcEntity):
             )
 
         # Validate worker count
-        if self.max_workers < 1 or self.max_workers > 100:
-            return FlextResult.fail("Max workers must be between 1 and 100")
+        from flext_grpc.constants import FlextGrpcConstants
+        if self.max_workers < FlextGrpcConstants.Service.MIN_WORKERS or self.max_workers > FlextGrpcConstants.Service.MAX_WORKERS:
+            return FlextResult.fail(f"Max workers must be between {FlextGrpcConstants.Service.MIN_WORKERS} and {FlextGrpcConstants.Service.MAX_WORKERS}")
 
         return FlextResult.ok(None)
 
@@ -308,16 +309,17 @@ class FlextGrpcStream(FlextGrpcEntity):
 # =============================================================================
 
 def create_grpc_server(
-    id: str,
+    server_id: str,
     host: str,
     port: int,
     max_workers: int = 10,
+    *,
     ssl_enabled: bool = False,
 ) -> FlextResult[FlextGrpcServer]:
     """Create a new gRPC server entity with validation."""
     try:
         server = FlextGrpcServer(
-            id=id,
+            id=server_id,
             host=TGrpcHost(host),
             port=TGrpcPort(port),
             max_workers=max_workers,
@@ -335,14 +337,15 @@ def create_grpc_server(
 
 
 def create_grpc_client(
-    id: str,
+    client_id: str,
     target: str,
+    *,
     ssl_enabled: bool = False,
 ) -> FlextResult[FlextGrpcClient]:
     """Create a new gRPC client entity with validation."""
     try:
         client = FlextGrpcClient(
-            id=id,
+            id=client_id,
             target=TGrpcTarget(target),
             ssl_enabled=ssl_enabled,
             created_at=datetime.now(UTC),

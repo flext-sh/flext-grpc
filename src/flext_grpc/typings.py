@@ -42,20 +42,35 @@ TGrpcStreamType = Literal["unary", "server_streaming", "client_streaming", "bidi
 # =============================================================================
 @runtime_checkable
 class TGrpcChannel(Protocol):
-    def close(self) -> None: ...
-    def unsubscribe(self, callback: object) -> None: ...
+    """Protocol for minimal gRPC channel operations."""
+
+    def close(self) -> None:
+        """Close the channel."""
+
+    def unsubscribe(self, callback: object) -> None:
+        """Remove a subscription callback from the channel."""
 
 
 @runtime_checkable
 class TGrpcServer(Protocol):
-    def add_generic_rpc_handlers(self, handlers: list[object]) -> None: ...
-    def start(self) -> None: ...
-    def stop(self, grace: float | None) -> None: ...
+    """Protocol for minimal gRPC server operations."""
+
+    def add_generic_rpc_handlers(self, handlers: list[object]) -> None:
+        """Add generic RPC handlers."""
+
+    def start(self) -> None:
+        """Start the server."""
+
+    def stop(self, grace: float | None) -> None:
+        """Stop the server with optional grace period."""
 
 
 @runtime_checkable
 class TGrpcStub(Protocol):
-    def __init__(self, channel: TGrpcChannel) -> None: ...
+    """Protocol for minimal gRPC client stub."""
+
+    def __init__(self, channel: TGrpcChannel) -> None:
+        """Initialize the stub with a channel."""
 
 
 # =============================================================================
@@ -63,6 +78,7 @@ class TGrpcStub(Protocol):
 # =============================================================================
 
 def flext_grpc_validate_target(target: str) -> bool:
+    """Validate a gRPC target string in the form host:port."""
     if not target or ":" not in target:
         return False
     try:

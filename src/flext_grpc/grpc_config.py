@@ -145,7 +145,7 @@ FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 # =============================================================================
 
 # Import exception here to avoid circular import
-from flext_core.exceptions import create_module_exception_classes
+from flext_core.exceptions import create_module_exception_classes  # noqa: E402
 
 # Generate gRPC-specific exceptions
 _grpc_exceptions = create_module_exception_classes("flext_grpc")

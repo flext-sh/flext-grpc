@@ -83,16 +83,6 @@ except importlib.metadata.PackageNotFoundError:
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 __all__: list[str] = [
-    "annotations", "FlextContainer", "FlextResult", "create_channel", "create_client",
-    "create_complete_setup", "create_config", "create_server", "create_service", "create_stream",
-    "parse_address", "validate_address", "FlextGrpcConfig", "FlextGrpcConfigurationError",
-    "FlextGrpcConnectionError", "FlextGrpcError", "FlextGrpcTimeoutError", "FlextGrpcValidationError",
-    "FlextGrpcChannel", "FlextGrpcClient", "FlextGrpcServer", "FlextGrpcService", "FlextGrpcStream",
-    "TGrpcChannelState", "TGrpcHost", "TGrpcMethodName", "TGrpcPort", "TGrpcServerState",
-    "TGrpcServiceName", "TGrpcStreamType", "TGrpcTarget", "TGrpcTimeout", "flext_grpc_parse_target",
-    "flext_grpc_validate_target", "FlextGrpcClientService", "FlextGrpcPlatform",
-    "FlextGrpcServerService", "FlextGrpcStreamService", "__version_info__",
-] = [
     # Core
     "FlextContainer",
     # Domain Entities
