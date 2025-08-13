@@ -384,7 +384,8 @@ class FlextGrpcServerService(
                 return self._handle_add_service(server, options)
             case "status":
                 return self._process_server_result(
-                    self._get_server_status(server), "Status",
+                    self._get_server_status(server),
+                    "Status",
                 )
             case _:
                 return FlextResult.fail(f"Unknown server operation: {operation}")
@@ -823,17 +824,20 @@ class FlextGrpcClientService(
         match operation:
             case "connect":
                 return self._process_client_result(
-                    self._connect_client(client), "Connect",
+                    self._connect_client(client),
+                    "Connect",
                 )
             case "disconnect":
                 return self._process_client_result(
-                    self._disconnect_client(client), "Disconnect",
+                    self._disconnect_client(client),
+                    "Disconnect",
                 )
             case "call":
                 return self._handle_call_operation(client, kwargs)
             case "status":
                 return self._process_client_result(
-                    self._get_client_status(client), "Status",
+                    self._get_client_status(client),
+                    "Status",
                 )
             case _:
                 return FlextResult.fail(f"Unknown client operation: {operation}")

@@ -280,10 +280,12 @@ class TestCompleteGrpcWorkflow:
         # 2. Create multiple services
         auth_service = create_service("AuthService", ["login", "logout", "verify"])
         data_service = create_service(
-            "DataService", ["create", "read", "update", "delete"],
+            "DataService",
+            ["create", "read", "update", "delete"],
         )
         notification_service = create_service(
-            "NotificationService", ["send", "subscribe"],
+            "NotificationService",
+            ["send", "subscribe"],
         )
 
         # 3. Add all services to server

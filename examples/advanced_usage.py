@@ -82,7 +82,9 @@ class GrpcServerManager:
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
     def create_server_pool(
-        self, base_port: int = 8000, count: int = 3,
+        self,
+        base_port: int = 8000,
+        count: int = 3,
     ) -> list[FlextGrpcServer]:
         """Create a pool of servers on consecutive ports."""
         servers = []
@@ -175,7 +177,8 @@ class GrpcClientPool:
         self.connection_status: dict[str, bool] = {}
 
     def create_clients_for_servers(
-        self, servers: list[FlextGrpcServer],
+        self,
+        servers: list[FlextGrpcServer],
     ) -> list[FlextGrpcClient]:
         """Create clients for a list of servers."""
         clients = []
@@ -222,7 +225,9 @@ class GrpcClientPool:
         return results
 
     def broadcast_call(
-        self, method_name: str, data: object = None,
+        self,
+        method_name: str,
+        data: object = None,
     ) -> dict[str, object]:
         """Broadcast a method call to all connected clients."""
         results = {}
@@ -352,7 +357,8 @@ def example_2_client_pool() -> None:
     # Broadcast method calls
     print("\nBroadcasting 'GetStatus' call:")
     broadcast_results = client_pool.broadcast_call(
-        "GetStatus", {"timestamp": datetime.now(UTC).isoformat()},
+        "GetStatus",
+        {"timestamp": datetime.now(UTC).isoformat()},
     )
 
     for client_id, result in broadcast_results.items():

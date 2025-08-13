@@ -34,11 +34,18 @@ TGrpcTimeout = NewType("TGrpcTimeout", float)
 # STATE TYPES
 # =============================================================================
 TGrpcChannelState = Literal[
-    "idle", "connecting", "ready", "transient_failure", "shutdown",
+    "idle",
+    "connecting",
+    "ready",
+    "transient_failure",
+    "shutdown",
 ]
 TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
 TGrpcStreamType = Literal[
-    "unary", "server_streaming", "client_streaming", "bidirectional",
+    "unary",
+    "server_streaming",
+    "client_streaming",
+    "bidirectional",
 ]
 
 

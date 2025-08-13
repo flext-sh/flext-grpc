@@ -198,7 +198,10 @@ class TestFlextGrpcService:
         )
 
         result = self.service.execute(
-            "server", "add_service", self.server, service=service_entity,
+            "server",
+            "add_service",
+            self.server,
+            service=service_entity,
         )
         updated_server = _assert_server_result(result)
         if len(updated_server.services) != 1:

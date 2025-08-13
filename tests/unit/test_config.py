@@ -60,7 +60,10 @@ class TestFlextGrpcConfig:
     def test_create_valid_config_with_custom_values(self) -> None:
         """Test creating configuration with custom values."""
         config = FlextGrpcConfig(
-            host="api.example.com", port=8080, max_workers=20, timeout=30.0,
+            host="api.example.com",
+            port=8080,
+            max_workers=20,
+            timeout=30.0,
         )
 
         assert config.host == "api.example.com"

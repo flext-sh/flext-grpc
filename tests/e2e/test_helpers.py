@@ -59,7 +59,8 @@ if TYPE_CHECKING:
 
 
 def assert_server_from_setup(
-    setup_result: Mapping[str, object], key: str = "server",
+    setup_result: Mapping[str, object],
+    key: str = "server",
 ) -> FlextGrpcServer:
     """Type-safe server extraction from setup results - DRY pattern."""
     from flext_grpc.entities import FlextGrpcServer
@@ -71,7 +72,8 @@ def assert_server_from_setup(
 
 
 def assert_client_from_setup(
-    setup_result: Mapping[str, object], key: str = "client",
+    setup_result: Mapping[str, object],
+    key: str = "client",
 ) -> FlextGrpcClient:
     """Type-safe client extraction from setup results - DRY pattern."""
     from flext_grpc.entities import FlextGrpcClient
@@ -83,7 +85,8 @@ def assert_client_from_setup(
 
 
 def assert_service_from_setup(
-    setup_result: Mapping[str, object], key: str = "service",
+    setup_result: Mapping[str, object],
+    key: str = "service",
 ) -> FlextGrpcService:
     """Type-safe service extraction from setup results - DRY pattern."""
     from flext_grpc.entities import FlextGrpcService
