@@ -16,11 +16,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import cast
 
 from flext_core import FlextContainer, FlextResult, get_flext_container
 
-# Import domain entities for proper typing
 from flext_grpc.entities import (
     FlextGrpcClient,
     FlextGrpcServer,
@@ -78,7 +78,10 @@ class FlextGrpcServerService:
             return FlextResult.fail(f"Server validation failed: {validation.error}")
 
         # Command mapping to reduce return statements
-        command_handlers = {
+        command_handlers: dict[
+            str,
+            Callable[[], FlextResult[TGrpcServerEntity | dict[str, object]]],
+        ] = {
             "start": lambda: cast(
                 "FlextResult[TGrpcServerEntity | dict[str, object]]",
                 self._start_server(server),
@@ -107,7 +110,8 @@ class FlextGrpcServerService:
 
         # Execute mapped commands
         if command in command_handlers:
-            return command_handlers[command]()
+            handler = command_handlers[command]
+            return handler()
 
         return FlextResult.fail(f"Unknown server command: {command}")
 
@@ -217,7 +221,13 @@ class FlextGrpcClientService:
             return FlextResult.fail(f"Client validation failed: {validation.error}")
 
         # Command mapping to reduce return statements
-        command_handlers = {
+        command_handlers: dict[
+            str,
+            Callable[
+                [],
+                FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]],
+            ],
+        ] = {
             "connect": lambda: cast(
                 "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
                 self._connect_client(client),
@@ -247,7 +257,8 @@ class FlextGrpcClientService:
 
         # Execute mapped commands
         if command in command_handlers:
-            return command_handlers[command]()
+            handler = command_handlers[command]
+            return handler()
 
         return FlextResult.fail(f"Unknown client command: {command}")
 
