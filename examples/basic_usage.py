@@ -212,7 +212,7 @@ def example_3_operations() -> None:
 
         # Call method
         call_result = ops.call_method(
-            connected_client, "GetServerInfo", {"request_id": "12345"}
+            connected_client, "GetServerInfo", {"request_id": "12345"},
         )
         if call_result.success:
             response = call_result.data

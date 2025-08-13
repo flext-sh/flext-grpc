@@ -146,7 +146,7 @@ class TestCompleteGrpcWorkflow:
         auth_data = auth_result.data
         if auth_data["method"] != "authenticate":
             raise AssertionError(
-                f"Expected {'authenticate'}, got {auth_data['method']}"
+                f"Expected {'authenticate'}, got {auth_data['method']}",
             )
 
         # Data processing
@@ -162,7 +162,7 @@ class TestCompleteGrpcWorkflow:
         assert process_result.success
         if process_result.data["method"] != "process_data":
             raise AssertionError(
-                f"Expected {'process_data'}, got {process_result.data['method']}"
+                f"Expected {'process_data'}, got {process_result.data['method']}",
             )
 
         # Status check
@@ -174,7 +174,7 @@ class TestCompleteGrpcWorkflow:
         assert status_result.success
         if status_result.data["method"] != "get_status":
             raise AssertionError(
-                f"Expected {'get_status'}, got {status_result.data['method']}"
+                f"Expected {'get_status'}, got {status_result.data['method']}",
             )
 
         # 7. Server status verification
@@ -183,7 +183,7 @@ class TestCompleteGrpcWorkflow:
         status_data = final_status.data
         if status_data["address"] != "localhost:9100":
             raise AssertionError(
-                f"Expected {'localhost:9100'}, got {status_data['address']}"
+                f"Expected {'localhost:9100'}, got {status_data['address']}",
             )
         if not (status_data["is_running"]):
             raise AssertionError(f"Expected True, got {status_data['is_running']}")
@@ -280,10 +280,10 @@ class TestCompleteGrpcWorkflow:
         # 2. Create multiple services
         auth_service = create_service("AuthService", ["login", "logout", "verify"])
         data_service = create_service(
-            "DataService", ["create", "read", "update", "delete"]
+            "DataService", ["create", "read", "update", "delete"],
         )
         notification_service = create_service(
-            "NotificationService", ["send", "subscribe"]
+            "NotificationService", ["send", "subscribe"],
         )
 
         # 3. Add all services to server
@@ -301,7 +301,7 @@ class TestCompleteGrpcWorkflow:
         assert final_status.success
         if final_status.data["service_count"] != EXPECTED_DATA_COUNT:
             raise AssertionError(
-                f"Expected {3}, got {final_status.data['service_count']}"
+                f"Expected {3}, got {final_status.data['service_count']}",
             )
 
         # 5. Create client and test each service
@@ -403,7 +403,7 @@ class TestCompleteGrpcWorkflow:
             assert call_result.success
             if call_result.data["data"]["client_id"] != i:
                 raise AssertionError(
-                    f"Expected {i}, got {call_result.data['data']['client_id']}"
+                    f"Expected {i}, got {call_result.data['data']['client_id']}",
                 )
 
         # 5. Verify server handled all clients

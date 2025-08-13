@@ -198,7 +198,7 @@ class TestFlextGrpcService:
         )
 
         result = self.service.execute(
-            "server", "add_service", self.server, service=service_entity
+            "server", "add_service", self.server, service=service_entity,
         )
         updated_server = _assert_server_result(result)
         if len(updated_server.services) != 1:
@@ -215,7 +215,7 @@ class TestFlextGrpcService:
         status = _assert_dict_result(result)
         if status["address"] != "localhost:50051":
             raise AssertionError(
-                f"Expected {'localhost:50051'}, got {status['address']}"
+                f"Expected {'localhost:50051'}, got {status['address']}",
             )
         assert status["state"] == "stopped"
         if status["is_running"]:
@@ -239,7 +239,7 @@ class TestFlextGrpcService:
             raise AssertionError(msg)
         if connected_client.channel.state != "ready":
             raise AssertionError(
-                f"Expected {'ready'}, got {connected_client.channel.state}"
+                f"Expected {'ready'}, got {connected_client.channel.state}",
             )
 
     def test_client_connect_already_connected_fails(self) -> None:
@@ -275,7 +275,7 @@ class TestFlextGrpcService:
             raise AssertionError(msg)
         if disconnected_client.channel.state != "idle":
             raise AssertionError(
-                f"Expected {'idle'}, got {disconnected_client.channel.state}"
+                f"Expected {'idle'}, got {disconnected_client.channel.state}",
             )
 
     def test_client_disconnect_not_connected_fails(self) -> None:
@@ -305,7 +305,7 @@ class TestFlextGrpcService:
         assert connected_client is not None
         if response["client_id"] != connected_client.id:
             raise AssertionError(
-                f"Expected {connected_client.id}, got {response['client_id']}"
+                f"Expected {connected_client.id}, got {response['client_id']}",
             )
         assert response["data"] == {"key": "value"}
 
@@ -371,7 +371,7 @@ class TestFlextGrpcService:
         stream = result.data
         if stream.method_name != "stream_method":
             raise AssertionError(
-                f"Expected {'stream_method'}, got {stream.method_name}"
+                f"Expected {'stream_method'}, got {stream.method_name}",
             )
         assert stream.stream_type == "server_streaming"
 
@@ -384,7 +384,7 @@ class TestFlextGrpcService:
             or "Client must be a FlextGrpcClient instance" not in result.error
         ):
             raise AssertionError(
-                f"Expected {'Client must be a FlextGrpcClient instance'} in {result.error}"
+                f"Expected {'Client must be a FlextGrpcClient instance'} in {result.error}",
             )
 
     def test_stream_create_client_not_connected_fails(self) -> None:
@@ -446,5 +446,5 @@ class TestFlextGrpcService:
             or "Unknown stream operation: unknown_op" not in result.error
         ):
             raise AssertionError(
-                f"Expected {'Unknown stream operation: unknown_op'} in {result.error}"
+                f"Expected {'Unknown stream operation: unknown_op'} in {result.error}",
             )

@@ -116,7 +116,7 @@ class TestAPIFunctions:
         assert client.channel is not None
         if client.channel.target != "localhost:50051":
             raise AssertionError(
-                f"Expected {'localhost:50051'}, got {client.channel.target}"
+                f"Expected {'localhost:50051'}, got {client.channel.target}",
             )
         assert client.channel.state == "idle"
 
@@ -125,7 +125,7 @@ class TestAPIFunctions:
         client_with_options = create_client("localhost:50051", options)
         if client_with_options.options != options:
             raise AssertionError(
-                f"Expected {options}, got {client_with_options.options}"
+                f"Expected {options}, got {client_with_options.options}",
             )
 
     def test_create_channel(self) -> None:
@@ -141,7 +141,7 @@ class TestAPIFunctions:
         channel_with_options = create_channel("localhost:50051", options)
         if channel_with_options.options != options:
             raise AssertionError(
-                f"Expected {options}, got {channel_with_options.options}"
+                f"Expected {options}, got {channel_with_options.options}",
             )
 
     def test_create_service(self) -> None:
@@ -157,7 +157,7 @@ class TestAPIFunctions:
         service_with_methods = create_service("TestService", methods)
         if service_with_methods.methods != methods:
             raise AssertionError(
-                f"Expected {methods}, got {service_with_methods.methods}"
+                f"Expected {methods}, got {service_with_methods.methods}",
             )
 
     def test_create_stream(self) -> None:
@@ -172,7 +172,7 @@ class TestAPIFunctions:
         server_stream = create_stream("test_method", "server_streaming")
         if server_stream.stream_type != "server_streaming":
             raise AssertionError(
-                f"Expected {'server_streaming'}, got {server_stream.stream_type}"
+                f"Expected {'server_streaming'}, got {server_stream.stream_type}",
             )
 
     def test_create_stream_invalid_type(self) -> None:
@@ -248,13 +248,13 @@ class TestAPIFunctions:
         result = parse_address("localhost:50051")
         if result != {"host": "localhost", "port": 50051}:
             raise AssertionError(
-                f'Expected {{"host": "localhost", "port": 50051}}, got {result}'
+                f'Expected {{"host": "localhost", "port": 50051}}, got {result}',
             )
 
         result = parse_address("127.0.0.1:8080")
         if result != {"host": "127.0.0.1", "port": 8080}:
             raise AssertionError(
-                f'Expected {{"host": "127.0.0.1", "port": 8080}}, got {result}'
+                f'Expected {{"host": "127.0.0.1", "port": 8080}}, got {result}',
             )
 
         # Invalid parsing should raise ValueError

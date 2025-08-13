@@ -66,7 +66,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import asyncio
-from typing import Any
+from typing import Any, NoReturn
 
 from flext_core import FlextResult, get_logger
 
@@ -85,14 +85,21 @@ logger = get_logger(__name__)
 
 def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]]:
     """Validate user input with FlextGrpcValidationError."""
+
+    def _raise_username_error() -> NoReturn:
+        msg = "Username cannot be empty"
+        raise FlextGrpcValidationError(msg, field_name="username")
+
+    def _raise_email_error() -> NoReturn:
+        msg = "Invalid email format"
+        raise FlextGrpcValidationError(msg, field_name="email")
+
     try:
         if not username:
-            msg = "Username cannot be empty"
-            raise FlextGrpcValidationError(msg, field_name="username")
+            _raise_username_error()
 
         if not email or "@" not in email:
-            msg = "Invalid email format"
-            raise FlextGrpcValidationError(msg, field_name="email")
+            _raise_email_error()
 
         return FlextResult.ok({"username": username, "email": email})
 
@@ -103,39 +110,58 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
 
 def create_server_config(port: int, workers: int) -> FlextResult[Any]:
     """Create server configuration with proper error handling."""
+
+    def _raise_port_error() -> NoReturn:
+        msg = "Port must be between 1 and 65535"
+        raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)
+
+    def _raise_workers_error() -> NoReturn:
+        msg = "Workers must be positive"
+        raise FlextGrpcConfigurationError(
+            msg,
+            config_key="max_workers",
+            config_value=workers,
+        )
+
+    def _raise_config_error() -> NoReturn:
+        msg: str = f"Failed to create config: {config_result.error}"
+        raise FlextGrpcConfigurationError(msg)
+
     try:
         max_port = 65535
         if port < 1 or port > max_port:
-            msg = f"Port must be between 1 and {max_port}"
-            raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)
+            _raise_port_error()
 
         if workers < 1:
-            msg = "Workers must be positive"
-            raise FlextGrpcConfigurationError(
-                msg, config_key="max_workers", config_value=workers
-            )
+            _raise_workers_error()
 
         config_result = create_config(host="localhost", port=port, max_workers=workers)
 
         if config_result.is_failure:
-            msg: str = f"Failed to create config: {config_result.error}"
-            raise FlextGrpcConfigurationError(msg)
+            _raise_config_error()
 
         return config_result
 
     except FlextGrpcConfigurationError as e:
         logger.exception(
-            "Configuration error", key=e.config_key, value=e.config_value, error=str(e)
+            "Configuration error",
+            key=e.config_key,
+            value=e.config_value,
+            error=str(e),
         )
         return FlextResult.fail(f"Configuration error: {e}")
 
 
 def simulate_connection_error() -> FlextResult[str]:
     """Simulate a connection error scenario."""
-    try:
-        # Simulate connection failure
+
+    def _raise_connection_error() -> NoReturn:
         msg = "Failed to connect to gRPC server"
         raise FlextGrpcConnectionError(msg)
+
+    try:
+        # Simulate connection failure
+        _raise_connection_error()
 
     except FlextGrpcConnectionError as e:
         logger.exception("Connection failed", error=str(e))
@@ -144,10 +170,14 @@ def simulate_connection_error() -> FlextResult[str]:
 
 def simulate_timeout_error() -> FlextResult[str]:
     """Simulate a timeout error scenario."""
-    try:
-        # Simulate timeout
+
+    def _raise_timeout_error() -> NoReturn:
         msg = "Request timed out after 30 seconds"
         raise FlextGrpcTimeoutError(msg)
+
+    try:
+        # Simulate timeout
+        _raise_timeout_error()
 
     except FlextGrpcTimeoutError as e:
         logger.exception("Request timed out", error=str(e))
@@ -156,10 +186,14 @@ def simulate_timeout_error() -> FlextResult[str]:
 
 def handle_generic_grpc_error() -> FlextResult[str]:
     """Handle generic gRPC errors."""
-    try:
-        # Simulate generic error
+
+    def _raise_generic_error() -> NoReturn:
         msg = "Unknown gRPC error occurred"
         raise FlextGrpcError(msg)
+
+    try:
+        # Simulate generic error
+        _raise_generic_error()
 
     except FlextGrpcError as e:
         logger.exception("Generic gRPC error", error=str(e))
@@ -174,7 +208,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     validation_result = validate_user_input("john_doe", "john@example.com")
     if validation_result.is_failure:
         return FlextResult.fail(
-            f"Pipeline failed at validation: {validation_result.error}"
+            f"Pipeline failed at validation: {validation_result.error}",
         )
 
     logger.info("✅ User input validation passed")
@@ -183,7 +217,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     config_result = create_server_config(50051, 4)
     if config_result.is_failure:
         return FlextResult.fail(
-            f"Pipeline failed at configuration: {config_result.error}"
+            f"Pipeline failed at configuration: {config_result.error}",
         )
 
     logger.info("✅ Server configuration created")
@@ -199,7 +233,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
         result = scenario_func()
         if result.is_failure:
             logger.warning(
-                f"⚠️ {scenario_name} scenario failed as expected: {result.error}"
+                f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
             )
 
     return FlextResult.ok("Pipeline completed with graceful error handling")
@@ -242,7 +276,8 @@ def demonstrate_error_context() -> None:
 
     # Create errors with rich context
     validation_error = FlextGrpcValidationError(
-        "Email format is invalid - missing @ symbol", field_name="user_email"
+        "Email format is invalid - missing @ symbol",
+        field_name="user_email",
     )
 
     config_error = FlextGrpcConfigurationError(
@@ -280,8 +315,12 @@ async def async_error_handling() -> FlextResult[str]:
 
         # Check for error condition
         if True:  # Simulate error condition
-            msg = "Async operation timed out"
-            raise FlextGrpcTimeoutError(msg)
+
+            def _raise_async_timeout() -> NoReturn:
+                msg = "Async operation timed out"
+                raise FlextGrpcTimeoutError(msg)
+
+            _raise_async_timeout()
 
         return FlextResult.ok("Async operation completed")
 

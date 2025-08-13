@@ -7,6 +7,7 @@ Protocol contracts for the gRPC integration, following flext-core semantics.
 - Keep only one authoritative definition per type name
 - Provide legacy-friendly helpers and re-exports when necessary
 """
+
 from __future__ import annotations
 
 import re
@@ -32,9 +33,13 @@ TGrpcTimeout = NewType("TGrpcTimeout", float)
 # =============================================================================
 # STATE TYPES
 # =============================================================================
-TGrpcChannelState = Literal["idle", "connecting", "ready", "transient_failure", "shutdown"]
+TGrpcChannelState = Literal[
+    "idle", "connecting", "ready", "transient_failure", "shutdown",
+]
 TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
-TGrpcStreamType = Literal["unary", "server_streaming", "client_streaming", "bidirectional"]
+TGrpcStreamType = Literal[
+    "unary", "server_streaming", "client_streaming", "bidirectional",
+]
 
 
 # =============================================================================
@@ -76,6 +81,7 @@ class TGrpcStub(Protocol):
 # =============================================================================
 # VALIDATION HELPERS
 # =============================================================================
+
 
 def flext_grpc_validate_target(target: str) -> bool:
     """Validate a gRPC target string in the form host:port."""

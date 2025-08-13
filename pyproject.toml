@@ -122,6 +122,7 @@ exclude = [
 ]
 known_first_party = ["flext_grpc"]
 pep621_dev_dependency_groups = ["dev", "security", "test", "typings"]
+
 [tool.mypy]
 # Strict mode - enables all recommended checks
 strict = true

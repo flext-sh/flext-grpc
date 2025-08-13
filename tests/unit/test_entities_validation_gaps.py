@@ -157,11 +157,11 @@ class TestEntityValidationGaps:
                 created_at=datetime.now(UTC),
             ),
             FlextGrpcChannel(
-                id="channel", target="localhost:50051", created_at=datetime.now(UTC)
+                id="channel", target="localhost:50051", created_at=datetime.now(UTC),
             ),
             FlextGrpcClient(id="client", created_at=datetime.now(UTC)),
             FlextGrpcService(
-                id="service", name="test-service", created_at=datetime.now(UTC)
+                id="service", name="test-service", created_at=datetime.now(UTC),
             ),
             FlextGrpcStream(
                 id="stream",

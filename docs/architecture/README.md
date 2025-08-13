@@ -264,7 +264,7 @@ container.register("grpc_client_service", FlextGrpcClientService())
 - **Clean Architecture**: Clear layer separation and dependency direction
 - **Domain-Driven Design**: Rich domain model with business logic encapsulation
 - **Test Coverage**: Comprehensive unit, integration, and E2E testing
-- **Type Safety**: Full type annotation with strict MyPy validation
+- **Type Safety**: MyPy strict mode adoption; aiming for full annotations
 
 ### Scalability
 

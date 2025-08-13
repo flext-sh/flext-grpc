@@ -75,7 +75,9 @@ def create_client(
         FlextResult containing created client or error message
 
     Example:
-        >>> result = create_client(f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}")
+        >>> result = create_client(
+        ...     f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}"
+        ... )
         >>> if result.success:
         ...     client = result.data
         ...     print(f"Client created: {client.target}")
@@ -200,13 +202,13 @@ def create_complete_setup(
 
     """
     # Create server
-    server_result = create_server(server_id, host, port, max_workers, ssl_enabled)
+    server_result = create_server(host, port, max_workers)
     if server_result.is_failure:
         return FlextResult.fail(f"Server creation failed: {server_result.error}")
 
     # Create client
     target = f"{host}:{port}"
-    client_result = create_client(client_id, target, ssl_enabled)
+    client_result = create_client(target)
     if client_result.is_failure:
         return FlextResult.fail(f"Client creation failed: {client_result.error}")
 
@@ -228,6 +230,7 @@ def create_complete_setup(
 # ADDRESS VALIDATION AND PARSING
 # =============================================================================
 
+
 def validate_address(address: str) -> bool:
     """Validate network address format.
 
@@ -238,7 +241,9 @@ def validate_address(address: str) -> bool:
         True if address is valid, False otherwise
 
     Example:
-        >>> validate_address(f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}")
+        >>> validate_address(
+        ...     f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}"
+        ... )
         True
         >>> validate_address("invalid-address")
         False
@@ -259,7 +264,9 @@ def parse_address(address: str) -> FlextResult[tuple[str, int]]:
         FlextResult containing (host, port) tuple or error message
 
     Example:
-        >>> result = parse_address(f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}")
+        >>> result = parse_address(
+        ...     f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}"
+        ... )
         >>> if result.success:
         ...     host, port = result.data
         ...     print(f"Host: {host}, Port: {port}")
@@ -281,6 +288,7 @@ def parse_address(address: str) -> FlextResult[tuple[str, int]]:
 # =============================================================================
 # UTILITY FUNCTIONS
 # =============================================================================
+
 
 def validate_host(host: str) -> bool:
     """Validate host address format.

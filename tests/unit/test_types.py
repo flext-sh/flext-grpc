@@ -119,7 +119,7 @@ class TestGrpcTypes:
             result = flext_grpc_parse_target(target)
             if result != expected:
                 raise AssertionError(
-                    f"Expected {expected}, got {result}. Parsing {target} should return {expected}"
+                    f"Expected {expected}, got {result}. Parsing {target} should return {expected}",
                 )
 
     def test_parse_target_invalid_cases(self) -> None:

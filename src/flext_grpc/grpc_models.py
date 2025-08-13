@@ -46,6 +46,7 @@ from .typings import (
 # GRPC DOMAIN ENTITIES
 # =============================================================================
 
+
 class FlextGrpcEntity(FlextEntity):
     """Base entity class for all gRPC domain entities.
 
@@ -93,7 +94,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         ...     host="localhost",
         ...     port=50051,
         ...     max_workers=10,
-        ...     created_at=datetime.now(timezone.utc)
+        ...     created_at=datetime.now(timezone.utc),
         ... )
         >>> result = server.validate_business_rules()
         >>> print(result.success)
@@ -124,8 +125,14 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         # Validate worker count
         from flext_grpc.constants import FlextGrpcConstants
-        if self.max_workers < FlextGrpcConstants.Service.MIN_WORKERS or self.max_workers > FlextGrpcConstants.Service.MAX_WORKERS:
-            return FlextResult.fail(f"Max workers must be between {FlextGrpcConstants.Service.MIN_WORKERS} and {FlextGrpcConstants.Service.MAX_WORKERS}")
+
+        if (
+            self.max_workers < FlextGrpcConstants.Service.MIN_WORKERS
+            or self.max_workers > FlextGrpcConstants.Service.MAX_WORKERS
+        ):
+            return FlextResult.fail(
+                f"Max workers must be between {FlextGrpcConstants.Service.MIN_WORKERS} and {FlextGrpcConstants.Service.MAX_WORKERS}",
+            )
 
         return FlextResult.ok(None)
 
@@ -182,7 +189,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         >>> client = FlextGrpcClient(
         ...     id="api-client",
         ...     target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}",
-        ...     created_at=datetime.now(timezone.utc)
+        ...     created_at=datetime.now(timezone.utc),
         ... )
         >>> result = client.validate_business_rules()
         >>> print(result.success)
@@ -214,7 +221,9 @@ class FlextGrpcClient(FlextGrpcEntity):
     def mark_ready(self) -> FlextResult[FlextGrpcClient]:
         """Mark client as ready (state transition: connecting → ready)."""
         if self.channel_state != "connecting":
-            return FlextResult.fail(f"Cannot mark ready from state: {self.channel_state}")
+            return FlextResult.fail(
+                f"Cannot mark ready from state: {self.channel_state}",
+            )
 
         return FlextResult.ok(
             self.model_copy(update={"channel_state": "ready"}),
@@ -223,7 +232,9 @@ class FlextGrpcClient(FlextGrpcEntity):
     def disconnect(self) -> FlextResult[FlextGrpcClient]:
         """Disconnect the client (state transition: ready → shutdown)."""
         if self.channel_state not in {"ready", "connecting"}:
-            return FlextResult.fail(f"Cannot disconnect from state: {self.channel_state}")
+            return FlextResult.fail(
+                f"Cannot disconnect from state: {self.channel_state}",
+            )
 
         return FlextResult.ok(
             self.model_copy(update={"channel_state": "shutdown"}),
@@ -274,6 +285,7 @@ class FlextGrpcService(FlextGrpcEntity):
 
         # Validate service name length
         from .grpc_config import FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH
+
         if len(self.name) > FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH:
             return FlextResult.fail(
                 f"Service name too long: {len(self.name)} > {FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH}",
@@ -307,6 +319,7 @@ class FlextGrpcStream(FlextGrpcEntity):
 # =============================================================================
 # FACTORY FUNCTIONS - Entity Creation Helpers
 # =============================================================================
+
 
 def create_grpc_server(
     server_id: str,

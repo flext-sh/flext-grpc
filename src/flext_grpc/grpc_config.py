@@ -20,6 +20,7 @@ from typing import ClassVar
 
 from flext_core import FlextSettings
 from flext_core.constants import FlextConstants
+from flext_core.exceptions import create_module_exception_classes as _create_exc
 from pydantic import Field, field_validator
 
 # =============================================================================
@@ -144,11 +145,8 @@ FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 # GRPC CONFIGURATION CLASSES
 # =============================================================================
 
-# Import exception here to avoid circular import
-from flext_core.exceptions import create_module_exception_classes  # noqa: E402
-
 # Generate gRPC-specific exceptions
-_grpc_exceptions = create_module_exception_classes("flext_grpc")
+_grpc_exceptions = _create_exc("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FlextGrpcConfigurationError"]
 
 

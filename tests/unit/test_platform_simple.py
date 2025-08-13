@@ -52,10 +52,10 @@ class TestFlextGrpcPlatformSimple:
         )
 
         channel = FlextGrpcChannel(
-            id="test-channel", target="localhost:50051", created_at=datetime.now(UTC)
+            id="test-channel", target="localhost:50051", created_at=datetime.now(UTC),
         )
         client = FlextGrpcClient(
-            id="test-client", channel=channel, created_at=datetime.now(UTC)
+            id="test-client", channel=channel, created_at=datetime.now(UTC),
         )
 
         # Test operations - these will likely fail but we're testing the error paths

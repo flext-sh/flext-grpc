@@ -9,6 +9,21 @@ from __future__ import annotations
 
 from typing import Protocol, TypedDict
 
+from .typings import (
+    TGrpcChannelState,
+    TGrpcEntityId,
+    TGrpcHost,
+    TGrpcMethodName,
+    TGrpcPort,
+    TGrpcServerState,
+    TGrpcServiceName,
+    TGrpcStreamType,
+    TGrpcTarget,
+    TGrpcTimeout,
+    flext_grpc_parse_target,
+    flext_grpc_validate_target,
+)
+
 
 class FlextGrpcError(Exception):
     """Base gRPC error type for FLEXT."""
@@ -36,21 +51,8 @@ class FlextGrpcStatus(Protocol):
     message: str
 
 
-# Backward-compatibility re-exports expected by tests
-from .typings import (  # noqa: E402
-    TGrpcChannelState,
-    TGrpcEntityId,
-    TGrpcHost,
-    TGrpcMethodName,
-    TGrpcPort,
-    TGrpcServerState,
-    TGrpcServiceName,
-    TGrpcStreamType,
-    TGrpcTarget,
-    TGrpcTimeout,
-    flext_grpc_parse_target,
-    flext_grpc_validate_target,
-)
+
+
 
 __all__: list[str] = [
     "FlextGrpcError",

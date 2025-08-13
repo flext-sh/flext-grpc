@@ -82,7 +82,7 @@ class GrpcServerManager:
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
     def create_server_pool(
-        self, base_port: int = 8000, count: int = 3
+        self, base_port: int = 8000, count: int = 3,
     ) -> list[FlextGrpcServer]:
         """Create a pool of servers on consecutive ports."""
         servers = []
@@ -175,7 +175,7 @@ class GrpcClientPool:
         self.connection_status: dict[str, bool] = {}
 
     def create_clients_for_servers(
-        self, servers: list[FlextGrpcServer]
+        self, servers: list[FlextGrpcServer],
     ) -> list[FlextGrpcClient]:
         """Create clients for a list of servers."""
         clients = []
@@ -216,13 +216,13 @@ class GrpcClientPool:
             else:
                 results[client_id] = False
                 print(
-                    f"❌ Failed to connect client {client_id}: {connect_result.error}"
+                    f"❌ Failed to connect client {client_id}: {connect_result.error}",
                 )
 
         return results
 
     def broadcast_call(
-        self, method_name: str, data: object = None
+        self, method_name: str, data: object = None,
     ) -> dict[str, object]:
         """Broadcast a method call to all connected clients."""
         results = {}
@@ -237,7 +237,7 @@ class GrpcClientPool:
                     results[client_id] = {"error": call_result.error}
                     print(
                         f"❌ Failed to call {method_name} on {client_id}: "
-                        f"{call_result.error}"
+                        f"{call_result.error}",
                     )
             else:
                 results[client_id] = {"error": "Client not connected"}
@@ -292,7 +292,7 @@ class ServiceRegistry:
                         "service_id": service_id,
                         "service_name": service.name,
                         "server_id": server_id,
-                    }
+                    },
                 )
 
         return matches
@@ -319,7 +319,7 @@ def example_1_server_pool() -> None:
     for server_id, info in status.items():
         print(
             f"  {server_id}: {info['address']} ({info['state']}) - "
-            f"{info['max_workers']} workers"
+            f"{info['max_workers']} workers",
         )
 
     # Stop all servers
@@ -352,7 +352,7 @@ def example_2_client_pool() -> None:
     # Broadcast method calls
     print("\nBroadcasting 'GetStatus' call:")
     broadcast_results = client_pool.broadcast_call(
-        "GetStatus", {"timestamp": datetime.now(UTC).isoformat()}
+        "GetStatus", {"timestamp": datetime.now(UTC).isoformat()},
     )
 
     for client_id, result in broadcast_results.items():
@@ -405,7 +405,7 @@ def example_3_service_registry() -> None:
     print("Registered Services:")
     for info in discovery.values():
         print(
-            f"  {info['name']}: {info['method_count']} methods on {info['server_id']}"
+            f"  {info['name']}: {info['method_count']} methods on {info['server_id']}",
         )
 
     # Find services by method

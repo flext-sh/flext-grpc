@@ -92,7 +92,7 @@ class TestServicesValidationGaps:
         """Test service execute with wrong entity type for operation."""
         service = FlextGrpcService()
         channel = FlextGrpcChannel(
-            id="test-channel", target="localhost:50051", created_at=datetime.now(UTC)
+            id="test-channel", target="localhost:50051", created_at=datetime.now(UTC),
         )
 
         # Try to use channel with server operation

@@ -122,7 +122,8 @@ class _GrpcServiceValidationMixin:
 
 
 class FlextGrpcServerService(
-    FlextDomainService[FlextGrpcServer], _GrpcServiceValidationMixin,
+    FlextDomainService[FlextGrpcServer],
+    _GrpcServiceValidationMixin,
 ):
     """Domain service for gRPC server lifecycle management and operations.
 
@@ -382,7 +383,9 @@ class FlextGrpcServerService(
             case "add_service":
                 return self._handle_add_service(server, options)
             case "status":
-                return self._process_server_result(self._get_server_status(server), "Status")
+                return self._process_server_result(
+                    self._get_server_status(server), "Status",
+                )
             case _:
                 return FlextResult.fail(f"Unknown server operation: {operation}")
 
@@ -578,7 +581,8 @@ class FlextGrpcServerService(
 
 
 class FlextGrpcClientService(
-    FlextDomainService[FlextGrpcClient], _GrpcServiceValidationMixin,
+    FlextDomainService[FlextGrpcClient],
+    _GrpcServiceValidationMixin,
 ):
     """Domain service for gRPC client connection management and communication.
 
@@ -818,13 +822,19 @@ class FlextGrpcClientService(
         """Dispatch client operation to appropriate handler."""
         match operation:
             case "connect":
-                return self._process_client_result(self._connect_client(client), "Connect")
+                return self._process_client_result(
+                    self._connect_client(client), "Connect",
+                )
             case "disconnect":
-                return self._process_client_result(self._disconnect_client(client), "Disconnect")
+                return self._process_client_result(
+                    self._disconnect_client(client), "Disconnect",
+                )
             case "call":
                 return self._handle_call_operation(client, kwargs)
             case "status":
-                return self._process_client_result(self._get_client_status(client), "Status")
+                return self._process_client_result(
+                    self._get_client_status(client), "Status",
+                )
             case _:
                 return FlextResult.fail(f"Unknown client operation: {operation}")
 
@@ -882,7 +892,8 @@ class FlextGrpcClientService(
         return FlextResult.ok(None)
 
     def _connect_and_ready_channel(
-        self, channel: FlextGrpcChannel,
+        self,
+        channel: FlextGrpcChannel,
     ) -> FlextResult[FlextGrpcChannel]:
         """Connect channel and mark as ready."""
         # Use proper channel state transitions

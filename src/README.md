@@ -115,7 +115,7 @@ src/flext_grpc/
 
 ### Code Quality Standards
 
-**Type Safety**: 100% type annotation coverage with strict MyPy validation
+**Type Safety**: MyPy strict mode adoption; aiming for full coverage
 
 - All parameters and return types explicitly typed
 - Union types for optional parameters
