@@ -624,7 +624,7 @@ class FlextGrpcClientService(
         >>> service = FlextGrpcClientService()
         >>> client = FlextGrpcClient(
         ...     id="api-client",
-        ...     target="localhost:50051",
+        ...     target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}",
         ...     created_at=datetime.now(timezone.utc),
         ... )
         >>>

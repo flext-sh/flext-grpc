@@ -75,7 +75,7 @@ def create_client(
         FlextResult containing created client or error message
 
     Example:
-        >>> result = create_client("localhost:50051")
+        >>> result = create_client(f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}")
         >>> if result.success:
         ...     client = result.data
         ...     print(f"Client created: {client.target}")
@@ -238,7 +238,7 @@ def validate_address(address: str) -> bool:
         True if address is valid, False otherwise
 
     Example:
-        >>> validate_address("localhost:50051")
+        >>> validate_address(f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}")
         True
         >>> validate_address("invalid-address")
         False
@@ -259,7 +259,7 @@ def parse_address(address: str) -> FlextResult[tuple[str, int]]:
         FlextResult containing (host, port) tuple or error message
 
     Example:
-        >>> result = parse_address("localhost:50051")
+        >>> result = parse_address(f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_PORT}")
         >>> if result.success:
         ...     host, port = result.data
         ...     print(f"Host: {host}, Port: {port}")
