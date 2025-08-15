@@ -1,28 +1,4 @@
-"""FLEXT gRPC - Enterprise gRPC Communication Platform with Clean Architecture.
-
-🎯 REORGANIZAÇÃO PEP8 COMPLETA - CONSOLIDAÇÃO DE 9 ARQUIVOS:
-
-ANTES (9 arquivos fragmentados):
-- api.py, config.py, constants.py, entities.py, errors.py
-- platform.py, services.py, types.py, __init__.py
-
-DEPOIS (5 arquivos PEP8 consolidados):
-- grpc_config.py (config + constants consolidados)
-- grpc_models.py (entities + types consolidados)
-- grpc_services.py (services + platform consolidados)
-- grpc_api.py (api functions consolidados)
-- grpc_exceptions.py (errors consolidados)
-
-ZERO DUPLICAÇÃO + 100% FUNCIONALIDADE PRESERVADA + BACKWARD COMPATIBILITY
-
-This module provides the public API for the FLEXT gRPC communication platform,
-offering enterprise-grade gRPC client/server management, streaming capabilities,
-and comprehensive configuration management. Built following Clean Architecture
-and Domain-Driven Design principles for maintainable, scalable communication.
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
+"""Enterprise gRPC Communication Platform for FLEXT ecosystem."""
 
 from __future__ import annotations
 
