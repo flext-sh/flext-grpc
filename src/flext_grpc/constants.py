@@ -62,7 +62,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core.constants import FlextConstants
+from flext_core import FlextConstants
 
 # =============================================================================
 # GRPC-SPECIFIC SEMANTIC CONSTANTS - Modern Python 3.13 Structure

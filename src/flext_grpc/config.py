@@ -6,14 +6,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextSettings
+from flext_core import FlextBaseConfigModel
 from pydantic import Field, field_validator
 
 from flext_grpc.constants import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
 from flext_grpc.errors import FlextGrpcConfigurationError
 
 
-class FlextGrpcConfig(FlextSettings):
+class FlextGrpcConfig(FlextBaseConfigModel):
     """Simplified gRPC configuration."""
 
     host: str = Field(default="localhost")

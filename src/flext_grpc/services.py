@@ -55,6 +55,7 @@ from typing import TYPE_CHECKING
 
 from flext_core import FlextDomainService, FlextResult
 
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcClient,
     FlextGrpcEntityFactory,
@@ -62,8 +63,6 @@ from flext_grpc.entities import (
     FlextGrpcService,
     FlextGrpcStream,
 )
-
-from .constants import FlextGrpcConstants
 
 if TYPE_CHECKING:
     from flext_grpc.entities import (

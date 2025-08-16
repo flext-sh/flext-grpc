@@ -68,9 +68,9 @@ from flext_grpc import (
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
+    GrpcOperations,
+    TGrpcTarget,
 )
-from flext_grpc.services import GrpcOperations
-from flext_grpc.types import TGrpcTarget
 
 
 class GrpcServerManager:

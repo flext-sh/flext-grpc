@@ -22,7 +22,13 @@ from flext_core import FlextResult
 from flext_core.models import FlextEntity
 from pydantic import Field
 
-from .typings import (
+from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc.grpc_config import (
+    FLEXT_GRPC_MAX_PORT,
+    FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH,
+    FLEXT_GRPC_MIN_PORT,
+)
+from flext_grpc.typings import (
     TGrpcChannelState,
     TGrpcEntityId,
     TGrpcHost,
@@ -111,7 +117,6 @@ class FlextGrpcServer(FlextGrpcEntity):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate server business rules and configuration."""
         # Import here to avoid circular imports
-        from .grpc_config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
 
         # Validate host
         if not self.host or not self.host.strip():
@@ -124,7 +129,6 @@ class FlextGrpcServer(FlextGrpcEntity):
             )
 
         # Validate worker count
-        from flext_grpc.constants import FlextGrpcConstants
 
         if (
             self.max_workers < FlextGrpcConstants.Service.MIN_WORKERS
@@ -284,7 +288,6 @@ class FlextGrpcService(FlextGrpcEntity):
             return FlextResult.fail("Service name cannot be empty")
 
         # Validate service name length
-        from .grpc_config import FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH
 
         if len(self.name) > FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH:
             return FlextResult.fail(

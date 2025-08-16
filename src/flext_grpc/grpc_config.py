@@ -18,7 +18,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextSettings
+from flext_core import FlextBaseConfigModel
 from flext_core.constants import FlextConstants
 from flext_core.exceptions import create_module_exception_classes as _create_exc
 from pydantic import Field, field_validator
@@ -150,7 +150,7 @@ _grpc_exceptions = _create_exc("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FlextGrpcConfigurationError"]
 
 
-class FlextGrpcConfig(FlextSettings):
+class FlextGrpcConfig(FlextBaseConfigModel):
     """Simplified gRPC configuration with validation."""
 
     host: str = Field(default="localhost")

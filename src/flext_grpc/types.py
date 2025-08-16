@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import Protocol, TypedDict
 
-from .typings import (
+from flext_grpc.typings import (
     TGrpcChannelState,
     TGrpcEntityId,
     TGrpcHost,

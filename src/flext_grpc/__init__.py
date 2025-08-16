@@ -7,7 +7,7 @@ import importlib.metadata
 from flext_core import FlextContainer, FlextResult
 
 # Import from consolidated PEP8 files
-from .grpc_api import (
+from flext_grpc.grpc_api import (
     create_channel,
     create_client,
     create_complete_setup,
@@ -18,15 +18,15 @@ from .grpc_api import (
     parse_address,
     validate_address,
 )
-from .grpc_config import FlextGrpcConfig
-from .grpc_exceptions import (
+from flext_grpc.grpc_config import FlextGrpcConfig
+from flext_grpc.grpc_exceptions import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
-from .grpc_models import (
+from flext_grpc.grpc_models import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcServer,
@@ -44,7 +44,7 @@ from .grpc_models import (
     flext_grpc_parse_target,
     flext_grpc_validate_target,
 )
-from .grpc_services import (
+from flext_grpc.grpc_services import (
     FlextGrpcClientService,
     FlextGrpcPlatform,
     FlextGrpcServerService,

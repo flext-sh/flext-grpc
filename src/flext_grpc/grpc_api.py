@@ -19,7 +19,6 @@ import re
 
 from flext_core import FlextResult
 
-# Import proper entity types
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -28,6 +27,14 @@ from flext_grpc.entities import (
     FlextGrpcService,
     FlextGrpcStream,
 )
+from flext_grpc.grpc_config import FlextGrpcConfig
+from flext_grpc.grpc_models import (
+    TGrpcTarget,
+    flext_grpc_parse_target,
+    flext_grpc_validate_target,
+)
+
+from .grpc_config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
 
 # =============================================================================
 # ENTITY FACTORY FUNCTIONS
@@ -156,8 +163,6 @@ def create_config(
         FlextResult containing created configuration or error message
 
     """
-    from .grpc_config import FlextGrpcConfig
-
     try:
         config = FlextGrpcConfig(
             host=host,
@@ -249,8 +254,6 @@ def validate_address(address: str) -> bool:
         False
 
     """
-    from .grpc_models import flext_grpc_validate_target
-
     return flext_grpc_validate_target(address)
 
 
@@ -277,8 +280,6 @@ def parse_address(address: str) -> FlextResult[tuple[str, int]]:
         return FlextResult.fail(f"Invalid address format: {address}")
 
     try:
-        from .grpc_models import TGrpcTarget, flext_grpc_parse_target
-
         host, port = flext_grpc_parse_target(TGrpcTarget(address))
         return FlextResult.ok((str(host), int(port)))
     except Exception as e:
@@ -318,8 +319,6 @@ def validate_port(port: int) -> bool:
         True if port is valid, False otherwise
 
     """
-    from .grpc_config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
-
     return FLEXT_GRPC_MIN_PORT <= port <= FLEXT_GRPC_MAX_PORT
 
 
