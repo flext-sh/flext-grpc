@@ -79,14 +79,16 @@ make fix                     # Auto-fix all issues
 
 ```bash
 make proto-gen               # Generate protobuf code from .proto files
-# Note: Proto files are located in proto/ directory when available
+# Note: Protocol Buffer integration is currently incomplete - no active proto/ directory
+# This is part of the Go/Python integration gap identified in architectural TODOs
 ```
 
-### gRPC Server Operations
+### gRPC Development Testing
 
 ```bash
-make dev-server              # Start development gRPC server (port 50051)
-# Server operations are handled through the FlextGrpcPlatform API
+make grpc-test               # Test gRPC basic functionality
+make grpc-operations         # Run all gRPC validations
+# Note: Server operations use FlextGrpcPlatform API rather than direct CLI
 ```
 
 ### Build and Distribution
@@ -130,9 +132,11 @@ make v                       # validate
 
 ### Coverage Requirements
 
-- **Minimum 90% coverage** enforced by `make test`
+- **Minimum 90% coverage** enforced by `make test` 
+- **Current Status**: ~76% coverage (needs improvement)
 - Focus on domain entities and services in `src/flext_grpc/`
 - Use `make coverage-html` to identify gaps
+- Coverage reports available in `reports/coverage/`
 
 ### Test Configuration
 
@@ -273,13 +277,16 @@ poetry run python -c "import grpc; print(f'gRPC version: {grpc.__version__}')"
 
 ```bash
 # Debug service registration with flext-core
-poetry run python -c "from flext_core import get_flext_container; print(get_flext_container().list_services())"
+python -c "from flext_core import get_flext_container; print(get_flext_container().list_services())"
 
-# Check gRPC functionality
-poetry run python -c "import grpc; print('gRPC imported successfully')"
+# Check gRPC functionality  
+python -c "import grpc; print(f'gRPC version: {grpc.__version__}')"
 
-# Test entity creation
-poetry run python -c "from flext_grpc.entities import FlextGrpcServer; print('Entities working')"
+# Test basic functionality
+python -c "from flext_grpc import FlextGrpcPlatform; print('✅ Basic functionality working')"
+
+# Check current project structure
+ls -la src/flext_grpc/        # View available modules
 ```
 
 ### Development Environment Issues
@@ -341,25 +348,68 @@ This library is part of the larger FLEXT ecosystem and follows established patte
 - [ ] Integrar com ecosystem service registry
 - [ ] Documentar service discovery patterns para deployment
 
-### 🚨 GAP 3: Coverage de Testes Baixa (76%)
+### 🚨 GAP 3: Coverage de Testes e Qualidade (76%)
 
 **Status**: ALTO - Cobertura abaixo do mínimo ecosystem (90%)
 **Problema**:
 
-- Coverage atual 76% vs 90% mínimo exigido pelo ecosystem
-- Domain entities e services não completamente testados
-- Integration tests insuficientes
+- Coverage atual ~76% vs 90% mínimo exigido pelo ecosystem
+- Alguns testes falhando no ambiente atual
+- Poetry dependency issues affecting development environment
 
 **TODO**:
 
 - [ ] Aumentar coverage para 90%+ seguindo padrões ecosystem
-- [ ] Criar comprehensive integration tests
+- [ ] Resolver dependency issues com Poetry/requests compatibility
+- [ ] Criar comprehensive integration tests para gRPC workflows
 - [ ] Implementar property-based testing para entities
 - [ ] Adicionar performance benchmarks para gRPC operations
+
+### Current Status Reality Check
+
+**Working Components**:
+- ✅ Core entities and domain models functional
+- ✅ Basic imports and FlextGrpcPlatform working  
+- ✅ gRPC library (1.74.0) properly installed
+- ✅ Clean Architecture structure in place
+
+**Known Issues**:
+- ⚠️ Poetry environment has dependency conflicts
+- ⚠️ Some tests failing (needs investigation)
+- ⚠️ Protocol Buffer integration incomplete
+- ⚠️ Test coverage below target (90%)
+
+## Project Structure
+
+### Key Directories and Files
+
+```
+flext-grpc/
+├── src/flext_grpc/          # Main library code
+│   ├── grpc_models.py       # Domain entities (Server, Client, Channel, etc.)
+│   ├── grpc_services.py     # Domain services and platform layer
+│   ├── grpc_config.py       # Configuration management
+│   ├── grpc_api.py          # Public API functions
+│   ├── grpc_exceptions.py   # Domain-specific exceptions
+│   └── legacy.py           # Legacy/transitional code
+├── tests/
+│   ├── unit/               # Unit tests for individual components
+│   ├── integration/        # Integration tests
+│   └── e2e/               # End-to-end workflow tests
+├── examples/              # Usage examples and patterns
+└── reports/coverage/      # Test coverage reports
+```
+
+### Architecture Notes
+
+- **Consolidated Files**: The project uses consolidated PEP8-named files (grpc_*.py) rather than the individual files mentioned in older documentation
+- **Current Implementation**: Core entities and services are functional; Protocol Buffer integration incomplete
+- **Test Structure**: Comprehensive test suite with unit, integration, and e2e categories
 
 ## Examples
 
 See `examples/` directory for comprehensive usage examples:
 
-- `basic_usage.py`: Core functionality and entity usage
-- `advanced_usage.py`: Complex scenarios with streaming and service management
+- `01_basic_usage.py`: Core functionality and entity usage patterns
+- `02_advanced_usage.py`: Complex scenarios with streaming and service management
+- `03_error_handling_patterns.py`: FlextResult pattern usage and error scenarios

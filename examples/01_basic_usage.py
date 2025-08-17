@@ -31,7 +31,7 @@ Example:
     Standard entity creation and validation pattern:
 
     >>> from flext_grpc import create_server, create_client
-    >>> from flext_grpc.entities import FlextGrpcServer
+    >>> from flext_grpc import FlextGrpcServer
     >>>
     >>> # Create server entity with validation
     >>> server = create_server(host="localhost", port=50051, max_workers=10)
@@ -73,11 +73,11 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC server
     server = FlextGrpcServer(
-        id="example-server",
-        host="localhost",
-        port=8080,
-        max_workers=10,
-        created_at=datetime.now(UTC),
+      id="example-server",
+      host="localhost",
+      port=8080,
+      max_workers=10,
+      created_at=datetime.now(UTC),
     )
 
     print(f"Created server: {server.get_address()}")
@@ -86,9 +86,9 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC channel
     channel = FlextGrpcChannel(
-        id="example-channel",
-        target=TGrpcTarget("localhost:8080"),
-        created_at=datetime.now(UTC),
+      id="example-channel",
+      target=TGrpcTarget("localhost:8080"),
+      created_at=datetime.now(UTC),
     )
 
     print(f"Created channel: {channel.target}")
@@ -96,9 +96,9 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC client
     client = FlextGrpcClient(
-        id="example-client",
-        channel=channel,
-        created_at=datetime.now(UTC),
+      id="example-client",
+      channel=channel,
+      created_at=datetime.now(UTC),
     )
 
     print(f"Created client with channel: {client.channel.target}")
@@ -106,10 +106,10 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC service
     service = FlextGrpcService(
-        id="example-service",
-        name="UserService",
-        methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser"],
-        created_at=datetime.now(UTC),
+      id="example-service",
+      name="UserService",
+      methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser"],
+      created_at=datetime.now(UTC),
     )
 
     print(f"Created service: {service.name}")
@@ -132,10 +132,10 @@ def example_2_configuration() -> None:
 
     # Create custom configuration
     custom_config = FlextGrpcConfig(
-        host="example.com",
-        port=9090,
-        max_workers=20,
-        timeout=60.0,
+      host="example.com",
+      port=9090,
+      max_workers=20,
+      timeout=60.0,
     )
 
     print(f"Custom config: {custom_config.get_address()}")
@@ -144,9 +144,9 @@ def example_2_configuration() -> None:
 
     # Configuration validation
     try:
-        FlextGrpcConfig(host="", port=0)
+      FlextGrpcConfig(host="", port=0)
     except (RuntimeError, ValueError, TypeError) as e:
-        print(f"Configuration validation works: {e}")
+      print(f"Configuration validation works: {e}")
 
     print()
 
@@ -164,10 +164,10 @@ def example_3_operations() -> None:
 
     # Create server for operations
     server = FlextGrpcServer(
-        id="ops-server",
-        host="localhost",
-        port=7070,
-        created_at=datetime.now(UTC),
+      id="ops-server",
+      host="localhost",
+      port=7070,
+      created_at=datetime.now(UTC),
     )
 
     print(f"Initial server state: {server.state}")
@@ -175,31 +175,31 @@ def example_3_operations() -> None:
     # Start server
     start_result = ops.start_server(server)
     if start_result.success:
-        running_server = start_result.data
-        print(f"Server started: {running_server.state}")
+      running_server = start_result.data
+      print(f"Server started: {running_server.state}")
     else:
-        print(f"Failed to start server: {start_result.error}")
+      print(f"Failed to start server: {start_result.error}")
 
     # Stop server
     if start_result.success:
-        stop_result = ops.stop_server(running_server)
-        if stop_result.success:
-            stopped_server = stop_result.data
-            print(f"Server stopped: {stopped_server.state}")
-        else:
-            print(f"Failed to stop server: {stop_result.error}")
+      stop_result = ops.stop_server(running_server)
+      if stop_result.success:
+          stopped_server = stop_result.data
+          print(f"Server stopped: {stopped_server.state}")
+      else:
+          print(f"Failed to stop server: {stop_result.error}")
 
     # Create client for operations
     channel = FlextGrpcChannel(
-        id="ops-channel",
-        target=TGrpcTarget("localhost:7070"),
-        created_at=datetime.now(UTC),
+      id="ops-channel",
+      target=TGrpcTarget("localhost:7070"),
+      created_at=datetime.now(UTC),
     )
 
     client = FlextGrpcClient(
-        id="ops-client",
-        channel=channel,
-        created_at=datetime.now(UTC),
+      id="ops-client",
+      channel=channel,
+      created_at=datetime.now(UTC),
     )
 
     print(f"Initial client connected: {client.is_connected()}")
@@ -207,24 +207,24 @@ def example_3_operations() -> None:
     # Connect client
     connect_result = ops.connect_client(client)
     if connect_result.success:
-        connected_client = connect_result.data
-        print(f"Client connected: {connected_client.is_connected()}")
+      connected_client = connect_result.data
+      print(f"Client connected: {connected_client.is_connected()}")
 
-        # Call method
-        call_result = ops.call_method(
-            connected_client,
-            "GetServerInfo",
-            {"request_id": "12345"},
-        )
-        if call_result.success:
-            response = call_result.data
-            print(f"Method call successful: {response['method']}")
-            print(f"Response status: {response['status']}")
-            print(f"Response data: {response['data']}")
-        else:
-            print(f"Method call failed: {call_result.error}")
+      # Call method
+      call_result = ops.call_method(
+          connected_client,
+          "GetServerInfo",
+          {"request_id": "12345"},
+      )
+      if call_result.success:
+          response = call_result.data
+          print(f"Method call successful: {response['method']}")
+          print(f"Response status: {response['status']}")
+          print(f"Response data: {response['data']}")
+      else:
+          print(f"Method call failed: {call_result.error}")
     else:
-        print(f"Failed to connect client: {connect_result.error}")
+      print(f"Failed to connect client: {connect_result.error}")
 
     print()
 
@@ -235,11 +235,11 @@ def example_4_validation() -> None:
 
     # Valid entities
     valid_server = FlextGrpcServer(
-        id="valid-server",
-        host="localhost",
-        port=8080,
-        max_workers=5,
-        created_at=datetime.now(UTC),
+      id="valid-server",
+      host="localhost",
+      port=8080,
+      max_workers=5,
+      created_at=datetime.now(UTC),
     )
 
     validation = valid_server.validate_domain_rules()
@@ -247,42 +247,42 @@ def example_4_validation() -> None:
 
     # Invalid entities
     try:
-        invalid_server = FlextGrpcServer(
-            id="invalid-server",
-            host="",  # Invalid empty host
-            port=0,  # Invalid port
-            max_workers=0,  # Invalid workers
-            created_at=datetime.now(UTC),
-        )
+      invalid_server = FlextGrpcServer(
+          id="invalid-server",
+          host="",  # Invalid empty host
+          port=0,  # Invalid port
+          max_workers=0,  # Invalid workers
+          created_at=datetime.now(UTC),
+      )
 
-        validation = invalid_server.validate_domain_rules()
-        print(f"Invalid server validation: {validation.success}")
-        if validation.is_failure:
-            print(f"Validation error: {validation.error}")
+      validation = invalid_server.validate_domain_rules()
+      print(f"Invalid server validation: {validation.success}")
+      if validation.is_failure:
+          print(f"Validation error: {validation.error}")
     except (RuntimeError, ValueError, TypeError) as e:
-        print(f"Server creation failed during validation: {e}")
+      print(f"Server creation failed during validation: {e}")
 
     # Channel validation
     valid_channel = FlextGrpcChannel(
-        id="valid-channel",
-        target=TGrpcTarget("localhost:8080"),
-        state="ready",
-        created_at=datetime.now(UTC),
+      id="valid-channel",
+      target=TGrpcTarget("localhost:8080"),
+      state="ready",
+      created_at=datetime.now(UTC),
     )
 
     channel_validation = valid_channel.validate_domain_rules()
     print(f"Valid channel validation: {channel_validation.success}")
 
     invalid_channel = FlextGrpcChannel(
-        id="invalid-channel",
-        target=TGrpcTarget(""),  # Invalid empty target
-        created_at=datetime.now(UTC),
+      id="invalid-channel",
+      target=TGrpcTarget(""),  # Invalid empty target
+      created_at=datetime.now(UTC),
     )
 
     invalid_validation = invalid_channel.validate_domain_rules()
     print(f"Invalid channel validation: {invalid_validation.success}")
     if invalid_validation.is_failure:
-        print(f"Channel validation error: {invalid_validation.error}")
+      print(f"Channel validation error: {invalid_validation.error}")
 
     print()
 
@@ -293,10 +293,10 @@ def example_5_state_transitions() -> None:
 
     # Channel state transitions
     channel = FlextGrpcChannel(
-        id="transition-channel",
-        target=TGrpcTarget("localhost:8080"),
-        state="idle",
-        created_at=datetime.now(UTC),
+      id="transition-channel",
+      target=TGrpcTarget("localhost:8080"),
+      state="idle",
+      created_at=datetime.now(UTC),
     )
 
     print(f"Initial channel state: {channel.state}")
@@ -304,24 +304,24 @@ def example_5_state_transitions() -> None:
     # Connect channel
     connect_result = channel.connect()
     if connect_result.success:
-        connecting_channel = connect_result.data
-        print(f"After connect: {connecting_channel.state}")
+      connecting_channel = connect_result.data
+      print(f"After connect: {connecting_channel.state}")
 
-        # Mark ready
-        ready_result = connecting_channel.mark_ready()
-        if ready_result.success:
-            ready_channel = ready_result.data
-            print(f"After mark ready: {ready_channel.state}")
-            print(f"Channel is ready: {ready_channel.is_ready()}")
-        else:
-            print(f"Failed to mark ready: {ready_result.error}")
+      # Mark ready
+      ready_result = connecting_channel.mark_ready()
+      if ready_result.success:
+          ready_channel = ready_result.data
+          print(f"After mark ready: {ready_channel.state}")
+          print(f"Channel is ready: {ready_channel.is_ready()}")
+      else:
+          print(f"Failed to mark ready: {ready_result.error}")
     else:
-        print(f"Failed to connect: {connect_result.error}")
+      print(f"Failed to connect: {connect_result.error}")
 
     # Server state management
     server = FlextGrpcServer(
-        id="transition-server",
-        created_at=datetime.now(UTC),
+      id="transition-server",
+      created_at=datetime.now(UTC),
     )
 
     print(f"Initial server state: {server.state}")
@@ -332,9 +332,9 @@ def example_5_state_transitions() -> None:
     # Start server
     start_result = ops.start_server(server)
     if start_result.success:
-        running_server = start_result.data
-        print(f"After start: {running_server.state}")
-        print(f"Server is running: {running_server.is_running()}")
+      running_server = start_result.data
+      print(f"After start: {running_server.state}")
+      print(f"Server is running: {running_server.is_running()}")
 
     print()
 

@@ -487,9 +487,8 @@ from flext_grpc.errors import (
 # 6. TYPE_CHECKING imports (avoid circular imports)
 from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from flext_grpc.platform import FlextGrpcPlatform
-    from flext_grpc.services import FlextGrpcServerService
+from flext_grpc.platform import FlextGrpcPlatform
+from flext_grpc.services import FlextGrpcServerService
 ```
 
 ### **Public API Exports (`__init__.py`)**

@@ -57,10 +57,10 @@ class TGrpcChannel(Protocol):
     """Protocol for minimal gRPC channel operations."""
 
     def close(self) -> None:
-        """Close the channel."""
+      """Close the channel."""
 
     def unsubscribe(self, callback: object) -> None:
-        """Remove a subscription callback from the channel."""
+      """Remove a subscription callback from the channel."""
 
 
 @runtime_checkable
@@ -68,13 +68,13 @@ class TGrpcServer(Protocol):
     """Protocol for minimal gRPC server operations."""
 
     def add_generic_rpc_handlers(self, handlers: list[object]) -> None:
-        """Add generic RPC handlers."""
+      """Add generic RPC handlers."""
 
     def start(self) -> None:
-        """Start the server."""
+      """Start the server."""
 
     def stop(self, grace: float | None) -> None:
-        """Stop the server with optional grace period."""
+      """Stop the server with optional grace period."""
 
 
 @runtime_checkable
@@ -82,7 +82,7 @@ class TGrpcStub(Protocol):
     """Protocol for minimal gRPC client stub."""
 
     def __init__(self, channel: TGrpcChannel) -> None:
-        """Initialize the stub with a channel."""
+      """Initialize the stub with a channel."""
 
 
 # =============================================================================
@@ -93,19 +93,19 @@ class TGrpcStub(Protocol):
 def flext_grpc_validate_target(target: str) -> bool:
     """Validate a gRPC target string in the form host:port."""
     if not target or ":" not in target:
-        return False
+      return False
     try:
-        host, port_str = target.split(":", 1)
-        if not host or not port_str:
-            return False
-        if not re.match(r"^[a-zA-Z0-9.-]+$", host):
-            return False
-        port = int(port_str)
-        return MIN_PORT <= port <= MAX_PORT
+      host, port_str = target.split(":", 1)
+      if not host or not port_str:
+          return False
+      if not re.match(r"^[a-zA-Z0-9.-]+$", host):
+          return False
+      port = int(port_str)
+      return MIN_PORT <= port <= MAX_PORT
     except (ValueError, AttributeError):
-        logger = get_logger(__name__)
-        logger.debug("Invalid gRPC target: %s", target)
-        return False
+      logger = get_logger(__name__)
+      logger.debug("Invalid gRPC target: %s", target)
+      return False
 
 
 def flext_grpc_parse_target(target: str) -> tuple[str, int]:
@@ -115,8 +115,8 @@ def flext_grpc_parse_target(target: str) -> tuple[str, int]:
     flext_grpc_validate_target() beforehand when you need a boolean.
     """
     if not flext_grpc_validate_target(target):
-        msg = f"Invalid gRPC target: {target}"
-        raise ValueError(msg)
+      msg = f"Invalid gRPC target: {target}"
+      raise ValueError(msg)
     host, port_str = target.split(":", 1)
     return (host, int(port_str))
 

@@ -43,18 +43,18 @@ class FlextGrpcError(FlextError):
     - Support enterprise error monitoring and reporting
 
     Usage:
-        Use as base for all gRPC-specific exceptions or catch-all:
+      Use as base for all gRPC-specific exceptions or catch-all:
 
-        >>> try:
-        ...     grpc_operation()
-        ... except FlextGrpcError as e:
-        ...     logger.error(f"gRPC operation failed: {e}")
-        ...     # Handle any gRPC-related error
+      >>> try:
+      ...     grpc_operation()
+      ... except FlextGrpcError as e:
+      ...     logger.error(f"gRPC operation failed: {e}")
+      ...     # Handle any gRPC-related error
 
     Error Hierarchy:
-        All FLEXT gRPC exceptions inherit from this base class,
-        enabling both specific and general error handling patterns
-        depending on application requirements.
+      All FLEXT gRPC exceptions inherit from this base class,
+      enabling both specific and general error handling patterns
+      depending on application requirements.
     """
 
 
@@ -73,42 +73,42 @@ class FlextGrpcValidationError(FlextValidationError):
     - Developer-focused debugging information
 
     Attributes:
-        field_name (str | None): Name of the field that failed validation.
-            Provides context for identifying specific validation failures.
-            None when validation error is not field-specific.
+      field_name (str | None): Name of the field that failed validation.
+          Provides context for identifying specific validation failures.
+          None when validation error is not field-specific.
 
     Example:
-        Field validation error handling:
+      Field validation error handling:
 
-        >>> try:
-        ...     server = FlextGrpcServer(host="", port=50051)
-        ... except FlextGrpcValidationError as e:
-        ...     if e.field_name:
-        ...         print(f"Validation failed for field '{e.field_name}': {e}")
-        ...     else:
-        ...         print(f"General validation error: {e}")
-        Validation failed for field 'host': Host cannot be empty
+      >>> try:
+      ...     server = FlextGrpcServer(host="", port=50051)
+      ... except FlextGrpcValidationError as e:
+      ...     if e.field_name:
+      ...         print(f"Validation failed for field '{e.field_name}': {e}")
+      ...     else:
+      ...         print(f"General validation error: {e}")
+      Validation failed for field 'host': Host cannot be empty
 
     Integration:
-        Used throughout the platform for:
-        - Entity validation in domain layer
-        - Configuration validation in settings
-        - API parameter validation
-        - User input validation and feedback
+      Used throughout the platform for:
+      - Entity validation in domain layer
+      - Configuration validation in settings
+      - API parameter validation
+      - User input validation and feedback
 
     """
 
     def __init__(self, message: str, field_name: str | None = None) -> None:
-        """Initialize validation error with message and optional field context.
+      """Initialize validation error with message and optional field context.
 
-        Args:
-            message (str): Detailed validation error message for user feedback.
-            field_name (str | None): Name of field that failed validation.
-                Provides context for error identification and resolution.
+      Args:
+          message (str): Detailed validation error message for user feedback.
+          field_name (str | None): Name of field that failed validation.
+              Provides context for error identification and resolution.
 
-        """
-        super().__init__(message)
-        self.field_name = field_name
+      """
+      super().__init__(message)
+      self.field_name = field_name
 
 
 class FlextGrpcConnectionError(FlextConnectionError):
@@ -126,29 +126,29 @@ class FlextGrpcConnectionError(FlextConnectionError):
     - Enterprise monitoring and alerting integration
 
     Common Causes:
-        - Server unavailable or unreachable
-        - Network connectivity issues
-        - Channel configuration problems
-        - Authentication and authorization failures
-        - Load balancer and proxy issues
+      - Server unavailable or unreachable
+      - Network connectivity issues
+      - Channel configuration problems
+      - Authentication and authorization failures
+      - Load balancer and proxy issues
 
     Example:
-        Connection error handling with retry logic:
+      Connection error handling with retry logic:
 
-        >>> try:
-        ...     client = create_client("unreachable-server:50051")
-        ...     platform.connect_client(client)
-        ... except FlextGrpcConnectionError as e:
-        ...     logger.warning(f"Connection failed: {e}")
-        ...     # Implement retry logic or fallback
-        ...     backup_client = create_client("backup-server:50051")
+      >>> try:
+      ...     client = create_client("unreachable-server:50051")
+      ...     platform.connect_client(client)
+      ... except FlextGrpcConnectionError as e:
+      ...     logger.warning(f"Connection failed: {e}")
+      ...     # Implement retry logic or fallback
+      ...     backup_client = create_client("backup-server:50051")
 
     Integration:
-        Used throughout the platform for:
-        - Client connection establishment failures
-        - Channel lifecycle management errors
-        - Network communication issues
-        - Service discovery and routing problems
+      Used throughout the platform for:
+      - Client connection establishment failures
+      - Channel lifecycle management errors
+      - Network communication issues
+      - Service discovery and routing problems
 
     """
 
@@ -168,28 +168,28 @@ class FlextGrpcTimeoutError(FlextTimeoutError):
     - Enterprise SLA monitoring and alerting
 
     Common Causes:
-        - Network latency exceeding configured timeouts
-        - Server processing delays and resource constraints
-        - Large data transfer operations
-        - Cascading timeout failures in distributed systems
-        - Inadequate timeout configuration for operation complexity
+      - Network latency exceeding configured timeouts
+      - Server processing delays and resource constraints
+      - Large data transfer operations
+      - Cascading timeout failures in distributed systems
+      - Inadequate timeout configuration for operation complexity
 
     Example:
-        Timeout error handling with performance monitoring:
+      Timeout error handling with performance monitoring:
 
-        >>> try:
-        ...     response = platform.make_call(client, "ProcessLargeDataset", dataset)
-        ... except FlextGrpcTimeoutError as e:
-        ...     logger.warning(f"Operation timed out: {e}")
-        ...     # Adjust timeout or implement async processing
-        ...     metrics.increment("grpc.timeout.ProcessLargeDataset")
+      >>> try:
+      ...     response = platform.make_call(client, "ProcessLargeDataset", dataset)
+      ... except FlextGrpcTimeoutError as e:
+      ...     logger.warning(f"Operation timed out: {e}")
+      ...     # Adjust timeout or implement async processing
+      ...     metrics.increment("grpc.timeout.ProcessLargeDataset")
 
     Integration:
-        Used throughout the platform for:
-        - Remote method call timeout handling
-        - Stream operation deadline management
-        - Configuration timeout validation
-        - Performance monitoring and SLA tracking
+      Used throughout the platform for:
+      - Remote method call timeout handling
+      - Stream operation deadline management
+      - Configuration timeout validation
+      - Performance monitoring and SLA tracking
 
     """
 
@@ -209,59 +209,59 @@ class FlextGrpcConfigurationError(FlextConfigurationError):
     - Deployment and environment-specific error handling
 
     Attributes:
-        config_key (str | None): Configuration key that caused the error.
-            Provides context for identifying specific configuration issues.
-            None when error is not key-specific.
-        config_value (object): Invalid configuration value that caused the error.
-            Enables debugging and configuration validation analysis.
+      config_key (str | None): Configuration key that caused the error.
+          Provides context for identifying specific configuration issues.
+          None when error is not key-specific.
+      config_value (object): Invalid configuration value that caused the error.
+          Enables debugging and configuration validation analysis.
 
     Common Causes:
-        - Invalid port numbers or host addresses
-        - Incorrect timeout or worker count configurations
-        - Missing required configuration parameters
-        - Environment variable parsing failures
-        - Configuration file format or content errors
+      - Invalid port numbers or host addresses
+      - Incorrect timeout or worker count configurations
+      - Missing required configuration parameters
+      - Environment variable parsing failures
+      - Configuration file format or content errors
 
     Example:
-        Configuration error handling with detailed context:
+      Configuration error handling with detailed context:
 
-        >>> try:
-        ...     config = FlextGrpcConfig(port=999999)  # Invalid port
-        ... except FlextGrpcConfigurationError as e:
-        ...     print(f"Configuration error in '{e.config_key}': {e}")
-        ...     print(f"Invalid value: {e.config_value}")
-        ...     # Provide user-friendly error correction guidance
-        Configuration error in 'port': Port 999999 must be between 1024 and 65535
-        Invalid value: 999999
+      >>> try:
+      ...     config = FlextGrpcConfig(port=999999)  # Invalid port
+      ... except FlextGrpcConfigurationError as e:
+      ...     print(f"Configuration error in '{e.config_key}': {e}")
+      ...     print(f"Invalid value: {e.config_value}")
+      ...     # Provide user-friendly error correction guidance
+      Configuration error in 'port': Port 999999 must be between 1024 and 65535
+      Invalid value: 999999
 
     Integration:
-        Used throughout the platform for:
-        - Configuration validation during startup
-        - Environment variable parsing and validation
-        - Runtime configuration updates and validation
-        - Enterprise configuration management systems
+      Used throughout the platform for:
+      - Configuration validation during startup
+      - Environment variable parsing and validation
+      - Runtime configuration updates and validation
+      - Enterprise configuration management systems
 
     """
 
     def __init__(
-        self,
-        message: str,
-        config_key: str | None = None,
-        config_value: object = None,
+      self,
+      message: str,
+      config_key: str | None = None,
+      config_value: object = None,
     ) -> None:
-        """Initialize configuration error with detailed context information.
+      """Initialize configuration error with detailed context information.
 
-        Args:
-            message (str): Detailed configuration error message for user feedback.
-            config_key (str | None): Configuration key that caused the error.
-                Provides context for identifying and fixing configuration issues.
-            config_value (object): Invalid configuration value for analysis.
-                Enables debugging and validation rule development.
+      Args:
+          message (str): Detailed configuration error message for user feedback.
+          config_key (str | None): Configuration key that caused the error.
+              Provides context for identifying and fixing configuration issues.
+          config_value (object): Invalid configuration value for analysis.
+              Enables debugging and validation rule development.
 
-        """
-        super().__init__(message)
-        self.config_key = config_key
-        self.config_value = config_value
+      """
+      super().__init__(message)
+      self.config_key = config_key
+      self.config_value = config_value
 
 
 # =============================================================================
