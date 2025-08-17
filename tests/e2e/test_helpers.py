@@ -79,7 +79,7 @@ def assert_client_from_setup(
 
     client_entity = setup_result[key]
     if not isinstance(client_entity, FlextGrpcClient):
-      raise TypeError(f"Expected FlextGrpcClient, got {type(client_entity)}")
+        raise TypeError(f"Expected FlextGrpcClient, got {type(client_entity)}")
     return client_entity
 
 
@@ -92,17 +92,17 @@ def assert_service_from_setup(
 
     service_entity = setup_result[key]
     if not isinstance(service_entity, FlextGrpcService):
-      raise TypeError(f"Expected FlextGrpcService, got {type(service_entity)}")
+        raise TypeError(f"Expected FlextGrpcService, got {type(service_entity)}")
     return service_entity
 
 
 def assert_dict_from_result(result_data: object) -> dict[str, object]:
     """Type-safe dict extraction from FlextResult data - DRY pattern."""
     if result_data is None:
-      msg = "Result data cannot be None"
-      raise ValueError(msg)
+        msg = "Result data cannot be None"
+        raise ValueError(msg)
     if not isinstance(result_data, dict):
-      raise TypeError(f"Expected dict, got {type(result_data)}")
+        raise TypeError(f"Expected dict, got {type(result_data)}")
     return result_data
 
 
@@ -111,10 +111,10 @@ def assert_client_from_result(result_data: object) -> FlextGrpcClient:
     from flext_grpc import FlextGrpcClient
 
     if result_data is None:
-      msg = "Result data cannot be None"
-      raise ValueError(msg)
+        msg = "Result data cannot be None"
+        raise ValueError(msg)
     if not isinstance(result_data, FlextGrpcClient):
-      raise TypeError(f"Expected FlextGrpcClient, got {type(result_data)}")
+        raise TypeError(f"Expected FlextGrpcClient, got {type(result_data)}")
     return result_data
 
 
@@ -123,8 +123,8 @@ def assert_server_from_result(result_data: object) -> FlextGrpcServer:
     from flext_grpc import FlextGrpcServer
 
     if result_data is None:
-      msg = "Result data cannot be None"
-      raise ValueError(msg)
+        msg = "Result data cannot be None"
+        raise ValueError(msg)
     if not isinstance(result_data, FlextGrpcServer):
-      raise TypeError(f"Expected FlextGrpcServer, got {type(result_data)}")
+        raise TypeError(f"Expected FlextGrpcServer, got {type(result_data)}")
     return result_data

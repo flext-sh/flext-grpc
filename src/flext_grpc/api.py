@@ -170,12 +170,12 @@ def create_server(
 
     """
     return FlextGrpcServer(
-      id=FlextGenerators.generate_entity_id(),
-      host=host,
-      port=port,
-      max_workers=max_workers,
-      state="stopped",
-      services=[],
+        id=FlextGenerators.generate_entity_id(),
+        host=host,
+        port=port,
+        max_workers=max_workers,
+        state="stopped",
+        services=[],
     )
 
 
@@ -270,9 +270,9 @@ def create_client(
     channel = create_channel(target, options)
 
     return FlextGrpcClient(
-      id=FlextGenerators.generate_entity_id(),
-      channel=channel,
-      options=options or {},
+        id=FlextGenerators.generate_entity_id(),
+        channel=channel,
+        options=options or {},
     )
 
 
@@ -364,10 +364,10 @@ def create_channel(
 
     """
     return FlextGrpcChannel(
-      id=FlextGenerators.generate_entity_id(),
-      target=TGrpcTarget(target),
-      state="idle",
-      options=options or {},
+        id=FlextGenerators.generate_entity_id(),
+        target=TGrpcTarget(target),
+        state="idle",
+        options=options or {},
     )
 
 
@@ -454,9 +454,9 @@ def create_service(
 
     """
     return FlextGrpcServiceEntity(
-      id=FlextGenerators.generate_entity_id(),
-      name=name,
-      methods=methods or [],
+        id=FlextGenerators.generate_entity_id(),
+        name=name,
+        methods=methods or [],
     )
 
 
@@ -511,8 +511,7 @@ def create_stream(
       >>> # Simple request-response stream
       >>> simple_stream = create_stream("GetData")
       >>> print(
-      ...     f"Stream: {simple_stream.method_name}, "
-      ...     f"Type: {simple_stream.stream_type}"
+      ...     f"Stream: {simple_stream.method_name}, Type: {simple_stream.stream_type}"
       ... )
       Stream: GetData, Type: unary
       >>>
@@ -553,13 +552,13 @@ def create_stream(
 
     valid_types = ("unary", "server_streaming", "client_streaming", "bidirectional")
     if stream_type not in valid_types:
-      invalid_stream_type_msg: str = f"Invalid stream type: {stream_type}"
-      raise ValueError(invalid_stream_type_msg)
+        invalid_stream_type_msg: str = f"Invalid stream type: {stream_type}"
+        raise ValueError(invalid_stream_type_msg)
     # Type is already validated above, safe to cast
     return FlextGrpcStream(
-      id=FlextGenerators.generate_entity_id(),
-      method_name=method_name,
-      stream_type=cast("TGrpcStreamType", stream_type),
+        id=FlextGenerators.generate_entity_id(),
+        method_name=method_name,
+        stream_type=cast("TGrpcStreamType", stream_type),
     )
 
 
@@ -660,10 +659,10 @@ def create_config(
 
     """
     return FlextGrpcConfig(
-      host=host,
-      port=port,
-      max_workers=max_workers,
-      timeout=timeout,
+        host=host,
+        port=port,
+        max_workers=max_workers,
+        timeout=timeout,
     )
 
 
@@ -743,21 +742,21 @@ def validate_address(address: str) -> FlextResult[bool]:
 
     """
     try:
-      # Validate basic address format
-      validation_error = _validate_address_format(address)
-      if validation_error:
-          return FlextResult.fail(validation_error)
+        # Validate basic address format
+        validation_error = _validate_address_format(address)
+        if validation_error:
+            return FlextResult.fail(validation_error)
 
-      # Parse and validate components
-      host, port_str = address.split(":")
-      validation_error = _validate_host_and_port(host, port_str)
-      if validation_error:
-          return FlextResult.fail(validation_error)
+        # Parse and validate components
+        host, port_str = address.split(":")
+        validation_error = _validate_host_and_port(host, port_str)
+        if validation_error:
+            return FlextResult.fail(validation_error)
 
-      return FlextResult.ok(data=True)
+        return FlextResult.ok(data=True)
 
     except (ValueError, AttributeError) as e:
-      return FlextResult.fail(f"Address validation error: {e}")
+        return FlextResult.fail(f"Address validation error: {e}")
 
 
 def _validate_address_format(address: str) -> str | None:
@@ -776,14 +775,14 @@ def _validate_address_format(address: str) -> str | None:
 
     """
     if not address:
-      return "Address cannot be empty"
+        return "Address cannot be empty"
 
     if ":" not in address:
-      return "Address must be in host:port format"
+        return "Address must be in host:port format"
 
     parts = address.split(":")
     if len(parts) != ADDRESS_PARTS_COUNT:
-      return "Address must be in host:port format"
+        return "Address must be in host:port format"
 
     return None
 
@@ -805,17 +804,17 @@ def _validate_host_and_port(host: str, port_str: str) -> str | None:
 
     """
     if not host:
-      return "Host cannot be empty"
+        return "Host cannot be empty"
 
     if not re.match(r"^[a-zA-Z0-9.-]+$", host):
-      return "Invalid host format"
+        return "Invalid host format"
 
     try:
-      port = int(port_str)
-      if not (MIN_PORT <= port <= MAX_PORT):
-          return f"Port must be between {MIN_PORT} and {MAX_PORT}"
+        port = int(port_str)
+        if not (MIN_PORT <= port <= MAX_PORT):
+            return f"Port must be between {MIN_PORT} and {MAX_PORT}"
     except ValueError:
-      return "Port must be a number"
+        return "Port must be a number"
 
     return None
 
@@ -870,12 +869,12 @@ def parse_address(address: str) -> dict[str, int | str]:
     """
     validation_result = validate_address(address)
     if not validation_result.success:
-      raise ValueError(validation_result.error)
+        raise ValueError(validation_result.error)
 
     host, port_str = address.split(":")
     return {
-      "host": host,
-      "port": int(port_str),
+        "host": host,
+        "port": int(port_str),
     }
 
 
@@ -976,8 +975,8 @@ def create_complete_setup(
     service = create_service(name=service_name, methods=methods)
 
     return {
-      "server": server,
-      "client": client,
-      "service": service,
-      "target": target,
+        "server": server,
+        "client": client,
+        "service": service,
+        "target": target,
     }

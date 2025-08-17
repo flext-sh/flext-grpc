@@ -99,16 +99,16 @@ class FlextGrpcValidationError(FlextValidationError):
     """
 
     def __init__(self, message: str, field_name: str | None = None) -> None:
-      """Initialize validation error with message and optional field context.
+        """Initialize validation error with message and optional field context.
 
-      Args:
-          message (str): Detailed validation error message for user feedback.
-          field_name (str | None): Name of field that failed validation.
-              Provides context for error identification and resolution.
+        Args:
+            message (str): Detailed validation error message for user feedback.
+            field_name (str | None): Name of field that failed validation.
+                Provides context for error identification and resolution.
 
-      """
-      super().__init__(message)
-      self.field_name = field_name
+        """
+        super().__init__(message)
+        self.field_name = field_name
 
 
 class FlextGrpcConnectionError(FlextConnectionError):
@@ -244,24 +244,24 @@ class FlextGrpcConfigurationError(FlextConfigurationError):
     """
 
     def __init__(
-      self,
-      message: str,
-      config_key: str | None = None,
-      config_value: object = None,
+        self,
+        message: str,
+        config_key: str | None = None,
+        config_value: object = None,
     ) -> None:
-      """Initialize configuration error with detailed context information.
+        """Initialize configuration error with detailed context information.
 
-      Args:
-          message (str): Detailed configuration error message for user feedback.
-          config_key (str | None): Configuration key that caused the error.
-              Provides context for identifying and fixing configuration issues.
-          config_value (object): Invalid configuration value for analysis.
-              Enables debugging and validation rule development.
+        Args:
+            message (str): Detailed configuration error message for user feedback.
+            config_key (str | None): Configuration key that caused the error.
+                Provides context for identifying and fixing configuration issues.
+            config_value (object): Invalid configuration value for analysis.
+                Enables debugging and validation rule development.
 
-      """
-      super().__init__(message)
-      self.config_key = config_key
-      self.config_value = config_value
+        """
+        super().__init__(message)
+        self.config_key = config_key
+        self.config_value = config_value
 
 
 # =============================================================================

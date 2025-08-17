@@ -71,99 +71,99 @@ class FlextGrpcFieldValidationError(FlextGrpcValidationError):
     """gRPC field validation errors with field context."""
 
     def __init__(
-      self,
-      message: str,
-      *,
-      field_name: str | None = None,
-      field_value: object | None = None,
-      validation_rule: str | None = None,
-      entity_type: str | None = None,
-      code: FlextGrpcErrorCodes | None = FlextGrpcErrorCodes.GRPC_VALIDATION_ERROR,
-      context: Mapping[str, object] | None = None,
+        self,
+        message: str,
+        *,
+        field_name: str | None = None,
+        field_value: object | None = None,
+        validation_rule: str | None = None,
+        entity_type: str | None = None,
+        code: FlextGrpcErrorCodes | None = FlextGrpcErrorCodes.GRPC_VALIDATION_ERROR,
+        context: Mapping[str, object] | None = None,
     ) -> None:
-      """Initialize gRPC field validation error with field context."""
-      context_dict: dict[str, object] = dict(context) if context else {}
-      if field_name is not None:
-          context_dict["field_name"] = field_name
-      if field_value is not None:
-          context_dict["field_value"] = field_value
-      if validation_rule is not None:
-          context_dict["validation_rule"] = validation_rule
-      if entity_type is not None:
-          context_dict["entity_type"] = entity_type
+        """Initialize gRPC field validation error with field context."""
+        context_dict: dict[str, object] = dict(context) if context else {}
+        if field_name is not None:
+            context_dict["field_name"] = field_name
+        if field_value is not None:
+            context_dict["field_value"] = field_value
+        if validation_rule is not None:
+            context_dict["validation_rule"] = validation_rule
+        if entity_type is not None:
+            context_dict["entity_type"] = entity_type
 
-      super().__init__(
-          message,
-          code=code,
-          context=context_dict,
-      )
+        super().__init__(
+            message,
+            code=code,
+            context=context_dict,
+        )
 
 
 class FlextGrpcChannelOperationError(FlextGrpcChannelError):
     """gRPC channel operation errors with channel context."""
 
     def __init__(
-      self,
-      message: str,
-      *,
-      channel_target: str | None = None,
-      channel_state: str | None = None,
-      operation: str | None = None,
-      retry_count: int | None = None,
-      timeout_seconds: float | None = None,
-      code: FlextGrpcErrorCodes | None = FlextGrpcErrorCodes.GRPC_CHANNEL_ERROR,
-      context: Mapping[str, object] | None = None,
+        self,
+        message: str,
+        *,
+        channel_target: str | None = None,
+        channel_state: str | None = None,
+        operation: str | None = None,
+        retry_count: int | None = None,
+        timeout_seconds: float | None = None,
+        code: FlextGrpcErrorCodes | None = FlextGrpcErrorCodes.GRPC_CHANNEL_ERROR,
+        context: Mapping[str, object] | None = None,
     ) -> None:
-      """Initialize gRPC channel operation error with channel context."""
-      context_dict: dict[str, object] = dict(context) if context else {}
-      if channel_target is not None:
-          context_dict["channel_target"] = channel_target
-      if channel_state is not None:
-          context_dict["channel_state"] = channel_state
-      if operation is not None:
-          context_dict["operation"] = operation
-      if retry_count is not None:
-          context_dict["retry_count"] = retry_count
-      if timeout_seconds is not None:
-          context_dict["timeout_seconds"] = timeout_seconds
+        """Initialize gRPC channel operation error with channel context."""
+        context_dict: dict[str, object] = dict(context) if context else {}
+        if channel_target is not None:
+            context_dict["channel_target"] = channel_target
+        if channel_state is not None:
+            context_dict["channel_state"] = channel_state
+        if operation is not None:
+            context_dict["operation"] = operation
+        if retry_count is not None:
+            context_dict["retry_count"] = retry_count
+        if timeout_seconds is not None:
+            context_dict["timeout_seconds"] = timeout_seconds
 
-      super().__init__(
-          message,
-          code=code,
-          context=context_dict,
-      )
+        super().__init__(
+            message,
+            code=code,
+            context=context_dict,
+        )
 
 
 class FlextGrpcConfigError(FlextGrpcConfigurationError):
     """gRPC configuration errors with config context."""
 
     def __init__(
-      self,
-      message: str,
-      *,
-      config_key: str | None = None,
-      config_value: object | None = None,
-      config_section: str | None = None,
-      valid_range: str | None = None,
-      code: FlextGrpcErrorCodes | None = FlextGrpcErrorCodes.GRPC_CONFIGURATION_ERROR,
-      context: Mapping[str, object] | None = None,
+        self,
+        message: str,
+        *,
+        config_key: str | None = None,
+        config_value: object | None = None,
+        config_section: str | None = None,
+        valid_range: str | None = None,
+        code: FlextGrpcErrorCodes | None = FlextGrpcErrorCodes.GRPC_CONFIGURATION_ERROR,
+        context: Mapping[str, object] | None = None,
     ) -> None:
-      """Initialize gRPC configuration error with config context."""
-      context_dict: dict[str, object] = dict(context) if context else {}
-      if config_key is not None:
-          context_dict["config_key"] = config_key
-      if config_value is not None:
-          context_dict["config_value"] = config_value
-      if config_section is not None:
-          context_dict["config_section"] = config_section
-      if valid_range is not None:
-          context_dict["valid_range"] = valid_range
+        """Initialize gRPC configuration error with config context."""
+        context_dict: dict[str, object] = dict(context) if context else {}
+        if config_key is not None:
+            context_dict["config_key"] = config_key
+        if config_value is not None:
+            context_dict["config_value"] = config_value
+        if config_section is not None:
+            context_dict["config_section"] = config_section
+        if valid_range is not None:
+            context_dict["valid_range"] = valid_range
 
-      super().__init__(
-          message,
-          code=code,
-          context=context_dict,
-      )
+        super().__init__(
+            message,
+            code=code,
+            context=context_dict,
+        )
 
 
 __all__: list[str] = [

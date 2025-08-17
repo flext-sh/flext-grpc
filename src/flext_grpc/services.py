@@ -79,38 +79,38 @@ class _GrpcServiceValidationMixin:
 
     @staticmethod
     def _validate_operation_arguments(
-      args: tuple[object, ...],
-      min_args: int = 2,
-      expected_args_description: str = "operation and target",
+        args: tuple[object, ...],
+        min_args: int = 2,
+        expected_args_description: str = "operation and target",
     ) -> FlextResult[tuple[str, object]]:
-      """Template Method: Validate and extract operation arguments.
+        """Template Method: Validate and extract operation arguments.
 
-      SOLID REFACTORING: Centralizes argument validation logic that was
-      duplicated across 4 different execute() methods.
+        SOLID REFACTORING: Centralizes argument validation logic that was
+        duplicated across 4 different execute() methods.
 
-      Args:
-          args: Arguments tuple from execute method
-          min_args: Minimum number of arguments required
-          expected_args_description: Description for error messages
+        Args:
+            args: Arguments tuple from execute method
+            min_args: Minimum number of arguments required
+            expected_args_description: Description for error messages
 
-      Returns:
-          FlextResult with (operation_str, target_object) or failure
+        Returns:
+            FlextResult with (operation_str, target_object) or failure
 
-      """
-      # Check minimum argument count
-      if len(args) < min_args:
-          return FlextResult.fail(
-              f"Missing required arguments: {expected_args_description}",
-          )
+        """
+        # Check minimum argument count
+        if len(args) < min_args:
+            return FlextResult.fail(
+                f"Missing required arguments: {expected_args_description}",
+            )
 
-      # Extract and validate operation string
-      operation = args[0]
-      if not isinstance(operation, str):
-          return FlextResult.fail("Operation must be a string")
+        # Extract and validate operation string
+        operation = args[0]
+        if not isinstance(operation, str):
+            return FlextResult.fail("Operation must be a string")
 
-      # Return operation and second argument (if exists)
-      target = args[1] if len(args) > 1 else None
-      return FlextResult.ok((operation, target))
+        # Return operation and second argument (if exists)
+        target = args[1] if len(args) > 1 else None
+        return FlextResult.ok((operation, target))
 
 
 class FlextGrpcServerService(
@@ -200,377 +200,377 @@ class FlextGrpcServerService(
     """
 
     def _handle_result(
-      self,
-      result: FlextResult[object],
-      error_msg: str,
+        self,
+        result: FlextResult[object],
+        error_msg: str,
     ) -> FlextResult[object]:
-      """Handle operation results with consistent error handling.
+        """Handle operation results with consistent error handling.
 
-      Utility method providing standardized result handling across all server
-      operations. Ensures consistent behavior for success and failure cases
-      while providing fallback error messages when original errors are missing.
+        Utility method providing standardized result handling across all server
+        operations. Ensures consistent behavior for success and failure cases
+        while providing fallback error messages when original errors are missing.
 
-      Args:
-          result (FlextResult[object]): Operation result to process and normalize.
-          error_msg (str): Fallback error message when result.error is None.
+        Args:
+            result (FlextResult[object]): Operation result to process and normalize.
+            error_msg (str): Fallback error message when result.error is None.
 
-      Returns:
-          FlextResult[object]: Normalized result with guaranteed data on success
-          (empty dict if None) and guaranteed error message on failure.
+        Returns:
+            FlextResult[object]: Normalized result with guaranteed data on success
+            (empty dict if None) and guaranteed error message on failure.
 
-      Business Logic:
-          - Success: Returns original data or empty dict if data is None
-          - Failure: Returns original error message or provided fallback
-          - Ensures no None values in success cases for downstream processing
+        Business Logic:
+            - Success: Returns original data or empty dict if data is None
+            - Failure: Returns original error message or provided fallback
+            - Ensures no None values in success cases for downstream processing
 
-      """
-      if result.success:
-          return FlextResult.ok(result.data if result.data is not None else {})
-      return FlextResult.fail(result.error or error_msg)
+        """
+        if result.success:
+            return FlextResult.ok(result.data if result.data is not None else {})
+        return FlextResult.fail(result.error or error_msg)
 
     def execute(self) -> FlextResult[FlextGrpcServer]:
-      """Execute default server operation - implementation required by abstract base."""
-      return FlextResult.fail(
-          "Use execute_operation(operation, server, **kwargs) instead",
-      )
+        """Execute default server operation - implementation required by abstract base."""
+        return FlextResult.fail(
+            "Use execute_operation(operation, server, **kwargs) instead",
+        )
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
-      """Execute server management operation with validation and error handling.
+        """Execute server management operation with validation and error handling.
 
-      Primary entry point for all server operations implementing the Command pattern.
-      Validates arguments, delegates to appropriate operation handlers, and ensures
-      consistent result handling across all server management workflows.
+        Primary entry point for all server operations implementing the Command pattern.
+        Validates arguments, delegates to appropriate operation handlers, and ensures
+        consistent result handling across all server management workflows.
 
-      This method serves as the unified interface for server lifecycle management,
-      providing type-safe operation dispatch with comprehensive validation and
-      detailed error reporting for monitoring and debugging purposes.
+        This method serves as the unified interface for server lifecycle management,
+        providing type-safe operation dispatch with comprehensive validation and
+        detailed error reporting for monitoring and debugging purposes.
 
-      Args:
-          *args (object): Variable arguments where first two are required:
-              - args[0] (str): Operation name (start/stop/add_service/status)
-              - args[1] (FlextGrpcServer): Target server entity for operation
-          **kwargs (object): Additional operation-specific options:
-              - service (FlextGrpcService): Required for "add_service" operation
-              - Additional options passed to operation handlers
+        Args:
+            *args (object): Variable arguments where first two are required:
+                - args[0] (str): Operation name (start/stop/add_service/status)
+                - args[1] (FlextGrpcServer): Target server entity for operation
+            **kwargs (object): Additional operation-specific options:
+                - service (FlextGrpcService): Required for "add_service" operation
+                - Additional options passed to operation handlers
 
-      Returns:
-          FlextResult[object]: Operation result containing:
-              - Success: Operation-specific data (server entity, status dict, etc.)
-              - Failure: Detailed error message with validation/execution failures
+        Returns:
+            FlextResult[object]: Operation result containing:
+                - Success: Operation-specific data (server entity, status dict, etc.)
+                - Failure: Detailed error message with validation/execution failures
 
-      Supported Operations:
-          - "start": Start server with state transition validation
-          - "stop": Stop running server with graceful shutdown
-          - "add_service": Register gRPC service with validation
-          - "status": Retrieve comprehensive server status information
+        Supported Operations:
+            - "start": Start server with state transition validation
+            - "stop": Stop running server with graceful shutdown
+            - "add_service": Register gRPC service with validation
+            - "status": Retrieve comprehensive server status information
 
-      Validation Flow:
-          1. Argument count and type validation using shared mixin
-          2. Server entity type validation and domain rule checking
-          3. Operation-specific validation and parameter extraction
-          4. Delegation to appropriate operation handler method
+        Validation Flow:
+            1. Argument count and type validation using shared mixin
+            2. Server entity type validation and domain rule checking
+            3. Operation-specific validation and parameter extraction
+            4. Delegation to appropriate operation handler method
 
-      Example:
-          Execute server operations with error handling:
+        Example:
+            Execute server operations with error handling:
 
-          >>> service = FlextGrpcServerService()
-          >>> server = FlextGrpcServer(id="srv-1", host="localhost", port=50051)
-          >>>
-          >>> # Start server operation
-          >>> result = service.execute("start", server)
-          >>> if result.success:
-          ...     started_server = result.data
-          ...     print(f"Server {started_server.id} started successfully")
-          >>> else:
-          ...     print(f"Start failed: {result.error}")
-          >>>
-          >>> # Add service operation
-          >>> grpc_service = FlextGrpcService(name="MyService", methods=["GetData"])
-          >>> result = service.execute("add_service", server, service=grpc_service)
+            >>> service = FlextGrpcServerService()
+            >>> server = FlextGrpcServer(id="srv-1", host="localhost", port=50051)
+            >>>
+            >>> # Start server operation
+            >>> result = service.execute("start", server)
+            >>> if result.success:
+            ...     started_server = result.data
+            ...     print(f"Server {started_server.id} started successfully")
+            >>> else:
+            ...     print(f"Start failed: {result.error}")
+            >>>
+            >>> # Add service operation
+            >>> grpc_service = FlextGrpcService(name="MyService", methods=["GetData"])
+            >>> result = service.execute("add_service", server, service=grpc_service)
 
-      Error Handling:
-          Returns detailed error messages for:
-          - Invalid argument count or types
-          - Server entity validation failures
-          - Domain rule violations
-          - State transition conflicts
-          - Unknown operation names
+        Error Handling:
+            Returns detailed error messages for:
+            - Invalid argument count or types
+            - Server entity validation failures
+            - Domain rule violations
+            - State transition conflicts
+            - Unknown operation names
 
-      Thread Safety:
-          Stateless operation execution with immutable entity patterns.
-          Safe for concurrent execution across multiple threads.
+        Thread Safety:
+            Stateless operation execution with immutable entity patterns.
+            Safe for concurrent execution across multiple threads.
 
-      Integration:
-          Uses shared validation mixin for consistent argument handling
-          and delegates to specialized operation methods for business logic.
+        Integration:
+            Uses shared validation mixin for consistent argument handling
+            and delegates to specialized operation methods for business logic.
 
-      """
-      # REFACTORING: Use shared validation - eliminates 15 lines duplication
-      validation_result = self._validate_operation_arguments(
-          args,
-          FlextGrpcConstants.MIN_REQUIRED_ARGS,
-          "operation and server",
-      )
-      if validation_result.is_failure:
-          return FlextResult.fail(validation_result.error or "Validation failed")
+        """
+        # REFACTORING: Use shared validation - eliminates 15 lines duplication
+        validation_result = self._validate_operation_arguments(
+            args,
+            FlextGrpcConstants.MIN_REQUIRED_ARGS,
+            "operation and server",
+        )
+        if validation_result.is_failure:
+            return FlextResult.fail(validation_result.error or "Validation failed")
 
-      if validation_result.data is None:
-          return FlextResult.fail("Validation returned no data")
+        if validation_result.data is None:
+            return FlextResult.fail("Validation returned no data")
 
-      operation, server = validation_result.data
+        operation, server = validation_result.data
 
-      # Type validation for server
-      if not isinstance(server, FlextGrpcServer):
-          return FlextResult.fail("Server must be a FlextGrpcServer instance")
+        # Type validation for server
+        if not isinstance(server, FlextGrpcServer):
+            return FlextResult.fail("Server must be a FlextGrpcServer instance")
 
-      # Validate server first
-      validation = server.validate_business_rules()
-      if validation.is_failure:
-          return FlextResult.fail(f"Invalid server: {validation.error}")
+        # Validate server first
+        validation = server.validate_business_rules()
+        if validation.is_failure:
+            return FlextResult.fail(f"Invalid server: {validation.error}")
 
-      return self._execute_server_operation(operation, server, **kwargs)
+        return self._execute_server_operation(operation, server, **kwargs)
 
     def _execute_server_operation(
-      self,
-      operation: str,
-      server: FlextGrpcServer,
-      **options: object,
+        self,
+        operation: str,
+        server: FlextGrpcServer,
+        **options: object,
     ) -> FlextResult[object]:
-      """Execute specific server operation with pattern matching and error handling.
+        """Execute specific server operation with pattern matching and error handling.
 
-      Delegates to appropriate operation handler based on operation name using
-      pattern matching for type-safe operation dispatch. Handles all supported
-      server operations with consistent error handling and result processing.
+        Delegates to appropriate operation handler based on operation name using
+        pattern matching for type-safe operation dispatch. Handles all supported
+        server operations with consistent error handling and result processing.
 
-      Args:
-          operation (str): Server operation name to execute.
-          server (FlextGrpcServer): Target server entity for operation.
-          **options (object): Additional operation-specific parameters.
+        Args:
+            operation (str): Server operation name to execute.
+            server (FlextGrpcServer): Target server entity for operation.
+            **options (object): Additional operation-specific parameters.
 
-      Returns:
-          FlextResult[object]: Operation result with success data or error details.
+        Returns:
+            FlextResult[object]: Operation result with success data or error details.
 
-      Supported Operations:
-          - "start": Server startup with state transition
-          - "stop": Server shutdown with graceful handling
-          - "add_service": Service registration with validation
-          - "status": Status information retrieval
+        Supported Operations:
+            - "start": Server startup with state transition
+            - "stop": Server shutdown with graceful handling
+            - "add_service": Service registration with validation
+            - "status": Status information retrieval
 
-      """
-      # Use match for better type inference and consolidated error handling
-      return self._dispatch_server_operation(operation, server, options)
+        """
+        # Use match for better type inference and consolidated error handling
+        return self._dispatch_server_operation(operation, server, options)
 
     def _dispatch_server_operation(
-      self,
-      operation: str,
-      server: FlextGrpcServer,
-      options: dict[str, object],
+        self,
+        operation: str,
+        server: FlextGrpcServer,
+        options: dict[str, object],
     ) -> FlextResult[object]:
-      """Dispatch server operation to appropriate handler."""
-      match operation:
-          case "start":
-              return self._process_server_result(self._start_server(server), "Start")
-          case "stop":
-              return self._process_server_result(self._stop_server(server), "Stop")
-          case "add_service":
-              return self._handle_add_service(server, options)
-          case "status":
-              return self._process_server_result(
-                  self._get_server_status(server),
-                  "Status",
-              )
-          case _:
-              return FlextResult.fail(f"Unknown server operation: {operation}")
+        """Dispatch server operation to appropriate handler."""
+        match operation:
+            case "start":
+                return self._process_server_result(self._start_server(server), "Start")
+            case "stop":
+                return self._process_server_result(self._stop_server(server), "Stop")
+            case "add_service":
+                return self._handle_add_service(server, options)
+            case "status":
+                return self._process_server_result(
+                    self._get_server_status(server),
+                    "Status",
+                )
+            case _:
+                return FlextResult.fail(f"Unknown server operation: {operation}")
 
     def _process_server_result(
-      self,
-      result: FlextResult[FlextGrpcServer] | FlextResult[dict[str, object]],
-      operation_name: str,
+        self,
+        result: FlextResult[FlextGrpcServer] | FlextResult[dict[str, object]],
+        operation_name: str,
     ) -> FlextResult[object]:
-      """Process server operation result with consistent error handling."""
-      if result.success:
-          return FlextResult.ok(result.data)
-      return FlextResult.fail(result.error or f"{operation_name} failed")
+        """Process server operation result with consistent error handling."""
+        if result.success:
+            return FlextResult.ok(result.data)
+        return FlextResult.fail(result.error or f"{operation_name} failed")
 
     def _handle_add_service(
-      self,
-      server: FlextGrpcServer,
-      options: dict[str, object],
+        self,
+        server: FlextGrpcServer,
+        options: dict[str, object],
     ) -> FlextResult[object]:
-      """Handle gRPC service registration with comprehensive validation.
+        """Handle gRPC service registration with comprehensive validation.
 
-      Processes service registration requests by validating the service entity
-      and delegating to the server's add_service domain method. Ensures type
-      safety and proper error handling throughout the registration process.
+        Processes service registration requests by validating the service entity
+        and delegating to the server's add_service domain method. Ensures type
+        safety and proper error handling throughout the registration process.
 
-      Args:
-          server (FlextGrpcServer): Target server for service registration.
-          options (dict[str, object]): Operation options containing:
-              - service (FlextGrpcService): Service entity to register
+        Args:
+            server (FlextGrpcServer): Target server for service registration.
+            options (dict[str, object]): Operation options containing:
+                - service (FlextGrpcService): Service entity to register
 
-      Returns:
-          FlextResult[object]: Registration result with updated server entity
-          or detailed error information for debugging.
+        Returns:
+            FlextResult[object]: Registration result with updated server entity
+            or detailed error information for debugging.
 
-      Validation Rules:
-          1. Service parameter must be present in options
-          2. Service must be valid FlextGrpcService instance
-          3. Server must accept the service registration
+        Validation Rules:
+            1. Service parameter must be present in options
+            2. Service must be valid FlextGrpcService instance
+            3. Server must accept the service registration
 
-      Business Logic:
-          Delegates service registration to server entity's add_service method,
-          maintaining domain logic encapsulation while providing service layer
-          coordination and error handling.
+        Business Logic:
+            Delegates service registration to server entity's add_service method,
+            maintaining domain logic encapsulation while providing service layer
+            coordination and error handling.
 
-      """
-      service = options.get("service")
-      if not service:
-          return FlextResult.fail("Service required")
+        """
+        service = options.get("service")
+        if not service:
+            return FlextResult.fail("Service required")
 
-      # Type validation for service
+        # Type validation for service
 
-      if not isinstance(service, FlextGrpcService):
-          return FlextResult.fail("Service must be a FlextGrpcService instance")
+        if not isinstance(service, FlextGrpcService):
+            return FlextResult.fail("Service must be a FlextGrpcService instance")
 
-      result = server.add_service(service)
-      # Convert to object result to match return type
-      if result.success:
-          return FlextResult.ok(result.data)
-      return FlextResult.fail(result.error or "Add service failed")
+        result = server.add_service(service)
+        # Convert to object result to match return type
+        if result.success:
+            return FlextResult.ok(result.data)
+        return FlextResult.fail(result.error or "Add service failed")
 
     def _start_server(self, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
-      """Start gRPC server with proper state transition management.
+        """Start gRPC server with proper state transition management.
 
-      Coordinates server startup process including state validation, transition
-      management, and proper error handling. Ensures server follows defined
-      state machine transitions for reliable lifecycle management.
+        Coordinates server startup process including state validation, transition
+        management, and proper error handling. Ensures server follows defined
+        state machine transitions for reliable lifecycle management.
 
-      Args:
-          server (FlextGrpcServer): Server entity to start.
+        Args:
+            server (FlextGrpcServer): Server entity to start.
 
-      Returns:
-          FlextResult[FlextGrpcServer]: Started server entity in running state
-          or failure with detailed error information.
+        Returns:
+            FlextResult[FlextGrpcServer]: Started server entity in running state
+            or failure with detailed error information.
 
-      State Transitions:
-          stopped → starting → running
+        State Transitions:
+            stopped → starting → running
 
-      Validation:
-          - Server must not already be in running state
-          - Server must be in valid state for starting
-          - All domain rules must be satisfied
+        Validation:
+            - Server must not already be in running state
+            - Server must be in valid state for starting
+            - All domain rules must be satisfied
 
-      Business Logic:
-          1. Validate current server state
-          2. Initiate start transition (stopped → starting)
-          3. Complete startup process (starting → running)
-          4. Return running server entity
+        Business Logic:
+            1. Validate current server state
+            2. Initiate start transition (stopped → starting)
+            3. Complete startup process (starting → running)
+            4. Return running server entity
 
-      """
-      if server.is_running:
-          return FlextResult.fail("Server is already running")
+        """
+        if server.is_running:
+            return FlextResult.fail("Server is already running")
 
-      # Use proper state transitions
-      start_result = server.start()
-      if start_result.is_failure:
-          return start_result
+        # Use proper state transitions
+        start_result = server.start()
+        if start_result.is_failure:
+            return start_result
 
-      starting_server = start_result.data
-      if starting_server is None:
-          return FlextResult.fail("Failed to start server")
+        starting_server = start_result.data
+        if starting_server is None:
+            return FlextResult.fail("Failed to start server")
 
-      return starting_server.mark_running()
+        return starting_server.mark_running()
 
     def _stop_server(self, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
-      """Stop gRPC server with graceful shutdown and state transition management.
+        """Stop gRPC server with graceful shutdown and state transition management.
 
-      Coordinates server shutdown process including state validation, graceful
-      service termination, and proper state transitions. Ensures clean shutdown
-      of all server resources and connections.
+        Coordinates server shutdown process including state validation, graceful
+        service termination, and proper state transitions. Ensures clean shutdown
+        of all server resources and connections.
 
-      Args:
-          server (FlextGrpcServer): Running server entity to stop.
+        Args:
+            server (FlextGrpcServer): Running server entity to stop.
 
-      Returns:
-          FlextResult[FlextGrpcServer]: Stopped server entity in stopped state
-          or failure with detailed error information.
+        Returns:
+            FlextResult[FlextGrpcServer]: Stopped server entity in stopped state
+            or failure with detailed error information.
 
-      State Transitions:
-          running → stopping → stopped
+        State Transitions:
+            running → stopping → stopped
 
-      Validation:
-          - Server must be in running state
-          - Server must be in valid state for stopping
-          - All domain rules must be satisfied
+        Validation:
+            - Server must be in running state
+            - Server must be in valid state for stopping
+            - All domain rules must be satisfied
 
-      Business Logic:
-          1. Validate server is running
-          2. Initiate stop transition (running → stopping)
-          3. Complete shutdown process (stopping → stopped)
-          4. Return stopped server entity
+        Business Logic:
+            1. Validate server is running
+            2. Initiate stop transition (running → stopping)
+            3. Complete shutdown process (stopping → stopped)
+            4. Return stopped server entity
 
-      """
-      if not server.is_running:
-          return FlextResult.fail("Server is not running")
+        """
+        if not server.is_running:
+            return FlextResult.fail("Server is not running")
 
-      # Use proper state transitions
-      stop_result = server.stop()
-      if stop_result.is_failure:
-          return stop_result
+        # Use proper state transitions
+        stop_result = server.stop()
+        if stop_result.is_failure:
+            return stop_result
 
-      stopping_server = stop_result.data
-      if stopping_server is None:
-          return FlextResult.fail("Failed to stop server")
+        stopping_server = stop_result.data
+        if stopping_server is None:
+            return FlextResult.fail("Failed to stop server")
 
-      return stopping_server.mark_stopped()
+        return stopping_server.mark_stopped()
 
     def _get_server_status(
-      self,
-      server: FlextGrpcServer,
+        self,
+        server: FlextGrpcServer,
     ) -> FlextResult[dict[str, object]]:
-      """Get comprehensive server status information for monitoring and debugging.
+        """Get comprehensive server status information for monitoring and debugging.
 
-      Retrieves detailed server status including operational state, configuration,
-      service registrations, and runtime metrics. Provides essential information
-      for monitoring, debugging, and operational visibility.
+        Retrieves detailed server status including operational state, configuration,
+        service registrations, and runtime metrics. Provides essential information
+        for monitoring, debugging, and operational visibility.
 
-      Args:
-          server (FlextGrpcServer): Server entity to query for status.
+        Args:
+            server (FlextGrpcServer): Server entity to query for status.
 
-      Returns:
-          FlextResult[dict[str, object]]: Status dictionary containing:
-              - id (str): Server unique identifier
-              - address (str): Server bind address (host:port)
-              - state (str): Current server state
-              - is_running (bool): Runtime status flag
-              - service_count (int): Number of registered services
-              - max_workers (int): Maximum worker thread count
-              - version (str): Server version information
+        Returns:
+            FlextResult[dict[str, object]]: Status dictionary containing:
+                - id (str): Server unique identifier
+                - address (str): Server bind address (host:port)
+                - state (str): Current server state
+                - is_running (bool): Runtime status flag
+                - service_count (int): Number of registered services
+                - max_workers (int): Maximum worker thread count
+                - version (str): Server version information
 
-      Status Information:
-          Provides comprehensive operational visibility including:
-          - Current lifecycle state and runtime status
-          - Network configuration and service statistics
-          - Resource limits and capacity information
-          - Version information for compatibility tracking
+        Status Information:
+            Provides comprehensive operational visibility including:
+            - Current lifecycle state and runtime status
+            - Network configuration and service statistics
+            - Resource limits and capacity information
+            - Version information for compatibility tracking
 
-      Usage:
-          Essential for monitoring dashboards, health checks, and operational
-          debugging. Status information supports both automated monitoring
-          and manual troubleshooting workflows.
+        Usage:
+            Essential for monitoring dashboards, health checks, and operational
+            debugging. Status information supports both automated monitoring
+            and manual troubleshooting workflows.
 
-      """
-      return FlextResult.ok(
-          {
-              "id": server.id,
-              "address": server.address,
-              "state": server.state,
-              "is_running": server.is_running,
-              "service_count": len(server.services),
-              "max_workers": server.max_workers,
-              "version": server.version,
-          },
-      )
+        """
+        return FlextResult.ok(
+            {
+                "id": server.id,
+                "address": server.address,
+                "state": server.state,
+                "is_running": server.is_running,
+                "service_count": len(server.services),
+                "max_workers": server.max_workers,
+                "version": server.version,
+            },
+        )
 
 
 class FlextGrpcClientService(
@@ -744,231 +744,231 @@ class FlextGrpcClientService(
     """
 
     def _handle_result(
-      self,
-      result: FlextResult[object],
-      error_msg: str,
+        self,
+        result: FlextResult[object],
+        error_msg: str,
     ) -> FlextResult[object]:
-      """Handle result with consistent pattern."""
-      if result.success:
-          return FlextResult.ok(result.data if result.data is not None else {})
-      return FlextResult.fail(result.error or error_msg)
+        """Handle result with consistent pattern."""
+        if result.success:
+            return FlextResult.ok(result.data if result.data is not None else {})
+        return FlextResult.fail(result.error or error_msg)
 
     def execute(self) -> FlextResult[FlextGrpcClient]:
-      """Execute default client operation - implementation required by abstract base."""
-      return FlextResult.fail(
-          "Use execute_operation(operation, client, **kwargs) instead",
-      )
+        """Execute default client operation - implementation required by abstract base."""
+        return FlextResult.fail(
+            "Use execute_operation(operation, client, **kwargs) instead",
+        )
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
-      """Execute client operation.
+        """Execute client operation.
 
-      Args:
-          *args: Arguments (expected: operation, client)
-          **kwargs: Additional options
+        Args:
+            *args: Arguments (expected: operation, client)
+            **kwargs: Additional options
 
-      Returns:
-          FlextResult with operation result
+        Returns:
+            FlextResult with operation result
 
-      """
-      # REFACTORING: Use shared validation - eliminates 15 lines duplication
-      validation_result = self._validate_operation_arguments(
-          args,
-          FlextGrpcConstants.MIN_REQUIRED_ARGS,
-          "operation and client",
-      )
-      if validation_result.is_failure:
-          return FlextResult.fail(validation_result.error or "Validation failed")
+        """
+        # REFACTORING: Use shared validation - eliminates 15 lines duplication
+        validation_result = self._validate_operation_arguments(
+            args,
+            FlextGrpcConstants.MIN_REQUIRED_ARGS,
+            "operation and client",
+        )
+        if validation_result.is_failure:
+            return FlextResult.fail(validation_result.error or "Validation failed")
 
-      if validation_result.data is None:
-          return FlextResult.fail("Validation returned no data")
+        if validation_result.data is None:
+            return FlextResult.fail("Validation returned no data")
 
-      operation, client = validation_result.data
+        operation, client = validation_result.data
 
-      # Type validation for client
+        # Type validation for client
 
-      if not isinstance(client, FlextGrpcClient):
-          return FlextResult.fail("Client must be a FlextGrpcClient instance")
+        if not isinstance(client, FlextGrpcClient):
+            return FlextResult.fail("Client must be a FlextGrpcClient instance")
 
-      # Validate client first
-      validation = client.validate_business_rules()
-      if validation.is_failure:
-          return FlextResult.fail(f"Invalid client: {validation.error}")
+        # Validate client first
+        validation = client.validate_business_rules()
+        if validation.is_failure:
+            return FlextResult.fail(f"Invalid client: {validation.error}")
 
-      return self._execute_client_operation(operation, client, **kwargs)
+        return self._execute_client_operation(operation, client, **kwargs)
 
     def _execute_client_operation(
-      self,
-      operation: str,
-      client: FlextGrpcClient,
-      **kwargs: object,
+        self,
+        operation: str,
+        client: FlextGrpcClient,
+        **kwargs: object,
     ) -> FlextResult[object]:
-      """Execute specific client operation - SOLID principle pattern."""
-      # Use consolidated operation dispatch
-      return self._dispatch_client_operation(operation, client, kwargs)
+        """Execute specific client operation - SOLID principle pattern."""
+        # Use consolidated operation dispatch
+        return self._dispatch_client_operation(operation, client, kwargs)
 
     def _dispatch_client_operation(
-      self,
-      operation: str,
-      client: FlextGrpcClient,
-      kwargs: dict[str, object],
+        self,
+        operation: str,
+        client: FlextGrpcClient,
+        kwargs: dict[str, object],
     ) -> FlextResult[object]:
-      """Dispatch client operation to appropriate handler."""
-      match operation:
-          case "connect":
-              return self._process_client_result(
-                  self._connect_client(client),
-                  "Connect",
-              )
-          case "disconnect":
-              return self._process_client_result(
-                  self._disconnect_client(client),
-                  "Disconnect",
-              )
-          case "call":
-              return self._handle_call_operation(client, kwargs)
-          case "status":
-              return self._process_client_result(
-                  self._get_client_status(client),
-                  "Status",
-              )
-          case _:
-              return FlextResult.fail(f"Unknown client operation: {operation}")
+        """Dispatch client operation to appropriate handler."""
+        match operation:
+            case "connect":
+                return self._process_client_result(
+                    self._connect_client(client),
+                    "Connect",
+                )
+            case "disconnect":
+                return self._process_client_result(
+                    self._disconnect_client(client),
+                    "Disconnect",
+                )
+            case "call":
+                return self._handle_call_operation(client, kwargs)
+            case "status":
+                return self._process_client_result(
+                    self._get_client_status(client),
+                    "Status",
+                )
+            case _:
+                return FlextResult.fail(f"Unknown client operation: {operation}")
 
     def _process_client_result(
-      self,
-      result: FlextResult[FlextGrpcClient] | FlextResult[dict[str, object]],
-      operation_name: str,
+        self,
+        result: FlextResult[FlextGrpcClient] | FlextResult[dict[str, object]],
+        operation_name: str,
     ) -> FlextResult[object]:
-      """Process client operation result with consistent error handling."""
-      if result.success:
-          return FlextResult.ok(result.data)
-      return FlextResult.fail(result.error or f"{operation_name} failed")
+        """Process client operation result with consistent error handling."""
+        if result.success:
+            return FlextResult.ok(result.data)
+        return FlextResult.fail(result.error or f"{operation_name} failed")
 
     def _handle_call_operation(
-      self,
-      client: FlextGrpcClient,
-      kwargs: dict[str, object],
+        self,
+        client: FlextGrpcClient,
+        kwargs: dict[str, object],
     ) -> FlextResult[object]:
-      """Handle call operation with proper parameter extraction."""
-      method_name_arg = kwargs.get("method_name")
-      method_name = str(method_name_arg) if method_name_arg else None
-      request_data = kwargs.get("request_data")
-      call_result = self._call_method(client, method_name, request_data)
-      if call_result.success:
-          return FlextResult.ok(call_result.data)
-      return FlextResult.fail(call_result.error or "Call failed")
+        """Handle call operation with proper parameter extraction."""
+        method_name_arg = kwargs.get("method_name")
+        method_name = str(method_name_arg) if method_name_arg else None
+        request_data = kwargs.get("request_data")
+        call_result = self._call_method(client, method_name, request_data)
+        if call_result.success:
+            return FlextResult.ok(call_result.data)
+        return FlextResult.fail(call_result.error or "Call failed")
 
     def _connect_client(self, client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
-      """Connect client with proper channel state management."""
-      # Validate client state
-      connection_validation = self._validate_client_for_connection(client)
-      if connection_validation.is_failure:
-          return FlextResult.fail(
-              connection_validation.error or "Connection validation failed",
-          )
+        """Connect client with proper channel state management."""
+        # Validate client state
+        connection_validation = self._validate_client_for_connection(client)
+        if connection_validation.is_failure:
+            return FlextResult.fail(
+                connection_validation.error or "Connection validation failed",
+            )
 
-      # Connect and transition channel
-      if client.channel is None:
-          return FlextResult.fail("Client has no channel to connect")
-      channel_result = self._connect_and_ready_channel(client.channel)
-      if channel_result.is_failure:
-          return FlextResult.fail(channel_result.error or "Channel connection failed")
+        # Connect and transition channel
+        if client.channel is None:
+            return FlextResult.fail("Client has no channel to connect")
+        channel_result = self._connect_and_ready_channel(client.channel)
+        if channel_result.is_failure:
+            return FlextResult.fail(channel_result.error or "Channel connection failed")
 
-      return client.copy_with(channel=channel_result.data)
+        return client.copy_with(channel=channel_result.data)
 
     def _validate_client_for_connection(
-      self,
-      client: FlextGrpcClient,
+        self,
+        client: FlextGrpcClient,
     ) -> FlextResult[None]:
-      """Validate client state for connection."""
-      if client.is_connected:
-          return FlextResult.fail("Client is already connected")
-      if not client.channel:
-          return FlextResult.fail("Client has no channel")
-      return FlextResult.ok(None)
+        """Validate client state for connection."""
+        if client.is_connected:
+            return FlextResult.fail("Client is already connected")
+        if not client.channel:
+            return FlextResult.fail("Client has no channel")
+        return FlextResult.ok(None)
 
     def _connect_and_ready_channel(
-      self,
-      channel: FlextGrpcChannel,
+        self,
+        channel: FlextGrpcChannel,
     ) -> FlextResult[FlextGrpcChannel]:
-      """Connect channel and mark as ready."""
-      # Use proper channel state transitions
-      connect_result = channel.connect()
-      if connect_result.is_failure:
-          return FlextResult.fail(connect_result.error or "Connect failed")
+        """Connect channel and mark as ready."""
+        # Use proper channel state transitions
+        connect_result = channel.connect()
+        if connect_result.is_failure:
+            return FlextResult.fail(connect_result.error or "Connect failed")
 
-      connecting_channel = connect_result.data
-      if connecting_channel is None:
-          return FlextResult.fail("Failed to connect channel")
+        connecting_channel = connect_result.data
+        if connecting_channel is None:
+            return FlextResult.fail("Failed to connect channel")
 
-      ready_result = connecting_channel.mark_ready()
-      if ready_result.is_failure:
-          return FlextResult.fail(ready_result.error or "Mark ready failed")
+        ready_result = connecting_channel.mark_ready()
+        if ready_result.is_failure:
+            return FlextResult.fail(ready_result.error or "Mark ready failed")
 
-      if ready_result.data is None:
-          return FlextResult.fail("Failed to mark channel ready")
+        if ready_result.data is None:
+            return FlextResult.fail("Failed to mark channel ready")
 
-      return FlextResult.ok(ready_result.data)
+        return FlextResult.ok(ready_result.data)
 
     def _disconnect_client(
-      self,
-      client: FlextGrpcClient,
+        self,
+        client: FlextGrpcClient,
     ) -> FlextResult[FlextGrpcClient]:
-      """Disconnect client with proper channel state management."""
-      if not client.is_connected:
-          return FlextResult.fail("Client is not connected")
+        """Disconnect client with proper channel state management."""
+        if not client.is_connected:
+            return FlextResult.fail("Client is not connected")
 
-      if not client.channel:
-          return FlextResult.fail("Client has no channel")
+        if not client.channel:
+            return FlextResult.fail("Client has no channel")
 
-      # Use proper channel state transitions
-      disconnect_result = client.channel.disconnect()
-      if disconnect_result.is_failure:
-          return FlextResult.fail(disconnect_result.error or "Disconnect failed")
+        # Use proper channel state transitions
+        disconnect_result = client.channel.disconnect()
+        if disconnect_result.is_failure:
+            return FlextResult.fail(disconnect_result.error or "Disconnect failed")
 
-      disconnected_channel = disconnect_result.data
-      if disconnected_channel is None:
-          return FlextResult.fail("Failed to disconnect channel")
+        disconnected_channel = disconnect_result.data
+        if disconnected_channel is None:
+            return FlextResult.fail("Failed to disconnect channel")
 
-      return client.copy_with(channel=disconnected_channel)
+        return client.copy_with(channel=disconnected_channel)
 
     def _call_method(
-      self,
-      client: FlextGrpcClient,
-      method_name: str | None,
-      request_data: object,
+        self,
+        client: FlextGrpcClient,
+        method_name: str | None,
+        request_data: object,
     ) -> FlextResult[dict[str, object]]:
-      """Make method call through connected client."""
-      if not client.is_connected:
-          return FlextResult.fail("Client is not connected")
+        """Make method call through connected client."""
+        if not client.is_connected:
+            return FlextResult.fail("Client is not connected")
 
-      if not method_name:
-          return FlextResult.fail("Method name is required")
+        if not method_name:
+            return FlextResult.fail("Method name is required")
 
-      return FlextResult.ok(
-          {
-              "status": "success",
-              "method": method_name,
-              "client_id": client.id,
-              "data": request_data,
-              "target": client.target,
-          },
-      )
+        return FlextResult.ok(
+            {
+                "status": "success",
+                "method": method_name,
+                "client_id": client.id,
+                "data": request_data,
+                "target": client.target,
+            },
+        )
 
     def _get_client_status(
-      self,
-      client: FlextGrpcClient,
+        self,
+        client: FlextGrpcClient,
     ) -> FlextResult[dict[str, object]]:
-      """Get comprehensive client status."""
-      return FlextResult.ok(
-          {
-              "id": client.id,
-              "is_connected": client.is_connected,
-              "target": client.target,
-              "channel_state": client.channel.state if client.channel else None,
-              "version": client.version,
-          },
-      )
+        """Get comprehensive client status."""
+        return FlextResult.ok(
+            {
+                "id": client.id,
+                "is_connected": client.is_connected,
+                "target": client.target,
+                "channel_state": client.channel.state if client.channel else None,
+                "version": client.version,
+            },
+        )
 
 
 class FlextGrpcStreamService(FlextDomainService[FlextGrpcStream]):
@@ -1064,139 +1064,139 @@ class FlextGrpcStreamService(FlextDomainService[FlextGrpcStream]):
     """
 
     def _handle_result(
-      self,
-      result: FlextResult[object],
-      error_msg: str,
+        self,
+        result: FlextResult[object],
+        error_msg: str,
     ) -> FlextResult[object]:
-      """Handle result with consistent pattern."""
-      if result.success:
-          return FlextResult.ok(result.data if result.data is not None else {})
-      return FlextResult.fail(result.error or error_msg)
+        """Handle result with consistent pattern."""
+        if result.success:
+            return FlextResult.ok(result.data if result.data is not None else {})
+        return FlextResult.fail(result.error or error_msg)
 
     def execute(self) -> FlextResult[FlextGrpcStream]:
-      """Execute default stream operation - implementation required by abstract base."""
-      return FlextResult.fail("Use execute_operation(operation, **kwargs) instead")
+        """Execute default stream operation - implementation required by abstract base."""
+        return FlextResult.fail("Use execute_operation(operation, **kwargs) instead")
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
-      """Execute stream operation.
+        """Execute stream operation.
 
-      Args:
-          *args: Arguments (expected: operation)
-          **kwargs: Additional options including stream, client, method_name, etc.
+        Args:
+            *args: Arguments (expected: operation)
+            **kwargs: Additional options including stream, client, method_name, etc.
 
-      Returns:
-          FlextResult with operation result
+        Returns:
+            FlextResult with operation result
 
-      """
-      if len(args) < 1:
-          return FlextResult.fail("Missing required argument: operation")
+        """
+        if len(args) < 1:
+            return FlextResult.fail("Missing required argument: operation")
 
-      operation = args[0]
-      if not isinstance(operation, str):
-          return FlextResult.fail("Operation must be a string")
+        operation = args[0]
+        if not isinstance(operation, str):
+            return FlextResult.fail("Operation must be a string")
 
-      match operation:
-          case "create":
-              return self._handle_create_stream(kwargs)
-          case "send":
-              return self._handle_send_stream(kwargs)
-          case "close":
-              return self._handle_close_stream(kwargs)
-          case _:
-              return FlextResult.fail(f"Unknown stream operation: {operation}")
+        match operation:
+            case "create":
+                return self._handle_create_stream(kwargs)
+            case "send":
+                return self._handle_send_stream(kwargs)
+            case "close":
+                return self._handle_close_stream(kwargs)
+            case _:
+                return FlextResult.fail(f"Unknown stream operation: {operation}")
 
     def _handle_create_stream(self, kwargs: dict[str, object]) -> FlextResult[object]:
-      """Handle create stream operation."""
-      client = kwargs.get("client")
-      method_name = kwargs.get("method_name")
-      stream_type = kwargs.get("stream_type", "unary")
+        """Handle create stream operation."""
+        client = kwargs.get("client")
+        method_name = kwargs.get("method_name")
+        stream_type = kwargs.get("stream_type", "unary")
 
-      # Type validation and conversion
+        # Type validation and conversion
 
-      if not isinstance(client, FlextGrpcClient):
-          return FlextResult.fail("Client must be a FlextGrpcClient instance")
+        if not isinstance(client, FlextGrpcClient):
+            return FlextResult.fail("Client must be a FlextGrpcClient instance")
 
-      method_name_str = str(method_name) if method_name else None
-      stream_type_str = str(stream_type) if stream_type else "unary"
+        method_name_str = str(method_name) if method_name else None
+        stream_type_str = str(stream_type) if stream_type else "unary"
 
-      result = self._create_stream(client, method_name_str, stream_type_str)
-      if result.success:
-          return FlextResult.ok(result.data)
-      return FlextResult.fail(result.error or "Create stream failed")
+        result = self._create_stream(client, method_name_str, stream_type_str)
+        if result.success:
+            return FlextResult.ok(result.data)
+        return FlextResult.fail(result.error or "Create stream failed")
 
     def _handle_send_stream(self, kwargs: dict[str, object]) -> FlextResult[object]:
-      """Handle send stream operation."""
-      stream = kwargs.get("stream")
-      data = kwargs.get("data")
+        """Handle send stream operation."""
+        stream = kwargs.get("stream")
+        data = kwargs.get("data")
 
-      # Type validation
+        # Type validation
 
-      if not isinstance(stream, FlextGrpcStream):
-          return FlextResult.fail("Stream must be a FlextGrpcStream instance")
+        if not isinstance(stream, FlextGrpcStream):
+            return FlextResult.fail("Stream must be a FlextGrpcStream instance")
 
-      send_result = self._send_data(stream, data)
-      if send_result.success:
-          return FlextResult.ok(send_result.data)
-      return FlextResult.fail(send_result.error or "Send data failed")
+        send_result = self._send_data(stream, data)
+        if send_result.success:
+            return FlextResult.ok(send_result.data)
+        return FlextResult.fail(send_result.error or "Send data failed")
 
     def _handle_close_stream(self, kwargs: dict[str, object]) -> FlextResult[object]:
-      """Handle close stream operation."""
-      stream = kwargs.get("stream")
+        """Handle close stream operation."""
+        stream = kwargs.get("stream")
 
-      # Type validation
+        # Type validation
 
-      if not isinstance(stream, FlextGrpcStream):
-          return FlextResult.fail("Stream must be a FlextGrpcStream instance")
+        if not isinstance(stream, FlextGrpcStream):
+            return FlextResult.fail("Stream must be a FlextGrpcStream instance")
 
-      close_result = self._close_stream(stream)
-      if close_result.success:
-          return FlextResult.ok(close_result.data)
-      return FlextResult.fail(close_result.error or "Close stream failed")
+        close_result = self._close_stream(stream)
+        if close_result.success:
+            return FlextResult.ok(close_result.data)
+        return FlextResult.fail(close_result.error or "Close stream failed")
 
     def _create_stream(
-      self,
-      client: FlextGrpcClient,
-      method_name: str | None,
-      stream_type: str,
+        self,
+        client: FlextGrpcClient,
+        method_name: str | None,
+        stream_type: str,
     ) -> FlextResult[FlextGrpcStream]:
-      """Create a new gRPC stream with validation."""
-      validation = client.validate_business_rules()
-      if validation.is_failure:
-          return FlextResult.fail(f"Invalid client: {validation.error}")
+        """Create a new gRPC stream with validation."""
+        validation = client.validate_business_rules()
+        if validation.is_failure:
+            return FlextResult.fail(f"Invalid client: {validation.error}")
 
-      if not client.is_connected:
-          return FlextResult.fail("Client is not connected")
+        if not client.is_connected:
+            return FlextResult.fail("Client is not connected")
 
-      if not method_name:
-          return FlextResult.fail("Method name is required")
+        if not method_name:
+            return FlextResult.fail("Method name is required")
 
-      # Use entity factory for proper creation
+        # Use entity factory for proper creation
 
-      return FlextGrpcEntityFactory.create_stream(method_name, stream_type)
+        return FlextGrpcEntityFactory.create_stream(method_name, stream_type)
 
     def _send_data(
-      self,
-      stream: FlextGrpcStream,
-      data: object,
+        self,
+        stream: FlextGrpcStream,
+        data: object,
     ) -> FlextResult[bool]:
-      """Send data through stream."""
-      validation = stream.validate_business_rules()
-      if validation.is_failure:
-          return FlextResult.fail(f"Invalid stream: {validation.error}")
+        """Send data through stream."""
+        validation = stream.validate_business_rules()
+        if validation.is_failure:
+            return FlextResult.fail(f"Invalid stream: {validation.error}")
 
-      # In a real implementation, this would send data through the stream
-      # Use data parameter to avoid ARG002
-      _ = data  # Mark as used
-      return FlextResult.ok(data=True)
+        # In a real implementation, this would send data through the stream
+        # Use data parameter to avoid ARG002
+        _ = data  # Mark as used
+        return FlextResult.ok(data=True)
 
     def _close_stream(self, stream: FlextGrpcStream) -> FlextResult[bool]:
-      """Close stream properly."""
-      validation = stream.validate_business_rules()
-      if validation.is_failure:
-          return FlextResult.fail(f"Invalid stream: {validation.error}")
+        """Close stream properly."""
+        validation = stream.validate_business_rules()
+        if validation.is_failure:
+            return FlextResult.fail(f"Invalid stream: {validation.error}")
 
-      # In a real implementation, this would close the stream
-      return FlextResult.ok(data=True)
+        # In a real implementation, this would close the stream
+        return FlextResult.ok(data=True)
 
 
 class FlextGrpcPlatformService(FlextDomainService[object]):
@@ -1243,9 +1243,7 @@ class FlextGrpcPlatformService(FlextDomainService[object]):
       >>> server_result = unified_service.execute("server", "start", server_instance)
       >>>
       >>> # Client operations
-      >>> client_result = unified_service.execute(
-      ...     "client", "connect", client_instance
-      ... )
+      >>> client_result = unified_service.execute("client", "connect", client_instance)
       >>>
       >>> # Stream operations
       >>> stream_result = unified_service.execute(
@@ -1283,118 +1281,118 @@ class FlextGrpcPlatformService(FlextDomainService[object]):
     """
 
     def __init__(self) -> None:
-      """Initialize unified service with specialized component services.
+        """Initialize unified service with specialized component services.
 
-      Creates instances of all specialized gRPC domain services and establishes
-      the service coordination infrastructure. Initializes the facade pattern
-      implementation for unified gRPC operation management.
+        Creates instances of all specialized gRPC domain services and establishes
+        the service coordination infrastructure. Initializes the facade pattern
+        implementation for unified gRPC operation management.
 
-      Component Services:
-          - FlextGrpcServerService: Server lifecycle and management
-          - FlextGrpcClientService: Client connection and communication
-          - FlextGrpcStreamService: Streaming operations and flow control
+        Component Services:
+            - FlextGrpcServerService: Server lifecycle and management
+            - FlextGrpcClientService: Client connection and communication
+            - FlextGrpcStreamService: Streaming operations and flow control
 
-      Architecture:
-          Implements dependency injection pattern by creating and managing
-          specialized service instances, providing clean separation of concerns
-          while maintaining unified operational interface.
-      """
-      self._server_service = FlextGrpcServerService()
-      self._client_service = FlextGrpcClientService()
-      self._stream_service = FlextGrpcStreamService()
+        Architecture:
+            Implements dependency injection pattern by creating and managing
+            specialized service instances, providing clean separation of concerns
+            while maintaining unified operational interface.
+        """
+        self._server_service = FlextGrpcServerService()
+        self._client_service = FlextGrpcClientService()
+        self._stream_service = FlextGrpcStreamService()
 
     def execute(self) -> FlextResult[object]:
-      """Execute default unified operation - implementation required by abstract base."""
-      return FlextResult.fail(
-          "Use execute_operation(service_type, operation, **kwargs) instead",
-      )
+        """Execute default unified operation - implementation required by abstract base."""
+        return FlextResult.fail(
+            "Use execute_operation(service_type, operation, **kwargs) instead",
+        )
 
     def execute_operation(self, *args: object, **kwargs: object) -> FlextResult[object]:
-      """Execute unified gRPC operation with service type routing and delegation.
+        """Execute unified gRPC operation with service type routing and delegation.
 
-      Primary entry point for all gRPC operations implementing the Facade pattern.
-      Routes operations to appropriate specialized services based on service type
-      while maintaining consistent argument handling and error reporting.
+        Primary entry point for all gRPC operations implementing the Facade pattern.
+        Routes operations to appropriate specialized services based on service type
+        while maintaining consistent argument handling and error reporting.
 
-      This method provides a unified interface for the entire gRPC subsystem,
-      simplifying complex workflows by routing operations to specialized services
-      while ensuring consistent behavior and error handling across operations.
+        This method provides a unified interface for the entire gRPC subsystem,
+        simplifying complex workflows by routing operations to specialized services
+        while ensuring consistent behavior and error handling across operations.
 
-      Args:
-          *args (object): Variable arguments where first argument is required:
-              - args[0] (str): Service type ("server", "client", "stream")
-              - args[1:]: Remaining arguments passed to specialized service
-          **kwargs (object): Additional options passed through to specialized services
+        Args:
+            *args (object): Variable arguments where first argument is required:
+                - args[0] (str): Service type ("server", "client", "stream")
+                - args[1:]: Remaining arguments passed to specialized service
+            **kwargs (object): Additional options passed through to specialized services
 
-      Returns:
-          FlextResult[object]: Operation result from delegated service containing:
-              - Success: Service-specific operation result data
-              - Failure: Detailed error message with routing/execution failures
+        Returns:
+            FlextResult[object]: Operation result from delegated service containing:
+                - Success: Service-specific operation result data
+                - Failure: Detailed error message with routing/execution failures
 
-      Service Type Routing:
-          - "server": Routes to FlextGrpcServerService for server operations
-          - "client": Routes to FlextGrpcClientService for client operations
-          - "stream": Routes to FlextGrpcStreamService for streaming operations
+        Service Type Routing:
+            - "server": Routes to FlextGrpcServerService for server operations
+            - "client": Routes to FlextGrpcClientService for client operations
+            - "stream": Routes to FlextGrpcStreamService for streaming operations
 
-      Delegation Pattern:
-          1. Validate service type argument
-          2. Route to appropriate specialized service
-          3. Pass remaining arguments to service execute() method
-          4. Return result with unified error handling
+        Delegation Pattern:
+            1. Validate service type argument
+            2. Route to appropriate specialized service
+            3. Pass remaining arguments to service execute() method
+            4. Return result with unified error handling
 
-      Example:
-          Unified service operation routing:
+        Example:
+            Unified service operation routing:
 
-          >>> service = FlextGrpcService()
-          >>>
-          >>> # Server operation - routed to FlextGrpcServerService
-          >>> result = service.execute("server", "start", server_instance)
-          >>>
-          >>> # Client operation - routed to FlextGrpcClientService
-          >>> result = service.execute("client", "connect", client_instance)
-          >>>
-          >>> # Stream operation - routed to FlextGrpcStreamService
-          >>> result = service.execute(
-          ...     "stream", "create", client=client_instance, method_name="StreamData"
-          ... )
+            >>> service = FlextGrpcService()
+            >>>
+            >>> # Server operation - routed to FlextGrpcServerService
+            >>> result = service.execute("server", "start", server_instance)
+            >>>
+            >>> # Client operation - routed to FlextGrpcClientService
+            >>> result = service.execute("client", "connect", client_instance)
+            >>>
+            >>> # Stream operation - routed to FlextGrpcStreamService
+            >>> result = service.execute(
+            ...     "stream", "create", client=client_instance, method_name="StreamData"
+            ... )
 
-      Error Handling:
-          Returns detailed error messages for:
-          - Missing or invalid service type argument
-          - Unknown service type routing failures
-          - Delegated service operation failures
-          - Argument validation and parameter extraction errors
+        Error Handling:
+            Returns detailed error messages for:
+            - Missing or invalid service type argument
+            - Unknown service type routing failures
+            - Delegated service operation failures
+            - Argument validation and parameter extraction errors
 
-      Benefits:
-          - Single entry point for all gRPC operations
-          - Consistent error handling across operation types
-          - Simplified testing and mocking interface
-          - Centralized monitoring and logging integration
+        Benefits:
+            - Single entry point for all gRPC operations
+            - Consistent error handling across operation types
+            - Simplified testing and mocking interface
+            - Centralized monitoring and logging integration
 
-      Thread Safety:
-          Stateless routing with delegation to thread-safe specialized services.
-          Safe for concurrent execution across multiple threads.
+        Thread Safety:
+            Stateless routing with delegation to thread-safe specialized services.
+            Safe for concurrent execution across multiple threads.
 
-      """
-      # Validate minimum argument requirements for service type routing
-      if len(args) < 1:
-          return FlextResult.fail("Missing required argument: service_type")
+        """
+        # Validate minimum argument requirements for service type routing
+        if len(args) < 1:
+            return FlextResult.fail("Missing required argument: service_type")
 
-      # Extract and validate service type for routing
-      service_type = args[0]
-      if not isinstance(service_type, str):
-          return FlextResult.fail("Service type must be a string")
+        # Extract and validate service type for routing
+        service_type = args[0]
+        if not isinstance(service_type, str):
+            return FlextResult.fail("Service type must be a string")
 
-      # Delegate to appropriate specialized service based on service type
-      match service_type:
-          case "server":
-              return self._server_service.execute_operation(*args[1:], **kwargs)
-          case "client":
-              return self._client_service.execute_operation(*args[1:], **kwargs)
-          case "stream":
-              return self._stream_service.execute_operation(*args[1:], **kwargs)
-          case _:
-              return FlextResult.fail(f"Unknown service type: {service_type}")
+        # Delegate to appropriate specialized service based on service type
+        match service_type:
+            case "server":
+                return self._server_service.execute_operation(*args[1:], **kwargs)
+            case "client":
+                return self._client_service.execute_operation(*args[1:], **kwargs)
+            case "stream":
+                return self._stream_service.execute_operation(*args[1:], **kwargs)
+            case _:
+                return FlextResult.fail(f"Unknown service type: {service_type}")
 
 
 # Note: Do NOT alias FlextGrpcService here; that name refers to the

@@ -23,70 +23,70 @@ class TestFlextGrpcPlatformSimple:
     """Simple tests for platform coverage without complex mocking."""
 
     def setup_method(self) -> None:
-      """Set up test environment."""
-      container = get_flext_container()
-      container.clear()
+        """Set up test environment."""
+        container = get_flext_container()
+        container.clear()
 
     def test_platform_service_property_fallback_paths(self) -> None:
-      """Test service property edge cases for better coverage."""
-      platform = FlextGrpcPlatform()
+        """Test service property edge cases for better coverage."""
+        platform = FlextGrpcPlatform()
 
-      # Clear container after initialization
-      platform.container.clear()
+        # Clear container after initialization
+        platform.container.clear()
 
-      # This should trigger the fallback creation in service property (lines 51-53)
-      service = platform.service
-      assert service is not None
+        # This should trigger the fallback creation in service property (lines 51-53)
+        service = platform.service
+        assert service is not None
 
-      # Register wrong type to test the fallback path (lines 59-61)
-      platform.container.register("flext_grpc_service", "wrong_type")
-      service2 = platform.service
-      assert service2 is not None
+        # Register wrong type to test the fallback path (lines 59-61)
+        platform.container.register("flext_grpc_service", "wrong_type")
+        service2 = platform.service
+        assert service2 is not None
 
     def test_platform_operations_error_paths(self) -> None:
-      """Test platform operation error handling for coverage."""
-      platform = FlextGrpcPlatform()
+        """Test platform operation error handling for coverage."""
+        platform = FlextGrpcPlatform()
 
-      server = FlextGrpcServer(
-          id="test-server",
-          host="localhost",
-          port=50051,
-          max_workers=10,
-          created_at=datetime.now(UTC),
-      )
+        server = FlextGrpcServer(
+            id="test-server",
+            host="localhost",
+            port=50051,
+            max_workers=10,
+            created_at=datetime.now(UTC),
+        )
 
-      channel = FlextGrpcChannel(
-          id="test-channel",
-          target="localhost:50051",
-          created_at=datetime.now(UTC),
-      )
-      client = FlextGrpcClient(
-          id="test-client",
-          channel=channel,
-          created_at=datetime.now(UTC),
-      )
+        channel = FlextGrpcChannel(
+            id="test-channel",
+            target="localhost:50051",
+            created_at=datetime.now(UTC),
+        )
+        client = FlextGrpcClient(
+            id="test-client",
+            channel=channel,
+            created_at=datetime.now(UTC),
+        )
 
-      # Test operations - these will likely fail but we're testing the error paths
-      # to improve coverage of lines 104, 110, 116, 122, 128, 153, 157, 166, 170, 188, 194
+        # Test operations - these will likely fail but we're testing the error paths
+        # to improve coverage of lines 104, 110, 116, 122, 128, 153, 157, 166, 170, 188, 194
 
-      start_result = platform.start_server(server)
-      # Should either succeed or fail gracefully
-      assert start_result.success or start_result.is_failure
+        start_result = platform.start_server(server)
+        # Should either succeed or fail gracefully
+        assert start_result.success or start_result.is_failure
 
-      stop_result = platform.stop_server(server)
-      assert stop_result.success or stop_result.is_failure
+        stop_result = platform.stop_server(server)
+        assert stop_result.success or stop_result.is_failure
 
-      connect_result = platform.connect_client(client)
-      assert connect_result.success or connect_result.is_failure
+        connect_result = platform.connect_client(client)
+        assert connect_result.success or connect_result.is_failure
 
-      call_result = platform.make_call(client, "test_method", {"data": "test"})
-      assert call_result.success or call_result.is_failure
+        call_result = platform.make_call(client, "test_method", {"data": "test"})
+        assert call_result.success or call_result.is_failure
 
-      server_status = platform.get_server_status(server)
-      assert server_status.success or server_status.is_failure
+        server_status = platform.get_server_status(server)
+        assert server_status.success or server_status.is_failure
 
-      client_status = platform.get_client_status(client)
-      assert client_status.success or client_status.is_failure
+        client_status = platform.get_client_status(client)
+        assert client_status.success or client_status.is_failure
 
-      stream_result = platform.create_stream(client, "test_method")
-      assert stream_result.success or stream_result.is_failure
+        stream_result = platform.create_stream(client, "test_method")
+        assert stream_result.success or stream_result.is_failure

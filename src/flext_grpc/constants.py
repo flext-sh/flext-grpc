@@ -78,42 +78,42 @@ class FlextGrpcSemanticConstants(FlextConstants):
     """
 
     class Network:
-      """Network configuration constants."""
+        """Network configuration constants."""
 
-      # CONSUME from single source - NO DUPLICATION
-      DEFAULT_HOST = FlextConstants.Infrastructure.DEFAULT_HOST
-      DEFAULT_PORT = 50051  # gRPC-specific port
-      MIN_PORT = FlextConstants.Platform.MIN_PORT_NUMBER
-      MAX_PORT = FlextConstants.Platform.MAX_PORT_NUMBER
-      HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
+        # CONSUME from single source - NO DUPLICATION
+        DEFAULT_HOST = FlextConstants.Infrastructure.DEFAULT_HOST
+        DEFAULT_PORT = 50051  # gRPC-specific port
+        MIN_PORT = FlextConstants.Platform.MIN_PORT_NUMBER
+        MAX_PORT = FlextConstants.Platform.MAX_PORT_NUMBER
+        HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
 
     class Service:
-      """Service configuration constants."""
+        """Service configuration constants."""
 
-      # CONSUME from single source - NO DUPLICATION
-      DEFAULT_TIMEOUT = FlextConstants.Defaults.TIMEOUT
-      DEFAULT_MAX_WORKERS = 10
-      MIN_WORKERS = 1
-      MAX_WORKERS = 100
-      MIN_REQUIRED_ARGS = 2
+        # CONSUME from single source - NO DUPLICATION
+        DEFAULT_TIMEOUT = FlextConstants.Defaults.TIMEOUT
+        DEFAULT_MAX_WORKERS = 10
+        MIN_WORKERS = 1
+        MAX_WORKERS = 100
+        MIN_REQUIRED_ARGS = 2
 
     class Validation:
-      """Validation limits and patterns."""
+        """Validation limits and patterns."""
 
-      MAX_SERVICE_NAME_LENGTH = 255
-      MAX_METHOD_NAME_LENGTH = 200
-      MIN_TIMEOUT_SECONDS = 0.1
-      MAX_TIMEOUT_SECONDS = 600.0
+        MAX_SERVICE_NAME_LENGTH = 255
+        MAX_METHOD_NAME_LENGTH = 200
+        MIN_TIMEOUT_SECONDS = 0.1
+        MAX_TIMEOUT_SECONDS = 600.0
 
     class Config:
-      """Default configuration templates."""
+        """Default configuration templates."""
 
-      DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
-          "host": FlextConstants.Infrastructure.DEFAULT_HOST,
-          "port": 50051,
-          "timeout": FlextConstants.Defaults.TIMEOUT,
-          "max_workers": 10,
-      }
+        DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
+            "host": FlextConstants.Infrastructure.DEFAULT_HOST,
+            "port": 50051,
+            "timeout": FlextConstants.Defaults.TIMEOUT,
+            "max_workers": 10,
+        }
 
 
 class FlextGrpcConstants(FlextGrpcSemanticConstants):
@@ -143,10 +143,10 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     MIN_REQUIRED_ARGS = FlextGrpcSemanticConstants.Service.MIN_REQUIRED_ARGS
 
     MAX_SERVICE_NAME_LENGTH = (
-      FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+        FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
     )
     MAX_METHOD_NAME_LENGTH = (
-      FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+        FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
     )
     MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
     MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS

@@ -63,10 +63,10 @@ def clean_container() -> object:
 def sample_grpc_config() -> dict[str, object]:
     """Sample gRPC configuration for tests."""
     return {
-      "host": "localhost",
-      "port": 50051,
-      "max_workers": 10,
-      "timeout": 30.0,
+        "host": "localhost",
+        "port": 50051,
+        "max_workers": 10,
+        "timeout": 30.0,
     }
 
 
@@ -74,19 +74,19 @@ def sample_grpc_config() -> dict[str, object]:
 def test_addresses() -> dict[str, list[str]]:
     """Test addresses for validation."""
     return {
-      "valid": [
-          "localhost:50051",
-          "127.0.0.1:8080",
-          "example.com:443",
-          "api-server:9000",
-      ],
-      "invalid": [
-          "",
-          "localhost",
-          ":50051",
-          "localhost:",
-          "localhost:abc",
-          "localhost:-1",
-          "localhost:70000",
-      ],
+        "valid": [
+            "localhost:50051",
+            "127.0.0.1:8080",
+            "example.com:443",
+            "api-server:9000",
+        ],
+        "invalid": [
+            "",
+            "localhost",
+            ":50051",
+            "localhost:",
+            "localhost:abc",
+            "localhost:-1",
+            "localhost:70000",
+        ],
     }

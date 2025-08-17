@@ -64,9 +64,9 @@ def create_server(
 
     """
     return FlextGrpcEntityFactory.create_server(
-      host=host,
-      port=port,
-      max_workers=max_workers,
+        host=host,
+        port=port,
+        max_workers=max_workers,
     )
 
 
@@ -140,8 +140,8 @@ def create_stream(
 
     """
     return FlextGrpcEntityFactory.create_stream(
-      method_name=method_name,
-      stream_type=stream_type,
+        method_name=method_name,
+        stream_type=stream_type,
     )
 
 
@@ -164,15 +164,15 @@ def create_config(
 
     """
     try:
-      config = FlextGrpcConfig(
-          host=host,
-          port=port,
-          max_workers=max_workers,
-          timeout=timeout,
-      )
-      return FlextResult.ok(config)
+        config = FlextGrpcConfig(
+            host=host,
+            port=port,
+            max_workers=max_workers,
+            timeout=timeout,
+        )
+        return FlextResult.ok(config)
     except Exception as e:
-      return FlextResult.fail(str(e))
+        return FlextResult.fail(str(e))
 
 
 def create_complete_setup(
@@ -209,23 +209,23 @@ def create_complete_setup(
     # Create server
     server_result = create_server(host, port, max_workers)
     if server_result.is_failure:
-      return FlextResult.fail(f"Server creation failed: {server_result.error}")
+        return FlextResult.fail(f"Server creation failed: {server_result.error}")
 
     # Create client
     target = f"{host}:{port}"
     client_result = create_client(target)
     if client_result.is_failure:
-      return FlextResult.fail(f"Client creation failed: {client_result.error}")
+        return FlextResult.fail(f"Client creation failed: {client_result.error}")
 
     # Create configuration
     config_result = create_config(host, port, max_workers)
     if config_result.is_failure:
-      return FlextResult.fail(f"Config creation failed: {config_result.error}")
+        return FlextResult.fail(f"Config creation failed: {config_result.error}")
 
     setup = {
-      "server": server_result.data,
-      "client": client_result.data,
-      "config": config_result.data,
+        "server": server_result.data,
+        "client": client_result.data,
+        "config": config_result.data,
     }
 
     return FlextResult.ok(setup)
@@ -277,13 +277,13 @@ def parse_address(address: str) -> FlextResult[tuple[str, int]]:
 
     """
     if not validate_address(address):
-      return FlextResult.fail(f"Invalid address format: {address}")
+        return FlextResult.fail(f"Invalid address format: {address}")
 
     try:
-      host, port = flext_grpc_parse_target(TGrpcTarget(address))
-      return FlextResult.ok((str(host), int(port)))
+        host, port = flext_grpc_parse_target(TGrpcTarget(address))
+        return FlextResult.ok((str(host), int(port)))
     except Exception as e:
-      return FlextResult.fail(f"Address parsing failed: {e}")
+        return FlextResult.fail(f"Address parsing failed: {e}")
 
 
 # =============================================================================
@@ -302,7 +302,7 @@ def validate_host(host: str) -> bool:
 
     """
     if not host or not host.strip():
-      return False
+        return False
 
     # Basic hostname/IP validation
     pattern = r"^[a-zA-Z0-9.-]+$"

@@ -36,152 +36,152 @@ class TestEntityValidationGaps:
     """Surgical tests for uncovered entity validation paths."""
 
     def test_entity_type_property_coverage(self) -> None:
-      """Test entity_type property for coverage line 101."""
-      server = FlextGrpcServer(
-          id="test-server",
-          host="localhost",
-          port=50051,
-          max_workers=10,
-          created_at=datetime.now(UTC),
-      )
+        """Test entity_type property for coverage line 101."""
+        server = FlextGrpcServer(
+            id="test-server",
+            host="localhost",
+            port=50051,
+            max_workers=10,
+            created_at=datetime.now(UTC),
+        )
 
-      # Line 101: return self.__class__.__name__
-      assert server.entity_type == "FlextGrpcServer"
+        # Line 101: return self.__class__.__name__
+        assert server.entity_type == "FlextGrpcServer"
 
     def test_channel_valid_states_coverage(self) -> None:
-      """Test channel validation with all valid states for coverage."""
-      valid_states = ["idle", "connecting", "ready", "transient_failure", "shutdown"]
+        """Test channel validation with all valid states for coverage."""
+        valid_states = ["idle", "connecting", "ready", "transient_failure", "shutdown"]
 
-      for state in valid_states:
-          channel = FlextGrpcChannel(
-              id=f"test-channel-{state}",
-              target="localhost:50051",
-              state=state,
-              created_at=datetime.now(UTC),
-          )
+        for state in valid_states:
+            channel = FlextGrpcChannel(
+                id=f"test-channel-{state}",
+                target="localhost:50051",
+                state=state,
+                created_at=datetime.now(UTC),
+            )
 
-          validation = channel.validate_domain_rules()
-          assert validation.success
+            validation = channel.validate_domain_rules()
+            assert validation.success
 
     def test_server_valid_states_coverage(self) -> None:
-      """Test server validation with all valid states for coverage."""
-      valid_states = ["stopped", "starting", "running", "stopping"]
+        """Test server validation with all valid states for coverage."""
+        valid_states = ["stopped", "starting", "running", "stopping"]
 
-      for state in valid_states:
-          server = FlextGrpcServer(
-              id=f"test-server-{state}",
-              host="localhost",
-              port=50051,
-              max_workers=10,
-              state=state,
-              created_at=datetime.now(UTC),
-          )
+        for state in valid_states:
+            server = FlextGrpcServer(
+                id=f"test-server-{state}",
+                host="localhost",
+                port=50051,
+                max_workers=10,
+                state=state,
+                created_at=datetime.now(UTC),
+            )
 
-          validation = server.validate_domain_rules()
-          assert validation.success
+            validation = server.validate_domain_rules()
+            assert validation.success
 
     def test_client_channel_none_validation(self) -> None:
-      """Test client validation edge cases for missing coverage."""
-      client = FlextGrpcClient(
-          id="test-client",
-          channel=None,  # No channel
-          created_at=datetime.now(UTC),
-      )
+        """Test client validation edge cases for missing coverage."""
+        client = FlextGrpcClient(
+            id="test-client",
+            channel=None,  # No channel
+            created_at=datetime.now(UTC),
+        )
 
-      # Test validation with no channel
-      validation = client.validate_domain_rules()
-      # Should either pass or fail gracefully
-      assert validation.success or validation.is_failure
+        # Test validation with no channel
+        validation = client.validate_domain_rules()
+        # Should either pass or fail gracefully
+        assert validation.success or validation.is_failure
 
     def test_service_empty_methods_validation(self) -> None:
-      """Test service validation with edge cases."""
-      service = FlextGrpcService(
-          id="test-service",
-          name="test-service",
-          methods=[],  # Empty methods list
-          created_at=datetime.now(UTC),
-      )
+        """Test service validation with edge cases."""
+        service = FlextGrpcService(
+            id="test-service",
+            name="test-service",
+            methods=[],  # Empty methods list
+            created_at=datetime.now(UTC),
+        )
 
-      validation = service.validate_domain_rules()
-      assert validation.success or validation.is_failure
+        validation = service.validate_domain_rules()
+        assert validation.success or validation.is_failure
 
     def test_stream_all_types_coverage(self) -> None:
-      """Test stream validation with all valid stream types for coverage."""
-      valid_types = ["unary", "server_streaming", "client_streaming", "bidirectional"]
+        """Test stream validation with all valid stream types for coverage."""
+        valid_types = ["unary", "server_streaming", "client_streaming", "bidirectional"]
 
-      for stream_type in valid_types:
-          stream = FlextGrpcStream(
-              id=f"test-stream-{stream_type}",
-              method_name="test_method",
-              stream_type=stream_type,
-              created_at=datetime.now(UTC),
-          )
+        for stream_type in valid_types:
+            stream = FlextGrpcStream(
+                id=f"test-stream-{stream_type}",
+                method_name="test_method",
+                stream_type=stream_type,
+                created_at=datetime.now(UTC),
+            )
 
-          validation = stream.validate_domain_rules()
-          assert validation.success
+            validation = stream.validate_domain_rules()
+            assert validation.success
 
     def test_server_zero_workers_validation(self) -> None:
-      """Test server validation with zero workers for coverage."""
-      server = FlextGrpcServer(
-          id="test-server",
-          host="localhost",
-          port=50051,
-          max_workers=0,  # Invalid: zero workers
-          created_at=datetime.now(UTC),
-      )
+        """Test server validation with zero workers for coverage."""
+        server = FlextGrpcServer(
+            id="test-server",
+            host="localhost",
+            port=50051,
+            max_workers=0,  # Invalid: zero workers
+            created_at=datetime.now(UTC),
+        )
 
-      validation = server.validate_domain_rules()
-      # Should catch max_workers validation
-      assert validation.success or validation.is_failure
+        validation = server.validate_domain_rules()
+        # Should catch max_workers validation
+        assert validation.success or validation.is_failure
 
     def test_channel_empty_target_validation(self) -> None:
-      """Test channel validation with empty target."""
-      channel = FlextGrpcChannel(
-          id="test-channel",
-          target="",  # Empty target
-          created_at=datetime.now(UTC),
-      )
+        """Test channel validation with empty target."""
+        channel = FlextGrpcChannel(
+            id="test-channel",
+            target="",  # Empty target
+            created_at=datetime.now(UTC),
+        )
 
-      validation = channel.validate_domain_rules()
-      assert validation.is_failure
-      assert "Channel target cannot be empty" in validation.error
+        validation = channel.validate_domain_rules()
+        assert validation.is_failure
+        assert "Channel target cannot be empty" in validation.error
 
     def test_all_entity_types_coverage(self) -> None:
-      """Test entity_type property for all entities to improve coverage."""
-      entities = [
-          FlextGrpcServer(
-              id="server",
-              host="localhost",
-              port=50051,
-              max_workers=10,
-              created_at=datetime.now(UTC),
-          ),
-          FlextGrpcChannel(
-              id="channel",
-              target="localhost:50051",
-              created_at=datetime.now(UTC),
-          ),
-          FlextGrpcClient(id="client", created_at=datetime.now(UTC)),
-          FlextGrpcService(
-              id="service",
-              name="test-service",
-              created_at=datetime.now(UTC),
-          ),
-          FlextGrpcStream(
-              id="stream",
-              method_name="test_method",
-              stream_type="unary",
-              created_at=datetime.now(UTC),
-          ),
-      ]
+        """Test entity_type property for all entities to improve coverage."""
+        entities = [
+            FlextGrpcServer(
+                id="server",
+                host="localhost",
+                port=50051,
+                max_workers=10,
+                created_at=datetime.now(UTC),
+            ),
+            FlextGrpcChannel(
+                id="channel",
+                target="localhost:50051",
+                created_at=datetime.now(UTC),
+            ),
+            FlextGrpcClient(id="client", created_at=datetime.now(UTC)),
+            FlextGrpcService(
+                id="service",
+                name="test-service",
+                created_at=datetime.now(UTC),
+            ),
+            FlextGrpcStream(
+                id="stream",
+                method_name="test_method",
+                stream_type="unary",
+                created_at=datetime.now(UTC),
+            ),
+        ]
 
-      expected_types = [
-          "FlextGrpcServer",
-          "FlextGrpcChannel",
-          "FlextGrpcClient",
-          "FlextGrpcService",
-          "FlextGrpcStream",
-      ]
+        expected_types = [
+            "FlextGrpcServer",
+            "FlextGrpcChannel",
+            "FlextGrpcClient",
+            "FlextGrpcService",
+            "FlextGrpcStream",
+        ]
 
-      for entity, expected_type in zip(entities, expected_types, strict=False):
-          assert entity.entity_type == expected_type
+        for entity, expected_type in zip(entities, expected_types, strict=False):
+            assert entity.entity_type == expected_type
