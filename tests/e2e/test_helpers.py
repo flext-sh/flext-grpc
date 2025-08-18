@@ -51,10 +51,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from flext_grpc import FlextGrpcClient, FlextGrpcServer
+from flext_grpc import FlextGrpcClient, FlextGrpcServer
 
 
 def assert_server_from_setup(

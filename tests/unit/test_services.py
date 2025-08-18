@@ -57,17 +57,78 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import TYPE_CHECKING
 
+import pytest
 from flext_core import FlextGenerators
 
 from flext_grpc import (
+    FlextGrpcChannel,
+    FlextGrpcClient,
     FlextGrpcServer,
-    FlextGrpcService as FlextGrpcServiceEntity,
+    FlextGrpcService,
     FlextGrpcStream,
 )
 
-if TYPE_CHECKING:
+
+def _assert_error_contains(result: object, expected_text: str) -> None:
+    """Helper function to assert error contains expected text."""
+    assert result.is_failure
+    assert result.error is not None
+    assert expected_text in result.error
+
+
+def _assert_server_result(result: object) -> object:
+    """Helper function to assert server result success."""
+    assert result.success
+    assert result.data is not None
+    return result.data
+
+
+def _assert_client_result(result: object) -> object:
+    """Helper function to assert client result success."""
+    assert result.success
+    assert result.data is not None
+    return result.data
+
+
+def _assert_dict_result(result: object) -> dict[str, object]:
+    """Helper function to assert dict result success."""
+    assert result.success
+    assert result.data is not None
+    assert isinstance(result.data, dict)
+    return result.data
+
+
+class TestFlextGrpcService:
+    """Test suite for FlextGrpcService functionality."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self) -> None:
+        """Set up test fixtures."""
+        # Create test entities for use in tests
+
+        self.server = FlextGrpcServer(
+            id=FlextGenerators.generate_entity_id(),
+            host="localhost",
+            port=50051,
+            created_at=datetime.now(UTC),
+        )
+
+        self.channel = FlextGrpcChannel(
+            id=FlextGenerators.generate_entity_id(),
+            target="localhost:50051",
+            state="idle",
+            created_at=datetime.now(UTC),
+        )
+
+        self.client = FlextGrpcClient(
+            id=FlextGenerators.generate_entity_id(),
+            target="localhost:50051",
+            channel=self.channel,
+            created_at=datetime.now(UTC),
+        )
+
+        self.service = FlextGrpcService()
 
     def test_server_start_invalid_host_fails(self) -> None:
         """Test server start with invalid host fails."""
