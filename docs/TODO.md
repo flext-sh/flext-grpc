@@ -22,7 +22,7 @@ src/flext_grpc/services.py:255:37: error: Argument 1 to "fail" of "FlextResult" 
 src/flext_grpc/services.py:257:29: error: "None" object is not iterable
 ```
 
-**Causa Raiz**: Inconsistência entre `FlextResult.fail()` que espera `str` mas recebe `str | None`
+**Causa Raiz**: Inconsistência entre `FlextResult[None].fail()` que espera `str` mas recebe `str | None`
 
 **Correção Necessária**:
 

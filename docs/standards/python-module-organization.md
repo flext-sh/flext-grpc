@@ -166,7 +166,7 @@ class FlextGrpcServer(FlextEntity):
     def start(self) -> FlextResult[FlextGrpcServer]:
         """Start server with state transition validation."""
         if self.state != "stopped":
-            return FlextResult.fail(f"Cannot start from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot start from state: {self.state}")
         return self.copy_with(state="starting")
 ```
 

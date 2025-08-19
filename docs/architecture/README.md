@@ -181,10 +181,10 @@ class FlextGrpcServerService(FlextDomainService):
 def start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
     validation = server.validate_domain_rules()
     if validation.is_failure:
-        return FlextResult.fail(validation.error)
+        return FlextResult[None].fail(validation.error)
 
     # Business logic
-    return FlextResult.ok(started_server)
+    return FlextResult[None].ok(started_server)
 ```
 
 ## Integration Architecture

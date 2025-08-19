@@ -221,10 +221,10 @@ def create_server(config) -> FlextResult[FlextGrpcServer]:
         server = FlextGrpcServer(**config)
         validation = server.validate_domain_rules()
         if validation.is_failure:
-            return FlextResult.fail(validation.error)
-        return FlextResult.ok(server)
+            return FlextResult[None].fail(validation.error)
+        return FlextResult[None].ok(server)
     except Exception as e:
-        return FlextResult.fail(f"Server creation failed: {e}")
+        return FlextResult[None].fail(f"Server creation failed: {e}")
 ```
 
 ### **Service Integration**

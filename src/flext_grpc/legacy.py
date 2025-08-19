@@ -204,11 +204,6 @@ __all__: list[str] = [
     "GRPC_DEFAULT_PORT",
     "GRPC_DEFAULT_TIMEOUT",
     "GRPC_DEFAULT_WORKERS",
-    # Legacy API functions
-    "create_grpc_client",
-    "create_grpc_config",
-    "create_grpc_server",
-    "grpc_configuration_error",
     # Legacy exception aliases
     "GrpcChannelError",
     "GrpcChannelErrorParams",
@@ -220,6 +215,11 @@ __all__: list[str] = [
     "GrpcTimeoutError",
     "GrpcValidationError",
     "GrpcValidationErrorParams",
+    # Legacy API functions
+    "create_grpc_client",
+    "create_grpc_config",
+    "create_grpc_server",
+    "grpc_configuration_error",
     # Legacy API functions continued
     "setup_grpc_platform",
     "simple_grpc_call",

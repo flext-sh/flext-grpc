@@ -185,11 +185,11 @@ def create_validated_server(config: dict) -> FlextResult[FlextGrpcServer]:
         validation = server.validate_domain_rules()
 
         if validation.is_failure:
-            return FlextResult.fail(f"Server validation failed: {validation.error}")
+            return FlextResult[None].fail(f"Server validation failed: {validation.error}")
 
-        return FlextResult.ok(server)
+        return FlextResult[None].ok(server)
     except Exception as e:
-        return FlextResult.fail(f"Server creation failed: {str(e)}")
+        return FlextResult[None].fail(f"Server creation failed: {str(e)}")
 ```
 
 #### Entity Pattern Integration
@@ -227,7 +227,7 @@ class GrpcHealthCheck(FlextHealthCheck):
     async def check_health(self) -> FlextResult[dict]:
         """Check gRPC platform health."""
         # Implement health check logic
-        return FlextResult.ok({"status": "healthy"})
+        return FlextResult[None].ok({"status": "healthy"})
 ```
 
 #### Performance Monitoring

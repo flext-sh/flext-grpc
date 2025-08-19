@@ -160,12 +160,12 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         """
         if not self.target or not str(self.target).strip():
-            return FlextResult.fail("Channel target cannot be empty")
+            return FlextResult[None].fail("Channel target cannot be empty")
 
         valid_states = {"idle", "connecting", "ready", "transient_failure", "shutdown"}
         if self.state not in valid_states:
-            return FlextResult.fail(f"Invalid channel state: {self.state}")
-        return FlextResult.ok(None)
+            return FlextResult[None].fail(f"Invalid channel state: {self.state}")
+        return FlextResult[None].ok(None)
 
     def is_ready(self) -> bool:
         """Check if channel is ready for gRPC communication.
@@ -207,7 +207,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         """
         if self.state != "idle":
-            return FlextResult.fail(f"Cannot connect from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot connect from state: {self.state}")
         return self.copy_with(state="connecting")
 
     def mark_ready(self) -> FlextResult[FlextGrpcChannel]:
@@ -234,7 +234,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         """
         if self.state != "connecting":
-            return FlextResult.fail(f"Cannot mark ready from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot mark ready from state: {self.state}")
         return self.copy_with(state="ready")
 
     def disconnect(self) -> FlextResult[FlextGrpcChannel]:
@@ -366,20 +366,20 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         """
         if not self.host or not self.host.strip():
-            return FlextResult.fail("Server host cannot be empty")
+            return FlextResult[None].fail("Server host cannot be empty")
 
         if not (FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT):
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 f"Invalid port: {self.port} "
                 f"(must be {FLEXT_GRPC_MIN_PORT}-{FLEXT_GRPC_MAX_PORT})",
             )
 
         if self.max_workers < 1:
-            return FlextResult.fail("Max workers must be >= 1")
+            return FlextResult[None].fail("Max workers must be >= 1")
 
         if self.state not in {"stopped", "starting", "running", "stopping"}:
-            return FlextResult.fail(f"Invalid server state: {self.state}")
-        return FlextResult.ok(None)
+            return FlextResult[None].fail(f"Invalid server state: {self.state}")
+        return FlextResult[None].ok(None)
 
     @property
     def address(self) -> str:
@@ -454,7 +454,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         """
         if self.state in {"running", "starting"}:
-            return FlextResult.fail(f"Server already {self.state}")
+            return FlextResult[None].fail(f"Server already {self.state}")
         return self.copy_with(state="starting")
 
     def mark_running(self) -> FlextResult[FlextGrpcServer]:
@@ -481,7 +481,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         """
         if self.state != "starting":
-            return FlextResult.fail(f"Cannot mark running from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot mark running from state: {self.state}")
         return self.copy_with(state="running")
 
     def stop(self) -> FlextResult[FlextGrpcServer]:
@@ -508,7 +508,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         """
         if self.state in {"stopped", "stopping"}:
-            return FlextResult.fail(f"Server already {self.state}")
+            return FlextResult[None].fail(f"Server already {self.state}")
         return self.copy_with(state="stopping")
 
     def mark_stopped(self) -> FlextResult[FlextGrpcServer]:
@@ -536,7 +536,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         """
         if self.state not in {"stopping", "running"}:
-            return FlextResult.fail(f"Cannot mark stopped from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot mark stopped from state: {self.state}")
         return self.copy_with(state="stopped")
 
     def add_service(self, service: FlextGrpcService) -> FlextResult[FlextGrpcServer]:
@@ -579,7 +579,7 @@ class FlextGrpcServer(FlextGrpcEntity):
                 hasattr(existing_service, "name")
                 and existing_service.name == service.name
             ):
-                return FlextResult.fail("Service already exists")
+                return FlextResult[None].fail("Service already exists")
 
         return self.copy_with(services=[*self.services, service])
 
@@ -650,16 +650,16 @@ class FlextGrpcService(FlextGrpcEntity):
 
         """
         if not self.name or not self.name.strip():
-            return FlextResult.fail("Service name cannot be empty")
+            return FlextResult[None].fail("Service name cannot be empty")
 
         if not self.methods:
-            return FlextResult.fail("Service must have at least one method")
+            return FlextResult[None].fail("Service must have at least one method")
 
         for method in self.methods:
             if not method or not method.strip():
-                return FlextResult.fail("Method name cannot be empty")
+                return FlextResult[None].fail("Method name cannot be empty")
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
     def has_method(self, method_name: str) -> bool:
         """Check if service has the specified method registered.
@@ -714,10 +714,10 @@ class FlextGrpcService(FlextGrpcEntity):
 
         """
         if not method_name or not method_name.strip():
-            return FlextResult.fail("Method name cannot be empty")
+            return FlextResult[None].fail("Method name cannot be empty")
 
         if method_name in self.methods:
-            return FlextResult.fail("Method already exists")
+            return FlextResult[None].fail("Method already exists")
 
         return self.copy_with(methods=[*self.methods, method_name])
 
@@ -792,8 +792,8 @@ class FlextGrpcClient(FlextGrpcEntity):
         if self.channel is not None:
             channel_validation = self.channel.validate_business_rules()
             if channel_validation.is_failure:
-                return FlextResult.fail(f"Invalid channel: {channel_validation.error}")
-        return FlextResult.ok(None)
+                return FlextResult[None].fail(f"Invalid channel: {channel_validation.error}")
+        return FlextResult[None].ok(None)
 
     @property
     def is_connected(self) -> bool:
@@ -876,7 +876,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         """
         channel_result = FlextGrpcEntityFactory.create_channel(target)
         if channel_result.is_failure:
-            return FlextResult.fail(channel_result.error or "Channel creation failed")
+            return FlextResult[None].fail(channel_result.error or "Channel creation failed")
 
         return self.copy_with(channel=channel_result.data)
 
@@ -950,12 +950,12 @@ class FlextGrpcStream(FlextGrpcEntity):
 
         """
         if not self.method_name or not self.method_name.strip():
-            return FlextResult.fail("Stream method name cannot be empty")
+            return FlextResult[None].fail("Stream method name cannot be empty")
 
         valid_types = {"unary", "server_streaming", "client_streaming", "bidirectional"}
         if self.stream_type not in valid_types:
-            return FlextResult.fail(f"Invalid stream type: {self.stream_type}")
-        return FlextResult.ok(None)
+            return FlextResult[None].fail(f"Invalid stream type: {self.stream_type}")
+        return FlextResult[None].ok(None)
 
     @property
     def is_streaming(self) -> bool:
@@ -1098,7 +1098,7 @@ class FlextGrpcEntityFactory:
         """Create a validated gRPC client."""
         channel_result = cls.create_channel(target)
         if channel_result.is_failure:
-            return FlextResult.fail(f"Failed to create client: {channel_result.error}")
+            return FlextResult[None].fail(f"Failed to create client: {channel_result.error}")
 
         return FlextFactory.create_model(
             FlextGrpcClient,

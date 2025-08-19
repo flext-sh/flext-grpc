@@ -161,7 +161,7 @@ server = FlextGrpcServer(
 # Always validate domain rules
 validation = server.validate_domain_rules()
 if validation.is_failure:
-    return FlextResult.fail(validation.error)
+    return FlextResult[None].fail(validation.error)
 ```
 
 ### State Transitions
@@ -189,8 +189,8 @@ if result.success:
 # Always use FlextResult for operations that can fail
 def risky_operation() -> FlextResult[str]:
     if error_condition:
-        return FlextResult.fail("Operation failed")
-    return FlextResult.ok("Success")
+        return FlextResult[None].fail("Operation failed")
+    return FlextResult[None].ok("Success")
 
 # Handle results properly
 result = risky_operation()

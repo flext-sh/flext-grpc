@@ -119,11 +119,11 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         # Validate host
         if not self.host or not self.host.strip():
-            return FlextResult.fail("Host cannot be empty")
+            return FlextResult[None].fail("Host cannot be empty")
 
         # Validate port range
         if not (FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT):
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 f"Port {self.port} must be between {FLEXT_GRPC_MIN_PORT} and {FLEXT_GRPC_MAX_PORT}",
             )
 
@@ -133,45 +133,45 @@ class FlextGrpcServer(FlextGrpcEntity):
             self.max_workers < FlextGrpcConstants.Service.MIN_WORKERS
             or self.max_workers > FlextGrpcConstants.Service.MAX_WORKERS
         ):
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 f"Max workers must be between {FlextGrpcConstants.Service.MIN_WORKERS} and {FlextGrpcConstants.Service.MAX_WORKERS}",
             )
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
     def start(self) -> FlextResult[FlextGrpcServer]:
         """Start the server (state transition: stopped → starting)."""
         if self.state != "stopped":
-            return FlextResult.fail(f"Cannot start server in state: {self.state}")
+            return FlextResult[None].fail(f"Cannot start server in state: {self.state}")
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"state": "starting"}),
         )
 
     def mark_running(self) -> FlextResult[FlextGrpcServer]:
         """Mark server as running (state transition: starting → running)."""
         if self.state != "starting":
-            return FlextResult.fail(f"Cannot mark running from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot mark running from state: {self.state}")
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"state": "running"}),
         )
 
     def stop(self) -> FlextResult[FlextGrpcServer]:
         """Stop the server (state transition: running → stopping)."""
         if self.state != "running":
-            return FlextResult.fail(f"Cannot stop server in state: {self.state}")
+            return FlextResult[None].fail(f"Cannot stop server in state: {self.state}")
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"state": "stopping"}),
         )
 
     def mark_stopped(self) -> FlextResult[FlextGrpcServer]:
         """Mark server as stopped (state transition: stopping → stopped)."""
         if self.state != "stopping":
-            return FlextResult.fail(f"Cannot mark stopped from state: {self.state}")
+            return FlextResult[None].fail(f"Cannot mark stopped from state: {self.state}")
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"state": "stopped"}),
         )
 
@@ -208,38 +208,38 @@ class FlextGrpcClient(FlextGrpcEntity):
         """Validate client business rules and configuration."""
         # Validate target format
         if not flext_grpc_validate_target(self.target):
-            return FlextResult.fail(f"Invalid target format: {self.target}")
+            return FlextResult[None].fail(f"Invalid target format: {self.target}")
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
     def connect(self) -> FlextResult[FlextGrpcClient]:
         """Connect the client (state transition: idle → connecting)."""
         if self.channel_state != "idle":
-            return FlextResult.fail(f"Cannot connect from state: {self.channel_state}")
+            return FlextResult[None].fail(f"Cannot connect from state: {self.channel_state}")
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"channel_state": "connecting"}),
         )
 
     def mark_ready(self) -> FlextResult[FlextGrpcClient]:
         """Mark client as ready (state transition: connecting → ready)."""
         if self.channel_state != "connecting":
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 f"Cannot mark ready from state: {self.channel_state}",
             )
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"channel_state": "ready"}),
         )
 
     def disconnect(self) -> FlextResult[FlextGrpcClient]:
         """Disconnect the client (state transition: ready → shutdown)."""
         if self.channel_state not in {"ready", "connecting"}:
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 f"Cannot disconnect from state: {self.channel_state}",
             )
 
-        return FlextResult.ok(
+        return FlextResult[None].ok(
             self.model_copy(update={"channel_state": "shutdown"}),
         )
 
@@ -262,9 +262,9 @@ class FlextGrpcChannel(FlextGrpcEntity):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate channel business rules and configuration."""
         if not flext_grpc_validate_target(self.target):
-            return FlextResult.fail(f"Invalid target format: {self.target}")
+            return FlextResult[None].fail(f"Invalid target format: {self.target}")
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
 
 class FlextGrpcService(FlextGrpcEntity):
@@ -284,16 +284,16 @@ class FlextGrpcService(FlextGrpcEntity):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate service business rules and configuration."""
         if not self.name or not self.name.strip():
-            return FlextResult.fail("Service name cannot be empty")
+            return FlextResult[None].fail("Service name cannot be empty")
 
         # Validate service name length
 
         if len(self.name) > FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH:
-            return FlextResult.fail(
+            return FlextResult[None].fail(
                 f"Service name too long: {len(self.name)} > {FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH}",
             )
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
 
 class FlextGrpcStream(FlextGrpcEntity):
@@ -313,9 +313,9 @@ class FlextGrpcStream(FlextGrpcEntity):
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate stream business rules and configuration."""
         if not self.method_name or not self.method_name.strip():
-            return FlextResult.fail("Method name cannot be empty")
+            return FlextResult[None].fail("Method name cannot be empty")
 
-        return FlextResult.ok(None)
+        return FlextResult[None].ok(None)
 
 
 # =============================================================================
@@ -344,11 +344,11 @@ def create_grpc_server(
 
         validation = server.validate_business_rules()
         if validation.is_failure:
-            return FlextResult.fail(validation.error or "Server validation failed")
+            return FlextResult[None].fail(validation.error or "Server validation failed")
 
-        return FlextResult.ok(server)
+        return FlextResult[None].ok(server)
     except Exception as e:
-        return FlextResult.fail(str(e))
+        return FlextResult[None].fail(str(e))
 
 
 def create_grpc_client(
@@ -368,11 +368,11 @@ def create_grpc_client(
 
         validation = client.validate_business_rules()
         if validation.is_failure:
-            return FlextResult.fail(validation.error or "Client validation failed")
+            return FlextResult[None].fail(validation.error or "Client validation failed")
 
-        return FlextResult.ok(client)
+        return FlextResult[None].ok(client)
     except Exception as e:
-        return FlextResult.fail(str(e))
+        return FlextResult[None].fail(str(e))
 
 
 # =============================================================================

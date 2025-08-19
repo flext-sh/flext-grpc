@@ -745,18 +745,18 @@ def validate_address(address: str) -> FlextResult[bool]:
         # Validate basic address format
         validation_error = _validate_address_format(address)
         if validation_error:
-            return FlextResult.fail(validation_error)
+            return FlextResult[bool].fail(validation_error)
 
         # Parse and validate components
         host, port_str = address.split(":")
         validation_error = _validate_host_and_port(host, port_str)
         if validation_error:
-            return FlextResult.fail(validation_error)
+            return FlextResult[bool].fail(validation_error)
 
-        return FlextResult.ok(data=True)
+        return FlextResult[bool].ok(True)
 
     except (ValueError, AttributeError) as e:
-        return FlextResult.fail(f"Address validation error: {e}")
+        return FlextResult[bool].fail(f"Address validation error: {e}")
 
 
 def _validate_address_format(address: str) -> str | None:

@@ -92,31 +92,31 @@ class FlextGrpcPlatform:
         """Start a gRPC server."""
         result = self.server_operation("start", server, **options)
         if result.is_failure:
-            return FlextResult.fail(result.error or "Start server failed")
+            return FlextResult[None].fail(result.error or "Start server failed")
         # Safe cast since we know server operations return FlextGrpcServer
         if isinstance(result.data, FlextGrpcServer):
-            return FlextResult.ok(result.data)
-        return FlextResult.fail("Invalid server result type")
+            return FlextResult[None].ok(result.data)
+        return FlextResult[None].fail("Invalid server result type")
 
     def stop_server(self, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
         """Stop a gRPC server."""
         result = self.server_operation("stop", server)
         if result.is_failure:
-            return FlextResult.fail(result.error or "Stop server failed")
+            return FlextResult[None].fail(result.error or "Stop server failed")
         # Safe cast since we know server operations return FlextGrpcServer
         if isinstance(result.data, FlextGrpcServer):
-            return FlextResult.ok(result.data)
-        return FlextResult.fail("Invalid server result type")
+            return FlextResult[None].ok(result.data)
+        return FlextResult[None].fail("Invalid server result type")
 
     def connect_client(self, client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
         """Connect a gRPC client."""
         result = self.client_operation("connect", client)
         if result.is_failure:
-            return FlextResult.fail(result.error or "Connect client failed")
+            return FlextResult[None].fail(result.error or "Connect client failed")
         # Safe cast since we know client operations return FlextGrpcClient
         if isinstance(result.data, FlextGrpcClient):
-            return FlextResult.ok(result.data)
-        return FlextResult.fail("Invalid client result type")
+            return FlextResult[None].ok(result.data)
+        return FlextResult[None].fail("Invalid client result type")
 
     def make_call(
         self,
@@ -141,11 +141,11 @@ class FlextGrpcPlatform:
         """Get server status."""
         result = self.server_operation("status", server)
         if result.is_failure:
-            return FlextResult.fail(result.error or "Get server status failed")
+            return FlextResult[None].fail(result.error or "Get server status failed")
         # Safe cast since we know status operations return dict
         if isinstance(result.data, dict):
-            return FlextResult.ok(result.data)
-        return FlextResult.fail("Invalid status result type")
+            return FlextResult[None].ok(result.data)
+        return FlextResult[None].fail("Invalid status result type")
 
     def get_client_status(
         self,
@@ -154,11 +154,11 @@ class FlextGrpcPlatform:
         """Get client status."""
         result = self.client_operation("status", client)
         if result.is_failure:
-            return FlextResult.fail(result.error or "Get client status failed")
+            return FlextResult[None].fail(result.error or "Get client status failed")
         # Safe cast since we know status operations return dict
         if isinstance(result.data, dict):
-            return FlextResult.ok(result.data)
-        return FlextResult.fail("Invalid status result type")
+            return FlextResult[None].ok(result.data)
+        return FlextResult[None].fail("Invalid status result type")
 
     def create_stream(
         self,
@@ -176,8 +176,8 @@ class FlextGrpcPlatform:
             **options,
         )
         if result.is_failure:
-            return FlextResult.fail(result.error or "Create stream failed")
+            return FlextResult[None].fail(result.error or "Create stream failed")
         # Safe cast since we know stream operations return FlextGrpcStream
         if isinstance(result.data, FlextGrpcStream):
-            return FlextResult.ok(result.data)
-        return FlextResult.fail("Invalid stream result type")
+            return FlextResult[None].ok(result.data)
+        return FlextResult[None].fail("Invalid stream result type")
