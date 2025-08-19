@@ -77,8 +77,8 @@ class FlextGrpcSemanticConstants(FlextConstants):
     values while maintaining full backward compatibility.
     """
 
-    class Network:
-        """Network configuration constants."""
+    class GrpcNetwork:
+        """gRPC network configuration constants."""
 
         # CONSUME from single source - NO DUPLICATION
         DEFAULT_HOST = FlextConstants.Infrastructure.DEFAULT_HOST
@@ -97,8 +97,8 @@ class FlextGrpcSemanticConstants(FlextConstants):
         MAX_WORKERS = 100
         MIN_REQUIRED_ARGS = 2
 
-    class Validation:
-        """Validation limits and patterns."""
+    class GrpcValidation:
+        """gRPC validation limits and patterns."""
 
         MAX_SERVICE_NAME_LENGTH = 255
         MAX_METHOD_NAME_LENGTH = 200
@@ -124,17 +124,17 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     """
 
     # Modern semantic access (Primary API) - direct references
-    Network = FlextGrpcSemanticConstants.Network
+    GrpcNetwork = FlextGrpcSemanticConstants.GrpcNetwork
     Service = FlextGrpcSemanticConstants.Service
-    Validation = FlextGrpcSemanticConstants.Validation
+    GrpcValidation = FlextGrpcSemanticConstants.GrpcValidation
     Config = FlextGrpcSemanticConstants.Config
 
     # Legacy compatibility - flat access patterns (DEPRECATED - use semantic access)
-    DEFAULT_HOST = FlextGrpcSemanticConstants.Network.DEFAULT_HOST
-    DEFAULT_PORT = FlextGrpcSemanticConstants.Network.DEFAULT_PORT
-    MIN_PORT = FlextGrpcSemanticConstants.Network.MIN_PORT
-    MAX_PORT = FlextGrpcSemanticConstants.Network.MAX_PORT
-    HOST_NAME_PATTERN = FlextGrpcSemanticConstants.Network.HOST_NAME_PATTERN
+    DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
+    DEFAULT_PORT = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_PORT
+    MIN_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MIN_PORT
+    MAX_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MAX_PORT
+    HOST_NAME_PATTERN = FlextGrpcSemanticConstants.GrpcNetwork.HOST_NAME_PATTERN
 
     DEFAULT_TIMEOUT = FlextGrpcSemanticConstants.Service.DEFAULT_TIMEOUT
     DEFAULT_MAX_WORKERS = FlextGrpcSemanticConstants.Service.DEFAULT_MAX_WORKERS
@@ -143,13 +143,13 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     MIN_REQUIRED_ARGS = FlextGrpcSemanticConstants.Service.MIN_REQUIRED_ARGS
 
     MAX_SERVICE_NAME_LENGTH = (
-        FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+        FlextGrpcSemanticConstants.GrpcValidation.MAX_SERVICE_NAME_LENGTH
     )
     MAX_METHOD_NAME_LENGTH = (
-        FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+        FlextGrpcSemanticConstants.GrpcValidation.MAX_METHOD_NAME_LENGTH
     )
-    MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
-    MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
+    MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MIN_TIMEOUT_SECONDS
+    MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
 
     DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
@@ -158,12 +158,12 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
 # LEGACY CONSTANTS - Backward compatibility module-level aliases
 # =============================================================================
 
-# Network configuration constants (DEPRECATED - use FlextGrpcConstants.Network.*)
-FLEXT_GRPC_DEFAULT_HOST = FlextGrpcSemanticConstants.Network.DEFAULT_HOST
-FLEXT_GRPC_DEFAULT_PORT = FlextGrpcSemanticConstants.Network.DEFAULT_PORT
-FLEXT_GRPC_MIN_PORT = FlextGrpcSemanticConstants.Network.MIN_PORT
-FLEXT_GRPC_MAX_PORT = FlextGrpcSemanticConstants.Network.MAX_PORT
-FLEXT_GRPC_HOST_NAME_PATTERN = FlextGrpcSemanticConstants.Network.HOST_NAME_PATTERN
+# Network configuration constants (DEPRECATED - use FlextGrpcConstants.GrpcNetwork.*)
+FLEXT_GRPC_DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
+FLEXT_GRPC_DEFAULT_PORT = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_PORT
+FLEXT_GRPC_MIN_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MIN_PORT
+FLEXT_GRPC_MAX_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MAX_PORT
+FLEXT_GRPC_HOST_NAME_PATTERN = FlextGrpcSemanticConstants.GrpcNetwork.HOST_NAME_PATTERN
 
 # Service configuration constants (DEPRECATED - use FlextGrpcConstants.Service.*)
 FLEXT_GRPC_DEFAULT_TIMEOUT = FlextGrpcSemanticConstants.Service.DEFAULT_TIMEOUT
@@ -171,18 +171,18 @@ FLEXT_GRPC_DEFAULT_MAX_WORKERS = FlextGrpcSemanticConstants.Service.DEFAULT_MAX_
 FLEXT_GRPC_MIN_WORKERS = FlextGrpcSemanticConstants.Service.MIN_WORKERS
 FLEXT_GRPC_MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
 
-# Validation rule constants (DEPRECATED - use FlextGrpcConstants.Validation.*)
+# Validation rule constants (DEPRECATED - use FlextGrpcConstants.GrpcValidation.*)
 FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH = (
-    FlextGrpcSemanticConstants.Validation.MAX_SERVICE_NAME_LENGTH
+    FlextGrpcSemanticConstants.GrpcValidation.MAX_SERVICE_NAME_LENGTH
 )
 FLEXT_GRPC_MAX_METHOD_NAME_LENGTH = (
-    FlextGrpcSemanticConstants.Validation.MAX_METHOD_NAME_LENGTH
+    FlextGrpcSemanticConstants.GrpcValidation.MAX_METHOD_NAME_LENGTH
 )
 FLEXT_GRPC_MIN_TIMEOUT_SECONDS = (
-    FlextGrpcSemanticConstants.Validation.MIN_TIMEOUT_SECONDS
+    FlextGrpcSemanticConstants.GrpcValidation.MIN_TIMEOUT_SECONDS
 )
 FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
-    FlextGrpcSemanticConstants.Validation.MAX_TIMEOUT_SECONDS
+    FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
 )
 
 # Configuration constants (DEPRECATED - use FlextGrpcConstants.Config.*)

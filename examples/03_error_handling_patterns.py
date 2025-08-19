@@ -66,7 +66,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import asyncio
+import sys
+from pathlib import Path
 from typing import Any, NoReturn
+
+# Add src directory to Python path for development
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from flext_core import FlextResult, get_logger
 
@@ -123,8 +128,8 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
             config_value=workers,
         )
 
-    def _raise_config_error() -> NoReturn:
-        msg: str = f"Failed to create config: {config_result.error}"
+    def _raise_config_error(error_msg: str) -> NoReturn:
+        msg: str = f"Failed to create config: {error_msg}"
         raise FlextGrpcConfigurationError(msg)
 
     try:
@@ -135,10 +140,13 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
         if workers < 1:
             _raise_workers_error()
 
-        config_result = create_config(host="localhost", port=port, max_workers=workers)
+        try:
+            config_result = create_config(host="localhost", port=port, max_workers=workers)
+        except Exception as e:
+            config_result = FlextResult[None].fail(str(e))
 
         if config_result.is_failure:
-            _raise_config_error()
+            _raise_config_error(config_result.error)
 
         return config_result
 

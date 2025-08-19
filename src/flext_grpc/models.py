@@ -1,8 +1,30 @@
-"""Compatibility models module mapping to grpc_models.
+"""FLEXT gRPC Domain Models.
 
-Re-exports domain models for tests that import flext_grpc.models directly.
+This module provides the main domain models for gRPC communication,
+following Clean Architecture and SOLID principles. Contains all entities
+that represent the core domain concepts.
+
+Copyright (c) 2025 FLEXT Contributors
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
-from flext_grpc.grpc_models import *  # noqa: F403
+# Re-export all entities from entities module for clean API
+from flext_grpc.entities import (
+    FlextGrpcChannel,
+    FlextGrpcClient,
+    FlextGrpcEntity,
+    FlextGrpcServer,
+    FlextGrpcService,
+    FlextGrpcStream,
+)
+
+__all__ = [
+    "FlextGrpcChannel",
+    "FlextGrpcClient",
+    "FlextGrpcEntity",
+    "FlextGrpcServer",
+    "FlextGrpcService",
+    "FlextGrpcStream",
+]

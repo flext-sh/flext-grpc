@@ -68,10 +68,16 @@ import time
 
 from flext_grpc import (
     FlextGrpcPlatform,
+    FlextGrpcServerService,
+    FlextGrpcService,
+    TGrpcTarget,
     create_client,
     create_complete_setup,
+    create_config,
     create_server,
     create_service,
+    flext_grpc_parse_target,
+    flext_grpc_validate_target,
     validate_address,
 )
 
@@ -416,18 +422,7 @@ class TestCompleteGrpcWorkflow:
     def test_full_library_integration(self) -> None:
         """Test integration of all library components."""
         # Import everything to test no missing dependencies
-        from flext_grpc import (
-            # Entities
-            FlextGrpcPlatform,
-            FlextGrpcService,
-            # Types
-            TGrpcTarget,
-            # API
-            create_client,
-            create_config,
-            create_server,
-            create_service,
-        )
+        # All imports now at top of file
 
         # 1. Create using API functions
         server = create_server("localhost", 9106)
@@ -448,10 +443,7 @@ class TestCompleteGrpcWorkflow:
         # 4. Validate types work
         target_str = "localhost:9106"
         TGrpcTarget(target_str)
-        from flext_grpc import (
-            flext_grpc_parse_target,
-            flext_grpc_validate_target,
-        )
+        # Imports now at top of file
 
         assert flext_grpc_validate_target(target_str)
         parsed = flext_grpc_parse_target(target_str)
@@ -459,8 +451,8 @@ class TestCompleteGrpcWorkflow:
             raise AssertionError(f"Expected {('localhost', 9106)}, got {parsed}")
 
         # 5. Test service works
-        app_service = FlextGrpcService()
-        service_result = app_service.execute("server", "status", server_result.data)
+        app_service = FlextGrpcServerService()
+        service_result = app_service.execute("status", server_result.data)
         assert service_result.success
 
     def test_performance_workflow(self) -> None:

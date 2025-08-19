@@ -8,8 +8,8 @@ Practical examples demonstrating FLEXT gRPC usage patterns and integration scena
 
 ```
 examples/
-├── basic_usage.py              # Core functionality and entity usage
-├── advanced_usage.py           # Complex scenarios with streaming
+├── 01_basic_usage.py           # Core functionality and entity usage
+├── 02_advanced_usage.py        # Complex scenarios with streaming
 ├── 03_error_handling_patterns.py # Comprehensive error handling
 └── README.md                   # This documentation
 ```
@@ -277,7 +277,7 @@ server = FlextGrpcServer(
 )
 
 # Always validate before use
-validation = server.validate_domain_rules()
+validation = server.validate_business_rules()
 if validation.is_failure:
     print(f"Validation failed: {validation.error}")
     exit(1)

@@ -6,8 +6,8 @@ import importlib.metadata
 
 from flext_core import FlextContainer, FlextResult
 
-# Import from consolidated PEP8 files
-from flext_grpc.grpc_api import (
+# Import from PEP8 organized modules
+from flext_grpc.api import (
     create_channel,
     create_client,
     create_complete_setup,
@@ -18,20 +18,28 @@ from flext_grpc.grpc_api import (
     parse_address,
     validate_address,
 )
-from flext_grpc.grpc_config import FlextGrpcConfig
-from flext_grpc.grpc_exceptions import (
+from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.exceptions import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
-from flext_grpc.grpc_models import (
+from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
+)
+from flext_grpc.services import (
+    FlextGrpcClientService,
+    FlextGrpcPlatform,
+    FlextGrpcServerService,
+    FlextGrpcStreamService,
+)
+from flext_grpc.typings import (
     TGrpcChannelState,
     TGrpcHost,
     TGrpcMethodName,
@@ -43,12 +51,6 @@ from flext_grpc.grpc_models import (
     TGrpcTimeout,
     flext_grpc_parse_target,
     flext_grpc_validate_target,
-)
-from flext_grpc.grpc_services import (
-    FlextGrpcClientService,
-    FlextGrpcPlatform,
-    FlextGrpcServerService,
-    FlextGrpcStreamService,
 )
 
 try:

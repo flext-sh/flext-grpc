@@ -60,7 +60,7 @@ class TestEntityValidationGaps:
                 created_at=datetime.now(UTC),
             )
 
-            validation = channel.validate_domain_rules()
+            validation = channel.validate_business_rules()
             assert validation.success
 
     def test_server_valid_states_coverage(self) -> None:
@@ -77,7 +77,7 @@ class TestEntityValidationGaps:
                 created_at=datetime.now(UTC),
             )
 
-            validation = server.validate_domain_rules()
+            validation = server.validate_business_rules()
             assert validation.success
 
     def test_client_channel_none_validation(self) -> None:
@@ -89,7 +89,7 @@ class TestEntityValidationGaps:
         )
 
         # Test validation with no channel
-        validation = client.validate_domain_rules()
+        validation = client.validate_business_rules()
         # Should either pass or fail gracefully
         assert validation.success or validation.is_failure
 
@@ -102,7 +102,7 @@ class TestEntityValidationGaps:
             created_at=datetime.now(UTC),
         )
 
-        validation = service.validate_domain_rules()
+        validation = service.validate_business_rules()
         assert validation.success or validation.is_failure
 
     def test_stream_all_types_coverage(self) -> None:
@@ -117,7 +117,7 @@ class TestEntityValidationGaps:
                 created_at=datetime.now(UTC),
             )
 
-            validation = stream.validate_domain_rules()
+            validation = stream.validate_business_rules()
             assert validation.success
 
     def test_server_zero_workers_validation(self) -> None:
@@ -130,7 +130,7 @@ class TestEntityValidationGaps:
             created_at=datetime.now(UTC),
         )
 
-        validation = server.validate_domain_rules()
+        validation = server.validate_business_rules()
         # Should catch max_workers validation
         assert validation.success or validation.is_failure
 
@@ -142,7 +142,7 @@ class TestEntityValidationGaps:
             created_at=datetime.now(UTC),
         )
 
-        validation = channel.validate_domain_rules()
+        validation = channel.validate_business_rules()
         assert validation.is_failure
         assert "Channel target cannot be empty" in validation.error
 

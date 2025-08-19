@@ -59,16 +59,22 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import sys
 from datetime import UTC, datetime
+from pathlib import Path
+
+# Add src directory to Python path for development
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
+    FlextGrpcClientService,
     FlextGrpcConfig,
     FlextGrpcServer,
+    FlextGrpcServerService,
     FlextGrpcService,
     FlextGrpcStream,
-    GrpcOperations,
     TGrpcTarget,
 )
 
@@ -77,7 +83,7 @@ class GrpcServerManager:
     """Advanced server management example."""
 
     def __init__(self) -> None:
-        self.operations = GrpcOperations()
+        self.server_service = FlextGrpcServerService()
         self.servers: dict[str, FlextGrpcServer] = {}
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
@@ -119,11 +125,11 @@ class GrpcServerManager:
         results = {}
 
         for server_id, server in self.servers.items():
-            start_result = self.operations.start_server(server)
+            start_result = self.server_service.execute("start", server)
             if start_result.success:
                 self.servers[server_id] = start_result.data
                 results[server_id] = True
-                print(f"✅ Started server {server_id} on {server.get_address()}")
+                print(f"✅ Started server {server_id} on {server.address}")
             else:
                 results[server_id] = False
                 print(f"❌ Failed to start server {server_id}: {start_result.error}")
@@ -135,8 +141,8 @@ class GrpcServerManager:
         results = {}
 
         for server_id, server in self.servers.items():
-            if server.is_running():
-                stop_result = self.operations.stop_server(server)
+            if server.is_running:
+                stop_result = self.server_service.execute("stop", server)
                 if stop_result.success:
                     self.servers[server_id] = stop_result.data
                     results[server_id] = True
@@ -146,7 +152,7 @@ class GrpcServerManager:
                     print(f"❌ Failed to stop server {server_id}: {stop_result.error}")
             else:
                 results[server_id] = True
-                print(f"i Server {server_id} already stopped")
+                print(f"i  Server {server_id} already stopped")
 
         return results
 
@@ -157,12 +163,12 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
             status[server_id] = {
-                "address": server.get_address(),
+                "address": server.address,
                 "state": server.state,
                 "max_workers": str(server.max_workers),
                 "timeout": f"{config.timeout}s",
-                "is_running": str(server.is_running()),
-                "is_valid": str(server.is_valid()),
+                "is_running": str(server.is_running),
+                "is_valid": str(server.validate_business_rules().success),
             }
 
         return status
@@ -172,7 +178,7 @@ class GrpcClientPool:
     """Advanced client pool management."""
 
     def __init__(self) -> None:
-        self.operations = GrpcOperations()
+        self.client_service = FlextGrpcClientService()
         self.clients: dict[str, FlextGrpcClient] = {}
         self.connection_status: dict[str, bool] = {}
 
@@ -185,7 +191,7 @@ class GrpcClientPool:
 
         for i, server in enumerate(servers):
             client_id = f"client-for-{server.id}"
-            target = server.get_address()
+            target = server.address
 
             channel = FlextGrpcChannel(
                 id=f"channel-{i}",
@@ -210,7 +216,7 @@ class GrpcClientPool:
         results = {}
 
         for client_id, client in self.clients.items():
-            connect_result = self.operations.connect_client(client)
+            connect_result = self.client_service.execute("connect", client)
             if connect_result.success:
                 self.clients[client_id] = connect_result.data
                 self.connection_status[client_id] = True
@@ -233,10 +239,12 @@ class GrpcClientPool:
         results = {}
 
         for client_id, client in self.clients.items():
-            if self.connection_status[client_id] and client.is_connected():
-                call_result = self.operations.call_method(client, method_name, data)
+            if self.connection_status[client_id] and client.is_connected:
+                call_result = self.client_service.execute(
+                    "call", client, method_name=method_name, data=data
+                )
                 if call_result.success:
-                    results[client_id] = call_result.data
+                    results[client_id] = call_result.data or {"method": method_name, "status": "success"}
                     print(f"✅ Called {method_name} on {client_id}")
                 else:
                     results[client_id] = {"error": call_result.error}
@@ -260,7 +268,7 @@ class ServiceRegistry:
 
     def register_service(self, service: FlextGrpcService, server_id: str) -> bool:
         """Register a service with a server."""
-        validation = service.validate_domain_rules()
+        validation = service.validate_business_rules()
         if validation.is_failure:
             print(f"❌ Service validation failed: {validation.error}")
             return False
@@ -463,10 +471,10 @@ def example_4_streaming() -> None:
 
     print("Stream Analysis:")
     for stream in streams:
-        validation = stream.validate_domain_rules()
+        validation = stream.validate_business_rules()
         print(f"  {stream.method_name} ({stream.stream_type}):")
         print(f"    Valid: {validation.success}")
-        print(f"    Is Streaming: {stream.is_streaming()}")
+        print(f"    Is Streaming: {stream.is_streaming}")
         if validation.is_failure:
             print(f"    Error: {validation.error}")
 
@@ -477,7 +485,7 @@ def example_5_error_handling() -> None:
     """Example 5: Comprehensive error handling."""
     print("=== Example 5: Error Handling Patterns ===")
 
-    ops = GrpcOperations()
+    server_service = FlextGrpcServerService()
 
     # Server error scenarios
     print("Server Error Scenarios:")
@@ -490,7 +498,7 @@ def example_5_error_handling() -> None:
             port=0,  # Invalid
             created_at=datetime.now(UTC),
         )
-        validation = invalid_server.validate_domain_rules()
+        validation = invalid_server.validate_business_rules()
         print(f"  Invalid server validation: {validation.error}")
     except (RuntimeError, ValueError, TypeError) as e:
         print(f"  Server creation failed: {e}")
@@ -501,10 +509,10 @@ def example_5_error_handling() -> None:
         created_at=datetime.now(UTC),
     )
 
-    start1 = ops.start_server(server)
+    start1 = server_service.execute("start", server)
     if start1.success:
         running_server = start1.data
-        start2 = ops.start_server(running_server)
+        start2 = server_service.execute("start", running_server)
         print(f"  Double start error: {start2.error}")
 
     # Client error scenarios
@@ -517,7 +525,8 @@ def example_5_error_handling() -> None:
         created_at=datetime.now(UTC),
     )
 
-    connect_result = ops.connect_client(no_channel_client)
+    client_service = FlextGrpcClientService()
+    connect_result = client_service.execute("connect", no_channel_client)
     print(f"  No channel error: {connect_result.error}")
 
     # Try to call method on disconnected client
@@ -533,7 +542,7 @@ def example_5_error_handling() -> None:
         created_at=datetime.now(UTC),
     )
 
-    call_result = ops.call_method(disconnected_client, "TestMethod")
+    call_result = client_service.execute("call", disconnected_client, method_name="TestMethod")
     print(f"  Disconnected call error: {call_result.error}")
 
     # Configuration error scenarios

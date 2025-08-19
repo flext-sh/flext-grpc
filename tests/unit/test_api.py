@@ -45,7 +45,7 @@ Example:
     ...
     ...     # Assert: Verify entity creation and validation
     ...     assert entity is not None
-    ...     assert entity.validate_domain_rules().success
+    ...     assert entity.validate_business_rules().success
 
 Integration:
     - Tests API functions from flext_grpc.api module
@@ -281,11 +281,7 @@ class TestAPIFunctions:
                 raise AssertionError(f"Expected {key} in {setup}")
 
         # Check types
-        from flext_grpc import (
-            FlextGrpcClient,
-            FlextGrpcServer,
-            FlextGrpcService,
-        )
+        # All imports are at the top of the file
 
         assert isinstance(setup["server"], FlextGrpcServer)
         assert isinstance(setup["client"], FlextGrpcClient)
@@ -294,11 +290,7 @@ class TestAPIFunctions:
 
     def _validate_default_values(self, setup: dict[str, object]) -> None:
         """Validate default values in setup."""
-        from flext_grpc import (
-            FlextGrpcClient,
-            FlextGrpcServer,
-            FlextGrpcService,
-        )
+        # All imports are at the top of the file
 
         server = setup["server"]
         client = setup["client"]
@@ -327,7 +319,7 @@ class TestAPIFunctions:
             ["method1", "method2"],
         )
 
-        from flext_grpc import FlextGrpcServer, FlextGrpcService
+        # All imports are at the top of the file
 
         custom_server = custom_setup["server"]
         custom_service = custom_setup["service"]
@@ -351,11 +343,11 @@ class TestAPIFunctions:
         stream = create_stream("test_method", "server_streaming")
 
         # Validate all entities
-        assert server.validate_domain_rules().success
-        assert client.validate_domain_rules().success
-        assert channel.validate_domain_rules().success
-        assert service.validate_domain_rules().success
-        assert stream.validate_domain_rules().success
+        assert server.validate_business_rules().success
+        assert client.validate_business_rules().success
+        assert channel.validate_business_rules().success
+        assert service.validate_business_rules().success
+        assert stream.validate_business_rules().success
 
     def test_factory_functions_use_proper_ids(self) -> None:
         """Test that factory functions generate proper IDs."""
@@ -392,4 +384,4 @@ class TestAPIFunctions:
         # All should have timestamps within expected range
         entities = [server, client, channel, service, stream]
         for entity in entities:
-            assert before <= entity.created_at <= after
+            assert before <= entity.created_at.root <= after

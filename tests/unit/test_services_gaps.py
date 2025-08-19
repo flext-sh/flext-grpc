@@ -10,11 +10,6 @@ Test Focus:
     - Edge case error handling missing from main test suite
     - Service execution branches not covered
 
-Coverage Target Lines (services.py):
-    107, 114, 229-231, 311, 314, 322, 425, 431, 468, 472, 511, 515,
-    741-743, 763, 766, 774, 779, 848, 868, 872, 876, 879, 892, 897, 901,
-    1042-1044, 1058, 1062, 1105, 1122, 1140, 1161, 1172, 1356
-
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
@@ -24,24 +19,24 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_grpc import FlextGrpcChannel, FlextGrpcServer, FlextGrpcService
+from flext_grpc import (
+    FlextGrpcChannel,
+    FlextGrpcClient,
+    FlextGrpcServer,
+    FlextGrpcService,
+    FlextGrpcServerService,
+    FlextGrpcClientService,
+    FlextGrpcStreamService,
+    FlextGrpcStream,
+)
 
 
 class TestServicesValidationGaps:
     """Surgical tests for uncovered service validation and error paths."""
 
-    def test_service_execute_missing_arguments(self) -> None:
-        """Test service execute with missing arguments for coverage line 107."""
-        service = FlextGrpcService()
-
-        # Line 107: Missing required arguments error path
-        result = service.execute("server")  # Missing required arguments
-        assert result.is_failure
-        assert "Missing required arguments" in result.error
-
-    def test_service_execute_non_string_operation(self) -> None:
-        """Test service execute with non-string operation for coverage line 114."""
-        service = FlextGrpcService()
+    def test_server_service_unknown_command(self) -> None:
+        """Test server service with unknown command."""
+        service = FlextGrpcServerService()
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
@@ -50,110 +45,157 @@ class TestServicesValidationGaps:
             created_at=datetime.now(UTC),
         )
 
-        # Line 114: Operation must be a string error path
-        result = service.execute("server", 123, server)  # Non-string operation (123)
+        result = service.execute("unknown_command", server)
         assert result.is_failure
-        assert "Operation must be a string" in result.error
+        assert "Unknown server command" in result.error
 
-    def test_service_execute_invalid_service_type(self) -> None:
-        """Test service execute with invalid service type."""
-        service = FlextGrpcService()
-        server = FlextGrpcServer(
-            id="test-server",
-            host="localhost",
-            port=50051,
-            max_workers=10,
-            created_at=datetime.now(UTC),
-        )
-
-        # Test with invalid service type
-        result = service.execute("invalid_service_type", "start", server)
-        assert result.is_failure
-        assert "Invalid service type" in result.error or "Unknown" in result.error
-
-    def test_service_execute_invalid_operation(self) -> None:
-        """Test service execute with invalid operation."""
-        service = FlextGrpcService()
-        server = FlextGrpcServer(
-            id="test-server",
-            host="localhost",
-            port=50051,
-            max_workers=10,
-            created_at=datetime.now(UTC),
-        )
-
-        # Test with invalid operation
-        result = service.execute("server", "invalid_operation", server)
-        assert result.is_failure
-        # Should fail with some validation error
-
-    def test_service_execute_wrong_entity_type(self) -> None:
-        """Test service execute with wrong entity type for operation."""
-        service = FlextGrpcService()
-        channel = FlextGrpcChannel(
-            id="test-channel",
+    def test_client_service_unknown_command(self) -> None:
+        """Test client service with unknown command."""
+        service = FlextGrpcClientService()
+        client = FlextGrpcClient(
+            id="test-client",
             target="localhost:50051",
             created_at=datetime.now(UTC),
         )
 
-        # Try to use channel with server operation
-        result = service.execute("server", "start", channel)
+        result = service.execute("unknown_command", client)
         assert result.is_failure
-        # Should fail with entity type mismatch
+        assert "Unknown client command" in result.error
+
+    def test_stream_service_unknown_command(self) -> None:
+        """Test stream service with unknown command."""
+        service = FlextGrpcStreamService()
+        stream = FlextGrpcStream(
+            id="test-stream",
+            stream_type="unary",
+            method_name="TestMethod",
+            created_at=datetime.now(UTC),
+        )
+
+        result = service.execute("unknown_command", stream)
+        assert result.is_failure
+        assert "Unknown stream command" in result.error
+
+    def test_server_service_invalid_server_state(self) -> None:
+        """Test server service operations with invalid server state."""
+        service = FlextGrpcServerService()
+        # Create server with invalid port to trigger validation failure
+        server = FlextGrpcServer(
+            id="test-server",
+            host="",  # Invalid empty host
+            port=50051,
+            max_workers=10,
+            created_at=datetime.now(UTC),
+        )
+
+        result = service.execute("start", server)
+        assert result.is_failure
+        assert "Server validation failed" in result.error
+
+    def test_client_service_missing_channel(self) -> None:
+        """Test client operations when channel is None."""
+        service = FlextGrpcClientService()
+        client = FlextGrpcClient(
+            id="test-client",
+            target="localhost:50051",
+            channel=None,  # No channel
+            created_at=datetime.now(UTC),
+        )
+
+        result = service.execute("connect", client)
+        assert result.is_failure
+        assert "has no channel" in result.error
+
+    def test_client_service_call_not_connected(self) -> None:
+        """Test client call when not connected."""
+        service = FlextGrpcClientService()
+        channel = FlextGrpcChannel(
+            id="test-channel",
+            target="localhost:50051",
+            state="idle",  # Not connected
+            created_at=datetime.now(UTC),
+        )
+        client = FlextGrpcClient(
+            id="test-client",
+            target="localhost:50051",
+            channel=channel,
+            created_at=datetime.now(UTC),
+        )
+
+        result = service.execute("call", client, "TestMethod", {"data": "test"})
+        assert result.is_failure
+        assert "Cannot make call with disconnected client" in result.error
+
+    def test_server_service_add_service_wrong_state(self) -> None:
+        """Test adding service to server in wrong state."""
+        service = FlextGrpcServerService()
+        server = FlextGrpcServer(
+            id="test-server",
+            host="localhost",
+            port=50051,
+            max_workers=10,
+            state="stopped",  # Wrong state for adding service
+            created_at=datetime.now(UTC),
+        )
+        
+        grpc_service = FlextGrpcService(
+            id="test-service",
+            name="TestService",
+            methods=["TestMethod"],
+            created_at=datetime.now(UTC),
+        )
+
+        result = service.execute("add_service", server, grpc_service)
+        assert result.is_failure
+        assert "Cannot add service to server in state" in result.error
+
+    def test_stream_service_validation_errors(self) -> None:
+        """Test stream service with validation errors."""
+        service = FlextGrpcStreamService()
+        # Create stream with empty method name to trigger validation
+        stream = FlextGrpcStream(
+            id="test-stream",
+            stream_type="unary",
+            method_name="",  # Invalid empty method name
+            created_at=datetime.now(UTC),
+        )
+
+        result = service.execute("create", stream)
+        assert result.is_failure
+        assert "Stream validation failed" in result.error
 
     def test_service_execute_insufficient_arguments_variations(self) -> None:
         """Test various insufficient argument scenarios."""
-        service = FlextGrpcService()
+        server_service = FlextGrpcServerService()
+        client_service = FlextGrpcClientService()
 
-        # Test with no arguments at all
-        result = service.execute()
+        # Test server service - call method requires method name
+        server = FlextGrpcServer(
+            id="test-server",
+            host="localhost",
+            port=50051,
+            max_workers=10,
+            created_at=datetime.now(UTC),
+        )
+        
+        # This should work - valid operation
+        result = server_service.execute("status", server)
+        assert result.success
+        
+        # Test client service - call without method name should fail
+        channel = FlextGrpcChannel(
+            id="test-channel",
+            target="localhost:50051",
+            state="ready",
+            created_at=datetime.now(UTC),
+        )
+        client = FlextGrpcClient(
+            id="test-client",
+            target="localhost:50051",
+            channel=channel,
+            created_at=datetime.now(UTC),
+        )
+        
+        result = client_service.execute("call", client)  # Missing method name
         assert result.is_failure
-        assert "Missing required argument" in result.error
-
-        # Test with only service type
-        result = service.execute("server")
-        assert result.is_failure
-        assert "Missing required arguments" in result.error
-
-    def test_client_service_missing_arguments(self) -> None:
-        """Test client service operations with missing arguments."""
-        service = FlextGrpcService()
-
-        # Test client operations with insufficient args
-        result = service.execute("client")
-        assert result.is_failure
-        assert "Missing required arguments" in result.error
-
-        result = service.execute("client", "connect")
-        assert result.is_failure
-        # Should fail with missing client entity
-
-    def test_stream_service_missing_arguments(self) -> None:
-        """Test stream service operations with missing arguments."""
-        service = FlextGrpcService()
-
-        # Test stream operations with insufficient args
-        result = service.execute("stream")
-        assert result.is_failure
-        assert "Missing required argument" in result.error
-
-        result = service.execute("stream", "create")
-        assert result.is_failure
-        # Should fail with missing stream parameters
-
-    def test_service_execution_edge_cases(self) -> None:
-        """Test service execution edge cases for additional coverage."""
-        service = FlextGrpcService()
-
-        # Test with None as operation
-        result = service.execute("server", None, "dummy")
-        assert result.is_failure
-
-        # Test with empty string operation
-        result = service.execute("server", "", "dummy")
-        assert result.is_failure or result.success  # Either is acceptable
-
-        # Test with numeric operation
-        result = service.execute("server", 42, "dummy")
-        assert result.is_failure
-        assert "Operation must be a string" in result.error
+        assert "Method name must be string" in result.error

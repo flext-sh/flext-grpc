@@ -62,6 +62,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_core import (
+    FlextConfigurationError,
+    FlextConnectionError,
+    FlextError,
+    FlextTimeoutError,
+    FlextValidationError,
+)
+
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
@@ -85,7 +93,7 @@ class TestFlextGrpcError:
 
     def test_base_error_inheritance(self) -> None:
         """Test FlextGrpcError inherits from FlextError."""
-        from flext_core import FlextError
+        # All imports are at the top of the file
 
         error = FlextGrpcError("test")
         assert isinstance(error, FlextError)
@@ -127,7 +135,7 @@ class TestFlextGrpcValidationError:
 
     def test_validation_error_inheritance(self) -> None:
         """Test FlextGrpcValidationError inherits correctly."""
-        from flext_core import FlextValidationError
+        # All imports are at the top of the file
 
         error = FlextGrpcValidationError("test")
         assert isinstance(error, FlextValidationError)
@@ -146,7 +154,7 @@ class TestFlextGrpcConnectionError:
 
     def test_connection_error_inheritance(self) -> None:
         """Test FlextGrpcConnectionError inherits correctly."""
-        from flext_core import FlextConnectionError
+        # All imports are at the top of the file
 
         error = FlextGrpcConnectionError("test")
         assert isinstance(error, FlextConnectionError)
@@ -165,7 +173,7 @@ class TestFlextGrpcTimeoutError:
 
     def test_timeout_error_inheritance(self) -> None:
         """Test FlextGrpcTimeoutError inherits correctly."""
-        from flext_core import FlextTimeoutError
+        # All imports are at the top of the file
 
         error = FlextGrpcTimeoutError("test")
         assert isinstance(error, FlextTimeoutError)
@@ -212,7 +220,7 @@ class TestFlextGrpcConfigurationError:
 
     def test_configuration_error_inheritance(self) -> None:
         """Test FlextGrpcConfigurationError inherits correctly."""
-        from flext_core import FlextConfigurationError
+        # All imports are at the top of the file
 
         error = FlextGrpcConfigurationError("test")
         assert isinstance(error, FlextConfigurationError)
@@ -238,7 +246,7 @@ class TestErrorIntegration:
 
     def test_error_hierarchy_consistency(self) -> None:
         """Test error hierarchy follows flext-core patterns."""
-        from flext_core import FlextError
+        # All imports are at the top of the file
 
         # All should inherit from FlextError through their specific parents
         errors = [

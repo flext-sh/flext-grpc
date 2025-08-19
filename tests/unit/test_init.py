@@ -7,8 +7,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import importlib
 import importlib.metadata
 from unittest.mock import patch
+
+import flext_grpc
 
 
 def test_version_fallback() -> None:
@@ -18,7 +21,7 @@ def test_version_fallback() -> None:
         side_effect=importlib.metadata.PackageNotFoundError,
     ):
         # Reload the module to test the exception path
-        import flext_grpc
+        # All imports are at the top of the file
 
         importlib.reload(flext_grpc)
         assert flext_grpc.__version__ == "1.0.0"
@@ -26,7 +29,7 @@ def test_version_fallback() -> None:
 
 def test_version_info_parsing() -> None:
     """Test version info tuple parsing."""
-    import flext_grpc
+    # All imports are at the top of the file
 
     # Should be a tuple of integers
     assert isinstance(flext_grpc.__version_info__, tuple)

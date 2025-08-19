@@ -58,7 +58,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+import pytest
 from flext_core import FlextGenerators
+from pydantic_core import ValidationError
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -114,7 +116,7 @@ class TestFlextGrpcChannel:
             created_at=datetime.now(UTC),
         )
 
-        validation = channel.validate_domain_rules()
+        validation = channel.validate_business_rules()
         assert validation.success
         if channel.target != "localhost:50051":
             msg: str = f"Expected {'localhost:50051'}, got {channel.target}"
@@ -139,7 +141,7 @@ class TestFlextGrpcChannel:
             created_at=datetime.now(UTC),
         )
 
-        validation = channel.validate_domain_rules()
+        validation = channel.validate_business_rules()
         assert validation.is_failure
         if validation.error is None or "target cannot be empty" not in validation.error:
             msg: str = f"Expected {'target cannot be empty'} in {validation.error}"
@@ -148,8 +150,7 @@ class TestFlextGrpcChannel:
     def test_invalid_channel_state(self) -> None:
         """Test channel with invalid state fails validation."""
         # Pydantic validates types at creation time
-        import pytest
-        from pydantic_core import ValidationError
+        # All imports are at the top of the file
 
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcChannel(
@@ -246,7 +247,7 @@ class TestFlextGrpcServer:
             created_at=datetime.now(UTC),
         )
 
-        validation = server.validate_domain_rules()
+        validation = server.validate_business_rules()
         assert validation.success
         if server.address != "localhost:50051":
             msg: str = f"Expected {'localhost:50051'}, got {server.address}"
@@ -262,7 +263,7 @@ class TestFlextGrpcServer:
             port=50051,
             created_at=datetime.now(UTC),
         )
-        validation1 = server1.validate_domain_rules()
+        validation1 = server1.validate_business_rules()
         assert validation1.is_failure
         if validation1.error is None or "host cannot be empty" not in validation1.error:
             msg: str = f"Expected {'host cannot be empty'} in {validation1.error}"
@@ -275,7 +276,7 @@ class TestFlextGrpcServer:
             port=70000,  # Too high
             created_at=datetime.now(UTC),
         )
-        validation2 = server2.validate_domain_rules()
+        validation2 = server2.validate_business_rules()
         assert validation2.is_failure
         if validation2.error is None or "Invalid port" not in validation2.error:
             msg: str = f"Expected {'Invalid port'} in {validation2.error}"
@@ -289,7 +290,7 @@ class TestFlextGrpcServer:
             max_workers=0,
             created_at=datetime.now(UTC),
         )
-        validation3 = server3.validate_domain_rules()
+        validation3 = server3.validate_business_rules()
         assert validation3.is_failure
         if (
             validation3.error is None
@@ -395,7 +396,7 @@ class TestFlextGrpcService:
             created_at=datetime.now(UTC),
         )
 
-        validation = service.validate_domain_rules()
+        validation = service.validate_business_rules()
         assert validation.success
         assert service.has_method("method1")
         assert service.has_method("method2")
@@ -410,7 +411,7 @@ class TestFlextGrpcService:
             methods=["method1"],
             created_at=datetime.now(UTC),
         )
-        validation1 = service1.validate_domain_rules()
+        validation1 = service1.validate_business_rules()
         assert validation1.is_failure
         if validation1.error is None or "name cannot be empty" not in validation1.error:
             msg: str = f"Expected {'name cannot be empty'} in {validation1.error}"
@@ -423,7 +424,7 @@ class TestFlextGrpcService:
             methods=[],
             created_at=datetime.now(UTC),
         )
-        validation2 = service2.validate_domain_rules()
+        validation2 = service2.validate_business_rules()
         assert validation2.is_failure
         if (
             validation2.error is None
@@ -482,7 +483,7 @@ class TestFlextGrpcClient:
             created_at=datetime.now(UTC),
         )
 
-        validation = client.validate_domain_rules()
+        validation = client.validate_business_rules()
         assert validation.success
         assert client.is_connected
         if client.target != "localhost:50051":
@@ -497,7 +498,7 @@ class TestFlextGrpcClient:
             created_at=datetime.now(UTC),
         )
 
-        validation = client.validate_domain_rules()
+        validation = client.validate_business_rules()
         assert validation.success
         assert not client.is_connected
         assert client.target is None
@@ -532,7 +533,7 @@ class TestFlextGrpcStream:
             created_at=datetime.now(UTC),
         )
 
-        validation = stream.validate_domain_rules()
+        validation = stream.validate_business_rules()
         assert validation.success
         assert stream.is_streaming
         assert stream.is_server_streaming
@@ -548,7 +549,7 @@ class TestFlextGrpcStream:
             stream_type="unary",
             created_at=datetime.now(UTC),
         )
-        validation1 = stream1.validate_domain_rules()
+        validation1 = stream1.validate_business_rules()
         assert validation1.is_failure
         if (
             validation1.error is None
@@ -560,8 +561,7 @@ class TestFlextGrpcStream:
             raise AssertionError(msg)
 
         # Invalid stream type - Pydantic validates at creation time
-        import pytest
-        from pydantic_core import ValidationError
+        # All imports are at the top of the file
 
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcStream(

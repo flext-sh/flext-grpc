@@ -52,7 +52,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_grpc import FlextGrpcClient, FlextGrpcServer
+from flext_grpc import FlextGrpcClient, FlextGrpcServer, FlextGrpcService
 
 
 def assert_server_from_setup(
@@ -60,8 +60,6 @@ def assert_server_from_setup(
     key: str = "server",
 ) -> FlextGrpcServer:
     """Type-safe server extraction from setup results - DRY pattern."""
-    from flext_grpc import FlextGrpcServer
-
     server_entity = setup_result[key]
     if not isinstance(server_entity, FlextGrpcServer):
         raise TypeError(f"Expected FlextGrpcServer, got {type(server_entity)}")
@@ -73,8 +71,6 @@ def assert_client_from_setup(
     key: str = "client",
 ) -> FlextGrpcClient:
     """Type-safe client extraction from setup results - DRY pattern."""
-    from flext_grpc import FlextGrpcClient
-
     client_entity = setup_result[key]
     if not isinstance(client_entity, FlextGrpcClient):
         raise TypeError(f"Expected FlextGrpcClient, got {type(client_entity)}")
@@ -86,8 +82,6 @@ def assert_service_from_setup(
     key: str = "service",
 ) -> FlextGrpcService:
     """Type-safe service extraction from setup results - DRY pattern."""
-    from flext_grpc import FlextGrpcService
-
     service_entity = setup_result[key]
     if not isinstance(service_entity, FlextGrpcService):
         raise TypeError(f"Expected FlextGrpcService, got {type(service_entity)}")
@@ -106,8 +100,6 @@ def assert_dict_from_result(result_data: object) -> dict[str, object]:
 
 def assert_client_from_result(result_data: object) -> FlextGrpcClient:
     """Type-safe client extraction from FlextResult data - DRY pattern."""
-    from flext_grpc import FlextGrpcClient
-
     if result_data is None:
         msg = "Result data cannot be None"
         raise ValueError(msg)
@@ -118,8 +110,6 @@ def assert_client_from_result(result_data: object) -> FlextGrpcClient:
 
 def assert_server_from_result(result_data: object) -> FlextGrpcServer:
     """Type-safe server extraction from FlextResult data - DRY pattern."""
-    from flext_grpc import FlextGrpcServer
-
     if result_data is None:
         msg = "Result data cannot be None"
         raise ValueError(msg)

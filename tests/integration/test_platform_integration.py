@@ -57,8 +57,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_grpc import (
+    FlextGrpcClientService,
     FlextGrpcPlatform,
+    FlextGrpcServerService,
     FlextGrpcService,
+    FlextGrpcStreamService,
     create_client,
     create_server,
     create_service,
@@ -71,7 +74,21 @@ class TestPlatformIntegration:
     def setup_method(self) -> None:
         """Set up test fixtures."""
         self.platform = FlextGrpcPlatform()
-        self.service = FlextGrpcService()
+        self.server_service = FlextGrpcServerService()
+        self.client_service = FlextGrpcClientService()
+        self.stream_service = FlextGrpcStreamService()
+
+    def execute_service_command(self, service_type: str, command: str, *args, **kwargs):
+        """Route service commands to appropriate service instances."""
+        if service_type == "server":
+            return self.server_service.execute(command, *args, **kwargs)
+        elif service_type == "client":
+            return self.client_service.execute(command, *args, **kwargs)
+        elif service_type == "stream":
+            return self.stream_service.execute(command, *args, **kwargs)
+        else:
+            from flext_core import FlextResult
+            return FlextResult.fail(f"Unknown service type: {service_type}")
 
     def test_platform_server_lifecycle(self) -> None:
         """Test complete server lifecycle through platform."""
@@ -166,7 +183,7 @@ class TestPlatformIntegration:
         server = create_server("localhost", 9003)
 
         # Test server operations through service
-        start_result = self.service.execute("server", "start", server)
+        start_result = self.execute_service_command("server", "start", server)
         assert start_result.success
 
         # Test same operations through platform
@@ -247,7 +264,7 @@ class TestPlatformIntegration:
         invalid_server = create_server("", 0)  # Invalid configuration
 
         # Service level
-        service_result = self.service.execute("server", "start", invalid_server)
+        service_result = self.execute_service_command("server", "start", invalid_server)
         assert service_result.is_failure
         if "Invalid server" not in service_result.error:
             msg: str = f"Expected {'Invalid server'} in {service_result.error}"
@@ -265,7 +282,7 @@ class TestPlatformIntegration:
         server = create_server("localhost", 9005)
 
         # Start through service
-        service_result = self.service.execute("server", "start", server)
+        service_result = self.execute_service_command("server", "start", server)
         service_server = service_result.data
 
         # Check status through platform
