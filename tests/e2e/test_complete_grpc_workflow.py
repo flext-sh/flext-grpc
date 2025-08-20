@@ -69,7 +69,6 @@ import time
 from flext_grpc import (
     FlextGrpcPlatform,
     FlextGrpcServerService,
-    FlextGrpcService,
     TGrpcTarget,
     create_client,
     create_complete_setup,

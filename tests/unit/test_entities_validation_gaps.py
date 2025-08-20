@@ -23,12 +23,15 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+from flext_core import FlextEntityId, FlextTimestamp
+
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
+    TGrpcTarget,
 )
 
 
@@ -38,11 +41,11 @@ class TestEntityValidationGaps:
     def test_entity_type_property_coverage(self) -> None:
         """Test entity_type property for coverage line 101."""
         server = FlextGrpcServer(
-            id="test-server",
+            id=FlextEntityId("test-server"),
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         # Line 101: return self.__class__.__name__
@@ -54,10 +57,10 @@ class TestEntityValidationGaps:
 
         for state in valid_states:
             channel = FlextGrpcChannel(
-                id=f"test-channel-{state}",
-                target="localhost:50051",
-                state=state,
-                created_at=datetime.now(UTC),
+                id=FlextEntityId(f"test-channel-{state}"),
+                target=TGrpcTarget("localhost:50051"),
+                state=state,  # type: ignore[arg-type]
+                created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
             validation = channel.validate_business_rules()
@@ -69,12 +72,12 @@ class TestEntityValidationGaps:
 
         for state in valid_states:
             server = FlextGrpcServer(
-                id=f"test-server-{state}",
+                id=FlextEntityId(f"test-server-{state}"),
                 host="localhost",
                 port=50051,
                 max_workers=10,
-                state=state,
-                created_at=datetime.now(UTC),
+                state=state,  # type: ignore[arg-type]
+                created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
             validation = server.validate_business_rules()
@@ -83,9 +86,9 @@ class TestEntityValidationGaps:
     def test_client_channel_none_validation(self) -> None:
         """Test client validation edge cases for missing coverage."""
         client = FlextGrpcClient(
-            id="test-client",
+            id=FlextEntityId("test-client"),
             channel=None,  # No channel
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         # Test validation with no channel
@@ -96,10 +99,10 @@ class TestEntityValidationGaps:
     def test_service_empty_methods_validation(self) -> None:
         """Test service validation with edge cases."""
         service = FlextGrpcService(
-            id="test-service",
+            id=FlextEntityId("test-service"),
             name="test-service",
             methods=[],  # Empty methods list
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         validation = service.validate_business_rules()
@@ -111,10 +114,10 @@ class TestEntityValidationGaps:
 
         for stream_type in valid_types:
             stream = FlextGrpcStream(
-                id=f"test-stream-{stream_type}",
+                id=FlextEntityId(f"test-stream-{stream_type}"),
                 method_name="test_method",
-                stream_type=stream_type,
-                created_at=datetime.now(UTC),
+                stream_type=stream_type,  # type: ignore[arg-type]
+                created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
             validation = stream.validate_business_rules()
@@ -123,11 +126,11 @@ class TestEntityValidationGaps:
     def test_server_zero_workers_validation(self) -> None:
         """Test server validation with zero workers for coverage."""
         server = FlextGrpcServer(
-            id="test-server",
+            id=FlextEntityId("test-server"),
             host="localhost",
             port=50051,
             max_workers=0,  # Invalid: zero workers
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         validation = server.validate_business_rules()
@@ -137,41 +140,42 @@ class TestEntityValidationGaps:
     def test_channel_empty_target_validation(self) -> None:
         """Test channel validation with empty target."""
         channel = FlextGrpcChannel(
-            id="test-channel",
-            target="",  # Empty target
-            created_at=datetime.now(UTC),
+            id=FlextEntityId("test-channel"),
+            target=TGrpcTarget(""),  # Empty target for testing
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         validation = channel.validate_business_rules()
         assert validation.is_failure
+        assert validation.error is not None
         assert "Channel target cannot be empty" in validation.error
 
     def test_all_entity_types_coverage(self) -> None:
         """Test entity_type property for all entities to improve coverage."""
         entities = [
             FlextGrpcServer(
-                id="server",
+                id=FlextEntityId("server"),
                 host="localhost",
                 port=50051,
                 max_workers=10,
-                created_at=datetime.now(UTC),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             ),
             FlextGrpcChannel(
-                id="channel",
-                target="localhost:50051",
-                created_at=datetime.now(UTC),
+                id=FlextEntityId("channel"),
+                target=TGrpcTarget("localhost:50051"),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             ),
-            FlextGrpcClient(id="client", created_at=datetime.now(UTC)),
+            FlextGrpcClient(id=FlextEntityId("client"), created_at=FlextTimestamp(datetime.now(UTC))),
             FlextGrpcService(
-                id="service",
+                id=FlextEntityId("service"),
                 name="test-service",
-                created_at=datetime.now(UTC),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             ),
             FlextGrpcStream(
-                id="stream",
+                id=FlextEntityId("stream"),
                 method_name="test_method",
                 stream_type="unary",
-                created_at=datetime.now(UTC),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             ),
         ]
 

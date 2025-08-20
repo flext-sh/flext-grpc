@@ -205,6 +205,20 @@ class FlextGrpcConfig(FlextBaseConfigModel):
             raise FlextGrpcConfigurationError(msg)
         return v
 
+    def get_address(self) -> str:
+        """Get formatted address string.
+
+        Returns:
+            Formatted address as "host:port"
+
+        Example:
+            >>> config = FlextGrpcConfig(host="localhost", port=50051)
+            >>> config.get_address()
+            'localhost:50051'
+
+        """
+        return f"{self.host}:{self.port}"
+
 
 # =============================================================================
 # EXPORTS

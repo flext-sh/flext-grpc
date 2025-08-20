@@ -16,8 +16,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
+import uuid
+from datetime import UTC, datetime
 
-from flext_core import FlextResult
+from flext_core import FlextEntityId, FlextResult, FlextTimestamp
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
 from flext_grpc.entities import (
@@ -29,8 +31,6 @@ from flext_grpc.entities import (
     FlextGrpcStream,
 )
 from flext_grpc.typings import (
-    TGrpcTarget,
-    flext_grpc_parse_target,
     flext_grpc_validate_target,
 )
 
@@ -91,14 +91,14 @@ def create_client(
     if result.is_failure:
         raise ValueError(result.error)
     client = result.data
-    
+
     if options:
         # Update client with options using copy_with and handle FlextResult
         copy_result = client.copy_with(options=options)
         if copy_result.is_failure:
             raise ValueError(copy_result.error)
         return copy_result.data
-    
+
     return client
 
 
@@ -126,7 +126,7 @@ def create_channel(
         if copy_result.is_failure:
             raise ValueError(copy_result.error)
         return copy_result.data
-    
+
     return channel
 
 
@@ -147,22 +147,17 @@ def create_service(
     # Handle empty methods case at API level for backward compatibility
     if methods is None:
         methods = []
-    
+
     # For empty methods, create service directly to avoid business rule conflicts
     # This maintains API compatibility with existing tests
     if not methods:
-        from datetime import datetime, UTC
-        import uuid
-        
-        service = FlextGrpcService(
-            id=f"service-{uuid.uuid4().hex[:8]}",
+        return FlextGrpcService(
+            id=FlextEntityId(f"service-{uuid.uuid4().hex[:8]}"),
             name=name,
             methods=[],
-            created_at=datetime.now(UTC)
+            created_at=FlextTimestamp(datetime.now(UTC))
         )
-        # Skip business rule validation for API compatibility
-        return service
-    
+
     result = FlextGrpcEntityFactory.create_service(name=name, methods=methods)
     if result.is_failure:
         raise ValueError(result.error)
@@ -188,8 +183,9 @@ def create_stream(
     """
     valid_types = ["unary", "server_streaming", "client_streaming", "bidirectional"]
     if stream_type not in valid_types:
-        raise ValueError(f"Invalid stream type: {stream_type}")
-    
+        msg = f"Invalid stream type: {stream_type}"
+        raise ValueError(msg)
+
     result = FlextGrpcEntityFactory.create_stream(
         method_name=method_name,
         stream_type=stream_type,
@@ -221,13 +217,12 @@ def create_config(
 
     """
     try:
-        config = FlextGrpcConfig(
+        return FlextGrpcConfig(
             host=host,
             port=port,
             max_workers=max_workers,
             timeout=timeout,
         )
-        return config
     except Exception as e:
         raise ValueError(str(e)) from e
 
@@ -259,23 +254,21 @@ def create_complete_setup(
     """
     if service_methods is None:
         service_methods = []
-    
+
     # Create components using the fixed factory functions
     server = create_server(host, port)
-    
+
     target = f"{host}:{port}"
     client = create_client(target)
-    
+
     service = create_service(service_name, service_methods)
-    
-    setup = {
+
+    return {
         "server": server,
-        "client": client, 
+        "client": client,
         "service": service,
         "target": target,
     }
-
-    return setup
 
 
 # =============================================================================
@@ -301,12 +294,12 @@ def validate_address(address: str | None) -> FlextResult[bool]:
     try:
         if address is None or not address.strip():
             return FlextResult[bool].fail("Address cannot be empty")
-        
-        is_valid = flext_grpc_validate_target(address)
-        if is_valid:
-            return FlextResult[bool].ok(True)
-        else:
-            return FlextResult[bool].fail("Invalid address format")
+
+        # Check target validity (flext_grpc_validate_target returns bool)
+        target_is_valid = flext_grpc_validate_target(address)
+        if target_is_valid:  # noqa: FBT003
+            return FlextResult[bool].ok(True)  # noqa: FBT003
+        return FlextResult[bool].fail("Invalid address format")
     except Exception as e:
         return FlextResult[bool].fail(f"Address validation error: {e}")
 
@@ -330,33 +323,44 @@ def parse_address(address: str) -> dict[str, str | int]:
 
     """
     if not address or ":" not in address:
-        raise ValueError("Address must be in host:port format")
-    
+        msg = "Address must be in host:port format"
+        raise ValueError(msg)
+
     parts = address.split(":")
-    if len(parts) != 2:
-        if len(parts) > 2:
-            raise ValueError("Address must be in host:port format") 
-        raise ValueError("Address must be in host:port format")
-    
+    expected_parts = 2
+    if len(parts) != expected_parts:
+        msg = "Address must be in host:port format"
+        raise ValueError(msg)
+
     host, port_str = parts
-    
+
     if not host.strip():
-        raise ValueError("Invalid host format")
-    
+        msg = "Invalid host format"
+        raise ValueError(msg)
+
     # Try parsing port - different error messages based on the format
     try:
+        def _validate_port_in_range() -> None:
+            """Validate parsed port is within valid range."""
+            min_port = 1
+            max_port = 65535
+            if port < min_port or port > max_port:
+                port_range_msg = f"Port must be between {min_port} and {max_port}"
+                raise ValueError(port_range_msg) from None  # noqa: TRY301
+
         port = int(port_str)
-        if port < 1 or port > 65535:
-            raise ValueError("Port must be between 1 and 65535")
-    except ValueError:
+        _validate_port_in_range()
+    except ValueError as parse_error:
         # Different error messages based on port_str content
-        if port_str.isalpha() and len(port_str) <= 3:
+        short_string_length = 3
+        if port_str.isalpha() and len(port_str) <= short_string_length:
             # Short alphabetic strings like "abc" suggest invalid format overall
-            raise ValueError("Invalid host format")
-        else:
-            # Longer strings like "address" suggest port number parsing issue
-            raise ValueError("Port must be a number")
-    
+            host_format_msg = "Invalid host format"
+            raise ValueError(host_format_msg) from parse_error
+        # Longer strings like "address" suggest port number parsing issue
+        port_number_msg = "Port must be a number"
+        raise ValueError(port_number_msg) from parse_error
+
     return {"host": host, "port": port}
 
 

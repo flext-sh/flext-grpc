@@ -9,13 +9,20 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import get_flext_container
+from flext_core import FlextEntityId, FlextTimestamp, get_flext_container
 
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcPlatform,
     FlextGrpcServer,
+    TGrpcTarget,
+    create_stream,
+)
+from flext_grpc.services import (
+    FlextGrpcClientService,
+    FlextGrpcServerService,
+    FlextGrpcStreamService,
 )
 
 
@@ -32,38 +39,40 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
 
         # Clear container after initialization
-        platform.container.clear()
+        platform._container.clear()
 
-        # This should trigger the fallback creation in service property (lines 51-53)
-        service = platform.service
-        assert service is not None
+        # Test that platform has all required service instances
+        assert platform._server_service is not None
+        assert platform._client_service is not None
+        assert platform._stream_service is not None
 
-        # Register wrong type to test the fallback path (lines 59-61)
-        platform.container.register("flext_grpc_service", "wrong_type")
-        service2 = platform.service
-        assert service2 is not None
+        # Test that services are of the correct type
+
+        assert isinstance(platform._server_service, FlextGrpcServerService)
+        assert isinstance(platform._client_service, FlextGrpcClientService)
+        assert isinstance(platform._stream_service, FlextGrpcStreamService)
 
     def test_platform_operations_error_paths(self) -> None:
         """Test platform operation error handling for coverage."""
         platform = FlextGrpcPlatform()
 
         server = FlextGrpcServer(
-            id="test-server",
+            id=FlextEntityId("test-server"),
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         channel = FlextGrpcChannel(
-            id="test-channel",
-            target="localhost:50051",
-            created_at=datetime.now(UTC),
+            id=FlextEntityId("test-channel"),
+            target=TGrpcTarget("localhost:50051"),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
         client = FlextGrpcClient(
-            id="test-client",
+            id=FlextEntityId("test-client"),
             channel=channel,
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         # Test operations - these will likely fail but we're testing the error paths
@@ -88,5 +97,7 @@ class TestFlextGrpcPlatformSimple:
         client_status = platform.get_client_status(client)
         assert client_status.success or client_status.is_failure
 
-        stream_result = platform.create_stream(client, "test_method")
+        # Create a stream entity first
+        stream = create_stream("test_method", "unary")
+        stream_result = platform.create_stream(stream)
         assert stream_result.success or stream_result.is_failure

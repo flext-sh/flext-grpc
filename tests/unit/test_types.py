@@ -54,6 +54,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import pytest
+
 from flext_grpc import (
     TGrpcTarget,
     flext_grpc_parse_target,
@@ -135,8 +137,8 @@ class TestGrpcTypes:
         ]
 
         for target in invalid_targets:
-            result = flext_grpc_parse_target(target)
-            assert result is None, f"Parsing {target} should return None"
+            with pytest.raises(ValueError, match="Invalid gRPC target"):
+                flext_grpc_parse_target(target)
 
     def test_edge_cases(self) -> None:
         """Test edge cases for validation and parsing."""

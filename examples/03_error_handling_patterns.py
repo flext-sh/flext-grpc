@@ -106,11 +106,11 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
         if not email or "@" not in email:
             _raise_email_error()
 
-        return FlextResult[None].ok({"username": username, "email": email})
+        return FlextResult[dict[str, str]].ok({"username": username, "email": email})
 
     except FlextGrpcValidationError as e:
         logger.exception("Validation failed", field=e.field_name, error=str(e))
-        return FlextResult[None].fail(f"Validation error: {e}")
+        return FlextResult[dict[str, str]].fail(f"Validation error: {e}")
 
 
 def create_server_config(port: int, workers: int) -> FlextResult[Any]:
@@ -141,14 +141,10 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
             _raise_workers_error()
 
         try:
-            config_result = create_config(host="localhost", port=port, max_workers=workers)
+            config = create_config(host="localhost", port=port, max_workers=workers)
+            return FlextResult[Any].ok(config)
         except Exception as e:
-            config_result = FlextResult[None].fail(str(e))
-
-        if config_result.is_failure:
-            _raise_config_error(config_result.error)
-
-        return config_result
+            return FlextResult[Any].fail(str(e))
 
     except FlextGrpcConfigurationError as e:
         logger.exception(
@@ -157,7 +153,7 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
             value=e.config_value,
             error=str(e),
         )
-        return FlextResult[None].fail(f"Configuration error: {e}")
+        return FlextResult[Any].fail(f"Configuration error: {e}")
 
 
 def simulate_connection_error() -> FlextResult[str]:
@@ -173,7 +169,7 @@ def simulate_connection_error() -> FlextResult[str]:
 
     except FlextGrpcConnectionError as e:
         logger.exception("Connection failed", error=str(e))
-        return FlextResult[None].fail(f"Connection error: {e}")
+        return FlextResult[str].fail(f"Connection error: {e}")
 
 
 def simulate_timeout_error() -> FlextResult[str]:
@@ -189,7 +185,7 @@ def simulate_timeout_error() -> FlextResult[str]:
 
     except FlextGrpcTimeoutError as e:
         logger.exception("Request timed out", error=str(e))
-        return FlextResult[None].fail(f"Timeout error: {e}")
+        return FlextResult[str].fail(f"Timeout error: {e}")
 
 
 def handle_generic_grpc_error() -> FlextResult[str]:
@@ -205,7 +201,7 @@ def handle_generic_grpc_error() -> FlextResult[str]:
 
     except FlextGrpcError as e:
         logger.exception("Generic gRPC error", error=str(e))
-        return FlextResult[None].fail(f"gRPC error: {e}")
+        return FlextResult[str].fail(f"gRPC error: {e}")
 
 
 def comprehensive_error_handling_pipeline() -> FlextResult[str]:
@@ -215,7 +211,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     # Step 1: Validate user input
     validation_result = validate_user_input("john_doe", "john@example.com")
     if validation_result.is_failure:
-        return FlextResult[None].fail(
+        return FlextResult[str].fail(
             f"Pipeline failed at validation: {validation_result.error}",
         )
 
@@ -224,7 +220,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     # Step 2: Create server configuration
     config_result = create_server_config(50051, 4)
     if config_result.is_failure:
-        return FlextResult[None].fail(
+        return FlextResult[str].fail(
             f"Pipeline failed at configuration: {config_result.error}",
         )
 
@@ -244,7 +240,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
                 f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
             )
 
-    return FlextResult[None].ok("Pipeline completed with graceful error handling")
+    return FlextResult[str].ok("Pipeline completed with graceful error handling")
 
 
 def error_recovery_patterns() -> FlextResult[str]:
@@ -263,7 +259,7 @@ def error_recovery_patterns() -> FlextResult[str]:
         last_attempt = 2
         if attempt == last_attempt:  # Last attempt
             logger.error("❌ All connection attempts failed")
-            return FlextResult[None].fail("Connection recovery failed after 3 attempts")
+            return FlextResult[str].fail("Connection recovery failed after 3 attempts")
 
     # Pattern 2: Fallback configuration
     primary_config_result = create_server_config(-1, 4)  # Invalid port
@@ -273,9 +269,9 @@ def error_recovery_patterns() -> FlextResult[str]:
         fallback_config_result = create_server_config(8080, 2)  # Fallback
         if fallback_config_result.success:
             logger.info("✅ Fallback configuration successful")
-            return FlextResult[None].ok("Recovery successful with fallback config")
+            return FlextResult[str].ok("Recovery successful with fallback config")
 
-    return FlextResult[None].fail("All recovery attempts failed")
+    return FlextResult[str].fail("All recovery attempts failed")
 
 
 def demonstrate_error_context() -> None:
@@ -326,17 +322,19 @@ async def async_error_handling() -> FlextResult[str]:
         await asyncio.sleep(0.1)  # Simulate work
 
         # Check for error condition
-        if True:  # Simulate error condition
-            return _raise_async_timeout()
+        error_condition = True  # Simulate error condition
+        if error_condition:
+            _raise_async_timeout()
 
-        return FlextResult[None].ok("Async operation completed")
+        # This would only execute if error_condition is False
+        return FlextResult[str].ok("Async operation completed")
 
     except FlextGrpcTimeoutError as e:
         logger.exception("Async timeout occurred", error=str(e))
-        return FlextResult[None].fail(f"Async error: {e}")
+        return FlextResult[str].fail(f"Async error: {e}")
     except Exception as e:
         logger.exception("Unexpected async error", error=str(e))
-        return FlextResult[None].fail(f"Unexpected async error: {e}")
+        return FlextResult[str].fail(f"Unexpected async error: {e}")
 
 
 def main() -> None:

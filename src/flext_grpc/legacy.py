@@ -71,7 +71,7 @@ def GrpcValidationError(*args: object, **kwargs: object) -> FlextGrpcValidationE
     message = str(args[0]) if args else kwargs.get("message", "")
     field_name_raw = kwargs.get("field_name")
     field_name = field_name_raw if isinstance(field_name_raw, str) else None
-    return FlextGrpcValidationError(str(message), field_name)
+    return FlextGrpcValidationError(str(message), field_name=field_name)
 
 
 def GrpcConnectionError(*args: object, **kwargs: object) -> FlextGrpcConnectionError:  # noqa: N802
@@ -100,7 +100,7 @@ def grpc_configuration_error(
     config_key_raw = kwargs.get("config_key")
     config_key = config_key_raw if isinstance(config_key_raw, str) else None
     config_value = kwargs.get("config_value")
-    return FlextGrpcConfigurationError(str(message), config_key, config_value)
+    return FlextGrpcConfigurationError(str(message), config_key=config_key, config_value=config_value)
 
 
 def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError:  # noqa: N802
@@ -128,7 +128,7 @@ def GrpcStreamError(*args: object, **kwargs: object) -> FlextGrpcStreamError:  #
 
 
 # Legacy API function aliases
-def create_grpc_client(*args: object, **kwargs: object) -> object:  # noqa: N802
+def create_grpc_client(*_args: object, **kwargs: object) -> object:  # noqa: N802
     """Legacy: Use FlextGrpcClient directly instead."""
     if not _imports_available or FlextGrpcClient is None:
         msg = "FlextGrpcClient not available"
@@ -138,7 +138,7 @@ def create_grpc_client(*args: object, **kwargs: object) -> object:  # noqa: N802
     return FlextGrpcClient(**kwargs)  # type: ignore[arg-type]
 
 
-def create_grpc_server(*args: object, **kwargs: object) -> object:  # noqa: N802
+def create_grpc_server(*_args: object, **kwargs: object) -> object:  # noqa: N802
     """Legacy: Use FlextGrpcServer directly instead."""
     if not _imports_available or FlextGrpcServer is None:
         msg = "FlextGrpcServer not available"
@@ -148,7 +148,7 @@ def create_grpc_server(*args: object, **kwargs: object) -> object:  # noqa: N802
     return FlextGrpcServer(**kwargs)  # type: ignore[arg-type]
 
 
-def create_grpc_config(*args: object, **kwargs: object) -> object:  # noqa: N802
+def create_grpc_config(*_args: object, **kwargs: object) -> object:  # noqa: N802
     """Legacy: Use FlextGrpcConfig directly instead."""
     if not _imports_available or FlextGrpcConfig is None:
         msg = "FlextGrpcConfig not available"
@@ -158,7 +158,7 @@ def create_grpc_config(*args: object, **kwargs: object) -> object:  # noqa: N802
     return FlextGrpcConfig(**kwargs)  # type: ignore[arg-type]
 
 
-def setup_grpc_platform(*args: object, **kwargs: object) -> object:  # noqa: N802
+def setup_grpc_platform(*_args: object, **kwargs: object) -> object:  # noqa: N802
     """Legacy: Use FlextGrpcPlatform directly instead."""
     if not _imports_available or FlextGrpcPlatform is None:
         msg = "FlextGrpcPlatform not available"

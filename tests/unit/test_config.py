@@ -28,8 +28,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 
-from flext_grpc import FlextGrpcConfig, FlextGrpcConfigurationError
+from flext_grpc import FlextGrpcConfig
 
 
 class TestFlextGrpcConfig:
@@ -72,21 +73,21 @@ class TestFlextGrpcConfig:
 
     def test_invalid_empty_host(self) -> None:
         """Test configuration creation with empty host fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(host="")
 
         assert "Host cannot be empty" in str(exc_info.value)
 
     def test_invalid_whitespace_host(self) -> None:
         """Test configuration creation with whitespace-only host fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(host="   ")
 
         assert "Host cannot be empty" in str(exc_info.value)
 
     def test_invalid_port_too_low(self) -> None:
         """Test configuration creation with port below minimum fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(port=0)
 
         error_msg = str(exc_info.value)
@@ -94,7 +95,7 @@ class TestFlextGrpcConfig:
 
     def test_invalid_port_too_high(self) -> None:
         """Test configuration creation with port above maximum fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(port=70000)
 
         error_msg = str(exc_info.value)
@@ -102,17 +103,17 @@ class TestFlextGrpcConfig:
 
     def test_invalid_max_workers_zero(self) -> None:
         """Test configuration creation with zero max_workers fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(max_workers=0)
 
-        assert "Max workers must be >= 1" in str(exc_info.value)
+        assert "Max workers 0 must be between" in str(exc_info.value)
 
     def test_invalid_max_workers_negative(self) -> None:
         """Test configuration creation with negative max_workers fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(max_workers=-1)
 
-        assert "Max workers must be >= 1" in str(exc_info.value)
+        assert "Max workers -1 must be between" in str(exc_info.value)
 
     def test_valid_boundary_values(self) -> None:
         """Test configuration with boundary values passes validation."""
@@ -142,14 +143,14 @@ class TestFlextGrpcConfig:
 
     def test_invalid_timeout_zero(self) -> None:
         """Test configuration creation with zero timeout fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(timeout=0.0)
 
-        assert "Timeout must be positive" in str(exc_info.value)
+        assert "Timeout 0.0 must be between" in str(exc_info.value)
 
     def test_invalid_timeout_negative(self) -> None:
         """Test configuration creation with negative timeout fails validation."""
-        with pytest.raises(FlextGrpcConfigurationError) as exc_info:
+        with pytest.raises(ValidationError) as exc_info:
             FlextGrpcConfig(timeout=-1.0)
 
-        assert "Timeout must be positive" in str(exc_info.value)
+        assert "Timeout -1.0 must be between" in str(exc_info.value)

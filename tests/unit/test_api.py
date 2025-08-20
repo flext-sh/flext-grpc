@@ -235,6 +235,7 @@ class TestAPIFunctions:
         result = validate_address(None)
         assert result.is_failure
         # The error should either be empty address error or exception error
+        assert result.error is not None
         assert (
             "Address cannot be empty" in result.error
             or "Address validation error:" in result.error

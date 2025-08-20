@@ -61,6 +61,8 @@ from pathlib import Path
 # Add src directory to Python path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+from flext_core import FlextEntityId, FlextTimestamp
+
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -72,6 +74,8 @@ from flext_grpc import (
     TGrpcTarget,
 )
 
+# FlextGrpcClient and FlextGrpcServer already imported above
+
 
 def example_1_basic_entities() -> None:
     """Example 1: Creating and using basic gRPC entities."""
@@ -79,11 +83,11 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC server
     server = FlextGrpcServer(
-        id="example-server",
+        id=FlextEntityId("example-server"),
         host="localhost",
         port=8080,
         max_workers=10,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Created server: {server.address}")
@@ -93,9 +97,9 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC channel
     channel = FlextGrpcChannel(
-        id="example-channel",
+        id=FlextEntityId("example-channel"),
         target=TGrpcTarget("localhost:8080"),
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Created channel: {channel.target}")
@@ -103,9 +107,9 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC client
     client = FlextGrpcClient(
-        id="example-client",
+        id=FlextEntityId("example-client"),
         channel=channel,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Created client with channel: {client.channel.target}")
@@ -113,10 +117,10 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC service
     service = FlextGrpcService(
-        id="example-service",
+        id=FlextEntityId("example-service"),
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser"],
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Created service: {service.name}")
@@ -171,10 +175,10 @@ def example_3_operations() -> None:
 
     # Create server for operations
     server = FlextGrpcServer(
-        id="ops-server",
+        id=FlextEntityId("ops-server"),
         host="localhost",
         port=7070,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Initial server state: {server.state}")
@@ -188,8 +192,13 @@ def example_3_operations() -> None:
         print(f"Failed to start server: {start_result.error}")
 
     # Stop server
-    if start_result.success:
-        stop_result = server_service.execute("stop", running_server)
+    if start_result.success and start_result.data is not None:
+        # Check if data is actually a server instance
+        if isinstance(start_result.data, FlextGrpcServer):
+            stop_result = server_service.execute("stop", start_result.data)
+        else:
+            print("Start result data is not a server instance")
+            return
         if stop_result.success:
             stopped_server = stop_result.data
             print(f"Server stopped: {stopped_server.state}")
@@ -198,15 +207,15 @@ def example_3_operations() -> None:
 
     # Create client for operations
     channel = FlextGrpcChannel(
-        id="ops-channel",
+        id=FlextEntityId("ops-channel"),
         target=TGrpcTarget("localhost:7070"),
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     client = FlextGrpcClient(
-        id="ops-client",
+        id=FlextEntityId("ops-client"),
         channel=channel,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Initial client connected: {client.is_connected}")
@@ -218,19 +227,20 @@ def example_3_operations() -> None:
         print(f"Client connected: {connected_client.is_connected}")
 
         # Call method
-        call_result = client_service.execute(
-            "call",
-            connected_client,
-            method_name="GetServerInfo",
-            data={"request_id": "12345"},
-        )
-        if call_result.success:
-            response = call_result.data or {"method": "GetServerInfo", "status": "success", "data": "mock_response"}
-            print(f"Method call successful: {response.get('method', 'GetServerInfo')}")
-            print(f"Response status: {response.get('status', 'success')}")
-            print(f"Response data: {response.get('data', 'mock_response')}")
-        else:
-            print(f"Method call failed: {call_result.error}")
+        if isinstance(connect_result.data, FlextGrpcClient):
+            call_result = client_service.execute(
+                "call",
+                connect_result.data,
+                method_name="GetServerInfo",
+                data={"request_id": "12345"},
+            )
+            if call_result.success:
+                response = call_result.data or {"method": "GetServerInfo", "status": "success", "data": "mock_response"}
+                print(f"Method call successful: {response.get('method', 'GetServerInfo')}")
+                print(f"Response status: {response.get('status', 'success')}")
+                print(f"Response data: {response.get('data', 'mock_response')}")
+            else:
+                print(f"Method call failed: {call_result.error}")
     else:
         print(f"Failed to connect client: {connect_result.error}")
 
@@ -243,11 +253,11 @@ def example_4_validation() -> None:
 
     # Valid entities
     valid_server = FlextGrpcServer(
-        id="valid-server",
+        id=FlextEntityId("valid-server"),
         host="localhost",
         port=8080,
         max_workers=5,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     validation = valid_server.validate_business_rules()
@@ -256,11 +266,11 @@ def example_4_validation() -> None:
     # Invalid entities
     try:
         invalid_server = FlextGrpcServer(
-            id="invalid-server",
+            id=FlextEntityId("invalid-server"),
             host="",  # Invalid empty host
             port=0,  # Invalid port
             max_workers=0,  # Invalid workers
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
         validation = invalid_server.validate_business_rules()
@@ -272,19 +282,19 @@ def example_4_validation() -> None:
 
     # Channel validation
     valid_channel = FlextGrpcChannel(
-        id="valid-channel",
+        id=FlextEntityId("valid-channel"),
         target=TGrpcTarget("localhost:8080"),
         state="ready",
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     channel_validation = valid_channel.validate_business_rules()
     print(f"Valid channel validation: {channel_validation.success}")
 
     invalid_channel = FlextGrpcChannel(
-        id="invalid-channel",
+        id=FlextEntityId("invalid-channel"),
         target=TGrpcTarget(""),  # Invalid empty target
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     invalid_validation = invalid_channel.validate_business_rules()
@@ -301,10 +311,10 @@ def example_5_state_transitions() -> None:
 
     # Channel state transitions
     channel = FlextGrpcChannel(
-        id="transition-channel",
+        id=FlextEntityId("transition-channel"),
         target=TGrpcTarget("localhost:8080"),
         state="idle",
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Initial channel state: {channel.state}")
@@ -328,8 +338,8 @@ def example_5_state_transitions() -> None:
 
     # Server state management
     server = FlextGrpcServer(
-        id="transition-server",
-        created_at=datetime.now(UTC),
+        id=FlextEntityId("transition-server"),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     print(f"Initial server state: {server.state}")

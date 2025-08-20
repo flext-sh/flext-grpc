@@ -60,7 +60,6 @@ from flext_grpc import (
     FlextGrpcClientService,
     FlextGrpcPlatform,
     FlextGrpcServerService,
-    FlextGrpcService,
     FlextGrpcStreamService,
     create_client,
     create_server,
@@ -82,13 +81,12 @@ class TestPlatformIntegration:
         """Route service commands to appropriate service instances."""
         if service_type == "server":
             return self.server_service.execute(command, *args, **kwargs)
-        elif service_type == "client":
+        if service_type == "client":
             return self.client_service.execute(command, *args, **kwargs)
-        elif service_type == "stream":
+        if service_type == "stream":
             return self.stream_service.execute(command, *args, **kwargs)
-        else:
-            from flext_core import FlextResult
-            return FlextResult.fail(f"Unknown service type: {service_type}")
+        from flext_core import FlextResult
+        return FlextResult.fail(f"Unknown service type: {service_type}")
 
     def test_platform_server_lifecycle(self) -> None:
         """Test complete server lifecycle through platform."""

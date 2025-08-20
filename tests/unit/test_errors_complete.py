@@ -257,8 +257,18 @@ class TestErrorIntegration:
             FlextGrpcConfigurationError("test"),
         ]
 
+        # Test that FlextGrpcError inherits from FlextError (base case)
+        assert isinstance(FlextGrpcError("test"), FlextError)
+
+        # Test that specialized errors inherit from their respective flext-core parents
+        assert isinstance(FlextGrpcValidationError("test"), FlextValidationError)
+        assert isinstance(FlextGrpcConnectionError("test"), FlextConnectionError)
+        assert isinstance(FlextGrpcTimeoutError("test"), FlextTimeoutError)
+        assert isinstance(FlextGrpcConfigurationError("test"), FlextConfigurationError)
+
+        # All errors should be Exception instances
         for error in errors:
-            assert isinstance(error, FlextError)
+            assert isinstance(error, Exception)
 
     def test_error_with_complex_scenarios(self) -> None:
         """Test errors in complex real-world scenarios."""

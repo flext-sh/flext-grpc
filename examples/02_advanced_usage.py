@@ -66,6 +66,8 @@ from pathlib import Path
 # Add src directory to Python path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+from flext_core import FlextEntityId, FlextTimestamp
+
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -77,6 +79,8 @@ from flext_grpc import (
     FlextGrpcStream,
     TGrpcTarget,
 )
+
+# FlextGrpcClient and FlextGrpcServer already imported above
 
 
 class GrpcServerManager:
@@ -107,11 +111,11 @@ class GrpcServerManager:
             )
 
             server = FlextGrpcServer(
-                id=server_id,
+                id=FlextEntityId(server_id),
                 host=config.host,
                 port=config.port,
                 max_workers=config.max_workers,
-                created_at=datetime.now(UTC),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
             self.servers[server_id] = server
@@ -126,7 +130,7 @@ class GrpcServerManager:
 
         for server_id, server in self.servers.items():
             start_result = self.server_service.execute("start", server)
-            if start_result.success:
+            if start_result.success and isinstance(start_result.data, FlextGrpcServer):
                 self.servers[server_id] = start_result.data
                 results[server_id] = True
                 print(f"✅ Started server {server_id} on {server.address}")
@@ -143,7 +147,7 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             if server.is_running:
                 stop_result = self.server_service.execute("stop", server)
-                if stop_result.success:
+                if stop_result.success and isinstance(stop_result.data, FlextGrpcServer):
                     self.servers[server_id] = stop_result.data
                     results[server_id] = True
                     print(f"✅ Stopped server {server_id}")
@@ -194,15 +198,15 @@ class GrpcClientPool:
             target = server.address
 
             channel = FlextGrpcChannel(
-                id=f"channel-{i}",
+                id=FlextEntityId(f"channel-{i}"),
                 target=TGrpcTarget(target),
-                created_at=datetime.now(UTC),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
             client = FlextGrpcClient(
-                id=client_id,
+                id=FlextEntityId(client_id),
                 channel=channel,
-                created_at=datetime.now(UTC),
+                created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
             self.clients[client_id] = client
@@ -217,7 +221,7 @@ class GrpcClientPool:
 
         for client_id, client in self.clients.items():
             connect_result = self.client_service.execute("connect", client)
-            if connect_result.success:
+            if connect_result.success and isinstance(connect_result.data, FlextGrpcClient):
                 self.clients[client_id] = connect_result.data
                 self.connection_status[client_id] = True
                 results[client_id] = True
@@ -273,8 +277,8 @@ class ServiceRegistry:
             print(f"❌ Service validation failed: {validation.error}")
             return False
 
-        self.services[service.id] = service
-        self.service_servers[service.id] = server_id
+        self.services[str(service.id)] = service
+        self.service_servers[str(service.id)] = server_id
         print(f"✅ Registered service {service.name} with server {server_id}")
         return True
 
@@ -370,10 +374,13 @@ def example_2_client_pool() -> None:
     )
 
     for client_id, result in broadcast_results.items():
-        if "error" not in result:
-            print(f"  {client_id}: {result['status']} - {result['method']}")
+        if isinstance(result, dict):
+            if "error" not in result:
+                print(f"  {client_id}: {result['status']} - {result['method']}")
+            else:
+                print(f"  {client_id}: Error - {result['error']}")
         else:
-            print(f"  {client_id}: Error - {result['error']}")
+            print(f"  {client_id}: Invalid result type: {type(result)}")
 
     # Cleanup
     server_manager.stop_all_servers()
@@ -389,24 +396,24 @@ def example_3_service_registry() -> None:
 
     # Register multiple services
     user_service = FlextGrpcService(
-        id="user-service",
+        id=FlextEntityId("user-service"),
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser", "ListUsers"],
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     order_service = FlextGrpcService(
-        id="order-service",
+        id=FlextEntityId("order-service"),
         name="OrderService",
         methods=["GetOrder", "CreateOrder", "UpdateOrder", "CancelOrder", "ListOrders"],
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     notification_service = FlextGrpcService(
-        id="notification-service",
+        id=FlextEntityId("notification-service"),
         name="NotificationService",
         methods=["SendNotification", "GetNotifications", "MarkAsRead"],
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     # Register services with different servers
@@ -444,28 +451,28 @@ def example_4_streaming() -> None:
     # Create different stream types
     streams = [
         FlextGrpcStream(
-            id="unary-stream",
+            id=FlextEntityId("unary-stream"),
             method_name="GetUser",
             stream_type="unary",
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         ),
         FlextGrpcStream(
-            id="server-stream",
+            id=FlextEntityId("server-stream"),
             method_name="StreamMessages",
             stream_type="server_streaming",
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         ),
         FlextGrpcStream(
-            id="client-stream",
+            id=FlextEntityId("client-stream"),
             method_name="UploadData",
             stream_type="client_streaming",
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         ),
         FlextGrpcStream(
-            id="bidi-stream",
+            id=FlextEntityId("bidi-stream"),
             method_name="Chat",
             stream_type="bidirectional",
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         ),
     ]
 
@@ -493,10 +500,10 @@ def example_5_error_handling() -> None:
     # Try to start invalid server
     try:
         invalid_server = FlextGrpcServer(
-            id="invalid-server",
+            id=FlextEntityId("invalid-server"),
             host="",  # Invalid
             port=0,  # Invalid
-            created_at=datetime.now(UTC),
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
         validation = invalid_server.validate_business_rules()
         print(f"  Invalid server validation: {validation.error}")
@@ -505,12 +512,12 @@ def example_5_error_handling() -> None:
 
     # Try to start already running server
     server = FlextGrpcServer(
-        id="test-server",
-        created_at=datetime.now(UTC),
+        id=FlextEntityId("test-server"),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     start1 = server_service.execute("start", server)
-    if start1.success:
+    if start1.success and isinstance(start1.data, FlextGrpcServer):
         running_server = start1.data
         start2 = server_service.execute("start", running_server)
         print(f"  Double start error: {start2.error}")
@@ -520,9 +527,9 @@ def example_5_error_handling() -> None:
 
     # Try to connect client without channel
     no_channel_client = FlextGrpcClient(
-        id="no-channel-client",
+        id=FlextEntityId("no-channel-client"),
         channel=None,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     client_service = FlextGrpcClientService()
@@ -531,15 +538,15 @@ def example_5_error_handling() -> None:
 
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
-        id="test-channel",
+        id=FlextEntityId("test-channel"),
         target=TGrpcTarget("localhost:50051"),
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     disconnected_client = FlextGrpcClient(
-        id="disconnected-client",
+        id=FlextEntityId("disconnected-client"),
         channel=channel,
-        created_at=datetime.now(UTC),
+        created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
     call_result = client_service.execute("call", disconnected_client, method_name="TestMethod")
