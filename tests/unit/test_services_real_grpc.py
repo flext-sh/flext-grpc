@@ -55,7 +55,9 @@ class TestRealGrpcServices:
         assert server_key in server_service._active_servers
 
         # Test real connectivity to the server
-        test_channel = grpc.insecure_channel(f"{running_server.host}:{running_server.port}")
+        test_channel = grpc.insecure_channel(
+            f"{running_server.host}:{running_server.port}"
+        )
         try:
             # This should succeed if real server is running
             grpc.channel_ready_future(test_channel).result(timeout=2.0)
@@ -124,7 +126,9 @@ class TestRealGrpcServices:
 
             # Connect - should make REAL gRPC connection
             connect_result = client_service.execute("connect", client)
-            assert connect_result.success, f"Client connect failed: {connect_result.error}"
+            assert connect_result.success, (
+                f"Client connect failed: {connect_result.error}"
+            )
 
             connected_client = connect_result.data
             assert connected_client is not None
@@ -141,19 +145,44 @@ class TestRealGrpcServices:
             assert status["grpc_channel_active"] is True
             assert status["grpc_channel_ready"] is True
 
-            # Make call - should validate real channel
-            call_result = client_service.execute("call", connected_client, "TestMethod", {"test": "data"})
+            # Add a real service first so we can make calls
+            service_def = FlextGrpcService(
+                id=FlextEntityId("real-service"),
+                name="FlextGrpcService",
+                methods=["Echo", "HealthCheck"],
+                created_at=FlextTimestamp(datetime.now(UTC)),
+            )
+
+            add_result = server_service.execute(
+                "add_service", running_server, service_def
+            )
+            assert add_result.success, f"Service add failed: {add_result.error}"
+
+            # Make call using real Echo method - should validate real channel
+            call_result = client_service.execute(
+                "call",
+                connected_client,
+                "Echo",
+                {
+                    "message": "Test message for real gRPC call",
+                    "metadata": {"test": "real", "client": "validation"},
+                },
+            )
             assert call_result.success, f"Client call failed: {call_result.error}"
 
             call_response = call_result.data
             assert isinstance(call_response, dict)
-            assert call_response["method"] == "TestMethod"
+            assert call_response["method"] == "Echo"
+            assert call_response["status"] == "success"
+            assert "Test message for real gRPC call" in call_response["message"]
             assert call_response["channel_ready"] is True
             assert call_response["target"] == target
 
             # Disconnect - should close REAL gRPC channel
             disconnect_result = client_service.execute("disconnect", connected_client)
-            assert disconnect_result.success, f"Client disconnect failed: {disconnect_result.error}"
+            assert disconnect_result.success, (
+                f"Client disconnect failed: {disconnect_result.error}"
+            )
 
             disconnected_client = disconnect_result.data
             assert disconnected_client is not None
@@ -188,18 +217,24 @@ class TestRealGrpcServices:
         )
 
         start1_result = server_service.execute("start", server1)
-        assert start1_result.success, f"First server start failed: {start1_result.error}"
+        assert start1_result.success, (
+            f"First server start failed: {start1_result.error}"
+        )
         running_server1 = start1_result.data
         assert running_server1 is not None
 
         start2_result = server_service.execute("start", server2)
-        assert start2_result.success, f"Second server start failed: {start2_result.error}"
+        assert start2_result.success, (
+            f"Second server start failed: {start2_result.error}"
+        )
         running_server2 = start2_result.data
         assert running_server2 is not None
 
         try:
             # Validate both servers are running on different ports
-            assert running_server1.port != running_server2.port, "Servers should use different ports"
+            assert running_server1.port != running_server2.port, (
+                "Servers should use different ports"
+            )
             assert running_server1.port > 0
             assert running_server2.port > 0
 
@@ -249,7 +284,10 @@ class TestRealGrpcServices:
         # Connect should fail with real connection error
         connect_result = client_service.execute("connect", client)
         assert connect_result.is_failure
-        assert "timeout" in connect_result.error.lower() or "connect" in connect_result.error.lower()
+        assert (
+            "timeout" in connect_result.error.lower()
+            or "connect" in connect_result.error.lower()
+        )
 
         # Verify no channel was created
         assert target not in client_service._active_channels
@@ -269,8 +307,8 @@ class TestRealGrpcServices:
 
         service_def = FlextGrpcService(
             id=FlextEntityId("test-service"),
-            name="TestService",
-            methods=["TestMethod"],
+            name="FlextGrpcService",
+            methods=["Echo", "HealthCheck"],
             created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
@@ -287,13 +325,15 @@ class TestRealGrpcServices:
 
         try:
             # Now add_service should work
-            add_result = server_service.execute("add_service", running_server, service_def)
+            add_result = server_service.execute(
+                "add_service", running_server, service_def
+            )
             assert add_result.success, f"Add service failed: {add_result.error}"
 
             server_with_service = add_result.data
             assert server_with_service is not None
             assert len(server_with_service.services) == 1
-            assert server_with_service.services[0].name == "TestService"
+            assert server_with_service.services[0].name == "FlextGrpcService"
 
         finally:
             # Cleanup

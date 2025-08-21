@@ -50,6 +50,15 @@ TGrpcStreamType = Literal[
 
 
 # =============================================================================
+# STREAMING TYPES
+# =============================================================================
+TStreamRequestData = NewType("TStreamRequestData", str)
+TStreamResponse = NewType("TStreamResponse", dict[str, object])
+TStreamRequestIterator = NewType("TStreamRequestIterator", object)
+TStreamResponseIterator = NewType("TStreamResponseIterator", object)
+
+
+# =============================================================================
 # PROTOCOLS
 # =============================================================================
 @runtime_checkable

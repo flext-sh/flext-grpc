@@ -86,6 +86,7 @@ class TestPlatformIntegration:
         if service_type == "stream":
             return self.stream_service.execute(command, *args, **kwargs)
         from flext_core import FlextResult
+
         return FlextResult.fail(f"Unknown service type: {service_type}")
 
     def test_platform_server_lifecycle(self) -> None:

@@ -41,7 +41,9 @@ class TestRealGrpcIntegration:
     def test_complete_server_lifecycle_real(self) -> None:
         """Test complete server lifecycle with REAL state transitions and validation."""
         # Create a real server with proper configuration
-        server = create_server("localhost", 50052, 5)  # Use different port to avoid conflicts
+        server = create_server(
+            "localhost", 50052, 5
+        )  # Use different port to avoid conflicts
 
         # Validate initial state
         assert server.state == "stopped"
@@ -224,7 +226,9 @@ class TestRealGrpcIntegration:
     def test_complete_setup_integration_real(self) -> None:
         """Test complete setup utility creates working, integrated components."""
         # Use the factory function to create a complete setup
-        setup = create_complete_setup("localhost", 50056, "IntegrationService", ["TestMethod"])
+        setup = create_complete_setup(
+            "localhost", 50056, "IntegrationService", ["TestMethod"]
+        )
 
         # Validate all components are created and properly configured
         server = setup["server"]

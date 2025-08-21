@@ -155,7 +155,7 @@ def create_service(
             id=FlextEntityId(f"service-{uuid.uuid4().hex[:8]}"),
             name=name,
             methods=[],
-            created_at=FlextTimestamp(datetime.now(UTC))
+            created_at=FlextTimestamp(datetime.now(UTC)),
         )
 
     result = FlextGrpcEntityFactory.create_service(name=name, methods=methods)
@@ -340,6 +340,7 @@ def parse_address(address: str) -> dict[str, str | int]:
 
     # Try parsing port - different error messages based on the format
     try:
+
         def _validate_port_in_range() -> None:
             """Validate parsed port is within valid range."""
             min_port = 1

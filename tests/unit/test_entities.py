@@ -156,7 +156,7 @@ class TestFlextGrpcChannel:
             FlextGrpcChannel(
                 id=FlextEntityId(FlextGenerators.generate_entity_id()),
                 target=TGrpcTarget("localhost:50051"),
-                state="invalid_state",  # type: ignore[arg-type]
+                state="invalid_state",
                 created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
@@ -567,7 +567,7 @@ class TestFlextGrpcStream:
             FlextGrpcStream(
                 id=FlextEntityId(FlextGenerators.generate_entity_id()),
                 method_name="TestMethod",
-                stream_type="invalid_type",  # type: ignore[arg-type]
+                stream_type="invalid_type",
                 created_at=FlextTimestamp(datetime.now(UTC)),
             )
 

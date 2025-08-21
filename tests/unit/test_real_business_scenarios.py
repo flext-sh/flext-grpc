@@ -38,20 +38,21 @@ class TestRealBusinessScenarios:
         assert not user_server.is_running
 
         # 2. Define the service with real business methods
-        user_service = create_service("UserService", [
-            "CreateUser",
-            "GetUser",
-            "UpdateUser",
-            "DeleteUser",
-            "ListUsers"
-        ])
+        user_service = create_service(
+            "UserService",
+            ["CreateUser", "GetUser", "UpdateUser", "DeleteUser", "ListUsers"],
+        )
 
         # 3. Validate business rules
         server_validation = user_server.validate_business_rules()
-        assert server_validation.success, f"Server validation failed: {server_validation.error}"
+        assert server_validation.success, (
+            f"Server validation failed: {server_validation.error}"
+        )
 
         service_validation = user_service.validate_business_rules()
-        assert service_validation.success, f"Service validation failed: {service_validation.error}"
+        assert service_validation.success, (
+            f"Service validation failed: {service_validation.error}"
+        )
 
         # 4. Test server lifecycle management
         start_result = user_server.start()
@@ -72,7 +73,9 @@ class TestRealBusinessScenarios:
 
         # 6. Register service with running server
         service_add_result = running_server.add_service(user_service)
-        assert service_add_result.success, f"Failed to add service: {service_add_result.error}"
+        assert service_add_result.success, (
+            f"Failed to add service: {service_add_result.error}"
+        )
 
         server_with_service = service_add_result.data
         assert server_with_service is not None
@@ -154,10 +157,9 @@ class TestRealBusinessScenarios:
         # Business Scenario: API versioning and service evolution
 
         # 1. Start with v1 of a service
-        payment_service_v1 = create_service("PaymentService", [
-            "ProcessPayment",
-            "GetPaymentStatus"
-        ])
+        payment_service_v1 = create_service(
+            "PaymentService", ["ProcessPayment", "GetPaymentStatus"]
+        )
 
         assert payment_service_v1.validate_business_rules().success
         assert payment_service_v1.has_method("ProcessPayment")
@@ -166,7 +168,9 @@ class TestRealBusinessScenarios:
 
         # 2. Evolve to v2 by adding methods
         add_refund_result = payment_service_v1.add_method("RefundPayment")
-        assert add_refund_result.success, f"Failed to add method: {add_refund_result.error}"
+        assert add_refund_result.success, (
+            f"Failed to add method: {add_refund_result.error}"
+        )
 
         payment_service_v2 = add_refund_result.data
         assert payment_service_v2 is not None
@@ -198,7 +202,7 @@ class TestRealBusinessScenarios:
             "localhost",
             50073,
             "NotificationService",
-            ["SendEmail", "SendSMS", "SendPush", "GetNotificationHistory"]
+            ["SendEmail", "SendSMS", "SendPush", "GetNotificationHistory"],
         )
 
         # 2. Validate all components work together
@@ -256,7 +260,12 @@ class TestRealBusinessScenarios:
             {"host": "", "port": 50074, "error": "host cannot be empty"},
             {"host": "localhost", "port": -1, "error": "Invalid port"},
             {"host": "localhost", "port": 99999, "error": "Invalid port"},
-            {"host": "localhost", "port": 50075, "max_workers": 0, "error": "Max workers must be >= 1"},
+            {
+                "host": "localhost",
+                "port": 50075,
+                "max_workers": 0,
+                "error": "Max workers must be >= 1",
+            },
         ]
 
         for config in invalid_configs:
@@ -307,7 +316,9 @@ class TestRealBusinessScenarios:
 
         # 1. Create multiple services that might run concurrently
         services = []
-        for i, service_name in enumerate(["Gateway", "Auth", "Users", "Orders"], start=1):
+        for i, service_name in enumerate(
+            ["Gateway", "Auth", "Users", "Orders"], start=1
+        ):
             server = FlextGrpcServer(
                 id=FlextEntityId(f"{service_name.lower()}-service"),
                 host="localhost",
@@ -323,7 +334,9 @@ class TestRealBusinessScenarios:
                 created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
-            services.append({"server": server, "service": service, "name": service_name})
+            services.append(
+                {"server": server, "service": service, "name": service_name}
+            )
 
         # 2. Validate all services
         for svc in services:
@@ -336,11 +349,9 @@ class TestRealBusinessScenarios:
             start_result = platform.start_server(svc["server"])
             status_result = platform.get_server_status(svc["server"])
 
-            results.append({
-                "name": svc["name"],
-                "start": start_result,
-                "status": status_result
-            })
+            results.append(
+                {"name": svc["name"], "start": start_result, "status": status_result}
+            )
 
         # 4. Validate platform handled all operations gracefully
         for result in results:
@@ -352,4 +363,6 @@ class TestRealBusinessScenarios:
             if result["status"].success:
                 status_data = result["status"].data
                 assert isinstance(status_data, dict)
-                assert all(key in status_data for key in ["address", "state", "is_running"])
+                assert all(
+                    key in status_data for key in ["address", "state", "is_running"]
+                )

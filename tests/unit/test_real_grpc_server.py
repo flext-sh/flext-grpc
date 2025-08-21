@@ -114,7 +114,9 @@ class TestRealGrpcServer:
             import echo_pb2_grpc  # noqa: PLC0415
 
             class EchoServicer(echo_pb2_grpc.EchoServiceServicer):
-                def Echo(self, request: echo_pb2.EchoRequest, context: object) -> echo_pb2.EchoResponse:  # noqa: N802, ARG002
+                def Echo(
+                    self, request: echo_pb2.EchoRequest, context: object
+                ) -> echo_pb2.EchoResponse:  # noqa: N802, ARG002
                     return echo_pb2.EchoResponse(message=f"Echo: {request.message}")
 
             # Start real server with the service

@@ -235,8 +235,14 @@ def example_3_operations() -> None:
                 data={"request_id": "12345"},
             )
             if call_result.success:
-                response = call_result.data or {"method": "GetServerInfo", "status": "success", "data": "mock_response"}
-                print(f"Method call successful: {response.get('method', 'GetServerInfo')}")
+                response = call_result.data or {
+                    "method": "GetServerInfo",
+                    "status": "success",
+                    "data": "mock_response",
+                }
+                print(
+                    f"Method call successful: {response.get('method', 'GetServerInfo')}"
+                )
                 print(f"Response status: {response.get('status', 'success')}")
                 print(f"Response data: {response.get('data', 'mock_response')}")
             else:
@@ -373,8 +379,12 @@ def main() -> None:
     print()
     print("Key Benefits of Current Library:")
     print("- Clean Architecture with separate domain entities")
-    print("- Service-oriented operations with FlextGrpcServerService and FlextGrpcClientService")
-    print("- Factory functions for easy entity creation (create_server, create_client, etc.)")
+    print(
+        "- Service-oriented operations with FlextGrpcServerService and FlextGrpcClientService"
+    )
+    print(
+        "- Factory functions for easy entity creation (create_server, create_client, etc.)"
+    )
     print("- Platform facade with FlextGrpcPlatform for unified management")
     print("- Strong domain validation with FlextResult patterns")
     print("- Comprehensive error handling with specific exception types")

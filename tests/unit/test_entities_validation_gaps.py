@@ -59,7 +59,7 @@ class TestEntityValidationGaps:
             channel = FlextGrpcChannel(
                 id=FlextEntityId(f"test-channel-{state}"),
                 target=TGrpcTarget("localhost:50051"),
-                state=state,  # type: ignore[arg-type]
+                state=state,
                 created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
@@ -76,7 +76,7 @@ class TestEntityValidationGaps:
                 host="localhost",
                 port=50051,
                 max_workers=10,
-                state=state,  # type: ignore[arg-type]
+                state=state,
                 created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
@@ -116,7 +116,7 @@ class TestEntityValidationGaps:
             stream = FlextGrpcStream(
                 id=FlextEntityId(f"test-stream-{stream_type}"),
                 method_name="test_method",
-                stream_type=stream_type,  # type: ignore[arg-type]
+                stream_type=stream_type,
                 created_at=FlextTimestamp(datetime.now(UTC)),
             )
 
@@ -165,7 +165,9 @@ class TestEntityValidationGaps:
                 target=TGrpcTarget("localhost:50051"),
                 created_at=FlextTimestamp(datetime.now(UTC)),
             ),
-            FlextGrpcClient(id=FlextEntityId("client"), created_at=FlextTimestamp(datetime.now(UTC))),
+            FlextGrpcClient(
+                id=FlextEntityId("client"), created_at=FlextTimestamp(datetime.now(UTC))
+            ),
             FlextGrpcService(
                 id=FlextEntityId("service"),
                 name="test-service",

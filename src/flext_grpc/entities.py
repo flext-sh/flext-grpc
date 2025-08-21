@@ -376,7 +376,9 @@ class FlextGrpcServer(FlextGrpcEntity):
             return FlextResult[None].fail("Server host cannot be empty")
 
         # Allow port 0 for automatic port selection by gRPC
-        if self.port != 0 and not (FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT):
+        if self.port != 0 and not (
+            FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT
+        ):
             return FlextResult[None].fail(
                 f"Invalid port: {self.port} "
                 f"(must be 0 for auto-selection or {FLEXT_GRPC_MIN_PORT}-{FLEXT_GRPC_MAX_PORT})",
@@ -466,7 +468,9 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         starting_result = self.copy_with(state="starting")
         if starting_result.is_failure:
-            return FlextResult[FlextGrpcServer].fail(starting_result.error or "Starting failed")
+            return FlextResult[FlextGrpcServer].fail(
+                starting_result.error or "Starting failed"
+            )
         return FlextResult[FlextGrpcServer].ok(starting_result.data)
 
     def mark_running(self) -> FlextResult[FlextGrpcServer]:
@@ -499,7 +503,9 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         running_result = self.copy_with(state="running")
         if running_result.is_failure:
-            return FlextResult[FlextGrpcServer].fail(running_result.error or "Running failed")
+            return FlextResult[FlextGrpcServer].fail(
+                running_result.error or "Running failed"
+            )
         return FlextResult[FlextGrpcServer].ok(running_result.data)
 
     def stop(self) -> FlextResult[FlextGrpcServer]:
@@ -530,7 +536,9 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         stopping_result = self.copy_with(state="stopping")
         if stopping_result.is_failure:
-            return FlextResult[FlextGrpcServer].fail(stopping_result.error or "Stopping failed")
+            return FlextResult[FlextGrpcServer].fail(
+                stopping_result.error or "Stopping failed"
+            )
         return FlextResult[FlextGrpcServer].ok(stopping_result.data)
 
     def mark_stopped(self) -> FlextResult[FlextGrpcServer]:
@@ -563,7 +571,9 @@ class FlextGrpcServer(FlextGrpcEntity):
             )
         stopped_result = self.copy_with(state="stopped")
         if stopped_result.is_failure:
-            return FlextResult[FlextGrpcServer].fail(stopped_result.error or "Stopped failed")
+            return FlextResult[FlextGrpcServer].fail(
+                stopped_result.error or "Stopped failed"
+            )
         return FlextResult[FlextGrpcServer].ok(stopped_result.data)
 
     def add_service(self, service: FlextGrpcService) -> FlextResult[FlextGrpcServer]:
@@ -607,7 +617,9 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         service_result = self.copy_with(services=[*self.services, service])
         if service_result.is_failure:
-            return FlextResult[FlextGrpcServer].fail(service_result.error or "Service addition failed")
+            return FlextResult[FlextGrpcServer].fail(
+                service_result.error or "Service addition failed"
+            )
         return FlextResult[FlextGrpcServer].ok(service_result.data)
 
 
@@ -1111,7 +1123,7 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcServer]:
         """Create a validated gRPC server."""
-        return FlextFactory.create_model(  # type: ignore[return-value]
+        return FlextFactory.create_model(
             FlextGrpcServer,
             id=FlextGenerators.generate_entity_id(),
             host=host,
@@ -1135,7 +1147,7 @@ class FlextGrpcEntityFactory:
                 f"Failed to create client: {channel_result.error}"
             )
 
-        return FlextFactory.create_model(  # type: ignore[return-value]
+        return FlextFactory.create_model(
             FlextGrpcClient,
             id=FlextGenerators.generate_entity_id(),
             channel=channel_result.data,
@@ -1151,7 +1163,7 @@ class FlextGrpcEntityFactory:
         """Create a validated gRPC channel."""
         # Use typed factory method to create channel instance
         # Use FlextFactory directly
-        return FlextFactory.create_model(  # type: ignore[return-value]
+        return FlextFactory.create_model(
             FlextGrpcChannel,
             id=FlextGenerators.generate_entity_id(),
             target=TGrpcTarget(target),
@@ -1169,7 +1181,7 @@ class FlextGrpcEntityFactory:
         """Create a validated gRPC service."""
         # Use typed factory method to create service instance
         # Use FlextFactory directly
-        return FlextFactory.create_model(  # type: ignore[return-value]
+        return FlextFactory.create_model(
             FlextGrpcService,
             id=FlextGenerators.generate_entity_id(),
             name=name,
@@ -1187,7 +1199,7 @@ class FlextGrpcEntityFactory:
         """Create a validated gRPC stream."""
         # Use typed factory method to create stream instance
         # Use FlextFactory directly
-        return FlextFactory.create_model(  # type: ignore[return-value]
+        return FlextFactory.create_model(
             FlextGrpcStream,
             id=FlextGenerators.generate_entity_id(),
             method_name=method_name,

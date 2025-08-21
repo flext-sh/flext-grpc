@@ -147,7 +147,9 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             if server.is_running:
                 stop_result = self.server_service.execute("stop", server)
-                if stop_result.success and isinstance(stop_result.data, FlextGrpcServer):
+                if stop_result.success and isinstance(
+                    stop_result.data, FlextGrpcServer
+                ):
                     self.servers[server_id] = stop_result.data
                     results[server_id] = True
                     print(f"✅ Stopped server {server_id}")
@@ -221,7 +223,9 @@ class GrpcClientPool:
 
         for client_id, client in self.clients.items():
             connect_result = self.client_service.execute("connect", client)
-            if connect_result.success and isinstance(connect_result.data, FlextGrpcClient):
+            if connect_result.success and isinstance(
+                connect_result.data, FlextGrpcClient
+            ):
                 self.clients[client_id] = connect_result.data
                 self.connection_status[client_id] = True
                 results[client_id] = True
@@ -248,7 +252,10 @@ class GrpcClientPool:
                     "call", client, method_name=method_name, data=data
                 )
                 if call_result.success:
-                    results[client_id] = call_result.data or {"method": method_name, "status": "success"}
+                    results[client_id] = call_result.data or {
+                        "method": method_name,
+                        "status": "success",
+                    }
                     print(f"✅ Called {method_name} on {client_id}")
                 else:
                     results[client_id] = {"error": call_result.error}
@@ -549,7 +556,9 @@ def example_5_error_handling() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    call_result = client_service.execute("call", disconnected_client, method_name="TestMethod")
+    call_result = client_service.execute(
+        "call", disconnected_client, method_name="TestMethod"
+    )
     print(f"  Disconnected call error: {call_result.error}")
 
     # Configuration error scenarios

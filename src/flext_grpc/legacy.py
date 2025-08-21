@@ -39,10 +39,10 @@ try:
 except ImportError:
     # Will be handled in individual functions
     _imports_available = False
-    FlextGrpcConfig = None  # type: ignore[misc,assignment]
-    FlextGrpcClient = None  # type: ignore[misc,assignment]
-    FlextGrpcServer = None  # type: ignore[misc,assignment]
-    FlextGrpcPlatform = None  # type: ignore[misc,assignment]
+    FlextGrpcConfig = None
+    FlextGrpcClient = None
+    FlextGrpcServer = None
+    FlextGrpcPlatform = None
 
 
 def _deprecation_warning(old_name: str, new_name: str) -> None:
@@ -100,7 +100,9 @@ def grpc_configuration_error(
     config_key_raw = kwargs.get("config_key")
     config_key = config_key_raw if isinstance(config_key_raw, str) else None
     config_value = kwargs.get("config_value")
-    return FlextGrpcConfigurationError(str(message), config_key=config_key, config_value=config_value)
+    return FlextGrpcConfigurationError(
+        str(message), config_key=config_key, config_value=config_value
+    )
 
 
 def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError:  # noqa: N802
@@ -135,7 +137,7 @@ def create_grpc_client(*_args: object, **kwargs: object) -> object:  # noqa: N80
         raise ImportError(msg) from None
     _deprecation_warning("create_grpc_client", "FlextGrpcClient")
     # Legacy function - ignore all type checking for backward compatibility
-    return FlextGrpcClient(**kwargs)  # type: ignore[arg-type]
+    return FlextGrpcClient(**kwargs)
 
 
 def create_grpc_server(*_args: object, **kwargs: object) -> object:  # noqa: N802
@@ -145,7 +147,7 @@ def create_grpc_server(*_args: object, **kwargs: object) -> object:  # noqa: N80
         raise ImportError(msg) from None
     _deprecation_warning("create_grpc_server", "FlextGrpcServer")
     # Legacy function - ignore all type checking for backward compatibility
-    return FlextGrpcServer(**kwargs)  # type: ignore[arg-type]
+    return FlextGrpcServer(**kwargs)
 
 
 def create_grpc_config(*_args: object, **kwargs: object) -> object:  # noqa: N802
@@ -155,7 +157,7 @@ def create_grpc_config(*_args: object, **kwargs: object) -> object:  # noqa: N80
         raise ImportError(msg) from None
     _deprecation_warning("create_grpc_config", "FlextGrpcConfig")
     # Legacy function - ignore all type checking for backward compatibility
-    return FlextGrpcConfig(**kwargs)  # type: ignore[arg-type]
+    return FlextGrpcConfig(**kwargs)
 
 
 def setup_grpc_platform(*_args: object, **kwargs: object) -> object:  # noqa: N802
@@ -165,7 +167,7 @@ def setup_grpc_platform(*_args: object, **kwargs: object) -> object:  # noqa: N8
         raise ImportError(msg) from None
     _deprecation_warning("setup_grpc_platform", "FlextGrpcPlatform")
     # Legacy function - ignore all type checking for backward compatibility
-    return FlextGrpcPlatform(**kwargs)  # type: ignore[arg-type]
+    return FlextGrpcPlatform(**kwargs)
 
 
 def simple_grpc_call(*args: object, **kwargs: object) -> object:  # noqa: N802
@@ -176,7 +178,7 @@ def simple_grpc_call(*args: object, **kwargs: object) -> object:  # noqa: N802
     _deprecation_warning("simple_grpc_call", "FlextGrpcPlatform.make_call")
     platform = FlextGrpcPlatform()
     # Legacy function - ignore all type checking for method call
-    return platform.make_call(*args, **kwargs)  # type: ignore[arg-type]
+    return platform.make_call(*args, **kwargs)
 
 
 # Legacy constants and configuration
