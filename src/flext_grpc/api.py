@@ -298,7 +298,7 @@ def validate_address(address: str | None) -> FlextResult[bool]:
         # Check target validity (flext_grpc_validate_target returns bool)
         target_is_valid = flext_grpc_validate_target(address)
         if target_is_valid:  # noqa: FBT003
-            return FlextResult[bool].ok(True)  # noqa: FBT003
+            return FlextResult[bool].ok(data=True)  # noqa: FBT003
         return FlextResult[bool].fail("Invalid address format")
     except Exception as e:
         return FlextResult[bool].fail(f"Address validation error: {e}")
