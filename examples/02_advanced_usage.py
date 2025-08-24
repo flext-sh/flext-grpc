@@ -66,6 +66,8 @@ from pathlib import Path
 # Add src directory to Python path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+import contextlib
+
 from flext_core import FlextEntityId, FlextTimestamp
 
 from flext_grpc import (
@@ -133,10 +135,8 @@ class GrpcServerManager:
             if start_result.success and isinstance(start_result.data, FlextGrpcServer):
                 self.servers[server_id] = start_result.data
                 results[server_id] = True
-                print(f"✅ Started server {server_id} on {server.address}")
             else:
                 results[server_id] = False
-                print(f"❌ Failed to start server {server_id}: {start_result.error}")
 
         return results
 
@@ -152,13 +152,10 @@ class GrpcServerManager:
                 ):
                     self.servers[server_id] = stop_result.data
                     results[server_id] = True
-                    print(f"✅ Stopped server {server_id}")
                 else:
                     results[server_id] = False
-                    print(f"❌ Failed to stop server {server_id}: {stop_result.error}")
             else:
                 results[server_id] = True
-                print(f"i  Server {server_id} already stopped")
 
         return results
 
@@ -229,12 +226,8 @@ class GrpcClientPool:
                 self.clients[client_id] = connect_result.data
                 self.connection_status[client_id] = True
                 results[client_id] = True
-                print(f"✅ Connected client {client_id} to {client.channel.target}")
             else:
                 results[client_id] = False
-                print(
-                    f"❌ Failed to connect client {client_id}: {connect_result.error}",
-                )
 
         return results
 
@@ -256,16 +249,10 @@ class GrpcClientPool:
                         "method": method_name,
                         "status": "success",
                     }
-                    print(f"✅ Called {method_name} on {client_id}")
                 else:
                     results[client_id] = {"error": call_result.error}
-                    print(
-                        f"❌ Failed to call {method_name} on {client_id}: "
-                        f"{call_result.error}",
-                    )
             else:
                 results[client_id] = {"error": "Client not connected"}
-                print(f"⚠️ Client {client_id} not connected")
 
         return results
 
@@ -281,12 +268,10 @@ class ServiceRegistry:
         """Register a service with a server."""
         validation = service.validate_business_rules()
         if validation.is_failure:
-            print(f"❌ Service validation failed: {validation.error}")
             return False
 
         self.services[str(service.id)] = service
         self.service_servers[str(service.id)] = server_id
-        print(f"✅ Registered service {service.name} with server {server_id}")
         return True
 
     def discover_services(self) -> dict[str, dict[str, object]]:
@@ -324,40 +309,27 @@ class ServiceRegistry:
 
 def example_1_server_pool() -> None:
     """Example 1: Server pool management."""
-    print("=== Example 1: Server Pool Management ===")
-
     manager = GrpcServerManager()
 
     # Create server pool
-    servers = manager.create_server_pool(base_port=8000, count=3)
-    print(f"Created {len(servers)} servers")
+    manager.create_server_pool(base_port=8000, count=3)
 
     # Start all servers
     start_results = manager.start_all_servers()
-    started_count = sum(1 for success in start_results.values() if success)
-    print(f"Started {started_count}/{len(servers)} servers")
+    sum(1 for success in start_results.values() if success)
 
     # Get status
     status = manager.get_server_status()
-    print("\nServer Status:")
-    for server_id, info in status.items():
-        print(
-            f"  {server_id}: {info['address']} ({info['state']}) - "
-            f"{info['max_workers']} workers",
-        )
+    for _server_id, _info in status.items():
+        pass
 
     # Stop all servers
     stop_results = manager.stop_all_servers()
-    stopped_count = sum(1 for success in stop_results.values() if success)
-    print(f"Stopped {stopped_count}/{len(servers)} servers")
-
-    print()
+    sum(1 for success in stop_results.values() if success)
 
 
 def example_2_client_pool() -> None:
     """Example 2: Client pool and broadcasting."""
-    print("=== Example 2: Client Pool and Broadcasting ===")
-
     # Create servers first
     server_manager = GrpcServerManager()
     servers = server_manager.create_server_pool(base_port=8100, count=2)
@@ -365,40 +337,28 @@ def example_2_client_pool() -> None:
 
     # Create client pool
     client_pool = GrpcClientPool()
-    clients = client_pool.create_clients_for_servers(servers)
-    print(f"Created {len(clients)} clients")
+    client_pool.create_clients_for_servers(servers)
 
     # Connect all clients
     connect_results = client_pool.connect_all_clients()
-    connected_count = sum(1 for success in connect_results.values() if success)
-    print(f"Connected {connected_count}/{len(clients)} clients")
+    sum(1 for success in connect_results.values() if success)
 
     # Broadcast method calls
-    print("\nBroadcasting 'GetStatus' call:")
     broadcast_results = client_pool.broadcast_call(
         "GetStatus",
         {"timestamp": datetime.now(UTC).isoformat()},
     )
 
-    for client_id, result in broadcast_results.items():
-        if isinstance(result, dict):
-            if "error" not in result:
-                print(f"  {client_id}: {result['status']} - {result['method']}")
-            else:
-                print(f"  {client_id}: Error - {result['error']}")
-        else:
-            print(f"  {client_id}: Invalid result type: {type(result)}")
+    for result in broadcast_results.values():
+        if isinstance(result, dict) and "error" not in result:
+            pass
 
     # Cleanup
     server_manager.stop_all_servers()
 
-    print()
-
 
 def example_3_service_registry() -> None:
     """Example 3: Service registry and discovery."""
-    print("=== Example 3: Service Registry and Discovery ===")
-
     registry = ServiceRegistry()
 
     # Register multiple services
@@ -430,31 +390,22 @@ def example_3_service_registry() -> None:
 
     # Discover all services
     discovery = registry.discover_services()
-    print("Registered Services:")
-    for info in discovery.values():
-        print(
-            f"  {info['name']}: {info['method_count']} methods on {info['server_id']}",
-        )
+    for _info in discovery.values():
+        pass
 
     # Find services by method
     get_services = registry.find_service_by_method("GetUser")
     create_services = registry.find_service_by_method("CreateOrder")
 
-    print(f"\nServices with 'GetUser' method: {len(get_services)}")
-    for service in get_services:
-        print(f"  {service['service_name']} on {service['server_id']}")
+    for _service in get_services:
+        pass
 
-    print(f"\nServices with 'CreateOrder' method: {len(create_services)}")
-    for service in create_services:
-        print(f"  {service['service_name']} on {service['server_id']}")
-
-    print()
+    for _service in create_services:
+        pass
 
 
 def example_4_streaming() -> None:
     """Example 4: Streaming scenarios."""
-    print("=== Example 4: Streaming Scenarios ===")
-
     # Create different stream types
     streams = [
         FlextGrpcStream(
@@ -483,26 +434,17 @@ def example_4_streaming() -> None:
         ),
     ]
 
-    print("Stream Analysis:")
     for stream in streams:
         validation = stream.validate_business_rules()
-        print(f"  {stream.method_name} ({stream.stream_type}):")
-        print(f"    Valid: {validation.success}")
-        print(f"    Is Streaming: {stream.is_streaming}")
         if validation.is_failure:
-            print(f"    Error: {validation.error}")
-
-    print()
+            pass
 
 
 def example_5_error_handling() -> None:
     """Example 5: Comprehensive error handling."""
-    print("=== Example 5: Error Handling Patterns ===")
-
     server_service = FlextGrpcServerService()
 
     # Server error scenarios
-    print("Server Error Scenarios:")
 
     # Try to start invalid server
     try:
@@ -512,10 +454,9 @@ def example_5_error_handling() -> None:
             port=0,  # Invalid
             created_at=FlextTimestamp(datetime.now(UTC)),
         )
-        validation = invalid_server.validate_business_rules()
-        print(f"  Invalid server validation: {validation.error}")
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"  Server creation failed: {e}")
+        invalid_server.validate_business_rules()
+    except (RuntimeError, ValueError, TypeError):
+        pass
 
     # Try to start already running server
     server = FlextGrpcServer(
@@ -526,11 +467,9 @@ def example_5_error_handling() -> None:
     start1 = server_service.execute("start", server)
     if start1.success and isinstance(start1.data, FlextGrpcServer):
         running_server = start1.data
-        start2 = server_service.execute("start", running_server)
-        print(f"  Double start error: {start2.error}")
+        server_service.execute("start", running_server)
 
     # Client error scenarios
-    print("\nClient Error Scenarios:")
 
     # Try to connect client without channel
     no_channel_client = FlextGrpcClient(
@@ -540,8 +479,7 @@ def example_5_error_handling() -> None:
     )
 
     client_service = FlextGrpcClientService()
-    connect_result = client_service.execute("connect", no_channel_client)
-    print(f"  No channel error: {connect_result.error}")
+    client_service.execute("connect", no_channel_client)
 
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
@@ -556,59 +494,32 @@ def example_5_error_handling() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    call_result = client_service.execute(
+    client_service.execute(
         "call", disconnected_client, method_name="TestMethod"
     )
-    print(f"  Disconnected call error: {call_result.error}")
 
     # Configuration error scenarios
-    print("\nConfiguration Error Scenarios:")
 
-    try:
+    with contextlib.suppress(RuntimeError, ValueError, TypeError):
         FlextGrpcConfig(host="")
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"  Empty host error: {e}")
 
-    try:
+    with contextlib.suppress(RuntimeError, ValueError, TypeError):
         FlextGrpcConfig(port=0)
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"  Invalid port error: {e}")
 
-    try:
+    with contextlib.suppress(RuntimeError, ValueError, TypeError):
         FlextGrpcConfig(max_workers=0)
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"  Invalid workers error: {e}")
 
-    try:
+    with contextlib.suppress(RuntimeError, ValueError, TypeError):
         FlextGrpcConfig(timeout=-1.0)
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"  Invalid timeout error: {e}")
-
-    print()
 
 
 def main() -> None:
     """Run all advanced examples."""
-    print("FLEXT gRPC Library - Advanced Usage Examples")
-    print("=============================================")
-    print()
-
     example_1_server_pool()
     example_2_client_pool()
     example_3_service_registry()
     example_4_streaming()
     example_5_error_handling()
-
-    print("All advanced examples completed!")
-    print()
-    print("Advanced Patterns Demonstrated:")
-    print("- Server pool management with automatic port allocation")
-    print("- Client pool with broadcast messaging capabilities")
-    print("- Service registry and discovery patterns")
-    print("- Streaming type analysis and validation")
-    print("- Comprehensive error handling and validation")
-    print("- Clean separation of concerns between entities and operations")
-    print("- Strong typing with domain validation")
 
 
 if __name__ == "__main__":

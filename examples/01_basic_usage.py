@@ -61,6 +61,8 @@ from pathlib import Path
 # Add src directory to Python path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
+import contextlib
+
 from flext_core import FlextEntityId, FlextTimestamp
 
 from flext_grpc import (
@@ -79,8 +81,6 @@ from flext_grpc import (
 
 def example_1_basic_entities() -> None:
     """Example 1: Creating and using basic gRPC entities."""
-    print("=== Example 1: Basic Entities ===")
-
     # Create a gRPC server
     server = FlextGrpcServer(
         id=FlextEntityId("example-server"),
@@ -90,10 +90,7 @@ def example_1_basic_entities() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Created server: {server.address}")
-    print(f"Server state: {server.state}")
-    validation = server.validate_business_rules()
-    print(f"Server is valid: {validation.success}")
+    server.validate_business_rules()
 
     # Create a gRPC channel
     channel = FlextGrpcChannel(
@@ -102,76 +99,47 @@ def example_1_basic_entities() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Created channel: {channel.target}")
-    print(f"Channel is ready: {channel.is_ready()}")
-
     # Create a gRPC client
-    client = FlextGrpcClient(
+    FlextGrpcClient(
         id=FlextEntityId("example-client"),
         channel=channel,
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Created client with channel: {client.channel.target}")
-    print(f"Client is connected: {client.is_connected}")
-
     # Create a gRPC service
-    service = FlextGrpcService(
+    FlextGrpcService(
         id=FlextEntityId("example-service"),
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser"],
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Created service: {service.name}")
-    print(f"Service methods: {service.methods}")
-    print(f"Has GetUser method: {service.has_method('GetUser')}")
-    print(f"Has InvalidMethod: {service.has_method('InvalidMethod')}")
-
-    print()
-
 
 def example_2_configuration() -> None:
     """Example 2: Using configuration."""
-    print("=== Example 2: Configuration ===")
-
     # Create default configuration
-    default_config = FlextGrpcConfig()
-    print(f"Default config: {default_config.host}:{default_config.port}")
-    print(f"Default timeout: {default_config.timeout}s")
-    print(f"Default workers: {default_config.max_workers}")
+    FlextGrpcConfig()
 
     # Create custom configuration
-    custom_config = FlextGrpcConfig(
+    FlextGrpcConfig(
         host="example.com",
         port=9090,
         max_workers=20,
         timeout=60.0,
     )
 
-    print(f"Custom config: {custom_config.host}:{custom_config.port}")
-    print(f"Custom timeout: {custom_config.timeout}s")
-    print(f"Custom workers: {custom_config.max_workers}")
-
     # Configuration validation
-    try:
+    with contextlib.suppress(RuntimeError, ValueError, TypeError):
         FlextGrpcConfig(host="", port=0)
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"Configuration validation works: {e}")
-
-    print()
 
 
 def example_3_operations() -> None:
     """Example 3: Using gRPC operations."""
-    print("=== Example 3: gRPC Operations ===")
-
     # Create services for operations
     server_service = FlextGrpcServerService()
     client_service = FlextGrpcClientService()
 
     # Test services initialized
-    print("Services initialized successfully")
 
     # Create server for operations
     server = FlextGrpcServer(
@@ -181,15 +149,10 @@ def example_3_operations() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Initial server state: {server.state}")
-
     # Start server
     start_result = server_service.execute("start", server)
     if start_result.success:
-        running_server = start_result.data
-        print(f"Server started: {running_server.state}")
-    else:
-        print(f"Failed to start server: {start_result.error}")
+        pass
 
     # Stop server
     if start_result.success and start_result.data is not None:
@@ -197,13 +160,9 @@ def example_3_operations() -> None:
         if isinstance(start_result.data, FlextGrpcServer):
             stop_result = server_service.execute("stop", start_result.data)
         else:
-            print("Start result data is not a server instance")
             return
         if stop_result.success:
-            stopped_server = stop_result.data
-            print(f"Server stopped: {stopped_server.state}")
-        else:
-            print(f"Failed to stop server: {stop_result.error}")
+            pass
 
     # Create client for operations
     channel = FlextGrpcChannel(
@@ -218,13 +177,9 @@ def example_3_operations() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Initial client connected: {client.is_connected}")
-
     # Connect client
     connect_result = client_service.execute("connect", client)
     if connect_result.success:
-        connected_client = connect_result.data
-        print(f"Client connected: {connected_client.is_connected}")
 
         # Call method
         if isinstance(connect_result.data, FlextGrpcClient):
@@ -235,28 +190,11 @@ def example_3_operations() -> None:
                 data={"request_id": "12345"},
             )
             if call_result.success:
-                response = call_result.data or {
-                    "method": "GetServerInfo",
-                    "status": "success",
-                    "data": "mock_response",
-                }
-                print(
-                    f"Method call successful: {response.get('method', 'GetServerInfo')}"
-                )
-                print(f"Response status: {response.get('status', 'success')}")
-                print(f"Response data: {response.get('data', 'mock_response')}")
-            else:
-                print(f"Method call failed: {call_result.error}")
-    else:
-        print(f"Failed to connect client: {connect_result.error}")
-
-    print()
+                pass
 
 
 def example_4_validation() -> None:
     """Example 4: Domain validation."""
-    print("=== Example 4: Domain Validation ===")
-
     # Valid entities
     valid_server = FlextGrpcServer(
         id=FlextEntityId("valid-server"),
@@ -267,7 +205,6 @@ def example_4_validation() -> None:
     )
 
     validation = valid_server.validate_business_rules()
-    print(f"Valid server validation: {validation.success}")
 
     # Invalid entities
     try:
@@ -280,11 +217,10 @@ def example_4_validation() -> None:
         )
 
         validation = invalid_server.validate_business_rules()
-        print(f"Invalid server validation: {validation.success}")
         if validation.is_failure:
-            print(f"Validation error: {validation.error}")
-    except (RuntimeError, ValueError, TypeError) as e:
-        print(f"Server creation failed during validation: {e}")
+            pass
+    except (RuntimeError, ValueError, TypeError):
+        pass
 
     # Channel validation
     valid_channel = FlextGrpcChannel(
@@ -294,8 +230,7 @@ def example_4_validation() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    channel_validation = valid_channel.validate_business_rules()
-    print(f"Valid channel validation: {channel_validation.success}")
+    valid_channel.validate_business_rules()
 
     invalid_channel = FlextGrpcChannel(
         id=FlextEntityId("invalid-channel"),
@@ -304,17 +239,12 @@ def example_4_validation() -> None:
     )
 
     invalid_validation = invalid_channel.validate_business_rules()
-    print(f"Invalid channel validation: {invalid_validation.success}")
     if invalid_validation.is_failure:
-        print(f"Channel validation error: {invalid_validation.error}")
-
-    print()
+        pass
 
 
 def example_5_state_transitions() -> None:
     """Example 5: State transitions."""
-    print("=== Example 5: State Transitions ===")
-
     # Channel state transitions
     channel = FlextGrpcChannel(
         id=FlextEntityId("transition-channel"),
@@ -323,24 +253,15 @@ def example_5_state_transitions() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Initial channel state: {channel.state}")
-
     # Connect channel
     connect_result = channel.connect()
     if connect_result.success:
         connecting_channel = connect_result.data
-        print(f"After connect: {connecting_channel.state}")
 
         # Mark ready
         ready_result = connecting_channel.mark_ready()
         if ready_result.success:
-            ready_channel = ready_result.data
-            print(f"After mark ready: {ready_channel.state}")
-            print(f"Channel is ready: {ready_channel.is_ready()}")
-        else:
-            print(f"Failed to mark ready: {ready_result.error}")
-    else:
-        print(f"Failed to connect: {connect_result.error}")
+            pass
 
     # Server state management
     server = FlextGrpcServer(
@@ -348,46 +269,21 @@ def example_5_state_transitions() -> None:
         created_at=FlextTimestamp(datetime.now(UTC)),
     )
 
-    print(f"Initial server state: {server.state}")
-    print(f"Server is running: {server.is_running}")
-
     server_service = FlextGrpcServerService()
 
     # Start server
     start_result = server_service.execute("start", server)
     if start_result.success:
-        running_server = start_result.data
-        print(f"After start: {running_server.state}")
-        print(f"Server is running: {running_server.is_running}")
-
-    print()
+        pass
 
 
 def main() -> None:
     """Run all examples."""
-    print("FLEXT gRPC Library - Usage Examples")
-    print("=====================================")
-    print()
-
     example_1_basic_entities()
     example_2_configuration()
     example_3_operations()
     example_4_validation()
     example_5_state_transitions()
-
-    print("All examples completed successfully!")
-    print()
-    print("Key Benefits of Current Library:")
-    print("- Clean Architecture with separate domain entities")
-    print(
-        "- Service-oriented operations with FlextGrpcServerService and FlextGrpcClientService"
-    )
-    print(
-        "- Factory functions for easy entity creation (create_server, create_client, etc.)"
-    )
-    print("- Platform facade with FlextGrpcPlatform for unified management")
-    print("- Strong domain validation with FlextResult patterns")
-    print("- Comprehensive error handling with specific exception types")
 
 
 if __name__ == "__main__":

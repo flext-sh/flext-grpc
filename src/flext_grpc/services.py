@@ -1130,14 +1130,12 @@ class FlextGrpcStreamService:
         responses = []
         try:
             for response in response_iterator:
-                responses.append(
-                    {
-                        "data": response.data,
-                        "sequence": response.sequence,
-                        "server_id": response.server_id,
-                        "timestamp": response.timestamp,
-                    }
-                )
+                responses.append({
+                    "data": response.data,
+                    "sequence": response.sequence,
+                    "server_id": response.server_id,
+                    "timestamp": response.timestamp,
+                })
                 # Break after first response for immediate processing
                 break
         except Exception:

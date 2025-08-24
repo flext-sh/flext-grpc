@@ -132,9 +132,9 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Bidirectional streaming error: {e}")
 
-    def HealthCheck(
+    def HealthCheck(  # noqa: N802
         self, request: HealthRequest, context: grpc.ServicerContext
-    ) -> HealthResponse:  # noqa: N802
+    ) -> HealthResponse:
         """Real health check implementation."""
         try:
             # Check server health

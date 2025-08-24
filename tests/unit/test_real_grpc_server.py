@@ -110,13 +110,13 @@ class TestRealGrpcServer:
         """Test registering a real service and making real gRPC calls."""
         try:
             # Try to import the generated protobuf files
-            import echo_pb2  # noqa: PLC0415
-            import echo_pb2_grpc  # noqa: PLC0415
+            import echo_pb2
+            import echo_pb2_grpc
 
             class EchoServicer(echo_pb2_grpc.EchoServiceServicer):
                 def Echo(
                     self, request: echo_pb2.EchoRequest, context: object
-                ) -> echo_pb2.EchoResponse:  # noqa: N802, ARG002
+                ) -> echo_pb2.EchoResponse:
                     return echo_pb2.EchoResponse(message=f"Echo: {request.message}")
 
             # Start real server with the service
