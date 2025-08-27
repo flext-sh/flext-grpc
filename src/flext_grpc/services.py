@@ -28,7 +28,9 @@ from typing import Protocol, TypedDict, cast
 
 import grpc
 import psutil
-from flext_core import FlextContainer, FlextResult, get_flext_container, get_logger
+
+# Import centralized constants from flext-core to eliminate duplication
+from flext_core import FlextConstants, FlextContainer, FlextResult, get_logger
 
 from flext_grpc.entities import (
     FlextGrpcClient,
@@ -45,25 +47,25 @@ from flext_grpc.proto import (
 )
 from flext_grpc.real_servicer import create_real_servicer
 
-# Constants for enterprise-grade stream management
-CLIENT_STREAMING_BUFFER_THRESHOLD = 3  # Threshold for client streaming batching
-SERVER_STREAMING_BATCH_SIZE = 50
-BIDIRECTIONAL_STREAMING_QUEUE_SIZE = 1000
-STREAM_CLEANUP_MAX_AGE_SECONDS = 300.0
-STREAM_PROCESSING_TIMEOUT_SECONDS = 30.0
-MAX_CONCURRENT_STREAMS_PER_CLIENT = 100
-STREAM_METRICS_COLLECTION_INTERVAL = 60.0  # seconds
-STREAM_HEALTH_DEGRADED_THRESHOLD = 60.0  # seconds for health status
+# Use centralized gRPC constants following SOLID DRY principles
+CLIENT_STREAMING_BUFFER_THRESHOLD = FlextConstants.GRPC.CLIENT_STREAMING_BUFFER_THRESHOLD
+SERVER_STREAMING_BATCH_SIZE = FlextConstants.GRPC.SERVER_STREAMING_BATCH_SIZE
+BIDIRECTIONAL_STREAMING_QUEUE_SIZE = FlextConstants.GRPC.BIDIRECTIONAL_STREAMING_QUEUE_SIZE
+STREAM_CLEANUP_MAX_AGE_SECONDS = FlextConstants.GRPC.STREAM_CLEANUP_MAX_AGE_SECONDS
+STREAM_PROCESSING_TIMEOUT_SECONDS = FlextConstants.GRPC.STREAM_PROCESSING_TIMEOUT_SECONDS
+MAX_CONCURRENT_STREAMS_PER_CLIENT = FlextConstants.GRPC.MAX_CONCURRENT_STREAMS_PER_CLIENT
+STREAM_METRICS_COLLECTION_INTERVAL = FlextConstants.GRPC.STREAM_METRICS_COLLECTION_INTERVAL
+STREAM_HEALTH_DEGRADED_THRESHOLD = FlextConstants.GRPC.STREAM_HEALTH_DEGRADED_THRESHOLD
 
-# Memory efficiency constants
-MAX_BUFFER_SIZE_BYTES = 50 * 1024 * 1024  # 50MB per stream buffer
-MEMORY_PRESSURE_THRESHOLD = 0.85  # 85% memory usage triggers cleanup
-BUFFER_CLEANUP_BATCH_SIZE = 100  # Clean up buffers in batches
-LOW_MEMORY_THRESHOLD = 100 * 1024 * 1024  # 100MB system memory threshold
-ADAPTIVE_BUFFER_SCALING_FACTOR = 0.8  # Scale buffers by 80% under pressure
-MEMORY_CLEANUP_INTERVAL_SHORT = 30  # 30 seconds for frequent cleanup
-MEMORY_CLEANUP_INTERVAL_LONG = 60  # 60 seconds for infrequent cleanup
-HIGH_PRESSURE_RATIO_THRESHOLD = 0.5  # 50% streams under pressure triggers cleanup
+# Centralized memory efficiency constants from FlextConstants.GRPC
+MAX_BUFFER_SIZE_BYTES = FlextConstants.GRPC.MAX_BUFFER_SIZE_BYTES
+MEMORY_PRESSURE_THRESHOLD = FlextConstants.GRPC.MEMORY_PRESSURE_THRESHOLD
+BUFFER_CLEANUP_BATCH_SIZE = FlextConstants.GRPC.BUFFER_CLEANUP_BATCH_SIZE
+LOW_MEMORY_THRESHOLD = FlextConstants.GRPC.LOW_MEMORY_THRESHOLD
+ADAPTIVE_BUFFER_SCALING_FACTOR = FlextConstants.GRPC.ADAPTIVE_BUFFER_SCALING_FACTOR
+MEMORY_CLEANUP_INTERVAL_SHORT = FlextConstants.GRPC.MEMORY_CLEANUP_INTERVAL_SHORT
+MEMORY_CLEANUP_INTERVAL_LONG = FlextConstants.GRPC.MEMORY_CLEANUP_INTERVAL_LONG
+HIGH_PRESSURE_RATIO_THRESHOLD = FlextConstants.GRPC.HIGH_PRESSURE_RATIO_THRESHOLD
 
 
 # Stream info types for enterprise-grade stream management
@@ -1557,7 +1559,7 @@ class FlextGrpcPlatform:
 
     def __init__(self, container: FlextContainer | None = None) -> None:
         """Initialize platform with optional container."""
-        self._container = container or get_flext_container()
+        self._container = container or FlextContainer.get_global()
         self._server_service = FlextGrpcServerService()
         self._client_service = FlextGrpcClientService()
         self._stream_service = FlextGrpcStreamService()

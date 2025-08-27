@@ -235,7 +235,7 @@ graph TB
 
 ```python
 # Global container integration
-container = get_flext_container()
+container = FlextContainer.get_global()
 platform = FlextGrpcPlatform(container=container)
 
 # Service registration

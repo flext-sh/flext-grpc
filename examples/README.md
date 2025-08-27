@@ -150,7 +150,7 @@ from flext_core import get_flext_container
 from datetime import datetime, timezone
 
 # Integration with FLEXT ecosystem
-container = get_flext_container()
+container = FlextContainer.get_global()
 platform = FlextGrpcPlatform(container=container)
 
 # Client for FlexCore service

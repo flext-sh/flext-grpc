@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import FlextEntityId, FlextTimestamp, get_flext_container
+from flext_core import FlextEntityId, FlextTimestamp
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -31,7 +31,7 @@ class TestFlextGrpcPlatformSimple:
 
     def setup_method(self) -> None:
         """Set up test environment."""
-        container = get_flext_container()
+        container = FlextContainer.get_global()
         container.clear()
 
     def test_platform_service_property_fallback_paths(self) -> None:

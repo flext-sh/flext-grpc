@@ -164,7 +164,7 @@ from flext_core import get_flext_container
 from flext_grpc import FlextGrpcPlatform
 
 # Global container integration
-container = get_flext_container()
+container = FlextContainer.get_global()
 platform = FlextGrpcPlatform(container=container)
 
 # Service registration
@@ -513,7 +513,7 @@ prod_config = FlextGrpcConfig(
 from flext_core import get_flext_container
 
 # Shared configuration across ecosystem
-container = get_flext_container()
+container = FlextContainer.get_global()
 ecosystem_config = container.get("ecosystem_config").data
 
 grpc_config = FlextGrpcConfig(

@@ -49,13 +49,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from flext_core import get_flext_container
 
 
 @pytest.fixture(autouse=True)
 def clean_container() -> object:
     """Clean global container before each test."""
-    return get_flext_container()
+    return FlextContainer.get_global()
     # Container isolation is handled by flext-core
 
 

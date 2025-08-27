@@ -17,11 +17,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
-    FlextExceptions.ConfigurationError,
-    FlextExceptions.ConnectionError,
-    FlextExceptions.Error,
-    FlextExceptions.TimeoutError,
-    FlextExceptions.ValidationError,
+    FlextExceptions,
 )
 
 # =============================================================================
@@ -29,12 +25,12 @@ from flext_core import (
 # =============================================================================
 
 
-class FlextGrpcError(FlextExceptions.Error):
+class FlextGrpcError(FlextExceptions):
     """Base exception for all FLEXT gRPC platform errors.
 
     Root exception class for the FLEXT gRPC error hierarchy, providing
     a common base for all gRPC-specific exceptions. Extends the flext-core
-    FlextExceptions.Error foundation while enabling specific gRPC error handling.
+    FlextExceptions foundation while enabling specific gRPC error handling.
 
     This base class enables comprehensive error handling patterns:
     - Catch all gRPC errors with single exception type
@@ -58,7 +54,7 @@ class FlextGrpcError(FlextExceptions.Error):
     """
 
 
-class FlextGrpcValidationError(FlextExceptions.ValidationError):
+class FlextGrpcValidationError(FlextExceptions):
     """gRPC validation error with comprehensive field context and validation details.
 
     Specialized validation error for gRPC entity and configuration validation
@@ -111,7 +107,7 @@ class FlextGrpcValidationError(FlextExceptions.ValidationError):
         self.field_name = field_name
 
 
-class FlextGrpcConnectionError(FlextExceptions.ConnectionError):
+class FlextGrpcConnectionError(FlextExceptions):
     """gRPC connection error with comprehensive network and channel context.
 
     Specialized connection error for gRPC network communication failures.
@@ -153,7 +149,7 @@ class FlextGrpcConnectionError(FlextExceptions.ConnectionError):
     """
 
 
-class FlextGrpcTimeoutError(FlextExceptions.TimeoutError):
+class FlextGrpcTimeoutError(FlextExceptions):
     """gRPC timeout error with comprehensive deadline and operation context.
 
     Specialized timeout error for gRPC operation deadline violations.
@@ -194,7 +190,7 @@ class FlextGrpcTimeoutError(FlextExceptions.TimeoutError):
     """
 
 
-class FlextGrpcConfigurationError(FlextExceptions.ConfigurationError):
+class FlextGrpcConfigurationError(FlextExceptions):
     """gRPC configuration error with comprehensive configuration context.
 
     Specialized configuration error for gRPC setup and configuration validation

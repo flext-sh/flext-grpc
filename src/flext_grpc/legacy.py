@@ -2,7 +2,7 @@
 
 This module provides backward compatibility for legacy exception classes and APIs
 that were refactored during the flext-core modernization. All legacy names are
-maintained as facades to the new FlextExceptions.ErrorMixin-based exceptions.
+maintained as facades to the new FlextExceptionsMixin-based exceptions.
 
 This layer will be deprecated in a future version. Please migrate to the new
 FlextGrpc* exception classes for modern error handling patterns.
@@ -14,6 +14,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import warnings
+
+from flext_core import FlextConstants
 
 from flext_grpc.exceptions import (
     FlextGrpcChannelError,
@@ -45,7 +47,7 @@ except ImportError:
     FlextGrpcPlatform = None
 
 
-def _deprecation_warning(old_name: str, new_name: str) -> None:
+def deprecation_warning(old_name: str, new_name: str) -> None:
     """Issue deprecation warning for legacy API usage."""
     warnings.warn(
         f"{old_name} is deprecated. Use {new_name} instead. "
@@ -58,7 +60,7 @@ def _deprecation_warning(old_name: str, new_name: str) -> None:
 # Legacy exception aliases following facade pattern
 def GrpcError(*args: object, **kwargs: object) -> FlextGrpcError:  # noqa: N802
     """Legacy: Use FlextGrpcError instead."""
-    _deprecation_warning("GrpcError", "FlextGrpcError")
+    deprecation_warning("GrpcError", "FlextGrpcError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     return FlextGrpcError(str(message))
@@ -66,7 +68,7 @@ def GrpcError(*args: object, **kwargs: object) -> FlextGrpcError:  # noqa: N802
 
 def GrpcValidationError(*args: object, **kwargs: object) -> FlextGrpcValidationError:  # noqa: N802
     """Legacy: Use FlextGrpcValidationError instead."""
-    _deprecation_warning("GrpcValidationError", "FlextGrpcValidationError")
+    deprecation_warning("GrpcValidationError", "FlextGrpcValidationError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     field_name_raw = kwargs.get("field_name")
@@ -76,7 +78,7 @@ def GrpcValidationError(*args: object, **kwargs: object) -> FlextGrpcValidationE
 
 def GrpcConnectionError(*args: object, **kwargs: object) -> FlextGrpcConnectionError:  # noqa: N802
     """Legacy: Use FlextGrpcConnectionError instead."""
-    _deprecation_warning("GrpcConnectionError", "FlextGrpcConnectionError")
+    deprecation_warning("GrpcConnectionError", "FlextGrpcConnectionError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     return FlextGrpcConnectionError(str(message))
@@ -84,7 +86,7 @@ def GrpcConnectionError(*args: object, **kwargs: object) -> FlextGrpcConnectionE
 
 def GrpcTimeoutError(*args: object, **kwargs: object) -> FlextGrpcTimeoutError:  # noqa: N802
     """Legacy: Use FlextGrpcTimeoutError instead."""
-    _deprecation_warning("GrpcTimeoutError", "FlextGrpcTimeoutError")
+    deprecation_warning("GrpcTimeoutError", "FlextGrpcTimeoutError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     return FlextGrpcTimeoutError(str(message))
@@ -94,7 +96,7 @@ def grpc_configuration_error(
     *args: object, **kwargs: object
 ) -> FlextGrpcConfigurationError:
     """Legacy: Use FlextGrpcConfigurationError instead."""
-    _deprecation_warning("GrpcConfigurationError", "FlextGrpcConfigurationError")
+    deprecation_warning("GrpcConfigurationError", "FlextGrpcConfigurationError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     config_key_raw = kwargs.get("config_key")
@@ -107,7 +109,7 @@ def grpc_configuration_error(
 
 def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError:  # noqa: N802
     """Legacy: Use FlextGrpcChannelError instead."""
-    _deprecation_warning("GrpcChannelError", "FlextGrpcChannelError")
+    deprecation_warning("GrpcChannelError", "FlextGrpcChannelError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     return FlextGrpcChannelError(str(message))
@@ -115,7 +117,7 @@ def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError: 
 
 def GrpcServiceError(*args: object, **kwargs: object) -> FlextGrpcServiceError:  # noqa: N802
     """Legacy: Use FlextGrpcServiceError instead."""
-    _deprecation_warning("GrpcServiceError", "FlextGrpcServiceError")
+    deprecation_warning("GrpcServiceError", "FlextGrpcServiceError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     return FlextGrpcServiceError(str(message))
@@ -123,7 +125,7 @@ def GrpcServiceError(*args: object, **kwargs: object) -> FlextGrpcServiceError: 
 
 def GrpcStreamError(*args: object, **kwargs: object) -> FlextGrpcStreamError:  # noqa: N802
     """Legacy: Use FlextGrpcStreamError instead."""
-    _deprecation_warning("GrpcStreamError", "FlextGrpcStreamError")
+    deprecation_warning("GrpcStreamError", "FlextGrpcStreamError")
     # Legacy function - use first arg as message or empty string
     message = str(args[0]) if args else kwargs.get("message", "")
     return FlextGrpcStreamError(str(message))
@@ -135,7 +137,7 @@ def create_grpc_client(*_args: object, **kwargs: object) -> object:
     if not _imports_available or FlextGrpcClient is None:
         msg = "FlextGrpcClient not available"
         raise ImportError(msg) from None
-    _deprecation_warning("create_grpc_client", "FlextGrpcClient")
+    deprecation_warning("create_grpc_client", "FlextGrpcClient")
     # Legacy function - ignore all type checking for backward compatibility
     return FlextGrpcClient(**kwargs)
 
@@ -145,7 +147,7 @@ def create_grpc_server(*_args: object, **kwargs: object) -> object:
     if not _imports_available or FlextGrpcServer is None:
         msg = "FlextGrpcServer not available"
         raise ImportError(msg) from None
-    _deprecation_warning("create_grpc_server", "FlextGrpcServer")
+    deprecation_warning("create_grpc_server", "FlextGrpcServer")
     # Legacy function - ignore all type checking for backward compatibility
     return FlextGrpcServer(**kwargs)
 
@@ -155,7 +157,7 @@ def create_grpc_config(*_args: object, **kwargs: object) -> object:
     if not _imports_available or FlextGrpcConfig is None:
         msg = "FlextGrpcConfig not available"
         raise ImportError(msg) from None
-    _deprecation_warning("create_grpc_config", "FlextGrpcConfig")
+    deprecation_warning("create_grpc_config", "FlextGrpcConfig")
     # Legacy function - ignore all type checking for backward compatibility
     return FlextGrpcConfig(**kwargs)
 
@@ -165,7 +167,7 @@ def setup_grpc_platform(*_args: object, **kwargs: object) -> object:
     if not _imports_available or FlextGrpcPlatform is None:
         msg = "FlextGrpcPlatform not available"
         raise ImportError(msg) from None
-    _deprecation_warning("setup_grpc_platform", "FlextGrpcPlatform")
+    deprecation_warning("setup_grpc_platform", "FlextGrpcPlatform")
     # Legacy function - ignore all type checking for backward compatibility
     return FlextGrpcPlatform(**kwargs)
 
@@ -175,7 +177,7 @@ def simple_grpc_call(*args: object, **kwargs: object) -> object:
     if not _imports_available or FlextGrpcPlatform is None:
         msg = "FlextGrpcPlatform not available"
         raise ImportError(msg) from None
-    _deprecation_warning("simple_grpc_call", "FlextGrpcPlatform.make_call")
+    deprecation_warning("simple_grpc_call", "FlextGrpcPlatform.make_call")
     platform = FlextGrpcPlatform()
     # Legacy function - ignore all type checking for method call
     return platform.make_call(*args, **kwargs)
@@ -185,13 +187,13 @@ def simple_grpc_call(*args: object, **kwargs: object) -> object:
 GRPC_DEFAULT_HOST = "localhost"
 GRPC_DEFAULT_PORT = 50051
 GRPC_DEFAULT_WORKERS = 10
-GRPC_DEFAULT_TIMEOUT = 30.0
+GRPC_DEFAULT_TIMEOUT = FlextConstants.Api.GRPC_DEFAULT_TIMEOUT
 
 
 # Legacy parameter factories for compatibility
 def GrpcValidationErrorParams(*args: object, **kwargs: object) -> dict[str, object]:  # noqa: N802,ARG001
     """Legacy: Create parameters for GrpcValidationError - use FlextGrpcValidationError context instead."""
-    _deprecation_warning(
+    deprecation_warning(
         "GrpcValidationErrorParams", "FlextGrpcValidationError context parameter"
     )
     return {
@@ -204,7 +206,7 @@ def GrpcValidationErrorParams(*args: object, **kwargs: object) -> dict[str, obje
 
 def GrpcConfigurationErrorParams(*args: object, **kwargs: object) -> dict[str, object]:  # noqa: N802,ARG001
     """Legacy: Create parameters for GrpcConfigurationError - use FlextGrpcConfigurationError context instead."""
-    _deprecation_warning(
+    deprecation_warning(
         "GrpcConfigurationErrorParams", "FlextGrpcConfigurationError context parameter"
     )
     return {
@@ -217,7 +219,7 @@ def GrpcConfigurationErrorParams(*args: object, **kwargs: object) -> dict[str, o
 
 def GrpcChannelErrorParams(*args: object, **kwargs: object) -> dict[str, object]:  # noqa: N802,ARG001
     """Legacy: Create parameters for GrpcChannelError - use FlextGrpcChannelError context instead."""
-    _deprecation_warning(
+    deprecation_warning(
         "GrpcChannelErrorParams", "FlextGrpcChannelError context parameter"
     )
     return {
