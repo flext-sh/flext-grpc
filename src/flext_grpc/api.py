@@ -347,7 +347,7 @@ def parse_address(address: str) -> dict[str, str | int]:
             max_port = 65535
             if port < min_port or port > max_port:
                 port_range_msg = f"Port must be between {min_port} and {max_port}"
-                raise ValueError(port_range_msg) from None  # noqa: TRY301
+                raise ValueError(port_range_msg) from None
 
         port = int(port_str)
         _validate_port_in_range()

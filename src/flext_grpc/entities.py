@@ -105,7 +105,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
     State Transitions:
       idle -> connecting -> ready -> shutdown
-      Any state can transition to idle through disconnect()
+      object state can transition to idle through disconnect()
 
     Domain Rules:
       - Target cannot be empty or None

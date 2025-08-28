@@ -68,7 +68,7 @@ from __future__ import annotations
 import asyncio
 import sys
 from pathlib import Path
-from typing import Any, NoReturn
+from typing import NoReturn, object
 
 # Add src directory to Python path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
@@ -113,7 +113,7 @@ def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]
         return FlextResult[dict[str, str]].fail(f"Validation error: {e}")
 
 
-def create_server_config(port: int, workers: int) -> FlextResult[Any]:
+def create_server_config(port: int, workers: int) -> FlextResult[object]:
     """Create server configuration with proper error handling."""
 
     def _raise_port_error() -> NoReturn:
@@ -142,9 +142,9 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
 
         try:
             config = create_config(host="localhost", port=port, max_workers=workers)
-            return FlextResult[Any].ok(config)
+            return FlextResult[object].ok(config)
         except Exception as e:
-            return FlextResult[Any].fail(str(e))
+            return FlextResult[object].fail(str(e))
 
     except FlextGrpcConfigurationError as e:
         logger.exception(
@@ -153,7 +153,7 @@ def create_server_config(port: int, workers: int) -> FlextResult[Any]:
             value=e.config_value,
             error=str(e),
         )
-        return FlextResult[Any].fail(f"Configuration error: {e}")
+        return FlextResult[object].fail(f"Configuration error: {e}")
 
 
 def simulate_connection_error() -> FlextResult[str]:

@@ -352,7 +352,7 @@ package flext.common;
 message FlextResult {
     bool success = 1;
     string error = 2;
-    google.protobuf.Any data = 3;
+    google.protobuf.object data = 3;
 }
 
 message FlextEntity {
