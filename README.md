@@ -75,7 +75,7 @@ FLEXT gRPC provides communication layer between distributed services:
 ### **FLEXT Core Integration**
 
 - **FlextResult Pattern**: Railway-oriented programming for error handling
-- **FlextEntity**: Domain entities with validation and state transitions
+- **FlextModels.Entity**: Domain entities with validation and state transitions
 - **Dependency Injection**: Global container integration (via flext-core)
 
 ## Installation & Usage

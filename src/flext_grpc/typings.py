@@ -13,7 +13,7 @@ from __future__ import annotations
 import re
 from typing import Literal, NewType, Protocol, runtime_checkable
 
-from flext_core import get_logger
+from flext_core import FlextLogger
 
 # Network validation constants for port range enforcement
 MIN_PORT = 1
@@ -112,7 +112,7 @@ def flext_grpc_validate_target(target: str) -> bool:
         port = int(port_str)
         return MIN_PORT <= port <= MAX_PORT
     except (ValueError, AttributeError):
-        logger = get_logger(__name__)
+        logger = FlextLogger(__name__)
         logger.debug("Invalid gRPC target: %s", target)
         return False
 

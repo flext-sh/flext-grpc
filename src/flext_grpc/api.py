@@ -19,7 +19,7 @@ import re
 import uuid
 from datetime import UTC, datetime
 
-from flext_core import FlextEntityId, FlextResult, FlextTimestamp
+from flext_core import FlextModels, FlextResult, FlextModels.Timestamp
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
 from flext_grpc.entities import (
@@ -152,10 +152,10 @@ def create_service(
     # This maintains API compatibility with existing tests
     if not methods:
         return FlextGrpcService(
-            id=FlextEntityId(f"service-{uuid.uuid4().hex[:8]}"),
+            id=FlextModels.EntityId(f"service-{uuid.uuid4().hex[:8]}"),
             name=name,
             methods=[],
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
     result = FlextGrpcEntityFactory.create_service(name=name, methods=methods)

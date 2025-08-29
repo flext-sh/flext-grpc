@@ -153,7 +153,7 @@ src/flext_grpc/
 
 **flext-core Foundation**: Built on established FLEXT patterns
 
-- FlextEntity base class for all domain entities
+- FlextModels.Entity base class for all domain entities
 - FlextResult for consistent error handling
 - Global dependency injection container
 

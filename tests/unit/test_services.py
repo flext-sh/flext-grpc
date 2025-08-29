@@ -59,7 +59,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextEntityId, FlextGenerators, FlextResult, FlextTimestamp
+from flext_core import FlextModels, FlextGenerators, FlextResult, FlextModels.Timestamp
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -113,23 +113,23 @@ class TestFlextGrpcService:
         # Create test entities for use in tests
 
         self.server = FlextGrpcServer(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             host="localhost",
             port=50051,
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         self.channel = FlextGrpcChannel(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             target=TGrpcTarget("localhost:50051"),
             state="idle",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         self.client = FlextGrpcClient(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             channel=self.channel,
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         self.server_service = FlextGrpcServerService()
@@ -192,10 +192,10 @@ class TestFlextGrpcService:
         running_server = _assert_server_result(start_result)
 
         service_entity = FlextGrpcService(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             name="TestService",
             methods=["test_method"],
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         result = self.execute_service_command(
@@ -411,10 +411,10 @@ class TestFlextGrpcService:
         """Test that stream service validates stream business rules."""
         # Create an invalid stream directly (bypassing create_stream validation)
         invalid_stream = FlextGrpcStream(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             method_name="",  # Invalid empty method name
             stream_type="unary",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         # The service should validate and reject it
@@ -426,10 +426,10 @@ class TestFlextGrpcService:
     def test_stream_send_operation(self) -> None:
         """Test stream send operation."""
         stream = FlextGrpcStream(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             method_name="test_method",
             stream_type="unary",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         # First create the stream
@@ -447,10 +447,10 @@ class TestFlextGrpcService:
     def test_stream_close_operation(self) -> None:
         """Test stream close operation."""
         stream = FlextGrpcStream(
-            id=FlextEntityId(FlextGenerators.generate_entity_id()),
+            id=FlextModels.EntityId(FlextGenerators.generate_entity_id()),
             method_name="test_method",
             stream_type="unary",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         # First create the stream

@@ -142,10 +142,10 @@ graph TD
 
 ```python
 # Domain Entity Example - FlextGrpcServer
-from flext_core import FlextEntity, FlextResult
+from flext_core import FlextModels.Entity, FlextResult
 from flext_grpc.types import TGrpcServerState
 
-class FlextGrpcServer(FlextEntity):
+class FlextGrpcServer(FlextModels.Entity):
     """
     gRPC server domain entity with rich behavioral methods.
 
@@ -220,7 +220,7 @@ Key Components:
 Architecture:
     Domain entities form the core of the gRPC communication platform, implementing
     rich business behavior with immutable state transitions. Each entity includes
-    domain validation and follows the FlextEntity pattern from flext-core.
+    domain validation and follows the FlextModels.Entity pattern from flext-core.
 
 Example:
     Basic server entity creation and validation:
@@ -367,7 +367,7 @@ def validate_domain_rules(self) -> FlextResult[None]:
 from typing import Dict, List, Optional, Protocol, Union, TypeVar, Generic, Literal
 from pathlib import Path
 from datetime import datetime
-from flext_core import FlextResult, FlextEntity
+from flext_core import FlextResult, FlextModels.Entity
 from flext_grpc.types import TGrpcServerState, TGrpcHost, TGrpcPort
 
 # Type variables for generic implementations
@@ -449,12 +449,12 @@ from pydantic import Field, validator
 
 # 3. FLEXT ecosystem imports (foundation first, then alphabetical)
 from flext_core import (
-    FlextEntity,
+    FlextModels.Entity,
     FlextResult,
     FlextLogger,
     FlextContainer,
     get_flext_container,
-    get_logger,
+    FlextLogger,
 )
 from flext_observability import (
     HealthChecker,
@@ -644,8 +644,8 @@ __email__ = "team@flext.sh"
 __url__ = "https://github.com/flext-sh/flext/tree/main/flext-grpc"
 
 # Module-level logger
-from flext_core import get_logger
-logger = get_logger(__name__)
+from flext_core import FlextLogger
+logger = FlextLogger(__name__)
 logger.info("FLEXT gRPC initialized", version=__version__, architecture=__architecture__)
 ```
 

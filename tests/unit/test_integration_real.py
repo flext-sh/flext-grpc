@@ -19,7 +19,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import FlextEntityId, FlextTimestamp
+from flext_core import FlextModels, FlextModels.Timestamp
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -139,16 +139,16 @@ class TestRealGrpcIntegration:
 
         # Create real entities for platform testing
         server = FlextGrpcServer(
-            id=FlextEntityId("platform-server"),
+            id=FlextModels.EntityId("platform-server"),
             host="localhost",
             port=50054,  # Different port
             max_workers=3,
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         client = FlextGrpcClient(
-            id=FlextEntityId("platform-client"),
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            id=FlextModels.EntityId("platform-client"),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         # Test real platform server operations
@@ -187,10 +187,10 @@ class TestRealGrpcIntegration:
         """Test REAL error handling without mocks - validate actual error conditions."""
         # Test invalid server configuration - should fail domain validation
         invalid_server = FlextGrpcServer(
-            id=FlextEntityId("invalid-server"),
+            id=FlextModels.EntityId("invalid-server"),
             host="",  # Invalid empty host
             port=50055,
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         validation = invalid_server.validate_business_rules()
@@ -200,10 +200,10 @@ class TestRealGrpcIntegration:
 
         # Test invalid port - should fail domain validation
         invalid_port_server = FlextGrpcServer(
-            id=FlextEntityId("invalid-port-server"),
+            id=FlextModels.EntityId("invalid-port-server"),
             host="localhost",
             port=99999,  # Invalid port
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         port_validation = invalid_port_server.validate_business_rules()
@@ -213,9 +213,9 @@ class TestRealGrpcIntegration:
 
         # Test invalid channel target
         invalid_channel = FlextGrpcChannel(
-            id=FlextEntityId("invalid-channel"),
+            id=FlextModels.EntityId("invalid-channel"),
             target=TGrpcTarget(""),  # Empty target
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         channel_validation = invalid_channel.validate_business_rules()
@@ -270,18 +270,18 @@ class TestRealGrpcIntegration:
 
         # Create coordinated entities that will work together
         server = FlextGrpcServer(
-            id=FlextEntityId("coord-server"),
+            id=FlextModels.EntityId("coord-server"),
             host="localhost",
             port=50057,
             max_workers=2,
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         service = FlextGrpcService(
-            id=FlextEntityId("coord-service"),
+            id=FlextModels.EntityId("coord-service"),
             name="CoordinationService",
             methods=["Coordinate", "Validate"],
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         # Test real service operations through platform

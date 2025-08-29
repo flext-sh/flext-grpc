@@ -30,7 +30,7 @@ import grpc
 import psutil
 
 # Import centralized constants from flext-core to eliminate duplication
-from flext_core import FlextConstants, FlextContainer, FlextResult, get_logger
+from flext_core import FlextConstants, FlextContainer, FlextLogger, FlextResult
 
 from flext_grpc.entities import (
     FlextGrpcClient,
@@ -1405,7 +1405,7 @@ class FlextGrpcStreamService:
             trigger_memory_cleanup()
 
         except Exception as e:
-            logger = get_logger(__name__)
+            logger = FlextLogger(__name__)
             logger.debug(f"Proactive memory cleanup error: {e}")
 
     def _start_metrics_collection(self) -> None:
@@ -1500,7 +1500,7 @@ class FlextGrpcStreamService:
 
             except Exception as e:
                 # Log error but continue metrics collection
-                logger = get_logger(__name__)
+                logger = FlextLogger(__name__)
                 logger.warning(f"Metrics collection error: {e}")
 
             # Wait for next collection interval
@@ -1524,7 +1524,7 @@ class FlextGrpcStreamService:
         self._shutdown_event.set()
 
         # Close all active channels
-        logger = get_logger(__name__)
+        logger = FlextLogger(__name__)
         for channel in self._active_channels.values():
             try:
                 channel.close()

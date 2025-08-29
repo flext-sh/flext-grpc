@@ -15,7 +15,7 @@ from datetime import UTC, datetime
 
 import grpc
 import pytest
-from flext_core import FlextEntityId, FlextTimestamp
+from flext_core import FlextModels, FlextModels.Timestamp
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -43,11 +43,11 @@ class TestRealGrpcServer:
         try:
             # Create server entity with the actual port that was assigned
             server = FlextGrpcServer(
-                id=FlextEntityId("real-test-server"),
+                id=FlextModels.EntityId("real-test-server"),
                 host="localhost",
                 port=actual_port,
                 max_workers=2,
-                created_at=FlextTimestamp(datetime.now(UTC)),
+                created_at=FlextModels.Timestamp(datetime.now(UTC)),
                 state="running",
             )
 
@@ -67,10 +67,10 @@ class TestRealGrpcServer:
 
                 # Test entity state transitions work correctly - start with idle
                 channel_entity = FlextGrpcChannel(
-                    id=FlextEntityId("real-test-channel"),
+                    id=FlextModels.EntityId("real-test-channel"),
                     target=TGrpcTarget(target),
                     state="idle",  # Start with idle state for transition testing
-                    created_at=FlextTimestamp(datetime.now(UTC)),
+                    created_at=FlextModels.Timestamp(datetime.now(UTC)),
                 )
 
                 # Test idle -> connecting transition
@@ -90,9 +90,9 @@ class TestRealGrpcServer:
 
                 # Now create client with ready channel
                 client_entity = FlextGrpcClient(
-                    id=FlextEntityId("real-test-client"),
+                    id=FlextModels.EntityId("real-test-client"),
                     channel=ready_channel,
-                    created_at=FlextTimestamp(datetime.now(UTC)),
+                    created_at=FlextModels.Timestamp(datetime.now(UTC)),
                 )
 
                 # Validate entity states match reality
@@ -130,19 +130,19 @@ class TestRealGrpcServer:
             try:
                 # Create our entities to represent this real setup
                 server_entity = FlextGrpcServer(
-                    id=FlextEntityId("echo-server"),
+                    id=FlextModels.EntityId("echo-server"),
                     host="localhost",
                     port=port,
                     max_workers=2,
-                    created_at=FlextTimestamp(datetime.now(UTC)),
+                    created_at=FlextModels.Timestamp(datetime.now(UTC)),
                     state="running",
                 )
 
                 service_entity = FlextGrpcService(
-                    id=FlextEntityId("echo-service"),
+                    id=FlextModels.EntityId("echo-service"),
                     name="EchoService",
                     methods=["Echo"],
-                    created_at=FlextTimestamp(datetime.now(UTC)),
+                    created_at=FlextModels.Timestamp(datetime.now(UTC)),
                 )
 
                 # Validate entities
@@ -168,16 +168,16 @@ class TestRealGrpcServer:
 
                     # Validate our entities represent this reality
                     channel_entity = FlextGrpcChannel(
-                        id=FlextEntityId("echo-channel"),
+                        id=FlextModels.EntityId("echo-channel"),
                         target=TGrpcTarget(target),
                         state="ready",
-                        created_at=FlextTimestamp(datetime.now(UTC)),
+                        created_at=FlextModels.Timestamp(datetime.now(UTC)),
                     )
 
                     client_entity = FlextGrpcClient(
-                        id=FlextEntityId("echo-client"),
+                        id=FlextModels.EntityId("echo-client"),
                         channel=channel_entity,
-                        created_at=FlextTimestamp(datetime.now(UTC)),
+                        created_at=FlextModels.Timestamp(datetime.now(UTC)),
                     )
 
                     assert client_entity.is_connected
@@ -199,10 +199,10 @@ class TestRealGrpcServer:
         target = "localhost:99999"  # Port that should be closed
 
         channel_entity = FlextGrpcChannel(
-            id=FlextEntityId("error-test-channel"),
+            id=FlextModels.EntityId("error-test-channel"),
             target=TGrpcTarget(target),
             state="idle",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         # Create real channel and test failure

@@ -73,7 +73,7 @@ from typing import NoReturn, object
 # Add src directory to Python path for development
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from flext_core import FlextResult, get_logger
+from flext_core import FlextLogger, FlextResult
 
 from flext_grpc import (
     FlextGrpcConfigurationError,
@@ -85,7 +85,7 @@ from flext_grpc import (
 )
 
 # Setup logging
-logger = get_logger(__name__)
+logger = FlextLogger(__name__)
 
 
 def validate_user_input(username: str, email: str) -> FlextResult[dict[str, str]]:

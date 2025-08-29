@@ -63,7 +63,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import contextlib
 
-from flext_core import FlextEntityId, FlextTimestamp
+from flext_core import FlextModels, FlextModels.Timestamp
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -83,35 +83,35 @@ def example_1_basic_entities() -> None:
     """Example 1: Creating and using basic gRPC entities."""
     # Create a gRPC server
     server = FlextGrpcServer(
-        id=FlextEntityId("example-server"),
+        id=FlextModels.EntityId("example-server"),
         host="localhost",
         port=8080,
         max_workers=10,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     server.validate_business_rules()
 
     # Create a gRPC channel
     channel = FlextGrpcChannel(
-        id=FlextEntityId("example-channel"),
+        id=FlextModels.EntityId("example-channel"),
         target=TGrpcTarget("localhost:8080"),
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     # Create a gRPC client
     FlextGrpcClient(
-        id=FlextEntityId("example-client"),
+        id=FlextModels.EntityId("example-client"),
         channel=channel,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     # Create a gRPC service
     FlextGrpcService(
-        id=FlextEntityId("example-service"),
+        id=FlextModels.EntityId("example-service"),
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser"],
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
 
@@ -143,10 +143,10 @@ def example_3_operations() -> None:
 
     # Create server for operations
     server = FlextGrpcServer(
-        id=FlextEntityId("ops-server"),
+        id=FlextModels.EntityId("ops-server"),
         host="localhost",
         port=7070,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     # Start server
@@ -166,15 +166,15 @@ def example_3_operations() -> None:
 
     # Create client for operations
     channel = FlextGrpcChannel(
-        id=FlextEntityId("ops-channel"),
+        id=FlextModels.EntityId("ops-channel"),
         target=TGrpcTarget("localhost:7070"),
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     client = FlextGrpcClient(
-        id=FlextEntityId("ops-client"),
+        id=FlextModels.EntityId("ops-client"),
         channel=channel,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     # Connect client
@@ -197,11 +197,11 @@ def example_4_validation() -> None:
     """Example 4: Domain validation."""
     # Valid entities
     valid_server = FlextGrpcServer(
-        id=FlextEntityId("valid-server"),
+        id=FlextModels.EntityId("valid-server"),
         host="localhost",
         port=8080,
         max_workers=5,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     validation = valid_server.validate_business_rules()
@@ -209,11 +209,11 @@ def example_4_validation() -> None:
     # Invalid entities
     try:
         invalid_server = FlextGrpcServer(
-            id=FlextEntityId("invalid-server"),
+            id=FlextModels.EntityId("invalid-server"),
             host="",  # Invalid empty host
             port=0,  # Invalid port
             max_workers=0,  # Invalid workers
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
 
         validation = invalid_server.validate_business_rules()
@@ -224,18 +224,18 @@ def example_4_validation() -> None:
 
     # Channel validation
     valid_channel = FlextGrpcChannel(
-        id=FlextEntityId("valid-channel"),
+        id=FlextModels.EntityId("valid-channel"),
         target=TGrpcTarget("localhost:8080"),
         state="ready",
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     valid_channel.validate_business_rules()
 
     invalid_channel = FlextGrpcChannel(
-        id=FlextEntityId("invalid-channel"),
+        id=FlextModels.EntityId("invalid-channel"),
         target=TGrpcTarget(""),  # Invalid empty target
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     invalid_validation = invalid_channel.validate_business_rules()
@@ -247,10 +247,10 @@ def example_5_state_transitions() -> None:
     """Example 5: State transitions."""
     # Channel state transitions
     channel = FlextGrpcChannel(
-        id=FlextEntityId("transition-channel"),
+        id=FlextModels.EntityId("transition-channel"),
         target=TGrpcTarget("localhost:8080"),
         state="idle",
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     # Connect channel
@@ -265,8 +265,8 @@ def example_5_state_transitions() -> None:
 
     # Server state management
     server = FlextGrpcServer(
-        id=FlextEntityId("transition-server"),
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        id=FlextModels.EntityId("transition-server"),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     server_service = FlextGrpcServerService()

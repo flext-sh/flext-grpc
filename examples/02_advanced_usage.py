@@ -68,7 +68,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import contextlib
 
-from flext_core import FlextEntityId, FlextTimestamp
+from flext_core import FlextModels, FlextModels.Timestamp
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -113,11 +113,11 @@ class GrpcServerManager:
             )
 
             server = FlextGrpcServer(
-                id=FlextEntityId(server_id),
+                id=FlextModels.EntityId(server_id),
                 host=config.host,
                 port=config.port,
                 max_workers=config.max_workers,
-                created_at=FlextTimestamp(datetime.now(UTC)),
+                created_at=FlextModels.Timestamp(datetime.now(UTC)),
             )
 
             self.servers[server_id] = server
@@ -197,15 +197,15 @@ class GrpcClientPool:
             target = server.address
 
             channel = FlextGrpcChannel(
-                id=FlextEntityId(f"channel-{i}"),
+                id=FlextModels.EntityId(f"channel-{i}"),
                 target=TGrpcTarget(target),
-                created_at=FlextTimestamp(datetime.now(UTC)),
+                created_at=FlextModels.Timestamp(datetime.now(UTC)),
             )
 
             client = FlextGrpcClient(
-                id=FlextEntityId(client_id),
+                id=FlextModels.EntityId(client_id),
                 channel=channel,
-                created_at=FlextTimestamp(datetime.now(UTC)),
+                created_at=FlextModels.Timestamp(datetime.now(UTC)),
             )
 
             self.clients[client_id] = client
@@ -363,24 +363,24 @@ def example_3_service_registry() -> None:
 
     # Register multiple services
     user_service = FlextGrpcService(
-        id=FlextEntityId("user-service"),
+        id=FlextModels.EntityId("user-service"),
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser", "ListUsers"],
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     order_service = FlextGrpcService(
-        id=FlextEntityId("order-service"),
+        id=FlextModels.EntityId("order-service"),
         name="OrderService",
         methods=["GetOrder", "CreateOrder", "UpdateOrder", "CancelOrder", "ListOrders"],
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     notification_service = FlextGrpcService(
-        id=FlextEntityId("notification-service"),
+        id=FlextModels.EntityId("notification-service"),
         name="NotificationService",
         methods=["SendNotification", "GetNotifications", "MarkAsRead"],
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     # Register services with different servers
@@ -409,28 +409,28 @@ def example_4_streaming() -> None:
     # Create different stream types
     streams = [
         FlextGrpcStream(
-            id=FlextEntityId("unary-stream"),
+            id=FlextModels.EntityId("unary-stream"),
             method_name="GetUser",
             stream_type="unary",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         ),
         FlextGrpcStream(
-            id=FlextEntityId("server-stream"),
+            id=FlextModels.EntityId("server-stream"),
             method_name="StreamMessages",
             stream_type="server_streaming",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         ),
         FlextGrpcStream(
-            id=FlextEntityId("client-stream"),
+            id=FlextModels.EntityId("client-stream"),
             method_name="UploadData",
             stream_type="client_streaming",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         ),
         FlextGrpcStream(
-            id=FlextEntityId("bidi-stream"),
+            id=FlextModels.EntityId("bidi-stream"),
             method_name="Chat",
             stream_type="bidirectional",
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         ),
     ]
 
@@ -449,10 +449,10 @@ def example_5_error_handling() -> None:
     # Try to start invalid server
     try:
         invalid_server = FlextGrpcServer(
-            id=FlextEntityId("invalid-server"),
+            id=FlextModels.EntityId("invalid-server"),
             host="",  # Invalid
             port=0,  # Invalid
-            created_at=FlextTimestamp(datetime.now(UTC)),
+            created_at=FlextModels.Timestamp(datetime.now(UTC)),
         )
         invalid_server.validate_business_rules()
     except (RuntimeError, ValueError, TypeError):
@@ -460,8 +460,8 @@ def example_5_error_handling() -> None:
 
     # Try to start already running server
     server = FlextGrpcServer(
-        id=FlextEntityId("test-server"),
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        id=FlextModels.EntityId("test-server"),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     start1 = server_service.execute("start", server)
@@ -473,9 +473,9 @@ def example_5_error_handling() -> None:
 
     # Try to connect client without channel
     no_channel_client = FlextGrpcClient(
-        id=FlextEntityId("no-channel-client"),
+        id=FlextModels.EntityId("no-channel-client"),
         channel=None,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     client_service = FlextGrpcClientService()
@@ -483,15 +483,15 @@ def example_5_error_handling() -> None:
 
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
-        id=FlextEntityId("test-channel"),
+        id=FlextModels.EntityId("test-channel"),
         target=TGrpcTarget("localhost:50051"),
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     disconnected_client = FlextGrpcClient(
-        id=FlextEntityId("disconnected-client"),
+        id=FlextModels.EntityId("disconnected-client"),
         channel=channel,
-        created_at=FlextTimestamp(datetime.now(UTC)),
+        created_at=FlextModels.Timestamp(datetime.now(UTC)),
     )
 
     client_service.execute(

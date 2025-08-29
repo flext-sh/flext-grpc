@@ -195,10 +195,10 @@ def create_validated_server(config: dict) -> FlextResult[FlextGrpcServer]:
 #### Entity Pattern Integration
 
 ```python
-from flext_core import FlextEntity
+from flext_core import FlextModels.Entity
 from flext_grpc import FlextGrpcEntity
 
-# All gRPC entities inherit from FlextEntity foundation
+# All gRPC entities inherit from FlextModels.Entity foundation
 class CustomGrpcEntity(FlextGrpcEntity):
     """Custom gRPC entity with flext-core foundation."""
 
@@ -355,7 +355,7 @@ message FlextResult {
     google.protobuf.object data = 3;
 }
 
-message FlextEntity {
+message FlextModels.Entity {
     string id = 1;
     int64 created_at = 2;
     int64 updated_at = 3;
