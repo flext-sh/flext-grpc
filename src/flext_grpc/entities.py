@@ -43,7 +43,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextModels.Entity, FlextFactory, FlextGenerators, FlextResult
+from flext_core import FlextFactory, FlextGenerators, FlextModels, FlextResult
 from pydantic import Field
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT

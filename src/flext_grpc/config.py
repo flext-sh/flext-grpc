@@ -19,7 +19,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_core import (
-    FlextConfig.BaseConfigModel,
+    FlextConfig.BaseModel,
     FlextConstants,
     create_module_exception_classes as _create_exc,
 )
@@ -152,7 +152,7 @@ _grpc_exceptions = _create_exc("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]
 
 
-class FlextGrpcConfig(FlextConfig.BaseConfigModel):
+class FlextGrpcConfig(FlextConfig.BaseModel):
     """Simplified gRPC configuration with validation."""
 
     host: str = Field(default="localhost")

@@ -59,7 +59,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextModels, FlextGenerators, FlextResult, FlextModels.Timestamp
+from flext_core import FlextGenerators, FlextModels, FlextResult
 
 from flext_grpc import (
     FlextGrpcChannel,

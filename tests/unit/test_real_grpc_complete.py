@@ -18,7 +18,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import grpc
-from flext_core import FlextModels, FlextModels.Timestamp
+from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,

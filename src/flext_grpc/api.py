@@ -19,7 +19,7 @@ import re
 import uuid
 from datetime import UTC, datetime
 
-from flext_core import FlextModels, FlextResult, FlextModels.Timestamp
+from flext_core import FlextModels, FlextResult
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
 from flext_grpc.entities import (

@@ -15,7 +15,7 @@ from datetime import UTC, datetime
 
 import grpc
 import pytest
-from flext_core import FlextModels, FlextModels.Timestamp
+from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,

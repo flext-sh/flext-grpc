@@ -68,7 +68,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import contextlib
 
-from flext_core import FlextModels, FlextModels.Timestamp
+from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,
