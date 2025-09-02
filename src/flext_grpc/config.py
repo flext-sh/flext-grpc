@@ -152,7 +152,7 @@ _grpc_exceptions = _create_exc("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]
 
 
-class FlextGrpcConfig(FlextModels.BaseModel):
+class FlextGrpcConfig(FlextModels.Entity):
     """Simplified gRPC configuration with validation."""
 
     host: str = Field(default="localhost")

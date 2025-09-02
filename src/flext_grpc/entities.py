@@ -55,7 +55,7 @@ from flext_grpc.typings import (
 )
 
 
-class FlextGrpcEntity(FlextModels):
+class FlextGrpcEntity(FlextModels.BaseConfig):
     """Base entity class for all gRPC domain entities.
 
     Provides common functionality for gRPC entities following unified FLEXT patterns.

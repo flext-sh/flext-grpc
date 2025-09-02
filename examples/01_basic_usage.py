@@ -179,17 +179,16 @@ def example_3_operations() -> None:
 
     # Connect client
     connect_result = client_service.execute("connect", client)
-    if connect_result.success:
+    if connect_result.success and isinstance(connect_result.data, FlextGrpcClient):
         # Call method
-        if isinstance(connect_result.data, FlextGrpcClient):
-            call_result = client_service.execute(
-                "call",
-                connect_result.data,
-                method_name="GetServerInfo",
-                data={"request_id": "12345"},
-            )
-            if call_result.success:
-                pass
+        call_result = client_service.execute(
+            "call",
+            connect_result.data,
+            method_name="GetServerInfo",
+            data={"request_id": "12345"},
+        )
+        if call_result.success:
+            pass
 
 
 def example_4_validation() -> None:
