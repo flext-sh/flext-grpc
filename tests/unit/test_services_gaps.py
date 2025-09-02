@@ -41,11 +41,11 @@ class TestServicesValidationGaps:
         """Test server service with unknown command."""
         service = FlextGrpcServerService()
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("test-server"),
+            id=FlextModels("test-server"),
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("unknown_command", server)
@@ -58,8 +58,8 @@ class TestServicesValidationGaps:
         """Test client service with unknown command."""
         service = FlextGrpcClientService()
         client = FlextGrpcClient(
-            id=FlextModels.EntityId("test-client"),
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            id=FlextModels("test-client"),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("unknown_command", client)
@@ -71,10 +71,10 @@ class TestServicesValidationGaps:
         """Test stream service with unknown command."""
         service = FlextGrpcStreamService()
         stream = FlextGrpcStream(
-            id=FlextModels.EntityId("test-stream"),
+            id=FlextModels("test-stream"),
             stream_type="unary",
             method_name="TestMethod",
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("unknown_command", stream)
@@ -87,11 +87,11 @@ class TestServicesValidationGaps:
         service = FlextGrpcServerService()
         # Create server with invalid port to trigger validation failure
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("test-server"),
+            id=FlextModels("test-server"),
             host="",  # Invalid empty host
             port=50051,
             max_workers=10,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("start", server)
@@ -103,9 +103,9 @@ class TestServicesValidationGaps:
         """Test client operations when channel is None."""
         service = FlextGrpcClientService()
         client = FlextGrpcClient(
-            id=FlextModels.EntityId("test-client"),
+            id=FlextModels("test-client"),
             channel=None,  # No channel
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("connect", client)
@@ -117,15 +117,15 @@ class TestServicesValidationGaps:
         """Test client call when not connected."""
         service = FlextGrpcClientService()
         channel = FlextGrpcChannel(
-            id=FlextModels.EntityId("test-channel"),
+            id=FlextModels("test-channel"),
             target=TGrpcTarget("localhost:50051"),
             state="idle",  # Not connected
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
         client = FlextGrpcClient(
-            id=FlextModels.EntityId("test-client"),
+            id=FlextModels("test-client"),
             channel=channel,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("call", client, "TestMethod", {"data": "test"})
@@ -137,19 +137,19 @@ class TestServicesValidationGaps:
         """Test adding service to server in wrong state."""
         service = FlextGrpcServerService()
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("test-server"),
+            id=FlextModels("test-server"),
             host="localhost",
             port=50051,
             max_workers=10,
             state="stopped",  # Wrong state for adding service
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         grpc_service = FlextGrpcService(
-            id=FlextModels.EntityId("test-service"),
+            id=FlextModels("test-service"),
             name="TestService",
             methods=["TestMethod"],
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("add_service", server, grpc_service)
@@ -162,10 +162,10 @@ class TestServicesValidationGaps:
         service = FlextGrpcStreamService()
         # Create stream with empty method name to trigger validation
         stream = FlextGrpcStream(
-            id=FlextModels.EntityId("test-stream"),
+            id=FlextModels("test-stream"),
             stream_type="unary",
             method_name="",  # Invalid empty method name
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = service.execute("create", stream)
@@ -180,11 +180,11 @@ class TestServicesValidationGaps:
 
         # Test server service - call method requires method name
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("test-server"),
+            id=FlextModels("test-server"),
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         # This should work - valid operation
@@ -193,15 +193,15 @@ class TestServicesValidationGaps:
 
         # Test client service - call without method name should fail
         channel = FlextGrpcChannel(
-            id=FlextModels.EntityId("test-channel"),
+            id=FlextModels("test-channel"),
             target=TGrpcTarget("localhost:50051"),
             state="ready",
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
         client = FlextGrpcClient(
-            id=FlextModels.EntityId("test-client"),
+            id=FlextModels("test-client"),
             channel=channel,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         result = client_service.execute("call", client)  # Missing method name

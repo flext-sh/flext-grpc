@@ -109,19 +109,19 @@ class TestRealBusinessScenarios:
 
         # 1. Create multiple backend services
         auth_server = FlextGrpcServer(
-            id=FlextModels.EntityId("auth-service"),
+            id=FlextModels("auth-service"),
             host="localhost",
             port=50071,
             max_workers=3,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         user_server = FlextGrpcServer(
-            id=FlextModels.EntityId("user-service"),
+            id=FlextModels("user-service"),
             host="localhost",
             port=50072,
             max_workers=5,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         # 2. Validate all services
@@ -270,11 +270,11 @@ class TestRealBusinessScenarios:
 
         for config in invalid_configs:
             server = FlextGrpcServer(
-                id=FlextModels.EntityId(f"invalid-{config['port']}"),
+                id=FlextModels(f"invalid-{config['port']}"),
                 host=config["host"],
                 port=config["port"],
                 max_workers=config.get("max_workers", 10),
-                created_at=FlextModels.Timestamp(datetime.now(UTC)),
+                created_at=FlextModels(datetime.now(UTC)),
             )
 
             validation = server.validate_business_rules()
@@ -284,10 +284,10 @@ class TestRealBusinessScenarios:
 
         # 2. Test invalid service configurations
         empty_service = FlextGrpcService(
-            id=FlextModels.EntityId("empty-service"),
+            id=FlextModels("empty-service"),
             name="",  # Invalid empty name
             methods=["method1"],
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         validation = empty_service.validate_business_rules()
@@ -297,10 +297,10 @@ class TestRealBusinessScenarios:
 
         # 3. Test service without methods
         no_methods_service = FlextGrpcService(
-            id=FlextModels.EntityId("no-methods-service"),
+            id=FlextModels("no-methods-service"),
             name="ValidService",
             methods=[],  # No methods
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         validation = no_methods_service.validate_business_rules()
@@ -320,18 +320,18 @@ class TestRealBusinessScenarios:
             ["Gateway", "Auth", "Users", "Orders"], start=1
         ):
             server = FlextGrpcServer(
-                id=FlextModels.EntityId(f"{service_name.lower()}-service"),
+                id=FlextModels(f"{service_name.lower()}-service"),
                 host="localhost",
                 port=50080 + i,
                 max_workers=2 + i,
-                created_at=FlextModels.Timestamp(datetime.now(UTC)),
+                created_at=FlextModels(datetime.now(UTC)),
             )
 
             service = FlextGrpcService(
-                id=FlextModels.EntityId(f"{service_name.lower()}-svc"),
+                id=FlextModels(f"{service_name.lower()}-svc"),
                 name=f"{service_name}Service",
                 methods=[f"Handle{service_name}Request"],
-                created_at=FlextModels.Timestamp(datetime.now(UTC)),
+                created_at=FlextModels(datetime.now(UTC)),
             )
 
             services.append(

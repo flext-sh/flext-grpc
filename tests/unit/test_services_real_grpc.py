@@ -14,7 +14,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import grpc
-from flext_core import FlextModels, FlextModels.Timestamp
+from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -34,11 +34,11 @@ class TestRealGrpcServices:
 
         # Create server entity
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("test-real-server"),
+            id=FlextModels("test-real-server"),
             host="localhost",
             port=0,  # Let gRPC choose port
             max_workers=2,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         # Start server - should create REAL gRPC server
@@ -94,11 +94,11 @@ class TestRealGrpcServices:
         server_service = FlextGrpcServerService()
 
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("target-server"),
+            id=FlextModels("target-server"),
             host="localhost",
             port=0,
             max_workers=2,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         start_result = server_service.execute("start", server)
@@ -112,16 +112,16 @@ class TestRealGrpcServices:
 
             target = f"{running_server.host}:{running_server.port}"
             channel = FlextGrpcChannel(
-                id=FlextModels.EntityId("test-channel"),
+                id=FlextModels("test-channel"),
                 target=target,
                 state="idle",
-                created_at=FlextModels.Timestamp(datetime.now(UTC)),
+                created_at=FlextModels(datetime.now(UTC)),
             )
 
             client = FlextGrpcClient(
-                id=FlextModels.EntityId("test-client"),
+                id=FlextModels("test-client"),
                 channel=channel,
-                created_at=FlextModels.Timestamp(datetime.now(UTC)),
+                created_at=FlextModels(datetime.now(UTC)),
             )
 
             # Connect - should make REAL gRPC connection
@@ -147,10 +147,10 @@ class TestRealGrpcServices:
 
             # Add a real service first so we can make calls
             service_def = FlextGrpcService(
-                id=FlextModels.EntityId("real-service"),
+                id=FlextModels("real-service"),
                 name="FlextGrpcService",
                 methods=["Echo", "HealthCheck"],
-                created_at=FlextModels.Timestamp(datetime.now(UTC)),
+                created_at=FlextModels(datetime.now(UTC)),
             )
 
             add_result = server_service.execute(
@@ -201,19 +201,19 @@ class TestRealGrpcServices:
 
         # Start multiple servers on different ports
         server1 = FlextGrpcServer(
-            id=FlextModels.EntityId("server-1"),
+            id=FlextModels("server-1"),
             host="localhost",
             port=0,  # Auto-assign port
             max_workers=2,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         server2 = FlextGrpcServer(
-            id=FlextModels.EntityId("server-2"),
+            id=FlextModels("server-2"),
             host="localhost",
             port=0,  # Auto-assign port
             max_workers=2,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         start1_result = server_service.execute("start", server1)
@@ -269,16 +269,16 @@ class TestRealGrpcServices:
         # Try to connect to non-existent server
         target = "localhost:99999"  # Should be unused port
         channel = FlextGrpcChannel(
-            id=FlextModels.EntityId("fail-channel"),
+            id=FlextModels("fail-channel"),
             target=target,
             state="idle",
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         client = FlextGrpcClient(
-            id=FlextModels.EntityId("fail-client"),
+            id=FlextModels("fail-client"),
             channel=channel,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         # Connect should fail with real connection error
@@ -298,18 +298,18 @@ class TestRealGrpcServices:
 
         # Create server but don't start it
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("stopped-server"),
+            id=FlextModels("stopped-server"),
             host="localhost",
             port=50123,
             max_workers=2,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         service_def = FlextGrpcService(
-            id=FlextModels.EntityId("test-service"),
+            id=FlextModels("test-service"),
             name="FlextGrpcService",
             methods=["Echo", "HealthCheck"],
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         # Try to add service to stopped server - should fail

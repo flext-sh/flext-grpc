@@ -14,7 +14,7 @@ Key Components:
 Architecture:
     Domain entities form the core of the gRPC communication platform, implementing
     rich business behavior with immutable state transitions. Each entity includes
-    domain validation and follows the FlextModels.Entity pattern from flext-core.
+    domain validation and follows the FlextModels pattern from flext-core.
 
 Example:
     Basic server entity creation and validation:
@@ -55,14 +55,14 @@ from flext_grpc.typings import (
 )
 
 
-class FlextGrpcEntity(FlextModels.Entity):
+class FlextGrpcEntity(FlextModels):
     """Base entity class for all gRPC domain entities.
 
     Provides common functionality for gRPC entities following unified FLEXT patterns.
     All gRPC entities inherit from this base class to ensure consistent behavior.
 
     Features:
-      - Inherits FlextModels.Entity with immutable behavior and validation
+      - Inherits FlextModels with immutable behavior and validation
       - Implements entity_type property for runtime type identification
       - Supports business rule validation through validate_business_rules()
 

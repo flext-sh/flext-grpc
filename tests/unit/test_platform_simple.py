@@ -57,22 +57,22 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
 
         server = FlextGrpcServer(
-            id=FlextModels.EntityId("test-server"),
+            id=FlextModels("test-server"),
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         channel = FlextGrpcChannel(
-            id=FlextModels.EntityId("test-channel"),
+            id=FlextModels("test-channel"),
             target=TGrpcTarget("localhost:50051"),
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
         client = FlextGrpcClient(
-            id=FlextModels.EntityId("test-client"),
+            id=FlextModels("test-client"),
             channel=channel,
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
         # Test operations - these will likely fail but we're testing the error paths

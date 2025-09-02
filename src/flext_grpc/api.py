@@ -152,10 +152,10 @@ def create_service(
     # This maintains API compatibility with existing tests
     if not methods:
         return FlextGrpcService(
-            id=FlextModels.EntityId(f"service-{uuid.uuid4().hex[:8]}"),
+            id=FlextModels(f"service-{uuid.uuid4().hex[:8]}"),
             name=name,
             methods=[],
-            created_at=FlextModels.Timestamp(datetime.now(UTC)),
+            created_at=FlextModels(datetime.now(UTC)),
         )
 
     result = FlextGrpcEntityFactory.create_service(name=name, methods=methods)
