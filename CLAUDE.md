@@ -132,7 +132,7 @@ make v                       # validate
 
 ### Coverage Requirements
 
-- **Minimum 90% coverage** enforced by `make test` 
+- **Minimum 90% coverage** enforced by `make test`
 - **Current Status**: ~76% coverage (needs improvement)
 - Focus on domain entities and services in `src/flext_grpc/`
 - Use `make coverage-html` to identify gaps
@@ -279,7 +279,7 @@ poetry run python -c "import grpc; print(f'gRPC version: {grpc.__version__}')"
 # Debug service registration with flext-core
 python -c "from flext_core import get_flext_container; print(get_flext_container().list_services())"
 
-# Check gRPC functionality  
+# Check gRPC functionality
 python -c "import grpc; print(f'gRPC version: {grpc.__version__}')"
 
 # Test basic functionality
@@ -368,12 +368,14 @@ This library is part of the larger FLEXT ecosystem and follows established patte
 ### Current Status Reality Check
 
 **Working Components**:
+
 - ✅ Core entities and domain models functional
-- ✅ Basic imports and FlextGrpcPlatform working  
+- ✅ Basic imports and FlextGrpcPlatform working
 - ✅ gRPC library (1.74.0) properly installed
 - ✅ Clean Architecture structure in place
 
 **Known Issues**:
+
 - ⚠️ Poetry environment has dependency conflicts
 - ⚠️ Some tests failing (needs investigation)
 - ⚠️ Protocol Buffer integration incomplete
@@ -402,7 +404,7 @@ flext-grpc/
 
 ### Architecture Notes
 
-- **Consolidated Files**: The project uses consolidated PEP8-named files (grpc_*.py) rather than the individual files mentioned in older documentation
+- **Consolidated Files**: The project uses consolidated PEP8-named files (grpc\_\*.py) rather than the individual files mentioned in older documentation
 - **Current Implementation**: Core entities and services are functional; Protocol Buffer integration incomplete
 - **Test Structure**: Comprehensive test suite with unit, integration, and e2e categories
 
