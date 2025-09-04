@@ -56,6 +56,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_core import FlextResult
+
 from flext_grpc import (
     FlextGrpcClientService,
     FlextGrpcPlatform,
@@ -77,7 +79,9 @@ class TestPlatformIntegration:
         self.client_service = FlextGrpcClientService()
         self.stream_service = FlextGrpcStreamService()
 
-    def execute_service_command(self, service_type: str, command: str, *args, **kwargs):
+    def execute_service_command(
+        self, service_type: str, command: str, *args: object, **kwargs: object
+    ) -> FlextResult:
         """Route service commands to appropriate service instances."""
         if service_type == "server":
             return self.server_service.execute(command, *args, **kwargs)
@@ -85,7 +89,6 @@ class TestPlatformIntegration:
             return self.client_service.execute(command, *args, **kwargs)
         if service_type == "stream":
             return self.stream_service.execute(command, *args, **kwargs)
-        from flext_core import FlextResult
 
         return FlextResult.fail(f"Unknown service type: {service_type}")
 
