@@ -58,7 +58,7 @@ def deprecation_warning(old_name: str, new_name: str) -> None:
 
 
 # Legacy exception aliases following facade pattern
-def GrpcError(*args: object, **kwargs: object) -> FlextGrpcError:  # noqa: N802
+def GrpcError(*args: object, **kwargs: object) -> FlextGrpcError:
     """Legacy: Use FlextGrpcError instead."""
     deprecation_warning("GrpcError", "FlextGrpcError")
     # Legacy function - use first arg as message or empty string
@@ -66,7 +66,7 @@ def GrpcError(*args: object, **kwargs: object) -> FlextGrpcError:  # noqa: N802
     return FlextGrpcError(str(message))
 
 
-def GrpcValidationError(*args: object, **kwargs: object) -> FlextGrpcValidationError:  # noqa: N802
+def GrpcValidationError(*args: object, **kwargs: object) -> FlextGrpcValidationError:
     """Legacy: Use FlextGrpcValidationError instead."""
     deprecation_warning("GrpcValidationError", "FlextGrpcValidationError")
     # Legacy function - use first arg as message or empty string
@@ -76,7 +76,7 @@ def GrpcValidationError(*args: object, **kwargs: object) -> FlextGrpcValidationE
     return FlextGrpcValidationError(str(message), field_name=field_name)
 
 
-def GrpcConnectionError(*args: object, **kwargs: object) -> FlextGrpcConnectionError:  # noqa: N802, ARG001
+def GrpcConnectionError(*args: object, **kwargs: object) -> FlextGrpcConnectionError:
     """Legacy: Use FlextGrpcConnectionError instead."""
     deprecation_warning("GrpcConnectionError", "FlextGrpcConnectionError")
     # Legacy function - use first arg as message or empty string
@@ -84,7 +84,7 @@ def GrpcConnectionError(*args: object, **kwargs: object) -> FlextGrpcConnectionE
     return FlextGrpcConnectionError(str(message))
 
 
-def GrpcTimeoutError(*args: object, **kwargs: object) -> FlextGrpcTimeoutError:  # noqa: N802
+def GrpcTimeoutError(*args: object, **kwargs: object) -> FlextGrpcTimeoutError:
     """Legacy: Use FlextGrpcTimeoutError instead."""
     deprecation_warning("GrpcTimeoutError", "FlextGrpcTimeoutError")
     # Legacy function - use first arg as message or empty string
@@ -107,7 +107,7 @@ def grpc_configuration_error(
     )
 
 
-def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError:  # noqa: N802
+def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError:
     """Legacy: Use FlextGrpcChannelError instead."""
     deprecation_warning("GrpcChannelError", "FlextGrpcChannelError")
     # Legacy function - use first arg as message or empty string
@@ -115,7 +115,7 @@ def GrpcChannelError(*args: object, **kwargs: object) -> FlextGrpcChannelError: 
     return FlextGrpcChannelError(str(message))
 
 
-def GrpcServiceError(*args: object, **kwargs: object) -> FlextGrpcServiceError:  # noqa: N802
+def GrpcServiceError(*args: object, **kwargs: object) -> FlextGrpcServiceError:
     """Legacy: Use FlextGrpcServiceError instead."""
     deprecation_warning("GrpcServiceError", "FlextGrpcServiceError")
     # Legacy function - use first arg as message or empty string
@@ -123,7 +123,7 @@ def GrpcServiceError(*args: object, **kwargs: object) -> FlextGrpcServiceError: 
     return FlextGrpcServiceError(str(message))
 
 
-def GrpcStreamError(*args: object, **kwargs: object) -> FlextGrpcStreamError:  # noqa: N802
+def GrpcStreamError(*args: object, **kwargs: object) -> FlextGrpcStreamError:
     """Legacy: Use FlextGrpcStreamError instead."""
     deprecation_warning("GrpcStreamError", "FlextGrpcStreamError")
     # Legacy function - use first arg as message or empty string
@@ -191,7 +191,7 @@ GRPC_DEFAULT_TIMEOUT = FlextConstants.Api.GRPC_DEFAULT_TIMEOUT
 
 
 # Legacy parameter factories for compatibility
-def GrpcValidationErrorParams(*args: object, **kwargs: object) -> dict[str, object]:  # noqa: N802, ARG001
+def GrpcValidationErrorParams(*args: object, **kwargs: object) -> dict[str, object]:
     """Legacy: Create parameters for GrpcValidationError - use FlextGrpcValidationError context instead."""
     deprecation_warning(
         "GrpcValidationErrorParams", "FlextGrpcValidationError context parameter"
@@ -204,7 +204,7 @@ def GrpcValidationErrorParams(*args: object, **kwargs: object) -> dict[str, obje
     }
 
 
-def GrpcConfigurationErrorParams(*args: object, **kwargs: object) -> dict[str, object]:  # noqa: N802, ARG001
+def GrpcConfigurationErrorParams(*args: object, **kwargs: object) -> dict[str, object]:
     """Legacy: Create parameters for GrpcConfigurationError - use FlextGrpcConfigurationError context instead."""
     deprecation_warning(
         "GrpcConfigurationErrorParams", "FlextGrpcConfigurationError context parameter"
@@ -217,7 +217,7 @@ def GrpcConfigurationErrorParams(*args: object, **kwargs: object) -> dict[str, o
     }
 
 
-def GrpcChannelErrorParams(*args: object, **kwargs: object) -> dict[str, object]:  # noqa: N802, ARG001
+def GrpcChannelErrorParams(*args: object, **kwargs: object) -> dict[str, object]:
     """Legacy: Create parameters for GrpcChannelError - use FlextGrpcChannelError context instead."""
     deprecation_warning(
         "GrpcChannelErrorParams", "FlextGrpcChannelError context parameter"
