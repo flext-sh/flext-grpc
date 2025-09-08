@@ -14,9 +14,11 @@ Coverage Target Lines:
     entities.py: 101, 177, 391, 467, 494, 521, 549, 670, 727, 805, 889, 967,
     1122-1127, 1141-1151, 1166, 1183-1188, 1205
 
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
 
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations

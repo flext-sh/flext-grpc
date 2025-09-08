@@ -4,54 +4,8 @@ This module provides comprehensive integration testing for the FLEXT gRPC platfo
 validating component interactions, service coordination, and platform-level operations
 following enterprise testing standards with real component integration.
 
-Test Coverage:
-    The module ensures comprehensive coverage of platform integration:
-    - Platform Operations: Unified platform API and service coordination
-    - Component Integration: Entity, service, and platform interaction testing
-    - Service Coordination: Multi-service operation and dependency management
-    - Container Integration: Dependency injection and service resolution testing
-    - Cross-Layer Integration: Domain, application, and infrastructure layer coordination
-
-Testing Architecture:
-    Integration testing follows enterprise testing principles:
-    - Component Interaction: Real component integration without mocking
-    - Service Coordination: Multiple service operation validation
-    - Platform Testing: Unified platform API and facade testing
-    - Dependency Testing: Container integration and service resolution
-    - Workflow Testing: Complete business workflow validation
-
-Testing Patterns:
-    All integration tests follow enterprise testing standards:
-    - AAA Pattern: Arrange, Act, Assert structure for clarity
-    - Real Components: Actual component integration without mocking
-    - Service Coordination: Multi-service operation testing
-    - State Validation: Cross-component state consistency verification
-    - Error Propagation: Integration error handling and recovery testing
-
-Example:
-    Standard platform integration testing pattern:
-
-    >>> def test_platform_service_integration():
-    ...     # Arrange: Set up platform and components
-    ...     platform = FlextGrpcPlatform()
-    ...     server = create_server()
-    ...
-    ...     # Act: Execute platform operation
-    ...     result = platform.service.execute("start", server)
-    ...
-    ...     # Assert: Verify integration success:
-    ...     assert result.success
-    ...     assert result.data.state == "starting"
-
-Integration:
-    - Tests platform integration from flext_grpc.platform module
-    - Validates service coordination from flext_grpc.services module
-    - Uses real entity integration from flext_grpc.entities module
-    - Integrates with pytest framework for execution and reporting
-
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
-
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

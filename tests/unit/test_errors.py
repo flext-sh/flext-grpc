@@ -55,7 +55,10 @@ Integration:
     - Uses enterprise error handling patterns for validation
     - Integrates with pytest framework for execution and coverage
 
-Copyright (c) 2025 FLEXT Contributors
+
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
 """

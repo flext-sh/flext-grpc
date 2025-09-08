@@ -10,9 +10,11 @@ Test Focus:
     - Edge case error handling missing from main test suite
     - Service execution branches not covered
 
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
 
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations

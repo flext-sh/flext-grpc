@@ -1,12 +1,16 @@
-"""Enterprise gRPC Communication Platform for FLEXT ecosystem."""
+"""Enterprise gRPC Communication Platform for FLEXT ecosystem.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
+from flext_core import FlextTypes
 
 import importlib.metadata
 
 from flext_core import FlextContainer, FlextResult
 
-# Import from PEP8 organized modules
 from flext_grpc.api import (
     create_channel,
     create_client,
@@ -60,7 +64,7 @@ except importlib.metadata.PackageNotFoundError:
 
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     # Core
     "FlextContainer",
     # Domain Entities

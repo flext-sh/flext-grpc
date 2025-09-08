@@ -1,10 +1,5 @@
 """FLEXT gRPC Exceptions - Unified Exception Hierarchy.
 
-🎯 CONSOLIDATES 1 EXCEPTION FILE INTO SINGLE PEP8 MODULE:
-- errors.py (331 lines) - Comprehensive gRPC error hierarchy
-
-TOTAL CONSOLIDATION: 331 lines → grpc_exceptions.py (PEP8 organized)
-
 This module provides comprehensive error hierarchy for FLEXT gRPC platform,
 extending flext-core error foundation with domain-specific error types.
 Designed for precise error handling, debugging support, and enterprise-grade
@@ -101,6 +96,9 @@ class FlextGrpcValidationError(FlextExceptions):
             message (str): Detailed validation error message for user feedback.
             field_name (str | None): Name of field that failed validation.
                 Provides context for error identification and resolution.
+
+        Returns:
+            object: Description of return value.
 
         """
         super().__init__(message)

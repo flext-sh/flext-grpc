@@ -577,7 +577,7 @@ from flext_grpc.types import (
 )
 
 # Organized public API exports
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     # Core Foundation
     "FlextContainer",
     "FlextResult",

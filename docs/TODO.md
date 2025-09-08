@@ -135,7 +135,7 @@ find . -name "proto" -type d
 
 ```python
 # __init__.py linha 83-130: __all__ está bagunçado
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     # Core
     "FlextContainer",  # ← Não é do flext-grpc, é do flext-core
     # Domain Entities

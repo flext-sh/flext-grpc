@@ -1,3 +1,17 @@
+"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
+
+from __future__ import annotations
+
+import pytest
+
+from flext_grpc import (
+    TGrpcTarget,
+    flext_grpc_parse_target,
+    flext_grpc_validate_target,
+)
+
 r"""FLEXT gRPC Type Testing - Comprehensive unit tests for type system and validation.
 
 This module provides comprehensive unit testing for all FLEXT gRPC type definitions,
@@ -51,16 +65,6 @@ Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 
 """
-
-from __future__ import annotations
-
-import pytest
-
-from flext_grpc import (
-    TGrpcTarget,
-    flext_grpc_parse_target,
-    flext_grpc_validate_target,
-)
 
 
 class TestGrpcTypes:

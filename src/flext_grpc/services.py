@@ -1,15 +1,5 @@
 """FLEXT gRPC Services - Unified Domain Services and Platform.
 
-🎯 CONSOLIDATES 2 SERVICE FILES INTO SINGLE PEP8 MODULE:
-- services.py (800+ lines) - Domain services for gRPC operations orchestration
-- platform.py (600+ lines) - Platform facade for unified gRPC management
-
-TOTAL CONSOLIDATION: 1400+ lines → grpc_services.py (PEP8 organized)
-
-This module provides unified domain services and platform facade for FLEXT gRPC,
-implementing business logic orchestration and simplified platform operations with
-comprehensive error handling and enterprise patterns.
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -28,9 +18,13 @@ from typing import Protocol, TypedDict, cast
 
 import grpc
 import psutil
-
-# Import centralized constants from flext-core to eliminate duplication
-from flext_core import FlextConstants, FlextContainer, FlextLogger, FlextResult
+from flext_core import (
+    FlextConstants,
+    FlextContainer,
+    FlextLogger,
+    FlextResult,
+    FlextTypes,
+)
 
 from flext_grpc.entities import (
     FlextGrpcClient,
@@ -91,7 +85,7 @@ class StreamInfo(TypedDict):
     channel: object  # gRPC channel
 
     # Enterprise buffering and queueing
-    request_buffer: list[object]  # Buffer for streaming requests
+    request_buffer: FlextTypes.Core.List  # Buffer for streaming requests
     request_queue: Queue[object]  # Thread-safe queue for high throughput
     response_buffer: deque[object]  # Circular buffer for responses
 
@@ -140,7 +134,7 @@ type TGrpcServerEntity = FlextGrpcServer
 type TGrpcClientEntity = FlextGrpcClient
 type TGrpcStreamEntity = FlextGrpcStream
 type TGrpcServiceDef = FlextGrpcService
-type TMethodCallResult = dict[str, object]
+type TMethodCallResult = FlextTypes.Core.Dict
 
 
 # =============================================================================
@@ -157,7 +151,7 @@ def get_system_memory_usage() -> float:
         return 0.5  # Assume moderate usage
 
 
-def get_buffer_size_bytes(buffer: list[object] | deque[object]) -> int:
+def get_buffer_size_bytes(buffer: FlextTypes.Core.List | deque[object]) -> int:
     """Estimate buffer size in bytes using sys.getsizeof recursively."""
     try:
         total_size = sys.getsizeof(buffer)
@@ -216,6 +210,9 @@ class FlextGrpcServerService:
             max_servers: Maximum number of concurrent servers (default: 10)
             thread_pool_size: Thread pool size for gRPC servers (default: 50)
 
+        Returns:
+            object: Description of return value.
+
         """
         self._active_servers: dict[str, GrpcServerProtocol] = {}
         self._max_servers = max_servers
@@ -233,32 +230,32 @@ class FlextGrpcServerService:
         server: TGrpcServerEntity,
         *args: object,
         **kwargs: object,
-    ) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
+    ) -> FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]:
         """Execute server command with validation and error handling."""
         # Import here to avoid circular imports
 
         # Validate server entity
         validation = server.validate_business_rules()
         if validation.is_failure:
-            return FlextResult[TGrpcServerEntity | dict[str, object]].fail(
+            return FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict].fail(
                 f"Server validation failed: {validation.error}"
             )
 
         # Command mapping to reduce return statements
         command_handlers: dict[
             str,
-            Callable[[], FlextResult[TGrpcServerEntity | dict[str, object]]],
+            Callable[[], FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]],
         ] = {
             "start": lambda: cast(
-                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                "FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]",
                 self._start_server(server),
             ),
             "stop": lambda: cast(
-                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                "FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]",
                 self._stop_server(server),
             ),
             "status": lambda: cast(
-                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                "FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]",
                 self._get_status(server),
             ),
         }
@@ -267,11 +264,11 @@ class FlextGrpcServerService:
         if command == "add_service":
             service_def = args[0] if args else kwargs.get("service")
             if not isinstance(service_def, FlextGrpcService):
-                return FlextResult[TGrpcServerEntity | dict[str, object]].fail(
+                return FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict].fail(
                     f"Service definition must be FlextGrpcService, got: {type(service_def)}",
                 )
             return cast(
-                "FlextResult[TGrpcServerEntity | dict[str, object]]",
+                "FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]",
                 self._add_service(server, service_def),
             )
 
@@ -280,7 +277,7 @@ class FlextGrpcServerService:
             handler = command_handlers[command]
             return handler()
 
-        return FlextResult[TGrpcServerEntity | dict[str, object]].fail(
+        return FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict].fail(
             f"Unknown server command: {command}"
         )
 
@@ -469,7 +466,9 @@ class FlextGrpcServerService:
                 f"Failed to add service to gRPC server: {e}"
             )
 
-    def _get_status(self, server: TGrpcServerEntity) -> FlextResult[dict[str, object]]:
+    def _get_status(
+        self, server: TGrpcServerEntity
+    ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get server status information including REAL gRPC server status."""
         server_key = f"{server.host}:{server.port}"
 
@@ -480,7 +479,7 @@ class FlextGrpcServerService:
         metrics = self._server_metrics.get(server_key, {})
         current_time = time.time()
 
-        status: dict[str, object] = {
+        status: FlextTypes.Core.Dict = {
             "state": server.state,
             "host": server.host,
             "port": server.port,
@@ -502,7 +501,7 @@ class FlextGrpcServerService:
                 "max_servers": self._max_servers,
             },
         }
-        return FlextResult[dict[str, object]].ok(status)
+        return FlextResult[FlextTypes.Core.Dict].ok(status)
 
 
 class FlextGrpcClientService:
@@ -539,7 +538,7 @@ class FlextGrpcClientService:
         self._active_channels: dict[str, GrpcChannelProtocol] = {}
         self._connection_timeout = connection_timeout
         self._max_retry_attempts = max_retry_attempts
-        self._client_metrics: dict[str, dict[str, object]] = {}  # Connection metrics
+        self._client_metrics: dict[str, FlextTypes.Core.Dict] = {}  # Connection metrics
 
     def execute(
         self,
@@ -547,13 +546,13 @@ class FlextGrpcClientService:
         client: TGrpcClientEntity,
         *args: object,
         **kwargs: object,
-    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
+    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]:
         """Execute client command with validation and error handling."""
         # Validate client entity
         validation = client.validate_business_rules()
         if validation.is_failure:
             return FlextResult[
-                TGrpcClientEntity | TMethodCallResult | dict[str, object]
+                TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict
             ].fail(f"Client validation failed: {validation.error}")
 
         # Command mapping to reduce return statements
@@ -561,19 +560,21 @@ class FlextGrpcClientService:
             str,
             Callable[
                 [],
-                FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]],
+                FlextResult[
+                    TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict
+                ],
             ],
         ] = {
             "connect": lambda: cast(
-                "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
+                "FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]",
                 self._connect_client(client),
             ),
             "disconnect": lambda: cast(
-                "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
+                "FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]",
                 self._disconnect_client(client),
             ),
             "status": lambda: cast(
-                "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
+                "FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]",
                 self._get_status(client),
             ),
         }
@@ -584,12 +585,12 @@ class FlextGrpcClientService:
             request = args[1] if len(args) > 1 else kwargs.get("request")
             if not isinstance(method_name, str):
                 return FlextResult[
-                    TGrpcClientEntity | TMethodCallResult | dict[str, object]
+                    TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict
                 ].fail(
                     f"Method name must be string, got: {type(method_name)}",
                 )
             return cast(
-                "FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]",
+                "FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]",
                 self._make_call(client, method_name, request),
             )
 
@@ -599,7 +600,7 @@ class FlextGrpcClientService:
             return handler()
 
         return FlextResult[
-            TGrpcClientEntity | TMethodCallResult | dict[str, object]
+            TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict
         ].fail(f"Unknown client command: {command}")
 
     def _connect_client(
@@ -855,7 +856,9 @@ class FlextGrpcClientService:
         except Exception as e:
             return FlextResult[TMethodCallResult].fail(f"Failed to make gRPC call: {e}")
 
-    def _get_status(self, client: TGrpcClientEntity) -> FlextResult[dict[str, object]]:
+    def _get_status(
+        self, client: TGrpcClientEntity
+    ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get client status information including REAL gRPC channel status."""
         target = client.target
 
@@ -871,14 +874,14 @@ class FlextGrpcClientService:
             except grpc.FutureTimeoutError:
                 grpc_channel_ready = False
 
-        status: dict[str, object] = {
+        status: FlextTypes.Core.Dict = {
             "channel_state": client.channel.state if client.channel else "no_channel",
             "target": client.target,
             "is_connected": client.is_connected,
             "grpc_channel_active": grpc_channel_active,
             "grpc_channel_ready": grpc_channel_ready,
         }
-        return FlextResult[dict[str, object]].ok(status)
+        return FlextResult[FlextTypes.Core.Dict].ok(status)
 
 
 class FlextGrpcStreamService:
@@ -1508,7 +1511,7 @@ class FlextGrpcStreamService:
             # Wait for next collection interval
             self._shutdown_event.wait(self._metrics_interval)
 
-    def get_stream_metrics(self) -> dict[str, object]:
+    def get_stream_metrics(self) -> FlextTypes.Core.Dict:
         """Get comprehensive stream performance metrics."""
         with self._metrics_lock:
             return {
@@ -1579,28 +1582,28 @@ class FlextGrpcPlatform:
     def start_server(
         self,
         server: TGrpcServerEntity,
-    ) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
+    ) -> FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]:
         """Start gRPC server with comprehensive lifecycle management."""
         return self._server_service.execute("start", server)
 
     def stop_server(
         self,
         server: TGrpcServerEntity,
-    ) -> FlextResult[TGrpcServerEntity | dict[str, object]]:
+    ) -> FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict]:
         """Stop gRPC server with graceful shutdown."""
         return self._server_service.execute("stop", server)
 
     def connect_client(
         self,
         client: TGrpcClientEntity,
-    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
+    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]:
         """Connect gRPC client with connection management."""
         return self._client_service.execute("connect", client)
 
     def disconnect_client(
         self,
         client: TGrpcClientEntity,
-    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
+    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]:
         """Disconnect gRPC client with graceful shutdown."""
         return self._client_service.execute("disconnect", client)
 
@@ -1609,7 +1612,7 @@ class FlextGrpcPlatform:
         client: TGrpcClientEntity,
         method: str,
         request: object,
-    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | dict[str, object]]:
+    ) -> FlextResult[TGrpcClientEntity | TMethodCallResult | FlextTypes.Core.Dict]:
         """Execute remote method call through client."""
         return self._client_service.execute("call", client, method, request)
 
@@ -1623,20 +1626,20 @@ class FlextGrpcPlatform:
     def get_server_status(
         self,
         server: TGrpcServerEntity,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get comprehensive server status information."""
         result = self._server_service.execute("status", server)
-        # Cast is safe since status command always returns dict[str, object]
-        return cast("FlextResult[dict[str, object]]", result)
+        # Cast is safe since status command always returns FlextTypes.Core.Dict
+        return cast("FlextResult[FlextTypes.Core.Dict]", result)
 
     def get_client_status(
         self,
         client: TGrpcClientEntity,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get comprehensive client status information."""
         result = self._client_service.execute("status", client)
-        # Cast is safe since status command always returns dict[str, object]
-        return cast("FlextResult[dict[str, object]]", result)
+        # Cast is safe since status command always returns FlextTypes.Core.Dict
+        return cast("FlextResult[FlextTypes.Core.Dict]", result)
 
 
 # =============================================================================

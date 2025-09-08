@@ -3,9 +3,8 @@
 This module tests real business scenarios that users would encounter when using
 the FLEXT gRPC library in production environments. No mocks, real functionality only.
 
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
-
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
@@ -335,7 +334,11 @@ class TestRealBusinessScenarios:
             )
 
             services.append(
-                {"server": server, "service": service, "name": service_name}
+                {
+                    "server": server,
+                    "service": service,
+                    "name": service_name,
+                }
             )
 
         # 2. Validate all services
@@ -350,7 +353,11 @@ class TestRealBusinessScenarios:
             status_result = platform.get_server_status(svc["server"])
 
             results.append(
-                {"name": svc["name"], "start": start_result, "status": status_result}
+                {
+                    "name": svc["name"],
+                    "start": start_result,
+                    "status": status_result,
+                }
             )
 
         # 4. Validate platform handled all operations gracefully

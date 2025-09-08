@@ -5,66 +5,17 @@ for the FLEXT gRPC communication platform, showcasing complex entity management,
 service coordination, streaming patterns, and production-ready configurations
 following Clean Architecture and Domain-Driven Design principles.
 
-Advanced Example Categories:
-    The module provides comprehensive examples of advanced FLEXT gRPC functionality:
-    - Complex Entity Management: Multi-entity coordination and lifecycle management
-    - Service Coordination: Cross-service operations and dependency management
-    - Streaming Patterns: Stream entity usage and streaming type validation
-    - Platform Integration: FlextGrpcPlatform usage for unified operations
-    - Production Configurations: Enterprise-grade configuration and deployment patterns
-
-Current Implementation Status:
-    - ✅ Complex Entity Patterns: Advanced entity lifecycle and coordination examples
-    - ✅ Service Integration: Service coordination and platform integration examples
-    - ✅ Stream Entities: Stream creation and type validation examples
-    - ✅ Production Patterns: Enterprise configuration and deployment examples
-    - ⚠️ Real Streaming: Limited by lack of Protocol Buffer implementation
-
-Advanced Patterns Demonstrated:
-    - Multi-Entity Coordination: Server, client, and service coordination patterns
-    - Platform Operations: FlextGrpcPlatform facade usage for unified management
-    - Stream Management: Stream entity creation with type safety validation
-    - Configuration Management: Advanced configuration patterns for production
-    - Error Recovery: Advanced error handling and recovery strategies
-
-Example:
-    Advanced platform integration pattern:
-
-    >>> from flext_grpc import FlextGrpcPlatform, create_complete_setup
-    >>> from flext_grpc import FlextGrpcService
-    >>>
-    >>> # Create complete setup with platform integration
-    >>> setup = create_complete_setup(
-    ...     host="api.production.com",
-    ...     port=443,
-    ...     service_name="ProductionService",
-    ...     methods=["ProcessData", "GetStatus"],
-    ... )
-    >>>
-    >>> platform = FlextGrpcPlatform()
-    >>> server_result = platform.service.execute("validate", setup["server"])
-    >>>
-    >>> if server_result.success:
-    ...     print("Advanced setup validated successfully")
-
-Usage:
-    Run this example to see FLEXT gRPC advanced functionality:
-
-    >>> poetry run python examples/advanced_usage.py
-
-Copyright (c) 2025 FLEXT Contributors
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
+from flext_core import FlextTypes
+
 
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-
-# Add src directory to Python path for development
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import contextlib
 
@@ -81,8 +32,6 @@ from flext_grpc import (
     FlextGrpcStream,
     TGrpcTarget,
 )
-
-# FlextGrpcClient and FlextGrpcServer already imported above
 
 
 class GrpcServerManager:
@@ -159,7 +108,7 @@ class GrpcServerManager:
 
         return results
 
-    def get_server_status(self) -> dict[str, dict[str, str]]:
+    def get_server_status(self) -> dict[str, FlextTypes.Core.Headers]:
         """Get status of all servers."""
         status = {}
 
@@ -235,7 +184,7 @@ class GrpcClientPool:
         self,
         method_name: str,
         data: object = None,
-    ) -> dict[str, object]:
+    ) -> FlextTypes.Core.Dict:
         """Broadcast a method call to all connected clients."""
         results = {}
 
@@ -262,7 +211,7 @@ class ServiceRegistry:
 
     def __init__(self) -> None:
         self.services: dict[str, FlextGrpcService] = {}
-        self.service_servers: dict[str, str] = {}  # service_id -> server_id
+        self.service_servers: FlextTypes.Core.Headers = {}  # service_id -> server_id
 
     def register_service(self, service: FlextGrpcService, server_id: str) -> bool:
         """Register a service with a server."""
@@ -274,7 +223,7 @@ class ServiceRegistry:
         self.service_servers[str(service.id)] = server_id
         return True
 
-    def discover_services(self) -> dict[str, dict[str, object]]:
+    def discover_services(self) -> dict[str, FlextTypes.Core.Dict]:
         """Discover all registered services."""
         discovery = {}
 
@@ -289,7 +238,7 @@ class ServiceRegistry:
 
         return discovery
 
-    def find_service_by_method(self, method_name: str) -> list[dict[str, str]]:
+    def find_service_by_method(self, method_name: str) -> list[FlextTypes.Core.Headers]:
         """Find services that support a specific method."""
         matches = []
 

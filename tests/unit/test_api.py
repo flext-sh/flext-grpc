@@ -4,58 +4,8 @@ This module provides comprehensive unit testing for all FLEXT gRPC public API fu
 following enterprise testing standards with factory function validation, configuration
 testing, and integration pattern verification.
 
-Test Coverage:
-    The module ensures comprehensive coverage of all public API functions:
-    - Factory Functions: create_server, create_client, create_channel, create_service
-    - Configuration Functions: create_config with validation and defaults
-    - Validation Functions: validate_address, parse_address with error handling
-    - Utility Functions: create_complete_setup for rapid development scenarios
-    - Stream Functions: create_stream with type validation and configuration
-
-Testing Architecture:
-    API testing follows enterprise testing principles:
-    - Function Isolation: Each API function tested independently
-    - Parameter Validation: All parameter combinations and edge cases tested
-    - Return Value Validation: Entity creation and configuration verification
-    - Error Handling: Invalid input handling and error reporting validation
-    - Integration Testing: API function coordination and entity compatibility
-
-Testing Patterns:
-    All API tests follow enterprise testing standards:
-    - AAA Pattern: Arrange, Act, Assert structure for clarity
-    - Boundary Testing: Valid and invalid parameter boundary conditions
-    - Default Validation: Default parameter behavior verification
-    - Error Scenarios: Comprehensive failure case testing and error messages
-    - Factory Pattern: Entity creation validation through factory functions
-
-# Test Constants - Configuration values for consistent testing
-EXPECTED_BULK_SIZE = 2         # Expected size for bulk operations
-EXPECTED_TOTAL_PAGES = 8       # Expected pagination count
-EXPECTED_DATA_COUNT = 3        # Expected data elements in test scenarios
-
-Example:
-    Standard API function testing pattern used throughout module:
-
-    >>> def test_create_entity_with_valid_parameters():
-    ...     # Arrange: Set up valid parameters
-    ...     params = create_valid_parameters()
-    ...
-    ...     # Act: Call API function
-    ...     entity = create_server(**params)
-    ...
-    ...     # Assert: Verify entity creation and validation
-    ...     assert entity is not None
-    ...     assert entity.validate_business_rules().success
-
-Integration:
-    - Tests API functions from flext_grpc.api module
-    - Validates entity creation through factory patterns
-    - Uses flext-core patterns for consistent entity behavior
-    - Integrates with pytest framework for execution and coverage
-
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
-
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
@@ -63,6 +13,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
+from flext_core import FlextTypes
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -119,7 +70,7 @@ class TestAPIFunctions:
         assert client.channel.state == "idle"
 
         # Test with options
-        options: dict[str, object] = {"timeout": 30}
+        options: FlextTypes.Core.Dict = {"timeout": 30}
         client_with_options = create_client("localhost:50051", options)
         if client_with_options.options != options:
             raise AssertionError(
@@ -135,7 +86,7 @@ class TestAPIFunctions:
         assert channel.state == "idle"
 
         # Test with options
-        options: dict[str, object] = {"compression": "gzip"}
+        options: FlextTypes.Core.Dict = {"compression": "gzip"}
         channel_with_options = create_channel("localhost:50051", options)
         if channel_with_options.options != options:
             raise AssertionError(
@@ -273,7 +224,7 @@ class TestAPIFunctions:
         self._validate_default_values(setup)
         self._validate_custom_setup()
 
-    def _validate_setup_components(self, setup: dict[str, object]) -> None:
+    def _validate_setup_components(self, setup: FlextTypes.Core.Dict) -> None:
         """Validate setup components are present and correct types."""
         # Check all components are created
         required_keys = ["server", "client", "service", "target"]
@@ -289,7 +240,7 @@ class TestAPIFunctions:
         assert isinstance(setup["service"], FlextGrpcService)
         assert isinstance(setup["target"], str)
 
-    def _validate_default_values(self, setup: dict[str, object]) -> None:
+    def _validate_default_values(self, setup: FlextTypes.Core.Dict) -> None:
         """Validate default values in setup."""
         # All imports are at the top of the file
 

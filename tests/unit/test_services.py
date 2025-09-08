@@ -49,7 +49,10 @@ Integration:
     - Uses flext-core FlextResult patterns for operation validation
     - Integrates with pytest framework for execution and reporting
 
-Copyright (c) 2025 FLEXT Contributors
+
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
 """
@@ -59,7 +62,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextGenerators, FlextModels, FlextResult
+from flext_core import FlextGenerators, FlextModels, FlextResult, FlextTypes
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -96,7 +99,7 @@ def _assert_client_result(result: object) -> object:
     return result.data
 
 
-def _assert_dict_result(result: object) -> dict[str, object]:
+def _assert_dict_result(result: object) -> FlextTypes.Core.Dict:
     """Helper function to assert dict result success."""
     assert result.success
     assert result.data is not None

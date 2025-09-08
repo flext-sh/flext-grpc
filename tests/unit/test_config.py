@@ -4,25 +4,8 @@ This module provides comprehensive unit testing for FlextGrpcConfig configuratio
 following enterprise testing standards with comprehensive validation testing, error
 scenario coverage, and configuration management validation.
 
-Test Coverage:
-    The module ensures comprehensive coverage of configuration functionality:
-    - Configuration Creation: Valid and invalid configuration creation scenarios
-    - Field Validation: Individual field validation with comprehensive error testing
-    - Value Validation: Boundary conditions and invalid input handling
-    - Error Handling: Configuration error creation and context validation
-    - Default Values: Default configuration behavior and value validation
-
-Testing Architecture:
-    Configuration testing follows enterprise testing principles:
-    - Validation Testing: Comprehensive field validation and constraint testing
-    - Error Scenario Testing: Invalid input handling and error reporting
-    - Boundary Testing: Edge cases and limit validation
-    - Default Testing: Default value behavior validation
-    - Integration Testing: Configuration usage in entity creation
-
-Copyright (c) 2025 FLEXT Contributors
-SPDX-License-Identifier: MIT
-
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

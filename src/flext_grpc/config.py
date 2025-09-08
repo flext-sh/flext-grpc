@@ -1,15 +1,5 @@
 """FLEXT gRPC Configuration - Unified Configuration Management.
 
-🎯 CONSOLIDATES 2 CONFIGURATION FILES INTO SINGLE PEP8 MODULE:
-- config.py (61 lines) - Core gRPC configuration with validation
-- constants.py (213 lines) - Constants, defaults, and validation rules
-
-TOTAL CONSOLIDATION: 274 lines → grpc_config.py (PEP8 organized)
-
-This module provides unified configuration management for FLEXT gRPC platform,
-combining configuration classes with comprehensive constants and validation rules.
-Built on flext-core foundation patterns for enterprise deployment standards.
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -21,6 +11,7 @@ from typing import ClassVar
 from flext_core import (
     FlextConstants,
     FlextModels,
+    FlextTypes,
     create_module_exception_classes as _create_exc,
 )
 from pydantic import Field, field_validator
@@ -69,7 +60,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
     class Config:
         """Default configuration templates."""
 
-        DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
+        DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
             "host": FlextConstants.Infrastructure.DEFAULT_HOST,
             "port": 50051,
             "timeout": FlextConstants.Defaults.TIMEOUT,

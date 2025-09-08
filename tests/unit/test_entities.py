@@ -49,7 +49,10 @@ Integration:
     - Integrates with pytest framework for execution and reporting
     - Supports coverage analysis and quality gate enforcement
 
-Copyright (c) 2025 FLEXT Contributors
+
+
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
 """

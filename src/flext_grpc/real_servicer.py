@@ -1,6 +1,9 @@
 """FLEXT gRPC Real Service Implementation.
 
 Real gRPC servicer implementation for production use, replacing all simulations.
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

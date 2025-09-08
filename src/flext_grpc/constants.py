@@ -4,65 +4,15 @@ This module provides comprehensive constants for the FLEXT gRPC platform,
 extending the flext-core constant foundation with domain-specific values,
 validation rules, and configuration defaults. Designed for consistent
 configuration management and enterprise deployment standards.
-
-Constant Categories:
-    The FLEXT gRPC constants are organized into functional categories:
-    - Network Constants: Host, port, and network configuration defaults
-    - Service Constants: Worker, timeout, and service configuration limits
-    - Validation Constants: String length limits and validation rules
-    - Operation Constants: Service operation and argument requirements
-    - Pattern Constants: Regular expressions for validation
-    - Default Configurations: Complete configuration templates
-
-Enterprise Standards:
-    All constants follow enterprise deployment standards:
-    - Security-compliant defaults (non-privileged ports, reasonable timeouts)
-    - Performance-optimized values (appropriate worker counts, timeouts)
-    - Validation rules that prevent common configuration errors
-    - Backward compatibility through legacy constant aliases
-    - Consistent naming conventions across the FLEXT ecosystem
-
-Configuration Philosophy:
-    Constants provide sensible defaults while enabling customization:
-    - Development-friendly defaults (localhost, standard ports)
-    - Production-ready limits (worker counts, timeout ranges)
-    - Validation boundaries that prevent resource exhaustion
-    - Extensible patterns that support enterprise requirements
-
-Example:
-    Using FLEXT gRPC constants for configuration:
-
-    >>> from flext_grpc.constants import FlextGrpcConstants
-    >>>
-    >>> # Use constants for validation
-    >>> def validate_port(port: int) -> bool:
-    ...     return FlextGrpcConstants.MIN_PORT <= port <= FlextGrpcConstants.MAX_PORT
-    >>>
-    >>> # Use default configuration template
-    >>> config_template = FlextGrpcConstants.DEFAULT_CONFIG
-    >>> print(f"Default: {config_template['host']}:{config_template['port']}")
-    Default: localhost:50051
-    >>>
-    >>> # Validate service names
-    >>> def validate_service_name(name: str) -> bool:
-    ...     return len(name) <= FlextGrpcConstants.MAX_SERVICE_NAME_LENGTH
-
-Integration:
-    - Extends flext-core constants for ecosystem consistency
-    - Used throughout platform for validation and defaults
-    - Supports enterprise configuration management systems
-    - Enables consistent behavior across all gRPC operations
-
-Copyright (c) 2025 FLEXT Contributors
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_core import FlextConstants
+from flext_core import FlextConstants, FlextTypes
 
 # =============================================================================
 # GRPC-SPECIFIC SEMANTIC CONSTANTS - Modern Python 3.13 Structure
@@ -108,7 +58,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
     class Config:
         """Default configuration templates."""
 
-        DEFAULT_CONFIG: ClassVar[dict[str, object]] = {
+        DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
             "host": FlextConstants.Infrastructure.DEFAULT_HOST,
             "port": 50051,
             "timeout": FlextConstants.Defaults.TIMEOUT,
@@ -192,7 +142,7 @@ FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 # EXPORTS
 # =============================================================================
 
-__all__: list[str] = [
+__all__: FlextTypes.Core.StringList = [
     "FLEXT_GRPC_DEFAULT_CONFIG",
     "FLEXT_GRPC_DEFAULT_HOST",
     "FLEXT_GRPC_DEFAULT_MAX_WORKERS",

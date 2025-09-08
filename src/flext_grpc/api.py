@@ -1,14 +1,5 @@
 """FLEXT gRPC API - Unified High-Level API Functions.
 
-🎯 CONSOLIDATES 1 API FILE INTO SINGLE PEP8 MODULE:
-- api.py (600+ lines) - High-level API functions and utilities for gRPC operations
-
-TOTAL CONSOLIDATION: 600+ lines → grpc_api.py (PEP8 organized)
-
-This module provides comprehensive high-level API for all gRPC operations,
-offering convenient factory functions and utilities for creating, configuring,
-and managing gRPC entities with enterprise-grade validation and error handling.
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
@@ -19,7 +10,7 @@ import re
 import uuid
 from datetime import UTC, datetime
 
-from flext_core import FlextModels, FlextResult
+from flext_core import FlextModels, FlextResult, FlextTypes
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
 from flext_grpc.entities import (
@@ -71,7 +62,7 @@ def create_server(
 
 def create_client(
     target: str,
-    options: dict[str, object] | None = None,
+    options: FlextTypes.Core.Dict | None = None,
 ) -> FlextGrpcClient:
     """Create gRPC client with comprehensive validation.
 
@@ -104,7 +95,7 @@ def create_client(
 
 def create_channel(
     target: str,
-    options: dict[str, object] | None = None,
+    options: FlextTypes.Core.Dict | None = None,
 ) -> FlextGrpcChannel:
     """Create gRPC channel with validation.
 
@@ -132,7 +123,7 @@ def create_channel(
 
 def create_service(
     name: str,
-    methods: list[str] | None = None,
+    methods: FlextTypes.Core.StringList | None = None,
 ) -> FlextGrpcService:
     """Create gRPC service with validation.
 
@@ -231,8 +222,8 @@ def create_complete_setup(
     host: str = "localhost",
     port: int = 50051,
     service_name: str = "DefaultService",
-    service_methods: list[str] | None = None,
-) -> dict[str, object]:
+    service_methods: FlextTypes.Core.StringList | None = None,
+) -> FlextTypes.Core.Dict:
     """Create complete gRPC setup with server, client, service, and target.
 
     Args:
@@ -374,10 +365,10 @@ def validate_host(host: str) -> bool:
     """Validate host address format.
 
     Args:
-      host: Host address (hostname or IP)
+        host: Host address (hostname or IP)
 
     Returns:
-      True if host is valid, False otherwise
+        True if host is valid, False otherwise
 
     """
     if not host or not host.strip():

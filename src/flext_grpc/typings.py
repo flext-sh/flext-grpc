@@ -3,9 +3,8 @@
 This module centralizes all type aliases, Literal states, NewType wrappers and
 Protocol contracts for the gRPC integration, following flext-core semantics.
 
-- Prefer importing from this module rather than scattering across files
-- Keep only one authoritative definition per type name
-- Provide legacy-friendly helpers and re-exports when necessary
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
@@ -13,7 +12,7 @@ from __future__ import annotations
 import re
 from typing import Literal, NewType, Protocol, runtime_checkable
 
-from flext_core import FlextLogger
+from flext_core import FlextLogger, FlextTypes
 
 # Network validation constants for port range enforcement
 MIN_PORT = 1
@@ -53,7 +52,7 @@ TGrpcStreamType = Literal[
 # STREAMING TYPES
 # =============================================================================
 TStreamRequestData = NewType("TStreamRequestData", str)
-TStreamResponse = NewType("TStreamResponse", dict[str, object])
+TStreamResponse = NewType("TStreamResponse", FlextTypes.Core.Dict)
 TStreamRequestIterator = NewType("TStreamRequestIterator", object)
 TStreamResponseIterator = NewType("TStreamResponseIterator", object)
 
@@ -76,7 +75,7 @@ class TGrpcChannel(Protocol):
 class TGrpcServer(Protocol):
     """Protocol for minimal gRPC server operations."""
 
-    def add_generic_rpc_handlers(self, handlers: list[object]) -> None:
+    def add_generic_rpc_handlers(self, handlers: FlextTypes.Core.List) -> None:
         """Add generic RPC handlers."""
 
     def start(self) -> None:
@@ -122,6 +121,10 @@ def flext_grpc_parse_target(target: str) -> tuple[str, int]:
 
     Raises ValueError if the target is invalid. Prefer checking with
     flext_grpc_validate_target() beforehand when you need a boolean.
+
+    Returns:
+            tuple[str, int]:: Description of return value.
+
     """
     if not flext_grpc_validate_target(target):
         msg = f"Invalid gRPC target: {target}"

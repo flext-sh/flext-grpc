@@ -4,46 +4,19 @@ This module implements the domain layer entities for the FLEXT gRPC communicatio
 platform following Clean Architecture and Domain-Driven Design principles. All entities
 are immutable and include comprehensive domain validation.
 
-Key Components:
-    - FlextGrpcServer: Server lifecycle and state management
-    - FlextGrpcClient: Client connection management with SSL support
-    - FlextGrpcChannel: gRPC channel abstraction with connection states
-    - FlextGrpcService: Service definition with method registration
-    - FlextGrpcStream: Streaming operations for all gRPC stream types
-
-Architecture:
-    Domain entities form the core of the gRPC communication platform, implementing
-    rich business behavior with immutable state transitions. Each entity includes
-    domain validation and follows the FlextModels pattern from flext-core.
-
-Example:
-    Basic server entity creation and validation:
-
-    >>> from datetime import datetime, timezone
-    >>> server = FlextGrpcServer(
-    ...     id="main-server",
-    ...     host="localhost",
-    ...     port=50051,
-    ...     max_workers=10,
-    ...     created_at=datetime.now(timezone.utc),
-    ... )
-    >>> validation = server.validate_business_rules()
-    >>> print(validation.success)
-    True
-
-Integration:
-    - Built on flext-core entity foundations for consistent patterns
-    - Integrates with flext-observability for monitoring and health checks
-    - Provides domain model for gRPC communication across FLEXT ecosystem
-
-Copyright (c) 2025 FLEXT Contributors
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-from flext_core import FlextFactory, FlextGenerators, FlextModels, FlextResult
+from flext_core import (
+    FlextFactory,
+    FlextGenerators,
+    FlextModels,
+    FlextResult,
+    FlextTypes,
+)
 from pydantic import Field
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
@@ -130,7 +103,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
     target: TGrpcTarget = TGrpcTarget("")
     state: TGrpcChannelState = "idle"
-    options: dict[str, object] = Field(default_factory=dict)
+    options: FlextTypes.Core.Dict = Field(default_factory=dict)
 
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate channel domain business rules.
@@ -657,7 +630,7 @@ class FlextGrpcService(FlextGrpcEntity):
     """
 
     name: str = ""
-    methods: list[str] = Field(default_factory=list)
+    methods: FlextTypes.Core.StringList = Field(default_factory=list)
 
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate service domain business rules and method definitions.
@@ -797,7 +770,7 @@ class FlextGrpcClient(FlextGrpcEntity):
     """
 
     channel: FlextGrpcChannel | None = None
-    options: dict[str, object] = Field(default_factory=dict)
+    options: FlextTypes.Core.Dict = Field(default_factory=dict)
 
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate client domain business rules and configuration.
@@ -1175,7 +1148,7 @@ class FlextGrpcEntityFactory:
     def create_service(
         cls,
         name: str,
-        methods: list[str] | None = None,
+        methods: FlextTypes.Core.StringList | None = None,
         **options: object,
     ) -> FlextResult[FlextGrpcService]:
         """Create a validated gRPC service."""
