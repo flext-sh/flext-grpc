@@ -10,16 +10,11 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
-
-
-import sys
-from datetime import UTC, datetime
-from pathlib import Path
 
 import contextlib
+from datetime import UTC, datetime
 
-from flext_core import FlextModels
+from flext_core import FlextModels, FlextTypes
 
 from flext_grpc import (
     FlextGrpcChannel,

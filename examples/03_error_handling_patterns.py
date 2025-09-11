@@ -10,15 +10,11 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
-
 
 import asyncio
-import sys
-from pathlib import Path
 from typing import NoReturn
 
-from flext_core import FlextLogger, FlextResult
+from flext_core import FlextLogger, FlextResult, FlextTypes
 
 from flext_grpc import (
     FlextGrpcConfigurationError,

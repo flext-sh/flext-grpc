@@ -5,11 +5,10 @@ SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
-from flext_core import FlextTypes
 
 import importlib.metadata
 
-from flext_core import FlextContainer, FlextResult
+from flext_core import FlextContainer, FlextResult, FlextTypes
 
 from flext_grpc.api import (
     create_channel,
@@ -23,19 +22,19 @@ from flext_grpc.api import (
     validate_address,
 )
 from flext_grpc.config import FlextGrpcConfig
-from flext_grpc.exceptions import (
-    FlextGrpcConfigurationError,
-    FlextGrpcConnectionError,
-    FlextGrpcError,
-    FlextGrpcTimeoutError,
-    FlextGrpcValidationError,
-)
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
+)
+from flext_grpc.exceptions import (
+    FlextGrpcConfigurationError,
+    FlextGrpcConnectionError,
+    FlextGrpcError,
+    FlextGrpcTimeoutError,
+    FlextGrpcValidationError,
 )
 from flext_grpc.services import (
     FlextGrpcClientService,
