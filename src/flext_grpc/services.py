@@ -752,7 +752,7 @@ class FlextGrpcClientService:
         method: str,
         request: object,
     ) -> FlextResult[TMethodCallResult]:
-        """Execute REAL gRPC method call."""
+        """Execute gRPC method call."""
         if not client.is_connected:
             return FlextResult[TMethodCallResult].fail(
                 f"Cannot make call with disconnected client: {client.target or 'no target'}",

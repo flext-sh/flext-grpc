@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import (
-    FlextFactory,
     FlextGenerators,
     FlextModels,
     FlextResult,
@@ -1085,7 +1084,7 @@ class FlextGrpcEntityFactory:
 
     """
 
-    # Modern factory pattern using FlextFactory directly
+    # Modern factory pattern using FlextModels directly
 
     @classmethod
     def create_server(
@@ -1096,7 +1095,7 @@ class FlextGrpcEntityFactory:
         **options: object,
     ) -> FlextResult[FlextGrpcServer]:
         """Create a validated gRPC server."""
-        return FlextFactory.create_model(
+        return FlextModels.create_model(
             FlextGrpcServer,
             id=FlextGenerators.generate_entity_id(),
             host=host,
@@ -1120,7 +1119,7 @@ class FlextGrpcEntityFactory:
                 f"Failed to create client: {channel_result.error}"
             )
 
-        return FlextFactory.create_model(
+        return FlextModels.create_model(
             FlextGrpcClient,
             id=FlextGenerators.generate_entity_id(),
             channel=channel_result.data,
@@ -1135,8 +1134,8 @@ class FlextGrpcEntityFactory:
     ) -> FlextResult[FlextGrpcChannel]:
         """Create a validated gRPC channel."""
         # Use typed factory method to create channel instance
-        # Use FlextFactory directly
-        return FlextFactory.create_model(
+        # Use FlextModels directly
+        return FlextModels.create_model(
             FlextGrpcChannel,
             id=FlextGenerators.generate_entity_id(),
             target=TGrpcTarget(target),
@@ -1153,8 +1152,8 @@ class FlextGrpcEntityFactory:
     ) -> FlextResult[FlextGrpcService]:
         """Create a validated gRPC service."""
         # Use typed factory method to create service instance
-        # Use FlextFactory directly
-        return FlextFactory.create_model(
+        # Use FlextModels directly
+        return FlextModels.create_model(
             FlextGrpcService,
             id=FlextGenerators.generate_entity_id(),
             name=name,
@@ -1171,8 +1170,8 @@ class FlextGrpcEntityFactory:
     ) -> FlextResult[FlextGrpcStream]:
         """Create a validated gRPC stream."""
         # Use typed factory method to create stream instance
-        # Use FlextFactory directly
-        return FlextFactory.create_model(
+        # Use FlextModels directly
+        return FlextModels.create_model(
             FlextGrpcStream,
             id=FlextGenerators.generate_entity_id(),
             method_name=method_name,
