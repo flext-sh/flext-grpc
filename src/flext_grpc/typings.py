@@ -18,9 +18,7 @@ from flext_core import FlextLogger, FlextTypes
 MIN_PORT = 1
 MAX_PORT = 65535
 
-# =============================================================================
-# DOMAIN AND COMMUNICATION TYPES
-# =============================================================================
+
 TGrpcTarget = NewType("TGrpcTarget", str)
 TGrpcMethodName = NewType("TGrpcMethodName", str)
 TGrpcServiceName = NewType("TGrpcServiceName", str)
@@ -29,9 +27,7 @@ TGrpcPort = NewType("TGrpcPort", int)
 TGrpcEntityId = NewType("TGrpcEntityId", str)
 TGrpcTimeout = NewType("TGrpcTimeout", float)
 
-# =============================================================================
-# STATE TYPES
-# =============================================================================
+
 TGrpcChannelState = Literal[
     "idle",
     "connecting",
@@ -48,18 +44,12 @@ TGrpcStreamType = Literal[
 ]
 
 
-# =============================================================================
-# STREAMING TYPES
-# =============================================================================
 TStreamRequestData = NewType("TStreamRequestData", str)
 TStreamResponse = NewType("TStreamResponse", FlextTypes.Core.Dict)
 TStreamRequestIterator = NewType("TStreamRequestIterator", object)
 TStreamResponseIterator = NewType("TStreamResponseIterator", object)
 
 
-# =============================================================================
-# PROTOCOLS
-# =============================================================================
 @runtime_checkable
 class TGrpcChannel(Protocol):
     """Protocol for minimal gRPC channel operations."""
@@ -91,11 +81,6 @@ class TGrpcStub(Protocol):
 
     def __init__(self, channel: TGrpcChannel) -> None:
         """Initialize the stub with a channel."""
-
-
-# =============================================================================
-# VALIDATION HELPERS
-# =============================================================================
 
 
 def flext_grpc_validate_target(target: str) -> bool:
@@ -147,7 +132,6 @@ __all__ = [
     "TGrpcServiceName",
     "TGrpcStreamType",
     "TGrpcStub",
-    # Types
     "TGrpcTarget",
     "TGrpcTimeout",
     "flext_grpc_parse_target",

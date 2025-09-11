@@ -12,7 +12,7 @@ tests/
 │   ├── test_entities.py     # Domain entity testing
 │   ├── test_services.py     # Domain service testing
 │   ├── test_api.py          # Public API testing
-│   ├── test_types.py        # Type validation testing
+│   ├── test_types.py
 │   └── test_errors_complete.py # Error handling testing
 ├── integration/             # Integration tests (component interaction)
 │   └── test_platform_integration.py # Platform integration testing

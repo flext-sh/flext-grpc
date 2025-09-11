@@ -131,7 +131,7 @@ src/flext_grpc/
 ├── services.py           # Domain services (business logic)
 ├── platform.py           # Application service (unified facade)
 ├── config.py             # Configuration management
-├── types.py              # Type definitions and validation
+├── types.py
 ├── errors.py             # Domain-specific errors
 ├── constants.py          # Domain constants
 └── api.py                # Public API functions

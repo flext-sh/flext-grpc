@@ -22,7 +22,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 import contextlib
 
-from ..flext_grpc import (
+from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcClientService,

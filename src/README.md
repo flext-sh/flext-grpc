@@ -14,7 +14,7 @@ src/flext_grpc/
 ├── platform.py              # Application service (unified facade)
 ├── api.py                   # Public API functions and utilities
 ├── config.py                # Configuration management and validation
-├── types.py                 # Type definitions and validation functions
+├── types.py
 ├── errors.py                # Domain-specific error classes
 └── constants.py             # Domain constants and enumerations
 ```

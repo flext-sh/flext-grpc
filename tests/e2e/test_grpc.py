@@ -91,7 +91,7 @@ class TestCompleteGrpcWorkflow:
         )
         assert auth_result.success
         assert auth_result.data is not None
-        # Type-safe cast since we know call results return dict
+
         if not isinstance(auth_result.data, dict):
             raise TypeError(f"Expected dict, got {type(auth_result.data)}")
         auth_data = auth_result.data

@@ -16,10 +16,6 @@ from flext_core import (
 )
 from pydantic import Field, field_validator
 
-# =============================================================================
-# GRPC CONFIGURATION CONSTANTS
-# =============================================================================
-
 
 class FlextGrpcSemanticConstants(FlextConstants):
     """gRPC-specific semantic constants extending FlextConstants.
@@ -134,10 +130,6 @@ FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
 FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
 
-# =============================================================================
-# GRPC CONFIGURATION CLASSES
-# =============================================================================
-
 # Generate gRPC-specific exceptions
 _grpc_exceptions = _create_exc("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]
@@ -210,10 +202,6 @@ class FlextGrpcConfig(FlextModels.Entity):
         """
         return f"{self.host}:{self.port}"
 
-
-# =============================================================================
-# EXPORTS
-# =============================================================================
 
 __all__ = [
     # Legacy module-level constants

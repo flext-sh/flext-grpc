@@ -25,10 +25,6 @@ from flext_grpc.typings import (
     flext_grpc_validate_target,
 )
 
-# =============================================================================
-# ENTITY FACTORY FUNCTIONS
-# =============================================================================
-
 
 def create_server(
     host: str = "localhost",
@@ -262,11 +258,6 @@ def create_complete_setup(
     }
 
 
-# =============================================================================
-# ADDRESS VALIDATION AND PARSING
-# =============================================================================
-
-
 def validate_address(address: str | None) -> FlextResult[bool]:
     """Validate network address format.
 
@@ -356,11 +347,6 @@ def parse_address(address: str) -> dict[str, str | int]:
     return {"host": host, "port": port}
 
 
-# =============================================================================
-# UTILITY FUNCTIONS
-# =============================================================================
-
-
 def validate_host(host: str) -> bool:
     """Validate host address format.
 
@@ -391,10 +377,6 @@ def validate_port(port: int) -> bool:
     """
     return FLEXT_GRPC_MIN_PORT <= port <= FLEXT_GRPC_MAX_PORT
 
-
-# =============================================================================
-# EXPORTS
-# =============================================================================
 
 __all__ = [
     # Factory functions

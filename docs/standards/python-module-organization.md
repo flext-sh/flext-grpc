@@ -31,13 +31,13 @@ FLEXT gRPC implements **enterprise-grade Python module organization** following 
 src/
 └── flext_grpc/                      # Main gRPC communication package
     ├── __init__.py                  # Public API exports and version
-    ├── py.typed                     # Type information marker (optional)
+    ├── py.typed
     ├── entities.py                  # Domain entities (Server, Client, Channel, Service, Stream)
     ├── services.py                  # Domain services (business logic orchestration)
     ├── platform.py                 # Application service (unified facade)
     ├── api.py                       # Public API functions and utilities
     ├── config.py                    # Configuration management with Pydantic
-    ├── types.py                     # Type definitions and validation functions
+    ├── types.py
     ├── errors.py                    # Domain-specific error classes
     └── constants.py                 # Domain constants and enumerations
 ```
@@ -55,7 +55,7 @@ flext-grpc/
 │   │   ├── test_entities.py         # Domain entity testing
 │   │   ├── test_services.py         # Domain service testing
 │   │   ├── test_api.py              # Public API testing
-│   │   ├── test_types.py            # Type validation testing
+│   │   ├── test_types.py
 │   │   └── test_errors_complete.py  # Error handling testing
 │   ├── integration/                 # Integration tests (component interaction)
 │   │   ├── __init__.py
@@ -607,7 +607,7 @@ __all__: FlextTypes.Core.StringList = [
     "FlextGrpcTimeoutError",
     "FlextGrpcValidationError",
 
-    # Type Definitions
+
     "TGrpcChannelState",
     "TGrpcHost",
     "TGrpcMethodName",
@@ -676,7 +676,7 @@ tests/
 │   ├── test_platform.py             # Platform service testing
 │   ├── test_api.py                  # Public API function testing
 │   ├── test_config.py               # Configuration management testing
-│   ├── test_types.py                # Type validation testing
+│   ├── test_types.py
 │   ├── test_errors.py               # Error handling testing
 │   └── test_constants.py            # Constants validation testing
 ├── integration/                     # Integration tests (component interaction)
@@ -871,7 +871,7 @@ make docs-examples-test          # Test all documentation examples execute
 
 # Type annotation validation
 make type-check                  # MyPy strict mode validation (zero errors)
-make type-coverage               # Type annotation coverage analysis
+make type-coverage
 make type-safety-audit           # Comprehensive type safety audit
 
 # Import organization validation

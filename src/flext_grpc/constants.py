@@ -14,10 +14,6 @@ from typing import ClassVar
 
 from flext_core import FlextConstants, FlextTypes
 
-# =============================================================================
-# GRPC-SPECIFIC SEMANTIC CONSTANTS - Modern Python 3.13 Structure
-# =============================================================================
-
 
 class FlextGrpcSemanticConstants(FlextConstants):
     """gRPC-specific semantic constants extending FlextConstants.
@@ -104,10 +100,6 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
 
-# =============================================================================
-# LEGACY CONSTANTS - Backward compatibility module-level aliases
-# =============================================================================
-
 # Network configuration constants (DEPRECATED - use FlextGrpcConstants.GrpcNetwork.*)
 FLEXT_GRPC_DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
 FLEXT_GRPC_DEFAULT_PORT = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_PORT
@@ -138,9 +130,6 @@ FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
 # Configuration constants (DEPRECATED - use FlextGrpcConstants.Config.*)
 FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
-# =============================================================================
-# EXPORTS
-# =============================================================================
 
 __all__: FlextTypes.Core.StringList = [
     "FLEXT_GRPC_DEFAULT_CONFIG",

@@ -15,10 +15,6 @@ from flext_core import (
     FlextExceptions,
 )
 
-# =============================================================================
-# GRPC EXCEPTION HIERARCHY
-# =============================================================================
-
 
 class FlextGrpcError(FlextExceptions):
     """Base exception for all FLEXT gRPC platform errors.
@@ -284,10 +280,6 @@ class FlextGrpcStreamError(FlextGrpcError):
     Provides context for streaming-specific troubleshooting.
     """
 
-
-# =============================================================================
-# EXPORTS
-# =============================================================================
 
 __all__ = [
     "FlextGrpcChannelError",

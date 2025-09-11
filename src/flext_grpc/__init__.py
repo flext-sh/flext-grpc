@@ -87,7 +87,6 @@ __all__: FlextTypes.Core.StringList = [
     "FlextGrpcTimeoutError",
     "FlextGrpcValidationError",
     "FlextResult",
-    # Types
     "TGrpcChannelState",
     "TGrpcHost",
     "TGrpcMethodName",

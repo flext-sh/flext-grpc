@@ -137,11 +137,6 @@ type TGrpcServiceDef = FlextGrpcService
 type TMethodCallResult = FlextTypes.Core.Dict
 
 
-# =============================================================================
-# MEMORY EFFICIENCY UTILITIES
-# =============================================================================
-
-
 def get_system_memory_usage() -> float:
     """Get current system memory usage as percentage (0.0 to 1.0)."""
     try:
@@ -174,11 +169,6 @@ def trigger_memory_cleanup() -> None:
     """Trigger garbage collection to free memory."""
     gc.collect()  # Full garbage collection
     gc.collect()  # Run twice for better cleanup
-
-
-# =============================================================================
-# GRPC DOMAIN SERVICES
-# =============================================================================
 
 
 class FlextGrpcServerService:
@@ -1544,11 +1534,6 @@ class FlextGrpcStreamService:
             self._metrics_thread.join(timeout=2.0)
 
 
-# =============================================================================
-# GRPC PLATFORM FACADE
-# =============================================================================
-
-
 class FlextGrpcPlatform:
     """Unified gRPC platform facade for simplified operations.
 
@@ -1641,10 +1626,6 @@ class FlextGrpcPlatform:
         # Cast is safe since status command always returns FlextTypes.Core.Dict
         return cast("FlextResult[FlextTypes.Core.Dict]", result)
 
-
-# =============================================================================
-# EXPORTS
-# =============================================================================
 
 __all__ = [
     "FlextGrpcClientService",
