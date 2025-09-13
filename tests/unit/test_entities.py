@@ -1,60 +1,35 @@
-"""FLEXT gRPC Entity Testing - Comprehensive unit tests for domain entities.
 
-This module provides comprehensive unit testing for all FLEXT gRPC domain entities,
-following enterprise testing standards with isolated component testing, comprehensive
-validation coverage, and Clean Architecture testing principles.
+"""Unit tests for gRPC entities.
 
-Test Coverage:
-    The module ensures comprehensive coverage of all entity behaviors:
-    - FlextGrpcChannel: Network channel lifecycle and state management testing
-    - FlextGrpcServer: Server entity validation and lifecycle operation testing
-    - FlextGrpcClient: Client entity creation and connection management testing
-    - FlextGrpcService: Service definition and method specification testing
-    - FlextGrpcStream: Stream entity creation and type validation testing
+The module ensures comprehensive coverage of all entity behaviors:
+- FlextGrpcChannel: Network channel lifecycle and state management testing
+- FlextGrpcServer: Server entity validation and lifecycle operation testing
+- FlextGrpcClient: Client entity creation and connection management testing
+- FlextGrpcService: Service definition and method specification testing
+- FlextGrpcStream: Stream entity creation and type validation testing
 
-Testing Architecture:
-    Entity testing follows Clean Architecture testing principles:
-    - Domain Logic Testing: Pure business logic validation without external dependencies
-    - Entity Validation: Comprehensive domain rule validation and constraint testing
-    - State Management: Complete lifecycle and state transition validation
-    - Boundary Conditions: Edge cases and invalid input handling
-    - Error Scenarios: Comprehensive failure case testing and error reporting
+Testing Architecture: Entity testing follows Clean Architecture testing principles:
+- Domain Logic Testing: Pure business logic validation without external dependencies
+- Entity Validation: Comprehensive domain rule validation and constraint testing
+- State Management: Complete lifecycle and state transition validation
+- Boundary Conditions: Edge cases and invalid input handling
+- Error Scenarios: Comprehensive failure case testing and error reporting
 
-Testing Patterns:
-    All tests follow enterprise testing standards:
-    - AAA Pattern: Arrange, Act, Assert structure for clarity
-    - Isolation: No external dependencies or side effects
-    - Deterministic: Consistent results across multiple runs
-    - Fast Execution: Sub-100ms execution for rapid feedback
-    - Descriptive Names: Clear test intent and coverage description
-
-Example:
-    Standard entity testing pattern used throughout module:
-
-    >>> def test_entity_creation_and_validation():
-    ...     # Arrange: Set up test data and dependencies
-    ...     entity_data = create_valid_entity_data()
-    ...
-    ...     # Act: Execute the operation under test
-    ...     entity = FlextGrpcServer(**entity_data)
-    ...     result = entity.validate_domain_rules()
-    ...
-    ...     # Assert: Verify expected behavior and state
-    ...     assert result.success
-    ...     assert entity.state == expected_state
+Testing Patterns: All tests follow enterprise testing standards:
+- AAA Pattern: Arrange, Act, Assert structure for clarity
+- Isolation: No external dependencies or side effects
+- Deterministic: Consistent results across multiple runs
+- Fast Execution: Sub-100ms execution for rapid feedback
+- Descriptive Names: Clear test intent and coverage description
 
 Integration:
-    - Validates entities created by flext_grpc.entities module
-    - Uses flext-core testing utilities for data generation
-    - Integrates with pytest framework for execution and reporting
-    - Supports coverage analysis and quality gate enforcement
-
-
-
+- Validates entities created by flext_grpc.entities module
+- Uses flext-core testing utilities for data generation
+- Integrates with pytest framework for execution and reporting
+- Supports coverage analysis and quality gate enforcement
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

@@ -1,7 +1,5 @@
-"""FLEXT gRPC Real Business Scenarios - Tests that validate actual business use cases.
 
-This module tests real business scenarios that users would encounter when using
-the FLEXT gRPC library in production environments. No mocks, real functionality only.
+"""Unit tests for real business scenarios.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

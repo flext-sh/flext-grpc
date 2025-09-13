@@ -1,8 +1,5 @@
-"""FLEXT gRPC API Testing - Comprehensive unit tests for public API functions.
 
-This module provides comprehensive unit testing for all FLEXT gRPC public API functions,
-following enterprise testing standards with factory function validation, configuration
-testing, and integration pattern verification.
+"""Unit tests for gRPC API functions.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

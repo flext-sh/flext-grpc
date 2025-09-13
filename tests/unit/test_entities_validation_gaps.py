@@ -1,24 +1,16 @@
-"""FLEXT gRPC Entity Validation Gap Testing - Targeted coverage improvement.
 
-This module provides surgical testing for uncovered validation paths in entities,
-specifically targeting the missing coverage lines to reach 90%+ without breaking
-existing functionality. Each test targets specific uncovered lines.
+"""Unit tests for entity validation gaps.
 
 Test Focus:
-    - Entity validation error paths that are currently uncovered
-    - Property accessors not currently tested
-    - Edge case validations missing from main test suite
-    - Domain rule validation branches not covered
+- Entity validation error paths that are currently uncovered
+- Property accessors not currently tested
+- Edge case validations missing from main test suite
+- Domain rule validation branches not covered
 
-Coverage Target Lines:
-    entities.py: 101, 177, 391, 467, 494, 521, 549, 670, 727, 805, 889, 967,
-    1122-1127, 1141-1151, 1166, 1183-1188, 1205
-
-
-
+Coverage Target Lines: entities.py: 101, 177, 391, 467, 494, 521, 549, 670, 727, 805, 889, 967, 1122-1127, 1141-1151, 1166, 1183-1188, 1205
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

@@ -1,8 +1,6 @@
-"""FLEXT gRPC Test Configuration - Pytest fixtures and test environment setup.
+"""Test configuration and fixtures for flext-grpc.
 
-This module provides comprehensive pytest configuration for the FLEXT gRPC testing suite,
-including shared fixtures, test environment setup, global container management, and
-test isolation patterns following enterprise testing standards.
+Test isolation patterns following enterprise testing standards.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

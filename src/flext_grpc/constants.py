@@ -1,9 +1,9 @@
-"""FLEXT gRPC Constants - Enterprise configuration constants and validation rules.
+"""FLEXT gRPC Constants.
 
-This module provides comprehensive constants for the FLEXT gRPC platform,
-extending the flext-core constant foundation with domain-specific values,
+gRPC-specific constants including network settings, service configuration,
 validation rules, and configuration defaults. Designed for consistent
 configuration management and enterprise deployment standards.
+
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

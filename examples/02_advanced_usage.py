@@ -33,6 +33,7 @@ class GrpcServerManager:
     """Advanced server management example."""
 
     def __init__(self) -> None:
+        """Initialize the gRPC server manager."""
         self.server_service = FlextGrpcServerService()
         self.servers: dict[str, FlextGrpcServer] = {}
         self.server_configs: dict[str, FlextGrpcConfig] = {}
@@ -125,6 +126,7 @@ class GrpcClientPool:
     """Advanced client pool management."""
 
     def __init__(self) -> None:
+        """Initialize the gRPC client pool."""
         self.client_service = FlextGrpcClientService()
         self.clients: dict[str, FlextGrpcClient] = {}
         self.connection_status: dict[str, bool] = {}
@@ -205,6 +207,7 @@ class ServiceRegistry:
     """Service registration and discovery example."""
 
     def __init__(self) -> None:
+        """Initialize the service registry."""
         self.services: dict[str, FlextGrpcService] = {}
         self.service_servers: FlextTypes.Core.Headers = {}  # service_id -> server_id
 

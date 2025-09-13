@@ -1,18 +1,9 @@
-"""FLEXT gRPC Complete REAL Implementation Tests.
 
-This module validates 100% REAL gRPC functionality:
-- Real protocol buffer calls
-- Real service registration
-- Real streaming operations
-- Real error handling
+"""Unit tests for real gRPC functionality.
 
 NO SIMULATIONS - Everything is actual gRPC communication.
-
-
-
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

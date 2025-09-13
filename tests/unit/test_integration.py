@@ -1,20 +1,15 @@
-"""FLEXT gRPC Real Integration Testing - Tests that validate actual functionality.
 
-This module provides REAL integration tests that execute actual gRPC functionality
-without mocks, testing complete workflows and validating real behavior patterns.
+"""Unit tests for gRPC integration scenarios.
 
 Test Focus:
-    - Complete entity lifecycle workflows from creation to destruction
-    - Real service operations with actual state transitions and side effects
-    - Platform integration with real dependency injection and service coordination
-    - Error handling with real validation and business rule enforcement
-    - Performance and behavior validation under realistic conditions
-
-
-
+- Complete entity lifecycle workflows from creation to destruction
+- Real service operations with actual state transitions and side effects
+- Platform integration with real dependency injection and service coordination
+- Error handling with real validation and business rule enforcement
+- Performance and behavior validation under realistic conditions
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

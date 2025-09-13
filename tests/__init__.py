@@ -1,4 +1,4 @@
-"""init   module.
+"""Tests package for flext-grpc.
 
 This module is part of the FLEXT ecosystem. Docstrings follow PEP 257 and Google style.
 

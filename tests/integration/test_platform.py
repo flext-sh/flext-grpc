@@ -1,9 +1,7 @@
-"""FLEXT gRPC Platform Integration Testing - Comprehensive component integration tests.
 
-This module provides comprehensive integration testing for the FLEXT gRPC platform,
-validating component interactions, service coordination, and platform-level operations
-following enterprise testing standards with real component integration.
+"""Integration tests for gRPC platform components.
 
+Following enterprise testing standards with real component integration.
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.
 """

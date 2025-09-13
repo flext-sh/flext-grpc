@@ -1,13 +1,8 @@
-"""FLEXT gRPC Real Server Testing - Tests that actually start gRPC servers.
 
-This module provides tests that execute ACTUAL gRPC functionality,
-starting real servers, making real connections, and validating real responses.
-
-
-
+"""Unit tests for real gRPC server functionality.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations

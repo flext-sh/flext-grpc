@@ -1,8 +1,5 @@
-"""FLEXT gRPC Configuration Testing - Comprehensive unit tests for configuration validation.
 
-This module provides comprehensive unit testing for FlextGrpcConfig configuration class,
-following enterprise testing standards with comprehensive validation testing, error
-scenario coverage, and configuration management validation.
+"""Unit tests for gRPC configuration.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

@@ -1,8 +1,5 @@
-"""FLEXT gRPC E2E Test Helpers - Comprehensive utilities for end-to-end testing.
 
-This module provides comprehensive helper functions and utilities for FLEXT gRPC
-end-to-end testing, implementing DRY principles with reusable test components,
-data generation, and validation utilities for enterprise testing scenarios.
+"""Test helpers for end-to-end gRPC tests.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

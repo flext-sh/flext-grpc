@@ -1,73 +1,44 @@
-"""FLEXT gRPC Error Testing - Comprehensive unit tests for error hierarchy and handling.
 
-This module provides comprehensive unit testing for all FLEXT gRPC error classes,
-following enterprise testing standards with complete error hierarchy validation,
-contextual information testing, and error handling pattern verification.
+"""Unit tests for gRPC error handling.
 
-Test Coverage:
-    The module ensures comprehensive coverage of error system functionality:
-    - Error Hierarchy: Base error class and specialized error type testing
-    - Contextual Information: Error-specific context and metadata validation
-    - Error Initialization: Error creation with proper parameter handling
-    - Error Reporting: Error message and context information validation
-    - Exception Handling: Error propagation and handling pattern testing
+Contextual information testing, and error handling pattern verification.
 
-Testing Architecture:
-    Error testing follows enterprise testing principles:
-    - Hierarchy Testing: Base class and inheritance validation
-    - Context Validation: Error-specific context information testing
-    - Initialization Testing: Error creation with various parameter combinations
-    - Message Testing: Error message clarity and consistency validation
-    - Integration Testing: Error usage in service and entity contexts
+Test Coverage: The module ensures comprehensive coverage of error system functionality:
+- Error Hierarchy: Base error class and specialized error type testing
+- Contextual Information: Error-specific context and metadata validation
+- Error Initialization: Error creation with proper parameter handling
+- Error Reporting: Error message and context information validation
+- Exception Handling: Error propagation and handling pattern testing
 
-Testing Patterns:
-    All error tests follow enterprise testing standards:
-    - AAA Pattern: Arrange, Act, Assert structure for clarity
-    - Exception Testing: Proper exception creation and handling validation
-    - Context Validation: Error context information accuracy testing
-    - Message Verification: Error message clarity and consistency checking
-    - Inheritance Testing: Error hierarchy and polymorphism validation
+Testing Architecture: Error testing follows enterprise testing principles:
+- Hierarchy Testing: Base class and inheritance validation
+- Context Validation: Error-specific context information testing
+- Initialization Testing: Error creation with various parameter combinations
+- Message Testing: Error message clarity and consistency validation
+- Integration Testing: Error usage in service and entity contexts
 
-Coverage Goals:
-    Tests all error classes and their specific attributes to achieve 100% coverage
-    with comprehensive validation of error creation, context, and usage patterns.
+Testing Patterns: All error tests follow enterprise testing standards:
+- AAA Pattern: Arrange, Act, Assert structure for clarity
+- Exception Testing: Proper exception creation and handling validation
+- Context Validation: Error context information accuracy testing
+- Message Verification: Error message clarity and consistency checking
+- Inheritance Testing: Error hierarchy and polymorphism validation
 
-Example:
-    Standard error testing pattern used throughout module:
-
-    >>> def test_error_creation_with_context():
-    ...     # Arrange: Set up error parameters
-    ...     error_message = "Configuration validation failed"
-    ...     config_key = "port"
-    ...     config_value = -1
-    ...
-    ...     # Act: Create error with context
-    ...     error = FlextGrpcConfigurationError(error_message, config_key, config_value)
-    ...
-    ...     # Assert: Verify error and context
-    ...     assert str(error) == error_message
-    ...     assert error.config_key == config_key
-    ...     assert error.config_value == config_value
+Coverage Goals: Tests all error classes and their specific attributes to achieve 100% coverage with comprehensive validation of error creation, context, and usage patterns.
 
 Integration:
-    - Tests error classes from flext_grpc.errors module
-    - Validates error hierarchy extending flext-core error foundation
-    - Uses enterprise error handling patterns for validation
-    - Integrates with pytest framework for execution and coverage
-
-
-
+- Tests error classes from flext_grpc.errors module
+- Validates error hierarchy extending flext-core error foundation
+- Uses enterprise error handling patterns for validation
+- Integrates with pytest framework for execution and coverage
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
+SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
 
-from flext_core import (
-    FlextExceptions,
-)
+from flext_core import FlextExceptions
 
 from flext_grpc import (
     FlextGrpcConfigurationError,

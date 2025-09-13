@@ -1,8 +1,6 @@
-"""FLEXT gRPC Domain Entities - Core business entities for gRPC communication.
+"""FLEXT gRPC Entities.
 
-This module implements the domain layer entities for the FLEXT gRPC communication
-platform following Clean Architecture and Domain-Driven Design principles. All entities
-are immutable and include comprehensive domain validation.
+Core gRPC entities and models for the FLEXT gRPC framework.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT

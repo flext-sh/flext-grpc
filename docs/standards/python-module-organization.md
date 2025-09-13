@@ -870,7 +870,7 @@ make docs-coverage               # Check docstring coverage percentages
 make docs-examples-test          # Test all documentation examples execute
 
 # Type annotation validation
-make type-check                
+make type-check
 make type-coverage
 make type-safety-audit           # Comprehensive type safety audit
 

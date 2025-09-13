@@ -1,4 +1,5 @@
-"""FLEXT gRPC End-to-End Tests - Complete workflow and real-world scenario validation.
+
+"""End-to-end tests package for flext-grpc.
 
 This package contains comprehensive end-to-end tests for complete FLEXT gRPC workflows,
 validating full system integration, performance testing, and production-like scenarios

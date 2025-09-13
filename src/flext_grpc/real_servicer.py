@@ -1,9 +1,6 @@
-"""FLEXT gRPC Real Service Implementation.
+"""FLEXT gRPC Real Servicer.
 
-Real gRPC servicer implementation for production use, replacing all simulations.
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-
-SPDX-License-Identifier: MIT.
+Real gRPC service implementation for FLEXT.
 """
 
 from __future__ import annotations
@@ -40,7 +37,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self.server_id = server_id
         self.start_time = time.time()
 
-    def Echo(self, request: EchoRequest, context: grpc.ServicerContext) -> EchoResponse:
+    def Echo(self, request: EchoRequest, context: grpc.ServicerContext) -> EchoResponse:  # noqa: N802
         """Real unary Echo implementation."""
         try:
             # Process the actual request
@@ -65,7 +62,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    def ServerStream(
+    def ServerStream(  # noqa: N802
         self, request: StreamRequest, context: grpc.ServicerContext
     ) -> Iterator[StreamResponse]:
         """Real server streaming implementation."""
@@ -87,7 +84,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Server streaming error: {e}")
 
-    def ClientStream(
+    def ClientStream(  # noqa: N802
         self, request_iterator: Iterator[StreamRequest], context: grpc.ServicerContext
     ) -> StreamResponse:
         """Real client streaming implementation."""
@@ -114,7 +111,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Client streaming error: {e}")
             return StreamResponse()
 
-    def BidirectionalStream(
+    def BidirectionalStream(  # noqa: N802
         self, request_iterator: Iterator[StreamRequest], context: grpc.ServicerContext
     ) -> Iterator[StreamResponse]:
         """Real bidirectional streaming implementation."""
@@ -135,7 +132,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Bidirectional streaming error: {e}")
 
-    def HealthCheck(
+    def HealthCheck(  # noqa: N802
         self, request: HealthRequest, context: grpc.ServicerContext
     ) -> HealthResponse:
         """Real health check implementation."""

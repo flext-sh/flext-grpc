@@ -1,8 +1,5 @@
-"""FLEXT gRPC End-to-End Testing - Complete workflow and integration validation.
 
-This module provides comprehensive end-to-end testing for complete FLEXT gRPC workflows,
-validating full system integration, real-world scenarios, and enterprise deployment
-patterns following comprehensive testing standards.
+"""End-to-end gRPC workflow tests.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.

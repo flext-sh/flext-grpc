@@ -1,6 +1,6 @@
-"""FLEXT gRPC Exceptions - Unified Exception Hierarchy.
+"""FLEXT gRPC Exceptions.
 
-This module provides comprehensive error hierarchy for FLEXT gRPC platform,
+Comprehensive exception handling for the FLEXT gRPC framework,
 extending flext-core error foundation with domain-specific error types.
 Designed for precise error handling, debugging support, and enterprise-grade
 error reporting across all gRPC operations.

@@ -11,6 +11,8 @@ import importlib.metadata
 from flext_core import FlextContainer, FlextResult, FlextTypes
 
 from flext_grpc.api import (
+    FlextGrpcApi,
+    GrpcServiceManager,
     create_channel,
     create_client,
     create_complete_setup,
@@ -25,9 +27,11 @@ from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
+    FlextGrpcEntity,
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
+    GrpcMessage,
 )
 from flext_grpc.exceptions import (
     FlextGrpcConfigurationError,
@@ -41,6 +45,7 @@ from flext_grpc.services import (
     FlextGrpcPlatform,
     FlextGrpcServerService,
     FlextGrpcStreamService,
+    GrpcClientService,
 )
 from flext_grpc.typings import (
     TGrpcChannelState,
@@ -66,26 +71,33 @@ __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 __all__: FlextTypes.Core.StringList = [
     # Core
     "FlextContainer",
+    "FlextGrpcApi",
     # Domain Entities
     "FlextGrpcChannel",
     "FlextGrpcClient",
+    # Domain Services
     "FlextGrpcClientService",
     # Configuration
     "FlextGrpcConfig",
     # Errors
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
+    "FlextGrpcEntity",
     "FlextGrpcError",
     "FlextGrpcPlatform",
     "FlextGrpcServer",
-    # Domain Services
     "FlextGrpcServerService",
     "FlextGrpcService",
     "FlextGrpcStream",
     "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",
     "FlextGrpcValidationError",
+    # Result type
     "FlextResult",
+    "GrpcClientService",
+    "GrpcMessage",
+    "GrpcServiceManager",
+    # Type definitions
     "TGrpcChannelState",
     "TGrpcHost",
     "TGrpcMethodName",
@@ -95,6 +107,7 @@ __all__: FlextTypes.Core.StringList = [
     "TGrpcStreamType",
     "TGrpcTarget",
     "TGrpcTimeout",
+    # Version info
     "__version__",
     "__version_info__",
     # API Functions
