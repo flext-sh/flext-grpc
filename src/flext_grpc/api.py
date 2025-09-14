@@ -20,6 +20,7 @@ from flext_grpc.entities import (
     FlextGrpcStream,
 )
 from flext_grpc.typings import (
+    TGrpcStreamType,
     flext_grpc_validate_target,
 )
 
@@ -135,7 +136,7 @@ def create_service(
 
 def create_stream(
     method_name: str,
-    stream_type: str = "unary",
+    stream_type: TGrpcStreamType = "unary",
 ) -> FlextGrpcStream:
     """Create gRPC stream with validation.
 

@@ -143,14 +143,10 @@ disallow_any_expr = false          # Too restrictive for real-world usage
 disallow_any_generics = true
 disallow_any_unimported = true
 
-# Ignore protobuf generated code issues
+# Ignore protobuf generated code completely - these are auto-generated
 [[tool.mypy.overrides]]
 module = "flext_grpc.proto.*"
-disallow_any_unimported = false
-disallow_untyped_calls = false
-disallow_untyped_defs = false
-disallow_subclassing_any = false
-disallow_untyped_decorators = false
+ignore_errors = true
 
 [[tool.mypy.overrides]]
 module = "flext_grpc.real_servicer"

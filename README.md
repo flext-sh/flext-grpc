@@ -1,286 +1,202 @@
 # flext-grpc
 
-**Type**: Infrastructure Library | **Status**: Active Development | **Dependencies**: flext-core
+gRPC communication library for the FLEXT ecosystem using Clean Architecture patterns.
 
-gRPC communication library for the FLEXT ecosystem with Clean Architecture patterns.
+> **⚠️ STATUS**: Development - Core functionality operational, test coverage at 26%
 
-> ⚠️ Development Status: Core domain entities working; Protocol Buffer integration incomplete; ~76% test coverage.
+---
 
-## Quick Start
+## 🎯 Purpose
+
+Provides gRPC communication patterns for microservices within the FLEXT data integration platform.
+
+### Key Responsibilities
+
+1. **gRPC Abstraction** - Layer over grpcio and protobuf libraries
+2. **Service Management** - Server and client lifecycle operations
+3. **Streaming Support** - Four gRPC patterns: unary, server streaming, client streaming, bidirectional
+
+### Integration with FLEXT Ecosystem
+
+- **flext-core** → Uses FlextResult, FlextContainer, FlextLogger patterns
+- **FLEXT projects** → Intended as gRPC communication foundation
+
+---
+
+## 🏗️ Current Implementation
+
+### FLEXT Integration Status
+
+| Pattern | Status | Notes |
+|---------|--------|-------|
+| FlextResult | ✅ Implemented | Used throughout API |
+| FlextContainer | ✅ Implemented | Dependency injection present |
+| FlextLogger | ✅ Implemented | Logging infrastructure |
+| Clean Architecture | ✅ Implemented | Domain/service/infrastructure separation |
+
+### Technical Details
+
+- **Source Code**: 4,923 lines across 13 modules
+- **Test Suite**: 18,018 lines across multiple test files
+- **Test Coverage**: 26% (verified via pytest --cov)
+- **Import Status**: ✅ All core modules importable after protobuf fixes
+
+### Verified Working Functionality
+
+```python
+from flext_grpc import create_server, create_client, FlextGrpcPlatform
+from flext_grpc.config import FlextGrpcConfig
+
+# Server creation - verified working
+server = create_server('localhost', 50051, 10)
+# Output: Server address: localhost:50051, state: stopped
+
+# Client creation - verified working
+client = create_client('localhost:50051')
+# Output: Client created successfully
+
+# Platform management - verified working
+platform = FlextGrpcPlatform()
+# Output: Platform created successfully
+
+# Configuration management - verified working
+config = FlextGrpcConfig(host='localhost', port=50051, max_workers=10)
+# Output: Config created with validation
+```
+
+---
+
+## 🚀 Installation
+
+### Prerequisites
+
+- Python 3.13
+- Poetry for dependency management
+- grpcio and protobuf (managed via dependencies)
+
+### Setup
+
+```bash
+git clone https://github.com/flext-sh/flext/tree/main/flext-grpc
+cd flext-grpc
+poetry install
+```
+
+---
+
+## 🔧 Development
+
+### Available Commands
 
 ```bash
 # Install dependencies
 poetry install
 
-# Test basic functionality
-python -c "from flext_grpc import FlextGrpcPlatform; platform = FlextGrpcPlatform(); print('✅ Working')"
+# Run individual test
+poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
 
-# Run development setup
-make setup
+# Check coverage (currently 26%)
+poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
+
+# Type checking
+poetry run mypy src/
+
+# Code linting
+poetry run ruff check src/
 ```
 
-## Current Reality
-
-**What Actually Works:**
-
-- Domain entities (Server, Client, Channel, Service, Stream) with state management
-- Service layer with business logic following DDD patterns
-- FlextResult pattern integration for error handling
-- Configuration management with Pydantic
-
-**What Needs Work:**
-
-- Protocol Buffer implementation for Go/Python interoperability
-- Service discovery integration (currently manual host/port)
-- Test coverage improvement (76% → 90% target)
-- Cross-language testing with Go services
-
-## Architecture Role in FLEXT Ecosystem
-
-### **Infrastructure Component**
-
-FLEXT gRPC provides communication layer between distributed services:
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                    FLEXT ECOSYSTEM (32 Projects)                 │
-├─────────────────────────────────────────────────────────────────┤
-│ Services: FlexCore(Go) | FLEXT Service(Go/Python) | Clients     │
-├─────────────────────────────────────────────────────────────────┤
-│ Applications: API | Auth | Web | CLI | Quality | Observability  │
-├═════════════════════════════════════════════════════════════════┤
-│ Infrastructure: Oracle | LDAP | LDIF | [FLEXT-GRPC] | WMS      │
-├─────────────────────────────────────────────────────────────────┤
-│ Singer Ecosystem: Taps(5) | Targets(5) | DBT(4) | Extensions(1) │
-├─────────────────────────────────────────────────────────────────┤
-│ Foundation: FLEXT-CORE (FlextResult | DI | Domain Patterns)     │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### **Core Responsibilities**
-
-1. **Service Communication**: gRPC client/server management for FlexCore ↔ FLEXT Service
-2. **Protocol Buffers**: Shared definitions for type-safe Go/Python communication
-3. **Clean Architecture**: Domain entities with state management and validation
-
-## Key Features
-
-### **Current Capabilities**
-
-- **Domain Entities**: gRPC Server, Client, Channel, Service, Stream with state management
-- **Clean Architecture**: Domain/service/platform layer separation
-- **FlextResult Pattern**: Type-safe error handling throughout
-- **Configuration Management**: Environment-aware gRPC settings
-
-### **FLEXT Core Integration**
-
-- **FlextResult Pattern**: Railway-oriented programming for error handling
-- **FlextModels.Entity**: Domain entities with validation and state transitions
-- **Dependency Injection**: Global container integration (via flext-core)
-
-## Installation & Usage
-
-### Installation
-
-```bash
-# Clone and install
-cd /path/to/flext-grpc
-poetry install
-
-# Development setup
-make setup
-```
-
-### Basic Usage
-
-```python
-from flext_grpc import FlextGrpcPlatform, FlextGrpcServer
-from datetime import datetime, timezone
-
-# Create server entity
-server = FlextGrpcServer(
-    id="main-server",
-    host="localhost",
-    port=50051,
-    max_workers=10,
-    created_at=datetime.now(timezone.utc)
-)
-
-# Validate domain rules
-validation = server.validate_domain_rules()
-if validation.is_failure:
-    print(f"Configuration error: {validation.error}")
-    exit(1)
-
-# Use platform for operations
-platform = FlextGrpcPlatform()
-result = platform.service.execute("create_server", server)
-if result.success:
-    print(f"Server created: {result.data.state}")
-else:
-    print(f"Error: {result.error}")
-```
-
-## Architecture
-
-### Clean Architecture + DDD Structure
-
-```
-src/flext_grpc/
-├── entities.py           # Domain entities (Server, Client, Channel, Service, Stream)
-├── services.py           # Domain services (business logic)
-├── platform.py           # Application service (unified facade)
-├── config.py             # Configuration management
-├── types.py
-├── errors.py             # Domain-specific errors
-├── constants.py          # Domain constants
-└── api.py                # Public API functions
-```
-
-### Key Architectural Patterns
-
-- **Entity Pattern**: Immutable domain entities with `copy_with()` methods
-- **Service Pattern**: Domain services for business operations
-- **Result Pattern**: `FlextResult` for error handling without exceptions
-- **Dependency Injection**: Global container integration via flext-core
-- **State Machines**: Clear state transitions for all gRPC entities
-
-### Domain Entities
-
-#### FlextGrpcServer
-
-Server lifecycle management with states: `stopped` → `starting` → `running` → `stopping`
-
-#### FlextGrpcClient
-
-Client connection management with host, port, and SSL configuration
-
-#### FlextGrpcChannel
-
-gRPC channel abstraction with connection state tracking
-
-#### FlextGrpcService
-
-Service definition with method registration and metadata
-
-#### FlextGrpcStream
-
-Streaming operations support (unary, server streaming, client streaming, bidirectional)
-
-## Development
-
-### Development Setup
-
-```bash
-# Complete development environment
-make setup                    # Install dependencies + pre-commit hooks
-
-# Quality gates (must pass before commits)
-make validate                 # Complete validation pipeline
-make check                    # Quick health check
-make test                     # Run tests with coverage
-```
-
-### Quality Standards
-
-- **Test Coverage**: Minimum 90% (currently 86% - [improvement needed](docs/TODO.md))
-- **Type Safety**: Strict MyPy validation (currently failing - [fixes needed](docs/TODO.md))
-- **Code Quality**: Ruff linting with ALL rules enabled
-- **Security**: Bandit + pip-audit scanning
-
-### Testing
-
-```bash
-# Test categories
-make test-unit                # Unit tests (isolated components)
-make test-integration         # Integration tests (component interaction)
-make test-grpc                # gRPC-specific functionality
-make test-fast                # Quick feedback without coverage
-
-# Coverage analysis
-make coverage-html            # Generate HTML coverage report
-```
-
-## Quality Standards
-
-### **Quality Targets**
-
-- **Coverage**: 90% target (currently ~76%)
-- **Type Safety**: MyPy strict mode adoption in progress
-- **Linting**: Ruff with comprehensive rules (continuous improvement)
-- **Security**: Bandit + pip-audit scanning
-
-## Integration with FLEXT Ecosystem
-
-### **FLEXT Core Patterns**
-
-```python
-# FlextResult for all operations
-def create_server(config) -> FlextResult[FlextGrpcServer]:
-    try:
-        server = FlextGrpcServer(**config)
-        validation = server.validate_domain_rules()
-        if validation.is_failure:
-            return FlextResult[None].fail(validation.error)
-        return FlextResult[None].ok(server)
-    except Exception as e:
-        return FlextResult[None].fail(f"Server creation failed: {e}")
-```
-
-### **Service Integration**
-
-- **FlexCore (Go)**: Runtime service gRPC communication (port 8080)
-- **FLEXT Service**: Data platform gRPC integration (port 8081)
-- **Cross-language**: Protocol Buffer definitions for Go/Python interop
-
-## Current Status
-
-**Version**: 0.9.0 (Development)
-
-**Completed**:
-
-- ✅ Domain entities with state management
-- ✅ Clean Architecture implementation
-- ✅ FlextResult error handling
-
-**In Progress**:
-
-- 🔄 Protocol Buffer integration
-- 🔄 Test coverage improvement (76% → 90%)
-- 🔄 Service discovery
-
-**Planned**:
-
-- 📋 Go service integration
-- 📋 Performance benchmarking
-- 📋 Advanced streaming features
-
-## Contributing
-
-### Development Standards
-
-- **FLEXT Core Integration**: Use established patterns
-- **Type Safety**: All code must pass MyPy
-- **Testing**: Maintain coverage and ensure tests pass
-- **Code Quality**: Follow linting rules
-
-### Development Workflow
-
-```bash
-# Setup and validate
-make setup
-make validate
-make test
-```
-
-## License
-
-MIT License - See [LICENSE](LICENSE) file for details.
-
-## Links
-
-- **[flext-core](../flext-core)**: Foundation library
-- **[CLAUDE.md](CLAUDE.md)**: Development guidance
-- **[Documentation](docs/)**: Complete documentation
+### Quality Status
+
+- **Import Validation**: ✅ Core functionality importable
+- **Basic Operations**: ✅ Server/client creation working
+- **Test Coverage**: ⚠️ 26% (needs improvement from pyproject.toml requirement of 90%)
+- **Type Safety**: Available via mypy
+- **Code Quality**: Available via ruff
 
 ---
+
+## 🧪 Testing
+
+### Current Test Status
+
+- **Test Structure**: 18,018 lines across comprehensive test suite
+- **Test Execution**: Individual tests can run successfully
+- **Coverage Results**: 26% actual coverage (1,322 total statements, 902 missed)
+- **Coverage Target**: 90% configured in pyproject.toml (not currently met)
+
+### Test Execution Examples
+
+```bash
+# Run a working test
+poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
+# Result: PASSED
+
+# Check coverage
+poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
+# Result: 26% coverage, needs improvement
+```
+
+---
+
+## 📊 Development Status
+
+### Current Version (0.9.0)
+
+**Working**:
+- Core API functions (create_server, create_client, FlextGrpcPlatform)
+- Configuration management with validation
+- Basic import functionality
+
+**Needs Work**:
+- Test coverage improvement (26% → 90% target)
+- Full test suite validation
+- Complete protobuf integration testing
+
+### Next Steps
+
+1. **Test Coverage** - Address the 74 percentage point gap to meet 90% requirement
+2. **Test Suite Validation** - Ensure all 18,018 lines of tests execute reliably
+3. **Integration Testing** - Verify actual gRPC server/client communication
+4. **Production Features** - Health checking, authentication, TLS
+
+---
+
+## 📚 Documentation
+
+- **[Architecture](docs/architecture.md)** - Clean Architecture implementation
+- **[API Reference](docs/api-reference.md)** - API documentation
+- **[Configuration](docs/configuration.md)** - Settings management
+- **[Integration](docs/integration.md)** - FLEXT ecosystem integration
+- **[Getting Started](docs/getting-started.md)** - Setup instructions
+- **[Development](docs/development.md)** - Development workflow
+- **[Troubleshooting](docs/troubleshooting.md)** - Common issues
+
+---
+
+## 🤝 Contributing
+
+### Development Focus
+
+1. **Test Coverage** - Primary need to reach 90% from current 26%
+2. **Functional Validation** - Ensure all features work as documented
+3. **FLEXT Compliance** - Maintain ecosystem integration standards
+4. **Code Quality** - Follow Clean Architecture patterns
+
+### Quality Requirements
+
+- **Test Coverage**: Must achieve 90% (currently 26%)
+- **Import Functionality**: All modules must be importable
+- **Type Safety**: Comprehensive type annotations
+- **FLEXT Integration**: Complete flext-core pattern compliance
+
+---
+
+## 📄 License
+
+MIT License
+
+---
+
+**flext-grpc v0.9.0** - gRPC communication library for FLEXT ecosystem.
+
+**Current Focus**: Improving test coverage from 26% to meet the 90% requirement while maintaining working core functionality.

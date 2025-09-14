@@ -325,7 +325,7 @@ class FlextGrpcServerService:
             )
 
     def _configure_server_port(
-        self, grpc_server: object, starting_server: TGrpcServerEntity
+        self, grpc_server: grpc.Server, starting_server: TGrpcServerEntity
     ) -> FlextResult[TGrpcServerEntity]:
         """Configure server port binding."""
         if starting_server.port == 0:
@@ -429,7 +429,7 @@ class FlextGrpcServerService:
 
             # Create REAL servicer and register it with the server
             real_servicer = create_real_servicer(f"{server.host}:{server.port}")
-            add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)
+            add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)  # type: ignore[no-untyped-call]
 
             # Add service to server entity (tracks the registration)
             add_result = server.add_service(service_def)
@@ -591,6 +591,9 @@ class FlextGrpcClientService:
             return validation_result
 
         target = client.target
+        if target is None:
+            return FlextResult[TGrpcClientEntity].fail("Client target cannot be None")
+
         try:
             # Create and test gRPC channel
             channel_result = self._create_and_test_grpc_channel(target)
@@ -671,6 +674,8 @@ class FlextGrpcClientService:
         self._active_channels[target] = cast("GrpcChannelProtocol", grpc_channel)
 
         # Transition: idle → connecting
+        if client.channel is None:
+            return FlextResult[TGrpcClientEntity].fail("Client channel cannot be None")
         connect_result = client.channel.connect()
         if connect_result.is_failure:
             cast("GrpcChannelProtocol", grpc_channel).close()
@@ -766,14 +771,16 @@ class FlextGrpcClientService:
 
             # Validate channel is still ready
             try:
-                grpc.channel_ready_future(grpc_channel).result(timeout=1.0)
+                grpc.channel_ready_future(cast("grpc.Channel", grpc_channel)).result(
+                    timeout=1.0
+                )
             except grpc.FutureTimeoutError:
                 return FlextResult[TMethodCallResult].fail(
                     f"gRPC channel not ready for {target}"
                 )
 
             # Create REAL gRPC stub and make REAL call
-            stub = FlextGrpcServiceStub(grpc_channel)
+            stub = FlextGrpcServiceStub(grpc_channel)  # type: ignore[no-untyped-call]
 
             # Handle different method types - REAL gRPC calls
             if method == "Echo":
@@ -850,7 +857,9 @@ class FlextGrpcClientService:
         if grpc_channel_active and target is not None:
             grpc_channel = self._active_channels[target]
             try:
-                grpc.channel_ready_future(grpc_channel).result(timeout=0.1)
+                grpc.channel_ready_future(cast("grpc.Channel", grpc_channel)).result(
+                    timeout=0.1
+                )
                 grpc_channel_ready = True
             except grpc.FutureTimeoutError:
                 grpc_channel_ready = False
@@ -964,7 +973,7 @@ class FlextGrpcStreamService:
         target: str | None = None,
     ) -> FlextResult[TGrpcStreamEntity]:
         """Create REAL gRPC stream."""
-        stream_key = f"{stream.id.root}_{stream.stream_type}"
+        stream_key = f"{stream.id}_{stream.stream_type}"
 
         try:
             # For real streaming, we need a target server
@@ -978,16 +987,16 @@ class FlextGrpcStreamService:
                     "GrpcChannelProtocol", grpc_channel
                 )
 
-            grpc_channel = self._active_channels[target]
+            grpc_channel = cast("grpc.Channel", self._active_channels[target])
 
             # Create real gRPC stub for streaming
-            stub = FlextGrpcServiceStub(grpc_channel)
+            stub = FlextGrpcServiceStub(grpc_channel)  # type: ignore[no-untyped-call]
 
             # Register the REAL stream with actual gRPC objects and buffers
             stream_info: StreamInfo = {
-                "stream_id": stream.id.root,
+                "stream_id": stream.id,
                 "type": stream.stream_type,
-                "created_at": stream.created_at.root.timestamp(),
+                "created_at": stream.created_at.timestamp(),
                 "active": True,
                 "target": target,
                 "stub": stub,  # Real gRPC stub
@@ -1067,7 +1076,7 @@ class FlextGrpcStreamService:
 
         if should_flush:
             # Make real client streaming call with all buffered requests
-            response = stub.ClientStream(iter(buffered_requests), timeout=10.0)
+            response = stub.ClientStream(iter(buffered_requests), timeout=10.0)  # type: ignore[attr-defined]
 
             # Clear buffer after successful call and trigger memory cleanup if needed
             stream_info["request_buffer"].clear()
@@ -1083,7 +1092,7 @@ class FlextGrpcStreamService:
             result = {
                 "sent": str(data),
                 "stream_type": stream.stream_type,
-                "stream_id": stream.id.root,
+                "stream_id": stream.id,
                 "buffered_count": len(buffered_requests),
                 "response": {
                     "data": response.data,
@@ -1097,7 +1106,7 @@ class FlextGrpcStreamService:
             result = {
                 "sent": str(data),
                 "stream_type": stream.stream_type,
-                "stream_id": stream.id.root,
+                "stream_id": stream.id,
                 "buffer_status": "buffered",
                 "buffer_size": len(buffered_requests),
                 "sequence": stream_info["sequence_counter"],
@@ -1120,7 +1129,7 @@ class FlextGrpcStreamService:
         stream_info["last_activity"] = time.time()
 
         # For bidirectional, we can send immediately but batch responses
-        response_iterator = stub.BidirectionalStream(
+        response_iterator = stub.BidirectionalStream(  # type: ignore[attr-defined]
             iter([stream_request]), timeout=10.0
         )
         responses = []
@@ -1143,7 +1152,7 @@ class FlextGrpcStreamService:
         result = {
             "sent": str(data),
             "stream_type": stream.stream_type,
-            "stream_id": stream.id.root,
+            "stream_id": stream.id,
             "responses": responses,
             "response_count": len(responses),
             "sequence": stream_info["sequence_counter"],
@@ -1179,7 +1188,7 @@ class FlextGrpcStreamService:
     ) -> FlextResult[TMethodCallResult]:
         """Handle server streaming operations."""
         # Server streaming: get iterator of responses
-        response_iterator = stub.ServerStream(stream_request, timeout=10.0)
+        response_iterator = stub.ServerStream(stream_request, timeout=10.0)  # type: ignore[attr-defined]
         responses = [
             {
                 "data": response.data,
@@ -1193,7 +1202,7 @@ class FlextGrpcStreamService:
         result = {
             "sent": str(data),
             "stream_type": stream.stream_type,
-            "stream_id": stream.id.root,
+            "stream_id": stream.id,
             "responses": responses,
             "response_count": len(responses),
         }
@@ -1210,19 +1219,19 @@ class FlextGrpcStreamService:
         """Handle unary operations."""
         # For unary, convert to Echo call
         echo_request = EchoRequest(message=str(data))
-        response = stub.Echo(echo_request, timeout=10.0)
+        response = stub.Echo(echo_request, timeout=10.0)  # type: ignore[attr-defined]
 
         result = {
             "sent": str(data),
             "stream_type": stream.stream_type,
-            "stream_id": stream.id.root,
+            "stream_id": stream.id,
             "response": {
                 "message": response.message,
                 "server_id": response.server_id,
                 "timestamp": response.timestamp,
             },
         }
-        return FlextResult[TMethodCallResult].ok(result)
+        return FlextResult[TMethodCallResult].ok(dict(result))
 
     def _send_data(
         self,
@@ -1230,7 +1239,7 @@ class FlextGrpcStreamService:
         data: object,
     ) -> FlextResult[TMethodCallResult]:
         """Send data through REAL gRPC stream."""
-        stream_key = f"{stream.id.root}_{stream.stream_type}"
+        stream_key = f"{stream.id}_{stream.stream_type}"
 
         try:
             # Validate stream existence and activity
@@ -1243,7 +1252,7 @@ class FlextGrpcStreamService:
 
             # Create real StreamRequest
             stream_request = StreamRequest(
-                data=str(data), sequence=1, client_id=stream.id.root
+                data=str(data), sequence=1, client_id=stream.id
             )
 
             # Use command mapping pattern to reduce returns
@@ -1276,7 +1285,7 @@ class FlextGrpcStreamService:
         stream: TGrpcStreamEntity,
     ) -> FlextResult[TGrpcStreamEntity]:
         """Close REAL gRPC stream gracefully."""
-        stream_key = f"{stream.id.root}_{stream.stream_type}"
+        stream_key = f"{stream.id}_{stream.stream_type}"
 
         try:
             # Close real gRPC stream if it exists

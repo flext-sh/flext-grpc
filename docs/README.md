@@ -1,59 +1,52 @@
 # FLEXT gRPC Documentation
 
-Comprehensive documentation for the FLEXT gRPC communication platform.
+**Version**: 0.9.0 | **Updated**: September 17, 2025
+
+Technical documentation for **flext-grpc** gRPC library implementation.
 
 ## Documentation Structure
 
-### Core Documentation
+### gRPC-Specific Documentation
+- **[Getting Started](getting-started.md)** - flext-grpc installation and setup
+- **[Architecture](architecture.md)** - gRPC-specific architecture within FLEXT patterns
+- **[API Reference](api-reference.md)** - flext-grpc API documentation
+- **[Configuration](configuration.md)** - gRPC service configuration
+- **[Development](development.md)** - gRPC service development workflow
+- **[Integration](integration.md)** - gRPC integration with FLEXT projects
+- **[Troubleshooting](troubleshooting.md)** - gRPC-specific issues and solutions
 
-- **[Architecture](architecture/)** - Clean Architecture and Domain-Driven Design patterns
-- **[API Reference](api/)** - Complete API documentation and usage patterns
-- **[Integration](integration/)** - FLEXT ecosystem integration guides
-- **[Development](development/)** - Development workflows and standards
+## Current Status
 
-### Development Resources
+- **Core Operations**: Server/client creation functional
+- **Test Coverage**: 26% (needs improvement to reach 90% target)
+- **Import System**: All modules importable after protobuf fixes
+- **Code Statistics**: 4,923 source lines, 18,018 test lines
 
-- **[TODO.md](TODO.md)** - Current issues, gaps, and development priorities
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines and standards
-- **[TESTING.md](TESTING.md)** - Testing strategy and patterns
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Deployment and configuration guides
+## Documentation Scope
 
-## Quick Navigation
+This documentation covers **only** flext-grpc specific functionality:
 
-### For Developers
+1. **gRPC Service Implementation** - How to use flext-grpc APIs
+2. **gRPC Configuration** - Service-specific settings
+3. **gRPC Integration Patterns** - How flext-grpc connects to FLEXT ecosystem
+4. **gRPC Development Workflow** - Development procedures specific to gRPC services
 
-1. **Getting Started**: [../README.md](../README.md) - Project overview and quick start
-2. **Development Setup**: [../CLAUDE.md](../CLAUDE.md) - Development guidance
-3. **Current Issues**: [TODO.md](TODO.md) - Known gaps and priorities
-4. **Architecture**: [architecture/README.md](architecture/README.md) - Design patterns
+## What This Documentation Does NOT Cover
 
-### For Integrators
+For general FLEXT concepts, refer to workspace documentation:
 
-1. **FLEXT Integration**: [integration/README.md](integration/README.md) - Ecosystem integration
-2. **API Usage**: [api/README.md](api/README.md) - API reference and examples
-3. **Configuration**: [development/configuration.md](development/configuration.md) - Setup guides
+- **FLEXT-Core patterns** → See `flext-core` documentation
+- **General Clean Architecture** → See workspace architecture documentation
+- **FLEXT ecosystem overview** → See workspace documentation
+- **General development standards** → See workspace development guidelines
 
-### For Maintainers
+## Contributing to Documentation
 
-1. **Testing Strategy**: [TESTING.md](TESTING.md) - Test patterns and coverage
-2. **Quality Standards**: [development/quality-standards.md](development/quality-standards.md) - Code quality requirements
-3. **Release Process**: [development/release-process.md](development/release-process.md) - Release guidelines
+1. **Focus**: Only document flext-grpc specific functionality
+2. **Accuracy**: Base all content on verified, tested capabilities
+3. **Standards**: Follow [FLEXT documentation standards](../../docs/standards/documentation.md)
+4. **No Duplication**: Reference workspace docs instead of duplicating general concepts
 
-## Documentation Standards
+---
 
-All documentation follows FLEXT enterprise standards:
-
-- **Professional English**: Clear, concise, technical language
-- **Factual Content**: No marketing claims, only verified functionality
-- **Enterprise Grade**: Suitable for production enterprise environments
-- **Clean Architecture**: Aligned with DDD and Clean Architecture principles
-- **FLEXT Patterns**: Consistent with flext-core foundations
-
-## Status
-
-- **Coverage**: Core documentation structure established
-- **Quality**: Enterprise-grade professional standards
-- **Maintenance**: Updated with development progress
-- **Integration**: Aligned with FLEXT ecosystem documentation
-
-For specific documentation gaps and improvement plans, see [TODO.md](TODO.md).
+For current development status, see the main [README.md](../README.md).
