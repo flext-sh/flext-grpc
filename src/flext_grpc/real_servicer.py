@@ -7,6 +7,10 @@ from __future__ import annotations
 
 import time
 from collections.abc import Iterator
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from grpc import ServicerContext
 
 import grpc
 
@@ -37,7 +41,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self.server_id = server_id
         self.start_time = time.time()
 
-    def Echo(self, request: EchoRequest, context: grpc.ServicerContext) -> EchoResponse:  # noqa: N802
+    def Echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:  # noqa: N802
         """Real unary Echo implementation."""
         try:
             # Process the actual request
@@ -63,7 +67,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             return EchoResponse()
 
     def ServerStream(  # noqa: N802
-        self, request: StreamRequest, context: grpc.ServicerContext
+        self, request: StreamRequest, context: ServicerContext
     ) -> Iterator[StreamResponse]:
         """Real server streaming implementation."""
         try:
@@ -85,7 +89,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Server streaming error: {e}")
 
     def ClientStream(  # noqa: N802
-        self, request_iterator: Iterator[StreamRequest], context: grpc.ServicerContext
+        self, request_iterator: Iterator[StreamRequest], context: ServicerContext
     ) -> StreamResponse:
         """Real client streaming implementation."""
         try:
@@ -112,7 +116,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             return StreamResponse()
 
     def BidirectionalStream(  # noqa: N802
-        self, request_iterator: Iterator[StreamRequest], context: grpc.ServicerContext
+        self, request_iterator: Iterator[StreamRequest], context: ServicerContext
     ) -> Iterator[StreamResponse]:
         """Real bidirectional streaming implementation."""
         try:
@@ -133,7 +137,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Bidirectional streaming error: {e}")
 
     def HealthCheck(  # noqa: N802
-        self, request: HealthRequest, context: grpc.ServicerContext
+        self, request: HealthRequest, context: ServicerContext
     ) -> HealthResponse:
         """Real health check implementation."""
         try:

@@ -7,10 +7,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-import uuid
-from datetime import UTC, datetime
 
-from flext_core import FlextModels, FlextResult, FlextTypes
+from flext_core import FlextResult, FlextTypes
 
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
 from flext_grpc.entities import (
@@ -53,7 +51,7 @@ def create_server(
     )
     if result.is_failure:
         raise ValueError(result.error)
-    return result.data
+    return result.unwrap()
 
 
 def create_client(
@@ -77,14 +75,11 @@ def create_client(
     result = FlextGrpcEntityFactory.create_client(target=target)
     if result.is_failure:
         raise ValueError(result.error)
-    client = result.data
+    client = result.unwrap()
 
     if options:
-        # Update client with options using copy_with and handle FlextResult
-        copy_result = client.copy_with(options=options)
-        if copy_result.is_failure:
-            raise ValueError(copy_result.error)
-        return copy_result.data
+        # Update client with options using model_copy
+        return client.model_copy(update={"options": options})
 
     return client
 
@@ -106,13 +101,10 @@ def create_channel(
     result = FlextGrpcEntityFactory.create_channel(target=target)
     if result.is_failure:
         raise ValueError(result.error)
-    channel = result.data
+    channel = result.unwrap()
     if options:
-        # Update channel with options using copy_with and handle FlextResult
-        copy_result = channel.copy_with(options=options)
-        if copy_result.is_failure:
-            raise ValueError(copy_result.error)
-        return copy_result.data
+        # Update channel with options using model_copy
+        return channel.model_copy(update={"options": options})
 
     return channel
 
@@ -135,20 +127,10 @@ def create_service(
     if methods is None:
         methods = []
 
-    # For empty methods, create service directly to avoid business rule conflicts
-    # This maintains API compatibility with existing tests
-    if not methods:
-        return FlextGrpcService(
-            id=FlextModels(f"service-{uuid.uuid4().hex[:8]}"),
-            name=name,
-            methods=[],
-            created_at=FlextModels(datetime.now(UTC)),
-        )
-
     result = FlextGrpcEntityFactory.create_service(name=name, methods=methods)
     if result.is_failure:
         raise ValueError(result.error)
-    return result.data
+    return result.unwrap()
 
 
 def create_stream(
@@ -179,7 +161,7 @@ def create_stream(
     )
     if result.is_failure:
         raise ValueError(result.error)
-    return result.data
+    return result.unwrap()
 
 
 def create_config(

@@ -1,4 +1,3 @@
-
 """Unit tests for real gRPC functionality.
 
 NO SIMULATIONS - Everything is actual gRPC communication.

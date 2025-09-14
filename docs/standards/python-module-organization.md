@@ -11,7 +11,7 @@
 
 ## 🎯 Overview
 
-FLEXT gRPC implements **enterprise-grade Python module organization** following **Clean Architecture**, **Domain-Driven Design**, and **professional standards** aligned with the FLEXT ecosystem architecture and patterns.
+FLEXT gRPC implements **Python module organization** following **Clean Architecture**, **Domain-Driven Design**, and **professional standards** aligned with the FLEXT ecosystem architecture and patterns.
 
 ### **Module Organization Philosophy**
 

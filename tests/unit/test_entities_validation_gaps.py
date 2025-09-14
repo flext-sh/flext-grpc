@@ -1,4 +1,3 @@
-
 """Unit tests for entity validation gaps.
 
 Test Focus:

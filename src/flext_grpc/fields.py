@@ -1,15 +1,3 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
-
-SPDX-License-Identifier: MIT.
-"""
-
-from __future__ import annotations
-
-from typing import cast
-
-from pydantic import Field
-from pydantic.fields import FieldInfo
-
 """FLEXT gRPC Field Definitions.
 
 This module provides field definitions and validators for gRPC entities,
@@ -19,6 +7,13 @@ the FLEXT ecosystem.
 Copyright (c) 2025 FLEXT Contributors
 SPDX-License-Identifier: MIT
 """
+
+from __future__ import annotations
+
+from typing import cast
+
+from pydantic import Field
+from pydantic.fields import FieldInfo
 
 
 # Host field validation

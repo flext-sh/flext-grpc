@@ -21,7 +21,6 @@ from typing import Protocol, TypedDict, cast
 import grpc
 import psutil
 from flext_core import (
-    FlextConstants,
     FlextContainer,
     FlextLogger,
     FlextResult,
@@ -43,35 +42,25 @@ from flext_grpc.proto import (
 )
 from flext_grpc.real_servicer import create_real_servicer
 
-# Use centralized gRPC constants following SOLID DRY principles
-CLIENT_STREAMING_BUFFER_THRESHOLD = (
-    FlextConstants.GRPC.CLIENT_STREAMING_BUFFER_THRESHOLD
-)
-SERVER_STREAMING_BATCH_SIZE = FlextConstants.GRPC.SERVER_STREAMING_BATCH_SIZE
-BIDIRECTIONAL_STREAMING_QUEUE_SIZE = (
-    FlextConstants.GRPC.BIDIRECTIONAL_STREAMING_QUEUE_SIZE
-)
-STREAM_CLEANUP_MAX_AGE_SECONDS = FlextConstants.GRPC.STREAM_CLEANUP_MAX_AGE_SECONDS
-STREAM_PROCESSING_TIMEOUT_SECONDS = (
-    FlextConstants.GRPC.STREAM_PROCESSING_TIMEOUT_SECONDS
-)
-MAX_CONCURRENT_STREAMS_PER_CLIENT = (
-    FlextConstants.GRPC.MAX_CONCURRENT_STREAMS_PER_CLIENT
-)
-STREAM_METRICS_COLLECTION_INTERVAL = (
-    FlextConstants.GRPC.STREAM_METRICS_COLLECTION_INTERVAL
-)
-STREAM_HEALTH_DEGRADED_THRESHOLD = FlextConstants.GRPC.STREAM_HEALTH_DEGRADED_THRESHOLD
+# gRPC streaming constants
+CLIENT_STREAMING_BUFFER_THRESHOLD = 1000
+SERVER_STREAMING_BATCH_SIZE = 100
+BIDIRECTIONAL_STREAMING_QUEUE_SIZE = 500
+STREAM_CLEANUP_MAX_AGE_SECONDS = 300
+STREAM_PROCESSING_TIMEOUT_SECONDS = 30
+MAX_CONCURRENT_STREAMS_PER_CLIENT = 10
+STREAM_METRICS_COLLECTION_INTERVAL = 60
+STREAM_HEALTH_DEGRADED_THRESHOLD = 0.8
 
-# Centralized memory efficiency constants from FlextConstants.GRPC
-MAX_BUFFER_SIZE_BYTES = FlextConstants.GRPC.MAX_BUFFER_SIZE_BYTES
-MEMORY_PRESSURE_THRESHOLD = FlextConstants.GRPC.MEMORY_PRESSURE_THRESHOLD
-BUFFER_CLEANUP_BATCH_SIZE = FlextConstants.GRPC.BUFFER_CLEANUP_BATCH_SIZE
-LOW_MEMORY_THRESHOLD = FlextConstants.GRPC.LOW_MEMORY_THRESHOLD
-ADAPTIVE_BUFFER_SCALING_FACTOR = FlextConstants.GRPC.ADAPTIVE_BUFFER_SCALING_FACTOR
-MEMORY_CLEANUP_INTERVAL_SHORT = FlextConstants.GRPC.MEMORY_CLEANUP_INTERVAL_SHORT
-MEMORY_CLEANUP_INTERVAL_LONG = FlextConstants.GRPC.MEMORY_CLEANUP_INTERVAL_LONG
-HIGH_PRESSURE_RATIO_THRESHOLD = FlextConstants.GRPC.HIGH_PRESSURE_RATIO_THRESHOLD
+# Memory efficiency constants
+MAX_BUFFER_SIZE_BYTES = 1024 * 1024  # 1MB
+MEMORY_PRESSURE_THRESHOLD = 0.8
+BUFFER_CLEANUP_BATCH_SIZE = 100
+LOW_MEMORY_THRESHOLD = 0.6
+ADAPTIVE_BUFFER_SCALING_FACTOR = 0.5
+MEMORY_CLEANUP_INTERVAL_SHORT = 30
+MEMORY_CLEANUP_INTERVAL_LONG = 300
+HIGH_PRESSURE_RATIO_THRESHOLD = 0.9
 
 
 # Stream info types for enterprise-grade stream management
@@ -293,7 +282,7 @@ class FlextGrpcServerService:
         if start_result.is_failure:
             return start_result
 
-        starting_server = start_result.data
+        starting_server = start_result.unwrap()
         return self._create_and_start_grpc_server(starting_server)
 
     def _create_and_start_grpc_server(
@@ -314,7 +303,7 @@ class FlextGrpcServerService:
                 grpc_server.stop(grace=1.0)
                 return port_result
 
-            configured_server = port_result.data
+            configured_server = port_result.unwrap()
             server_key = f"{configured_server.host}:{configured_server.port}"
 
             # Start the REAL gRPC server
@@ -343,12 +332,8 @@ class FlextGrpcServerService:
             # Let gRPC choose available port
             actual_port = grpc_server.add_insecure_port(f"{starting_server.host}:0")
             # Update entity with actual port
-            port_update_result = starting_server.copy_with(port=actual_port)
-            if port_update_result.is_failure:
-                return FlextResult[TGrpcServerEntity].fail(
-                    f"Failed to update port: {port_update_result.error}"
-                )
-            return FlextResult[TGrpcServerEntity].ok(port_update_result.data)
+            updated_server = starting_server.model_copy(update={"port": actual_port})
+            return FlextResult[TGrpcServerEntity].ok(updated_server)
         # Use specified port
         try:
             grpc_server.add_insecure_port(
@@ -384,7 +369,7 @@ class FlextGrpcServerService:
             "request_count": 0,
         }
 
-        return FlextResult[TGrpcServerEntity].ok(running_result.data)
+        return FlextResult[TGrpcServerEntity].ok(running_result.unwrap())
 
     def _stop_server(self, server: TGrpcServerEntity) -> FlextResult[TGrpcServerEntity]:
         """Stop server with REAL gRPC server shutdown."""
@@ -393,7 +378,7 @@ class FlextGrpcServerService:
         if stop_result.is_failure:
             return stop_result
 
-        stopping_server = stop_result.data
+        stopping_server = stop_result.unwrap()
         server_key = f"{stopping_server.host}:{stopping_server.port}"
 
         try:
@@ -413,7 +398,7 @@ class FlextGrpcServerService:
             if stopped_result.is_failure:
                 return stopped_result
 
-            return FlextResult[TGrpcServerEntity].ok(stopped_result.data)
+            return FlextResult[TGrpcServerEntity].ok(stopped_result.unwrap())
 
         except Exception as e:
             return FlextResult[TGrpcServerEntity].fail(
@@ -451,7 +436,7 @@ class FlextGrpcServerService:
             if add_result.is_failure:
                 return add_result
 
-            return FlextResult[TGrpcServerEntity].ok(add_result.data)
+            return FlextResult[TGrpcServerEntity].ok(add_result.unwrap())
 
         except Exception as e:
             return FlextResult[TGrpcServerEntity].fail(
@@ -614,7 +599,7 @@ class FlextGrpcClientService:
                     channel_result.error or "Channel creation failed"
                 )
 
-            grpc_channel = channel_result.data
+            grpc_channel = channel_result.unwrap()
             # Transition client to connected state
             return self._transition_client_to_connected(client, grpc_channel, target)
 
@@ -694,7 +679,7 @@ class FlextGrpcClientService:
                 f"Channel connection failed: {connect_result.error}"
             )
 
-        connecting_channel = connect_result.data
+        connecting_channel = connect_result.unwrap()
         # Transition: connecting → ready
         ready_result = connecting_channel.mark_ready()
         if ready_result.is_failure:
@@ -705,7 +690,8 @@ class FlextGrpcClientService:
             )
 
         # Update client with new channel
-        return client.copy_with(channel=ready_result.data)
+        updated_client = client.model_copy(update={"channel": ready_result.unwrap()})
+        return FlextResult[TGrpcClientEntity].ok(updated_client)
 
     def _disconnect_client(
         self,
@@ -741,7 +727,10 @@ class FlextGrpcClientService:
                 )
 
             # Update client with disconnected channel
-            return client.copy_with(channel=disconnect_result.data)
+            updated_client = client.model_copy(
+                update={"channel": disconnect_result.unwrap()}
+            )
+            return FlextResult[TGrpcClientEntity].ok(updated_client)
 
         except Exception as e:
             return FlextResult[TGrpcClientEntity].fail(

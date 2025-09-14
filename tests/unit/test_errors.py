@@ -1,4 +1,3 @@
-
 """Unit tests for gRPC error handling.
 
 Contextual information testing, and error handling pattern verification.

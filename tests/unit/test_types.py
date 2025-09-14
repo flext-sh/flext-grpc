@@ -1,11 +1,18 @@
-"""Copyright (c) 2025 FLEXT Team. All rights reserved.
+"""Unit tests for gRPC types.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.
 """
 
 from __future__ import annotations
 
 import pytest
-from flext_grpc import ( from __future__ import annotations from typing import Type TGrpcTarget, flext_grpc_parse_target, flext_grpc_validate_target, )
+
+from flext_grpc import (
+    TGrpcTarget,
+    flext_grpc_parse_target,
+    flext_grpc_validate_target,
+)
 
 r"""FLEXT gRPC Type Testing - Comprehensive unit tests for type system and validation.
 
@@ -67,7 +74,6 @@ class TestGrpcTypes:
 
     def test_grpc_target_type(self) -> None:
         """Test TGrpcTarget type."""
-
         target = TGrpcTarget("localhost:50051")
         if target != "localhost:50051":
             raise AssertionError(f"Expected {'localhost:50051'}, got {target}")
@@ -75,7 +81,6 @@ class TestGrpcTypes:
 
     def test_validate_target_valid_cases(self) -> None:
         """Test valid target validation cases."""
-
         valid_targets = [
             "localhost:50051",
             "127.0.0.1:8080",
@@ -91,7 +96,6 @@ class TestGrpcTypes:
 
     def test_validate_target_invalid_cases(self) -> None:
         """Test invalid target validation cases."""
-
         invalid_targets = [
             "",  # Empty
             "localhost",  # No port
@@ -112,7 +116,6 @@ class TestGrpcTypes:
 
     def test_parse_target_valid_cases(self) -> None:
         """Test valid target parsing cases."""
-
         test_cases = [
             ("localhost:50051", ("localhost", 50051)),
             ("127.0.0.1:8080", ("127.0.0.1", 8080)),
@@ -129,7 +132,6 @@ class TestGrpcTypes:
 
     def test_parse_target_invalid_cases(self) -> None:
         """Test invalid target parsing cases."""
-
         invalid_targets = [
             "",
             "localhost",
@@ -146,7 +148,6 @@ class TestGrpcTypes:
 
     def test_edge_cases(self) -> None:
         """Test edge cases for validation and parsing."""
-
         # Minimum valid port
         assert flext_grpc_validate_target("localhost:1")
         result = flext_grpc_parse_target("localhost:1")
@@ -165,7 +166,6 @@ class TestGrpcTypes:
 
     def test_hostname_patterns(self) -> None:
         """Test various hostname patterns."""
-
         valid_hostnames = [
             "localhost",
             "127.0.0.1",

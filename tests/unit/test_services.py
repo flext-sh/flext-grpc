@@ -1,15 +1,59 @@
+"""Unit tests for gRPC services.
+
+Test Coverage: The module ensures comprehensive coverage of all service operations:
+- FlextGrpcService: Unified service operations and command handling
+- Server Operations: Server lifecycle management and state transitions
+- Client Operations: Client connection management and communication
+- Stream Operations: Stream management and type validation
+- Error Handling: Comprehensive failure scenario testing
+
+Testing Architecture: Service testing follows Clean Architecture and Domain-Driven Design principles:
+- Business Logic Testing: Service operations and business rule enforcement
+- Command Handling: Service command execution and result validation
+- State Management: Entity state transitions through service operations
+- Error Propagation: Service error handling and failure recovery
+- Integration Testing: Service coordination and dependency management
+
+Testing Patterns: All service tests follow enterprise testing standards:
+- AAA Pattern: Arrange, Act, Assert structure for clarity
+- Service Isolation: Services tested with mocked dependencies
+- Operation Validation: Each service operation thoroughly tested
+- Error Scenarios: Comprehensive failure case testing
+- Result Pattern: FlextResult pattern validation throughout
+
+Integration:
+- Tests services from flext_grpc.services module
+- Validates service operations on entities from flext_grpc.entities
+- Uses flext-core FlextResult patterns for operation validation
+- Integrates with pytest framework for execution and reporting
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
 
 from __future__ import annotations
 
 from datetime import UTC, datetime
+
 import pytest
-from flext_core import FlextGenerators, FlextModels, FlextResult, FlextTypes
-from flext_grpc import ( Test Coverage: The module ensures comprehensive coverage of all service operations: - FlextGrpcService: Unified service operations and command handling - Server Operations: Server lifecycle management and state transitions - Client Operations: Client connection management and communication - Stream Operations: Stream management and type validation - Error Handling: Comprehensive failure scenario testing Testing Architecture: Service testing follows Clean Architecture and Domain-Driven Design principles: - Business Logic Testing: Service operations and business rule enforcement - Command Handling: Service command execution and result validation - State Management: Entity state transitions through service operations - Error Propagation: Service error handling and failure recovery - Integration Testing: Service coordination and dependency management Testing Patterns: All service tests follow enterprise testing standards: - AAA Pattern: Arrange, Act, Assert structure for clarity - Service Isolation: Services tested with mocked dependencies - Operation Validation: Each service operation thoroughly tested - Error Scenarios: Comprehensive failure case testing - Result Pattern: FlextResult pattern validation throughout Example: Standard service testing pattern used throughout module: >>> def test_service_operation_success(): ... # Arrange: Set up service and test data ... service = FlextGrpcService() ... entity = create_valid_entity() ... ... # Act: Execute service operation ... result = service.execute("operation", entity) ... ... # Assert: Verify successful execution and state ... assert result.success ... assert result.data.state == expected_state Integration: - Tests services from flext_grpc.services module - Validates service operations on entities from flext_grpc.entities - Uses flext-core FlextResult patterns for operation validation - Integrates with pytest framework for execution and reporting Copyright (c) 2025 FLEXT Team. All rights reserved. SPDX-License-Identifier: MIT """ from __future__ import annotations from flext_core import FlextModels from flext_core import FlextResult from typing import Dict FlextGrpcChannel, FlextGrpcClient, FlextGrpcClientService, FlextGrpcServer, FlextGrpcServerService, FlextGrpcService, FlextGrpcStream, FlextGrpcStreamService, TGrpcTarget, create_stream, )
+from flext_core import FlextModels, FlextResult, FlextTypes, FlextUtilities
+
+from flext_grpc import (
+    FlextGrpcChannel,
+    FlextGrpcClient,
+    FlextGrpcClientService,
+    FlextGrpcServer,
+    FlextGrpcServerService,
+    FlextGrpcService,
+    FlextGrpcStream,
+    FlextGrpcStreamService,
+    TGrpcTarget,
+    create_stream,
+)
 
 
 def _assert_error_contains(result: object, expected_text: str) -> None:
     """Helper function to assert error contains expected text."""
-
     assert result.is_failure
     assert result.error is not None
     assert expected_text in result.error
@@ -17,7 +61,6 @@ def _assert_error_contains(result: object, expected_text: str) -> None:
 
 def _assert_server_result(result: object) -> object:
     """Helper function to assert server result success."""
-
     assert result.success
     assert result.data is not None
     return result.data
@@ -25,7 +68,6 @@ def _assert_server_result(result: object) -> object:
 
 def _assert_client_result(result: object) -> object:
     """Helper function to assert client result success."""
-
     assert result.success
     assert result.data is not None
     return result.data
@@ -33,7 +75,6 @@ def _assert_client_result(result: object) -> object:
 
 def _assert_dict_result(result: object) -> FlextTypes.Core.Dict:
     """Helper function to assert dict result success."""
-
     assert result.success
     assert result.data is not None
     assert isinstance(result.data, dict)
@@ -46,27 +87,26 @@ class TestFlextGrpcService:
     @pytest.fixture(autouse=True)
     def setup(self) -> None:
         """Set up test fixtures."""
-
         # Create test entities for use in tests
 
         self.server = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="localhost",
             port=50051,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         self.channel = FlextGrpcChannel(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             target=TGrpcTarget("localhost:50051"),
             state="idle",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         self.client = FlextGrpcClient(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             channel=self.channel,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         self.server_service = FlextGrpcServerService()
@@ -77,7 +117,6 @@ class TestFlextGrpcService:
         self, service_type: str, command: str, *args: object, **kwargs: object
     ) -> FlextResult[object]:
         """Route service commands to appropriate service instances."""
-
         # Check if we have required arguments first
         if not args:
             return FlextResult.fail(f"{service_type.title()} entity required")
@@ -100,7 +139,6 @@ class TestFlextGrpcService:
 
     def test_server_start_invalid_host_fails(self) -> None:
         """Test server start with invalid host fails."""
-
         invalid_server = FlextGrpcServer(
             id=self.server.id,
             host="",  # Invalid empty host
@@ -112,7 +150,6 @@ class TestFlextGrpcService:
 
     def test_server_stop_operation(self) -> None:
         """Test server stop operation."""
-
         running_server = self.server.copy_with(state="running").data
         assert running_server is not None
         result = self.execute_service_command("server", "stop", running_server)
@@ -122,22 +159,20 @@ class TestFlextGrpcService:
 
     def test_server_stop_not_running_fails(self) -> None:
         """Test stopping non-running server fails."""
-
         result = self.execute_service_command("server", "stop", self.server)
         _assert_error_contains(result, "Server already stopped")
 
     def test_server_add_service_operation(self) -> None:
         """Test server add service operation."""
-
         # First start the server (required state for adding service)
         start_result = self.execute_service_command("server", "start", self.server)
         running_server = _assert_server_result(start_result)
 
         service_entity = FlextGrpcService(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             name="TestService",
             methods=["test_method"],
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         result = self.execute_service_command(
@@ -154,13 +189,11 @@ class TestFlextGrpcService:
 
     def test_server_add_service_without_service_fails(self) -> None:
         """Test server add service without service fails."""
-
         result = self.execute_service_command("server", "add_service", self.server)
         _assert_error_contains(result, "Service definition must be FlextGrpcService")
 
     def test_server_status_operation(self) -> None:
         """Test server status operation."""
-
         result = self.execute_service_command("server", "status", self.server)
         status = _assert_dict_result(result)
         if status["address"] != "localhost:50051":
@@ -176,14 +209,12 @@ class TestFlextGrpcService:
 
     def test_server_unknown_operation_fails(self) -> None:
         """Test server unknown operation fails."""
-
         result = self.execute_service_command("server", "unknown_op", self.server)
         assert result.is_failure
         _assert_error_contains(result, "Unknown server command: unknown_op")
 
     def test_client_connect_operation(self) -> None:
         """Test client connect operation."""
-
         result = self.execute_service_command("client", "connect", self.client)
         connected_client = _assert_client_result(result)
         if connected_client.channel is None:
@@ -196,7 +227,6 @@ class TestFlextGrpcService:
 
     def test_client_connect_already_connected_fails(self) -> None:
         """Test connecting already connected client fails."""
-
         ready_channel = self.channel.copy_with(state="ready").data
         assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
@@ -208,7 +238,6 @@ class TestFlextGrpcService:
 
     def test_client_connect_no_channel_fails(self) -> None:
         """Test connecting client without channel fails."""
-
         no_channel_client = self.client.copy_with(channel=None).data
         assert no_channel_client is not None
         result = self.execute_service_command("client", "connect", no_channel_client)
@@ -217,7 +246,6 @@ class TestFlextGrpcService:
 
     def test_client_disconnect_operation(self) -> None:
         """Test client disconnect operation."""
-
         ready_channel = self.channel.copy_with(state="ready").data
         assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
@@ -235,7 +263,6 @@ class TestFlextGrpcService:
 
     def test_client_disconnect_not_connected_fails(self) -> None:
         """Test disconnecting client without channel fails."""
-
         no_channel_client = self.client.copy_with(channel=None).data
         assert no_channel_client is not None
         result = self.execute_service_command("client", "disconnect", no_channel_client)
@@ -244,7 +271,6 @@ class TestFlextGrpcService:
 
     def test_client_call_operation(self) -> None:
         """Test client call operation."""
-
         ready_channel = self.channel.copy_with(state="ready").data
         assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
@@ -286,7 +312,6 @@ class TestFlextGrpcService:
 
     def test_client_call_not_connected_fails(self) -> None:
         """Test calling with non-connected client fails."""
-
         result = self.execute_service_command(
             "client",
             "call",
@@ -299,7 +324,6 @@ class TestFlextGrpcService:
 
     def test_client_call_no_method_name_fails(self) -> None:
         """Test calling without method name fails."""
-
         ready_channel = self.channel.copy_with(state="ready").data
         assert ready_channel is not None
         connected_client = self.client.copy_with(channel=ready_channel).data
@@ -311,7 +335,6 @@ class TestFlextGrpcService:
 
     def test_client_status_operation(self) -> None:
         """Test client status operation."""
-
         result = self.execute_service_command("client", "status", self.client)
         status = _assert_dict_result(result)
         if status["is_connected"]:
@@ -322,14 +345,12 @@ class TestFlextGrpcService:
 
     def test_client_unknown_operation_fails(self) -> None:
         """Test client unknown operation fails."""
-
         result = self.execute_service_command("client", "unknown_op", self.client)
         assert result.is_failure
         _assert_error_contains(result, "Unknown client command: unknown_op")
 
     def test_stream_create_operation(self) -> None:
         """Test stream create operation."""
-
         # Create a stream entity first
         stream = create_stream(
             method_name="stream_method", stream_type="server_streaming"
@@ -352,7 +373,6 @@ class TestFlextGrpcService:
 
     def test_stream_create_no_stream_fails(self) -> None:
         """Test stream create without stream entity fails."""
-
         result = self.execute_service_command("stream", "create")
         assert result.is_failure
         # The stream service execute method expects a stream parameter
@@ -360,20 +380,18 @@ class TestFlextGrpcService:
 
     def test_stream_create_invalid_stream_fails(self) -> None:
         """Test stream create with invalid stream fails."""
-
         # Create an invalid stream should raise ValueError from API
         with pytest.raises(ValueError, match="Stream method name cannot be empty"):
             create_stream(method_name="", stream_type="unary")
 
     def test_stream_validation_in_service(self) -> None:
         """Test that stream service validates stream business rules."""
-
         # Create an invalid stream directly (bypassing create_stream validation)
         invalid_stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="",  # Invalid empty method name
             stream_type="unary",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # The service should validate and reject it
@@ -384,12 +402,11 @@ class TestFlextGrpcService:
 
     def test_stream_send_operation(self) -> None:
         """Test stream send operation."""
-
         stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="test_method",
             stream_type="unary",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # First create the stream
@@ -406,12 +423,11 @@ class TestFlextGrpcService:
 
     def test_stream_close_operation(self) -> None:
         """Test stream close operation."""
-
         stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="test_method",
             stream_type="unary",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # First create the stream
@@ -426,7 +442,6 @@ class TestFlextGrpcService:
 
     def test_stream_unknown_operation_fails(self) -> None:
         """Test stream unknown operation fails."""
-
         # Need a valid stream for the unknown operation test
         stream = create_stream("test_method", "unary")
         result = self.execute_service_command("stream", "unknown_op", stream)

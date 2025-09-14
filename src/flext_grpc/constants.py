@@ -27,10 +27,10 @@ class FlextGrpcSemanticConstants(FlextConstants):
         """gRPC network configuration constants."""
 
         # CONSUME from single source - NO DUPLICATION
-        DEFAULT_HOST = FlextConstants.Infrastructure.DEFAULT_HOST
+        DEFAULT_HOST = FlextConstants.Platform.DEFAULT_HOST
         DEFAULT_PORT = 50051  # gRPC-specific port
-        MIN_PORT = FlextConstants.Platform.MIN_PORT_NUMBER
-        MAX_PORT = FlextConstants.Platform.MAX_PORT_NUMBER
+        MIN_PORT = FlextConstants.Network.MIN_PORT
+        MAX_PORT = FlextConstants.Network.MAX_PORT
         HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
 
     class Service:
@@ -55,7 +55,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
         """Default configuration templates."""
 
         DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
-            "host": FlextConstants.Infrastructure.DEFAULT_HOST,
+            "host": FlextConstants.Platform.DEFAULT_HOST,
             "port": 50051,
             "timeout": FlextConstants.Defaults.TIMEOUT,
             "max_workers": 10,

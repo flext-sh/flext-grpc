@@ -1,4 +1,3 @@
-
 """Integration tests package for flext-grpc.
 
 This package contains comprehensive integration tests for FLEXT gRPC platform components,

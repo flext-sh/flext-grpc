@@ -1,4 +1,3 @@
-
 """Unit tests for gRPC entities.
 
 The module ensures comprehensive coverage of all entity behaviors:
@@ -37,7 +36,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextGenerators, FlextModels
+from flext_core import FlextModels, FlextUtilities
 from pydantic_core import ValidationError
 
 from flext_grpc import (
@@ -88,7 +87,7 @@ class TestFlextGrpcChannel:
             3. Assert: Validation succeeds and properties are correct
         """
         channel = FlextGrpcChannel(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             target=TGrpcTarget("localhost:50051"),
             state="idle",
             created_at=FlextModels(datetime.now(UTC)),
@@ -114,7 +113,7 @@ class TestFlextGrpcChannel:
             3. Assert: Validation fails with appropriate error message
         """
         channel = FlextGrpcChannel(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             target=TGrpcTarget(""),
             created_at=FlextModels(datetime.now(UTC)),
         )
@@ -132,7 +131,7 @@ class TestFlextGrpcChannel:
 
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcChannel(
-                id=FlextModels(FlextGenerators.generate_entity_id()),
+                id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
                 target=TGrpcTarget("localhost:50051"),
                 state="invalid_state",
                 created_at=FlextModels(datetime.now(UTC)),
@@ -147,7 +146,7 @@ class TestFlextGrpcChannel:
     def test_channel_connection_lifecycle(self) -> None:
         """Test channel connection state transitions."""
         channel = FlextGrpcChannel(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             target=TGrpcTarget("localhost:50051"),
             state="idle",
             created_at=FlextModels(datetime.now(UTC)),
@@ -185,7 +184,7 @@ class TestFlextGrpcChannel:
     def test_invalid_state_transitions(self) -> None:
         """Test invalid state transitions fail."""
         channel = FlextGrpcChannel(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             target=TGrpcTarget("localhost:50051"),
             state="ready",
             created_at=FlextModels(datetime.now(UTC)),
@@ -218,7 +217,7 @@ class TestFlextGrpcServer:
     def test_create_valid_server(self) -> None:
         """Test creating a valid server."""
         server = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="localhost",
             port=50051,
             max_workers=10,
@@ -236,7 +235,7 @@ class TestFlextGrpcServer:
         """Test invalid server configurations fail validation."""
         # Empty host
         server1 = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="",
             port=50051,
             created_at=FlextModels(datetime.now(UTC)),
@@ -249,7 +248,7 @@ class TestFlextGrpcServer:
 
         # Invalid port
         server2 = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="localhost",
             port=70000,  # Too high
             created_at=FlextModels(datetime.now(UTC)),
@@ -262,7 +261,7 @@ class TestFlextGrpcServer:
 
         # Invalid max_workers
         server3 = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="localhost",
             port=50051,
             max_workers=0,
@@ -280,7 +279,7 @@ class TestFlextGrpcServer:
     def test_server_lifecycle(self) -> None:
         """Test server lifecycle state transitions."""
         server = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="localhost",
             port=50051,
             created_at=FlextModels(datetime.now(UTC)),
@@ -327,14 +326,14 @@ class TestFlextGrpcServer:
     def test_add_service_to_server(self) -> None:
         """Test adding services to server."""
         server = FlextGrpcServer(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             host="localhost",
             port=50051,
             created_at=FlextModels(datetime.now(UTC)),
         )
 
         service = FlextGrpcService(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             name="TestService",
             methods=["test_method"],
             created_at=FlextModels(datetime.now(UTC)),
@@ -368,7 +367,7 @@ class TestFlextGrpcService:
     def test_create_valid_service(self) -> None:
         """Test creating a valid service."""
         service = FlextGrpcService(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             name="TestService",
             methods=["method1", "method2"],
             created_at=FlextModels(datetime.now(UTC)),
@@ -384,7 +383,7 @@ class TestFlextGrpcService:
         """Test invalid service configurations fail validation."""
         # Empty name
         service1 = FlextGrpcService(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             name="",
             methods=["method1"],
             created_at=FlextModels(datetime.now(UTC)),
@@ -397,7 +396,7 @@ class TestFlextGrpcService:
 
         # No methods
         service2 = FlextGrpcService(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             name="TestService",
             methods=[],
             created_at=FlextModels(datetime.now(UTC)),
@@ -416,7 +415,7 @@ class TestFlextGrpcService:
     def test_add_method(self) -> None:
         """Test adding methods to service."""
         service = FlextGrpcService(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             name="TestService",
             methods=["method1"],
             created_at=FlextModels(datetime.now(UTC)),
@@ -449,14 +448,14 @@ class TestFlextGrpcClient:
     def test_create_valid_client(self) -> None:
         """Test creating a valid client."""
         channel = FlextGrpcChannel(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             target=TGrpcTarget("localhost:50051"),
             state="ready",
             created_at=FlextModels(datetime.now(UTC)),
         )
 
         client = FlextGrpcClient(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             channel=channel,
             created_at=FlextModels(datetime.now(UTC)),
         )
@@ -471,7 +470,7 @@ class TestFlextGrpcClient:
     def test_client_without_channel(self) -> None:
         """Test client without channel."""
         client = FlextGrpcClient(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             channel=None,
             created_at=FlextModels(datetime.now(UTC)),
         )
@@ -484,7 +483,7 @@ class TestFlextGrpcClient:
     def test_connect_to_target(self) -> None:
         """Test connecting client to target."""
         client = FlextGrpcClient(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             channel=None,
             created_at=FlextModels(datetime.now(UTC)),
         )
@@ -505,7 +504,7 @@ class TestFlextGrpcStream:
     def test_create_valid_stream(self) -> None:
         """Test creating a valid stream."""
         stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="TestMethod",
             stream_type="server_streaming",
             created_at=FlextModels(datetime.now(UTC)),
@@ -522,7 +521,7 @@ class TestFlextGrpcStream:
         """Test invalid stream configurations fail validation."""
         # Empty method name - this should fail domain validation
         stream1 = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="",
             stream_type="unary",
             created_at=FlextModels(datetime.now(UTC)),
@@ -543,7 +542,7 @@ class TestFlextGrpcStream:
 
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcStream(
-                id=FlextModels(FlextGenerators.generate_entity_id()),
+                id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
                 method_name="TestMethod",
                 stream_type="invalid_type",
                 created_at=FlextModels(datetime.now(UTC)),
@@ -561,7 +560,7 @@ class TestFlextGrpcStream:
         """Test stream type detection methods."""
         # Unary stream
         unary_stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="TestMethod",
             stream_type="unary",
             created_at=FlextModels(datetime.now(UTC)),
@@ -573,7 +572,7 @@ class TestFlextGrpcStream:
 
         # Server streaming
         server_stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="TestMethod",
             stream_type="server_streaming",
             created_at=FlextModels(datetime.now(UTC)),
@@ -585,7 +584,7 @@ class TestFlextGrpcStream:
 
         # Client streaming
         client_stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="TestMethod",
             stream_type="client_streaming",
             created_at=FlextModels(datetime.now(UTC)),
@@ -597,7 +596,7 @@ class TestFlextGrpcStream:
 
         # Bidirectional streaming
         bi_stream = FlextGrpcStream(
-            id=FlextModels(FlextGenerators.generate_entity_id()),
+            id=FlextModels(FlextUtilities.Generators.generate_entity_id()),
             method_name="TestMethod",
             stream_type="bidirectional",
             created_at=FlextModels(datetime.now(UTC)),

@@ -11,8 +11,6 @@ import importlib.metadata
 from flext_core import FlextContainer, FlextResult, FlextTypes
 
 from flext_grpc.api import (
-    FlextGrpcApi,
-    GrpcServiceManager,
     create_channel,
     create_client,
     create_complete_setup,
@@ -31,7 +29,6 @@ from flext_grpc.entities import (
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
-    GrpcMessage,
 )
 from flext_grpc.exceptions import (
     FlextGrpcConfigurationError,
@@ -45,7 +42,6 @@ from flext_grpc.services import (
     FlextGrpcPlatform,
     FlextGrpcServerService,
     FlextGrpcStreamService,
-    GrpcClientService,
 )
 from flext_grpc.typings import (
     TGrpcChannelState,

@@ -2,7 +2,7 @@
 
 **Enterprise gRPC Communication Platform - Source Code Organization**
 
-This directory contains the complete source code for the FLEXT gRPC communication platform, implementing Clean Architecture and Domain-Driven Design principles for enterprise-grade gRPC operations.
+This directory contains the complete source code for the FLEXT gRPC communication platform, implementing Clean Architecture and Domain-Driven Design principles for gRPC operations.
 
 ## 📁 Module Organization
 
@@ -67,7 +67,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`config.py`** - Configuration Management
 
-**Purpose**: Type-safe configuration with comprehensive validation
+**Purpose**: Type-safe configuration with validation
 **Components**:
 
 - `FlextGrpcConfig` - Main configuration class extending `FlextConfig`

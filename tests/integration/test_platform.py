@@ -1,4 +1,3 @@
-
 """Integration tests for gRPC platform components.
 
 Following enterprise testing standards with real component integration.

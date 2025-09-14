@@ -11,12 +11,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import (
-    FlextExceptions,
-)
+from flext_core import FlextExceptions
 
 
-class FlextGrpcError(FlextExceptions):
+class FlextGrpcError(FlextExceptions._Error):
     """Base exception for all FLEXT gRPC platform errors.
 
     Root exception class for the FLEXT gRPC error hierarchy, providing
@@ -45,7 +43,7 @@ class FlextGrpcError(FlextExceptions):
     """
 
 
-class FlextGrpcValidationError(FlextExceptions):
+class FlextGrpcValidationError(FlextExceptions._Error):
     """gRPC validation error with comprehensive field context and validation details.
 
     Specialized validation error for gRPC entity and configuration validation
@@ -101,7 +99,7 @@ class FlextGrpcValidationError(FlextExceptions):
         self.field_name = field_name
 
 
-class FlextGrpcConnectionError(FlextExceptions):
+class FlextGrpcConnectionError(FlextExceptions._Error):
     """gRPC connection error with comprehensive network and channel context.
 
     Specialized connection error for gRPC network communication failures.
@@ -143,7 +141,7 @@ class FlextGrpcConnectionError(FlextExceptions):
     """
 
 
-class FlextGrpcTimeoutError(FlextExceptions):
+class FlextGrpcTimeoutError(FlextExceptions._Error):
     """gRPC timeout error with comprehensive deadline and operation context.
 
     Specialized timeout error for gRPC operation deadline violations.
@@ -184,7 +182,7 @@ class FlextGrpcTimeoutError(FlextExceptions):
     """
 
 
-class FlextGrpcConfigurationError(FlextExceptions):
+class FlextGrpcConfigurationError(FlextExceptions._Error):
     """gRPC configuration error with comprehensive configuration context.
 
     Specialized configuration error for gRPC setup and configuration validation

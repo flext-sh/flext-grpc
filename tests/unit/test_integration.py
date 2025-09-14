@@ -1,4 +1,3 @@
-
 """Unit tests for gRPC integration scenarios.
 
 Test Focus:

@@ -4,7 +4,7 @@ Comprehensive guide for integrating FLEXT gRPC with the broader FLEXT ecosystem 
 
 ## Overview
 
-FLEXT gRPC serves as the **communication backbone** for the FLEXT distributed data integration platform, enabling seamless interaction between Go and Python services while maintaining type safety and enterprise-grade reliability.
+FLEXT gRPC serves as the **communication backbone** for the FLEXT distributed data integration platform, enabling seamless interaction between Go and Python services while maintaining type safety and reliability.
 
 ### Integration Architecture
 

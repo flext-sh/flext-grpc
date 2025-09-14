@@ -10,9 +10,9 @@ from typing import ClassVar
 
 from flext_core import (
     FlextConstants,
+    FlextExceptions,
     FlextModels,
     FlextTypes,
-    create_module_exception_classes as _create_exc,
 )
 from pydantic import Field, field_validator
 
@@ -29,10 +29,10 @@ class FlextGrpcSemanticConstants(FlextConstants):
         """gRPC network configuration constants."""
 
         # CONSUME from single source - NO DUPLICATION
-        DEFAULT_HOST = FlextConstants.Infrastructure.DEFAULT_HOST
+        DEFAULT_HOST = FlextConstants.Platform.DEFAULT_HOST
         DEFAULT_PORT = 50051  # gRPC-specific port
-        MIN_PORT = FlextConstants.Platform.MIN_PORT_NUMBER
-        MAX_PORT = FlextConstants.Platform.MAX_PORT_NUMBER
+        MIN_PORT = FlextConstants.Network.MIN_PORT
+        MAX_PORT = FlextConstants.Network.MAX_PORT
         HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
 
     class Service:
@@ -57,7 +57,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
         """Default configuration templates."""
 
         DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
-            "host": FlextConstants.Infrastructure.DEFAULT_HOST,
+            "host": FlextConstants.Platform.DEFAULT_HOST,
             "port": 50051,
             "timeout": FlextConstants.Defaults.TIMEOUT,
             "max_workers": 10,
@@ -131,7 +131,7 @@ FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
 
 
 # Generate gRPC-specific exceptions
-_grpc_exceptions = _create_exc("flext_grpc")
+_grpc_exceptions = FlextExceptions.create_module_exception_classes("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]
 
 

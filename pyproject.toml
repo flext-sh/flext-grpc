@@ -26,8 +26,8 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
 ]
 dependencies = [
-    "grpcio (>=1.50.0)",
-    "grpcio-tools (==1.71.2)",
+    "grpcio (>=1.74.1)",
+    "grpcio-tools (>=1.74.1)",
     "prometheus-client (>=0.22.1)",
     "protobuf (>=4)",
     "psutil (>=5.9.0)",
@@ -142,11 +142,31 @@ disallow_any_explicit = true
 disallow_any_expr = false          # Too restrictive for real-world usage
 disallow_any_generics = true
 disallow_any_unimported = true
-disallow_incomplete_defs = true
-disallow_subclassing_any = true
-disallow_untyped_calls = true
+
+# Ignore protobuf generated code issues
+[[tool.mypy.overrides]]
+module = "flext_grpc.proto.*"
+disallow_any_unimported = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+disallow_subclassing_any = false
 disallow_untyped_decorators = false
-disallow_untyped_defs = true
+
+[[tool.mypy.overrides]]
+module = "flext_grpc.real_servicer"
+disallow_any_unimported = false
+
+[[tool.mypy.overrides]]
+module = "tests.unit.echo_pb2"
+disallow_any_unimported = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "tests.unit.echo_pb2_grpc"
+disallow_any_unimported = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
 
 # Warning controls - maximum safety
 warn_no_return = true
@@ -215,6 +235,8 @@ exclude = [
     "dist/",
     "node_modules/",
     "vendor/",
+    ".*_pb2.py",
+    ".*_pb2_grpc.py",
 ]
 [tool.pydantic-mypy]
 # Pydantic plugin strict configuration

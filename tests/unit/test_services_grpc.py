@@ -1,10 +1,26 @@
+"""Unit tests for real gRPC service operations.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT.
+"""
 
 from __future__ import annotations
 
 from datetime import UTC, datetime
+
 import grpc
 from flext_core import FlextModels
-from flext_grpc import ( from flext_grpc.services import FlextGrpcClientService, FlextGrpcServerService Copyright (c) 2025 FLEXT Team. All rights reserved. SPDX-License-Identifier: MIT """ from __future__ import annotations FlextGrpcChannel, FlextGrpcClient, FlextGrpcServer, FlextGrpcService, )
+
+from flext_grpc import (
+    FlextGrpcChannel,
+    FlextGrpcClient,
+    FlextGrpcServer,
+    FlextGrpcService,
+)
+from flext_grpc.services import (
+    FlextGrpcClientService,
+    FlextGrpcServerService,
+)
 
 
 class TestRealGrpcServices:
@@ -12,7 +28,6 @@ class TestRealGrpcServices:
 
     def test_server_service_starts_real_grpc_server(self) -> None:
         """Test that FlextGrpcServerService starts a REAL gRPC server."""
-
         server_service = FlextGrpcServerService()
 
         # Create server entity
@@ -73,7 +88,6 @@ class TestRealGrpcServices:
 
     def test_client_service_makes_real_grpc_connections(self) -> None:
         """Test that FlextGrpcClientService makes REAL gRPC connections."""
-
         # First, start a real server to connect to
         server_service = FlextGrpcServerService()
 
@@ -181,7 +195,6 @@ class TestRealGrpcServices:
 
     def test_server_service_handles_multiple_servers(self) -> None:
         """Test that server service can manage multiple real gRPC servers."""
-
         server_service = FlextGrpcServerService()
 
         # Start multiple servers on different ports
@@ -249,7 +262,6 @@ class TestRealGrpcServices:
 
     def test_client_service_handles_connection_failures(self) -> None:
         """Test that client service handles real connection failures."""
-
         client_service = FlextGrpcClientService()
 
         # Try to connect to non-existent server
@@ -280,7 +292,6 @@ class TestRealGrpcServices:
 
     def test_service_add_operation_requires_running_server(self) -> None:
         """Test that add_service requires a REAL running gRPC server."""
-
         server_service = FlextGrpcServerService()
 
         # Create server but don't start it

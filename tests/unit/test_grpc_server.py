@@ -1,4 +1,3 @@
-
 """Unit tests for real gRPC server functionality.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -14,7 +13,6 @@ import echo_pb2
 import echo_pb2_grpc
 import grpc
 import pytest
-from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -42,11 +40,11 @@ class TestRealGrpcServer:
         try:
             # Create server entity with the actual port that was assigned
             server = FlextGrpcServer(
-                id=FlextModels("real-test-server"),
+                id="real-test-server",
                 host="localhost",
                 port=actual_port,
                 max_workers=2,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
                 state="running",
             )
 
@@ -66,10 +64,10 @@ class TestRealGrpcServer:
 
                 # Test entity state transitions work correctly - start with idle
                 channel_entity = FlextGrpcChannel(
-                    id=FlextModels("real-test-channel"),
+                    id="real-test-channel",
                     target=TGrpcTarget(target),
                     state="idle",  # Start with idle state for transition testing
-                    created_at=FlextModels(datetime.now(UTC)),
+                    created_at=datetime.now(UTC),
                 )
 
                 # Test idle -> connecting transition
@@ -89,9 +87,9 @@ class TestRealGrpcServer:
 
                 # Now create client with ready channel
                 client_entity = FlextGrpcClient(
-                    id=FlextModels("real-test-client"),
+                    id="real-test-client",
                     channel=ready_channel,
-                    created_at=FlextModels(datetime.now(UTC)),
+                    created_at=datetime.now(UTC),
                 )
 
                 # Validate entity states match reality
@@ -110,8 +108,10 @@ class TestRealGrpcServer:
         try:
             # Try to import the generated protobuf files
             class EchoServicer(echo_pb2_grpc.EchoServiceServicer):
-                def Echo(
-                    self, request: echo_pb2.EchoRequest, context: object
+                def Echo(  # noqa: N802
+                    self,
+                    request: echo_pb2.EchoRequest,
+                    context: object,  # noqa: ARG002
                 ) -> echo_pb2.EchoResponse:
                     return echo_pb2.EchoResponse(message=f"Echo: {request.message}")
 
@@ -126,19 +126,19 @@ class TestRealGrpcServer:
             try:
                 # Create our entities to represent this real setup
                 server_entity = FlextGrpcServer(
-                    id=FlextModels("echo-server"),
+                    id="echo-server",
                     host="localhost",
                     port=port,
                     max_workers=2,
-                    created_at=FlextModels(datetime.now(UTC)),
+                    created_at=datetime.now(UTC),
                     state="running",
                 )
 
                 service_entity = FlextGrpcService(
-                    id=FlextModels("echo-service"),
+                    id="echo-service",
                     name="EchoService",
                     methods=["Echo"],
-                    created_at=FlextModels(datetime.now(UTC)),
+                    created_at=datetime.now(UTC),
                 )
 
                 # Validate entities
@@ -164,16 +164,16 @@ class TestRealGrpcServer:
 
                     # Validate our entities represent this reality
                     channel_entity = FlextGrpcChannel(
-                        id=FlextModels("echo-channel"),
+                        id="echo-channel",
                         target=TGrpcTarget(target),
                         state="ready",
-                        created_at=FlextModels(datetime.now(UTC)),
+                        created_at=datetime.now(UTC),
                     )
 
                     client_entity = FlextGrpcClient(
-                        id=FlextModels("echo-client"),
+                        id="echo-client",
                         channel=channel_entity,
-                        created_at=FlextModels(datetime.now(UTC)),
+                        created_at=datetime.now(UTC),
                     )
 
                     assert client_entity.is_connected
@@ -195,10 +195,10 @@ class TestRealGrpcServer:
         target = "localhost:99999"  # Port that should be closed
 
         channel_entity = FlextGrpcChannel(
-            id=FlextModels("error-test-channel"),
+            id="error-test-channel",
             target=TGrpcTarget(target),
             state="idle",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Create real channel and test failure

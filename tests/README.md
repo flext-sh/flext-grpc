@@ -1,6 +1,6 @@
 # FLEXT gRPC Testing
 
-Comprehensive testing suite for the FLEXT gRPC communication platform with enterprise-grade quality standards.
+Testing suite for the FLEXT gRPC communication platform with quality standards.
 
 ## Testing Architecture
 
