@@ -16,8 +16,6 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import FlextModels
-
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -34,11 +32,11 @@ class TestEntityValidationGaps:
     def test_entity_type_property_coverage(self) -> None:
         """Test entity_type property for coverage line 101."""
         server = FlextGrpcServer(
-            id=FlextModels("test-server"),
+            id="test-server",
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Line 101: return self.__class__.__name__
@@ -50,10 +48,10 @@ class TestEntityValidationGaps:
 
         for state in valid_states:
             channel = FlextGrpcChannel(
-                id=FlextModels(f"test-channel-{state}"),
+                id=f"test-channel-{state}",
                 target=TGrpcTarget("localhost:50051"),
                 state=state,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             validation = channel.validate_business_rules()
@@ -65,12 +63,12 @@ class TestEntityValidationGaps:
 
         for state in valid_states:
             server = FlextGrpcServer(
-                id=FlextModels(f"test-server-{state}"),
+                id=f"test-server-{state}",
                 host="localhost",
                 port=50051,
                 max_workers=10,
                 state=state,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             validation = server.validate_business_rules()
@@ -79,9 +77,9 @@ class TestEntityValidationGaps:
     def test_client_channel_none_validation(self) -> None:
         """Test client validation edge cases for missing coverage."""
         client = FlextGrpcClient(
-            id=FlextModels("test-client"),
+            id="test-client",
             channel=None,  # No channel
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Test validation with no channel
@@ -92,10 +90,10 @@ class TestEntityValidationGaps:
     def test_service_empty_methods_validation(self) -> None:
         """Test service validation with edge cases."""
         service = FlextGrpcService(
-            id=FlextModels("test-service"),
+            id="test-service",
             name="test-service",
             methods=[],  # Empty methods list
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         validation = service.validate_business_rules()
@@ -107,10 +105,10 @@ class TestEntityValidationGaps:
 
         for stream_type in valid_types:
             stream = FlextGrpcStream(
-                id=FlextModels(f"test-stream-{stream_type}"),
+                id=f"test-stream-{stream_type}",
                 method_name="test_method",
                 stream_type=stream_type,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             validation = stream.validate_business_rules()
@@ -119,11 +117,11 @@ class TestEntityValidationGaps:
     def test_server_zero_workers_validation(self) -> None:
         """Test server validation with zero workers for coverage."""
         server = FlextGrpcServer(
-            id=FlextModels("test-server"),
+            id="test-server",
             host="localhost",
             port=50051,
             max_workers=0,  # Invalid: zero workers
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         validation = server.validate_business_rules()
@@ -133,9 +131,9 @@ class TestEntityValidationGaps:
     def test_channel_empty_target_validation(self) -> None:
         """Test channel validation with empty target."""
         channel = FlextGrpcChannel(
-            id=FlextModels("test-channel"),
+            id="test-channel",
             target=TGrpcTarget(""),  # Empty target for testing
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         validation = channel.validate_business_rules()
@@ -147,30 +145,30 @@ class TestEntityValidationGaps:
         """Test entity_type property for all entities to improve coverage."""
         entities = [
             FlextGrpcServer(
-                id=FlextModels("server"),
+                id="server",
                 host="localhost",
                 port=50051,
                 max_workers=10,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             ),
             FlextGrpcChannel(
-                id=FlextModels("channel"),
+                id="channel",
                 target=TGrpcTarget("localhost:50051"),
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             ),
             FlextGrpcClient(
-                id=FlextModels("client"), created_at=FlextModels(datetime.now(UTC))
+                id="client", created_at=datetime.now(UTC)
             ),
             FlextGrpcService(
-                id=FlextModels("service"),
+                id="service",
                 name="test-service",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             ),
             FlextGrpcStream(
-                id=FlextModels("stream"),
+                id="stream",
                 method_name="test_method",
                 stream_type="unary",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             ),
         ]
 
