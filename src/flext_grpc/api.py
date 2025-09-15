@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
+from dataclasses import replace
 
 from flext_core import FlextResult, FlextTypes
 
@@ -79,8 +80,8 @@ def create_client(
     client = result.unwrap()
 
     if options:
-        # Update client with options using model_copy
-        return client.model_copy(update={"options": options})
+        # Update client with options using replace
+        return replace(client, options=options)
 
     return client
 
@@ -104,8 +105,8 @@ def create_channel(
         raise ValueError(result.error)
     channel = result.unwrap()
     if options:
-        # Update channel with options using model_copy
-        return channel.model_copy(update={"options": options})
+        # Update channel with options using replace
+        return replace(channel, options=options)
 
     return channel
 

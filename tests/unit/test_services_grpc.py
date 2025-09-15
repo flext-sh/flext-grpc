@@ -9,7 +9,6 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import grpc
-from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -32,11 +31,11 @@ class TestRealGrpcServices:
 
         # Create server entity
         server = FlextGrpcServer(
-            id=FlextModels("test-real-server"),
+            id="test-real-server",
             host="localhost",
             port=0,  # Let gRPC choose port
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Start server - should create REAL gRPC server
@@ -92,11 +91,11 @@ class TestRealGrpcServices:
         server_service = FlextGrpcServerService()
 
         server = FlextGrpcServer(
-            id=FlextModels("target-server"),
+            id="target-server",
             host="localhost",
             port=0,
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         start_result = server_service.execute("start", server)
@@ -110,16 +109,16 @@ class TestRealGrpcServices:
 
             target = f"{running_server.host}:{running_server.port}"
             channel = FlextGrpcChannel(
-                id=FlextModels("test-channel"),
+                id="test-channel",
                 target=target,
                 state="idle",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             client = FlextGrpcClient(
-                id=FlextModels("test-client"),
+                id="test-client",
                 channel=channel,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             # Connect - should make REAL gRPC connection
@@ -145,10 +144,10 @@ class TestRealGrpcServices:
 
             # Add a real service first so we can make calls
             service_def = FlextGrpcService(
-                id=FlextModels("real-service"),
+                id="real-service",
                 name="FlextGrpcService",
                 methods=["Echo", "HealthCheck"],
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             add_result = server_service.execute(
@@ -199,19 +198,19 @@ class TestRealGrpcServices:
 
         # Start multiple servers on different ports
         server1 = FlextGrpcServer(
-            id=FlextModels("server-1"),
+            id="server-1",
             host="localhost",
             port=0,  # Auto-assign port
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         server2 = FlextGrpcServer(
-            id=FlextModels("server-2"),
+            id="server-2",
             host="localhost",
             port=0,  # Auto-assign port
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         start1_result = server_service.execute("start", server1)
@@ -267,16 +266,16 @@ class TestRealGrpcServices:
         # Try to connect to non-existent server
         target = "localhost:99999"  # Should be unused port
         channel = FlextGrpcChannel(
-            id=FlextModels("fail-channel"),
+            id="fail-channel",
             target=target,
             state="idle",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         client = FlextGrpcClient(
-            id=FlextModels("fail-client"),
+            id="fail-client",
             channel=channel,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Connect should fail with real connection error
@@ -296,18 +295,18 @@ class TestRealGrpcServices:
 
         # Create server but don't start it
         server = FlextGrpcServer(
-            id=FlextModels("stopped-server"),
+            id="stopped-server",
             host="localhost",
             port=50123,
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         service_def = FlextGrpcService(
-            id=FlextModels("test-service"),
+            id="test-service",
             name="FlextGrpcService",
             methods=["Echo", "HealthCheck"],
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Try to add service to stopped server - should fail

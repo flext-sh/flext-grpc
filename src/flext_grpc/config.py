@@ -6,15 +6,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import ClassVar
 
 from flext_core import (
     FlextConstants,
     FlextExceptions,
-    FlextModels,
     FlextTypes,
 )
-from pydantic import Field, field_validator
 
 
 class FlextGrpcSemanticConstants(FlextConstants):
@@ -53,7 +52,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
         MIN_TIMEOUT_SECONDS = 0.1
         MAX_TIMEOUT_SECONDS = 600.0
 
-    class Config:
+    class GrpcConfig:
         """Default configuration templates."""
 
         DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
@@ -75,7 +74,7 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     GrpcNetwork = FlextGrpcSemanticConstants.GrpcNetwork
     Service = FlextGrpcSemanticConstants.Service
     GrpcValidation = FlextGrpcSemanticConstants.GrpcValidation
-    Config = FlextGrpcSemanticConstants.Config
+    GrpcConfig = FlextGrpcSemanticConstants.GrpcConfig
 
     # Legacy compatibility - flat access patterns (DEPRECATED - use semantic access)
     DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
@@ -99,7 +98,7 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MIN_TIMEOUT_SECONDS
     MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
 
-    DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
+    DEFAULT_CONFIG = FlextGrpcSemanticConstants.GrpcConfig.DEFAULT_CONFIG
 
 
 # Legacy module-level aliases for backward compatibility
@@ -127,7 +126,7 @@ FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
     FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
 )
 
-FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
+FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.GrpcConfig.DEFAULT_CONFIG
 
 
 # Generate gRPC-specific exceptions
@@ -135,58 +134,46 @@ _grpc_exceptions = FlextExceptions.create_module_exception_classes("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]
 
 
-class FlextGrpcConfig(FlextModels.Entity):
+@dataclass
+class FlextGrpcConfig:
     """Simplified gRPC configuration with validation."""
 
-    host: str = Field(default="localhost")
-    port: int = Field(default=50051)
-    max_workers: int = Field(default=10)
-    timeout: float = Field(default=30.0)
+    host: str = "localhost"
+    port: int = 50051
+    max_workers: int = 10
+    timeout: float = 30.0
 
-    @field_validator("host")
-    @classmethod
-    def validate_host(cls, v: str) -> str:
-        """Validate host configuration value."""
-        if not v or not v.strip():
+    def __post_init__(self) -> None:
+        """Validate configuration values after initialization."""
+        # Validate host
+        if not self.host or not self.host.strip():
             msg = "Host cannot be empty"
             raise FlextGrpcConfigurationError(msg)
-        return v.strip()
+        self.host = self.host.strip()
 
-    @field_validator("port")
-    @classmethod
-    def validate_port(cls, v: int) -> int:
-        """Validate port configuration value."""
-        if not (FLEXT_GRPC_MIN_PORT <= v <= FLEXT_GRPC_MAX_PORT):
+        # Validate port
+        if not (FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT):
             msg = (
-                f"Port {v} must be between {FLEXT_GRPC_MIN_PORT} "
+                f"Port {self.port} must be between {FLEXT_GRPC_MIN_PORT} "
                 f"and {FLEXT_GRPC_MAX_PORT}"
             )
             raise FlextGrpcConfigurationError(msg)
-        return v
 
-    @field_validator("max_workers")
-    @classmethod
-    def validate_max_workers(cls, v: int) -> int:
-        """Validate max_workers configuration value."""
-        if not (FLEXT_GRPC_MIN_WORKERS <= v <= FLEXT_GRPC_MAX_WORKERS):
+        # Validate max_workers
+        if not (FLEXT_GRPC_MIN_WORKERS <= self.max_workers <= FLEXT_GRPC_MAX_WORKERS):
             msg = (
-                f"Max workers {v} must be between {FLEXT_GRPC_MIN_WORKERS} "
+                f"Max workers {self.max_workers} must be between {FLEXT_GRPC_MIN_WORKERS} "
                 f"and {FLEXT_GRPC_MAX_WORKERS}"
             )
             raise FlextGrpcConfigurationError(msg)
-        return v
 
-    @field_validator("timeout")
-    @classmethod
-    def validate_timeout(cls, v: float) -> float:
-        """Validate timeout configuration value."""
-        if not (FLEXT_GRPC_MIN_TIMEOUT_SECONDS <= v <= FLEXT_GRPC_MAX_TIMEOUT_SECONDS):
+        # Validate timeout
+        if not (FLEXT_GRPC_MIN_TIMEOUT_SECONDS <= self.timeout <= FLEXT_GRPC_MAX_TIMEOUT_SECONDS):
             msg = (
-                f"Timeout {v} must be between {FLEXT_GRPC_MIN_TIMEOUT_SECONDS} "
+                f"Timeout {self.timeout} must be between {FLEXT_GRPC_MIN_TIMEOUT_SECONDS} "
                 f"and {FLEXT_GRPC_MAX_TIMEOUT_SECONDS} seconds"
             )
             raise FlextGrpcConfigurationError(msg)
-        return v
 
     def get_address(self) -> str:
         """Get formatted address string.

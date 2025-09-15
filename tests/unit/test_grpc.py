@@ -10,7 +10,6 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import grpc
-from flext_core import FlextModels
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -39,11 +38,11 @@ class TestCompleteRealGrpc:
 
         # 1. Start REAL gRPC server
         server = FlextGrpcServer(
-            id=FlextModels("complete-real-server"),
+            id="complete-real-server",
             host="localhost",
             port=0,  # Auto-assign
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         start_result = server_service.execute("start", server)
@@ -54,10 +53,10 @@ class TestCompleteRealGrpc:
         try:
             # 2. Add REAL gRPC service to server
             service_def = FlextGrpcService(
-                id=FlextModels("real-grpc-service"),
+                id="real-grpc-service",
                 name="FlextGrpcService",
                 methods=["Echo", "HealthCheck"],
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             add_result = server_service.execute(
@@ -73,16 +72,16 @@ class TestCompleteRealGrpc:
 
             target = f"{running_server.host}:{running_server.port}"
             channel = FlextGrpcChannel(
-                id=FlextModels("real-client-channel"),
+                id="real-client-channel",
                 target=target,
                 state="idle",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             client = FlextGrpcClient(
-                id=FlextModels("real-grpc-client"),
+                id="real-grpc-client",
                 channel=channel,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             # 4. Connect client to REAL server
@@ -142,11 +141,11 @@ class TestCompleteRealGrpc:
 
         # Start server with service
         server = FlextGrpcServer(
-            id=FlextModels("streaming-server"),
+            id="streaming-server",
             host="localhost",
             port=0,
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         start_result = server_service.execute("start", server)
@@ -157,10 +156,10 @@ class TestCompleteRealGrpc:
         try:
             # Add service
             service_def = FlextGrpcService(
-                id=FlextModels("streaming-service"),
+                id="streaming-service",
                 name="FlextGrpcService",
                 methods=["ServerStream", "ClientStream", "BidirectionalStream"],
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             add_result = server_service.execute(
@@ -174,10 +173,10 @@ class TestCompleteRealGrpc:
 
             # Test server streaming
             server_stream = FlextGrpcStream(
-                id=FlextModels("server-stream-test"),
+                id="server-stream-test",
                 method_name="ServerStream",
                 stream_type="server_streaming",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             create_result = stream_service.execute("create", server_stream, target)
@@ -197,10 +196,10 @@ class TestCompleteRealGrpc:
 
             # Test client streaming
             client_stream = FlextGrpcStream(
-                id=FlextModels("client-stream-test"),
+                id="client-stream-test",
                 method_name="ClientStream",
                 stream_type="client_streaming",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             create_result = stream_service.execute("create", client_stream, target)
@@ -232,10 +231,10 @@ class TestCompleteRealGrpc:
 
             # Test bidirectional streaming
             bidirectional_stream = FlextGrpcStream(
-                id=FlextModels("bidirectional-stream-test"),
+                id="bidirectional-stream-test",
                 method_name="BidirectionalStream",
                 stream_type="bidirectional",
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             create_result = stream_service.execute(
@@ -267,16 +266,16 @@ class TestCompleteRealGrpc:
 
         # Try to connect to non-existent server
         channel = FlextGrpcChannel(
-            id=FlextModels("error-channel"),
+            id="error-channel",
             target="localhost:99999",  # Should fail
             state="idle",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         client = FlextGrpcClient(
-            id=FlextModels("error-client"),
+            id="error-client",
             channel=channel,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Connection should fail with REAL gRPC error
@@ -293,11 +292,11 @@ class TestCompleteRealGrpc:
 
         # Start server
         server = FlextGrpcServer(
-            id=FlextModels("concurrent-server"),
+            id="concurrent-server",
             host="localhost",
             port=0,
             max_workers=5,  # Support multiple clients
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         start_result = server_service.execute("start", server)
@@ -308,10 +307,10 @@ class TestCompleteRealGrpc:
         try:
             # Add service
             service_def = FlextGrpcService(
-                id=FlextModels("concurrent-service"),
+                id="concurrent-service",
                 name="FlextGrpcService",
                 methods=["Echo"],
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             add_result = server_service.execute(
@@ -326,16 +325,16 @@ class TestCompleteRealGrpc:
             clients = []
             for i in range(3):
                 channel = FlextGrpcChannel(
-                    id=FlextModels(f"concurrent-channel-{i}"),
+                    id=f"concurrent-channel-{i}",
                     target=target,
                     state="idle",
-                    created_at=FlextModels(datetime.now(UTC)),
+                    created_at=datetime.now(UTC),
                 )
 
                 client = FlextGrpcClient(
-                    id=FlextModels(f"concurrent-client-{i}"),
+                    id=f"concurrent-client-{i}",
                     channel=channel,
-                    created_at=FlextModels(datetime.now(UTC)),
+                    created_at=datetime.now(UTC),
                 )
 
                 connect_result = client_service.execute("connect", client)
@@ -375,11 +374,11 @@ class TestCompleteRealGrpc:
 
         # Start server
         server = FlextGrpcServer(
-            id=FlextModels("pb-direct-server"),
+            id="pb-direct-server",
             host="localhost",
             port=0,
             max_workers=2,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         start_result = server_service.execute("start", server)
@@ -390,10 +389,10 @@ class TestCompleteRealGrpc:
         try:
             # Add service
             service_def = FlextGrpcService(
-                id=FlextModels("pb-service"),
+                id="pb-service",
                 name="FlextGrpcService",
                 methods=["Echo"],
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             add_result = server_service.execute(

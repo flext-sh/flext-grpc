@@ -65,17 +65,11 @@ except importlib.metadata.PackageNotFoundError:
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 __all__: FlextTypes.Core.StringList = [
-    # Core
     "FlextContainer",
-    "FlextGrpcApi",
-    # Domain Entities
     "FlextGrpcChannel",
     "FlextGrpcClient",
-    # Domain Services
     "FlextGrpcClientService",
-    # Configuration
     "FlextGrpcConfig",
-    # Errors
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcEntity",
@@ -88,12 +82,7 @@ __all__: FlextTypes.Core.StringList = [
     "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",
     "FlextGrpcValidationError",
-    # Result type
     "FlextResult",
-    "GrpcClientService",
-    "GrpcMessage",
-    "GrpcServiceManager",
-    # Type definitions
     "TGrpcChannelState",
     "TGrpcHost",
     "TGrpcMethodName",
@@ -103,10 +92,8 @@ __all__: FlextTypes.Core.StringList = [
     "TGrpcStreamType",
     "TGrpcTarget",
     "TGrpcTimeout",
-    # Version info
     "__version__",
     "__version_info__",
-    # API Functions
     "create_channel",
     "create_client",
     "create_complete_setup",

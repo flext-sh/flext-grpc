@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-from flext_core import FlextContainer, FlextModels
+from flext_core import FlextContainer
 
 from flext_grpc import (
     FlextGrpcChannel,
@@ -56,22 +56,22 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
 
         server = FlextGrpcServer(
-            id=FlextModels("test-server"),
+            id="test-server",
             host="localhost",
             port=50051,
             max_workers=10,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         channel = FlextGrpcChannel(
-            id=FlextModels("test-channel"),
+            id="test-channel",
             target=TGrpcTarget("localhost:50051"),
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
         client = FlextGrpcClient(
-            id=FlextModels("test-client"),
+            id="test-client",
             channel=channel,
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
 
         # Test operations - these will likely fail but we're testing the error paths

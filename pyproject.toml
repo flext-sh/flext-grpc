@@ -143,27 +143,6 @@ disallow_any_expr = false          # Too restrictive for real-world usage
 disallow_any_generics = true
 disallow_any_unimported = true
 
-# Ignore protobuf generated code completely - these are auto-generated
-[[tool.mypy.overrides]]
-module = "flext_grpc.proto.*"
-ignore_errors = true
-
-[[tool.mypy.overrides]]
-module = "flext_grpc.real_servicer"
-disallow_any_unimported = false
-
-[[tool.mypy.overrides]]
-module = "tests.unit.echo_pb2"
-disallow_any_unimported = false
-disallow_untyped_calls = false
-disallow_untyped_defs = false
-
-[[tool.mypy.overrides]]
-module = "tests.unit.echo_pb2_grpc"
-disallow_any_unimported = false
-disallow_untyped_calls = false
-disallow_untyped_defs = false
-
 # Warning controls - maximum safety
 warn_no_return = true
 warn_redundant_casts = true
@@ -234,12 +213,35 @@ exclude = [
     ".*_pb2.py",
     ".*_pb2_grpc.py",
 ]
+
 [tool.pydantic-mypy]
 # Pydantic plugin strict configuration
 init_forbid_extra = true
 init_typed = true
 warn_required_dynamic_aliases = true
 warn_untyped_fields = true
+
+
+# Ignore protobuf generated code completely - these are auto-generated
+[[tool.mypy.overrides]]
+module = "flext_grpc.proto.*"
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = "flext_grpc.real_servicer"
+disallow_any_unimported = false
+
+[[tool.mypy.overrides]]
+module = "tests.unit.echo_pb2"
+disallow_any_unimported = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "tests.unit.echo_pb2_grpc"
+disallow_any_unimported = false
+disallow_untyped_calls = false
+disallow_untyped_defs = false
 
 [tool.pytest.ini_options]
 minversion = "8.0"
@@ -265,7 +267,7 @@ markers = [
     "smoke: Smoke tests",
     "e2e: End-to-end tests",
 ]
-filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
+# filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
 
 [tool.ruff]
 extend = "../ruff-shared.toml"

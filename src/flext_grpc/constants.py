@@ -51,7 +51,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
         MIN_TIMEOUT_SECONDS = 0.1
         MAX_TIMEOUT_SECONDS = 600.0
 
-    class Config:
+    class GrpcConfig:
         """Default configuration templates."""
 
         DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
@@ -73,7 +73,7 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     GrpcNetwork = FlextGrpcSemanticConstants.GrpcNetwork
     Service = FlextGrpcSemanticConstants.Service
     GrpcValidation = FlextGrpcSemanticConstants.GrpcValidation
-    Config = FlextGrpcSemanticConstants.Config
+    GrpcConfig = FlextGrpcSemanticConstants.GrpcConfig
 
     # Legacy compatibility - flat access patterns (DEPRECATED - use semantic access)
     DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
@@ -97,7 +97,7 @@ class FlextGrpcConstants(FlextGrpcSemanticConstants):
     MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MIN_TIMEOUT_SECONDS
     MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
 
-    DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
+    DEFAULT_CONFIG = FlextGrpcSemanticConstants.GrpcConfig.DEFAULT_CONFIG
 
 
 # Network configuration constants (DEPRECATED - use FlextGrpcConstants.GrpcNetwork.*)
@@ -128,7 +128,7 @@ FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
 )
 
 # Configuration constants (DEPRECATED - use FlextGrpcConstants.Config.*)
-FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.Config.DEFAULT_CONFIG
+FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.GrpcConfig.DEFAULT_CONFIG
 
 
 __all__: FlextTypes.Core.StringList = [

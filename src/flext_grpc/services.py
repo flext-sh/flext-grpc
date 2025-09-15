@@ -15,6 +15,7 @@ import time
 from collections import deque
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
+from dataclasses import replace
 from queue import Queue
 from typing import Protocol, TypedDict, cast
 
@@ -332,7 +333,7 @@ class FlextGrpcServerService:
             # Let gRPC choose available port
             actual_port = grpc_server.add_insecure_port(f"{starting_server.host}:0")
             # Update entity with actual port
-            updated_server = starting_server.model_copy(update={"port": actual_port})
+            updated_server = replace(starting_server, port=actual_port)
             return FlextResult[TGrpcServerEntity].ok(updated_server)
         # Use specified port
         try:
@@ -695,7 +696,7 @@ class FlextGrpcClientService:
             )
 
         # Update client with new channel
-        updated_client = client.model_copy(update={"channel": ready_result.unwrap()})
+        updated_client = replace(client, channel=ready_result.unwrap())
         return FlextResult[TGrpcClientEntity].ok(updated_client)
 
     def _disconnect_client(
@@ -732,9 +733,7 @@ class FlextGrpcClientService:
                 )
 
             # Update client with disconnected channel
-            updated_client = client.model_copy(
-                update={"channel": disconnect_result.unwrap()}
-            )
+            updated_client = replace(client, channel=disconnect_result.unwrap())
             return FlextResult[TGrpcClientEntity].ok(updated_client)
 
         except Exception as e:
