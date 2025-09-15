@@ -24,7 +24,7 @@ from flext_grpc.typings import (
 )
 
 
-class FlextGrpcEntity(FlextModels.Entity, FlextModels.TimestampedModel):  # type: ignore[explicit-any]
+class FlextGrpcEntity(FlextModels.Entity, FlextModels.TimestampedModel):
     """Base entity class for all gRPC domain entities.
 
     Provides common functionality for gRPC entities following unified FLEXT patterns.
@@ -60,7 +60,7 @@ class FlextGrpcEntity(FlextModels.Entity, FlextModels.TimestampedModel):  # type
         return self.__class__.__name__
 
 
-class FlextGrpcChannel(FlextGrpcEntity):  # type: ignore[explicit-any]
+class FlextGrpcChannel(FlextGrpcEntity):
     """gRPC channel entity representing connection state and management.
 
     Domain entity that encapsulates gRPC channel state and connection management
@@ -237,7 +237,7 @@ class FlextGrpcChannel(FlextGrpcEntity):  # type: ignore[explicit-any]
         return FlextResult[FlextGrpcChannel].ok(idle_channel)
 
 
-class FlextGrpcServer(FlextGrpcEntity):  # type: ignore[explicit-any]
+class FlextGrpcServer(FlextGrpcEntity):
     """gRPC server entity implementing complete server lifecycle management.
 
     Domain entity representing a gRPC server with comprehensive state management,
@@ -572,7 +572,7 @@ class FlextGrpcServer(FlextGrpcEntity):  # type: ignore[explicit-any]
         return FlextResult[FlextGrpcServer].ok(updated_server)
 
 
-class FlextGrpcService(FlextGrpcEntity):  # type: ignore[explicit-any]
+class FlextGrpcService(FlextGrpcEntity):
     """gRPC service entity representing service definitions and method registry.
 
     Domain entity that encapsulates gRPC service definition with method registration,
@@ -713,7 +713,7 @@ class FlextGrpcService(FlextGrpcEntity):  # type: ignore[explicit-any]
         return FlextResult[FlextGrpcService].ok(updated_service)
 
 
-class FlextGrpcClient(FlextGrpcEntity):  # type: ignore[explicit-any]
+class FlextGrpcClient(FlextGrpcEntity):
     """gRPC client entity implementing connection management and communication.
 
     Domain entity that encapsulates gRPC client functionality with channel management,
@@ -877,7 +877,7 @@ class FlextGrpcClient(FlextGrpcEntity):  # type: ignore[explicit-any]
         return FlextResult[FlextGrpcClient].ok(updated_client)
 
 
-class FlextGrpcStream(FlextGrpcEntity):  # type: ignore[explicit-any]
+class FlextGrpcStream(FlextGrpcEntity):
     """gRPC stream entity representing streaming operations and flow control.
 
     Domain entity that encapsulates gRPC streaming functionality including

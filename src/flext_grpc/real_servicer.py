@@ -41,7 +41,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self.server_id = server_id
         self.start_time = time.time()
 
-    def Echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:  # noqa: N802
+    def Echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
         """Real unary Echo implementation."""
         try:
             # Process the actual request
@@ -66,7 +66,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    def ServerStream(  # noqa: N802
+    def ServerStream(
         self, request: StreamRequest, context: ServicerContext
     ) -> Iterator[StreamResponse]:
         """Real server streaming implementation."""
@@ -88,7 +88,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Server streaming error: {e}")
 
-    def ClientStream(  # noqa: N802
+    def ClientStream(
         self, request_iterator: Iterator[StreamRequest], context: ServicerContext
     ) -> StreamResponse:
         """Real client streaming implementation."""
@@ -115,7 +115,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Client streaming error: {e}")
             return StreamResponse()
 
-    def BidirectionalStream(  # noqa: N802
+    def BidirectionalStream(
         self, request_iterator: Iterator[StreamRequest], context: ServicerContext
     ) -> Iterator[StreamResponse]:
         """Real bidirectional streaming implementation."""
@@ -136,7 +136,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Bidirectional streaming error: {e}")
 
-    def HealthCheck(  # noqa: N802
+    def HealthCheck(
         self, request: HealthRequest, context: ServicerContext
     ) -> HealthResponse:
         """Real health check implementation."""

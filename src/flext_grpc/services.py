@@ -429,7 +429,7 @@ class FlextGrpcServerService:
 
             # Create REAL servicer and register it with the server
             real_servicer = create_real_servicer(f"{server.host}:{server.port}")
-            add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)  # type: ignore[no-untyped-call]
+            add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)
 
             # Add service to server entity (tracks the registration)
             add_result = server.add_service(service_def)
@@ -780,7 +780,7 @@ class FlextGrpcClientService:
                 )
 
             # Create REAL gRPC stub and make REAL call
-            stub = FlextGrpcServiceStub(grpc_channel)  # type: ignore[no-untyped-call]
+            stub = FlextGrpcServiceStub(grpc_channel)
 
             # Handle different method types - REAL gRPC calls
             if method == "Echo":
@@ -990,7 +990,7 @@ class FlextGrpcStreamService:
             grpc_channel = cast("grpc.Channel", self._active_channels[target])
 
             # Create real gRPC stub for streaming
-            stub = FlextGrpcServiceStub(grpc_channel)  # type: ignore[no-untyped-call]
+            stub = FlextGrpcServiceStub(grpc_channel)
 
             # Register the REAL stream with actual gRPC objects and buffers
             stream_info: StreamInfo = {
@@ -1076,7 +1076,7 @@ class FlextGrpcStreamService:
 
         if should_flush:
             # Make real client streaming call with all buffered requests
-            response = stub.ClientStream(iter(buffered_requests), timeout=10.0)  # type: ignore[attr-defined]
+            response = stub.ClientStream(iter(buffered_requests), timeout=10.0)
 
             # Clear buffer after successful call and trigger memory cleanup if needed
             stream_info["request_buffer"].clear()
@@ -1129,7 +1129,7 @@ class FlextGrpcStreamService:
         stream_info["last_activity"] = time.time()
 
         # For bidirectional, we can send immediately but batch responses
-        response_iterator = stub.BidirectionalStream(  # type: ignore[attr-defined]
+        response_iterator = stub.BidirectionalStream(
             iter([stream_request]), timeout=10.0
         )
         responses = []
@@ -1188,7 +1188,7 @@ class FlextGrpcStreamService:
     ) -> FlextResult[TMethodCallResult]:
         """Handle server streaming operations."""
         # Server streaming: get iterator of responses
-        response_iterator = stub.ServerStream(stream_request, timeout=10.0)  # type: ignore[attr-defined]
+        response_iterator = stub.ServerStream(stream_request, timeout=10.0)
         responses = [
             {
                 "data": response.data,
@@ -1219,7 +1219,7 @@ class FlextGrpcStreamService:
         """Handle unary operations."""
         # For unary, convert to Echo call
         echo_request = EchoRequest(message=str(data))
-        response = stub.Echo(echo_request, timeout=10.0)  # type: ignore[attr-defined]
+        response = stub.Echo(echo_request, timeout=10.0)
 
         result = {
             "sent": str(data),

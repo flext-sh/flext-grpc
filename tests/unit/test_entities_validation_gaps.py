@@ -156,9 +156,7 @@ class TestEntityValidationGaps:
                 target=TGrpcTarget("localhost:50051"),
                 created_at=datetime.now(UTC),
             ),
-            FlextGrpcClient(
-                id="client", created_at=datetime.now(UTC)
-            ),
+            FlextGrpcClient(id="client", created_at=datetime.now(UTC)),
             FlextGrpcService(
                 id="service",
                 name="test-service",
