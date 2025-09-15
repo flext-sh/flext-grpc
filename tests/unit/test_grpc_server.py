@@ -108,10 +108,10 @@ class TestRealGrpcServer:
         try:
             # Try to import the generated protobuf files
             class EchoServicer(echo_pb2_grpc.EchoServiceServicer):
-                def Echo(
+                def echo(
                     self,
                     request: echo_pb2.EchoRequest,
-                    context: object,
+                    _context: object,
                 ) -> echo_pb2.EchoResponse:
                     return echo_pb2.EchoResponse(message=f"Echo: {request.message}")
 
