@@ -7,6 +7,7 @@ Technical documentation for **flext-grpc** gRPC library implementation.
 ## Documentation Structure
 
 ### gRPC-Specific Documentation
+
 - **[Getting Started](getting-started.md)** - flext-grpc installation and setup
 - **[Architecture](architecture.md)** - gRPC-specific architecture within FLEXT patterns
 - **[API Reference](api-reference.md)** - flext-grpc API documentation

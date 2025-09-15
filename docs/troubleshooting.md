@@ -11,6 +11,7 @@ Common issues and solutions for flext-grpc development and deployment.
 **Issue**: Import failures due to protobuf generated code compatibility.
 
 **Error Messages**:
+
 ```
 ModuleNotFoundError: No module named 'flext_grpc_pb2'
 # or
@@ -20,6 +21,7 @@ The grpc package installed is at version X.X.X, but the generated code depends o
 **Root Cause**: Generated protobuf files using incorrect import paths or version mismatches.
 
 **Solution Applied**:
+
 ```bash
 # 1. Regenerate protobuf files
 cd src/flext_grpc/proto
@@ -31,6 +33,7 @@ python -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. flext_grpc.pr
 ```
 
 **Verification**:
+
 ```bash
 python -c "from flext_grpc import FlextGrpcPlatform; print('Import successful')"
 ```
@@ -44,6 +47,7 @@ python -c "from flext_grpc import FlextGrpcPlatform; print('Import successful')"
 **Current Status**: Test structure exists but execution reliability needs verification.
 
 **Investigation Steps**:
+
 ```bash
 # Check test discovery
 poetry run pytest --collect-only
@@ -64,6 +68,7 @@ poetry run pytest tests/ -v
 **Symptom**: Module not found errors when importing flext-grpc components.
 
 **Solution**: Ensure correct Python path setup:
+
 ```python
 import sys
 sys.path.insert(0, 'src')  # For development
@@ -75,6 +80,7 @@ sys.path.insert(0, 'src')  # For development
 **Symptom**: Version mismatch warnings or errors.
 
 **Solution**: Use Poetry for consistent dependency management:
+
 ```bash
 poetry install --all-extras
 poetry show grpcio grpcio-tools protobuf  # Check versions
@@ -85,6 +91,7 @@ poetry show grpcio grpcio-tools protobuf  # Check versions
 **Symptom**: Server creation succeeds but startup fails.
 
 **Debugging**:
+
 ```python
 from flext_grpc import create_server, FlextGrpcPlatform
 
@@ -105,18 +112,21 @@ if start_result.is_failure:
 ### gRPC Service Development
 
 1. **Always use FlextResult patterns**:
+
    ```python
    def my_grpc_method() -> FlextResult[ResponseType]:
        # Explicit error handling, no exceptions
    ```
 
 2. **Validate inputs using Pydantic models**:
+
    ```python
    from flext_grpc.config import FlextGrpcConfig
    config = FlextGrpcConfig(host='localhost', port=50051, max_workers=10)
    ```
 
 3. **Use platform for complex operations**:
+
    ```python
    from flext_grpc import FlextGrpcPlatform
    platform = FlextGrpcPlatform()
@@ -141,12 +151,14 @@ Based on 2025 gRPC Python best practices:
 ## Diagnostic Commands
 
 ### Check Installation
+
 ```bash
 poetry show flext-grpc
 poetry run python -c "import flext_grpc; print('Installation OK')"
 ```
 
 ### Verify Dependencies
+
 ```bash
 poetry run python -c "
 import grpc
@@ -157,6 +169,7 @@ print(f'Protobuf: {google.protobuf.__version__}')
 ```
 
 ### Test Core Functionality
+
 ```bash
 poetry run python -c "
 from flext_grpc import create_server, FlextGrpcPlatform

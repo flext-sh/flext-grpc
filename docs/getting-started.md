@@ -15,6 +15,7 @@ Setup guide for flext-grpc gRPC communication library.
 ### Dependencies
 
 Managed via Poetry (no manual installation required):
+
 - grpcio and grpcio-tools
 - protobuf
 - flext-core (FLEXT ecosystem integration)

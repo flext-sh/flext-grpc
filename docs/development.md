@@ -30,6 +30,7 @@ make doctor
 ### Development Environment
 
 The `make setup` command configures:
+
 - Virtual environment with Poetry
 - Pre-commit hooks for quality gates
 - Development dependencies
@@ -412,6 +413,7 @@ def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None
    - Reference related issues or PRs
 
 2. **Branch Creation**
+
    ```bash
    git checkout -b feature/add-health-checking
    git checkout -b fix/protobuf-version-conflict
@@ -419,6 +421,7 @@ def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None
    ```
 
 3. **Development**
+
    ```bash
    # Make changes following standards
    make validate          # Run quality gates
@@ -436,12 +439,14 @@ def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None
 ### Code Review Guidelines
 
 **For Authors:**
+
 - Ensure all quality gates pass before requesting review
 - Provide clear PR description with context
 - Include working code examples in comments
 - Update documentation for API changes
 
 **For Reviewers:**
+
 - Check FLEXT-core pattern compliance
 - Verify comprehensive type annotations
 - Ensure tests cover new functionality
@@ -511,6 +516,7 @@ git commit -m "test: add comprehensive streaming operation tests"
 ### Common Issues
 
 **Import Errors**
+
 ```bash
 # Current blocker - protobuf version mismatch
 python -c "from flext_grpc import FlextGrpcConfig"
@@ -518,6 +524,7 @@ python -c "from flext_grpc import FlextGrpcConfig"
 ```
 
 **Type Checking Issues**
+
 ```bash
 # Check type annotations
 make type-check
@@ -529,6 +536,7 @@ make type-check
 ```
 
 **Test Failures**
+
 ```bash
 # Run specific test file
 pytest tests/unit/test_config.py -v
@@ -540,6 +548,7 @@ pytest tests/unit/test_config.py::test_validation -s
 ### Development Tools
 
 **Code Quality**
+
 ```bash
 # Auto-format code
 make format
@@ -550,6 +559,7 @@ mypy src/flext_grpc/config.py --strict
 ```
 
 **Debugging**
+
 ```bash
 # Python debugger
 import pdb; pdb.set_trace()

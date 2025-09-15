@@ -27,11 +27,11 @@ Provides gRPC communication patterns for microservices within the FLEXT data int
 
 ### FLEXT Integration Status
 
-| Pattern | Status | Notes |
-|---------|--------|-------|
-| FlextResult | ✅ Implemented | Used throughout API |
-| FlextContainer | ✅ Implemented | Dependency injection present |
-| FlextLogger | ✅ Implemented | Logging infrastructure |
+| Pattern            | Status         | Notes                                    |
+| ------------------ | -------------- | ---------------------------------------- |
+| FlextResult        | ✅ Implemented | Used throughout API                      |
+| FlextContainer     | ✅ Implemented | Dependency injection present             |
+| FlextLogger        | ✅ Implemented | Logging infrastructure                   |
 | Clean Architecture | ✅ Implemented | Domain/service/infrastructure separation |
 
 ### Technical Details
@@ -143,11 +143,13 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 ### Current Version (0.9.0)
 
 **Working**:
+
 - Core API functions (create_server, create_client, FlextGrpcPlatform)
 - Configuration management with validation
 - Basic import functionality
 
 **Needs Work**:
+
 - Test coverage improvement (26% → 90% target)
 - Full test suite validation
 - Complete protobuf integration testing

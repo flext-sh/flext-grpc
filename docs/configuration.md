@@ -44,6 +44,7 @@ config = FlextGrpcConfig()
 #### `host: str = "localhost"`
 
 Server bind address. Common values:
+
 - `"localhost"` - Local development
 - `"127.0.0.1"` - Local IPv4 only
 - `"0.0.0.0"` - All interfaces (production)
@@ -149,6 +150,7 @@ if validation.is_failure:
 ### Business Rules
 
 Configuration validation enforces these rules:
+
 - Host cannot be empty
 - Port must be in range 1024-65535
 - Max workers must be >= 1
@@ -253,7 +255,7 @@ grpc:
 
   performance:
     keepalive_time_ms: 30000
-    max_message_size: 4194304  # 4MB
+    max_message_size: 4194304 # 4MB
 ```
 
 ```python
@@ -297,6 +299,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
 ### Security
 
 1. **Use TLS in Production**
+
    ```python
    # Always enable TLS for production
    config = FlextGrpcConfig(
@@ -307,6 +310,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```
 
 2. **Secure File Permissions**
+
    ```bash
    # Protect certificate files
    chmod 600 /etc/ssl/private/server.key
@@ -314,6 +318,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```
 
 3. **Environment Variable Security**
+
    ```bash
    # Don't expose sensitive config in process lists
    export GRPC_TLS_KEY_FILE="/secure/path/key.pem"
@@ -322,6 +327,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
 ### Performance
 
 1. **Worker Thread Sizing**
+
    ```python
    import os
 
@@ -333,6 +339,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```
 
 2. **Message Size Limits**
+
    ```python
    # Set appropriate message limits
    config = FlextGrpcConfig(
@@ -342,6 +349,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```
 
 3. **Timeout Configuration**
+
    ```python
    # Different timeouts for different operations
    config = FlextGrpcConfig(
@@ -354,6 +362,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
 ### Monitoring
 
 1. **Enable Health Checking**
+
    ```python
    config = FlextGrpcConfig(
        enable_health_checking=True,
@@ -362,6 +371,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```
 
 2. **Metrics Collection**
+
    ```python
    config = FlextGrpcConfig(
        enable_metrics=True,
@@ -410,6 +420,7 @@ if config_result.success:
 ### Common Issues
 
 **Invalid Port Numbers**
+
 ```python
 # Error: Port out of range
 config = FlextGrpcConfig(port=70000)  # Too high
@@ -417,6 +428,7 @@ config = FlextGrpcConfig(port=80)     # Too low (reserved)
 ```
 
 **TLS Certificate Issues**
+
 ```python
 # Error: File not found
 config = FlextGrpcConfig(
@@ -426,6 +438,7 @@ config = FlextGrpcConfig(
 ```
 
 **Environment Variable Conflicts**
+
 ```bash
 # Multiple ways to set the same value can conflict
 export GRPC_PORT=50051

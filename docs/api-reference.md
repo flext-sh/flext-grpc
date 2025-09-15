@@ -52,6 +52,7 @@ config_result = create_config(
 Server entity with lifecycle management and state transitions.
 
 **Properties:**
+
 - `host: str` - Server bind address
 - `port: int` - Server port number
 - `state: TGrpcServerState` - Current server state
@@ -93,6 +94,7 @@ if validation.is_failure:
 Client entity for gRPC communication.
 
 **Properties:**
+
 - `channel: FlextGrpcChannel` - Associated gRPC channel
 - `state: TGrpcClientState` - Current connection state
 - `timeout: float` - Request timeout in seconds
@@ -112,6 +114,7 @@ Closes connection to the server.
 Configuration value object with validation.
 
 **Properties:**
+
 - `host: str = "localhost"` - Server host address
 - `port: int = 50051` - Server port number
 - `max_workers: int = 10` - Maximum worker threads
@@ -256,6 +259,7 @@ Validation-related errors.
 Streaming operations for all gRPC patterns.
 
 **Properties:**
+
 - `stream_type: TGrpcStreamType` - Type of streaming pattern
 - `method_name: str` - Associated service method
 - `buffer_size: int` - Stream buffer size

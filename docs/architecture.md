@@ -49,26 +49,31 @@ Each domain entity encapsulates business logic and maintains state consistency:
 ### Domain Entities (entities.py - 1,163 lines)
 
 **FlextGrpcServer**
+
 - Server lifecycle management with state machine
 - States: stopped → starting → running → stopping → stopped
 - Business rule validation and state transitions
 
 **FlextGrpcClient**
+
 - Client connection management with retry logic
 - Connection states: disconnected → connecting → connected
 - Health monitoring and automatic reconnection
 
 **FlextGrpcChannel**
+
 - gRPC channel abstraction with state tracking
 - Channel states: idle → connecting → ready → shutdown
 - Connection pooling and resource management
 
 **FlextGrpcService**
+
 - Service definition with method registry
 - Supports all gRPC method types
 - Service discovery integration
 
 **FlextGrpcStream**
+
 - Streaming operations for all patterns:
   - Unary (simple request/response)
   - Server streaming (one request, stream responses)
@@ -78,21 +83,25 @@ Each domain entity encapsulates business logic and maintains state consistency:
 ### Service Layer (services.py - 1,635 lines)
 
 **FlextGrpcServerService**
+
 - Server operations and lifecycle management
 - Configuration validation and error handling
 - Performance monitoring and resource management
 
 **FlextGrpcClientService**
+
 - Client connection and call handling
 - Retry policies and circuit breaker patterns
 - Request/response lifecycle management
 
 **FlextGrpcStreamService**
+
 - Streaming pattern implementations
 - Memory management with adaptive buffers
 - Flow control and backpressure handling
 
 **FlextGrpcPlatform**
+
 - Unified facade for all gRPC operations
 - Simplifies common use cases
 - Integration point for FLEXT ecosystem
@@ -100,21 +109,25 @@ Each domain entity encapsulates business logic and maintains state consistency:
 ### Infrastructure Layer
 
 **Configuration (config.py - 228 lines)**
+
 - Production-ready settings with validation
 - Environment variable support
 - Security and performance options
 
 **API Functions (api.py - 378 lines)**
+
 - Factory functions for entity creation
 - Public interface following FLEXT patterns
 - Type-safe API boundaries
 
 **Exception Hierarchy (exceptions.py - 291 lines)**
+
 - Comprehensive error handling system
 - Specific exceptions for different failure modes
 - Integration with FlextResult error handling
 
 **Protocol Buffers (proto/ - 369 lines)**
+
 - 5 service methods defined
 - Message types for requests/responses
 - Generated Python bindings
@@ -141,6 +154,7 @@ Services follow the Domain Service pattern from flext-core.
 ### Type Safety
 
 Complete integration with Python 3.13+ type system:
+
 - All functions have comprehensive type annotations
 - Custom type definitions for gRPC-specific types
 - Protocol definitions for interfaces
@@ -174,6 +188,7 @@ idle ──open()──> connecting ──ready()──> ready ──close()─�
 ### Adaptive Buffers
 
 The service layer implements adaptive buffer management:
+
 - Dynamic sizing based on message volume
 - Memory pressure detection
 - Garbage collection triggers for long-running services
@@ -181,6 +196,7 @@ The service layer implements adaptive buffer management:
 ### Resource Cleanup
 
 Proper resource lifecycle management:
+
 - Connection cleanup on shutdown
 - Stream resource management
 - Memory leak prevention
@@ -190,6 +206,7 @@ Proper resource lifecycle management:
 ### Connection Pooling
 
 Efficient resource usage through connection pooling:
+
 - Reuse existing connections when possible
 - Automatic connection lifecycle management
 - Load balancing across multiple connections
@@ -197,6 +214,7 @@ Efficient resource usage through connection pooling:
 ### Streaming Optimizations
 
 High-throughput streaming patterns:
+
 - Buffering strategies for different stream types
 - Flow control to prevent resource exhaustion
 - Backpressure handling for client protection
@@ -244,6 +262,7 @@ High-throughput streaming patterns:
 ### OpenTelemetry Integration
 
 Modern observability patterns:
+
 - Distributed tracing across service calls
 - Metrics collection with Prometheus export
 - Request correlation and performance analytics
@@ -251,6 +270,7 @@ Modern observability patterns:
 ### Security Architecture
 
 Enterprise security patterns:
+
 - TLS/mTLS configuration
 - Authentication interceptors
 - Authorization patterns
@@ -259,6 +279,7 @@ Enterprise security patterns:
 ### Service Discovery
 
 Production deployment patterns:
+
 - Service registry integration (Consul, etcd)
 - Load balancing strategies
 - Circuit breaker patterns
