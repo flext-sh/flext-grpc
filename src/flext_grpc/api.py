@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import replace
+from uuid import uuid4
 
 from flext_core import FlextResult, FlextTypes
 
@@ -15,13 +16,13 @@ from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrp
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
-    FlextGrpcEntityFactory,
     FlextGrpcServer,
     FlextGrpcService,
     FlextGrpcStream,
 )
 from flext_grpc.typings import (
     TGrpcStreamType,
+    TGrpcTarget,
     flext_grpc_validate_target,
 )
 
@@ -46,14 +47,19 @@ def create_server(
       >>> print(f"Server created: {server.host}:{server.port}")
 
     """
-    result = FlextGrpcEntityFactory.create_server(
-        host=host,
-        port=port,
-        max_workers=max_workers,
-    )
-    if result.is_failure:
-        raise ValueError(result.error)
-    return result.unwrap()
+    # Direct entity construction - no factory patterns
+    try:
+        return FlextGrpcServer(
+            id=str(uuid4()),
+            host=host,
+            port=port,
+            max_workers=max_workers,
+            state="stopped",
+            services=[],
+        )
+    except Exception as e:
+        error_msg = f"Failed to create server: {e}"
+        raise ValueError(error_msg) from e
 
 
 def create_client(
@@ -74,16 +80,25 @@ def create_client(
       >>> print(f"Client created: {client.target}")
 
     """
-    result = FlextGrpcEntityFactory.create_client(target=target)
-    if result.is_failure:
-        raise ValueError(result.error)
-    client = result.unwrap()
+    # Direct entity construction - no factory patterns
+    try:
+        # Create channel directly
+        channel = FlextGrpcChannel(
+            id=str(uuid4()),
+            target=TGrpcTarget(target),
+            state="idle",
+            options={},
+        )
 
-    if options:
-        # Update client with options using replace
-        return replace(client, options=options)
-
-    return client
+        # Create client directly
+        return FlextGrpcClient(
+            id=str(uuid4()),
+            channel=channel,
+            options=options or {},
+        )
+    except Exception as e:
+        error_msg = f"Failed to create client: {e}"
+        raise ValueError(error_msg) from e
 
 
 def create_channel(
@@ -100,10 +115,17 @@ def create_channel(
       Created channel entity
 
     """
-    result = FlextGrpcEntityFactory.create_channel(target=target)
-    if result.is_failure:
-        raise ValueError(result.error)
-    channel = result.unwrap()
+    # Direct entity construction - no factory patterns
+    try:
+        channel = FlextGrpcChannel(
+            id=str(uuid4()),
+            target=TGrpcTarget(target),
+            state="idle",
+            options={},
+        )
+    except Exception as e:
+        error_msg = f"Failed to create channel: {e}"
+        raise ValueError(error_msg) from e
     if options:
         # Update channel with options using replace
         return replace(channel, options=options)
@@ -129,10 +151,16 @@ def create_service(
     if methods is None:
         methods = []
 
-    result = FlextGrpcEntityFactory.create_service(name=name, methods=methods)
-    if result.is_failure:
-        raise ValueError(result.error)
-    return result.unwrap()
+    # Direct entity construction - no factory patterns
+    try:
+        return FlextGrpcService(
+            id=str(uuid4()),
+            name=name,
+            methods=methods,
+        )
+    except Exception as e:
+        error_msg = f"Failed to create service: {e}"
+        raise ValueError(error_msg) from e
 
 
 def create_stream(
@@ -157,13 +185,16 @@ def create_stream(
         msg = f"Invalid stream type: {stream_type}"
         raise ValueError(msg)
 
-    result = FlextGrpcEntityFactory.create_stream(
-        method_name=method_name,
-        stream_type=stream_type,
-    )
-    if result.is_failure:
-        raise ValueError(result.error)
-    return result.unwrap()
+    # Direct entity construction - no factory patterns
+    try:
+        return FlextGrpcStream(
+            id=str(uuid4()),
+            method_name=method_name,
+            stream_type=stream_type,
+        )
+    except Exception as e:
+        error_msg = f"Failed to create stream: {e}"
+        raise ValueError(error_msg) from e
 
 
 def create_config(

@@ -168,7 +168,11 @@ class FlextGrpcConfig:
             raise FlextGrpcConfigurationError(msg)
 
         # Validate timeout
-        if not (FLEXT_GRPC_MIN_TIMEOUT_SECONDS <= self.timeout <= FLEXT_GRPC_MAX_TIMEOUT_SECONDS):
+        if not (
+            FLEXT_GRPC_MIN_TIMEOUT_SECONDS
+            <= self.timeout
+            <= FLEXT_GRPC_MAX_TIMEOUT_SECONDS
+        ):
             msg = (
                 f"Timeout {self.timeout} must be between {FLEXT_GRPC_MIN_TIMEOUT_SECONDS} "
                 f"and {FLEXT_GRPC_MAX_TIMEOUT_SECONDS} seconds"

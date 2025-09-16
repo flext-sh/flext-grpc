@@ -65,7 +65,7 @@ class TestFlextGrpcError:
         # All imports are at the top of the file
 
         error = FlextGrpcError("test")
-        assert isinstance(error, FlextExceptions)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcValidationError:
@@ -107,7 +107,7 @@ class TestFlextGrpcValidationError:
         # All imports are at the top of the file
 
         error = FlextGrpcValidationError("test")
-        assert isinstance(error, FlextExceptions)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcConnectionError:
@@ -126,7 +126,7 @@ class TestFlextGrpcConnectionError:
         # All imports are at the top of the file
 
         error = FlextGrpcConnectionError("test")
-        assert isinstance(error, FlextExceptions)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcTimeoutError:
@@ -145,7 +145,7 @@ class TestFlextGrpcTimeoutError:
         # All imports are at the top of the file
 
         error = FlextGrpcTimeoutError("test")
-        assert isinstance(error, FlextExceptions)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcConfigurationError:
@@ -192,7 +192,7 @@ class TestFlextGrpcConfigurationError:
         # All imports are at the top of the file
 
         error = FlextGrpcConfigurationError("test")
-        assert isinstance(error, FlextExceptions)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestErrorIntegration:
@@ -227,13 +227,15 @@ class TestErrorIntegration:
         ]
 
         # Test that FlextGrpcError inherits from FlextExceptions (base case)
-        assert isinstance(FlextGrpcError("test"), FlextExceptions)
+        assert isinstance(FlextGrpcError("test"), FlextExceptions.BaseError)
 
         # Test that specialized errors inherit from their respective flext-core parents
-        assert isinstance(FlextGrpcValidationError("test"), FlextExceptions)
-        assert isinstance(FlextGrpcConnectionError("test"), FlextExceptions)
-        assert isinstance(FlextGrpcTimeoutError("test"), FlextExceptions)
-        assert isinstance(FlextGrpcConfigurationError("test"), FlextExceptions)
+        assert isinstance(FlextGrpcValidationError("test"), FlextExceptions.BaseError)
+        assert isinstance(FlextGrpcConnectionError("test"), FlextExceptions.BaseError)
+        assert isinstance(FlextGrpcTimeoutError("test"), FlextExceptions.BaseError)
+        assert isinstance(
+            FlextGrpcConfigurationError("test"), FlextExceptions.BaseError
+        )
 
         # All errors should be Exception instances
         for error in errors:

@@ -877,14 +877,19 @@ class FlextGrpcClient(FlextGrpcEntity):
             Channel state management handled through FlextGrpcChannel entity.
 
         """
-        channel_result = FlextGrpcEntityFactory.create_channel(target)
-        if channel_result.is_failure:
-            return FlextResult[FlextGrpcClient].fail(
-                channel_result.error or "Channel creation failed"
+        # Direct entity construction - no factory patterns
+        try:
+            channel = FlextGrpcChannel(
+                id=str(uuid4()),
+                target=TGrpcTarget(target),
+                state="idle",
+                options={},
             )
 
-        updated_client = replace(self, channel=channel_result.data)
-        return FlextResult[FlextGrpcClient].ok(updated_client)
+            updated_client = replace(self, channel=channel)
+            return FlextResult[FlextGrpcClient].ok(updated_client)
+        except Exception as e:
+            return FlextResult[FlextGrpcClient].fail(f"Channel creation failed: {e}")
 
 
 @dataclass
@@ -1037,143 +1042,6 @@ class FlextGrpcStream(FlextGrpcEntity):
         return self.stream_type == "bidirectional"
 
 
-class FlextGrpcEntityFactory:
-    """Factory class for creating validated gRPC entities with default configurations.
-
-    Provides factory methods for creating all gRPC domain entities with proper
-    validation, default values, and consistent initialization patterns. Uses
-    flext-core entity factory foundations for reliable entity creation.
-
-    Features:
-      - Validated entity creation with domain rule enforcement
-      - Default configuration management for all entity types
-      - Consistent entity initialization across the platform
-      - Integration with flext-core entity factory patterns
-
-    Supported Entities:
-      - FlextGrpcServer: gRPC server entities with lifecycle management
-      - FlextGrpcClient: gRPC client entities with connection management
-      - FlextGrpcChannel: gRPC channel entities with state management
-      - FlextGrpcService: gRPC service entities with method registry
-      - FlextGrpcStream: gRPC stream entities with streaming configuration
-
-    Example:
-      >>> # Create server with defaults
-      >>> server_result = FlextGrpcEntityFactory.create_server()
-      >>> if server_result.success:
-      ...     server = server_result.data
-      ...     print(f"Server: {server.host}:{server.port}")
-      'Server: localhost:50051'
-
-      >>> # Create client with custom target
-      >>> client_result = FlextGrpcEntityFactory.create_client("localhost:8080")
-      >>> if client_result.success:
-      ...     client = client_result.data
-      ...     print(f"Client target: {client.target}")
-      'Client target: localhost:8080'
-
-    """
-
-    # Modern factory pattern using FlextModels directly
-
-    @classmethod
-    def create_server(
-        cls,
-        host: str = "localhost",
-        port: int = 50051,
-        max_workers: int = 10,
-    ) -> FlextResult[FlextGrpcServer]:
-        """Create a validated gRPC server."""
-        try:
-            server = FlextGrpcServer(
-                id=str(uuid4()),
-                host=host,
-                port=port,
-                max_workers=max_workers,
-                state="stopped",
-                services=[],
-            )
-            return FlextResult[FlextGrpcServer].ok(server)
-        except Exception as e:
-            return FlextResult[FlextGrpcServer].fail(f"Failed to create server: {e}")
-
-    @classmethod
-    def create_client(
-        cls,
-        target: str,
-        **options: object,
-    ) -> FlextResult[FlextGrpcClient]:
-        """Create a validated gRPC client."""
-        channel_result = cls.create_channel(target)
-        if channel_result.is_failure:
-            return FlextResult[FlextGrpcClient].fail(
-                f"Failed to create client: {channel_result.error}"
-            )
-
-        try:
-            client = FlextGrpcClient(
-                id=str(uuid4()),
-                channel=channel_result.data,
-                options=options or {},
-            )
-            return FlextResult[FlextGrpcClient].ok(client)
-        except Exception as e:
-            return FlextResult[FlextGrpcClient].fail(f"Failed to create client: {e}")
-
-    @classmethod
-    def create_channel(
-        cls,
-        target: str,
-        **options: object,
-    ) -> FlextResult[FlextGrpcChannel]:
-        """Create a validated gRPC channel."""
-        # Use typed factory method to create channel instance
-        # Use FlextModels directly
-        try:
-            channel = FlextGrpcChannel(
-                id=str(uuid4()),
-                target=TGrpcTarget(target),
-                state="idle",
-                options=options or {},
-            )
-            return FlextResult[FlextGrpcChannel].ok(channel)
-        except Exception as e:
-            return FlextResult[FlextGrpcChannel].fail(f"Failed to create channel: {e}")
-
-    @classmethod
-    def create_service(
-        cls,
-        name: str,
-        methods: FlextTypes.Core.StringList | None = None,
-    ) -> FlextResult[FlextGrpcService]:
-        """Create a validated gRPC service."""
-        # Use typed factory method to create service instance
-        # Use FlextModels directly
-        try:
-            service = FlextGrpcService(
-                id=str(uuid4()),
-                name=name,
-                methods=methods or [],
-            )
-            return FlextResult[FlextGrpcService].ok(service)
-        except Exception as e:
-            return FlextResult[FlextGrpcService].fail(f"Failed to create service: {e}")
-
-    @classmethod
-    def create_stream(
-        cls,
-        method_name: str,
-        stream_type: TGrpcStreamType = "unary",
-    ) -> FlextResult[FlextGrpcStream]:
-        """Create a validated gRPC stream."""
-        # Use typed factory method to create stream instance
-        # Use FlextModels directly
-        try:
-            stream = FlextGrpcStream(
-                id=str(uuid4()),
-                method_name=method_name,
-                stream_type=stream_type,
-            )
-            return FlextResult[FlextGrpcStream].ok(stream)
-        except Exception as e:
-            return FlextResult[FlextGrpcStream].fail(f"Failed to create stream: {e}")
+# ELIMINATED: Factory pattern removed - use direct entity construction
+# This was a wrapper pattern violation that provided no value
+# According to zero tolerance policy, entities should be created directly

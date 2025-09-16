@@ -73,11 +73,11 @@ class StreamInfo(TypedDict):
     created_at: float
     active: bool
     target: str
-    stub: object  # gRPC stub
+    stub: FlextGrpcServiceStub  # gRPC stub
     channel: object  # gRPC channel
 
     # Enterprise buffering and queueing
-    request_buffer: FlextTypes.Core.List  # Buffer for streaming requests
+    request_buffer: list[StreamRequest]  # Buffer for streaming requests
     request_queue: Queue[object]  # Thread-safe queue for high throughput
     response_buffer: deque[object]  # Circular buffer for responses
 
@@ -138,7 +138,9 @@ def get_system_memory_usage() -> float:
         return 0.5  # Assume moderate usage
 
 
-def get_buffer_size_bytes(buffer: FlextTypes.Core.List | deque[object]) -> int:
+def get_buffer_size_bytes(
+    buffer: FlextTypes.Core.List | deque[object] | list[StreamRequest],
+) -> int:
     """Estimate buffer size in bytes using sys.getsizeof recursively."""
     try:
         total_size = sys.getsizeof(buffer)
@@ -632,6 +634,7 @@ class FlextGrpcClientService:
         """Create gRPC channel and test connectivity."""
         # Retry connection with exponential backoff
         for attempt in range(self._max_retry_attempts):
+            grpc_channel = None
             try:
                 # Create REAL gRPC channel
                 grpc_channel = grpc.insecure_channel(target)
@@ -652,7 +655,8 @@ class FlextGrpcClientService:
                 return FlextResult[object].ok(grpc_channel)
 
             except grpc.FutureTimeoutError:
-                grpc_channel.close()
+                if grpc_channel is not None:
+                    grpc_channel.close()
 
                 # If this is the last attempt, fail
                 if attempt == self._max_retry_attempts - 1:
@@ -808,13 +812,13 @@ class FlextGrpcClientService:
 
             elif method == "HealthCheck":
                 health_request = HealthRequest(service="FlextGrpcService")
-                grpc_response = stub.HealthCheck(health_request, timeout=5.0)
+                health_response = stub.HealthCheck(health_request, timeout=5.0)
 
                 response = {
                     "method": "HealthCheck",
                     "status": "success",
-                    "serving_status": grpc_response.status,
-                    "message": grpc_response.message,
+                    "serving_status": health_response.status,
+                    "message": health_response.message,
                     "target": target,
                     "channel_ready": True,
                 }
@@ -1039,9 +1043,9 @@ class FlextGrpcStreamService:
         self,
         stream: TGrpcStreamEntity,
         stream_info: StreamInfo,
-        stream_request: object,
+        stream_request: StreamRequest,
         data: object,
-        stub: object,
+        stub: FlextGrpcServiceStub,
     ) -> FlextResult[TMethodCallResult]:
         """Handle client streaming with memory optimization."""
         # Check memory pressure before adding to buffer
@@ -1117,9 +1121,9 @@ class FlextGrpcStreamService:
         self,
         stream: TGrpcStreamEntity,
         stream_info: StreamInfo,
-        stream_request: object,
+        stream_request: StreamRequest,
         data: object,
-        stub: object,
+        stub: FlextGrpcServiceStub,
     ) -> FlextResult[TMethodCallResult]:
         """Handle bidirectional streaming operations."""
         # Add to buffer for bidirectional streaming
@@ -1181,9 +1185,9 @@ class FlextGrpcStreamService:
         self,
         stream: TGrpcStreamEntity,
         _stream_info: StreamInfo,
-        stream_request: object,
+        stream_request: StreamRequest,
         data: object,
-        stub: object,
+        stub: FlextGrpcServiceStub,
     ) -> FlextResult[TMethodCallResult]:
         """Handle server streaming operations."""
         # Server streaming: get iterator of responses
@@ -1213,7 +1217,7 @@ class FlextGrpcStreamService:
         _stream_info: StreamInfo,
         _stream_request: object,
         data: object,
-        stub: object,
+        stub: FlextGrpcServiceStub,
     ) -> FlextResult[TMethodCallResult]:
         """Handle unary operations."""
         # For unary, convert to Echo call
