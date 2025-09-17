@@ -21,13 +21,13 @@ from typing import Protocol, TypedDict, cast
 
 import grpc
 import psutil
+
 from flext_core import (
     FlextContainer,
     FlextLogger,
     FlextResult,
     FlextTypes,
 )
-
 from flext_grpc.entities import (
     FlextGrpcClient,
     FlextGrpcServer,

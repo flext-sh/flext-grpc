@@ -9,8 +9,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextTypes
 
+from flext_core import FlextTypes
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

@@ -38,7 +38,6 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 from flext_core import FlextExceptions
-
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,

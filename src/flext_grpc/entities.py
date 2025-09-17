@@ -12,11 +12,12 @@ from dataclasses import dataclass, field, replace
 from datetime import datetime
 from uuid import uuid4
 
+from pydantic_core import ValidationError
+
 from flext_core import (
     FlextResult,
     FlextTypes,
 )
-
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
 from flext_grpc.typings import (
     TGrpcChannelState,
@@ -109,6 +110,31 @@ class FlextGrpcChannel(FlextGrpcEntity):
     target: TGrpcTarget = field(default_factory=lambda: TGrpcTarget(""))
     state: TGrpcChannelState = "idle"
     options: FlextTypes.Core.Dict = field(default_factory=dict)
+
+    def __post_init__(self) -> None:
+        """Validate entity after initialization.
+
+        Ensures critical state validation during object creation.
+        Raises ValidationError if validation fails following FLEXT patterns.
+        """
+        # Only validate state during object creation - target validation is done explicitly
+        valid_states = {"idle", "connecting", "ready", "transient_failure", "shutdown"}
+        if self.state not in valid_states:
+            valid_states_str = (
+                "'idle', 'connecting', 'ready', 'transient_failure', 'shutdown'"
+            )
+            msg = f"Input should be {valid_states_str}"
+            raise ValidationError.from_exception_data(
+                msg,
+                [
+                    {
+                        "type": "literal_error",
+                        "loc": ("state",),
+                        "input": self.state,
+                        "ctx": {"expected": valid_states_str},
+                    }
+                ],
+            )
 
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate channel domain business rules.

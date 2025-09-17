@@ -36,8 +36,8 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextResult, FlextTypes, FlextUtilities
 
+from flext_core import FlextResult, FlextTypes, FlextUtilities
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

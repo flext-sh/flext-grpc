@@ -27,7 +27,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
     class GrpcNetwork:
         """gRPC network configuration constants."""
 
-        # CONSUME from single source - NO DUPLICATION
+        # CONSUME from single source
         DEFAULT_HOST = FlextConstants.Platform.DEFAULT_HOST
         DEFAULT_PORT = 50051  # gRPC-specific port
         MIN_PORT = FlextConstants.Network.MIN_PORT
@@ -37,7 +37,7 @@ class FlextGrpcSemanticConstants(FlextConstants):
     class Service:
         """Service configuration constants."""
 
-        # CONSUME from single source - NO DUPLICATION
+        # CONSUME from single source
         DEFAULT_TIMEOUT = FlextConstants.Defaults.TIMEOUT
         DEFAULT_MAX_WORKERS = 10
         MIN_WORKERS = 1

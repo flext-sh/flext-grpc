@@ -11,7 +11,6 @@ from dataclasses import replace
 from uuid import uuid4
 
 from flext_core import FlextResult, FlextTypes
-
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
 from flext_grpc.entities import (
     FlextGrpcChannel,

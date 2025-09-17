@@ -36,9 +36,9 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_core import FlextUtilities
 from pydantic_core import ValidationError
 
+from flext_core import FlextUtilities
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

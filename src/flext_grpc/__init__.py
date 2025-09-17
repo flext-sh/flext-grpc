@@ -9,7 +9,6 @@ from __future__ import annotations
 import importlib.metadata
 
 from flext_core import FlextContainer, FlextResult, FlextTypes
-
 from flext_grpc.api import (
     create_channel,
     create_client,

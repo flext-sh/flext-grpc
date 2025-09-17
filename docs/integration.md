@@ -312,7 +312,7 @@ class TestGrpcIntegration(FlextTestCase):
     def test_server_creation_with_flext_patterns(self):
         """Test server creation using FlextResult pattern."""
 
-        config = FlextGrpcConfig(host="localhost", port=0)  # Any port
+        config = FlextGrpcConfig(host="localhost", port=0)  # object port
         server_result = create_server(config)
 
         # Railway-oriented testing
