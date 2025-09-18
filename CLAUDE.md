@@ -6,7 +6,19 @@
 
 **References**: See [../CLAUDE.md](../CLAUDE.md) for FLEXT ecosystem standards and [README.md](README.md) for project overview.
 
-**Copyright (c) 2025 FLEXT Team. All rights reserved.**  
+**Hierarchy**: This document provides project-specific standards based on workspace-level patterns defined in [../CLAUDE.md](../CLAUDE.md). For architectural principles, quality gates, and MCP server usage, reference the main workspace standards.
+
+## 🔗 MCP SERVER INTEGRATION
+
+| MCP Server | Purpose | Status |
+|------------|---------|--------|
+| **serena** | gRPC codebase analysis and microservices navigation | **ACTIVE** |
+| **sequential-thinking** | gRPC architecture and streaming problem solving | **ACTIVE** |
+| **github** | gRPC ecosystem integration and service PRs | **ACTIVE** |
+
+**Usage**: `claude mcp list` for available servers, leverage for gRPC-specific development patterns and microservices analysis.
+
+**Copyright (c) 2025 FLEXT Team. All rights reserved.**
 **License**: MIT
 
 ---
@@ -549,7 +561,7 @@ async def create_enterprise_streaming_service() -> FlextResult[EnterpriseGrpcStr
 from flext_core import FlextResult, get_logger
 from flext_grpc.config import FlextGrpcConfig
 from pydantic import BaseSettings, SecretStr
-from typing import Dict, Any, List, Optional
+from typing import Dict, object, List, Optional
 
 class EnterpriseGrpcConfiguration(BaseSettings):
     """Enterprise gRPC configuration using FLEXT patterns and production values."""
