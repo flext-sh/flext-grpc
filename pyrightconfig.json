@@ -1,7 +1,5 @@
 {
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
   "exclude": [
     "src/flext_grpc/proto/flext_grpc_pb2.py",
     "src/flext_grpc/proto/flext_grpc_pb2_grpc.py",

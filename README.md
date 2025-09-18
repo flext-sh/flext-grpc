@@ -140,7 +140,7 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 
 ## 📊 Development Status
 
-### Current Version (0.9.0)
+### Current Version (0.9.9)
 
 **Working**:
 
@@ -199,6 +199,6 @@ MIT License
 
 ---
 
-**flext-grpc v0.9.0** - gRPC communication library for FLEXT ecosystem.
+**flext-grpc v0.9.9** - gRPC communication library for FLEXT ecosystem.
 
 **Current Focus**: Improving test coverage from 26% to meet the 90% requirement while maintaining working core functionality.

@@ -1,6 +1,6 @@
 # flext-grpc FLEXT Ecosystem Integration
 
-**Version**: 0.9.0 | **Updated**: September 17, 2025
+**Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
 Integration patterns and guidelines for flext-grpc within the FLEXT data integration ecosystem.
 

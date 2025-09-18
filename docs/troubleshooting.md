@@ -1,6 +1,6 @@
 # flext-grpc Troubleshooting
 
-**Version**: 0.9.0 | **Updated**: September 17, 2025
+**Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
 Common issues and solutions for flext-grpc development and deployment.
 

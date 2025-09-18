@@ -1,6 +1,6 @@
 # flext-grpc Development Roadmap
 
-**Version**: 0.9.0 | **Updated**: September 17, 2025 | **Status**: Development (Blocked)
+**Version**: 0.9.9 RC | **Updated**: September 17, 2025 | **Status**: Development (Blocked) · 1.0.0 Release Preparation
 
 Development priorities and enhancement roadmap for flext-grpc library.
 

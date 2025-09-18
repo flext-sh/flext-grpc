@@ -1,6 +1,6 @@
 # flext-grpc API Reference
 
-**Version**: 0.9.0 | **Updated**: September 17, 2025
+**Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
 Intended API reference for **flext-grpc** - gRPC communication library for the FLEXT ecosystem.
 

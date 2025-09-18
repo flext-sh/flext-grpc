@@ -411,7 +411,7 @@ Usage:
     poetry run python examples/[filename].py
 
 Author: FLEXT Development Team
-Version: 0.9.0
+Version: 0.9.9
 """
 
 from flext_grpc import (
