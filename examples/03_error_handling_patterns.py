@@ -29,7 +29,7 @@ logger = FlextLogger(__name__)
 
 
 def validate_user_input(
-    username: str, email: str
+    username: str, email: str,
 ) -> FlextResult[FlextTypes.Core.Headers]:
     """Validate user input with FlextGrpcValidationError."""
 
@@ -49,7 +49,7 @@ def validate_user_input(
             _raise_email_error()
 
         return FlextResult[FlextTypes.Core.Headers].ok(
-            {"username": username, "email": email}
+            {"username": username, "email": email},
         )
 
     except FlextGrpcValidationError as e:

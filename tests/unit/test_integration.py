@@ -36,7 +36,7 @@ class TestRealGrpcIntegration:
         """Test complete server lifecycle with REAL state transitions and validation."""
         # Create a real server with proper configuration
         server = create_server(
-            "localhost", 50052, 5
+            "localhost", 50052, 5,
         )  # Use different port to avoid conflicts
 
         # Validate initial state
@@ -221,7 +221,7 @@ class TestRealGrpcIntegration:
         """Test complete setup utility creates working, integrated components."""
         # Use the factory function to create a complete setup
         setup = create_complete_setup(
-            "localhost", 50056, "IntegrationService", ["TestMethod"]
+            "localhost", 50056, "IntegrationService", ["TestMethod"],
         )
 
         # Validate all components are created and properly configured

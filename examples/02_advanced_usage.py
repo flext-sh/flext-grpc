@@ -92,7 +92,7 @@ class GrpcServerManager:
             if server.is_running:
                 stop_result = self.server_service.execute("stop", server)
                 if stop_result.success and isinstance(
-                    stop_result.data, FlextGrpcServer
+                    stop_result.data, FlextGrpcServer,
                 ):
                     self.servers[server_id] = stop_result.data
                     results[server_id] = True
@@ -166,7 +166,7 @@ class GrpcClientPool:
         for client_id, client in self.clients.items():
             connect_result = self.client_service.execute("connect", client)
             if connect_result.success and isinstance(
-                connect_result.data, FlextGrpcClient
+                connect_result.data, FlextGrpcClient,
             ):
                 self.clients[client_id] = connect_result.data
                 self.connection_status[client_id] = True
@@ -187,7 +187,7 @@ class GrpcClientPool:
         for client_id, client in self.clients.items():
             if self.connection_status[client_id] and client.is_connected:
                 call_result = self.client_service.execute(
-                    "call", client, method_name=method_name, data=data
+                    "call", client, method_name=method_name, data=data,
                 )
                 if call_result.success:
                     results[client_id] = call_result.data or {

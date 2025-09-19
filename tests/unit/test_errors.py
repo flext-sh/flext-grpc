@@ -233,7 +233,7 @@ class TestErrorIntegration:
         assert isinstance(FlextGrpcConnectionError("test"), FlextExceptions.BaseError)
         assert isinstance(FlextGrpcTimeoutError("test"), FlextExceptions.BaseError)
         assert isinstance(
-            FlextGrpcConfigurationError("test"), FlextExceptions.BaseError
+            FlextGrpcConfigurationError("test"), FlextExceptions.BaseError,
         )
 
         # All errors should be Exception instances

@@ -132,7 +132,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
                         "loc": ("state",),
                         "input": self.state,
                         "ctx": {"expected": valid_states_str},
-                    }
+                    },
                 ],
             )
 
@@ -212,7 +212,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         """
         if self.state != "idle":
             return FlextResult[FlextGrpcChannel].fail(
-                f"Cannot connect from state: {self.state}"
+                f"Cannot connect from state: {self.state}",
             )
         connecting_channel = replace(self, state="connecting")
         return FlextResult[FlextGrpcChannel].ok(connecting_channel)
@@ -242,7 +242,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         """
         if self.state != "connecting":
             return FlextResult[FlextGrpcChannel].fail(
-                f"Cannot mark ready from state: {self.state}"
+                f"Cannot mark ready from state: {self.state}",
             )
         ready_channel = replace(self, state="ready")
         return FlextResult[FlextGrpcChannel].ok(ready_channel)
@@ -499,7 +499,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         """
         if self.state != "starting":
             return FlextResult[FlextGrpcServer].fail(
-                f"Cannot mark running from state: {self.state}"
+                f"Cannot mark running from state: {self.state}",
             )
 
         running_server = replace(self, state="running")
@@ -560,7 +560,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         """
         if self.state not in {"stopping", "running"}:
             return FlextResult[FlextGrpcServer].fail(
-                f"Cannot mark stopped from state: {self.state}"
+                f"Cannot mark stopped from state: {self.state}",
             )
         stopped_server = replace(self, state="stopped")
         return FlextResult[FlextGrpcServer].ok(stopped_server)
@@ -820,7 +820,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             channel_validation = self.channel.validate_business_rules()
             if channel_validation.is_failure:
                 return FlextResult[None].fail(
-                    f"Invalid channel: {channel_validation.error}"
+                    f"Invalid channel: {channel_validation.error}",
                 )
         return FlextResult[None].ok(None)
 

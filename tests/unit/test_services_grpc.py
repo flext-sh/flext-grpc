@@ -53,7 +53,7 @@ class TestRealGrpcServices:
 
         # Test real connectivity to the server
         test_channel = grpc.insecure_channel(
-            f"{running_server.host}:{running_server.port}"
+            f"{running_server.host}:{running_server.port}",
         )
         try:
             # This should succeed if real server is running
@@ -151,7 +151,7 @@ class TestRealGrpcServices:
             )
 
             add_result = server_service.execute(
-                "add_service", running_server, service_def
+                "add_service", running_server, service_def,
             )
             assert add_result.success, f"Service add failed: {add_result.error}"
 
@@ -323,7 +323,7 @@ class TestRealGrpcServices:
         try:
             # Now add_service should work
             add_result = server_service.execute(
-                "add_service", running_server, service_def
+                "add_service", running_server, service_def,
             )
             assert add_result.success, f"Add service failed: {add_result.error}"
 

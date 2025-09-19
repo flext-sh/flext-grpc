@@ -205,7 +205,7 @@ class FlextGrpcServerService:
 
         # Create shared thread pool for better resource management
         self._thread_pool = ThreadPoolExecutor(
-            max_workers=thread_pool_size, thread_name_prefix="flext-grpc-server"
+            max_workers=thread_pool_size, thread_name_prefix="flext-grpc-server",
         )
 
     def execute(
@@ -222,7 +222,7 @@ class FlextGrpcServerService:
         validation = server.validate_business_rules()
         if validation.is_failure:
             return FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict].fail(
-                f"Server validation failed: {validation.error}"
+                f"Server validation failed: {validation.error}",
             )
 
         # Command mapping to reduce return statements
@@ -262,7 +262,7 @@ class FlextGrpcServerService:
             return handler()
 
         return FlextResult[TGrpcServerEntity | FlextTypes.Core.Dict].fail(
-            f"Unknown server command: {command}"
+            f"Unknown server command: {command}",
         )
 
     def _start_server(
@@ -274,7 +274,7 @@ class FlextGrpcServerService:
         if len(self._active_servers) >= self._max_servers:
             return FlextResult[TGrpcServerEntity].fail(
                 f"Maximum server limit reached ({self._max_servers}). "
-                "Stop some servers or increase max_servers limit."
+                "Stop some servers or increase max_servers limit.",
             )
 
         # Record start time for metrics
@@ -289,7 +289,7 @@ class FlextGrpcServerService:
         return self._create_and_start_grpc_server(starting_server)
 
     def _create_and_start_grpc_server(
-        self, starting_server: TGrpcServerEntity
+        self, starting_server: TGrpcServerEntity,
     ) -> FlextResult[TGrpcServerEntity]:
         """Create and start the actual gRPC server."""
         server_key = f"{starting_server.host}:{starting_server.port}"
@@ -297,7 +297,7 @@ class FlextGrpcServerService:
         try:
             # Create REAL gRPC server
             grpc_server = grpc.server(
-                ThreadPoolExecutor(max_workers=starting_server.max_workers)
+                ThreadPoolExecutor(max_workers=starting_server.max_workers),
             )
 
             # Configure port binding
@@ -314,21 +314,21 @@ class FlextGrpcServerService:
                 grpc_server.start()
             except Exception as e:
                 return FlextResult[TGrpcServerEntity].fail(
-                    f"Failed to start gRPC server on {configured_server.host}:{configured_server.port}: {e}"
+                    f"Failed to start gRPC server on {configured_server.host}:{configured_server.port}: {e}",
                 )
 
             # Store and transition to running
             return self._finalize_server_startup(
-                grpc_server, configured_server, server_key
+                grpc_server, configured_server, server_key,
             )
 
         except Exception as e:
             return FlextResult[TGrpcServerEntity].fail(
-                f"Failed to start gRPC server: {e}"
+                f"Failed to start gRPC server: {e}",
             )
 
     def _configure_server_port(
-        self, grpc_server: grpc.Server, starting_server: TGrpcServerEntity
+        self, grpc_server: grpc.Server, starting_server: TGrpcServerEntity,
     ) -> FlextResult[TGrpcServerEntity]:
         """Configure server port binding."""
         if starting_server.port == 0:
@@ -340,16 +340,16 @@ class FlextGrpcServerService:
         # Use specified port
         try:
             grpc_server.add_insecure_port(
-                f"{starting_server.host}:{starting_server.port}"
+                f"{starting_server.host}:{starting_server.port}",
             )
             return FlextResult[TGrpcServerEntity].ok(starting_server)
         except Exception as e:
             return FlextResult[TGrpcServerEntity].fail(
-                f"Failed to bind to {starting_server.host}:{starting_server.port}: {e}"
+                f"Failed to bind to {starting_server.host}:{starting_server.port}: {e}",
             )
 
     def _finalize_server_startup(
-        self, grpc_server: object, configured_server: TGrpcServerEntity, server_key: str
+        self, grpc_server: object, configured_server: TGrpcServerEntity, server_key: str,
     ) -> FlextResult[TGrpcServerEntity]:
         """Finalize server startup and transition to running state."""
         # Store the real server for lifecycle management
@@ -405,7 +405,7 @@ class FlextGrpcServerService:
 
         except Exception as e:
             return FlextResult[TGrpcServerEntity].fail(
-                f"Failed to stop gRPC server: {e}"
+                f"Failed to stop gRPC server: {e}",
             )
 
     def _add_service(
@@ -425,7 +425,7 @@ class FlextGrpcServerService:
             # Get the REAL gRPC server
             if server_key not in self._active_servers:
                 return FlextResult[TGrpcServerEntity].fail(
-                    f"No active gRPC server found for {server_key}"
+                    f"No active gRPC server found for {server_key}",
                 )
 
             grpc_server = self._active_servers[server_key]
@@ -443,11 +443,11 @@ class FlextGrpcServerService:
 
         except Exception as e:
             return FlextResult[TGrpcServerEntity].fail(
-                f"Failed to add service to gRPC server: {e}"
+                f"Failed to add service to gRPC server: {e}",
             )
 
     def _get_status(
-        self, server: TGrpcServerEntity
+        self, server: TGrpcServerEntity,
     ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get server status information including REAL gRPC server status."""
         server_key = f"{server.host}:{server.port}"
@@ -506,7 +506,7 @@ class FlextGrpcClientService:
     """
 
     def __init__(
-        self, connection_timeout: float = 5.0, max_retry_attempts: int = 3
+        self, connection_timeout: float = 5.0, max_retry_attempts: int = 3,
     ) -> None:
         """Initialize service with real gRPC client registry and connection optimization.
 
@@ -602,7 +602,7 @@ class FlextGrpcClientService:
             channel_result = self._create_and_test_grpc_channel(target)
             if channel_result.is_failure:
                 return FlextResult[TGrpcClientEntity].fail(
-                    channel_result.error or "Channel creation failed"
+                    channel_result.error or "Channel creation failed",
                 )
 
             grpc_channel = channel_result.unwrap()
@@ -611,21 +611,21 @@ class FlextGrpcClientService:
 
         except Exception as e:
             return FlextResult[TGrpcClientEntity].fail(
-                f"Failed to establish gRPC connection: {e}"
+                f"Failed to establish gRPC connection: {e}",
             )
 
     def _validate_client_for_connection(
-        self, client: TGrpcClientEntity
+        self, client: TGrpcClientEntity,
     ) -> FlextResult[TGrpcClientEntity]:
         """Validate client preconditions for connection."""
         if client.channel is None:
             return FlextResult[TGrpcClientEntity].fail(
-                "Client has no channel to connect"
+                "Client has no channel to connect",
             )
 
         if client.target is None:
             return FlextResult[TGrpcClientEntity].fail(
-                "Client has no target to connect to"
+                "Client has no target to connect to",
             )
 
         return FlextResult[TGrpcClientEntity].ok(client)
@@ -641,7 +641,7 @@ class FlextGrpcClientService:
 
                 # Test connectivity with configurable timeout
                 grpc.channel_ready_future(grpc_channel).result(
-                    timeout=self._connection_timeout
+                    timeout=self._connection_timeout,
                 )
 
                 # Record successful connection metrics
@@ -661,7 +661,7 @@ class FlextGrpcClientService:
                 # If this is the last attempt, fail
                 if attempt == self._max_retry_attempts - 1:
                     return FlextResult[object].fail(
-                        f"Failed to connect to {target}: connection timeout after {self._max_retry_attempts} attempts"
+                        f"Failed to connect to {target}: connection timeout after {self._max_retry_attempts} attempts",
                     )
 
                 # Wait before retrying with exponential backoff
@@ -672,7 +672,7 @@ class FlextGrpcClientService:
         return FlextResult[object].fail(f"Connection failed unexpectedly to {target}")
 
     def _transition_client_to_connected(
-        self, client: TGrpcClientEntity, grpc_channel: object, target: str
+        self, client: TGrpcClientEntity, grpc_channel: object, target: str,
     ) -> FlextResult[TGrpcClientEntity]:
         """Transition client channel states to connected."""
         # Store the real channel for lifecycle management
@@ -686,7 +686,7 @@ class FlextGrpcClientService:
             cast("GrpcChannelProtocol", grpc_channel).close()
             self._active_channels.pop(target, None)
             return FlextResult[TGrpcClientEntity].fail(
-                f"Channel connection failed: {connect_result.error}"
+                f"Channel connection failed: {connect_result.error}",
             )
 
         connecting_channel = connect_result.unwrap()
@@ -696,7 +696,7 @@ class FlextGrpcClientService:
             cast("GrpcChannelProtocol", grpc_channel).close()
             self._active_channels.pop(target, None)
             return FlextResult[TGrpcClientEntity].fail(
-                f"Channel ready transition failed: {ready_result.error}"
+                f"Channel ready transition failed: {ready_result.error}",
             )
 
         # Update client with new channel
@@ -711,13 +711,13 @@ class FlextGrpcClientService:
         # Check if client has a channel
         if client.channel is None:
             return FlextResult[TGrpcClientEntity].fail(
-                "Client has no channel to disconnect"
+                "Client has no channel to disconnect",
             )
 
         target = client.target
         if target is None:
             return FlextResult[TGrpcClientEntity].fail(
-                "Client has no target to disconnect from"
+                "Client has no target to disconnect from",
             )
 
         try:
@@ -742,7 +742,7 @@ class FlextGrpcClientService:
 
         except Exception as e:
             return FlextResult[TGrpcClientEntity].fail(
-                f"Failed to disconnect gRPC client: {e}"
+                f"Failed to disconnect gRPC client: {e}",
             )
 
     def _make_call(
@@ -760,14 +760,14 @@ class FlextGrpcClientService:
         target = client.target
         if target is None:
             return FlextResult[TMethodCallResult].fail(
-                "Client has no target for method call"
+                "Client has no target for method call",
             )
 
         try:
             # Get REAL gRPC channel
             if target not in self._active_channels:
                 return FlextResult[TMethodCallResult].fail(
-                    f"No active gRPC channel for {target}"
+                    f"No active gRPC channel for {target}",
                 )
 
             grpc_channel = self._active_channels[target]
@@ -775,11 +775,11 @@ class FlextGrpcClientService:
             # Validate channel is still ready
             try:
                 grpc.channel_ready_future(cast("grpc.Channel", grpc_channel)).result(
-                    timeout=1.0
+                    timeout=1.0,
                 )
             except grpc.FutureTimeoutError:
                 return FlextResult[TMethodCallResult].fail(
-                    f"gRPC channel not ready for {target}"
+                    f"gRPC channel not ready for {target}",
                 )
 
             # Create REAL gRPC stub and make REAL call
@@ -842,13 +842,13 @@ class FlextGrpcClientService:
 
         except grpc.RpcError as rpc_error:
             return FlextResult[TMethodCallResult].fail(
-                f"gRPC call failed: {rpc_error.code()} - {rpc_error.details()}"
+                f"gRPC call failed: {rpc_error.code()} - {rpc_error.details()}",
             )
         except Exception as e:
             return FlextResult[TMethodCallResult].fail(f"Failed to make gRPC call: {e}")
 
     def _get_status(
-        self, client: TGrpcClientEntity
+        self, client: TGrpcClientEntity,
     ) -> FlextResult[FlextTypes.Core.Dict]:
         """Get client status information including REAL gRPC channel status."""
         target = client.target
@@ -861,7 +861,7 @@ class FlextGrpcClientService:
             grpc_channel = self._active_channels[target]
             try:
                 grpc.channel_ready_future(cast("grpc.Channel", grpc_channel)).result(
-                    timeout=0.1
+                    timeout=0.1,
                 )
                 grpc_channel_ready = True
             except grpc.FutureTimeoutError:
@@ -944,7 +944,7 @@ class FlextGrpcStreamService:
         validation = stream.validate_business_rules()
         if validation.is_failure:
             return FlextResult[TGrpcStreamEntity | TMethodCallResult].fail(
-                f"Stream validation failed: {validation.error}"
+                f"Stream validation failed: {validation.error}",
             )
 
         # Execute command
@@ -952,7 +952,7 @@ class FlextGrpcStreamService:
             target = args[0] if args else kwargs.get("target")
             if target is not None and not isinstance(target, str):
                 return FlextResult[TGrpcStreamEntity | TMethodCallResult].fail(
-                    f"Target must be string, got: {type(target)}"
+                    f"Target must be string, got: {type(target)}",
                 )
             result = self._create_stream(stream, target)
             return cast("FlextResult[TGrpcStreamEntity | TMethodCallResult]", result)
@@ -967,7 +967,7 @@ class FlextGrpcStreamService:
             result = self._close_stream(stream)
             return cast("FlextResult[TGrpcStreamEntity | TMethodCallResult]", result)
         return FlextResult[TGrpcStreamEntity | TMethodCallResult].fail(
-            f"Unknown stream command: {command}"
+            f"Unknown stream command: {command}",
         )
 
     def _create_stream(
@@ -987,7 +987,7 @@ class FlextGrpcStreamService:
             if target not in self._active_channels:
                 grpc_channel = grpc.insecure_channel(target)
                 self._active_channels[target] = cast(
-                    "GrpcChannelProtocol", grpc_channel
+                    "GrpcChannelProtocol", grpc_channel,
                 )
 
             grpc_channel = cast("grpc.Channel", self._active_channels[target])
@@ -1006,10 +1006,10 @@ class FlextGrpcStreamService:
                 "channel": grpc_channel,  # Real gRPC channel
                 "request_buffer": [],  # Buffer for client streaming
                 "request_queue": Queue(
-                    maxsize=BIDIRECTIONAL_STREAMING_QUEUE_SIZE
+                    maxsize=BIDIRECTIONAL_STREAMING_QUEUE_SIZE,
                 ),  # Thread-safe queue
                 "response_buffer": deque(
-                    maxlen=SERVER_STREAMING_BATCH_SIZE
+                    maxlen=SERVER_STREAMING_BATCH_SIZE,
                 ),  # Circular buffer
                 "sequence_counter": 0,
                 "last_activity": time.time(),
@@ -1036,7 +1036,7 @@ class FlextGrpcStreamService:
 
         except Exception as e:
             return FlextResult[TGrpcStreamEntity].fail(
-                f"Failed to create gRPC stream: {e}"
+                f"Failed to create gRPC stream: {e}",
             )
 
     def _handle_client_streaming(
@@ -1133,7 +1133,7 @@ class FlextGrpcStreamService:
 
         # For bidirectional, we can send immediately but batch responses
         response_iterator = stub.BidirectionalStream(
-            iter([stream_request]), timeout=10.0
+            iter([stream_request]), timeout=10.0,
         )
         responses = []
         try:
@@ -1144,7 +1144,7 @@ class FlextGrpcStreamService:
                         "sequence": response.sequence,
                         "server_id": response.server_id,
                         "timestamp": response.timestamp,
-                    }
+                    },
                 )
                 # Break after first response for immediate processing
                 break
@@ -1165,18 +1165,18 @@ class FlextGrpcStreamService:
         return FlextResult[TMethodCallResult].ok(result)
 
     def _validate_stream_for_sending(
-        self, stream_key: str
+        self, stream_key: str,
     ) -> FlextResult[TMethodCallResult]:
         """Validate stream exists and is active for sending data."""
         if stream_key not in self._active_streams:
             return FlextResult[TMethodCallResult].fail(
-                f"No active gRPC stream found: {stream_key}"
+                f"No active gRPC stream found: {stream_key}",
             )
 
         stream_info = self._active_streams[stream_key]
         if not stream_info.get("active", False):
             return FlextResult[TMethodCallResult].fail(
-                f"gRPC stream is not active: {stream_key}"
+                f"gRPC stream is not active: {stream_key}",
             )
 
         return FlextResult[TMethodCallResult].ok({})
@@ -1255,7 +1255,7 @@ class FlextGrpcStreamService:
 
             # Create real StreamRequest
             stream_request = StreamRequest(
-                data=str(data), sequence=1, client_id=stream.id
+                data=str(data), sequence=1, client_id=stream.id,
             )
 
             # Use command mapping pattern to reduce returns
@@ -1271,16 +1271,16 @@ class FlextGrpcStreamService:
                 return handler(stream, stream_info, stream_request, data, stub)
 
             return FlextResult[TMethodCallResult].fail(
-                f"Unknown stream type: {stream.stream_type}"
+                f"Unknown stream type: {stream.stream_type}",
             )
 
         except grpc.RpcError as rpc_error:
             return FlextResult[TMethodCallResult].fail(
-                f"gRPC streaming failed: {rpc_error.code()} - {rpc_error.details()}"
+                f"gRPC streaming failed: {rpc_error.code()} - {rpc_error.details()}",
             )
         except Exception as e:
             return FlextResult[TMethodCallResult].fail(
-                f"Failed to send data through gRPC stream: {e}"
+                f"Failed to send data through gRPC stream: {e}",
             )
 
     def _close_stream(
@@ -1323,11 +1323,11 @@ class FlextGrpcStreamService:
 
         except Exception as e:
             return FlextResult[TGrpcStreamEntity].fail(
-                f"Failed to close gRPC stream: {e}"
+                f"Failed to close gRPC stream: {e}",
             )
 
     def _cleanup_expired_buffers(
-        self, max_age_seconds: float = STREAM_CLEANUP_MAX_AGE_SECONDS
+        self, max_age_seconds: float = STREAM_CLEANUP_MAX_AGE_SECONDS,
     ) -> None:
         """Clean up expired stream buffers to prevent memory leaks."""
         current_time = time.time()
@@ -1395,7 +1395,7 @@ class FlextGrpcStreamService:
                         keep_count = len(buffer) // 2
                         stream_info["request_buffer"] = buffer[-keep_count:]
                         stream_info["buffer_size_bytes"] = get_buffer_size_bytes(
-                            stream_info["request_buffer"]
+                            stream_info["request_buffer"],
                         )
                         stream_info["last_memory_cleanup"] = current_time
 
@@ -1425,7 +1425,7 @@ class FlextGrpcStreamService:
 
                     # Update global metrics including memory usage
                     self._global_metrics["total_streams_active"] = len(
-                        self._active_streams
+                        self._active_streams,
                     )
                     self._global_metrics["memory_pressure_score"] = (
                         get_system_memory_usage()
@@ -1440,7 +1440,7 @@ class FlextGrpcStreamService:
                         if stream_key not in self._stream_metrics:
                             self._stream_metrics[stream_key] = {
                                 "creation_time": stream_info.get(
-                                    "created_at", current_time
+                                    "created_at", current_time,
                                 ),
                                 "total_requests": 0.0,
                                 "total_responses": 0.0,
@@ -1485,7 +1485,7 @@ class FlextGrpcStreamService:
 
                     # Trigger proactive memory cleanup if too many streams under pressure
                     high_pressure_ratio = memory_pressure_count / max(
-                        1, len(self._active_streams)
+                        1, len(self._active_streams),
                     )
                     if (
                         high_pressure_ratio > HIGH_PRESSURE_RATIO_THRESHOLD
