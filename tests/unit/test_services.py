@@ -114,7 +114,11 @@ class TestFlextGrpcService:
         self.stream_service = FlextGrpcStreamService()
 
     def execute_service_command(
-        self, service_type: str, command: str, *args: object, **kwargs: object,
+        self,
+        service_type: str,
+        command: str,
+        *args: object,
+        **kwargs: object,
     ) -> FlextResult[object]:
         """Route service commands to appropriate service instances."""
         # Check if we have required arguments first
@@ -278,7 +282,9 @@ class TestFlextGrpcService:
 
         # First connect the client to create the real gRPC channel
         connect_result = self.execute_service_command(
-            "client", "connect", connected_client,
+            "client",
+            "connect",
+            connected_client,
         )
         if connect_result.success:
             # Use the connected client from the result
@@ -353,7 +359,8 @@ class TestFlextGrpcService:
         """Test stream create operation."""
         # Create a stream entity first
         stream = create_stream(
-            method_name="stream_method", stream_type="server_streaming",
+            method_name="stream_method",
+            stream_type="server_streaming",
         )
 
         # Test the stream service with the created stream
@@ -415,7 +422,10 @@ class TestFlextGrpcService:
 
         # Then send data to the created stream
         result = self.execute_service_command(
-            "stream", "send", stream, {"data": "test_data"},
+            "stream",
+            "send",
+            stream,
+            {"data": "test_data"},
         )
         assert result.success
         if not (result.data):

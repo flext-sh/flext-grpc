@@ -67,7 +67,9 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             return EchoResponse()
 
     def server_stream(
-        self, request: StreamRequest, context: ServicerContext,
+        self,
+        request: StreamRequest,
+        context: ServicerContext,
     ) -> Iterator[StreamResponse]:
         """Real server streaming implementation."""
         try:
@@ -89,7 +91,9 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Server streaming error: {e}")
 
     def client_stream(
-        self, request_iterator: Iterator[StreamRequest], context: ServicerContext,
+        self,
+        request_iterator: Iterator[StreamRequest],
+        context: ServicerContext,
     ) -> StreamResponse:
         """Real client streaming implementation."""
         try:
@@ -116,7 +120,9 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             return StreamResponse()
 
     def bidirectional_stream(
-        self, request_iterator: Iterator[StreamRequest], context: ServicerContext,
+        self,
+        request_iterator: Iterator[StreamRequest],
+        context: ServicerContext,
     ) -> Iterator[StreamResponse]:
         """Real bidirectional streaming implementation."""
         try:
@@ -137,7 +143,9 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Bidirectional streaming error: {e}")
 
     def health_check(
-        self, request: HealthRequest, context: ServicerContext,
+        self,
+        request: HealthRequest,
+        context: ServicerContext,
     ) -> HealthResponse:
         """Real health check implementation."""
         try:

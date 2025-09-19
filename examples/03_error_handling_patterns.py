@@ -29,7 +29,8 @@ logger = FlextLogger(__name__)
 
 
 def validate_user_input(
-    username: str, email: str,
+    username: str,
+    email: str,
 ) -> FlextResult[FlextTypes.Core.Headers]:
     """Validate user input with FlextGrpcValidationError."""
 

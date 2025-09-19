@@ -30,7 +30,11 @@ class TestPlatformIntegration:
         self.stream_service = FlextGrpcStreamService()
 
     def execute_service_command(
-        self, service_type: str, command: str, *args: object, **kwargs: object,
+        self,
+        service_type: str,
+        command: str,
+        *args: object,
+        **kwargs: object,
     ) -> FlextResult:
         """Route service commands to appropriate service instances."""
         if service_type == "server":

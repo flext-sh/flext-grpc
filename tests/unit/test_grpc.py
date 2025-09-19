@@ -60,7 +60,9 @@ class TestCompleteRealGrpc:
             )
 
             add_result = server_service.execute(
-                "add_service", running_server, service_def,
+                "add_service",
+                running_server,
+                service_def,
             )
             assert add_result.success, f"Service add failed: {add_result.error}"
             server_with_service = add_result.data
@@ -115,7 +117,10 @@ class TestCompleteRealGrpc:
 
             # 6. Make REAL gRPC HealthCheck call
             health_result = client_service.execute(
-                "call", connected_client, "HealthCheck", {},
+                "call",
+                connected_client,
+                "HealthCheck",
+                {},
             )
             assert health_result.success, f"Health check failed: {health_result.error}"
 
@@ -163,7 +168,9 @@ class TestCompleteRealGrpc:
             )
 
             add_result = server_service.execute(
-                "add_service", running_server, service_def,
+                "add_service",
+                running_server,
+                service_def,
             )
             assert add_result.success
 
@@ -184,7 +191,9 @@ class TestCompleteRealGrpc:
 
             # Send data through REAL server stream
             send_result = stream_service.execute(
-                "send", server_stream, "Real streaming data",
+                "send",
+                server_stream,
+                "Real streaming data",
             )
             assert send_result.success, f"Stream send failed: {send_result.error}"
 
@@ -207,7 +216,9 @@ class TestCompleteRealGrpc:
 
             # Send first request - should be buffered
             send_result = stream_service.execute(
-                "send", client_stream, "Client stream data 1",
+                "send",
+                client_stream,
+                "Client stream data 1",
             )
             assert send_result.success
 
@@ -219,7 +230,9 @@ class TestCompleteRealGrpc:
             # Send more requests to trigger buffer flush
             stream_service.execute("send", client_stream, "Client stream data 2")
             send_result = stream_service.execute(
-                "send", client_stream, "Client stream data 3",
+                "send",
+                client_stream,
+                "Client stream data 3",
             )
             assert send_result.success
 
@@ -238,12 +251,16 @@ class TestCompleteRealGrpc:
             )
 
             create_result = stream_service.execute(
-                "create", bidirectional_stream, target,
+                "create",
+                bidirectional_stream,
+                target,
             )
             assert create_result.success
 
             send_result = stream_service.execute(
-                "send", bidirectional_stream, "Bidirectional data",
+                "send",
+                bidirectional_stream,
+                "Bidirectional data",
             )
             assert send_result.success
 
@@ -314,7 +331,9 @@ class TestCompleteRealGrpc:
             )
 
             add_result = server_service.execute(
-                "add_service", running_server, service_def,
+                "add_service",
+                running_server,
+                service_def,
             )
             assert add_result.success
 
@@ -396,7 +415,9 @@ class TestCompleteRealGrpc:
             )
 
             add_result = server_service.execute(
-                "add_service", running_server, service_def,
+                "add_service",
+                running_server,
+                service_def,
             )
             assert add_result.success
 

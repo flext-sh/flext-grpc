@@ -152,7 +152,8 @@ class TestRealBusinessScenarios:
 
         # 1. Start with v1 of a service
         payment_service_v1 = create_service(
-            "PaymentService", ["ProcessPayment", "GetPaymentStatus"],
+            "PaymentService",
+            ["ProcessPayment", "GetPaymentStatus"],
         )
 
         assert payment_service_v1.validate_business_rules().success
@@ -311,7 +312,8 @@ class TestRealBusinessScenarios:
         # 1. Create multiple services that might run concurrently
         services = []
         for i, service_name in enumerate(
-            ["Gateway", "Auth", "Users", "Orders"], start=1,
+            ["Gateway", "Auth", "Users", "Orders"],
+            start=1,
         ):
             server = FlextGrpcServer(
                 id=f"{service_name.lower()}-service",
