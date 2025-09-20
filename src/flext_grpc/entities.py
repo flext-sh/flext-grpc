@@ -19,12 +19,7 @@ from flext_core import (
     FlextTypes,
 )
 from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
-from flext_grpc.typings import (
-    TGrpcChannelState,
-    TGrpcServerState,
-    TGrpcStreamType,
-    TGrpcTarget,
-)
+from flext_grpc.typings import FlextGrpcTypes
 
 
 @dataclass
@@ -95,7 +90,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
       >>> from datetime import datetime, timezone
       >>> channel = FlextGrpcChannel(
       ...     id="main-channel",
-      ...     target=TGrpcTarget("localhost:50051"),
+      ...     target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
       ...     state="idle",
       ...     created_at=datetime.now(timezone.utc),
       ... )
@@ -107,8 +102,10 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
     """
 
-    target: TGrpcTarget = field(default_factory=lambda: TGrpcTarget(""))
-    state: TGrpcChannelState = "idle"
+    target: FlextGrpcTypes.Core.GrpcTarget = field(
+        default_factory=lambda: FlextGrpcTypes.Core.GrpcTarget("")
+    )
+    state: FlextGrpcTypes.Core.GrpcChannelState = "idle"
     options: FlextTypes.Core.Dict = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -153,7 +150,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         Example:
             >>> channel = FlextGrpcChannel(
             ...     id="test",
-            ...     target=TGrpcTarget(""),
+            ...     target=FlextGrpcTypes.Core.GrpcTarget(""),
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result = channel.validate_business_rules()
@@ -322,7 +319,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
     host: str = "localhost"
     port: int = 50051
-    state: TGrpcServerState = "stopped"
+    state: FlextGrpcTypes.Core.GrpcServerState = "stopped"
     max_workers: int = 10
     services: list[FlextGrpcService] = field(default_factory=list)
 
@@ -803,7 +800,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         Example:
             >>> invalid_channel = FlextGrpcChannel(
             ...     id="bad-channel",
-            ...     target=TGrpcTarget(""),  # Invalid empty target
+            ...     target=FlextGrpcTypes.Core.GrpcTarget(""),  # Invalid empty target
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> client = FlextGrpcClient(
@@ -840,7 +837,7 @@ class FlextGrpcClient(FlextGrpcEntity):
 
             >>> ready_channel = FlextGrpcChannel(
             ...     id="ready-channel",
-            ...     target=TGrpcTarget("localhost:50051"),
+            ...     target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
             ...     state="ready",
             ...     created_at=datetime.now(timezone.utc),
             ... )
@@ -861,7 +858,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         Example:
             >>> channel = FlextGrpcChannel(
             ...     id="test-channel",
-            ...     target=TGrpcTarget("localhost:50051"),
+            ...     target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> client = FlextGrpcClient(
@@ -907,7 +904,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         try:
             channel = FlextGrpcChannel(
                 id=str(uuid4()),
-                target=TGrpcTarget(target),
+                target=FlextGrpcTypes.Core.GrpcTarget(target),
                 state="idle",
                 options={},
             )
@@ -957,7 +954,7 @@ class FlextGrpcStream(FlextGrpcEntity):
     """
 
     method_name: str = ""
-    stream_type: TGrpcStreamType = "unary"
+    stream_type: FlextGrpcTypes.Core.GrpcStreamType = "unary"
 
     def validate_business_rules(self) -> FlextResult[None]:
         """Validate stream domain business rules and configuration.

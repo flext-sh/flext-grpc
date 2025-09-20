@@ -42,19 +42,7 @@ from flext_grpc.services import (
     FlextGrpcServerService,
     FlextGrpcStreamService,
 )
-from flext_grpc.typings import (
-    TGrpcChannelState,
-    TGrpcHost,
-    TGrpcMethodName,
-    TGrpcPort,
-    TGrpcServerState,
-    TGrpcServiceName,
-    TGrpcStreamType,
-    TGrpcTarget,
-    TGrpcTimeout,
-    flext_grpc_parse_target,
-    flext_grpc_validate_target,
-)
+from flext_grpc.typings import FlextGrpcTypes
 
 try:
     __version__ = importlib.metadata.version("flext-grpc")
@@ -80,17 +68,9 @@ __all__: FlextTypes.Core.StringList = [
     "FlextGrpcStream",
     "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",
+    "FlextGrpcTypes",
     "FlextGrpcValidationError",
     "FlextResult",
-    "TGrpcChannelState",
-    "TGrpcHost",
-    "TGrpcMethodName",
-    "TGrpcPort",
-    "TGrpcServerState",
-    "TGrpcServiceName",
-    "TGrpcStreamType",
-    "TGrpcTarget",
-    "TGrpcTimeout",
     "__version__",
     "__version_info__",
     "create_channel",
@@ -100,8 +80,6 @@ __all__: FlextTypes.Core.StringList = [
     "create_server",
     "create_service",
     "create_stream",
-    "flext_grpc_parse_target",
-    "flext_grpc_validate_target",
     "parse_address",
     "validate_address",
 ]

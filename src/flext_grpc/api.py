@@ -19,11 +19,7 @@ from flext_grpc.entities import (
     FlextGrpcService,
     FlextGrpcStream,
 )
-from flext_grpc.typings import (
-    TGrpcStreamType,
-    TGrpcTarget,
-    flext_grpc_validate_target,
-)
+from flext_grpc.typings import FlextGrpcTypes
 
 
 def create_server(
@@ -84,7 +80,7 @@ def create_client(
         # Create channel directly
         channel = FlextGrpcChannel(
             id=str(uuid4()),
-            target=TGrpcTarget(target),
+            target=FlextGrpcTypes.Core.GrpcTarget(target),
             state="idle",
             options={},
         )
@@ -118,7 +114,7 @@ def create_channel(
     try:
         channel = FlextGrpcChannel(
             id=str(uuid4()),
-            target=TGrpcTarget(target),
+            target=FlextGrpcTypes.Core.GrpcTarget(target),
             state="idle",
             options={},
         )
@@ -164,7 +160,7 @@ def create_service(
 
 def create_stream(
     method_name: str,
-    stream_type: TGrpcStreamType = "unary",
+    stream_type: FlextGrpcTypes.Core.GrpcStreamType = "unary",
 ) -> FlextGrpcStream:
     """Create gRPC stream with validation.
 
@@ -291,8 +287,8 @@ def validate_address(address: str | None) -> FlextResult[bool]:
         if address is None or not address.strip():
             return FlextResult[bool].fail("Address cannot be empty")
 
-        # Check target validity (flext_grpc_validate_target returns bool)
-        target_is_valid = flext_grpc_validate_target(address)
+        # Check target validity (FlextGrpcTypes.Validation.validate_target returns bool)
+        target_is_valid = FlextGrpcTypes.Validation.validate_target(address)
         if target_is_valid:
             return FlextResult[bool].ok(data=True)
         return FlextResult[bool].fail("Invalid address format")
