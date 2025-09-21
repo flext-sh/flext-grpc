@@ -12,6 +12,8 @@ import time
 from collections.abc import Iterator
 from typing import TYPE_CHECKING
 
+from flext_core.constants import FlextConstants
+
 if TYPE_CHECKING:
     from grpc import ServicerContext
 
@@ -100,8 +102,8 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
     ) -> StreamResponse:
         """Real client streaming implementation."""
         try:
-            messages = []
-            sequence_count = 0
+            messages: list[str] = []
+            sequence_count = FlextConstants.Performance.MIN_CURRENT_STEP
 
             # Process all incoming requests
             for request in request_iterator:
