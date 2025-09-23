@@ -18,7 +18,7 @@ from flext_core import (
     FlextResult,
     FlextTypes,
 )
-from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
 
 
@@ -379,11 +379,11 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         # Allow port 0 for automatic port selection by gRPC
         if self.port != 0 and not (
-            FLEXT_GRPC_MIN_PORT <= self.port <= FLEXT_GRPC_MAX_PORT
+            FlextGrpcConstants.MIN_PORT <= self.port <= FlextGrpcConstants.MAX_PORT
         ):
             return FlextResult[None].fail(
                 f"Invalid port: {self.port} "
-                f"(must be 0 for auto-selection or {FLEXT_GRPC_MIN_PORT}-{FLEXT_GRPC_MAX_PORT})",
+                f"(must be 0 for auto-selection or {FlextGrpcConstants.MIN_PORT}-{FlextGrpcConstants.MAX_PORT})",
             )
 
         if self.max_workers < 1:

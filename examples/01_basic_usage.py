@@ -28,7 +28,7 @@ from flext_grpc import (
     FlextGrpcServer,
     FlextGrpcServerService,
     FlextGrpcService,
-    TGrpcTarget,
+    FlextGrpcTypes,
 )
 
 # FlextGrpcClient and FlextGrpcServer already imported above
@@ -50,7 +50,7 @@ def example_1_basic_entities() -> None:
     # Create a gRPC channel
     channel = FlextGrpcChannel(
         id="example-channel",
-        target=TGrpcTarget("localhost:8080"),
+        target=FlextGrpcTypes.Core.GrpcTarget("localhost:8080"),
         created_at=datetime.now(UTC),
     )
 
@@ -122,7 +122,7 @@ def example_3_operations() -> None:
     # Create client for operations
     channel = FlextGrpcChannel(
         id="ops-channel",
-        target=TGrpcTarget("localhost:7070"),
+        target=FlextGrpcTypes.Core.GrpcTarget("localhost:7070"),
         created_at=datetime.now(UTC),
     )
 
@@ -178,7 +178,7 @@ def example_4_validation() -> None:
     # Channel validation
     valid_channel = FlextGrpcChannel(
         id="valid-channel",
-        target=TGrpcTarget("localhost:8080"),
+        target=FlextGrpcTypes.Core.GrpcTarget("localhost:8080"),
         state="ready",
         created_at=datetime.now(UTC),
     )
@@ -187,7 +187,7 @@ def example_4_validation() -> None:
 
     invalid_channel = FlextGrpcChannel(
         id="invalid-channel",
-        target=TGrpcTarget(""),  # Invalid empty target
+        target=FlextGrpcTypes.Core.GrpcTarget(""),  # Invalid empty target
         created_at=datetime.now(UTC),
     )
 
@@ -201,7 +201,7 @@ def example_5_state_transitions() -> None:
     # Channel state transitions
     channel = FlextGrpcChannel(
         id="transition-channel",
-        target=TGrpcTarget("localhost:8080"),
+        target=FlextGrpcTypes.Core.GrpcTarget("localhost:8080"),
         state="idle",
         created_at=datetime.now(UTC),
     )

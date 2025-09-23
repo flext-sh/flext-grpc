@@ -24,7 +24,7 @@ from flext_grpc import (
     FlextGrpcServerService,
     FlextGrpcService,
     FlextGrpcStream,
-    TGrpcTarget,
+    FlextGrpcTypes,
 )
 
 
@@ -144,7 +144,7 @@ class GrpcClientPool:
 
             channel = FlextGrpcChannel(
                 id=FlextModels(f"channel-{i}"),
-                target=TGrpcTarget(target),
+                target=FlextGrpcTypes.Core.GrpcTarget(target),
                 created_at=FlextModels(datetime.now(UTC)),
             )
 
@@ -435,7 +435,7 @@ def example_5_error_handling() -> None:
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
         id=FlextModels("test-channel"),
-        target=TGrpcTarget("localhost:50051"),
+        target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
         created_at=FlextModels(datetime.now(UTC)),
     )
 

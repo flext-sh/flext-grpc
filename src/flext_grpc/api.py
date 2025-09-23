@@ -11,7 +11,8 @@ from dataclasses import replace
 from uuid import uuid4
 
 from flext_core import FlextResult, FlextTypes
-from flext_grpc.config import FLEXT_GRPC_MAX_PORT, FLEXT_GRPC_MIN_PORT, FlextGrpcConfig
+from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -385,7 +386,7 @@ def validate_port(port: int) -> bool:
       True if port is valid, False otherwise
 
     """
-    return FLEXT_GRPC_MIN_PORT <= port <= FLEXT_GRPC_MAX_PORT
+    return FlextGrpcConstants.MIN_PORT <= port <= FlextGrpcConstants.MAX_PORT
 
 
 __all__ = [
