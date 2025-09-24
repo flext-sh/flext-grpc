@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
 from datetime import datetime
+from typing import Self
 from uuid import uuid4
 
 from pydantic_core import ValidationError
@@ -47,7 +48,7 @@ class FlextGrpcEntity:
     updated_at: datetime = field(default_factory=datetime.now)
 
     @property
-    def entity_type(self) -> str:
+    def entity_type(self: Self) -> str:
         """Get the entity type name for runtime identification.
 
         Returns:
@@ -94,7 +95,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
       ...     state="idle",
       ...     created_at=datetime.now(timezone.utc),
       ... )
-      >>> connect_result = channel.connect()
+      >>> connect_result: FlextResult[object] = channel.connect()
       >>> if connect_result.success:
       ...     connecting_channel = connect_result.data
       ...     print(connecting_channel.state)
@@ -108,7 +109,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
     state: FlextGrpcTypes.Core.GrpcChannelState = "idle"
     options: FlextTypes.Core.Dict = field(default_factory=dict)
 
-    def __post_init__(self) -> None:
+    def __post_init__(self: Self) -> None:
         """Validate entity after initialization.
 
         Ensures critical state validation during object creation.
@@ -133,7 +134,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
                 ],
             )
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate channel domain business rules.
 
         Ensures channel configuration meets business requirements including
@@ -153,7 +154,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             ...     target=FlextGrpcTypes.Core.GrpcTarget(""),
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = channel.validate_business_rules()
+            >>> result: FlextResult[object] = channel.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -168,7 +169,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             return FlextResult[None].fail(f"Invalid channel state: {self.state}")
         return FlextResult[None].ok(None)
 
-    def is_ready(self) -> bool:
+    def is_ready(self: Self) -> bool:
         """Check if channel is ready for gRPC communication.
 
         Returns:
@@ -184,7 +185,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         """
         return self.state == "ready"
 
-    def connect(self) -> FlextResult[FlextGrpcChannel]:
+    def connect(self: Self) -> FlextResult[FlextGrpcChannel]:
         """Initiate channel connection state transition.
 
         Transitions channel from 'idle' state to 'connecting' state following
@@ -201,7 +202,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             >>> channel = FlextGrpcChannel(
             ...     id="test", state="idle", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = channel.connect()
+            >>> result: FlextResult[object] = channel.connect()
             >>> if result.success:
             ...     print(result.data.state)
             'connecting'
@@ -214,7 +215,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         connecting_channel = replace(self, state="connecting")
         return FlextResult[FlextGrpcChannel].ok(connecting_channel)
 
-    def mark_ready(self) -> FlextResult[FlextGrpcChannel]:
+    def mark_ready(self: Self) -> FlextResult[FlextGrpcChannel]:
         """Mark channel as ready for communication.
 
         Transitions channel from 'connecting' state to 'ready' state following
@@ -231,7 +232,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             >>> channel = FlextGrpcChannel(
             ...     id="test", state="connecting", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = channel.mark_ready()
+            >>> result: FlextResult[object] = channel.mark_ready()
             >>> if result.success:
             ...     print(result.data.state)
             'ready'
@@ -244,7 +245,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         ready_channel = replace(self, state="ready")
         return FlextResult[FlextGrpcChannel].ok(ready_channel)
 
-    def disconnect(self) -> FlextResult[FlextGrpcChannel]:
+    def disconnect(self: Self) -> FlextResult[FlextGrpcChannel]:
         """Disconnect the channel and reset to idle state.
 
         Transitions channel to 'idle' state from any current state. This is a
@@ -260,7 +261,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             >>> channel = FlextGrpcChannel(
             ...     id="test", state="ready", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = channel.disconnect()
+            >>> result: FlextResult[object] = channel.disconnect()
             >>> print(result.data.state)
             'idle'
 
@@ -311,7 +312,7 @@ class FlextGrpcServer(FlextGrpcEntity):
       >>> validation = server.validate_business_rules()
       >>> print(validation.success)
       True
-      >>> start_result = server.start()
+      >>> start_result: FlextResult[object] = server.start()
       >>> print(start_result.data.state)
       'starting'
 
@@ -323,7 +324,7 @@ class FlextGrpcServer(FlextGrpcEntity):
     max_workers: int = 10
     services: list[FlextGrpcService] = field(default_factory=list)
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate server domain business rules and configuration.
 
         Ensures server configuration meets business requirements including
@@ -347,7 +348,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     port=50051,
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = server.validate_business_rules()
+            >>> result: FlextResult[object] = server.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -360,7 +361,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     max_workers=10,
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = valid_server.validate_business_rules()
+            >>> result: FlextResult[object] = valid_server.validate_business_rules()
             >>> print(result.success)
             True
 
@@ -394,7 +395,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         return FlextResult[None].ok(None)
 
     @property
-    def address(self) -> str:
+    def address(self: Self) -> str:
         """Get complete server address as host:port format.
 
         Returns:
@@ -414,7 +415,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         return f"{self.host}:{self.port}"
 
     @property
-    def is_running(self) -> bool:
+    def is_running(self: Self) -> bool:
         """Check if server is currently in running state.
 
         Returns:
@@ -435,7 +436,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         """
         return self.state == "running"
 
-    def start(self) -> FlextResult[FlextGrpcServer]:
+    def start(self: Self) -> FlextResult[FlextGrpcServer]:
         """Initiate server startup state transition.
 
         Transitions server from 'stopped' state to 'starting' state following
@@ -452,7 +453,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             >>> server = FlextGrpcServer(
             ...     state="stopped", id="test", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = server.start()
+            >>> result: FlextResult[object] = server.start()
             >>> if result.success:
             ...     print(result.data.state)
             'starting'
@@ -460,7 +461,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             >>> running_server = FlextGrpcServer(
             ...     state="running", id="test2", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = running_server.start()
+            >>> result: FlextResult[object] = running_server.start()
             >>> print(result.is_failure)
             True
 
@@ -471,7 +472,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         starting_server = replace(self, state="starting")
         return FlextResult[FlextGrpcServer].ok(starting_server)
 
-    def mark_running(self) -> FlextResult[FlextGrpcServer]:
+    def mark_running(self: Self) -> FlextResult[FlextGrpcServer]:
         """Mark server as running after successful startup.
 
         Transitions server from 'starting' state to 'running' state following
@@ -488,7 +489,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             >>> server = FlextGrpcServer(
             ...     state="starting", id="test", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = server.mark_running()
+            >>> result: FlextResult[object] = server.mark_running()
             >>> if result.success:
             ...     print(result.data.state)
             'running'
@@ -502,7 +503,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         running_server = replace(self, state="running")
         return FlextResult[FlextGrpcServer].ok(running_server)
 
-    def stop(self) -> FlextResult[FlextGrpcServer]:
+    def stop(self: Self) -> FlextResult[FlextGrpcServer]:
         """Initiate server shutdown state transition.
 
         Transitions server from 'running' state to 'stopping' state following
@@ -519,7 +520,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             >>> server = FlextGrpcServer(
             ...     state="running", id="test", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = server.stop()
+            >>> result: FlextResult[object] = server.stop()
             >>> if result.success:
             ...     print(result.data.state)
             'stopping'
@@ -531,7 +532,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         stopping_server = replace(self, state="stopping")
         return FlextResult[FlextGrpcServer].ok(stopping_server)
 
-    def mark_stopped(self) -> FlextResult[FlextGrpcServer]:
+    def mark_stopped(self: Self) -> FlextResult[FlextGrpcServer]:
         """Mark server as stopped after successful shutdown.
 
         Transitions server from 'stopping' or 'running' state to 'stopped' state.
@@ -549,7 +550,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             >>> server = FlextGrpcServer(
             ...     state="stopping", id="test", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = server.mark_stopped()
+            >>> result: FlextResult[object] = server.mark_stopped()
             >>> if result.success:
             ...     print(result.data.state)
             'stopped'
@@ -586,7 +587,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     methods=["GetUser", "CreateUser"],
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = server.add_service(service)
+            >>> result: FlextResult[object] = server.add_service(service)
             >>> if result.success:
             ...     print(len(result.data.services))
             1
@@ -642,7 +643,7 @@ class FlextGrpcService(FlextGrpcEntity):
     name: str = ""
     methods: FlextTypes.Core.StringList = field(default_factory=list)
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate service domain business rules and method definitions.
 
         Ensures service configuration meets gRPC service requirements including
@@ -664,7 +665,7 @@ class FlextGrpcService(FlextGrpcEntity):
             ...     methods=[],
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = service.validate_business_rules()
+            >>> result: FlextResult[object] = service.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -727,7 +728,7 @@ class FlextGrpcService(FlextGrpcEntity):
             ...     methods=["GetUser"],
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = service.add_method("CreateUser")
+            >>> result: FlextResult[object] = service.add_method("CreateUser")
             >>> if result.success:
             ...     print(len(result.data.methods))
             2
@@ -772,7 +773,7 @@ class FlextGrpcClient(FlextGrpcEntity):
       >>> client = FlextGrpcClient(
       ...     id="api-client", created_at=datetime.now(timezone.utc)
       ... )
-      >>> connect_result = client.connect_to("localhost:50051")
+      >>> connect_result: FlextResult[object] = client.connect_to("localhost:50051")
       >>> if connect_result.success:
       ...     connected_client = connect_result.data
       ...     print(connected_client.is_connected)
@@ -783,7 +784,7 @@ class FlextGrpcClient(FlextGrpcEntity):
     channel: FlextGrpcChannel | None = None
     options: FlextTypes.Core.Dict = field(default_factory=dict)
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate client domain business rules and configuration.
 
         Ensures client configuration meets business requirements including
@@ -808,7 +809,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             ...     channel=invalid_channel,
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = client.validate_business_rules()
+            >>> result: FlextResult[object] = client.validate_business_rules()
             >>> print(result.is_failure)
             True
 
@@ -822,7 +823,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         return FlextResult[None].ok(None)
 
     @property
-    def is_connected(self) -> bool:
+    def is_connected(self: Self) -> bool:
         """Check if client is connected and ready for communication.
 
         Returns:
@@ -849,7 +850,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         return bool(self.channel and self.channel.is_ready())
 
     @property
-    def target(self) -> str | None:
+    def target(self: Self) -> str | None:
         """Get the target server address for client connection.
 
         Returns:
@@ -889,7 +890,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             >>> client = FlextGrpcClient(
             ...     id="test", created_at=datetime.now(timezone.utc)
             ... )
-            >>> result = client.connect_to("localhost:50051")
+            >>> result: FlextResult[object] = client.connect_to("localhost:50051")
             >>> if result.success:
             ...     connected_client = result.data
             ...     print(connected_client.target)
@@ -956,7 +957,7 @@ class FlextGrpcStream(FlextGrpcEntity):
     method_name: str = ""
     stream_type: FlextGrpcTypes.Core.GrpcStreamType = "unary"
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate stream domain business rules and configuration.
 
         Ensures stream configuration meets gRPC streaming requirements including
@@ -977,7 +978,7 @@ class FlextGrpcStream(FlextGrpcEntity):
             ...     stream_type="unary",
             ...     created_at=datetime.now(timezone.utc),
             ... )
-            >>> result = stream.validate_business_rules()
+            >>> result: FlextResult[object] = stream.validate_business_rules()
             >>> print(result.is_failure)
             True
             >>> print(result.error)
@@ -993,7 +994,7 @@ class FlextGrpcStream(FlextGrpcEntity):
         return FlextResult[None].ok(None)
 
     @property
-    def is_streaming(self) -> bool:
+    def is_streaming(self: Self) -> bool:
         """Check if this is a streaming operation (not unary).
 
         Returns:
@@ -1011,7 +1012,7 @@ class FlextGrpcStream(FlextGrpcEntity):
         return self.stream_type != "unary"
 
     @property
-    def is_server_streaming(self) -> bool:
+    def is_server_streaming(self: Self) -> bool:
         """Check if server can send multiple responses.
 
         Returns:
@@ -1029,7 +1030,7 @@ class FlextGrpcStream(FlextGrpcEntity):
         return self.stream_type in {"server_streaming", "bidirectional"}
 
     @property
-    def is_client_streaming(self) -> bool:
+    def is_client_streaming(self: Self) -> bool:
         """Check if client can send multiple requests.
 
         Returns:
@@ -1047,7 +1048,7 @@ class FlextGrpcStream(FlextGrpcEntity):
         return self.stream_type in {"client_streaming", "bidirectional"}
 
     @property
-    def is_bidirectional(self) -> bool:
+    def is_bidirectional(self: Self) -> bool:
         """Check if this is bidirectional streaming.
 
         Returns:

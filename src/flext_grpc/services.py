@@ -26,6 +26,7 @@ from flext_core import (
     FlextContainer,
     FlextLogger,
     FlextResult,
+    FlextService,
     FlextTypes,
 )
 from flext_grpc.entities import (
@@ -160,26 +161,11 @@ def trigger_memory_cleanup() -> None:
     gc.collect()  # Run twice for better cleanup
 
 
-class FlextGrpcServerService:
-    """gRPC server domain service for lifecycle management.
+class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict]):
+    """Single unified gRPC server service class following FLEXT standards.
 
-    Implements business logic for gRPC server operations including startup,
-    shutdown, service registration, and status monitoring. Follows Domain-Driven
-    Design patterns with comprehensive validation and error handling.
-
-    Commands:
-      - start: Start server lifecycle (stopped → starting → running)
-      - stop: Stop server lifecycle (running → stopping → stopped)
-      - add_service: Register gRPC service with server
-      - status: Get current server status and health information
-
-    Example:
-      >>> service = FlextGrpcServerService()
-      >>> result = service.execute("start", server)
-      >>> if result.success:
-      ...     running_server = result.data
-      ...     print(f"Server running: {running_server.state}")
-
+    Contains all gRPC server lifecycle management functionality.
+    Follows FLEXT pattern: one class per module with nested subclasses.
     """
 
     def __init__(self, max_servers: int = 10, thread_pool_size: int = 50) -> None:
@@ -193,6 +179,7 @@ class FlextGrpcServerService:
             object: Description of return value.
 
         """
+        super().__init__()
         self._active_servers: dict[str, GrpcServerProtocol] = {}
         self._max_servers = max_servers
         self._thread_pool_size = thread_pool_size
@@ -277,7 +264,7 @@ class FlextGrpcServerService:
         self._startup_start_time = time.time()
 
         # Transition: stopped → starting
-        start_result = server.start()
+        start_result: FlextResult[FlextGrpcServer] = server.start()
         if start_result.is_failure:
             return start_result
 
@@ -298,12 +285,14 @@ class FlextGrpcServerService:
             )
 
             # Configure port binding
-            port_result = self._configure_server_port(grpc_server, starting_server)
+            port_result: FlextResult[FlextGrpcServer] = self._configure_server_port(
+                grpc_server, starting_server
+            )
             if port_result.is_failure:
                 grpc_server.stop(grace=1.0)
                 return port_result
 
-            configured_server = port_result.unwrap()
+            configured_server: FlextGrpcServer = port_result.unwrap()
             server_key = f"{configured_server.host}:{configured_server.port}"
 
             # Start the REAL gRPC server
@@ -360,7 +349,7 @@ class FlextGrpcServerService:
         self._active_servers[server_key] = cast("GrpcServerProtocol", grpc_server)
 
         # Transition: starting → running
-        running_result = configured_server.mark_running()
+        running_result: FlextResult[FlextGrpcServer] = configured_server.mark_running()
         if running_result.is_failure:
             # Cleanup on failure
             cast("GrpcServerProtocol", grpc_server).stop(grace=1.0)
@@ -381,7 +370,7 @@ class FlextGrpcServerService:
     def _stop_server(self, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
         """Stop server with REAL gRPC server shutdown."""
         # Transition: running → stopping
-        stop_result = server.stop()
+        stop_result: FlextResult[FlextGrpcServer] = server.stop()
         if stop_result.is_failure:
             return stop_result
 
@@ -405,7 +394,7 @@ class FlextGrpcServerService:
             if stopped_result.is_failure:
                 return stopped_result
 
-            return FlextResult[FlextGrpcServer].ok(stopped_result.unwrap())
+            return stopped_result
 
         except Exception as e:
             return FlextResult[FlextGrpcServer].fail(
@@ -439,7 +428,7 @@ class FlextGrpcServerService:
             add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)
 
             # Add service to server entity (tracks the registration)
-            add_result = server.add_service(service_def)
+            add_result: FlextResult[FlextGrpcServer] = server.add_service(service_def)
             if add_result.is_failure:
                 return add_result
 
@@ -461,7 +450,7 @@ class FlextGrpcServerService:
         grpc_server_active = server_key in self._active_servers
 
         # Include performance metrics if available
-        metrics = self._server_metrics.get(server_key, {})
+        metrics: dict[str, float] = self._server_metrics.get(server_key, {})
         current_time = time.time()
 
         status: FlextTypes.Core.Dict = {
@@ -503,7 +492,7 @@ class FlextGrpcClientService:
 
     Example:
       >>> service = FlextGrpcClientService()
-      >>> result = service.execute("connect", client)
+      >>> result: FlextResult[object] = service.execute("connect", client)
       >>> if result.success:
       ...     connected_client = result.data
       ...     print(f"Client connected: {connected_client.channel_state}")
@@ -594,7 +583,9 @@ class FlextGrpcClientService:
     ) -> FlextResult[FlextGrpcClient]:
         """Connect client with REAL gRPC channel establishment."""
         # Validate client preconditions
-        validation_result = self._validate_client_for_connection(client)
+        validation_result: FlextResult[FlextGrpcClient] = (
+            self._validate_client_for_connection(client)
+        )
         if validation_result.is_failure:
             return validation_result
 
@@ -604,7 +595,9 @@ class FlextGrpcClientService:
 
         try:
             # Create and test gRPC channel
-            channel_result = self._create_and_test_grpc_channel(target)
+            channel_result: FlextResult[object] = self._create_and_test_grpc_channel(
+                target
+            )
             if channel_result.is_failure:
                 return FlextResult[FlextGrpcClient].fail(
                     channel_result.error or "Channel creation failed",
@@ -966,18 +959,13 @@ class FlextGrpcStreamService:
                 return FlextResult[FlextGrpcStream | FlextTypes.Core.Dict].fail(
                     f"Target must be string, got: {type(target)}",
                 )
-            result = self._create_stream(stream, target)
+            result: FlextResult[object] = self._create_stream(stream, target)
             return cast("FlextResult[FlextGrpcStream | FlextTypes.Core.Dict]", result)
         if command == "send":
             data = args[0] if args else kwargs.get("data")
-            send_result = self._send_data(stream, data)
-            return cast(
-                "FlextResult[FlextGrpcStream | FlextTypes.Core.Dict]",
-                send_result,
-            )
+            return self._send_data(stream, data)
         if command == "close":
-            result = self._close_stream(stream)
-            return cast("FlextResult[FlextGrpcStream | FlextTypes.Core.Dict]", result)
+            return self._close_stream(stream)
         return FlextResult[FlextGrpcStream | FlextTypes.Core.Dict].fail(
             f"Unknown stream command: {command}",
         )
@@ -1407,7 +1395,7 @@ class FlextGrpcStreamService:
                     stream_info = self._active_streams[stream_key]
 
                     # Partial buffer cleanup - keep only recent items
-                    buffer = stream_info.get("request_buffer", [])
+                    buffer: list[object] = stream_info.get("request_buffer", [])
                     if len(buffer) > CLIENT_STREAMING_BUFFER_THRESHOLD * 2:
                         # Keep only the most recent half of buffer items
                         keep_count = len(buffer) // 2
@@ -1473,7 +1461,9 @@ class FlextGrpcStreamService:
                         metrics["uptime"] = current_time - metrics["creation_time"]
 
                         # Update buffer sizes and memory usage
-                        buffer_size = len(stream_info.get("request_buffer", []))
+                        buffer_size: list[object] = len(
+                            stream_info.get("request_buffer", [])
+                        )
                         buffer_size_bytes = stream_info.get("buffer_size_bytes", 0)
                         memory_pressure = stream_info.get("memory_pressure_score", 0.0)
 
@@ -1572,11 +1562,13 @@ class FlextGrpcPlatform:
 
     Example:
       >>> platform = FlextGrpcPlatform()
-      >>> server_result = platform.start_server(server)
+      >>> server_result: FlextResult[object] = platform.start_server(server)
       >>> if server_result.success:
-      ...     client_result = platform.connect_client(client)
+      ...     client_result: FlextResult[object] = platform.connect_client(client)
       ...     if client_result.success:
-      ...         response = platform.make_call(client_result.data, "GetData", {})
+      ...         response: dict[str, object] = platform.make_call(
+      ...             client_result.data, "GetData", {}
+      ...         )
 
     """
 

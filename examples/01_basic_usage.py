@@ -11,14 +11,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import sys
-from datetime import UTC, datetime
-from pathlib import Path
-
 # Add src directory to Python path for development
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
-
 import contextlib
+from datetime import UTC, datetime
 
 from flext_grpc import (
     FlextGrpcChannel,

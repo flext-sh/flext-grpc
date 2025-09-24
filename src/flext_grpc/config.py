@@ -6,6 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import Self
+
 from pydantic import Field, field_validator
 
 from flext_core import (
@@ -91,14 +93,14 @@ class FlextGrpcConfig(FlextConfig):
             raise FlextGrpcConfigurationError(msg)
         return v
 
-    def get_address(self) -> str:
+    def get_address(self: Self) -> str:
         """Get formatted address string.
 
         Returns:
             Formatted address as "host:port"
 
         Example:
-            >>> config = FlextGrpcConfig(
+            >>> config: dict[str, object] = FlextGrpcConfig(
             ...     host=FlextConstants.Platform.DEFAULT_HOST,
             ...     port=FlextConstants.Platform.GRPC_DEFAULT_PORT,
             ... )

@@ -12,15 +12,13 @@ from flext_core import FlextContainer
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
+    FlextGrpcClientService,
     FlextGrpcPlatform,
     FlextGrpcServer,
-    TGrpcTarget,
-    create_stream,
-)
-from flext_grpc.services import (
-    FlextGrpcClientService,
     FlextGrpcServerService,
     FlextGrpcStreamService,
+    TGrpcTarget,
+    create_stream,
 )
 
 

@@ -214,7 +214,7 @@ class FlextGrpcConfigurationError(FlextGrpcError):
       Configuration error handling with detailed context:
 
       >>> try:
-      ...     config = FlextGrpcConfig(port=999999)  # Invalid port
+      ...     config: dict[str, object] = FlextGrpcConfig(port=999999)  # Invalid port
       ... except FlextGrpcConfigurationError as e:
       ...     print(f"Configuration error in '{e.config_key}': {e}")
       ...     print(f"Invalid value: {e.config_value}")

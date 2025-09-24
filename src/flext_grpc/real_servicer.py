@@ -10,23 +10,23 @@ from __future__ import annotations
 
 import time
 from collections.abc import Iterator
-from typing import TYPE_CHECKING
-
-from flext_core.constants import FlextConstants
-
-if TYPE_CHECKING:
-    from grpc import ServicerContext
 
 import grpc
+from flext_core.constants import FlextConstants
 
-from flext_grpc.proto import (
+# Import protobuf classes - these are dynamically generated
+from grpc import ServicerContext  # type: ignore[import-untyped]
+
+from flext_grpc.proto.flext_grpc_pb2 import (  # type: ignore[attr-defined]
     EchoRequest,
     EchoResponse,
-    FlextGrpcServiceServicer,
     HealthRequest,
     HealthResponse,
     StreamRequest,
     StreamResponse,
+)
+from flext_grpc.proto.flext_grpc_pb2_grpc import (
+    FlextGrpcServiceServicer,  # type: ignore[attr-defined]
 )
 
 
@@ -46,7 +46,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self.server_id = server_id
         self.start_time = time.time()
 
-    def echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
+    def echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:  # type: ignore[no-any-unimported]
         """Real unary Echo implementation."""
         try:
             # Process the actual request
@@ -71,7 +71,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    def server_stream(
+    def server_stream(  # type: ignore[no-any-unimported]
         self,
         request: StreamRequest,
         context: ServicerContext,
@@ -99,7 +99,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
-    ) -> StreamResponse:
+    ) -> StreamResponse:  # type: ignore[no-any-unimported]
         """Real client streaming implementation."""
         try:
             messages: list[str] = []
@@ -111,7 +111,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
                 sequence_count += 1
 
             # Return aggregated response
-            combined_data = " | ".join(messages)
+            combined_data: str = " | ".join(messages)
             return StreamResponse(
                 data=f"Received {sequence_count} messages: {combined_data}",
                 sequence=sequence_count,
@@ -128,7 +128,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
-    ) -> Iterator[StreamResponse]:
+    ) -> Iterator[StreamResponse]:  # type: ignore[no-any-unimported]
         """Real bidirectional streaming implementation."""
         try:
             # Process each request and yield responses
@@ -151,7 +151,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self,
         request: HealthRequest,
         context: ServicerContext,
-    ) -> HealthResponse:
+    ) -> HealthResponse:  # type: ignore[no-any-unimported]
         """Real health check implementation."""
         try:
             # Check server health

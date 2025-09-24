@@ -36,6 +36,7 @@ from flext_grpc.exceptions import (
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
+from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.services import (
     FlextGrpcClientService,
     FlextGrpcPlatform,
@@ -52,6 +53,7 @@ except importlib.metadata.PackageNotFoundError:
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
 __all__: FlextTypes.Core.StringList = [
+    "EchoRequest",
     "FlextContainer",
     "FlextGrpcChannel",
     "FlextGrpcClient",
@@ -65,6 +67,7 @@ __all__: FlextTypes.Core.StringList = [
     "FlextGrpcServer",
     "FlextGrpcServerService",
     "FlextGrpcService",
+    "FlextGrpcServiceStub",
     "FlextGrpcStream",
     "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",

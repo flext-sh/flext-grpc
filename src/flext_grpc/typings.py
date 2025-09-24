@@ -82,7 +82,7 @@ class FlextGrpcTypes(FlextTypes):
         class GrpcChannel(Protocol):
             """Protocol for minimal gRPC channel operations."""
 
-            def close(self) -> None:
+            def close(self: object) -> None:
                 """Close the channel."""
 
             def unsubscribe(self, callback: object) -> None:
@@ -95,7 +95,7 @@ class FlextGrpcTypes(FlextTypes):
             def add_generic_rpc_handlers(self, handlers: FlextTypes.Core.List) -> None:
                 """Add generic RPC handlers."""
 
-            def start(self) -> None:
+            def start(self: object) -> None:
                 """Start the server."""
 
             def stop(self, grace: float | None) -> None:

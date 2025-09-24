@@ -13,12 +13,10 @@ import grpc
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
-    FlextGrpcServer,
-    FlextGrpcService,
-)
-from flext_grpc.services import (
     FlextGrpcClientService,
+    FlextGrpcServer,
     FlextGrpcServerService,
+    FlextGrpcService,
 )
 
 

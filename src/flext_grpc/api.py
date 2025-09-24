@@ -279,7 +279,7 @@ def validate_address(address: str | None) -> FlextResult[bool]:
       FlextResult containing validation result or error message
 
     Example:
-      >>> result = validate_address("localhost:50051")
+      >>> result: FlextResult[object] = validate_address("localhost:50051")
       >>> if result.success:
       ...     print(f"Valid: {result.data}")
 
@@ -310,7 +310,7 @@ def parse_address(address: str) -> dict[str, str | int]:
       ValueError: If address format is invalid
 
     Example:
-      >>> result = parse_address("localhost:50051")
+      >>> result: FlextResult[object] = parse_address("localhost:50051")
       >>> print(f"Host: {result['host']}, Port: {result['port']}")
       Host: localhost, Port: 50051
 

@@ -12,19 +12,15 @@ from datetime import UTC, datetime
 import grpc
 
 from flext_grpc import (
+    EchoRequest,
     FlextGrpcChannel,
     FlextGrpcClient,
-    FlextGrpcServer,
-    FlextGrpcService,
-    FlextGrpcStream,
-)
-from flext_grpc.proto import (
-    EchoRequest,
-    FlextGrpcServiceStub,
-)
-from flext_grpc.services import (
     FlextGrpcClientService,
+    FlextGrpcServer,
     FlextGrpcServerService,
+    FlextGrpcService,
+    FlextGrpcServiceStub,
+    FlextGrpcStream,
     FlextGrpcStreamService,
 )
 
