@@ -14,7 +14,7 @@ from __future__ import annotations
 import contextlib
 from datetime import UTC, datetime
 
-from flext_core import FlextModels, FlextTypes
+from flext_core import FlextTypes
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -24,7 +24,6 @@ from flext_grpc import (
     FlextGrpcServerService,
     FlextGrpcService,
     FlextGrpcStream,
-    FlextGrpcTypes,
 )
 
 
@@ -43,7 +42,7 @@ class GrpcServerManager:
         count: int = 3,
     ) -> list[FlextGrpcServer]:
         """Create a pool of servers on consecutive ports."""
-        servers = []
+        servers: list[FlextGrpcServer] = []
 
         for i in range(count):
             server_id = f"pool-server-{i}"
@@ -57,11 +56,11 @@ class GrpcServerManager:
             )
 
             server = FlextGrpcServer(
-                id=FlextModels(server_id),
+                id=server_id,
                 host=config.host,
                 port=config.port,
                 max_workers=config.max_workers,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             self.servers[server_id] = server
@@ -76,7 +75,9 @@ class GrpcServerManager:
 
         for server_id, server in self.servers.items():
             start_result = self.server_service.execute("start", server)
-            if start_result.success and isinstance(start_result.data, FlextGrpcServer):
+            if start_result.is_success and isinstance(
+                start_result.data, FlextGrpcServer
+            ):
                 self.servers[server_id] = start_result.data
                 results[server_id] = True
             else:
@@ -91,7 +92,7 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             if server.is_running:
                 stop_result = self.server_service.execute("stop", server)
-                if stop_result.success and isinstance(
+                if stop_result.is_success and isinstance(
                     stop_result.data,
                     FlextGrpcServer,
                 ):
@@ -116,7 +117,7 @@ class GrpcServerManager:
                 "max_workers": str(server.max_workers),
                 "timeout": f"{config.timeout}s",
                 "is_running": str(server.is_running),
-                "is_valid": str(server.validate_business_rules().success),
+                "is_valid": str(server.validate_business_rules().is_success),
             }
 
         return status
@@ -136,22 +137,22 @@ class GrpcClientPool:
         servers: list[FlextGrpcServer],
     ) -> list[FlextGrpcClient]:
         """Create clients for a list of servers."""
-        clients = []
+        clients: list[FlextGrpcClient] = []
 
         for i, server in enumerate(servers):
             client_id = f"client-for-{server.id}"
             target = server.address
 
             channel = FlextGrpcChannel(
-                id=FlextModels(f"channel-{i}"),
-                target=FlextGrpcTypes.Core.GrpcTarget(target),
-                created_at=FlextModels(datetime.now(UTC)),
+                id=f"channel-{i}",
+                target=target,  # GrpcTarget is type alias, not constructor
+                created_at=datetime.now(UTC),
             )
 
             client = FlextGrpcClient(
-                id=FlextModels(client_id),
+                id=client_id,
                 channel=channel,
-                created_at=FlextModels(datetime.now(UTC)),
+                created_at=datetime.now(UTC),
             )
 
             self.clients[client_id] = client
@@ -166,7 +167,7 @@ class GrpcClientPool:
 
         for client_id, client in self.clients.items():
             connect_result = self.client_service.execute("connect", client)
-            if connect_result.success and isinstance(
+            if connect_result.is_success and isinstance(
                 connect_result.data,
                 FlextGrpcClient,
             ):
@@ -194,7 +195,7 @@ class GrpcClientPool:
                     method_name=method_name,
                     data=data,
                 )
-                if call_result.success:
+                if call_result.is_success:
                     results[client_id] = call_result.data or {
                         "method": method_name,
                         "status": "success",
@@ -242,7 +243,7 @@ class ServiceRegistry:
 
     def find_service_by_method(self, method_name: str) -> list[FlextTypes.Core.Headers]:
         """Find services that support a specific method."""
-        matches = []
+        matches: list[dict[str, str]] = []
 
         for service_id, service in self.services.items():
             if service.has_method(method_name):
@@ -314,24 +315,24 @@ def example_3_service_registry() -> None:
 
     # Register multiple services
     user_service = FlextGrpcService(
-        id=FlextModels("user-service"),
+        id="user-service",
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser", "ListUsers"],
-        created_at=FlextModels(datetime.now(UTC)),
+        created_at=datetime.now(UTC),
     )
 
     order_service = FlextGrpcService(
-        id=FlextModels("order-service"),
+        id="order-service",
         name="OrderService",
         methods=["GetOrder", "CreateOrder", "UpdateOrder", "CancelOrder", "ListOrders"],
-        created_at=FlextModels(datetime.now(UTC)),
+        created_at=datetime.now(UTC),
     )
 
     notification_service = FlextGrpcService(
-        id=FlextModels("notification-service"),
+        id="notification-service",
         name="NotificationService",
         methods=["SendNotification", "GetNotifications", "MarkAsRead"],
-        created_at=FlextModels(datetime.now(UTC)),
+        created_at=datetime.now(UTC),
     )
 
     # Register services with different servers
@@ -360,28 +361,28 @@ def example_4_streaming() -> None:
     # Create different stream types
     streams = [
         FlextGrpcStream(
-            id=FlextModels("unary-stream"),
+            id="unary-stream",
             method_name="GetUser",
             stream_type="unary",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         ),
         FlextGrpcStream(
-            id=FlextModels("server-stream"),
+            id="server-stream",
             method_name="StreamMessages",
             stream_type="server_streaming",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         ),
         FlextGrpcStream(
-            id=FlextModels("client-stream"),
+            id="client-stream",
             method_name="UploadData",
             stream_type="client_streaming",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         ),
         FlextGrpcStream(
-            id=FlextModels("bidi-stream"),
+            id="bidi-stream",
             method_name="Chat",
             stream_type="bidirectional",
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         ),
     ]
 
@@ -400,10 +401,10 @@ def example_5_error_handling() -> None:
     # Try to start invalid server
     try:
         invalid_server = FlextGrpcServer(
-            id=FlextModels("invalid-server"),
+            id="invalid-server",
             host="",  # Invalid
             port=0,  # Invalid
-            created_at=FlextModels(datetime.now(UTC)),
+            created_at=datetime.now(UTC),
         )
         invalid_server.validate_business_rules()
     except (RuntimeError, ValueError, TypeError):
@@ -411,12 +412,12 @@ def example_5_error_handling() -> None:
 
     # Try to start already running server
     server = FlextGrpcServer(
-        id=FlextModels("test-server"),
-        created_at=FlextModels(datetime.now(UTC)),
+        id="test-server",
+        created_at=datetime.now(UTC),
     )
 
     start1 = server_service.execute("start", server)
-    if start1.success and isinstance(start1.data, FlextGrpcServer):
+    if start1.is_success and isinstance(start1.data, FlextGrpcServer):
         running_server = start1.data
         server_service.execute("start", running_server)
 
@@ -424,9 +425,9 @@ def example_5_error_handling() -> None:
 
     # Try to connect client without channel
     no_channel_client = FlextGrpcClient(
-        id=FlextModels("no-channel-client"),
+        id="no-channel-client",
         channel=None,
-        created_at=FlextModels(datetime.now(UTC)),
+        created_at=datetime.now(UTC),
     )
 
     client_service = FlextGrpcClientService()
@@ -434,15 +435,15 @@ def example_5_error_handling() -> None:
 
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
-        id=FlextModels("test-channel"),
-        target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
-        created_at=FlextModels(datetime.now(UTC)),
+        id="test-channel",
+        target="localhost:50051",  # GrpcTarget is type alias, not constructor
+        created_at=datetime.now(UTC),
     )
 
     disconnected_client = FlextGrpcClient(
-        id=FlextModels("disconnected-client"),
+        id="disconnected-client",
         channel=channel,
-        created_at=FlextModels(datetime.now(UTC)),
+        created_at=datetime.now(UTC),
     )
 
     client_service.execute("call", disconnected_client, method_name="TestMethod")

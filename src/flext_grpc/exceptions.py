@@ -58,7 +58,7 @@ class FlextGrpcValidationError(FlextGrpcError):
     - Developer-focused debugging information
 
     Attributes:
-      field_name (str | None): Name of the field that failed validation.
+      field_name (Union[str, None]): Name of the field that failed validation.
           Provides context for identifying specific validation failures.
           None when validation error is not field-specific.
 
@@ -88,7 +88,7 @@ class FlextGrpcValidationError(FlextGrpcError):
 
         Args:
             message (str): Detailed validation error message for user feedback.
-            field_name (str | None): Name of field that failed validation.
+            field_name (Union[str, None]): Name of field that failed validation.
                 Provides context for error identification and resolution.
 
         Returns:
@@ -197,7 +197,7 @@ class FlextGrpcConfigurationError(FlextGrpcError):
     - Deployment and environment-specific error handling
 
     Attributes:
-      config_key (str | None): Configuration key that caused the error.
+      config_key (Union[str, None]): Configuration key that caused the error.
           Provides context for identifying specific configuration issues.
           None when error is not key-specific.
       config_value (object): Invalid configuration value that caused the error.
@@ -241,7 +241,7 @@ class FlextGrpcConfigurationError(FlextGrpcError):
 
         Args:
             message (str): Detailed configuration error message for user feedback.
-            config_key (str | None): Configuration key that caused the error.
+            config_key (Union[str, None]): Configuration key that caused the error.
                 Provides context for identifying and fixing configuration issues.
             config_value (object): Invalid configuration value for analysis.
                 Enables debugging and validation rule development.

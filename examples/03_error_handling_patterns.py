@@ -195,7 +195,7 @@ def error_recovery_patterns() -> FlextResult[str]:
     # Pattern 1: Retry with backoff
     for attempt in range(3):
         connection_result = simulate_connection_error()
-        if connection_result.success:
+        if connection_result.is_success:
             logger.info(f"✅ Connection succeeded on attempt {attempt + 1}")
             break
 
@@ -212,7 +212,7 @@ def error_recovery_patterns() -> FlextResult[str]:
         logger.warning("Primary config failed, trying fallback")
 
         fallback_config_result = create_server_config(8080, 2)  # Fallback
-        if fallback_config_result.success:
+        if fallback_config_result.is_success:
             logger.info("✅ Fallback configuration successful")
             return FlextResult[str].ok("Recovery successful with fallback config")
 
@@ -293,7 +293,7 @@ def main() -> None:
     # Comprehensive pipeline
     logger.info("\n🔄 2. Comprehensive Error Handling Pipeline")
     pipeline_result = comprehensive_error_handling_pipeline()
-    if pipeline_result.success:
+    if pipeline_result.is_success:
         logger.info(f"✅ Pipeline result: {pipeline_result.data}")
     else:
         logger.error(f"❌ Pipeline failed: {pipeline_result.error}")
@@ -301,7 +301,7 @@ def main() -> None:
     # Error recovery patterns
     logger.info("\n🔧 3. Error Recovery Patterns")
     recovery_result = error_recovery_patterns()
-    if recovery_result.success:
+    if recovery_result.is_success:
         logger.info(f"✅ Recovery result: {recovery_result.data}")
     else:
         logger.error(f"❌ Recovery failed: {recovery_result.error}")
@@ -310,7 +310,7 @@ def main() -> None:
     logger.info("\n⚡ 4. Async Error Handling")
     try:
         async_result = asyncio.run(async_error_handling())
-        if async_result.success:
+        if async_result.is_success:
             logger.info(f"✅ Async result: {async_result.data}")
         else:
             logger.error(f"❌ Async failed: {async_result.error}")

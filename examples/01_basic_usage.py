@@ -23,7 +23,6 @@ from flext_grpc import (
     FlextGrpcServer,
     FlextGrpcServerService,
     FlextGrpcService,
-    FlextGrpcTypes,
 )
 
 # FlextGrpcClient and FlextGrpcServer already imported above
@@ -45,7 +44,7 @@ def example_1_basic_entities() -> None:
     # Create a gRPC channel
     channel = FlextGrpcChannel(
         id="example-channel",
-        target=FlextGrpcTypes.Core.GrpcTarget("localhost:8080"),
+        target="localhost:8080",
         created_at=datetime.now(UTC),
     )
 
@@ -101,23 +100,23 @@ def example_3_operations() -> None:
 
     # Start server
     start_result = server_service.execute("start", server)
-    if start_result.success:
+    if start_result.is_success:
         pass
 
     # Stop server
-    if start_result.success and start_result.data is not None:
+    if start_result.is_success and start_result.data is not None:
         # Check if data is actually a server instance
         if isinstance(start_result.data, FlextGrpcServer):
             stop_result = server_service.execute("stop", start_result.data)
         else:
             return
-        if stop_result.success:
+        if stop_result.is_success:
             pass
 
     # Create client for operations
     channel = FlextGrpcChannel(
         id="ops-channel",
-        target=FlextGrpcTypes.Core.GrpcTarget("localhost:7070"),
+        target="localhost:7070",
         created_at=datetime.now(UTC),
     )
 
@@ -129,7 +128,7 @@ def example_3_operations() -> None:
 
     # Connect client
     connect_result = client_service.execute("connect", client)
-    if connect_result.success and isinstance(connect_result.data, FlextGrpcClient):
+    if connect_result.is_success and isinstance(connect_result.data, FlextGrpcClient):
         # Call method
         call_result = client_service.execute(
             "call",
@@ -137,7 +136,7 @@ def example_3_operations() -> None:
             method_name="GetServerInfo",
             data={"request_id": "12345"},
         )
-        if call_result.success:
+        if call_result.is_success:
             pass
 
 
@@ -173,7 +172,7 @@ def example_4_validation() -> None:
     # Channel validation
     valid_channel = FlextGrpcChannel(
         id="valid-channel",
-        target=FlextGrpcTypes.Core.GrpcTarget("localhost:8080"),
+        target="localhost:8080",
         state="ready",
         created_at=datetime.now(UTC),
     )
@@ -182,7 +181,7 @@ def example_4_validation() -> None:
 
     invalid_channel = FlextGrpcChannel(
         id="invalid-channel",
-        target=FlextGrpcTypes.Core.GrpcTarget(""),  # Invalid empty target
+        target="",  # Invalid empty target
         created_at=datetime.now(UTC),
     )
 
@@ -196,19 +195,19 @@ def example_5_state_transitions() -> None:
     # Channel state transitions
     channel = FlextGrpcChannel(
         id="transition-channel",
-        target=FlextGrpcTypes.Core.GrpcTarget("localhost:8080"),
+        target="localhost:8080",
         state="idle",
         created_at=datetime.now(UTC),
     )
 
     # Connect channel
     connect_result = channel.connect()
-    if connect_result.success:
+    if connect_result.is_success:
         connecting_channel = connect_result.data
 
         # Mark ready
         ready_result = connecting_channel.mark_ready()
-        if ready_result.success:
+        if ready_result.is_success:
             pass
 
     # Server state management
@@ -221,7 +220,7 @@ def example_5_state_transitions() -> None:
 
     # Start server
     start_result = server_service.execute("start", server)
-    if start_result.success:
+    if start_result.is_success:
         pass
 
 

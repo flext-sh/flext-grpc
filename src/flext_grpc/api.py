@@ -81,7 +81,7 @@ def create_client(
         # Create channel directly
         channel = FlextGrpcChannel(
             id=str(uuid4()),
-            target=FlextGrpcTypes.Core.GrpcTarget(target),
+            target=target,  # GrpcTarget is a type alias for str, not a constructor
             state="idle",
             options={},
         )
@@ -115,7 +115,7 @@ def create_channel(
     try:
         channel = FlextGrpcChannel(
             id=str(uuid4()),
-            target=FlextGrpcTypes.Core.GrpcTarget(target),
+            target=target,  # GrpcTarget is a type alias for str, not a constructor
             state="idle",
             options={},
         )
@@ -280,7 +280,7 @@ def validate_address(address: str | None) -> FlextResult[bool]:
 
     Example:
       >>> result: FlextResult[object] = validate_address("localhost:50051")
-      >>> if result.success:
+      >>> if result.is_success:
       ...     print(f"Valid: {result.data}")
 
     """
@@ -288,8 +288,8 @@ def validate_address(address: str | None) -> FlextResult[bool]:
         if address is None or not address.strip():
             return FlextResult[bool].fail("Address cannot be empty")
 
-        # Check target validity (FlextGrpcTypes.Validation.validate_target returns bool)
-        target_is_valid = FlextGrpcTypes.Validation.validate_target(address)
+        # Check target validity (FlextGrpcTypes.GrpcValidation.validate_target returns bool)
+        target_is_valid = FlextGrpcTypes.GrpcValidation.validate_target(address)
         if target_is_valid:
             return FlextResult[bool].ok(data=True)
         return FlextResult[bool].fail("Invalid address format")

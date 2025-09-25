@@ -91,12 +91,12 @@ class FlextGrpcChannel(FlextGrpcEntity):
       >>> from datetime import datetime, timezone
       >>> channel = FlextGrpcChannel(
       ...     id="main-channel",
-      ...     target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
+      ...     target="localhost:50051",
       ...     state="idle",
       ...     created_at=datetime.now(timezone.utc),
       ... )
       >>> connect_result: FlextResult[object] = channel.connect()
-      >>> if connect_result.success:
+      >>> if connect_result.is_success:
       ...     connecting_channel = connect_result.data
       ...     print(connecting_channel.state)
       'connecting'
@@ -104,7 +104,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
     """
 
     target: FlextGrpcTypes.Core.GrpcTarget = field(
-        default_factory=lambda: FlextGrpcTypes.Core.GrpcTarget("")
+        default_factory=lambda: ""  # GrpcTarget is a type alias for str, not a constructor
     )
     state: FlextGrpcTypes.Core.GrpcChannelState = "idle"
     options: FlextTypes.Core.Dict = field(default_factory=dict)
@@ -151,7 +151,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         Example:
             >>> channel = FlextGrpcChannel(
             ...     id="test",
-            ...     target=FlextGrpcTypes.Core.GrpcTarget(""),
+            ...     target="",
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result: FlextResult[object] = channel.validate_business_rules()
@@ -203,7 +203,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             ...     id="test", state="idle", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = channel.connect()
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(result.data.state)
             'connecting'
 
@@ -233,7 +233,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             ...     id="test", state="connecting", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = channel.mark_ready()
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(result.data.state)
             'ready'
 
@@ -310,7 +310,7 @@ class FlextGrpcServer(FlextGrpcEntity):
       ...     created_at=datetime.now(timezone.utc),
       ... )
       >>> validation = server.validate_business_rules()
-      >>> print(validation.success)
+      >>> print(validation.is_success)
       True
       >>> start_result: FlextResult[object] = server.start()
       >>> print(start_result.data.state)
@@ -362,7 +362,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result: FlextResult[object] = valid_server.validate_business_rules()
-            >>> print(result.success)
+            >>> print(result.is_success)
             True
 
         Integration:
@@ -454,7 +454,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="stopped", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.start()
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(result.data.state)
             'starting'
 
@@ -490,7 +490,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="starting", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.mark_running()
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(result.data.state)
             'running'
 
@@ -521,7 +521,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="running", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.stop()
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(result.data.state)
             'stopping'
 
@@ -551,7 +551,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     state="stopping", id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.mark_stopped()
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(result.data.state)
             'stopped'
 
@@ -588,7 +588,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result: FlextResult[object] = server.add_service(service)
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(len(result.data.services))
             1
 
@@ -633,7 +633,7 @@ class FlextGrpcService(FlextGrpcEntity):
       ...     created_at=datetime.now(timezone.utc),
       ... )
       >>> validation = service.validate_business_rules()
-      >>> print(validation.success)
+      >>> print(validation.is_success)
       True
       >>> print(service.has_method("GetUser"))
       True
@@ -729,7 +729,7 @@ class FlextGrpcService(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result: FlextResult[object] = service.add_method("CreateUser")
-            >>> if result.success:
+            >>> if result.is_success:
             ...     print(len(result.data.methods))
             2
             >>> print(result.data.has_method("CreateUser"))
@@ -774,7 +774,7 @@ class FlextGrpcClient(FlextGrpcEntity):
       ...     id="api-client", created_at=datetime.now(timezone.utc)
       ... )
       >>> connect_result: FlextResult[object] = client.connect_to("localhost:50051")
-      >>> if connect_result.success:
+      >>> if connect_result.is_success:
       ...     connected_client = connect_result.data
       ...     print(connected_client.is_connected)
       True
@@ -801,7 +801,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         Example:
             >>> invalid_channel = FlextGrpcChannel(
             ...     id="bad-channel",
-            ...     target=FlextGrpcTypes.Core.GrpcTarget(""),  # Invalid empty target
+            ...     target="",  # Invalid empty target
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> client = FlextGrpcClient(
@@ -838,7 +838,7 @@ class FlextGrpcClient(FlextGrpcEntity):
 
             >>> ready_channel = FlextGrpcChannel(
             ...     id="ready-channel",
-            ...     target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
+            ...     target="localhost:50051",
             ...     state="ready",
             ...     created_at=datetime.now(timezone.utc),
             ... )
@@ -854,12 +854,12 @@ class FlextGrpcClient(FlextGrpcEntity):
         """Get the target server address for client connection.
 
         Returns:
-            str | None: Target address if channel exists, None otherwise
+            Union[str, None]: Target address if channel exists, None otherwise
 
         Example:
             >>> channel = FlextGrpcChannel(
             ...     id="test-channel",
-            ...     target=FlextGrpcTypes.Core.GrpcTarget("localhost:50051"),
+            ...     target="localhost:50051",
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> client = FlextGrpcClient(
@@ -891,7 +891,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             ...     id="test", created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = client.connect_to("localhost:50051")
-            >>> if result.success:
+            >>> if result.is_success:
             ...     connected_client = result.data
             ...     print(connected_client.target)
             'localhost:50051'
@@ -905,7 +905,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         try:
             channel = FlextGrpcChannel(
                 id=str(uuid4()),
-                target=FlextGrpcTypes.Core.GrpcTarget(target),
+                target=target,
                 state="idle",
                 options={},
             )
