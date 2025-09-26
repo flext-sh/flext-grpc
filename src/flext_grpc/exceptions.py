@@ -11,6 +11,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import override
+
 from flext_core import FlextExceptions
 
 
@@ -58,7 +60,7 @@ class FlextGrpcValidationError(FlextGrpcError):
     - Developer-focused debugging information
 
     Attributes:
-      field_name (Union[str, None]): Name of the field that failed validation.
+      field_name (str | None): Name of the field that failed validation.
           Provides context for identifying specific validation failures.
           None when validation error is not field-specific.
 
@@ -83,12 +85,14 @@ class FlextGrpcValidationError(FlextGrpcError):
 
     """
 
+    @override
+    @override
     def __init__(self, message: str, field_name: str | None = None) -> None:
         """Initialize validation error with message and optional field context.
 
         Args:
             message (str): Detailed validation error message for user feedback.
-            field_name (Union[str, None]): Name of field that failed validation.
+            field_name (str | None): Name of field that failed validation.
                 Provides context for error identification and resolution.
 
         Returns:
@@ -197,7 +201,7 @@ class FlextGrpcConfigurationError(FlextGrpcError):
     - Deployment and environment-specific error handling
 
     Attributes:
-      config_key (Union[str, None]): Configuration key that caused the error.
+      config_key (str | None): Configuration key that caused the error.
           Provides context for identifying specific configuration issues.
           None when error is not key-specific.
       config_value (object): Invalid configuration value that caused the error.
@@ -214,7 +218,9 @@ class FlextGrpcConfigurationError(FlextGrpcError):
       Configuration error handling with detailed context:
 
       >>> try:
-      ...     config: dict[str, object] = FlextGrpcConfig(port=999999)  # Invalid port
+      ...     config: dict["str", "object"] = FlextGrpcConfig(
+      ...         port=999999
+      ...     )  # Invalid port
       ... except FlextGrpcConfigurationError as e:
       ...     print(f"Configuration error in '{e.config_key}': {e}")
       ...     print(f"Invalid value: {e.config_value}")
@@ -231,6 +237,8 @@ class FlextGrpcConfigurationError(FlextGrpcError):
 
     """
 
+    @override
+    @override
     def __init__(
         self,
         message: str,
@@ -241,7 +249,7 @@ class FlextGrpcConfigurationError(FlextGrpcError):
 
         Args:
             message (str): Detailed configuration error message for user feedback.
-            config_key (Union[str, None]): Configuration key that caused the error.
+            config_key (str | None): Configuration key that caused the error.
                 Provides context for identifying and fixing configuration issues.
             config_value (object): Invalid configuration value for analysis.
                 Enables debugging and validation rule development.

@@ -10,142 +10,88 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import ClassVar
+from typing import Final
 
 from flext_core import FlextConstants, FlextTypes
 
 
-class FlextGrpcSemanticConstants(FlextConstants):
-    """gRPC-specific semantic constants extending FlextConstants.
+class FlextGrpcConstants(FlextConstants):
+    """gRPC-specific constants following FLEXT unified single-class pattern.
 
-    Modern Python 3.13 constants following semantic grouping patterns.
-    Extends the FLEXT ecosystem constants with gRPC communication specific
-    values while maintaining full backward compatibility.
+    Inherits from FlextConstants for universal constants, defines only
+    gRPC-specific constants using nested namespace classes.
+
+    Layer N Foundation: gRPC domain-specific constants building on flext-core Layer 0.
+
+    Usage:
+        ```python
+        from flext_grpc import FlextGrpcConstants
+
+        timeout = FlextGrpcConstants.Service.DEFAULT_TIMEOUT
+        port = FlextGrpcConstants.Network.DEFAULT_PORT
+        ```
     """
 
-    class GrpcNetwork:
+    # Project metadata (Final attributes inherited from FlextConstants)
+    # CONSTANTS_VERSION, PROJECT_PREFIX, PROJECT_NAME inherited from FlextConstants
+
+    class Network:
         """gRPC network configuration constants."""
 
-        # CONSUME from single source
-        DEFAULT_HOST = FlextConstants.Platform.DEFAULT_HOST
-        DEFAULT_PORT = 50051  # gRPC-specific port
-        MIN_PORT = FlextConstants.Network.MIN_PORT
-        MAX_PORT = FlextConstants.Network.MAX_PORT
-        HOST_NAME_PATTERN = r"^[a-zA-Z0-9.-]+$"
+        # Use FlextConstants for common network patterns
+        DEFAULT_HOST: Final[str] = FlextConstants.Platform.DEFAULT_HOST
+        MIN_PORT: Final[int] = FlextConstants.Network.MIN_PORT
+        MAX_PORT: Final[int] = FlextConstants.Network.MAX_PORT
+
+        # gRPC-specific network constants
+        DEFAULT_PORT: Final[int] = 50051  # Standard gRPC port
+        HOST_NAME_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
 
     class Service:
-        """Service configuration constants."""
+        """gRPC service configuration constants."""
 
-        # CONSUME from single source
-        DEFAULT_TIMEOUT = FlextConstants.Defaults.TIMEOUT
-        DEFAULT_MAX_WORKERS = 10
-        MIN_WORKERS = 1
-        MAX_WORKERS = 100
-        MIN_REQUIRED_ARGS = 2
+        # Use FlextConstants for common service patterns
+        DEFAULT_TIMEOUT: Final[int] = FlextConstants.Network.DEFAULT_TIMEOUT
 
-    class GrpcValidation:
-        """gRPC validation limits and patterns."""
+        # gRPC-specific service constants
+        DEFAULT_MAX_WORKERS: Final[int] = FlextConstants.Container.MAX_WORKERS
+        MIN_WORKERS: Final[int] = FlextConstants.Container.MIN_WORKERS
+        MAX_WORKERS: Final[int] = 100
+        MIN_REQUIRED_ARGS: Final[int] = 2
 
-        MAX_SERVICE_NAME_LENGTH = 255
-        MAX_METHOD_NAME_LENGTH = 200
-        MIN_TIMEOUT_SECONDS = 0.1
-        MAX_TIMEOUT_SECONDS = 600.0
+    class Validation:
+        """gRPC validation constants."""
 
-    class GrpcConfig:
-        """Default configuration templates."""
+        # Use FlextConstants for common validation patterns
+        MIN_TIMEOUT_SECONDS: Final[float] = 0.1
+        MAX_TIMEOUT_SECONDS: Final[float] = (
+            FlextConstants.Performance.MAX_TIMEOUT_SECONDS
+        )
 
-        DEFAULT_CONFIG: ClassVar[FlextTypes.Core.Dict] = {
-            "host": FlextConstants.Platform.DEFAULT_HOST,
-            "port": 50051,
-            "timeout": FlextConstants.Defaults.TIMEOUT,
-            "max_workers": 10,
-        }
+        # gRPC-specific validation constants
+        MAX_SERVICE_NAME_LENGTH: Final[int] = 255
+        MAX_METHOD_NAME_LENGTH: Final[int] = 200
 
+    class Messages:
+        """gRPC-specific error and status messages."""
 
-class FlextGrpcConstants(FlextGrpcSemanticConstants):
-    """gRPC constants with backward compatibility.
+        SERVICE_START_FAILED: Final[str] = "gRPC service failed to start: {error}"
+        SERVICE_STARTED: Final[str] = "gRPC service started on {host}:{port}"
+        CONNECTION_FAILED: Final[str] = "gRPC connection failed: {error}"
+        TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
 
-    Legacy compatibility layer providing both modern semantic access
-    and traditional flat constant access patterns for smooth migration.
-    """
+    class Errors:
+        """gRPC-specific error codes extending FlextConstants.Errors."""
 
-    # Modern semantic access (Primary API) - direct references
-    GrpcNetwork = FlextGrpcSemanticConstants.GrpcNetwork
-    Service = FlextGrpcSemanticConstants.Service
-    GrpcValidation = FlextGrpcSemanticConstants.GrpcValidation
-    GrpcConfig = FlextGrpcSemanticConstants.GrpcConfig
+        # Compose with FlextConstants base errors
+        BASE_ERROR: Final[str] = f"GRPC_{FlextConstants.Errors.VALIDATION_ERROR}"
 
-    # Legacy compatibility - flat access patterns (DEPRECATED - use semantic access)
-    DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
-    DEFAULT_PORT = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_PORT
-    MIN_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MIN_PORT
-    MAX_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MAX_PORT
-    HOST_NAME_PATTERN = FlextGrpcSemanticConstants.GrpcNetwork.HOST_NAME_PATTERN
-
-    DEFAULT_TIMEOUT = FlextGrpcSemanticConstants.Service.DEFAULT_TIMEOUT
-    DEFAULT_MAX_WORKERS = FlextGrpcSemanticConstants.Service.DEFAULT_MAX_WORKERS
-    MIN_WORKERS = FlextGrpcSemanticConstants.Service.MIN_WORKERS
-    MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
-    MIN_REQUIRED_ARGS = FlextGrpcSemanticConstants.Service.MIN_REQUIRED_ARGS
-
-    MAX_SERVICE_NAME_LENGTH = (
-        FlextGrpcSemanticConstants.GrpcValidation.MAX_SERVICE_NAME_LENGTH
-    )
-    MAX_METHOD_NAME_LENGTH = (
-        FlextGrpcSemanticConstants.GrpcValidation.MAX_METHOD_NAME_LENGTH
-    )
-    MIN_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MIN_TIMEOUT_SECONDS
-    MAX_TIMEOUT_SECONDS = FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
-
-    DEFAULT_CONFIG = FlextGrpcSemanticConstants.GrpcConfig.DEFAULT_CONFIG
-
-
-# Network configuration constants (DEPRECATED - use FlextGrpcConstants.GrpcNetwork.*)
-FLEXT_GRPC_DEFAULT_HOST = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_HOST
-FLEXT_GRPC_DEFAULT_PORT = FlextGrpcSemanticConstants.GrpcNetwork.DEFAULT_PORT
-FLEXT_GRPC_MIN_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MIN_PORT
-FLEXT_GRPC_MAX_PORT = FlextGrpcSemanticConstants.GrpcNetwork.MAX_PORT
-FLEXT_GRPC_HOST_NAME_PATTERN = FlextGrpcSemanticConstants.GrpcNetwork.HOST_NAME_PATTERN
-
-# Service configuration constants (DEPRECATED - use FlextGrpcConstants.Service.*)
-FLEXT_GRPC_DEFAULT_TIMEOUT = FlextGrpcSemanticConstants.Service.DEFAULT_TIMEOUT
-FLEXT_GRPC_DEFAULT_MAX_WORKERS = FlextGrpcSemanticConstants.Service.DEFAULT_MAX_WORKERS
-FLEXT_GRPC_MIN_WORKERS = FlextGrpcSemanticConstants.Service.MIN_WORKERS
-FLEXT_GRPC_MAX_WORKERS = FlextGrpcSemanticConstants.Service.MAX_WORKERS
-
-# Validation rule constants (DEPRECATED - use FlextGrpcConstants.GrpcValidation.*)
-FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH = (
-    FlextGrpcSemanticConstants.GrpcValidation.MAX_SERVICE_NAME_LENGTH
-)
-FLEXT_GRPC_MAX_METHOD_NAME_LENGTH = (
-    FlextGrpcSemanticConstants.GrpcValidation.MAX_METHOD_NAME_LENGTH
-)
-FLEXT_GRPC_MIN_TIMEOUT_SECONDS = (
-    FlextGrpcSemanticConstants.GrpcValidation.MIN_TIMEOUT_SECONDS
-)
-FLEXT_GRPC_MAX_TIMEOUT_SECONDS = (
-    FlextGrpcSemanticConstants.GrpcValidation.MAX_TIMEOUT_SECONDS
-)
-
-# Configuration constants (DEPRECATED - use FlextGrpcConstants.Config.*)
-FLEXT_GRPC_DEFAULT_CONFIG = FlextGrpcSemanticConstants.GrpcConfig.DEFAULT_CONFIG
+        # gRPC-specific errors
+        GRPC_SERVICE_ERROR: Final[str] = "GRPC_SERVICE_ERROR"
+        GRPC_CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
+        GRPC_TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
 
 
 __all__: FlextTypes.Core.StringList = [
-    "FLEXT_GRPC_DEFAULT_CONFIG",
-    "FLEXT_GRPC_DEFAULT_HOST",
-    "FLEXT_GRPC_DEFAULT_MAX_WORKERS",
-    "FLEXT_GRPC_DEFAULT_PORT",
-    "FLEXT_GRPC_DEFAULT_TIMEOUT",
-    "FLEXT_GRPC_HOST_NAME_PATTERN",
-    "FLEXT_GRPC_MAX_METHOD_NAME_LENGTH",
-    "FLEXT_GRPC_MAX_PORT",
-    "FLEXT_GRPC_MAX_SERVICE_NAME_LENGTH",
-    "FLEXT_GRPC_MAX_TIMEOUT_SECONDS",
-    "FLEXT_GRPC_MAX_WORKERS",
-    "FLEXT_GRPC_MIN_PORT",
-    "FLEXT_GRPC_MIN_TIMEOUT_SECONDS",
-    "FLEXT_GRPC_MIN_WORKERS",
     "FlextGrpcConstants",
-    "FlextGrpcSemanticConstants",
 ]

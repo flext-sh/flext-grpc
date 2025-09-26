@@ -14,7 +14,6 @@ from __future__ import annotations
 import contextlib
 from datetime import UTC, datetime
 
-from flext_core import FlextTypes
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

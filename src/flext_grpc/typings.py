@@ -14,7 +14,11 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from typing import Literal, Protocol, TypeVar, runtime_checkable
+from typing import (
+    Literal,
+    Protocol,
+    override,
+)
 
 from flext_core import FlextLogger, FlextTypes
 
@@ -22,17 +26,8 @@ from flext_core import FlextLogger, FlextTypes
 # GRPC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for gRPC operations
 # =============================================================================
 
+
 # gRPC domain TypeVars
-TGrpcServer = TypeVar("TGrpcServer")
-TGrpcClient = TypeVar("TGrpcClient")
-TGrpcChannel = TypeVar("TGrpcChannel")
-TGrpcService = TypeVar("TGrpcService")
-TGrpcStream = TypeVar("TGrpcStream")
-TGrpcStub = TypeVar("TGrpcStub")
-TGrpcHandler = TypeVar("TGrpcHandler")
-TGrpcInterceptor = TypeVar("TGrpcInterceptor")
-
-
 class FlextGrpcTypes(FlextTypes):
     """gRPC-specific type definitions extending FlextTypes.
 
@@ -46,6 +41,18 @@ class FlextGrpcTypes(FlextTypes):
     # =============================================================================
     MIN_PORT = 1
     MAX_PORT = 65535
+    # =========================================================================
+    # GRPC CORE TYPES - Simple gRPC target types (moved from central FlextTypes)
+    # =========================================================================
+
+    class Core:
+        """Core gRPC types for basic gRPC operations."""
+
+        # gRPC target types (moved from flext-core to domain-specific location)
+        type GrpcTarget = str
+        type GrpcStreamType = str
+        type GrpcChannelState = str
+        type GrpcServerState = str
 
     # =========================================================================
     # GRPC SERVER TYPES - Complex server management types
@@ -199,6 +206,49 @@ class FlextGrpcTypes(FlextTypes):
     type CompressionType = Literal["none", "gzip", "deflate"]
 
     # =========================================================================
+    # GRPC PROJECT TYPES - Domain-specific project types extending FlextTypes
+    # =========================================================================
+
+    class Project(FlextTypes.Project):
+        """gRPC-specific project types extending FlextTypes.Project.
+
+        Adds gRPC/microservices-specific project types while inheriting
+        generic types from FlextTypes. Follows domain separation principle:
+        gRPC domain owns microservices-specific types.
+        """
+
+        # gRPC-specific project types extending the generic ones
+        type ProjectType = Literal[
+            # Generic types inherited from FlextTypes.Project
+            "library",
+            "application",
+            "service",
+            # gRPC-specific types
+            "grpc-service",
+            "microservice",
+            "grpc-server",
+            "grpc-client",
+            "grpc-gateway",
+            "service-mesh",
+            "grpc-api",
+            "streaming-service",
+            "rpc-service",
+            "distributed-service",
+            "grpc-proxy",
+            "api-gateway",
+            "message-broker",
+            "event-stream",
+            "grpc-interceptor",
+            "protocol-buffer",
+        ]
+
+        # gRPC-specific project configurations
+        type GrpcProjectConfig = dict[str, FlextTypes.Core.ConfigValue | object]
+        type MicroserviceConfig = dict[str, str | int | bool | list[str]]
+        type StreamingConfig = dict[str, bool | str | dict[str, object]]
+        type ServiceMeshConfig = dict[str, FlextTypes.Core.ConfigValue | object]
+
+    # =========================================================================
     # GRPC PROTOCOLS - Protocol definitions for gRPC interfaces
     # =========================================================================
 
@@ -237,6 +287,7 @@ class FlextGrpcTypes(FlextTypes):
         class GrpcStub(Protocol):
             """Protocol for gRPC client stub."""
 
+            @override
             def __init__(self, channel: FlextGrpcTypes.Protocols.GrpcChannel) -> None:
                 """Initialize the stub with a channel."""
                 ...
@@ -274,7 +325,7 @@ class FlextGrpcTypes(FlextTypes):
             validate_target() beforehand when you need a boolean.
 
             Returns:
-                tuple[str, int]: Host and port components.
+                tuple["str", "int"]: Host and port components.
 
             """
             if not FlextGrpcTypes.GrpcValidation.validate_target(target):
@@ -282,22 +333,3 @@ class FlextGrpcTypes(FlextTypes):
                 raise ValueError(msg)
             host, port_str = target.split(":", 1)
             return (host, int(port_str))
-
-
-# =============================================================================
-# PUBLIC API EXPORTS - gRPC TypeVars and types
-# =============================================================================
-
-__all__: list[str] = [
-    # gRPC Types class
-    "FlextGrpcTypes",
-    # gRPC-specific TypeVars
-    "TGrpcChannel",
-    "TGrpcClient",
-    "TGrpcHandler",
-    "TGrpcInterceptor",
-    "TGrpcServer",
-    "TGrpcService",
-    "TGrpcStream",
-    "TGrpcStub",
-]

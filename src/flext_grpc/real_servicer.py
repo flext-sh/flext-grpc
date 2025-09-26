@@ -10,14 +10,15 @@ from __future__ import annotations
 
 import time
 from collections.abc import Iterator
+from typing import override
 
 import grpc
 from flext_core.constants import FlextConstants
 
 # Import protobuf classes - these are dynamically generated
-from grpc import ServicerContext  # type: ignore[import-untyped]
+from grpc import ServicerContext
 
-from flext_grpc.proto.flext_grpc_pb2 import (  # type: ignore[attr-defined]
+from flext_grpc.proto.flext_grpc_pb2 import (
     EchoRequest,
     EchoResponse,
     HealthRequest,
@@ -26,7 +27,7 @@ from flext_grpc.proto.flext_grpc_pb2 import (  # type: ignore[attr-defined]
     StreamResponse,
 )
 from flext_grpc.proto.flext_grpc_pb2_grpc import (
-    FlextGrpcServiceServicer,  # type: ignore[attr-defined]
+    FlextGrpcServiceServicer,
 )
 
 
@@ -41,12 +42,13 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
     - Health checks
     """
 
+    @override
     def __init__(self, server_id: str = "flext-grpc-server") -> None:
         """Initialize the real servicer."""
         self.server_id = server_id
         self.start_time = time.time()
 
-    def echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:  # type: ignore[no-any-unimported]
+    def echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
         """Real unary Echo implementation."""
         try:
             # Process the actual request
@@ -71,7 +73,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    def server_stream(  # type: ignore[no-any-unimported]
+    def server_stream(
         self,
         request: StreamRequest,
         context: ServicerContext,
@@ -99,7 +101,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
-    ) -> StreamResponse:  # type: ignore[no-any-unimported]
+    ) -> StreamResponse:
         """Real client streaming implementation."""
         try:
             messages: list[str] = []
@@ -128,7 +130,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
-    ) -> Iterator[StreamResponse]:  # type: ignore[no-any-unimported]
+    ) -> Iterator[StreamResponse]:
         """Real bidirectional streaming implementation."""
         try:
             # Process each request and yield responses
@@ -151,7 +153,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self,
         request: HealthRequest,
         context: ServicerContext,
-    ) -> HealthResponse:  # type: ignore[no-any-unimported]
+    ) -> HealthResponse:
         """Real health check implementation."""
         try:
             # Check server health

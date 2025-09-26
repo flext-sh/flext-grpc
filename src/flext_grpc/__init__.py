@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import importlib.metadata
 
-from flext_core import FlextContainer, FlextResult, FlextTypes
+from flext_core import FlextContainer, FlextResult
 from flext_grpc.api import (
     create_channel,
     create_client,
@@ -54,7 +54,7 @@ except importlib.metadata.PackageNotFoundError:
 
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
-__all__: FlextTypes.Core.StringList = [
+__all__: FlextGrpcTypes.Core.StringList = [
     # Proto exports commented out until protobuf generation is available
     # "EchoRequest",
     # "FlextGrpcServiceStub",

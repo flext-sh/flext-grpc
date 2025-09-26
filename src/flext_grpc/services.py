@@ -8,6 +8,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import contextlib
 import gc
 import sys
 import threading
@@ -17,7 +18,7 @@ from collections.abc import Callable, Iterator
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from queue import Queue
-from typing import Any, Protocol, TypedDict, cast
+from typing import Any, Protocol, TypedDict, cast, override
 
 import grpc
 import psutil
@@ -168,6 +169,10 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
     Follows FLEXT pattern: one class per module with nested subclasses.
     """
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self, max_servers: int = 10, thread_pool_size: int = 50) -> None:
         """Initialize service with real gRPC server registry and performance optimization.
 
@@ -191,6 +196,9 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
             thread_name_prefix="flext-grpc-server",
         )
 
+    @override
+    @override
+    @override
     def execute(
         self,
         command: str | None = None,
@@ -201,20 +209,20 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
         """Execute server command with validation and error handling."""
         # Handle case where called without parameters (parent class compatibility)
         if command is None:
-            return FlextResult[FlextGrpcServer | dict[str, object]].ok({
+            return FlextResult[FlextGrpcServer | dict["str", "object"]].ok({
                 "status": "ready",
-                "service": "flext-grpc-server",
+                "service": flext - grpc - server,
             })
 
         if server is None:
-            return FlextResult[FlextGrpcServer | dict[str, object]].fail(
+            return FlextResult[FlextGrpcServer | dict["str", "object"]].fail(
                 "Server instance required"
             )
 
         # Validate server entity
         validation = server.validate_business_rules()
         if validation.is_failure:
-            return FlextResult[FlextGrpcServer | dict[str, object]].fail(
+            return FlextResult[FlextGrpcServer | dict["str", "object"]].fail(
                 f"Server validation failed: {validation.error}",
             )
 
@@ -241,7 +249,7 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
         if command == "add_service":
             service_def = args[0] if args else kwargs.get("service")
             if not isinstance(service_def, FlextGrpcService):
-                return FlextResult[FlextGrpcServer | dict[str, object]].fail(
+                return FlextResult[FlextGrpcServer | dict["str", "object"]].fail(
                     f"Service definition must be FlextGrpcService, got: {type(service_def)}",
                 )
             return cast(
@@ -254,7 +262,7 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
             handler = command_handlers[command]
             return handler()
 
-        return FlextResult[FlextGrpcServer | dict[str, object]].fail(
+        return FlextResult[FlextGrpcServer | dict["str", "object"]].fail(
             f"Unknown server command: {command}",
         )
 
@@ -367,9 +375,9 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
             return running_result
 
         # Record performance metrics
-        startup_time = time.time() - getattr(self, "_startup_start_time", time.time())
+        time.time() - getattr(self, "_startup_start_time", time.time())
         self._server_metrics[server_key] = {
-            "startup_time": startup_time,
+            "startup_time": "startup_time",
             "started_at": time.time(),
             "connection_count": 0,
             "request_count": 0,
@@ -437,7 +445,7 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
             real_servicer = create_real_servicer(f"{server.host}:{server.port}")
             add_FlextGrpcServiceServicer_to_server(
                 real_servicer, cast("grpc.Server", grpc_server)
-            )  # type: ignore[arg-type]
+            )
 
             # Add service to server entity (tracks the registration)
             add_result: FlextResult[FlextGrpcServer] = server.add_service(service_def)
@@ -459,7 +467,6 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
         server_key = f"{server.host}:{server.port}"
 
         # Check if we have a real gRPC server running
-        grpc_server_active = server_key in self._active_servers
 
         # Include performance metrics if available
         metrics: dict[str, float] = self._server_metrics.get(server_key, {})
@@ -473,8 +480,8 @@ class FlextGrpcServerService(FlextService[FlextGrpcServer | FlextTypes.Core.Dict
             "address": server.address,
             "is_running": server.is_running,
             "service_count": len(server.services),
-            "grpc_server_active": grpc_server_active,
-            "server_key": server_key,
+            "grpc_server_active": "grpc_server_active",
+            "server_key": "server_key",
             # Performance metrics
             "metrics": {
                 "startup_time_seconds": metrics.get("startup_time", 0.0),
@@ -511,6 +518,10 @@ class FlextGrpcClientService:
 
     """
 
+    @override
+    @override
+    @override
+    @override
     def __init__(
         self,
         connection_timeout: float = 5.0,
@@ -528,6 +539,9 @@ class FlextGrpcClientService:
         self._max_retry_attempts = max_retry_attempts
         self._client_metrics: dict[str, FlextTypes.Core.Dict] = {}  # Connection metrics
 
+    @override
+    @override
+    @override
     def execute(
         self,
         command: str,
@@ -795,7 +809,7 @@ class FlextGrpcClientService:
                 )
 
             # Create REAL gRPC stub and make REAL call
-            stub = FlextGrpcServiceStub(cast("grpc.Channel", grpc_channel))  # type: ignore[arg-type]
+            stub = FlextGrpcServiceStub(cast("grpc.Channel", grpc_channel))
 
             # Handle different method types - REAL gRPC calls
             if method == "Echo":
@@ -809,7 +823,7 @@ class FlextGrpcClientService:
                     echo_request = EchoRequest(message=str(request))
 
                 # Make REAL gRPC call
-                grpc_response = stub.Echo(cast("Any", echo_request))  # type: ignore[arg-type]
+                grpc_response = stub.Echo(cast("Any", echo_request))
 
                 # Convert to result format
                 response = {
@@ -818,36 +832,36 @@ class FlextGrpcClientService:
                     "message": grpc_response.message,
                     "server_id": grpc_response.server_id,
                     "timestamp": grpc_response.timestamp,
-                    "target": target,
-                    "channel_ready": True,
+                    "target": "target",
+                    "channel_ready": "True",
                 }
 
             elif method == "HealthCheck":
                 health_request = HealthRequest(service="FlextGrpcService")
-                health_response = stub.HealthCheck(cast("Any", health_request))  # type: ignore[arg-type]
+                health_response = stub.HealthCheck(cast("Any", health_request))
 
                 response = {
                     "method": "HealthCheck",
                     "status": "success",
                     "serving_status": health_response.status,
                     "message": health_response.message,
-                    "target": target,
-                    "channel_ready": True,
+                    "target": "target",
+                    "channel_ready": "True",
                 }
 
             else:
                 # For other methods, create a generic Echo call
                 echo_request = EchoRequest(message=f"Method: {method}")
-                grpc_response = stub.Echo(cast("Any", echo_request))  # type: ignore[arg-type]
+                grpc_response = stub.Echo(cast("Any", echo_request))
 
                 response = {
-                    "method": method,
+                    "method": "method",
                     "status": "success",
                     "message": grpc_response.message,
                     "server_id": grpc_response.server_id,
                     "timestamp": grpc_response.timestamp,
-                    "target": target,
-                    "channel_ready": True,
+                    "target": "target",
+                    "channel_ready": "True",
                 }
 
             return FlextResult[FlextTypes.Core.Dict].ok(
@@ -872,24 +886,20 @@ class FlextGrpcClientService:
 
         # Check if we have a real gRPC channel active
         grpc_channel_active = target is not None and target in self._active_channels
-        grpc_channel_ready = False
 
         if grpc_channel_active and target is not None:
             grpc_channel = self._active_channels[target]
-            try:
+            with contextlib.suppress(grpc.FutureTimeoutError):
                 grpc.channel_ready_future(cast("grpc.Channel", grpc_channel)).result(
                     timeout=0.1,
                 )
-                grpc_channel_ready = True
-            except grpc.FutureTimeoutError:
-                grpc_channel_ready = False
 
         status: FlextTypes.Core.Dict = {
             "channel_state": client.channel.state if client.channel else "no_channel",
             "target": client.target,
             "is_connected": client.is_connected,
-            "grpc_channel_active": grpc_channel_active,
-            "grpc_channel_ready": grpc_channel_ready,
+            "grpc_channel_active": "grpc_channel_active",
+            "grpc_channel_ready": "grpc_channel_ready",
         }
         return FlextResult[FlextTypes.Core.Dict].ok(status)
 
@@ -907,6 +917,10 @@ class FlextGrpcStreamService:
 
     """
 
+    @override
+    @override
+    @override
+    @override
     def __init__(
         self,
         max_concurrent_streams: int = MAX_CONCURRENT_STREAMS_PER_CLIENT,
@@ -949,6 +963,9 @@ class FlextGrpcStreamService:
         # Start background metrics collection
         self._start_metrics_collection()
 
+    @override
+    @override
+    @override
     def execute(
         self,
         command: str,
@@ -1012,17 +1029,17 @@ class FlextGrpcStreamService:
             grpc_channel = cast("grpc.Channel", self._active_channels[target])
 
             # Create real gRPC stub for streaming
-            stub = FlextGrpcServiceStub(cast("grpc.Channel", grpc_channel))  # type: ignore[arg-type]
+            FlextGrpcServiceStub(cast("grpc.Channel", grpc_channel))
 
             # Register the REAL stream with actual gRPC objects and buffers
             stream_info: StreamInfo = {
                 "stream_id": stream.id,
                 "type": stream.stream_type,
                 "created_at": stream.created_at.timestamp(),
-                "active": True,
-                "target": target,
-                "stub": stub,  # Real gRPC stub
-                "channel": grpc_channel,  # Real gRPC channel
+                "active": "True",
+                "target": "target",
+                "stub": "stub",  # Real gRPC stub
+                "channel": "grpc_channel",  # Real gRPC channel
                 "request_buffer": [],  # Buffer for client streaming
                 "request_queue": Queue(
                     maxsize=BIDIRECTIONAL_STREAMING_QUEUE_SIZE,
@@ -1039,13 +1056,13 @@ class FlextGrpcStreamService:
                 "error_count": 0,
                 "average_latency_ms": 0.0,
                 "processing_lock": threading.Lock(),
-                "is_processing": False,
-                "max_queue_size": BIDIRECTIONAL_STREAMING_QUEUE_SIZE,
+                "is_processing": "False",
+                "max_queue_size": "BIDIRECTIONAL_STREAMING_QUEUE_SIZE",
                 "current_queue_size": 0,
                 "health_status": "healthy",
                 "last_health_check": time.time(),
                 "buffer_size_bytes": 0,
-                "max_buffer_size_bytes": MAX_BUFFER_SIZE_BYTES,
+                "max_buffer_size_bytes": "MAX_BUFFER_SIZE_BYTES",
                 "memory_pressure_score": 0.0,
                 "last_memory_cleanup": time.time(),
             }
@@ -1098,7 +1115,7 @@ class FlextGrpcStreamService:
 
         if should_flush:
             # Make real client streaming call with all buffered requests
-            response = stub.ClientStream(cast("Iterator[Any]", iter(buffered_requests)))  # type: ignore[arg-type]
+            response = stub.ClientStream(cast("Iterator[Any]", iter(buffered_requests)))
 
             # Clear buffer after successful call and trigger memory cleanup if needed
             stream_info["request_buffer"].clear()
@@ -1175,7 +1192,7 @@ class FlextGrpcStreamService:
             "sent": str(data),
             "stream_type": stream.stream_type,
             "stream_id": stream.id,
-            "responses": responses,
+            "responses": "responses",
             "response_count": len(responses),
             "sequence": stream_info["sequence_counter"],
             "buffer_size": len(stream_info["request_buffer"]),
@@ -1213,7 +1230,7 @@ class FlextGrpcStreamService:
     ) -> FlextResult[FlextTypes.Core.Dict]:
         """Handle server streaming operations."""
         # Server streaming: get iterator of responses
-        response_iterator = stub.ServerStream(cast("Any", stream_request))  # type: ignore[arg-type]
+        response_iterator = stub.ServerStream(cast("Any", stream_request))
         responses = [
             {
                 "data": response.data,
@@ -1228,7 +1245,7 @@ class FlextGrpcStreamService:
             "sent": str(data),
             "stream_type": stream.stream_type,
             "stream_id": stream.id,
-            "responses": responses,
+            "responses": "responses",
             "response_count": len(responses),
         }
         return FlextResult[FlextTypes.Core.Dict].ok(
@@ -1246,7 +1263,7 @@ class FlextGrpcStreamService:
         """Handle unary operations."""
         # For unary, convert to Echo call
         echo_request = EchoRequest(message=str(data))
-        response = stub.Echo(cast("Any", echo_request))  # type: ignore[arg-type]
+        response = stub.Echo(cast("Any", echo_request))
 
         result = {
             "sent": str(data),
@@ -1477,7 +1494,7 @@ class FlextGrpcStreamService:
                                 "total_requests": 0.0,
                                 "total_responses": 0.0,
                                 "bytes_processed": 0.0,
-                                "last_metric_update": current_time,
+                                "last_metric_update": "current_time",
                             }
 
                         # Update stream-specific metrics (all numeric)
@@ -1589,12 +1606,16 @@ class FlextGrpcPlatform:
       >>> if server_result.is_success:
       ...     client_result: FlextResult[object] = platform.connect_client(client)
       ...     if client_result.is_success:
-      ...         response: dict[str, object] = platform.make_call(
+      ...         response: dict["str", "object"] = platform.make_call(
       ...             client_result.data, "GetData", {}
       ...         )
 
     """
 
+    @override
+    @override
+    @override
+    @override
     def __init__(self, container: FlextContainer | None = None) -> None:
         """Initialize platform with optional container."""
         self._container = container or FlextContainer.get_global()

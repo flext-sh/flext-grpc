@@ -36,7 +36,7 @@ class FlextGrpcEntity:
       - Supports business rule validation through validate_business_rules()
 
     Example:
-      >>> entity = FlextGrpcEntity(id="test", created_at=datetime.now(timezone.utc))
+      >>> entity = FlextGrpcEntity(id=test, created_at=datetime.now(timezone.utc))
       >>> print(entity.entity_type)
       'FlextGrpcEntity'
 
@@ -55,9 +55,7 @@ class FlextGrpcEntity:
             str: The class name of the entity for type identification
 
         Example:
-            >>> server = FlextGrpcServer(
-            ...     id="test", created_at=datetime.now(timezone.utc)
-            ... )
+            >>> server = FlextGrpcServer(id=test, created_at=datetime.now(timezone.utc))
             >>> print(server.entity_type)
             'FlextGrpcServer'
 
@@ -129,7 +127,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
                         "type": "literal_error",
                         "loc": ("state",),
                         "input": self.state,
-                        "ctx": {"expected": valid_states_str},
+                        "ctx": {"expected": "valid_states_str"},
                     },
                 ],
             )
@@ -177,7 +175,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         Example:
             >>> channel = FlextGrpcChannel(
-            ...     id="test", state="ready", created_at=datetime.now(timezone.utc)
+            ...     id=test, state=ready, created_at=datetime.now(timezone.utc)
             ... )
             >>> print(channel.is_ready())
             True
@@ -200,7 +198,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         Example:
             >>> channel = FlextGrpcChannel(
-            ...     id="test", state="idle", created_at=datetime.now(timezone.utc)
+            ...     id=test, state=idle, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = channel.connect()
             >>> if result.is_success:
@@ -230,7 +228,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         Example:
             >>> channel = FlextGrpcChannel(
-            ...     id="test", state="connecting", created_at=datetime.now(timezone.utc)
+            ...     id=test, state=connecting, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = channel.mark_ready()
             >>> if result.is_success:
@@ -259,7 +257,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
         Example:
             >>> channel = FlextGrpcChannel(
-            ...     id="test", state="ready", created_at=datetime.now(timezone.utc)
+            ...     id=test, state=ready, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = channel.disconnect()
             >>> print(result.data.state)
@@ -423,12 +421,12 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> server = FlextGrpcServer(
-            ...     state="running", id="test", created_at=datetime.now(timezone.utc)
+            ...     state=running, id=test, created_at=datetime.now(timezone.utc)
             ... )
             >>> print(server.is_running)
             True
             >>> stopped_server = FlextGrpcServer(
-            ...     state="stopped", id="test2", created_at=datetime.now(timezone.utc)
+            ...     state=stopped, id=test2, created_at=datetime.now(timezone.utc)
             ... )
             >>> print(stopped_server.is_running)
             False
@@ -451,7 +449,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> server = FlextGrpcServer(
-            ...     state="stopped", id="test", created_at=datetime.now(timezone.utc)
+            ...     state=stopped, id=test, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.start()
             >>> if result.is_success:
@@ -459,7 +457,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             'starting'
 
             >>> running_server = FlextGrpcServer(
-            ...     state="running", id="test2", created_at=datetime.now(timezone.utc)
+            ...     state=running, id=test2, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = running_server.start()
             >>> print(result.is_failure)
@@ -487,7 +485,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> server = FlextGrpcServer(
-            ...     state="starting", id="test", created_at=datetime.now(timezone.utc)
+            ...     state=starting, id=test, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.mark_running()
             >>> if result.is_success:
@@ -518,7 +516,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> server = FlextGrpcServer(
-            ...     state="running", id="test", created_at=datetime.now(timezone.utc)
+            ...     state=running, id=test, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.stop()
             >>> if result.is_success:
@@ -548,7 +546,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> server = FlextGrpcServer(
-            ...     state="stopping", id="test", created_at=datetime.now(timezone.utc)
+            ...     state=stopping, id=test, created_at=datetime.now(timezone.utc)
             ... )
             >>> result: FlextResult[object] = server.mark_stopped()
             >>> if result.is_success:
@@ -578,9 +576,7 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> from flext_grpc import FlextGrpcService
-            >>> server = FlextGrpcServer(
-            ...     id="test", created_at=datetime.now(timezone.utc)
-            ... )
+            >>> server = FlextGrpcServer(id=test, created_at=datetime.now(timezone.utc))
             >>> service = FlextGrpcService(
             ...     id="user-service",
             ...     name="UserService",
@@ -830,9 +826,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             bool: True if client has a channel and channel is ready, False otherwise
 
         Example:
-            >>> client = FlextGrpcClient(
-            ...     id="test", created_at=datetime.now(timezone.utc)
-            ... )
+            >>> client = FlextGrpcClient(id=test, created_at=datetime.now(timezone.utc))
             >>> print(client.is_connected)
             False
 
@@ -854,7 +848,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         """Get the target server address for client connection.
 
         Returns:
-            Union[str, None]: Target address if channel exists, None otherwise
+            str | None: Target address if channel exists, None otherwise
 
         Example:
             >>> channel = FlextGrpcChannel(
@@ -887,9 +881,7 @@ class FlextGrpcClient(FlextGrpcEntity):
                 or failure if channel creation fails
 
         Example:
-            >>> client = FlextGrpcClient(
-            ...     id="test", created_at=datetime.now(timezone.utc)
-            ... )
+            >>> client = FlextGrpcClient(id=test, created_at=datetime.now(timezone.utc))
             >>> result: FlextResult[object] = client.connect_to("localhost:50051")
             >>> if result.is_success:
             ...     connected_client = result.data
@@ -906,7 +898,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             channel = FlextGrpcChannel(
                 id=str(uuid4()),
                 target=target,
-                state="idle",
+                state=idle,
                 options={},
             )
 

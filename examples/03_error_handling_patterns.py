@@ -14,7 +14,6 @@ from __future__ import annotations
 import asyncio
 from typing import NoReturn
 
-from flext_core import FlextLogger, FlextResult, FlextTypes
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,

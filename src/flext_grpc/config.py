@@ -6,9 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Self
+import threading
+from typing import ClassVar, Self
 
 from pydantic import Field, field_validator
+from pydantic_settings import SettingsConfigDict
 
 from flext_core import (
     FlextConfig,
@@ -27,7 +29,30 @@ FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]
 
 
 class FlextGrpcConfig(FlextConfig):
-    """Simplified gRPC configuration with validation using FlextGrpcConstants."""
+    """Single Pydantic 2 Settings class for flext-grpc extending FlextConfig.
+
+    Follows standardized pattern:
+    - Extends FlextConfig from flext-core
+    - No nested classes within Config
+    - All defaults from FlextGrpcConstants
+    - Dependency injection integration with flext-core container
+    - Uses Pydantic 2.11+ features (field_validator, model_validator)
+    """
+
+    # Singleton pattern attributes
+    _global_instance: ClassVar[FlextGrpcConfig | None] = None
+    _lock: ClassVar[threading.Lock] = threading.Lock()
+
+    model_config = SettingsConfigDict(
+        env_prefix=FLEXT_GRPC_,
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra=ignore,
+        validate_assignment=True,
+        use_enum_values=True,
+        arbitrary_types_allowed=True,
+    )
 
     host: str = Field(
         default=FlextGrpcConstants.DEFAULT_HOST, description="gRPC server host"
@@ -100,7 +125,7 @@ class FlextGrpcConfig(FlextConfig):
             Formatted address as "host:port"
 
         Example:
-            >>> config: dict[str, object] = FlextGrpcConfig(
+            >>> config: dict["str", "object"] = FlextGrpcConfig(
             ...     host=FlextConstants.Platform.DEFAULT_HOST,
             ...     port=FlextConstants.Platform.GRPC_DEFAULT_PORT,
             ... )
@@ -109,6 +134,33 @@ class FlextGrpcConfig(FlextConfig):
 
         """
         return f"{self.host}:{self.port}"
+
+    @classmethod
+    def create_for_environment(
+        cls, environment: str, **overrides: object
+    ) -> FlextGrpcConfig:
+        """Create configuration for specific environment."""
+        return cls(environment=environment, **overrides)
+
+    @classmethod
+    def create_default(cls) -> FlextGrpcConfig:
+        """Create default configuration instance."""
+        return cls()
+
+    # Singleton pattern override for proper typing
+    @classmethod
+    def get_global_instance(cls) -> FlextGrpcConfig:
+        """Get the global singleton instance of FlextGrpcConfig."""
+        if cls._global_instance is None:
+            with cls._lock:
+                if cls._global_instance is None:
+                    cls._global_instance = cls()
+        return cls._global_instance
+
+    @classmethod
+    def reset_global_instance(cls) -> None:
+        """Reset the global FlextGrpcConfig instance (mainly for testing)."""
+        cls._global_instance = None
 
 
 __all__ = [

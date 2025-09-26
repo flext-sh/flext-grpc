@@ -13,7 +13,7 @@ TESTS_DIR := tests
 COV_DIR := flext_grpc
 
 # Quality Standards
-MIN_COVERAGE := 90
+MIN_COVERAGE := 100
 
 # gRPC Configuration
 GRPC_HOST := localhost
@@ -39,7 +39,7 @@ info: ## Show project information
 	@echo "Project: $(PROJECT_NAME)"
 	@echo "Python: $(PYTHON_VERSION)+"
 	@echo "Poetry: $(POETRY)"
-	@echo "Coverage: $(MIN_COVERAGE)% minimum"
+	@echo "Coverage: $(MIN_COVERAGE)% minimum (MANDATORY)"
 	@echo "gRPC: $(GRPC_HOST):$(GRPC_PORT) ($(GRPC_MAX_WORKERS) workers)"
 	@echo "Architecture: Clean Architecture + DDD + gRPC"
 
@@ -60,26 +60,26 @@ setup: install-dev ## Complete project setup
 	$(POETRY) run pre-commit install
 
 # =============================================================================
-# QUALITY GATES (MANDATORY)
+# QUALITY GATES (MANDATORY - ZERO TOLERANCE)
 # =============================================================================
 
 .PHONY: validate
-validate: lint type-check security test ## Run all quality gates
+validate: lint type-check security test ## Run all quality gates (MANDATORY ORDER)
 
 .PHONY: check
 check: lint type-check ## Quick health check
 
 .PHONY: lint
-lint: ## Run linting
-	$(POETRY) run ruff check $(SRC_DIR) $(TESTS_DIR)
+lint: ## Run linting (ZERO TOLERANCE)
+	$(POETRY) run ruff check .
 
 .PHONY: format
 format: ## Format code
-	$(POETRY) run ruff format $(SRC_DIR) $(TESTS_DIR)
+	$(POETRY) run ruff format .
 
 .PHONY: type-check
-type-check: ## Run type checking
-	$(POETRY) run mypy $(SRC_DIR) --strict
+type-check: ## Run type checking with Pyrefly (ZERO TOLERANCE)
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pyrefly check .
 
 .PHONY: security
 security: ## Run security scanning
@@ -88,24 +88,24 @@ security: ## Run security scanning
 
 .PHONY: fix
 fix: ## Auto-fix issues
-	$(POETRY) run ruff check $(SRC_DIR) $(TESTS_DIR) --fix
-	$(POETRY) run ruff format $(SRC_DIR) $(TESTS_DIR)
+	$(POETRY) run ruff check . --fix
+	$(POETRY) run ruff format .
 
 # =============================================================================
-# TESTING
+# TESTING (MANDATORY - 100% COVERAGE)
 # =============================================================================
 
 .PHONY: test
-test: ## Run tests with coverage
-	$(POETRY) run pytest $(TESTS_DIR) --cov=$(COV_DIR) --cov-report=term-missing --cov-fail-under=$(MIN_COVERAGE)
+test: ## Run tests with 100% coverage (MANDATORY)
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -q --maxfail=10000 --cov=$(COV_DIR) --cov-report=term-missing:skip-covered --cov-fail-under=$(MIN_COVERAGE)
 
 .PHONY: test-unit
 test-unit: ## Run unit tests
-	$(POETRY) run pytest $(TESTS_DIR) -m "not integration" -v
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -m "not integration" -v
 
 .PHONY: test-integration
-test-integration: ## Run integration tests
-	$(POETRY) run pytest $(TESTS_DIR) -m integration -v
+test-integration: ## Run integration tests with Docker
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -m integration -v
 
 .PHONY: test-grpc
 test-grpc: ## Run gRPC specific tests
@@ -125,11 +125,11 @@ test-e2e: ## Run end-to-end tests
 
 .PHONY: test-fast
 test-fast: ## Run tests without coverage
-	$(POETRY) run pytest $(TESTS_DIR) -v
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest -v
 
 .PHONY: coverage-html
 coverage-html: ## Generate HTML coverage report
-	$(POETRY) run pytest $(TESTS_DIR) --cov=$(COV_DIR) --cov-report=html
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run pytest --cov=$(COV_DIR) --cov-report=html
 
 # =============================================================================
 # BUILD & DISTRIBUTION
@@ -148,19 +148,19 @@ build-clean: clean build ## Clean and build
 
 .PHONY: proto-gen
 proto-gen: ## Generate protobuf code
-	$(POETRY) run python -m grpc_tools.protoc --python_out=. --grpc_python_out=. --proto_path=. proto/*.proto
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -m grpc_tools.protoc --python_out=. --grpc_python_out=. --proto_path=. proto/*.proto
 
 .PHONY: grpc-test
 grpc-test: ## Test gRPC connectivity
-	$(POETRY) run python -c "from flext_grpc import FlextGrpcPlatform; print('gRPC test passed')"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_grpc import FlextGrpcPlatform; print('gRPC test passed')"
 
 .PHONY: grpc-server
 grpc-server: ## Start development gRPC server
-	$(POETRY) run python -c "from flext_grpc import FlextGrpcServer; server = FlextGrpcServer(host='$(GRPC_HOST)', port=$(GRPC_PORT)); print('gRPC server started on $(GRPC_HOST):$(GRPC_PORT)')"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_grpc import FlextGrpcServer; server = FlextGrpcServer(host='$(GRPC_HOST)', port=$(GRPC_PORT)); print('gRPC server started on $(GRPC_HOST):$(GRPC_PORT)')"
 
 .PHONY: grpc-client
 grpc-client: ## Test gRPC client connection
-	$(POETRY) run python -c "from flext_grpc import FlextGrpcClient; print('gRPC client test passed')"
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c "from flext_grpc import FlextGrpcClient; print('gRPC client test passed')"
 
 .PHONY: grpc-operations
 grpc-operations: grpc-test proto-gen grpc-client ## Run all gRPC validations
@@ -199,7 +199,7 @@ deps-audit: ## Audit dependencies
 
 .PHONY: shell
 shell: ## Open Python shell
-	$(POETRY) run python
+	PYTHONPATH=$(SRC_DIR) $(POETRY) run python
 
 .PHONY: pre-commit
 pre-commit: ## Run pre-commit hooks
@@ -211,7 +211,7 @@ pre-commit: ## Run pre-commit hooks
 
 .PHONY: clean
 clean: ## Clean build artifacts
-	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ htmlcov/ .coverage .mypy_cache/ .ruff_cache/
+	rm -rf build/ dist/ *.egg-info/ .pytest_cache/ htmlcov/ .coverage .mypy_cache/ .pyrefly_cache/ .ruff_cache/
 	rm -rf proto/*_pb2.py proto/*_pb2_grpc.py
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true
@@ -231,8 +231,8 @@ reset: clean-all setup ## Reset project
 diagnose: ## Project diagnostics
 	@echo "Python: $$(python --version)"
 	@echo "Poetry: $$($(POETRY) --version)"
-	@echo "gRPC: $$($(POETRY) run python -c 'import grpc; print(grpc.__version__)' 2>/dev/null || echo 'Not available')"
-	@echo "Protobuf: $$($(POETRY) run python -c 'import google.protobuf; print(google.protobuf.__version__)' 2>/dev/null || echo 'Not available')"
+	@echo "gRPC: $$(PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c 'import grpc; print(grpc.__version__)' 2>/dev/null || echo 'Not available')"
+	@echo "Protobuf: $$(PYTHONPATH=$(SRC_DIR) $(POETRY) run python -c 'import google.protobuf; print(google.protobuf.__version__)' 2>/dev/null || echo 'Not available')"
 	@$(POETRY) env info
 
 .PHONY: doctor
