@@ -15,8 +15,8 @@ from flext_grpc import FlextGrpcConfig
 
 # Simple configuration
 config = FlextGrpcConfig(
-    host="localhost",
-    port=50051,
+    host=FlextGrpcConstants.Network.DEFAULT_HOST,
+    port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=10
 )
 ```
@@ -26,10 +26,10 @@ config = FlextGrpcConfig(
 Configuration values can be set via environment variables with `GRPC_` prefix:
 
 ```bash
-export GRPC_HOST="0.0.0.0"
-export GRPC_PORT="50051"
+export GRPC_HOST="${FlextConstants.Platform.PRODUCTION_HOST}"
+export GRPC_PORT="${FlextGrpcConstants.Network.DEFAULT_PORT}"
 export GRPC_MAX_WORKERS="20"
-export GRPC_TIMEOUT="30.0"
+export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"
 ```
 
 ```python
@@ -41,32 +41,32 @@ config = FlextGrpcConfig()
 
 ### Server Configuration
 
-#### `host: str = "localhost"`
+#### `host: str = FlextGrpcConstants.Network.DEFAULT_HOST`
 
 Server bind address. Common values:
 
-- `"localhost"` - Local development
-- `"127.0.0.1"` - Local IPv4 only
-- `"0.0.0.0"` - All interfaces (production)
+- `FlextGrpcConstants.Network.DEFAULT_HOST` - Local development
+- `FlextConstants.Platform.LOCALHOST_IP` - Local IPv4 only
+- `FlextConstants.Platform.PRODUCTION_HOST` - All interfaces (production)
 
 ```python
 # Development
-config = FlextGrpcConfig(host="localhost")
+config = FlextGrpcConfig(host=FlextGrpcConstants.Network.DEFAULT_HOST)
 
 # Production
-config = FlextGrpcConfig(host="0.0.0.0")
+config = FlextGrpcConfig(host=FlextConstants.Platform.PRODUCTION_HOST)
 ```
 
-#### `port: int = 50051`
+#### `port: int = FlextGrpcConstants.Network.DEFAULT_PORT`
 
 Server port number. Valid range: 1024-65535
 
 ```python
 # Standard gRPC port
-config = FlextGrpcConfig(port=50051)
+config = FlextGrpcConfig(port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 # Custom port
-config = FlextGrpcConfig(port=8080)
+config = FlextGrpcConfig(port=FlextConstants.Platform.DEFAULT_HTTP_PORT)
 ```
 
 #### `max_workers: int = 10`
@@ -83,7 +83,7 @@ config = FlextGrpcConfig(max_workers=50)
 
 ### Client Configuration
 
-#### `timeout: float = 30.0`
+#### `timeout: float = FlextGrpcConstants.Service.DEFAULT_TIMEOUT`
 
 Request timeout in seconds.
 
@@ -104,8 +104,8 @@ from flext_grpc import FlextGrpcConfig
 
 config = FlextGrpcConfig(
     # Connection settings
-    keepalive_time_ms=30000,      # 30 seconds
-    keepalive_timeout_ms=5000,    # 5 seconds
+    keepalive_time_ms=FlextConstants.Network.KEEPALIVE_TIME_MS,      # 30 seconds
+    keepalive_timeout_ms=FlextConstants.Network.KEEPALIVE_TIMEOUT_MS,    # 5 seconds
     keepalive_permit_without_calls=True,
 
     # Message size limits
@@ -166,7 +166,7 @@ from flext_core import FlextResult
 def validate_production_config(config: FlextGrpcConfig) -> FlextResult[None]:
     """Additional validation for production environments."""
 
-    if config.host == "localhost":
+    if config.host == FlextGrpcConstants.Network.DEFAULT_HOST:
         return FlextResult.fail("Production servers cannot use localhost")
 
     if config.max_workers < 10:
@@ -187,8 +187,8 @@ from flext_grpc import FlextGrpcConfig
 
 def create_dev_config() -> FlextGrpcConfig:
     return FlextGrpcConfig(
-        host="localhost",
-        port=50051,
+        host=FlextGrpcConstants.Network.DEFAULT_HOST,
+        port=FlextGrpcConstants.Network.DEFAULT_PORT,
         max_workers=4,
         timeout=10.0,
         use_tls=False,  # Simplified for development
@@ -201,10 +201,10 @@ def create_dev_config() -> FlextGrpcConfig:
 ```python
 def create_prod_config() -> FlextGrpcConfig:
     return FlextGrpcConfig(
-        host="0.0.0.0",
-        port=50051,
+        host=FlextConstants.Platform.PRODUCTION_HOST,
+        port=FlextGrpcConstants.Network.DEFAULT_PORT,
         max_workers=50,
-        timeout=30.0,
+        timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
 
         # Security settings
         use_tls=True,
@@ -212,7 +212,7 @@ def create_prod_config() -> FlextGrpcConfig:
         tls_key_file="/etc/ssl/server.key",
 
         # Performance settings
-        keepalive_time_ms=30000,
+        keepalive_time_ms=FlextConstants.Network.KEEPALIVE_TIME_MS,
         max_receive_message_length=16*1024*1024,  # 16MB
 
         # Monitoring
@@ -227,7 +227,7 @@ def create_prod_config() -> FlextGrpcConfig:
 ```python
 def create_test_config() -> FlextGrpcConfig:
     return FlextGrpcConfig(
-        host="localhost",
+        host=FlextGrpcConstants.Network.DEFAULT_HOST,
         port=0,  # Use any available port
         max_workers=2,
         timeout=5.0,
@@ -243,10 +243,10 @@ def create_test_config() -> FlextGrpcConfig:
 ```yaml
 # grpc_config.yaml
 grpc:
-  host: "0.0.0.0"
-  port: 50051
+  host: "${FlextConstants.Platform.PRODUCTION_HOST}"
+  port: ${FlextGrpcConstants.Network.DEFAULT_PORT}
   max_workers: 20
-  timeout: 30.0
+  timeout: ${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}
 
   tls:
     enabled: true
@@ -254,7 +254,7 @@ grpc:
     key_file: "/etc/ssl/server.key"
 
   performance:
-    keepalive_time_ms: 30000
+    keepalive_time_ms: ${FlextConstants.Network.KEEPALIVE_TIME_MS}
     max_message_size: 4194304 # 4MB
 ```
 
@@ -285,10 +285,10 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
 ```json
 {
   "grpc": {
-    "host": "localhost",
-    "port": 50051,
+    "host": "${FlextGrpcConstants.Network.DEFAULT_HOST}",
+    "port": ${FlextGrpcConstants.Network.DEFAULT_PORT},
     "max_workers": 10,
-    "timeout": 30.0,
+    "timeout": ${FlextGrpcConstants.Service.DEFAULT_TIMEOUT},
     "use_tls": false
   }
 }
@@ -353,7 +353,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```python
    # Different timeouts for different operations
    config = FlextGrpcConfig(
-       timeout=30.0,  # General operations
+       timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,  # General operations
        health_check_timeout=5.0,  # Health checks
        streaming_timeout=300.0    # Long-running streams
    )
@@ -375,7 +375,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
    ```python
    config = FlextGrpcConfig(
        enable_metrics=True,
-       metrics_port=9090  # Prometheus metrics
+       metrics_port=FlextGrpcConstants.METRICS_PORT  # Prometheus metrics
    )
    ```
 
@@ -391,8 +391,8 @@ from flext_core import FlextResult
 
 def setup_configuration() -> FlextResult[FlextGrpcConfig]:
     return create_config(
-        host="localhost",
-        port=50051
+        host=FlextGrpcConstants.Network.DEFAULT_HOST,
+        port=FlextGrpcConstants.Network.DEFAULT_PORT
     ).flat_map(lambda config: validate_config(config))
 ```
 
@@ -405,7 +405,7 @@ from flext_core import FlextContainer
 from flext_grpc import FlextGrpcConfig
 
 container = FlextContainer.get_global()
-config = FlextGrpcConfig(host="localhost", port=50051)
+config = FlextGrpcConfig(host=FlextGrpcConstants.Network.DEFAULT_HOST, port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 container.register("grpc_config", config)
 
@@ -441,8 +441,8 @@ config = FlextGrpcConfig(
 
 ```bash
 # Multiple ways to set the same value can conflict
-export GRPC_PORT=50051
-export GRPC_PORT=8080  # Overwrites previous value
+export GRPC_PORT=${FlextGrpcConstants.Network.DEFAULT_PORT}
+export GRPC_PORT=${FlextConstants.Platform.DEFAULT_HTTP_PORT}  # Overwrites previous value
 ```
 
 ### Debugging Configuration

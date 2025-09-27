@@ -15,10 +15,12 @@ from typing import cast
 from pydantic import Field
 from pydantic.fields import FieldInfo
 
+from flext_grpc.constants import FlextGrpcConstants
+
 
 # Host field validation
 def grpc_host_field(
-    default: str = "localhost",
+    default: str = FlextGrpcConstants.GRPC_DEFAULT_HOST,
     description: str = "gRPC server host address",
 ) -> FieldInfo:
     """Create a validated gRPC host field."""
@@ -36,7 +38,7 @@ def grpc_host_field(
 
 # Port field validation
 def grpc_port_field(
-    default: int = 50051,
+    default: int = FlextGrpcConstants.GRPC_DEFAULT_PORT,
     description: str = "gRPC server port number",
 ) -> FieldInfo:
     """Create a validated gRPC port field."""
@@ -85,7 +87,7 @@ def grpc_method_name_field(
 
 # Timeout field validation
 def grpc_timeout_field(
-    default: float = 30.0,
+    default: float = FlextGrpcConstants.GRPC_DEFAULT_TIMEOUT,
     description: str = "gRPC operation timeout in seconds",
 ) -> FieldInfo:
     """Create a validated gRPC timeout field."""

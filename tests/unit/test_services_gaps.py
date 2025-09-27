@@ -20,11 +20,10 @@ from flext_grpc import (
     FlextGrpcClientService,
     FlextGrpcServer,
     FlextGrpcServerService,
-    FlextGrpcService,
     FlextGrpcStream,
     FlextGrpcStreamService,
-    TGrpcTarget,
 )
+from flext_grpc.entities import FlextGrpcService
 
 
 class TestServicesValidationGaps:
@@ -111,7 +110,7 @@ class TestServicesValidationGaps:
         service = FlextGrpcClientService()
         channel = FlextGrpcChannel(
             id="test-channel",
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             state="idle",  # Not connected
             created_at=datetime.now(UTC),
         )
@@ -182,12 +181,12 @@ class TestServicesValidationGaps:
 
         # This should work - valid operation
         result = server_service.execute("status", server)
-        assert result.success
+        assert result.is_success
 
         # Test client service - call without method name should fail
         channel = FlextGrpcChannel(
             id="test-channel",
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             state="ready",
             created_at=datetime.now(UTC),
         )
@@ -200,4 +199,4 @@ class TestServicesValidationGaps:
         result = client_service.execute("call", client)  # Missing method name
         assert result.is_failure
         assert result.error is not None
-        assert "Method name must be string" in result.error
+        assert "Method name must be a string" in result.error

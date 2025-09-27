@@ -14,16 +14,18 @@ from __future__ import annotations
 import contextlib
 from datetime import UTC, datetime
 
+from flext_core import FlextConstants, FlextTypes
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcClientService,
     FlextGrpcConfig,
+    FlextGrpcConstants,
     FlextGrpcServer,
     FlextGrpcServerService,
-    FlextGrpcService,
     FlextGrpcStream,
 )
+from flext_grpc.entities import FlextGrpcService
 
 
 class GrpcServerManager:
@@ -48,10 +50,10 @@ class GrpcServerManager:
             port = base_port + i
 
             config = FlextGrpcConfig(
-                host="localhost",
+                host=FlextConstants.Platform.DEFAULT_HOST,
                 port=port,
                 max_workers=10 + (i * 5),  # Vary workers
-                timeout=30.0,
+                timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
             )
 
             server = FlextGrpcServer(
@@ -435,7 +437,7 @@ def example_5_error_handling() -> None:
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
         id="test-channel",
-        target="localhost:50051",  # GrpcTarget is type alias, not constructor
+        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",  # GrpcTarget is type alias, not constructor
         created_at=datetime.now(UTC),
     )
 
@@ -449,16 +451,16 @@ def example_5_error_handling() -> None:
 
     # Configuration error scenarios
 
-    with contextlib.suppress(RuntimeError, ValueError, TypeError):
+    with contextlib.suppress(Exception):
         FlextGrpcConfig(host="")
 
-    with contextlib.suppress(RuntimeError, ValueError, TypeError):
+    with contextlib.suppress(Exception):
         FlextGrpcConfig(port=0)
 
-    with contextlib.suppress(RuntimeError, ValueError, TypeError):
+    with contextlib.suppress(Exception):
         FlextGrpcConfig(max_workers=0)
 
-    with contextlib.suppress(RuntimeError, ValueError, TypeError):
+    with contextlib.suppress(Exception):
         FlextGrpcConfig(timeout=-1.0)
 
 

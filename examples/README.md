@@ -137,7 +137,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Key Integration Points**:
 
-- FlexCore (Go) service communication (port 8080)
+- FlexCore (Go) service communication (port ${FlextConstants.Platform.DEFAULT_HTTP_PORT})
 - FLEXT Service (Go/Python) integration (port 8081)
 - flext-core foundation pattern usage
 - flext-observability monitoring integration
@@ -156,8 +156,8 @@ platform = FlextGrpcPlatform(container=container)
 # Client for FlexCore service
 flexcore_client = FlextGrpcClient(
     id="flexcore-client",
-    host="localhost",
-    port=8080,  # FlexCore gRPC port
+    host=FlextConstants.Platform.DEFAULT_HOST,
+    port=FlextConstants.Platform.DEFAULT_HTTP_PORT,  # FlexCore gRPC port
     created_at=datetime.now(timezone.utc)
 )
 
@@ -183,10 +183,10 @@ from flext_grpc import FlextGrpcConfig
 
 # Production configuration
 prod_config = FlextGrpcConfig(
-    host="0.0.0.0",
-    port=50051,
+    host=FlextConstants.Platform.PRODUCTION_HOST,
+    port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=20,
-    timeout=30.0,
+    timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
     use_ssl=True,
     cert_file="/etc/ssl/certs/server.pem",
     key_file="/etc/ssl/private/server.key"
@@ -194,8 +194,8 @@ prod_config = FlextGrpcConfig(
 
 # Development configuration
 dev_config = FlextGrpcConfig(
-    host="localhost",
-    port=50051,
+    host=FlextGrpcConstants.Network.DEFAULT_HOST,
+    port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=4,
     timeout=10.0,
     dev_mode=True
@@ -270,8 +270,8 @@ from datetime import datetime, timezone
 # Standard entity creation with validation
 server = FlextGrpcServer(
     id="example-server",
-    host="localhost",
-    port=50051,
+    host=FlextGrpcConstants.Network.DEFAULT_HOST,
+    port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=10,
     created_at=datetime.now(timezone.utc)
 )

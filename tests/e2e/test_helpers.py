@@ -9,7 +9,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 from flext_core import FlextTypes
-from flext_grpc import FlextGrpcClient, FlextGrpcServer, FlextGrpcService
+from flext_grpc import FlextGrpcClient, FlextGrpcServer
+from flext_grpc.entities import FlextGrpcService
 
 
 def assert_server_from_setup(

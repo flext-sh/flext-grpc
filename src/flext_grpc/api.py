@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 from uuid import uuid4
 
-from flext_core import FlextResult, FlextTypes
+from flext_core import FlextConstants, FlextResult
 from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
@@ -24,349 +24,314 @@ from flext_grpc.typings import FlextGrpcTypes
 
 
 def create_server(
-    config: FlextGrpcModels.ServerConfig | None = None,
-    host: str = "localhost",
-    port: int = 50051,
-    max_workers: int = 10,
-) -> FlextResult[FlextGrpcServer]:
+    host: str | FlextGrpcModels.ServerConfig = FlextConstants.Platform.DEFAULT_HOST,
+    port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
+    max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
+) -> FlextGrpcServer:
     """Create gRPC server using FlextGrpcModels.ServerConfig.
 
     Args:
-      config: Server configuration model (preferred)
-      host: Server host address (fallback, default: localhost)
-      port: Server port number (fallback, default: 50051)
-      max_workers: Maximum worker threads (fallback, default: 10)
+      host: Server host address or ServerConfig object (default: FlextConstants.Platform.DEFAULT_HOST)
+      port: Server port number (default: FlextGrpcConstants.DEFAULT_GRPC_PORT)
+      max_workers: Maximum worker threads (default: FlextGrpcConstants.DEFAULT_MAX_WORKERS)
 
     Returns:
-      FlextResult containing created server entity or error
+      Created server entity
 
     Example:
-      >>> config = FlextGrpcModels.ServerConfig(host="localhost", port=50051)
-      >>> result = create_server(config=config)
-      >>> if result.is_success:
-      ...     server = result.unwrap()
-      ...     print(f"Server created: {server.host}:{server.port}")
+      >>> config = FlextGrpcModels.ServerConfig(
+      ...     host=FlextConstants.Platform.DEFAULT_HOST,
+      ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
+      ... )
+      >>> server = create_server(config=config)
+      >>> print(f"Server created: {server.host}:{server.port}")
 
     """
-    try:
-        # Use provided config or create from parameters
-        if config is None:
-            config = FlextGrpcModels.ServerConfig(
-                host=host, port=port, max_workers=max_workers
-            )
-
-        # Create server entity using standardized models
-        server = FlextGrpcServer(
-            id=str(uuid4()),
-            host=config.host,
-            port=config.port,
-            max_workers=config.max_workers,
-            state="stopped",
-            services=[],
+    # Handle both config object and individual parameters
+    if isinstance(host, FlextGrpcModels.ServerConfig):
+        config = host
+    else:
+        config = FlextGrpcModels.ServerConfig(
+            host=host, port=port, max_workers=max_workers
         )
 
-        return FlextResult[FlextGrpcServer].ok(server)
-    except Exception as e:
-        error_msg = f"Failed to create server: {e}"
-        return FlextResult[FlextGrpcServer].fail(error_msg)
+    # Create server entity using standardized models
+    return FlextGrpcServer(
+        id=str(uuid4()),
+        host=config.host,
+        port=config.port,
+        max_workers=config.max_workers,
+        state="stopped",
+        services=[],
+    )
 
 
 def create_client(
-    config: FlextGrpcModels.ClientConfig | None = None,
-    target: str | None = None,
-    options: FlextTypes.Core.Dict | None = None,
-) -> FlextResult[FlextGrpcClient]:
+    target: str | FlextGrpcModels.ClientConfig = FlextConstants.Platform.DEFAULT_HOST
+    + ":"
+    + str(FlextGrpcConstants.DEFAULT_GRPC_PORT),
+    options: dict[str, object] | None = None,
+) -> FlextGrpcClient:
     """Create gRPC client using FlextGrpcModels.ClientConfig.
 
     Args:
       config: Client configuration model (preferred)
-      target: gRPC target address (fallback, host:port format)
-      options: Optional client options (fallback)
+      target: gRPC target address (host:port format)
+      options: Optional client options
 
     Returns:
-      FlextResult containing created client entity or error
+      Created client entity
 
     Example:
-      >>> config = FlextGrpcModels.ClientConfig(target="localhost:50051")
-      >>> result = create_client(config=config)
-      >>> if result.is_success:
-      ...     client = result.unwrap()
-      ...     print(f"Client created: {client.target}")
+      >>> config = FlextGrpcModels.ClientConfig(
+      ...     target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
+      ... )
+      >>> client = create_client(config=config)
+      >>> print(f"Client created: {client.target}")
 
     """
-    try:
-        # Use provided config or create from parameters
-        if config is None:
-            if target is None:
-                return FlextResult[FlextGrpcClient].fail(
-                    "Either config or target must be provided"
-                )
-
-            config = FlextGrpcModels.ClientConfig(
-                target=target, timeout=30.0, retry_attempts=3
-            )
-
-        # Create channel using standardized models
-        FlextGrpcModels.ChannelConfig(address=config.target, options=options)
-
-        channel = FlextGrpcChannel(
-            id=str(uuid4()),
-            target=config.target,
-            state="idle",
-            options=options or {},
+    # Handle both config object and target string
+    if isinstance(target, FlextGrpcModels.ClientConfig):
+        config = target
+    else:
+        config = FlextGrpcModels.ClientConfig(
+            target=target,
+            timeout=FlextGrpcConstants.DEFAULT_TIMEOUT,
+            retry_attempts=3,
         )
 
-        # Create client entity using standardized models
-        client = FlextGrpcClient(
-            id=str(uuid4()),
-            channel=channel,
-            options=options or {},
-        )
+    # Create channel using standardized models
+    FlextGrpcModels.ChannelConfig(address=config.target, options=options)
 
-        return FlextResult[FlextGrpcClient].ok(client)
-    except Exception as e:
-        error_msg = f"Failed to create client: {e}"
-        return FlextResult[FlextGrpcClient].fail(error_msg)
+    channel = FlextGrpcChannel(
+        id=str(uuid4()),
+        target=config.target,
+        state="idle",
+        options=options or {},
+    )
+
+    # Create client entity using standardized models
+    return FlextGrpcClient(
+        id=str(uuid4()),
+        channel=channel,
+        options=options or {},
+    )
 
 
 def create_channel(
-    config: FlextGrpcModels.ChannelConfig | None = None,
-    target: str | None = None,
-    options: FlextTypes.Core.Dict | None = None,
-) -> FlextResult[FlextGrpcChannel]:
+    target: str | FlextGrpcModels.ChannelConfig = FlextConstants.Platform.DEFAULT_HOST
+    + ":"
+    + str(FlextGrpcConstants.DEFAULT_GRPC_PORT),
+    options: dict[str, object] | None = None,
+) -> FlextGrpcChannel:
     """Create gRPC channel using FlextGrpcModels.ChannelConfig.
 
     Args:
       config: Channel configuration model (preferred)
-      target: gRPC target address (fallback, host:port format)
-      options: Optional channel options (fallback)
+      target: gRPC target address (host:port format)
+      options: Optional channel options
 
     Returns:
-      FlextResult containing created channel entity or error
+      Created channel entity
 
     Example:
-      >>> config = FlextGrpcModels.ChannelConfig(address="localhost:50051")
-      >>> result = create_channel(config=config)
-      >>> if result.is_success:
-      ...     channel = result.unwrap()
-      ...     print(f"Channel created: {channel.target}")
+      >>> config = FlextGrpcModels.ChannelConfig(
+      ...     address=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
+      ... )
+      >>> channel = create_channel(config=config)
+      >>> print(f"Channel created: {channel.target}")
 
     """
-    try:
-        # Use provided config or create from parameters
-        if config is None:
-            if target is None:
-                return FlextResult[FlextGrpcChannel].fail(
-                    "Either config or target must be provided"
-                )
+    # Handle both config object and target string
+    if isinstance(target, FlextGrpcModels.ChannelConfig):
+        config = target
+    else:
+        config = FlextGrpcModels.ChannelConfig(address=target, options=options)
 
-            config = FlextGrpcModels.ChannelConfig(address=target, options=options)
-
-        # Create channel entity using standardized models
-        channel = FlextGrpcChannel(
-            id=str(uuid4()),
-            target=config.address,
-            state="idle",
-            options=config.options or {},
-        )
-
-        return FlextResult[FlextGrpcChannel].ok(channel)
-    except Exception as e:
-        error_msg = f"Failed to create channel: {e}"
-        return FlextResult[FlextGrpcChannel].fail(error_msg)
+    # Create channel entity using standardized models
+    return FlextGrpcChannel(
+        id=str(uuid4()),
+        target=config.address,
+        state="idle",
+        options=config.options or {},
+    )
 
 
 def create_service(
-    definition: FlextGrpcModels.ServiceDefinition | None = None,
-    name: str | None = None,
-    methods: FlextTypes.Core.StringList | None = None,
-) -> FlextResult[FlextGrpcService]:
+    name: str | FlextGrpcModels.ServiceDefinition = "DefaultService",
+    methods: list[str] | None = None,
+) -> FlextGrpcService:
     """Create gRPC service using FlextGrpcModels.ServiceDefinition.
 
     Args:
       definition: Service definition model (preferred)
-      name: Service name (fallback)
-      methods: List of method names (fallback, default: empty list)
+      name: Service name
+      methods: List of method names (default: empty list)
 
     Returns:
-      FlextResult containing created service entity or error
+      Created service entity
 
     Example:
       >>> definition = FlextGrpcModels.ServiceDefinition(
       ...     service_name="MyService", methods=["GetData", "ProcessData"]
       ... )
-      >>> result = create_service(definition=definition)
-      >>> if result.is_success:
-      ...     service = result.unwrap()
-      ...     print(f"Service created: {service.name}")
+      >>> service = create_service(definition=definition)
+      >>> print(f"Service created: {service.name}")
 
     """
-    try:
-        # Use provided definition or create from parameters
-        if definition is None:
-            if name is None:
-                return FlextResult[FlextGrpcService].fail(
-                    "Either definition or name must be provided"
-                )
-
-            definition = FlextGrpcModels.ServiceDefinition(
-                service_name=name, methods=methods or []
-            )
-
-        # Create service entity using standardized models
-        service = FlextGrpcService(
-            id=str(uuid4()),
-            name=definition.service_name,
-            methods=definition.methods,
+    # Handle both definition object and name string
+    if isinstance(name, FlextGrpcModels.ServiceDefinition):
+        definition = name
+    else:
+        definition = FlextGrpcModels.ServiceDefinition(
+            service_name=name, methods=methods or []
         )
 
-        return FlextResult[FlextGrpcService].ok(service)
-    except Exception as e:
-        error_msg = f"Failed to create service: {e}"
-        return FlextResult[FlextGrpcService].fail(error_msg)
+    # Create service entity using standardized models
+    return FlextGrpcService(
+        id=str(uuid4()),
+        name=definition.service_name,
+        methods=definition.methods,
+    )
 
 
 def create_stream(
-    stream_info: FlextGrpcModels.StreamInfo | None = None,
-    method_name: str | None = None,
-    stream_type: FlextGrpcTypes.Core.GrpcStreamType = "unary",
-) -> FlextResult[FlextGrpcStream]:
+    method_name: str | FlextGrpcModels.StreamInfo = "DefaultMethod",
+    stream_type: FlextGrpcTypes.GrpcStreamType = "unary",
+) -> FlextGrpcStream:
     """Create gRPC stream using FlextGrpcModels.StreamInfo.
 
     Args:
       stream_info: Stream information model (preferred)
-      method_name: Associated method name (fallback)
-      stream_type: Type of stream (fallback, default: unary)
+      method_name: Associated method name
+      stream_type: Type of stream (default: unary)
 
     Returns:
-      FlextResult containing created stream entity or error
+      Created stream entity
 
     Raises:
-      ValueError: If stream_type is invalid
+      ValueError: If stream_type is invalid or method_name is empty
 
     Example:
       >>> stream_info = FlextGrpcModels.StreamInfo(
       ...     stream_id="stream1",
       ...     stream_type="server_streaming",
-      ...     target="localhost:50051",
+      ...     target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",
       ... )
-      >>> result = create_stream(stream_info=stream_info)
-      >>> if result.is_success:
-      ...     stream = result.unwrap()
-      ...     print(f"Stream created: {stream.method_name}")
+      >>> stream = create_stream(stream_info=stream_info)
+      >>> print(f"Stream created: {stream.method_name}")
 
     """
-    try:
-        # Use provided stream_info or create from parameters
-        if stream_info is None:
-            if method_name is None:
-                return FlextResult[FlextGrpcStream].fail(
-                    "Either stream_info or method_name must be provided"
-                )
+    # Handle both stream_info object and method_name string
+    if isinstance(method_name, FlextGrpcModels.StreamInfo):
+        stream_info = method_name
+    else:
+        # Validate method name
+        if not method_name or not method_name.strip():
+            msg = "Stream method name cannot be empty"
+            raise ValueError(msg)
 
-            # Validate stream type
-            valid_types = [
-                "unary",
-                "server_streaming",
-                "client_streaming",
-                "bidirectional",
-            ]
-            if stream_type not in valid_types:
-                return FlextResult[FlextGrpcStream].fail(
-                    f"Invalid stream type: {stream_type}"
-                )
+        # Validate stream type
+        valid_types = [
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
+        ]
+        if stream_type not in valid_types:
+            msg = f"Invalid stream type: {stream_type}"
+            raise ValueError(msg)
 
-            stream_info = FlextGrpcModels.StreamInfo(
-                stream_id=str(uuid4()),
-                stream_type=stream_type,
-                target="localhost:50051",  # Default target
-            )
-
-        # Create stream entity using standardized models
-        stream = FlextGrpcStream(
-            id=stream_info.stream_id,
-            method_name=method_name or f"method_{stream_info.stream_id}",
-            stream_type=stream_info.stream_type,
+        stream_info = FlextGrpcModels.StreamInfo(
+            stream_id=str(uuid4()),
+            method_name=method_name,
+            stream_type=stream_type,
+            target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",  # Default target
         )
 
-        return FlextResult[FlextGrpcStream].ok(stream)
-    except Exception as e:
-        error_msg = f"Failed to create stream: {e}"
-        return FlextResult[FlextGrpcStream].fail(error_msg)
+    # Create stream entity using standardized models
+    # Extract method_name from stream_info if method_name is a StreamInfo object
+    actual_method_name = (
+        method_name if isinstance(method_name, str) else "DefaultMethod"
+    )
+
+    return FlextGrpcStream(
+        id=stream_info.stream_id,
+        method_name=actual_method_name,
+        stream_type=stream_info.stream_type,
+    )
 
 
 def create_config(
     server_config: FlextGrpcModels.ServerConfig | None = None,
-    host: str = "localhost",
-    port: int = 50051,
-    max_workers: int = 10,
-    timeout: float = 30.0,
-) -> FlextResult[FlextGrpcConfig]:
+    host: str = FlextConstants.Platform.DEFAULT_HOST,
+    port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
+    max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
+    timeout: float = FlextConstants.Network.DEFAULT_TIMEOUT,
+) -> FlextGrpcConfig:
     """Create gRPC configuration using FlextGrpcModels.ServerConfig.
 
     Args:
       server_config: Server configuration model (preferred)
-      host: Server host address (fallback, default: localhost)
-      port: Server port number (fallback, default: 50051)
-      max_workers: Maximum worker threads (fallback, default: 10)
-      timeout: Operation timeout in seconds (fallback, default: 30.0)
+      host: Server host address (default: FlextConstants.Platform.DEFAULT_HOST)
+      port: Server port number (default: FlextGrpcConstants.DEFAULT_GRPC_PORT)
+      max_workers: Maximum worker threads (default: FlextGrpcConstants.DEFAULT_MAX_WORKERS)
+      timeout: Operation timeout in seconds (default: FlextConstants.Network.DEFAULT_TIMEOUT)
 
     Returns:
-      FlextResult containing created configuration object or error
+      Created configuration object
 
     Raises:
       ValueError: If configuration parameters are invalid
 
     Example:
       >>> server_config = FlextGrpcModels.ServerConfig(
-      ...     host="localhost", port=50051, max_workers=10
+      ...     host=FlextConstants.Platform.DEFAULT_HOST,
+      ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
+      ...     max_workers=10,
       ... )
-      >>> result = create_config(server_config=server_config)
-      >>> if result.is_success:
-      ...     config = result.unwrap()
-      ...     print(f"Config created: {config.get_address()}")
+      >>> config = create_config(server_config=server_config)
+      >>> print(f"Config created: {config.get_address()}")
 
     """
-    try:
-        # Use provided server_config or create from parameters
-        if server_config is None:
-            server_config = FlextGrpcModels.ServerConfig(
-                host=host, port=port, max_workers=max_workers, timeout=timeout
-            )
-
-        # Create FlextGrpcConfig using standardized models
-        config = FlextGrpcConfig(
-            host=server_config.host,
-            port=server_config.port,
-            max_workers=server_config.max_workers,
-            timeout=server_config.timeout,
+    # Use provided server_config or create from parameters
+    if server_config is None:
+        server_config = FlextGrpcModels.ServerConfig(
+            host=host, port=port, max_workers=max_workers, timeout=timeout
         )
 
-        return FlextResult[FlextGrpcConfig].ok(config)
-    except Exception as e:
-        error_msg = f"Failed to create config: {e}"
-        return FlextResult[FlextGrpcConfig].fail(error_msg)
+    # Create FlextGrpcConfig using standardized models
+    return FlextGrpcConfig(
+        host=server_config.host,
+        port=server_config.port,
+        max_workers=server_config.max_workers,
+        timeout=server_config.timeout,
+    )
 
 
 def create_complete_setup(
-    host: str = "localhost",
-    port: int = 50051,
+    host: str = FlextConstants.Platform.DEFAULT_HOST,
+    port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
     service_name: str = "DefaultService",
-    service_methods: FlextTypes.Core.StringList | None = None,
-) -> FlextTypes.Core.Dict:
+    service_methods: FlextGrpcTypes.Core.StringList | None = None,
+) -> dict[str, object]:
     """Create complete gRPC setup with server, client, service, and target.
 
     Args:
-      host: Server host address (default: localhost)
-      port: Server port number (default: 50051)
+      host: Server host address (default: FlextConstants.Platform.DEFAULT_HOST)
+      port: Server port number (default: FlextGrpcConstants.DEFAULT_GRPC_PORT)
       service_name: Service name (default: DefaultService)
       service_methods: List of service methods (default: empty list)
 
     Returns:
-      Dictionary containing server, client, service, and target
+      Dictionary containing server, client, service, and target with gRPC-specific types
 
     Example:
-      >>> setup = create_complete_setup("localhost", 50051, "MyService")
+      >>> setup = create_complete_setup(
+      ...     FlextConstants.Platform.DEFAULT_HOST,
+      ...     FlextGrpcConstants.DEFAULT_GRPC_PORT,
+      ...     "MyService",
+      ... )
       >>> server = setup["server"]
       >>> client = setup["client"]
       >>> service = setup["service"]
@@ -377,18 +342,18 @@ def create_complete_setup(
         service_methods = []
 
     # Create components using the fixed factory functions
-    create_server(host, port)
+    server = create_server(host, port)
 
     target = f"{host}:{port}"
-    create_client(target)
+    client = create_client(target)
 
-    create_service(service_name, service_methods)
+    service = create_service(service_name, service_methods)
 
     return {
-        "server": "server",
-        "client": "client",
-        "service": "service",
-        "target": "target",
+        "server": server,
+        "client": client,
+        "service": service,
+        "target": target,
     }
 
 
@@ -402,7 +367,9 @@ def validate_address(address: str | None) -> FlextResult[bool]:
       FlextResult containing validation result or error message
 
     Example:
-      >>> result: FlextResult[object] = validate_address("localhost:50051")
+      >>> result: FlextResult[object] = validate_address(
+      ...     f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
+      ... )
       >>> if result.is_success:
       ...     print(f"Valid: {result.data}")
 
@@ -433,9 +400,11 @@ def parse_address(address: str) -> dict[str, str | int]:
       ValueError: If address format is invalid
 
     Example:
-      >>> result: FlextResult[object] = parse_address("localhost:50051")
+      >>> result: FlextResult[object] = parse_address(
+      ...     f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
+      ... )
       >>> print(f"Host: {result['host']}, Port: {result['port']}")
-      Host: "localhost", Port: 50051
+      Host: FlextConstants.Platform.DEFAULT_HOST, Port: FlextGrpcConstants.DEFAULT_GRPC_PORT
 
     """
     if not address or ":" not in address:
@@ -478,7 +447,7 @@ def parse_address(address: str) -> dict[str, str | int]:
         port_number_msg = "Port must be a number"
         raise ValueError(port_number_msg) from parse_error
 
-    return {"host": "host", "port": "port"}
+    return {"host": host, "port": port}
 
 
 def validate_host(host: str) -> bool:

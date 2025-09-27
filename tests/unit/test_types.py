@@ -9,7 +9,6 @@ from __future__ import annotations
 import pytest
 
 from flext_grpc import (
-    TGrpcTarget,
     flext_grpc_parse_target,
     flext_grpc_validate_target,
 )
@@ -74,7 +73,7 @@ class TestGrpcTypes:
 
     def test_grpc_target_type(self) -> None:
         """Test TGrpcTarget type."""
-        target = TGrpcTarget("localhost:50051")
+        target = "localhost:50051"
         if target != "localhost:50051":
             raise AssertionError(f"Expected {'localhost:50051'}, got {target}")
         assert isinstance(target, str)

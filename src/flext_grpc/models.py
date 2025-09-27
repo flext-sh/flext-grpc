@@ -1,17 +1,16 @@
-"""Module docstring."""
-
-from __future__ import annotations
-
 """Models for gRPC operations.
 
 This module provides data models for gRPC operations.
 """
 
+from __future__ import annotations
+
 from datetime import datetime
 
-from pydantic import Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 
-from flext_core import FlextModels
+from flext_core import FlextConstants, FlextModels
+from flext_grpc.constants import FlextGrpcConstants
 
 
 class FlextGrpcModels(FlextModels):
@@ -29,38 +28,54 @@ class FlextGrpcModels(FlextModels):
     """
 
     # Core gRPC Configuration Models
-    class ServerConfig(FlextModels.BaseConfig):
+    class ServerConfig(BaseModel):
         """gRPC server configuration model."""
 
-        host: str = Field(default="localhost", description="Server host address")
-        port: int = Field(default=50051, description="Server port number")
+        host: str = Field(
+            default=FlextConstants.Platform.DEFAULT_HOST,
+            description="Server host address",
+        )
+        port: int = Field(
+            default=FlextGrpcConstants.DEFAULT_GRPC_PORT,
+            description="Server port number",
+        )
         max_workers: int = Field(default=10, description="Maximum worker threads")
-        timeout: float = Field(default=30.0, description="Request timeout in seconds")
+        timeout: float = Field(
+            default=FlextConstants.Network.DEFAULT_TIMEOUT,
+            description="Request timeout in seconds",
+        )
 
         @field_validator("port")
         @classmethod
         def validate_port(cls, v: int) -> int:
-            if not (1024 <= v <= 65535):
-                msg = "Port must be between 1024 and 65535"
+            """Validate port number is within valid range."""
+            min_port = 1024
+            max_port = 65535
+            if not (min_port <= v <= max_port):
+                msg = f"Port must be between {min_port} and {max_port}"
                 raise ValueError(msg)
             return v
 
-    class ClientConfig(FlextModels.BaseConfig):
+    class ClientConfig(BaseModel):
         """gRPC client configuration model."""
 
         target: str = Field(description="Target server address")
-        timeout: float = Field(default=30.0, description="Request timeout")
+        timeout: float = Field(
+            default=FlextConstants.Network.DEFAULT_TIMEOUT,
+            description="Request timeout",
+        )
         retry_attempts: int = Field(default=3, description="Maximum retry attempts")
 
         @field_validator("target")
         @classmethod
         def validate_target(cls, v: str) -> str:
+            """Validate target address is not empty."""
             if not v or not v.strip():
                 msg = "Target cannot be empty"
                 raise ValueError(msg)
             return v.strip()
 
-    class ChannelConfig(FlextModels.BaseConfig):
+    class ChannelConfig(BaseModel):
         """gRPC channel configuration model."""
 
         address: str = Field(description="Channel target address")
@@ -70,7 +85,7 @@ class FlextGrpcModels(FlextModels):
         credentials: str | None = Field(default=None, description="Channel credentials")
 
     # Stream Management Models
-    class StreamInfo(FlextModels.BaseModel):
+    class StreamInfo(BaseModel):
         """Comprehensive stream information tracking model."""
 
         stream_id: str = Field(description="Unique stream identifier")
@@ -107,7 +122,7 @@ class FlextGrpcModels(FlextModels):
             default=None, description="Last health check"
         )
 
-    class StreamMetrics(FlextModels.BaseModel):
+    class StreamMetrics(BaseModel):
         """Stream performance metrics model."""
 
         stream_id: str = Field(description="Associated stream identifier")
@@ -119,7 +134,7 @@ class FlextGrpcModels(FlextModels):
         memory_usage_bytes: int = Field(default=0, description="Memory usage in bytes")
 
     # Service and Entity Models
-    class ServiceDefinition(FlextModels.BaseModel):
+    class ServiceDefinition(BaseModel):
         """gRPC service definition model."""
 
         service_name: str = Field(description="Service name")
@@ -129,13 +144,13 @@ class FlextGrpcModels(FlextModels):
         package: str | None = Field(default=None, description="Service package name")
         version: str | None = Field(default=None, description="Service version")
 
-    class ServerEntity(FlextModels.BaseModel):
+    class ServerEntity(BaseModel):
         """gRPC server entity model."""
 
         server_id: str = Field(description="Unique server identifier")
         address: str = Field(description="Server address")
         status: str = Field(default="stopped", description="Server status")
-        services: list[ServiceDefinition] = Field(
+        services: list[dict[str, str | list[str] | dict[str, object]]] = Field(
             default_factory=list, description="Registered services"
         )
         created_at: datetime = Field(
@@ -145,7 +160,7 @@ class FlextGrpcModels(FlextModels):
             default=None, description="Server start time"
         )
 
-    class ClientEntity(FlextModels.BaseModel):
+    class ClientEntity(BaseModel):
         """gRPC client entity model."""
 
         client_id: str = Field(description="Unique client identifier")
@@ -160,7 +175,7 @@ class FlextGrpcModels(FlextModels):
             default=None, description="Connection time"
         )
 
-    class ChannelEntity(FlextModels.BaseModel):
+    class ChannelEntity(BaseModel):
         """gRPC channel entity model."""
 
         channel_id: str = Field(description="Unique channel identifier")
@@ -171,7 +186,7 @@ class FlextGrpcModels(FlextModels):
         )
 
     # Request/Response Models
-    class GrpcRequest(FlextModels.BaseModel):
+    class GrpcRequest(BaseModel):
         """Generic gRPC request model."""
 
         request_id: str = Field(description="Unique request identifier")
@@ -186,7 +201,7 @@ class FlextGrpcModels(FlextModels):
             default=None, description="Request timeout override"
         )
 
-    class GrpcResponse(FlextModels.BaseModel):
+    class GrpcResponse(BaseModel):
         """Generic gRPC response model."""
 
         request_id: str = Field(description="Associated request identifier")
@@ -203,7 +218,7 @@ class FlextGrpcModels(FlextModels):
         )
 
     # Health and Monitoring Models
-    class HealthCheck(FlextModels.BaseModel):
+    class GrpcHealthCheck(BaseModel):
         """gRPC service health check model."""
 
         service_name: str = Field(description="Service being checked")
@@ -215,7 +230,7 @@ class FlextGrpcModels(FlextModels):
             default=None, description="Additional health details"
         )
 
-    class ServiceMetrics(FlextModels.BaseModel):
+    class ServiceMetrics(BaseModel):
         """gRPC service metrics model."""
 
         service_name: str = Field(description="Service name")
@@ -230,7 +245,7 @@ class FlextGrpcModels(FlextModels):
         )
 
     # Platform Integration Models
-    class PlatformConfig(FlextModels.BaseConfig):
+    class PlatformConfig(BaseModel):
         """gRPC platform configuration model."""
 
         enable_reflection: bool = Field(
@@ -243,13 +258,10 @@ class FlextGrpcModels(FlextModels):
             default=100, description="Maximum concurrent streams"
         )
         keepalive_time_ms: int = Field(
-            default=30000, description="Keepalive time in milliseconds"
+            default=FlextGrpcConstants.DEFAULT_KEEPALIVE_TIME_MS,
+            description="Keepalive time in milliseconds",
         )
         keepalive_timeout_ms: int = Field(
-            default=5000, description="Keepalive timeout in milliseconds"
+            default=FlextGrpcConstants.DEFAULT_KEEPALIVE_TIMEOUT_MS,
+            description="Keepalive timeout in milliseconds",
         )
-
-    # Type aliases for backward compatibility and convenience
-    GrpcMessage = dict[str, object]
-    GrpcMessages = list[GrpcMessage]
-    FlextGrpcChannel = object  # Placeholder for gRPC channel type

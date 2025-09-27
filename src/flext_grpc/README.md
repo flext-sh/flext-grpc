@@ -33,10 +33,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Purpose**: Domain services orchestrating business workflows
 **Components**:
 
-- `FlextGrpcServerService` - Server lifecycle management (start, stop, add_service, status)
-- `FlextGrpcClientService` - Client operations (connect, disconnect, call, status)
-- `FlextGrpcStreamService` - Streaming operations (create, send, close)
-- `FlextGrpcService` - Unified service facade coordinating all operations
+- `FlextGrpcService` - Unified service class with all gRPC operations (server lifecycle, client operations, streaming) following the unified class pattern
 - `_GrpcServiceValidationMixin` - Shared validation patterns (Template Method)
 
 **Architecture Patterns**:

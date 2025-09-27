@@ -39,11 +39,11 @@ RUN mkdir -p /app/logs \
 USER flext
 
 # Expose gRPC port
-EXPOSE 50051
+EXPOSE ${FlextGrpcConstants.Network.DEFAULT_PORT}
 
 # Health check for gRPC service
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD python -c "import grpc; import sys; channel = grpc.insecure_channel('localhost:50051'); channel.close()" || exit 1
+    CMD python -c "import grpc; import sys; channel = grpc.insecure_channel('${FlextGrpcConstants.Network.DEFAULT_HOST}:${FlextGrpcConstants.Network.DEFAULT_PORT}'); channel.close()" || exit 1
 
 # Start the gRPC server
 CMD ["python", "-m", "flext_grpc.server"]

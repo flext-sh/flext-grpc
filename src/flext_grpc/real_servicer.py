@@ -48,14 +48,15 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         self.server_id = server_id
         self.start_time = time.time()
 
-    def echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
+    @override
+    def Echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
         """Real unary Echo implementation."""
         try:
             # Process the actual request
             response_message = f"Echo: {request.message}"
 
             # Add metadata from request if present
-            if request.metadata:
+            if hasattr(request, "metadata") and request.metadata:
                 metadata_str = ", ".join(
                     f"{k}={v}" for k, v in request.metadata.items()
                 )
@@ -73,7 +74,8 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    def server_stream(
+    @override
+    def ServerStream(
         self,
         request: StreamRequest,
         context: ServicerContext,
@@ -97,7 +99,8 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Server streaming error: {e}")
 
-    def client_stream(
+    @override
+    def ClientStream(
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
@@ -126,7 +129,8 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Client streaming error: {e}")
             return StreamResponse()
 
-    def bidirectional_stream(
+    @override
+    def BidirectionalStream(
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
@@ -149,7 +153,8 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Bidirectional streaming error: {e}")
 
-    def health_check(
+    @override
+    def HealthCheck(
         self,
         request: HealthRequest,
         context: ServicerContext,

@@ -21,12 +21,12 @@ from flext_grpc.api import (
     validate_address,
 )
 from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcEntity,
     FlextGrpcServer,
-    FlextGrpcService,
     FlextGrpcStream,
 )
 from flext_grpc.exceptions import (
@@ -36,16 +36,24 @@ from flext_grpc.exceptions import (
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
-
-# Proto imports commented out until protobuf generation is available
-# from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
+from flext_grpc.models import FlextGrpcModels
+from flext_grpc.platform import FlextGrpcPlatform
+from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.services import (
     FlextGrpcClientService,
-    FlextGrpcPlatform,
     FlextGrpcServerService,
+    FlextGrpcService,
     FlextGrpcStreamService,
 )
 from flext_grpc.typings import FlextGrpcTypes
+
+# Export commonly used types for convenience
+TGrpcTarget = FlextGrpcTypes.TGrpcTarget
+GrpcTarget = FlextGrpcTypes.GrpcTarget
+
+# Export validation functions for convenience
+flext_grpc_validate_target = FlextGrpcTypes.GrpcValidation.validate_target
+flext_grpc_parse_target = FlextGrpcTypes.GrpcValidation.parse_target
 
 try:
     __version__ = importlib.metadata.version("flext-grpc")
@@ -54,10 +62,8 @@ except importlib.metadata.PackageNotFoundError:
 
 __version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
 
-__all__: FlextGrpcTypes.Core.StringList = [
-    # Proto exports commented out until protobuf generation is available
-    # "EchoRequest",
-    # "FlextGrpcServiceStub",
+__all__: list[str] = [
+    "EchoRequest",
     "FlextContainer",
     "FlextGrpcChannel",
     "FlextGrpcClient",
@@ -65,18 +71,23 @@ __all__: FlextGrpcTypes.Core.StringList = [
     "FlextGrpcConfig",
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
+    "FlextGrpcConstants",
     "FlextGrpcEntity",
     "FlextGrpcError",
+    "FlextGrpcModels",
     "FlextGrpcPlatform",
     "FlextGrpcServer",
     "FlextGrpcServerService",
     "FlextGrpcService",
+    "FlextGrpcServiceStub",
     "FlextGrpcStream",
     "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcValidationError",
     "FlextResult",
+    "GrpcTarget",
+    "TGrpcTarget",
     "__version__",
     "__version_info__",
     "create_channel",
@@ -86,9 +97,12 @@ __all__: FlextGrpcTypes.Core.StringList = [
     "create_server",
     "create_service",
     "create_stream",
+    "flext_grpc_parse_target",
+    "flext_grpc_validate_target",
     "parse_address",
     "validate_address",
 ]
+
 
 # Module metadata for API documentation and tooling
 __architecture__ = "Clean Architecture + DDD"

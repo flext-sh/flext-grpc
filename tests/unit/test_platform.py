@@ -12,14 +12,11 @@ from flext_core import FlextContainer
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
-    FlextGrpcClientService,
     FlextGrpcPlatform,
     FlextGrpcServer,
-    FlextGrpcServerService,
-    FlextGrpcStreamService,
-    TGrpcTarget,
     create_stream,
 )
+from flext_grpc.services import FlextGrpcService
 
 
 class TestFlextGrpcPlatformSimple:
@@ -35,18 +32,13 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
 
         # Clear container after initialization
-        platform._container.clear()
+        platform.container.clear()
 
-        # Test that platform has all required service instances
-        assert platform._server_service is not None
-        assert platform._client_service is not None
-        assert platform._stream_service is not None
+        # Test that platform has the main service instance
+        assert platform.service is not None
 
-        # Test that services are of the correct type
-
-        assert isinstance(platform._server_service, FlextGrpcServerService)
-        assert isinstance(platform._client_service, FlextGrpcClientService)
-        assert isinstance(platform._stream_service, FlextGrpcStreamService)
+        # Test that service is of the correct type
+        assert isinstance(platform.service, FlextGrpcService)
 
     def test_platform_operations_error_paths(self) -> None:
         """Test platform operation error handling for coverage."""
@@ -62,7 +54,7 @@ class TestFlextGrpcPlatformSimple:
 
         channel = FlextGrpcChannel(
             id="test-channel",
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             created_at=datetime.now(UTC),
         )
         client = FlextGrpcClient(
@@ -76,24 +68,24 @@ class TestFlextGrpcPlatformSimple:
 
         start_result = platform.start_server(server)
         # Should either succeed or fail gracefully
-        assert start_result.success or start_result.is_failure
+        assert start_result.is_success or start_result.is_failure
 
         stop_result = platform.stop_server(server)
-        assert stop_result.success or stop_result.is_failure
+        assert stop_result.is_success or stop_result.is_failure
 
         connect_result = platform.connect_client(client)
-        assert connect_result.success or connect_result.is_failure
+        assert connect_result.is_success or connect_result.is_failure
 
-        call_result = platform.make_call(client, "test_method", {"data": "test"})
-        assert call_result.success or call_result.is_failure
+        call_result = platform.make_call(client, "test_method", data="test")
+        assert call_result.is_success or call_result.is_failure
 
         server_status = platform.get_server_status(server)
-        assert server_status.success or server_status.is_failure
+        assert server_status.is_success or server_status.is_failure
 
         client_status = platform.get_client_status(client)
-        assert client_status.success or client_status.is_failure
+        assert client_status.is_success or client_status.is_failure
 
         # Create a stream entity first
-        stream = create_stream("test_method", "unary")
-        stream_result = platform.create_stream(stream)
-        assert stream_result.success or stream_result.is_failure
+        create_stream("test_method", "unary")
+        stream_result = platform.create_stream("unary", "test_method")
+        assert stream_result.is_success or stream_result.is_failure

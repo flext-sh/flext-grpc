@@ -11,21 +11,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-# Add src directory to Python path for development
 import contextlib
 from datetime import UTC, datetime
 
+from flext_core import FlextConstants
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcClientService,
     FlextGrpcConfig,
+    FlextGrpcConstants,
     FlextGrpcServer,
     FlextGrpcServerService,
-    FlextGrpcService,
 )
-
-# FlextGrpcClient and FlextGrpcServer already imported above
+from flext_grpc.entities import FlextGrpcService
 
 
 def example_1_basic_entities() -> None:
@@ -33,8 +32,8 @@ def example_1_basic_entities() -> None:
     # Create a gRPC server
     server = FlextGrpcServer(
         id="example-server",
-        host="localhost",
-        port=8080,
+        host=FlextConstants.Platform.DEFAULT_HOST,
+        port=FlextConstants.Platform.DEFAULT_HTTP_PORT,
         max_workers=10,
         created_at=datetime.now(UTC),
     )
@@ -44,7 +43,7 @@ def example_1_basic_entities() -> None:
     # Create a gRPC channel
     channel = FlextGrpcChannel(
         id="example-channel",
-        target="localhost:8080",
+        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}",
         created_at=datetime.now(UTC),
     )
 
@@ -72,13 +71,13 @@ def example_2_configuration() -> None:
     # Create custom configuration
     FlextGrpcConfig(
         host="example.com",
-        port=9090,
+        port=FlextGrpcConstants.METRICS_PORT,
         max_workers=20,
         timeout=60.0,
     )
 
     # Configuration validation
-    with contextlib.suppress(RuntimeError, ValueError, TypeError):
+    with contextlib.suppress(Exception):
         FlextGrpcConfig(host="", port=0)
 
 
@@ -93,7 +92,7 @@ def example_3_operations() -> None:
     # Create server for operations
     server = FlextGrpcServer(
         id="ops-server",
-        host="localhost",
+        host=FlextConstants.Platform.DEFAULT_HOST,
         port=7070,
         created_at=datetime.now(UTC),
     )
@@ -116,7 +115,7 @@ def example_3_operations() -> None:
     # Create client for operations
     channel = FlextGrpcChannel(
         id="ops-channel",
-        target="localhost:7070",
+        target=f"{FlextConstants.Platform.DEFAULT_HOST}:7070",
         created_at=datetime.now(UTC),
     )
 
@@ -145,8 +144,8 @@ def example_4_validation() -> None:
     # Valid entities
     valid_server = FlextGrpcServer(
         id="valid-server",
-        host="localhost",
-        port=8080,
+        host=FlextConstants.Platform.DEFAULT_HOST,
+        port=FlextConstants.Platform.DEFAULT_HTTP_PORT,
         max_workers=5,
         created_at=datetime.now(UTC),
     )
@@ -172,7 +171,7 @@ def example_4_validation() -> None:
     # Channel validation
     valid_channel = FlextGrpcChannel(
         id="valid-channel",
-        target="localhost:8080",
+        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}",
         state="ready",
         created_at=datetime.now(UTC),
     )
@@ -195,7 +194,7 @@ def example_5_state_transitions() -> None:
     # Channel state transitions
     channel = FlextGrpcChannel(
         id="transition-channel",
-        target="localhost:8080",
+        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}",
         state="idle",
         created_at=datetime.now(UTC),
     )

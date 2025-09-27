@@ -9,8 +9,6 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
 
-import echo_pb2
-import echo_pb2_grpc
 import grpc
 import pytest
 
@@ -18,9 +16,15 @@ from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcServer,
-    FlextGrpcService,
-    TGrpcTarget,
 )
+from flext_grpc.entities import FlextGrpcService
+
+# Import protobuf modules for testing - these are generated files
+try:
+    from . import echo_pb2, echo_pb2_grpc  # type: ignore[import-untyped]
+except ImportError:
+    import echo_pb2  # type: ignore[import-untyped]
+    import echo_pb2_grpc  # type: ignore[import-untyped]
 
 
 class TestRealGrpcServer:
@@ -50,7 +54,7 @@ class TestRealGrpcServer:
 
             # Validate server configuration with real port
             validation = server.validate_business_rules()
-            assert validation.success
+            assert validation.is_success
 
             # Test real connection to the server
             target = f"{server.host}:{actual_port}"
@@ -65,21 +69,21 @@ class TestRealGrpcServer:
                 # Test entity state transitions work correctly - start with idle
                 channel_entity = FlextGrpcChannel(
                     id="real-test-channel",
-                    target=TGrpcTarget(target),
+                    target=target,
                     state="idle",  # Start with idle state for transition testing
                     created_at=datetime.now(UTC),
                 )
 
                 # Test idle -> connecting transition
                 connect_result = channel_entity.connect()
-                assert connect_result.success
+                assert connect_result.is_success
                 connecting_channel = connect_result.data
                 assert connecting_channel is not None
                 assert connecting_channel.state == "connecting"
 
                 # Test connecting -> ready transition
                 ready_result = connecting_channel.mark_ready()
-                assert ready_result.success
+                assert ready_result.is_success
                 ready_channel = ready_result.data
                 assert ready_channel is not None
                 assert ready_channel.state == "ready"
@@ -111,7 +115,7 @@ class TestRealGrpcServer:
                 def echo(
                     self,
                     request: echo_pb2.EchoRequest,
-                    _context: object,
+                    _context: grpc.ServicerContext,
                 ) -> echo_pb2.EchoResponse:
                     return echo_pb2.EchoResponse(message=f"Echo: {request.message}")
 
@@ -142,8 +146,8 @@ class TestRealGrpcServer:
                 )
 
                 # Validate entities
-                assert server_entity.validate_business_rules().success
-                assert service_entity.validate_business_rules().success
+                assert server_entity.validate_business_rules().is_success
+                assert service_entity.validate_business_rules().is_success
                 assert service_entity.has_method("Echo")
 
                 # Make real gRPC call
@@ -165,7 +169,7 @@ class TestRealGrpcServer:
                     # Validate our entities represent this reality
                     channel_entity = FlextGrpcChannel(
                         id="echo-channel",
-                        target=TGrpcTarget(target),
+                        target=target,
                         state="ready",
                         created_at=datetime.now(UTC),
                     )
@@ -196,7 +200,7 @@ class TestRealGrpcServer:
 
         channel_entity = FlextGrpcChannel(
             id="error-test-channel",
-            target=TGrpcTarget(target),
+            target=target,
             state="idle",
             created_at=datetime.now(UTC),
         )
@@ -216,7 +220,7 @@ class TestRealGrpcServer:
 
             # Validate our entity can represent this error state
             error_result = channel_entity.connect()
-            if error_result.success:
+            if error_result.is_success:
                 # Simulate what would happen in real implementation
                 connecting_channel = error_result.data
                 assert connecting_channel is not None

@@ -20,13 +20,12 @@ from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcPlatform,
     FlextGrpcServer,
-    FlextGrpcService,
-    TGrpcTarget,
     create_client,
     create_complete_setup,
     create_server,
     create_service,
 )
+from flext_grpc.entities import FlextGrpcService
 
 
 class TestRealGrpcIntegration:
@@ -48,18 +47,18 @@ class TestRealGrpcIntegration:
 
         # Test real domain validation
         validation = server.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
 
         # Test real state transition: stopped -> starting
         start_result = server.start()
-        assert start_result.success
+        assert start_result.is_success
         starting_server = start_result.data
         assert starting_server is not None
         assert starting_server.state == "starting"
 
         # Test real state transition: starting -> running
         running_result = starting_server.mark_running()
-        assert running_result.success
+        assert running_result.is_success
         running_server = running_result.data
         assert running_server is not None
         assert running_server.state == "running"
@@ -68,7 +67,7 @@ class TestRealGrpcIntegration:
         # Test adding real service to running server
         service = create_service("TestService", ["GetData", "SetData"])
         service_result = running_server.add_service(service)
-        assert service_result.success
+        assert service_result.is_success
         server_with_service = service_result.data
         assert server_with_service is not None
         assert len(server_with_service.services) == 1
@@ -76,13 +75,13 @@ class TestRealGrpcIntegration:
 
         # Test real state transition: running -> stopping -> stopped
         stop_result = server_with_service.stop()
-        assert stop_result.success
+        assert stop_result.is_success
         stopping_server = stop_result.data
         assert stopping_server is not None
         assert stopping_server.state == "stopping"
 
         stopped_result = stopping_server.mark_stopped()
-        assert stopped_result.success
+        assert stopped_result.is_success
         stopped_server = stopped_result.data
         assert stopped_server is not None
         assert stopped_server.state == "stopped"
@@ -102,13 +101,13 @@ class TestRealGrpcIntegration:
         # Test real channel connection: idle -> connecting -> ready
         channel = client.channel
         connect_result = channel.connect()
-        assert connect_result.success
+        assert connect_result.is_success
         connecting_channel = connect_result.data
         assert connecting_channel is not None
         assert connecting_channel.state == "connecting"
 
         ready_result = connecting_channel.mark_ready()
-        assert ready_result.success
+        assert ready_result.is_success
         ready_channel = ready_result.data
         assert ready_channel is not None
         assert ready_channel.state == "ready"
@@ -116,14 +115,14 @@ class TestRealGrpcIntegration:
 
         # Update client with ready channel
         connected_client_result = client.copy_with(channel=ready_channel)
-        assert connected_client_result.success
+        assert connected_client_result.is_success
         connected_client = connected_client_result.data
         assert connected_client is not None
         assert connected_client.is_connected
 
         # Test real disconnection: ready -> idle
         disconnect_result = ready_channel.disconnect()
-        assert disconnect_result.success
+        assert disconnect_result.is_success
         idle_channel = disconnect_result.data
         assert idle_channel is not None
         assert idle_channel.state == "idle"
@@ -149,7 +148,7 @@ class TestRealGrpcIntegration:
 
         # Test real platform server operations
         start_result = platform.start_server(server)
-        if start_result.success:
+        if start_result.is_success:
             # Server started successfully - validate state
             started_server = start_result.data
             assert started_server is not None
@@ -160,7 +159,7 @@ class TestRealGrpcIntegration:
 
         # Test real platform client operations
         connect_result = platform.connect_client(client)
-        if connect_result.success:
+        if connect_result.is_success:
             # Client connected - validate state
             connected_client = connect_result.data
             assert connected_client is not None
@@ -171,8 +170,8 @@ class TestRealGrpcIntegration:
 
         # Test real platform status operations
         server_status = platform.get_server_status(server)
-        assert server_status.success or server_status.is_failure
-        if server_status.success:
+        assert server_status.is_success or server_status.is_failure
+        if server_status.is_success:
             status_data = server_status.data
             assert isinstance(status_data, dict)
             assert "address" in status_data
@@ -210,7 +209,7 @@ class TestRealGrpcIntegration:
         # Test invalid channel target
         invalid_channel = FlextGrpcChannel(
             id="invalid-channel",
-            target=TGrpcTarget(""),  # Empty target
+            target="",  # Empty target
             created_at=datetime.now(UTC),
         )
 
@@ -243,21 +242,21 @@ class TestRealGrpcIntegration:
         # Validate they work together
         assert server.host == "localhost"
         assert server.port == 50056
-        assert server.validate_business_rules().success
+        assert server.validate_business_rules().is_success
 
         assert client.channel is not None
         assert client.channel.target == "localhost:50056"
-        assert client.validate_business_rules().success
+        assert client.validate_business_rules().is_success
 
         assert service.name == "IntegrationService"
         assert service.has_method("TestMethod")
-        assert service.validate_business_rules().success
+        assert service.validate_business_rules().is_success
 
         assert target == "localhost:50056"
 
         # Test integration - add service to server
         service_add_result = server.add_service(service)
-        assert service_add_result.success
+        assert service_add_result.is_success
         server_with_service = service_add_result.data
         assert server_with_service is not None
         assert len(server_with_service.services) == 1
@@ -287,20 +286,20 @@ class TestRealGrpcIntegration:
         # This tests the actual dependency injection and service coordination
         start_result = platform.start_server(server)
         # Platform should handle this gracefully regardless of success/failure
-        assert start_result.success or start_result.is_failure
+        assert start_result.is_success or start_result.is_failure
 
-        if start_result.success:
+        if start_result.is_success:
             started_server = start_result.data
             assert started_server is not None
 
             # Test adding service to started server through platform
             # This would test real service registration in a production scenario
             service_result = started_server.add_service(service)
-            assert service_result.success
+            assert service_result.is_success
             updated_server = service_result.data
             assert updated_server is not None
             assert len(updated_server.services) == 1
 
             # Test stopping coordinated server
             stop_result = platform.stop_server(updated_server)
-            assert stop_result.success or stop_result.is_failure
+            assert stop_result.is_success or stop_result.is_failure

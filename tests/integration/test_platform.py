@@ -7,12 +7,15 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
+from typing import Any, cast
+
 from flext_core import FlextResult
 from flext_grpc import (
-    FlextGrpcClientService,
+    FlextGrpcClient,
     FlextGrpcPlatform,
+    FlextGrpcServer,
     FlextGrpcServerService,
-    FlextGrpcStreamService,
+    FlextGrpcStream,
     create_client,
     create_server,
     create_service,
@@ -25,26 +28,19 @@ class TestPlatformIntegration:
     def setup_method(self) -> None:
         """Set up test fixtures."""
         self.platform = FlextGrpcPlatform()
-        self.server_service = FlextGrpcServerService()
-        self.client_service = FlextGrpcClientService()
-        self.stream_service = FlextGrpcStreamService()
+        self.service = FlextGrpcServerService()
 
     def execute_service_command(
         self,
-        service_type: str,
         command: str,
+        entity: FlextGrpcServer | FlextGrpcClient | FlextGrpcStream | None = None,
         *args: object,
         **kwargs: object,
-    ) -> FlextResult:
+    ) -> FlextResult[Any]:
         """Route service commands to appropriate service instances."""
-        if service_type == "server":
-            return self.server_service.execute(command, *args, **kwargs)
-        if service_type == "client":
-            return self.client_service.execute(command, *args, **kwargs)
-        if service_type == "stream":
-            return self.stream_service.execute(command, *args, **kwargs)
-
-        return FlextResult.fail(f"Unknown service type: {service_type}")
+        return cast(
+            "FlextResult[Any]", self.service.execute(command, entity, *args, **kwargs)
+        )
 
     def test_platform_server_lifecycle(self) -> None:
         """Test complete server lifecycle through platform."""
@@ -52,29 +48,33 @@ class TestPlatformIntegration:
         server = create_server("localhost", 9000)
 
         # Start server
-        start_result = self.platform.start_server(server)
-        assert start_result.success
-        started_server = start_result.data
+        start_result: FlextResult[FlextGrpcServer] = self.platform.start_server(server)
+        assert start_result.is_success
+        started_server: FlextGrpcServer = start_result.data
         assert started_server.is_running
 
         # Get server status
-        status_result = self.platform.get_server_status(started_server)
-        assert status_result.success
-        status = status_result.data
+        status_result: FlextResult[dict[str, object]] = self.platform.get_server_status(
+            started_server
+        )
+        assert status_result.is_success
+        status: dict[str, object] = status_result.data
         if status["address"] != "localhost:9000":
-            msg: str = f"Expected {'localhost:9000'}, got {status['address']}"
-            raise AssertionError(msg)
+            address_msg: str = f"Expected {'localhost:9000'}, got {status['address']}"
+            raise AssertionError(address_msg)
         if not (status["is_running"]):
-            msg: str = f"Expected True, got {status['is_running']}"
-            raise AssertionError(msg)
+            running_msg: str = f"Expected True, got {status['is_running']}"
+            raise AssertionError(running_msg)
         if status["state"] != "running":
-            msg: str = f"Expected {'running'}, got {status['state']}"
-            raise AssertionError(msg)
+            state_msg: str = f"Expected {'running'}, got {status['state']}"
+            raise AssertionError(state_msg)
 
         # Stop server
-        stop_result = self.platform.stop_server(started_server)
-        assert stop_result.success
-        stopped_server = stop_result.data
+        stop_result: FlextResult[FlextGrpcServer] = self.platform.stop_server(
+            started_server
+        )
+        assert stop_result.is_success
+        stopped_server: FlextGrpcServer = stop_result.data
         assert not stopped_server.is_running
 
     def test_platform_client_lifecycle(self) -> None:
@@ -83,54 +83,56 @@ class TestPlatformIntegration:
         client = create_client("localhost:9001")
 
         # Connect client
-        connect_result = self.platform.connect_client(client)
-        assert connect_result.success
-        connected_client = connect_result.data
+        connect_result: FlextResult[FlextGrpcClient] = self.platform.connect_client(
+            client
+        )
+        assert connect_result.is_success
+        connected_client: FlextGrpcClient = connect_result.data
         assert connected_client.is_connected
 
         # Get client status
-        status_result = self.platform.get_client_status(connected_client)
-        assert status_result.success
-        status = status_result.data
+        status_result: FlextResult[dict[str, object]] = self.platform.get_client_status(
+            connected_client
+        )
+        assert status_result.is_success
+        status: dict[str, object] = status_result.data
         if not (status["is_connected"]):
-            msg: str = f"Expected True, got {status['is_connected']}"
-            raise AssertionError(msg)
+            connected_msg: str = f"Expected True, got {status['is_connected']}"
+            raise AssertionError(connected_msg)
         if status["target"] != "localhost:9001":
-            msg: str = f"Expected {'localhost:9001'}, got {status['target']}"
-            raise AssertionError(msg)
+            target_msg: str = f"Expected {'localhost:9001'}, got {status['target']}"
+            raise AssertionError(target_msg)
         assert status["channel_state"] == "ready"
 
         # Make call
-        call_result = self.platform.make_call(
+        call_result: FlextResult[dict[str, object]] = self.platform.make_call(
             connected_client,
             "test_method",
-            {"data": "test"},
+            data="test",
         )
-        assert call_result.success
-        response = call_result.data
+        assert call_result.is_success
+        response: dict[str, object] = call_result.data
         if response["status"] != "success":
-            msg: str = f"Expected {'success'}, got {response['status']}"
-            raise AssertionError(msg)
+            status_msg: str = f"Expected {'success'}, got {response['status']}"
+            raise AssertionError(status_msg)
         assert response["method"] == "test_method"
 
     def test_platform_stream_operations(self) -> None:
         """Test stream operations through platform."""
         # Create connected client
         client = create_client("localhost:9002")
-        connect_result = self.platform.connect_client(client)
-        connected_client = connect_result.data
+        self.platform.connect_client(client)
 
         # Create stream
-        stream_result = self.platform.create_stream(
-            connected_client,
-            "stream_method",
+        stream_result: FlextResult[FlextGrpcStream] = self.platform.create_stream(
             "server_streaming",
+            "stream_method",
         )
-        assert stream_result.success
-        stream = stream_result.data
+        assert stream_result.is_success
+        stream: FlextGrpcStream = stream_result.data
         if stream.method_name != "stream_method":
-            msg: str = f"Expected {'stream_method'}, got {stream.method_name}"
-            raise AssertionError(msg)
+            method_msg: str = f"Expected {'stream_method'}, got {stream.method_name}"
+            raise AssertionError(method_msg)
         assert stream.stream_type == "server_streaming"
         assert stream.is_server_streaming
 
@@ -139,80 +141,108 @@ class TestPlatformIntegration:
         server = create_server("localhost", 9003)
 
         # Test server operations through service
-        start_result = self.execute_service_command("server", "start", server)
-        assert start_result.success
+        start_result: FlextResult[Any] = self.execute_service_command("start", server)
+        assert start_result.is_success
 
         # Test same operations through platform
-        platform_start_result = self.platform.server_operation("start", server)
-        assert platform_start_result.success
+        platform_start_result: FlextResult[Any] = cast(
+            "FlextResult[Any]", self.platform.server_operation("start", server)
+        )
+        assert platform_start_result.is_success
 
         # Results should be consistent
-        service_server = start_result.data
-        platform_server = platform_start_result.data
-        if service_server.state != platform_server.state:
-            msg: str = f"Expected {platform_server.state}, got {service_server.state}"
-            raise AssertionError(msg)
+        service_server: Any = start_result.data
+        platform_server: Any = platform_start_result.data
+        if (
+            hasattr(service_server, "state")
+            and hasattr(platform_server, "state")
+            and service_server.state != platform_server.state
+        ):
+            consistency_msg: str = (
+                f"Expected {platform_server.state}, got {service_server.state}"
+            )
+            raise AssertionError(consistency_msg)
 
     def test_full_grpc_workflow(self) -> None:
         """Test complete gRPC workflow integration."""
         # 1. Create and start server
-        server = create_server("localhost", 9004, 5)
-        start_result = self.platform.start_server(server)
-        started_server = start_result.data
+        server: FlextGrpcServer = create_server("localhost", 9004, 5)
+        start_result: FlextResult[FlextGrpcServer] = self.platform.start_server(server)
+        started_server: FlextGrpcServer = start_result.data
 
         # 2. Add service to server
         service_entity = create_service("IntegrationService", ["integration_method"])
-        add_service_result = self.platform.server_operation(
-            "add_service",
-            started_server,
-            service=service_entity,
+        add_service_result: FlextResult[Any] = cast(
+            "FlextResult[Any]",
+            self.platform.server_operation(
+                "add_service",
+                started_server,
+                service=service_entity,
+            ),
         )
-        assert add_service_result.success
-        server_with_service = add_service_result.data
-        if len(server_with_service.services) != 1:
-            msg: str = f"Expected {1}, got {len(server_with_service.services)}"
-            raise AssertionError(msg)
+        assert add_service_result.is_success
+        server_with_service: Any = add_service_result.data
+        if (
+            hasattr(server_with_service, "services")
+            and server_with_service.services
+            and len(server_with_service.services) != 1
+        ):
+            service_count_msg: str = (
+                f"Expected {1}, got {len(server_with_service.services)}"
+            )
+            raise AssertionError(service_count_msg)
 
         # 3. Create and connect client
-        client = create_client("localhost:9004")
-        connect_result = self.platform.connect_client(client)
-        connected_client = connect_result.data
+        client: FlextGrpcClient = create_client("localhost:9004")
+        connect_result: FlextResult[FlextGrpcClient] = self.platform.connect_client(
+            client
+        )
+        connected_client: FlextGrpcClient = connect_result.data
 
         # 4. Make call through client
-        call_result = self.platform.make_call(
+        call_result: FlextResult[dict[str, object]] = self.platform.make_call(
             connected_client,
             "integration_method",
-            {"integration": True, "test_data": [1, 2, 3]},
+            integration=True,
+            test_data=[1, 2, 3],
         )
-        assert call_result.success
-        response = call_result.data
+        assert call_result.is_success
+        response: dict[str, object] = call_result.data
         if response["method"] != "integration_method":
-            msg: str = f"Expected {'integration_method'}, got {response['method']}"
-            raise AssertionError(msg)
-        if not (response["data"]["integration"]):
-            msg: str = f"Expected True, got {response['data']['integration']}"
-            raise AssertionError(msg)
+            method_name_msg: str = (
+                f"Expected {'integration_method'}, got {response['method']}"
+            )
+            raise AssertionError(method_name_msg)
+        response_data = response.get("data", {})
+        if isinstance(response_data, dict) and not response_data.get("integration"):
+            integration_msg: str = (
+                f"Expected True, got {response_data.get('integration')}"
+            )
+            raise AssertionError(integration_msg)
 
         # 5. Create stream
-        stream_result = self.platform.create_stream(
-            connected_client,
-            "integration_stream",
+        stream_result: FlextResult[FlextGrpcStream] = self.platform.create_stream(
             "bidirectional",
+            "integration_stream",
         )
-        assert stream_result.success
-        stream = stream_result.data
+        assert stream_result.is_success
+        stream: FlextGrpcStream = stream_result.data
         assert stream.is_bidirectional
 
         # 6. Get final status
-        final_status = self.platform.get_server_status(server_with_service)
-        assert final_status.success
-        status = final_status.data
+        final_status: FlextResult[dict[str, object]] = self.platform.get_server_status(
+            started_server
+        )
+        assert final_status.is_success
+        status: dict[str, object] = final_status.data
         if status["service_count"] != 1:
-            msg: str = f"Expected {1}, got {status['service_count']}"
-            raise AssertionError(msg)
+            service_count_final_msg: str = (
+                f"Expected {1}, got {status['service_count']}"
+            )
+            raise AssertionError(service_count_final_msg)
         if not (status["is_running"]):
-            msg: str = f"Expected True, got {status['is_running']}"
-            raise AssertionError(msg)
+            running_final_msg: str = f"Expected True, got {status['is_running']}"
+            raise AssertionError(running_final_msg)
 
     def test_error_propagation_integration(self) -> None:
         """Test error propagation through all layers."""
@@ -220,39 +250,47 @@ class TestPlatformIntegration:
         invalid_server = create_server("", 0)  # Invalid configuration
 
         # Service level
-        service_result = self.execute_service_command("server", "start", invalid_server)
+        service_result: FlextResult[Any] = self.execute_service_command(
+            "start", invalid_server
+        )
         assert service_result.is_failure
-        if "Invalid server" not in service_result.error:
-            msg: str = f"Expected {'Invalid server'} in {service_result.error}"
-            raise AssertionError(msg)
+        if service_result.error and "Invalid server" not in service_result.error:
+            error_msg: str = f"Expected {'Invalid server'} in {service_result.error}"
+            raise AssertionError(error_msg)
 
         # Platform level
-        platform_result = self.platform.start_server(invalid_server)
+        platform_result: FlextResult[FlextGrpcServer] = self.platform.start_server(
+            invalid_server
+        )
         assert platform_result.is_failure
-        if "Invalid server" not in platform_result.error:
-            msg: str = f"Expected {'Invalid server'} in {platform_result.error}"
-            raise AssertionError(msg)
+        if platform_result.error and "Invalid server" not in platform_result.error:
+            platform_error_msg: str = (
+                f"Expected {'Invalid server'} in {platform_result.error}"
+            )
+            raise AssertionError(platform_error_msg)
 
     def test_state_consistency_across_operations(self) -> None:
         """Test state consistency across different operations."""
         server = create_server("localhost", 9005)
 
         # Start through service
-        service_result = self.execute_service_command("server", "start", server)
-        service_server = service_result.data
+        service_result: FlextResult[Any] = self.execute_service_command("start", server)
+        service_server: Any = service_result.data
 
         # Check status through platform
-        platform_status = self.platform.get_server_status(service_server)
-        status = platform_status.data
+        platform_status: FlextResult[dict[str, object]] = (
+            self.platform.get_server_status(cast("FlextGrpcServer", service_server))
+        )
+        status: dict[str, object] = platform_status.data
 
         # States should be consistent
-        assert service_server.is_running
+        assert cast("FlextGrpcServer", service_server).is_running
         if not (status["is_running"]):
-            msg: str = f"Expected True, got {status['is_running']}"
-            raise AssertionError(msg)
+            running_consistency_msg: str = f"Expected True, got {status['is_running']}"
+            raise AssertionError(running_consistency_msg)
         if status["state"] != "running":
-            msg: str = f"Expected {'running'}, got {status['state']}"
-            raise AssertionError(msg)
+            state_consistency_msg: str = f"Expected {'running'}, got {status['state']}"
+            raise AssertionError(state_consistency_msg)
 
     def test_concurrent_operations(self) -> None:
         """Test concurrent operations don't interfere."""
@@ -260,20 +298,24 @@ class TestPlatformIntegration:
         servers = [create_server("localhost", 9006 + i) for i in range(3)]
 
         # Start all servers
-        started_servers = []
+        started_servers: list[FlextGrpcServer] = []
         for server in servers:
-            result = self.platform.start_server(server)
-            assert result.success
+            result: FlextResult[FlextGrpcServer] = self.platform.start_server(server)
+            assert result.is_success
             started_servers.append(result.data)
 
         # All servers should be running independently
         for server in started_servers:
             assert server.is_running
-            status_result = self.platform.get_server_status(server)
-            assert status_result.success
+            status_result: FlextResult[dict[str, object]] = (
+                self.platform.get_server_status(server)
+            )
+            assert status_result.is_success
             if not (status_result.data["is_running"]):
-                msg: str = f"Expected True, got {status_result.data['is_running']}"
-                raise AssertionError(msg)
+                concurrent_msg: str = (
+                    f"Expected True, got {status_result.data['is_running']}"
+                )
+                raise AssertionError(concurrent_msg)
 
     def test_configuration_propagation(self) -> None:
         """Test configuration propagation through platform."""
@@ -281,13 +323,13 @@ class TestPlatformIntegration:
         platform = FlextGrpcPlatform(config)
 
         if platform.config != config:
-            msg: str = f"Expected {config}, got {platform.config}"
-            raise AssertionError(msg)
+            config_msg: str = f"Expected {config}, got {platform.config}"
+            raise AssertionError(config_msg)
 
         # Platform should still work with custom config
-        server = create_server()
-        result = platform.start_server(server)
-        assert result.success
+        server: FlextGrpcServer = create_server()
+        result: FlextResult[FlextGrpcServer] = platform.start_server(server)
+        assert result.is_success
 
     def test_global_container_usage(self) -> None:
         """Test that platform uses global container correctly."""

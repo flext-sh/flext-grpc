@@ -14,9 +14,11 @@ from __future__ import annotations
 import asyncio
 from typing import NoReturn
 
+from flext_core import FlextConstants, FlextLogger, FlextResult, FlextTypes
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
+    FlextGrpcConstants,
     FlextGrpcError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
@@ -85,7 +87,11 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
             _raise_workers_error()
 
         try:
-            config = create_config(host="localhost", port=port, max_workers=workers)
+            config = create_config(
+                host=FlextGrpcConstants.GRPC_DEFAULT_HOST,
+                port=port,
+                max_workers=workers,
+            )
             return FlextResult[object].ok(config)
         except Exception as e:
             return FlextResult[object].fail(str(e))
@@ -162,7 +168,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     logger.info("✅ User input validation passed")
 
     # Step 2: Create server configuration
-    config_result = create_server_config(50051, 4)
+    config_result = create_server_config(FlextGrpcConstants.GRPC_DEFAULT_PORT, 4)
     if config_result.is_failure:
         return FlextResult[str].fail(
             f"Pipeline failed at configuration: {config_result.error}",
@@ -210,7 +216,9 @@ def error_recovery_patterns() -> FlextResult[str]:
     if primary_config_result.is_failure:
         logger.warning("Primary config failed, trying fallback")
 
-        fallback_config_result = create_server_config(8080, 2)  # Fallback
+        fallback_config_result = create_server_config(
+            FlextConstants.Platform.DEFAULT_HTTP_PORT, 2
+        )  # Fallback
         if fallback_config_result.is_success:
             logger.info("✅ Fallback configuration successful")
             return FlextResult[str].ok("Recovery successful with fallback config")

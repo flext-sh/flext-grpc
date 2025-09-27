@@ -6,14 +6,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import threading
-from typing import ClassVar, Self
+from typing import Self, cast
 
 from pydantic import Field, field_validator
 from pydantic_settings import SettingsConfigDict
 
 from flext_core import (
     FlextConfig,
+    FlextConstants,
     FlextExceptions,
 )
 from flext_grpc.constants import FlextGrpcConstants
@@ -35,37 +35,35 @@ class FlextGrpcConfig(FlextConfig):
     - Extends FlextConfig from flext-core
     - No nested classes within Config
     - All defaults from FlextGrpcConstants
-    - Dependency injection integration with flext-core container
+    - Uses enhanced singleton pattern with inverse dependency injection
     - Uses Pydantic 2.11+ features (field_validator, model_validator)
     """
 
-    # Singleton pattern attributes
-    _global_instance: ClassVar[FlextGrpcConfig | None] = None
-    _lock: ClassVar[threading.Lock] = threading.Lock()
-
     model_config = SettingsConfigDict(
-        env_prefix=FLEXT_GRPC_,
-        env_file=".env",
-        env_file_encoding="utf-8",
+        env_prefix="FLEXT_GRPC_",
         case_sensitive=False,
-        extra=ignore,
+        extra="ignore",
+        # Inherit enhanced Pydantic 2.11+ features from FlextConfig
         validate_assignment=True,
-        use_enum_values=True,
-        arbitrary_types_allowed=True,
+        str_strip_whitespace=True,
+        json_schema_extra={
+            "title": "FLEXT gRPC Configuration",
+            "description": "Enterprise gRPC service configuration extending FlextConfig",
+        },
     )
 
     host: str = Field(
-        default=FlextGrpcConstants.DEFAULT_HOST, description="gRPC server host"
+        default=FlextConstants.Platform.DEFAULT_HOST, description="gRPC server host"
     )
     port: int = Field(
-        default=FlextGrpcConstants.DEFAULT_PORT, description="gRPC server port"
+        default=FlextGrpcConstants.DEFAULT_GRPC_PORT, description="gRPC server port"
     )
     max_workers: int = Field(
         default=FlextGrpcConstants.DEFAULT_MAX_WORKERS,
         description="Maximum number of workers",
     )
     timeout: float = Field(
-        default=FlextGrpcConstants.DEFAULT_TIMEOUT,
+        default=FlextConstants.Network.DEFAULT_TIMEOUT,
         description="Request timeout in seconds",
     )
 
@@ -75,19 +73,21 @@ class FlextGrpcConfig(FlextConfig):
         """Validate host is not empty."""
         if not v or not v.strip():
             msg = "Host cannot be empty"
-            raise FlextGrpcConfigurationError(msg)
+            raise ValueError(msg)
         return v.strip()
 
     @field_validator("port")
     @classmethod
     def validate_port(cls, v: int) -> int:
         """Validate port is within valid range."""
-        if not (FlextGrpcConstants.MIN_PORT <= v <= FlextGrpcConstants.MAX_PORT):
+        if not (
+            FlextConstants.Network.MIN_PORT <= v <= FlextConstants.Network.MAX_PORT
+        ):
             msg = (
-                f"Port {v} must be between {FlextGrpcConstants.MIN_PORT} "
-                f"and {FlextGrpcConstants.MAX_PORT}"
+                f"Port {v} must be between {FlextConstants.Network.MIN_PORT} "
+                f"and {FlextConstants.Network.MAX_PORT}"
             )
-            raise FlextGrpcConfigurationError(msg)
+            raise ValueError(msg)
         return v
 
     @field_validator("max_workers")
@@ -99,23 +99,18 @@ class FlextGrpcConfig(FlextConfig):
                 f"Max workers {v} must be between {FlextGrpcConstants.MIN_WORKERS} "
                 f"and {FlextGrpcConstants.MAX_WORKERS}"
             )
-            raise FlextGrpcConfigurationError(msg)
+            raise ValueError(msg)
         return v
 
     @field_validator("timeout")
     @classmethod
     def validate_timeout(cls, v: float) -> float:
         """Validate timeout is within valid range."""
-        if not (
-            FlextGrpcConstants.MIN_TIMEOUT_SECONDS
-            <= v
-            <= FlextGrpcConstants.MAX_TIMEOUT_SECONDS
-        ):
-            msg = (
-                f"Timeout {v} must be between {FlextGrpcConstants.MIN_TIMEOUT_SECONDS} "
-                f"and {FlextGrpcConstants.MAX_TIMEOUT_SECONDS} seconds"
-            )
-            raise FlextGrpcConfigurationError(msg)
+        min_timeout_seconds = 0.1
+        max_timeout_seconds = 300.0  # 5 minutes
+        if not (min_timeout_seconds <= v <= max_timeout_seconds):
+            msg = f"Timeout {v} must be between {min_timeout_seconds} and {max_timeout_seconds} seconds"
+            raise ValueError(msg)
         return v
 
     def get_address(self: Self) -> str:
@@ -130,7 +125,7 @@ class FlextGrpcConfig(FlextConfig):
             ...     port=FlextConstants.Platform.GRPC_DEFAULT_PORT,
             ... )
             >>> config.get_address()
-            'localhost:50051'
+            f'{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}'
 
         """
         return f"{self.host}:{self.port}"
@@ -139,28 +134,39 @@ class FlextGrpcConfig(FlextConfig):
     def create_for_environment(
         cls, environment: str, **overrides: object
     ) -> FlextGrpcConfig:
-        """Create configuration for specific environment."""
-        return cls(environment=environment, **overrides)
+        """Create configuration for specific environment using enhanced singleton pattern."""
+        instance = cls.get_or_create_shared_instance(
+            project_name="flext-grpc", environment=environment, **overrides
+        )
+        return cls.model_validate(instance.model_dump())
 
     @classmethod
     def create_default(cls) -> FlextGrpcConfig:
-        """Create default configuration instance."""
-        return cls()
+        """Create default configuration instance using enhanced singleton pattern."""
+        return cls(
+            host=FlextConstants.Platform.DEFAULT_HOST,
+            port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
+            max_workers=FlextGrpcConstants.DEFAULT_MAX_WORKERS,
+            timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
+        )
 
-    # Singleton pattern override for proper typing
     @classmethod
     def get_global_instance(cls) -> FlextGrpcConfig:
-        """Get the global singleton instance of FlextGrpcConfig."""
-        if cls._global_instance is None:
-            with cls._lock:
-                if cls._global_instance is None:
-                    cls._global_instance = cls()
-        return cls._global_instance
+        """Get the global singleton instance using enhanced FlextConfig pattern."""
+        if (
+            not hasattr(cls, "_shared_instance")
+            or getattr(cls, "_shared_instance", None) is None
+        ):
+            setattr(cls, "_shared_instance", cls.create_default())
+        return cast("FlextGrpcConfig", getattr(cls, "_shared_instance"))
 
     @classmethod
     def reset_global_instance(cls) -> None:
         """Reset the global FlextGrpcConfig instance (mainly for testing)."""
-        cls._global_instance = None
+        # Use the enhanced FlextConfig reset mechanism
+        # Reset the shared instance
+        if hasattr(cls, "_shared_instance"):
+            delattr(cls, "_shared_instance")
 
 
 __all__ = [

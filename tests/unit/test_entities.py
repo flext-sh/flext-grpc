@@ -43,10 +43,9 @@ from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
     FlextGrpcServer,
-    FlextGrpcService,
     FlextGrpcStream,
-    TGrpcTarget,
 )
+from flext_grpc.entities import FlextGrpcService
 
 # Constants
 EXPECTED_BULK_SIZE = 2
@@ -88,13 +87,13 @@ class TestFlextGrpcChannel:
         """
         channel = FlextGrpcChannel(
             id=FlextUtilities.Generators.generate_entity_id(),
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             state="idle",
             created_at=datetime.now(UTC),
         )
 
         validation = channel.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
         if channel.target != "localhost:50051":
             msg: str = f"Expected {'localhost:50051'}, got {channel.target}"
             raise AssertionError(msg)
@@ -114,7 +113,7 @@ class TestFlextGrpcChannel:
         """
         channel = FlextGrpcChannel(
             id=FlextUtilities.Generators.generate_entity_id(),
-            target=TGrpcTarget(""),
+            target="",
             created_at=datetime.now(UTC),
         )
 
@@ -132,7 +131,7 @@ class TestFlextGrpcChannel:
         with pytest.raises(ValidationError) as exc_info:
             FlextGrpcChannel(
                 id=FlextUtilities.Generators.generate_entity_id(),
-                target=TGrpcTarget("localhost:50051"),
+                target="localhost:50051",
                 state="invalid_state",
                 created_at=datetime.now(UTC),
             )
@@ -147,14 +146,14 @@ class TestFlextGrpcChannel:
         """Test channel connection state transitions."""
         channel = FlextGrpcChannel(
             id=FlextUtilities.Generators.generate_entity_id(),
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             state="idle",
             created_at=datetime.now(UTC),
         )
 
         # Connect
         connecting_result = channel.connect()
-        assert connecting_result.success
+        assert connecting_result.is_success
         connecting_channel = connecting_result.data
         assert connecting_channel is not None
         if connecting_channel.state != "connecting":
@@ -163,7 +162,7 @@ class TestFlextGrpcChannel:
 
         # Mark ready
         ready_result = connecting_channel.mark_ready()
-        assert ready_result.success
+        assert ready_result.is_success
         ready_channel = ready_result.data
         assert ready_channel is not None
         if ready_channel.state != "ready":
@@ -173,7 +172,7 @@ class TestFlextGrpcChannel:
 
         # Disconnect
         idle_result = ready_channel.disconnect()
-        assert idle_result.success
+        assert idle_result.is_success
         idle_channel = idle_result.data
         assert idle_channel is not None
         if idle_channel.state != "idle":
@@ -185,7 +184,7 @@ class TestFlextGrpcChannel:
         """Test invalid state transitions fail."""
         channel = FlextGrpcChannel(
             id=FlextUtilities.Generators.generate_entity_id(),
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             state="ready",
             created_at=datetime.now(UTC),
         )
@@ -225,7 +224,7 @@ class TestFlextGrpcServer:
         )
 
         validation = server.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
         if server.address != "localhost:50051":
             msg: str = f"Expected {'localhost:50051'}, got {server.address}"
             raise AssertionError(msg)
@@ -287,7 +286,7 @@ class TestFlextGrpcServer:
 
         # Start server
         starting_result = server.start()
-        assert starting_result.success
+        assert starting_result.is_success
         starting_server = starting_result.data
         assert starting_server is not None
         if starting_server.state != "starting":
@@ -296,7 +295,7 @@ class TestFlextGrpcServer:
 
         # Mark running
         running_result = starting_server.mark_running()
-        assert running_result.success
+        assert running_result.is_success
         running_server = running_result.data
         assert running_server is not None
         if running_server.state != "running":
@@ -306,7 +305,7 @@ class TestFlextGrpcServer:
 
         # Stop server
         stopping_result = running_server.stop()
-        assert stopping_result.success
+        assert stopping_result.is_success
         stopping_server = stopping_result.data
         assert stopping_server is not None
         if stopping_server.state != "stopping":
@@ -315,7 +314,7 @@ class TestFlextGrpcServer:
 
         # Mark stopped
         stopped_result = stopping_server.mark_stopped()
-        assert stopped_result.success
+        assert stopped_result.is_success
         stopped_server = stopped_result.data
         assert stopped_server is not None
         if stopped_server.state != "stopped":
@@ -341,7 +340,7 @@ class TestFlextGrpcServer:
 
         # Add service
         updated_result = server.add_service(service)
-        assert updated_result.success
+        assert updated_result.is_success
         updated_server = updated_result.data
         assert updated_server is not None
         if len(updated_server.services) != 1:
@@ -374,7 +373,7 @@ class TestFlextGrpcService:
         )
 
         validation = service.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
         assert service.has_method("method1")
         assert service.has_method("method2")
         assert not service.has_method("method3")
@@ -423,7 +422,7 @@ class TestFlextGrpcService:
 
         # Add new method
         updated_result = service.add_method("method2")
-        assert updated_result.success
+        assert updated_result.is_success
         updated_service = updated_result.data
         assert updated_service is not None
         if len(updated_service.methods) != EXPECTED_BULK_SIZE:
@@ -449,7 +448,7 @@ class TestFlextGrpcClient:
         """Test creating a valid client."""
         channel = FlextGrpcChannel(
             id=FlextUtilities.Generators.generate_entity_id(),
-            target=TGrpcTarget("localhost:50051"),
+            target="localhost:50051",
             state="ready",
             created_at=datetime.now(UTC),
         )
@@ -461,7 +460,7 @@ class TestFlextGrpcClient:
         )
 
         validation = client.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
         assert client.is_connected
         if client.target != "localhost:50051":
             msg: str = f"Expected {'localhost:50051'}, got {client.target}"
@@ -476,7 +475,7 @@ class TestFlextGrpcClient:
         )
 
         validation = client.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
         assert not client.is_connected
         assert client.target is None
 
@@ -489,7 +488,7 @@ class TestFlextGrpcClient:
         )
 
         connected_result = client.connect_to("localhost:8080")
-        assert connected_result.success
+        assert connected_result.is_success
         connected_client = connected_result.data
         assert connected_client is not None
         assert connected_client.channel is not None
@@ -511,7 +510,7 @@ class TestFlextGrpcStream:
         )
 
         validation = stream.validate_business_rules()
-        assert validation.success
+        assert validation.is_success
         assert stream.is_streaming
         assert stream.is_server_streaming
         assert not stream.is_client_streaming
@@ -519,23 +518,18 @@ class TestFlextGrpcStream:
 
     def test_invalid_stream_configuration(self) -> None:
         """Test invalid stream configurations fail validation."""
-        # Empty method name - this should fail domain validation
-        stream1 = FlextGrpcStream(
-            id=FlextUtilities.Generators.generate_entity_id(),
-            method_name="",
-            stream_type="unary",
-            created_at=datetime.now(UTC),
-        )
-        validation1 = stream1.validate_business_rules()
-        assert validation1.is_failure
-        if (
-            validation1.error is None
-            or "method name cannot be empty" not in validation1.error
-        ):
-            msg: str = (
-                f"Expected {'method name cannot be empty'} in {validation1.error}"
+        # Empty method name - this should fail Pydantic validation at creation time
+        with pytest.raises(ValidationError) as exc_info:
+            FlextGrpcStream(
+                id=FlextUtilities.Generators.generate_entity_id(),
+                method_name="",
+                stream_type="unary",
+                created_at=datetime.now(UTC),
             )
-            raise AssertionError(msg)
+
+        # Verify the error message contains expected text
+        error_str = str(exc_info.value)
+        assert "method name cannot be empty" in error_str.lower()
 
         # Invalid stream type - Pydantic validates at creation time
         # All imports are at the top of the file
@@ -550,11 +544,7 @@ class TestFlextGrpcStream:
 
         # Verify the error message contains expected text
         error_str = str(exc_info.value)
-        if "Input should be" not in error_str:
-            msg: str = (
-                f"Expected validation error for invalid stream type, got: {error_str}"
-            )
-            raise AssertionError(msg)
+        assert "invalid stream type" in error_str.lower()
 
     def test_stream_type_detection(self) -> None:
         """Test stream type detection methods."""
@@ -602,6 +592,10 @@ class TestFlextGrpcStream:
             created_at=datetime.now(UTC),
         )
         assert bi_stream.is_streaming
-        assert bi_stream.is_server_streaming
-        assert bi_stream.is_client_streaming
+        assert (
+            not bi_stream.is_server_streaming
+        )  # Bidirectional is not server streaming
+        assert (
+            not bi_stream.is_client_streaming
+        )  # Bidirectional is not client streaming
         assert bi_stream.is_bidirectional

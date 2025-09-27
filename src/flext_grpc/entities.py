@@ -8,14 +8,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, replace
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Self
 from uuid import uuid4
 
-from pydantic_core import ValidationError
+from pydantic import Field, field_validator
 
 from flext_core import (
+    FlextConstants,
+    FlextModels,
     FlextResult,
     FlextTypes,
 )
@@ -23,8 +24,7 @@ from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
 
 
-@dataclass
-class FlextGrpcEntity:
+class FlextGrpcEntity(FlextModels.Entity):
     """Base entity class for all gRPC domain entities.
 
     Provides common functionality for gRPC entities following unified FLEXT patterns.
@@ -43,9 +43,8 @@ class FlextGrpcEntity:
     """
 
     # Entity fields
-    id: str
-    created_at: datetime = field(default_factory=datetime.now)
-    updated_at: datetime = field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
     @property
     def entity_type(self: Self) -> str:
@@ -63,7 +62,6 @@ class FlextGrpcEntity:
         return self.__class__.__name__
 
 
-@dataclass
 class FlextGrpcChannel(FlextGrpcEntity):
     """gRPC channel entity representing connection state and management.
 
@@ -86,10 +84,10 @@ class FlextGrpcChannel(FlextGrpcEntity):
       - Options must be valid dictionary
 
     Example:
-      >>> from datetime import datetime, timezone
+      >>> from datetime import UTC, datetime, timezone
       >>> channel = FlextGrpcChannel(
       ...     id="main-channel",
-      ...     target="localhost:50051",
+      ...     target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",
       ...     state="idle",
       ...     created_at=datetime.now(timezone.utc),
       ... )
@@ -101,36 +99,24 @@ class FlextGrpcChannel(FlextGrpcEntity):
 
     """
 
-    target: FlextGrpcTypes.Core.GrpcTarget = field(
+    target: FlextGrpcTypes.GrpcTarget = Field(
         default_factory=lambda: ""  # GrpcTarget is a type alias for str, not a constructor
     )
-    state: FlextGrpcTypes.Core.GrpcChannelState = "idle"
-    options: FlextTypes.Core.Dict = field(default_factory=dict)
+    state: FlextGrpcTypes.GrpcChannelState = "idle"
+    options: dict[str, object] = Field(default_factory=dict)
 
-    def __post_init__(self: Self) -> None:
-        """Validate entity after initialization.
-
-        Ensures critical state validation during object creation.
-        Raises ValidationError if validation fails following FLEXT patterns.
-        """
-        # Only validate state during object creation - target validation is done explicitly
+    @field_validator("state")
+    @classmethod
+    def validate_state(cls, v: str) -> str:
+        """Validate channel state is valid."""
         valid_states = {"idle", "connecting", "ready", "transient_failure", "shutdown"}
-        if self.state not in valid_states:
+        if v not in valid_states:
             valid_states_str = (
                 "'idle', 'connecting', 'ready', 'transient_failure', 'shutdown'"
             )
             msg = f"Input should be {valid_states_str}"
-            raise ValidationError.from_exception_data(
-                msg,
-                [
-                    {
-                        "type": "literal_error",
-                        "loc": ("state",),
-                        "input": self.state,
-                        "ctx": {"expected": "valid_states_str"},
-                    },
-                ],
-            )
+            raise ValueError(msg)
+        return v
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate channel domain business rules.
@@ -210,7 +196,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             return FlextResult[FlextGrpcChannel].fail(
                 f"Cannot connect from state: {self.state}",
             )
-        connecting_channel = replace(self, state="connecting")
+        connecting_channel = self.model_copy(update={"state": "connecting"})
         return FlextResult[FlextGrpcChannel].ok(connecting_channel)
 
     def mark_ready(self: Self) -> FlextResult[FlextGrpcChannel]:
@@ -240,7 +226,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
             return FlextResult[FlextGrpcChannel].fail(
                 f"Cannot mark ready from state: {self.state}",
             )
-        ready_channel = replace(self, state="ready")
+        ready_channel = self.model_copy(update={"state": "ready"})
         return FlextResult[FlextGrpcChannel].ok(ready_channel)
 
     def disconnect(self: Self) -> FlextResult[FlextGrpcChannel]:
@@ -264,11 +250,38 @@ class FlextGrpcChannel(FlextGrpcEntity):
             'idle'
 
         """
-        idle_channel = replace(self, state="idle")
+        idle_channel = self.model_copy(update={"state": "idle"})
         return FlextResult[FlextGrpcChannel].ok(idle_channel)
 
+    def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcChannel]:
+        """Create a copy of the channel with updated attributes.
 
-@dataclass
+        Args:
+            **kwargs: Attributes to update in the copy
+
+        Returns:
+            FlextResult[FlextGrpcChannel]: Success with updated channel copy
+
+        Example:
+            >>> channel = FlextGrpcChannel(
+            ...     id="test-channel",
+            ...     target="localhost:50051",
+            ...     state="idle",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> result = channel.copy_with(state="ready")
+            >>> if result.is_success:
+            ...     print(result.data.state)
+            ready
+
+        """
+        try:
+            updated_channel = self.model_copy(update=kwargs)
+            return FlextResult[FlextGrpcChannel].ok(updated_channel)
+        except Exception as e:
+            return FlextResult[FlextGrpcChannel].fail(f"Failed to copy channel: {e}")
+
+
 class FlextGrpcServer(FlextGrpcEntity):
     """gRPC server entity implementing complete server lifecycle management.
 
@@ -299,11 +312,11 @@ class FlextGrpcServer(FlextGrpcEntity):
       - Supports FLEXT ecosystem service registration patterns
 
     Example:
-      >>> from datetime import datetime, timezone
+      >>> from datetime import UTC, datetime, timezone
       >>> server = FlextGrpcServer(
       ...     id="production-server",
-      ...     host="0.0.0.0",
-      ...     port=50051,
+      ...     host=FlextConstants.Platform.DEFAULT_HOST,
+      ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
       ...     max_workers=20,
       ...     created_at=datetime.now(timezone.utc),
       ... )
@@ -316,11 +329,11 @@ class FlextGrpcServer(FlextGrpcEntity):
 
     """
 
-    host: str = "localhost"
-    port: int = 50051
-    state: FlextGrpcTypes.Core.GrpcServerState = "stopped"
+    host: str = FlextConstants.Platform.DEFAULT_HOST
+    port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT
+    state: FlextGrpcTypes.GrpcServerState = "stopped"
     max_workers: int = 10
-    services: list[FlextGrpcService] = field(default_factory=list)
+    services: list[FlextGrpcService] = Field(default_factory=list)
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate server domain business rules and configuration.
@@ -343,7 +356,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             >>> server = FlextGrpcServer(
             ...     id="test-server",
             ...     host="",  # Invalid empty host
-            ...     port=50051,
+            ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> result: FlextResult[object] = server.validate_business_rules()
@@ -354,8 +367,8 @@ class FlextGrpcServer(FlextGrpcEntity):
 
             >>> valid_server = FlextGrpcServer(
             ...     id="production-server",
-            ...     host="0.0.0.0",
-            ...     port=50051,
+            ...     host=FlextConstants.Platform.DEFAULT_HOST,
+            ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
             ...     max_workers=10,
             ...     created_at=datetime.now(timezone.utc),
             ... )
@@ -378,11 +391,13 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         # Allow port 0 for automatic port selection by gRPC
         if self.port != 0 and not (
-            FlextGrpcConstants.MIN_PORT <= self.port <= FlextGrpcConstants.MAX_PORT
+            FlextConstants.Network.MIN_PORT
+            <= self.port
+            <= FlextConstants.Network.MAX_PORT
         ):
             return FlextResult[None].fail(
                 f"Invalid port: {self.port} "
-                f"(must be 0 for auto-selection or {FlextGrpcConstants.MIN_PORT}-{FlextGrpcConstants.MAX_PORT})",
+                f"(must be 0 for auto-selection or {FlextConstants.Network.MIN_PORT}-{FlextConstants.Network.MAX_PORT})",
             )
 
         if self.max_workers < 1:
@@ -401,13 +416,13 @@ class FlextGrpcServer(FlextGrpcEntity):
 
         Example:
             >>> server = FlextGrpcServer(
-            ...     host="localhost",
-            ...     port=50051,
+            ...     host=FlextConstants.Platform.DEFAULT_HOST,
+            ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
             ...     id="test",
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> print(server.address)
-            'localhost:50051'
+            f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
 
         """
         return f"{self.host}:{self.port}"
@@ -467,7 +482,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         if self.state in {"running", "starting"}:
             return FlextResult[FlextGrpcServer].fail(f"Server already {self.state}")
 
-        starting_server = replace(self, state="starting")
+        starting_server = self.model_copy(update={"state": "starting"})
         return FlextResult[FlextGrpcServer].ok(starting_server)
 
     def mark_running(self: Self) -> FlextResult[FlextGrpcServer]:
@@ -498,7 +513,7 @@ class FlextGrpcServer(FlextGrpcEntity):
                 f"Cannot mark running from state: {self.state}",
             )
 
-        running_server = replace(self, state="running")
+        running_server = self.model_copy(update={"state": "running"})
         return FlextResult[FlextGrpcServer].ok(running_server)
 
     def stop(self: Self) -> FlextResult[FlextGrpcServer]:
@@ -527,7 +542,7 @@ class FlextGrpcServer(FlextGrpcEntity):
         if self.state in {"stopped", "stopping"}:
             return FlextResult[FlextGrpcServer].fail(f"Server already {self.state}")
 
-        stopping_server = replace(self, state="stopping")
+        stopping_server = self.model_copy(update={"state": "stopping"})
         return FlextResult[FlextGrpcServer].ok(stopping_server)
 
     def mark_stopped(self: Self) -> FlextResult[FlextGrpcServer]:
@@ -558,7 +573,7 @@ class FlextGrpcServer(FlextGrpcEntity):
             return FlextResult[FlextGrpcServer].fail(
                 f"Cannot mark stopped from state: {self.state}",
             )
-        stopped_server = replace(self, state="stopped")
+        stopped_server = self.model_copy(update={"state": "stopped"})
         return FlextResult[FlextGrpcServer].ok(stopped_server)
 
     def add_service(self, service: FlextGrpcService) -> FlextResult[FlextGrpcServer]:
@@ -598,11 +613,38 @@ class FlextGrpcServer(FlextGrpcEntity):
             if existing_service.name == service.name:
                 return FlextResult[FlextGrpcServer].fail("Service already exists")
 
-        updated_server = replace(self, services=[*self.services, service])
+        updated_server = self.model_copy(update={"services": [*self.services, service]})
         return FlextResult[FlextGrpcServer].ok(updated_server)
 
+    def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcServer]:
+        """Create a copy of the server with updated attributes.
 
-@dataclass
+        Args:
+            **kwargs: Attributes to update in the copy
+
+        Returns:
+            FlextResult[FlextGrpcServer]: Success with updated server copy
+
+        Example:
+            >>> server = FlextGrpcServer(
+            ...     id="test-server",
+            ...     host="localhost",
+            ...     port=50051,
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> result = server.copy_with(port=8080)
+            >>> if result.is_success:
+            ...     print(result.data.port)
+            8080
+
+        """
+        try:
+            updated_server = self.model_copy(update=kwargs)
+            return FlextResult[FlextGrpcServer].ok(updated_server)
+        except Exception as e:
+            return FlextResult[FlextGrpcServer].fail(f"Failed to copy server: {e}")
+
+
 class FlextGrpcService(FlextGrpcEntity):
     """gRPC service entity representing service definitions and method registry.
 
@@ -621,7 +663,7 @@ class FlextGrpcService(FlextGrpcEntity):
       - All method names must be unique within the service
 
     Example:
-      >>> from datetime import datetime, timezone
+      >>> from datetime import UTC, datetime, timezone
       >>> service = FlextGrpcService(
       ...     id="user-service",
       ...     name="UserService",
@@ -637,7 +679,7 @@ class FlextGrpcService(FlextGrpcEntity):
     """
 
     name: str = ""
-    methods: FlextTypes.Core.StringList = field(default_factory=list)
+    methods: FlextTypes.Core.StringList = Field(default_factory=list)
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate service domain business rules and method definitions.
@@ -738,11 +780,40 @@ class FlextGrpcService(FlextGrpcEntity):
         if method_name in self.methods:
             return FlextResult[FlextGrpcService].fail("Method already exists")
 
-        updated_service = replace(self, methods=[*self.methods, method_name])
+        updated_service = self.model_copy(
+            update={"methods": [*self.methods, method_name]}
+        )
         return FlextResult[FlextGrpcService].ok(updated_service)
 
+    def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcService]:
+        """Create a copy of the service with updated attributes.
 
-@dataclass
+        Args:
+            **kwargs: Attributes to update in the copy
+
+        Returns:
+            FlextResult[FlextGrpcService]: Success with updated service copy
+
+        Example:
+            >>> service = FlextGrpcService(
+            ...     id="user-service",
+            ...     name="UserService",
+            ...     methods=["GetUser"],
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> result = service.copy_with(name="UpdatedUserService")
+            >>> if result.is_success:
+            ...     print(result.data.name)
+            UpdatedUserService
+
+        """
+        try:
+            updated_service = self.model_copy(update=kwargs)
+            return FlextResult[FlextGrpcService].ok(updated_service)
+        except Exception as e:
+            return FlextResult[FlextGrpcService].fail(f"Failed to copy service: {e}")
+
+
 class FlextGrpcClient(FlextGrpcEntity):
     """gRPC client entity implementing connection management and communication.
 
@@ -760,16 +831,18 @@ class FlextGrpcClient(FlextGrpcEntity):
       - Connection state determined by channel readiness
 
     Integration:
-      - Works with FlextGrpcClientService for business operations
+      - Works with FlextGrpcService for business operations
       - Integrates with FlextGrpcChannel for connection management
       - Supports FLEXT ecosystem communication patterns
 
     Example:
-      >>> from datetime import datetime, timezone
+      >>> from datetime import UTC, datetime, timezone
       >>> client = FlextGrpcClient(
       ...     id="api-client", created_at=datetime.now(timezone.utc)
       ... )
-      >>> connect_result: FlextResult[object] = client.connect_to("localhost:50051")
+      >>> connect_result: FlextResult[object] = client.connect_to(
+      ...     f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
+      ... )
       >>> if connect_result.is_success:
       ...     connected_client = connect_result.data
       ...     print(connected_client.is_connected)
@@ -778,7 +851,7 @@ class FlextGrpcClient(FlextGrpcEntity):
     """
 
     channel: FlextGrpcChannel | None = None
-    options: FlextTypes.Core.Dict = field(default_factory=dict)
+    options: dict[str, object] = Field(default_factory=dict)
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate client domain business rules and configuration.
@@ -832,7 +905,7 @@ class FlextGrpcClient(FlextGrpcEntity):
 
             >>> ready_channel = FlextGrpcChannel(
             ...     id="ready-channel",
-            ...     target="localhost:50051",
+            ...     target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",
             ...     state="ready",
             ...     created_at=datetime.now(timezone.utc),
             ... )
@@ -853,7 +926,7 @@ class FlextGrpcClient(FlextGrpcEntity):
         Example:
             >>> channel = FlextGrpcChannel(
             ...     id="test-channel",
-            ...     target="localhost:50051",
+            ...     target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> client = FlextGrpcClient(
@@ -862,7 +935,7 @@ class FlextGrpcClient(FlextGrpcEntity):
             ...     created_at=datetime.now(timezone.utc),
             ... )
             >>> print(client.target)
-            'localhost:50051'
+            f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
 
         """
         return self.channel.target if self.channel else None
@@ -882,14 +955,16 @@ class FlextGrpcClient(FlextGrpcEntity):
 
         Example:
             >>> client = FlextGrpcClient(id=test, created_at=datetime.now(timezone.utc))
-            >>> result: FlextResult[object] = client.connect_to("localhost:50051")
+            >>> result: FlextResult[object] = client.connect_to(
+            ...     f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
+            ... )
             >>> if result.is_success:
             ...     connected_client = result.data
             ...     print(connected_client.target)
-            'localhost:50051'
+            f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}"
 
         Integration:
-            Used by FlextGrpcClientService for establishing server connections.
+            Used by FlextGrpcService for establishing server connections.
             Channel state management handled through FlextGrpcChannel entity.
 
         """
@@ -898,17 +973,42 @@ class FlextGrpcClient(FlextGrpcEntity):
             channel = FlextGrpcChannel(
                 id=str(uuid4()),
                 target=target,
-                state=idle,
+                state="idle",
                 options={},
             )
 
-            updated_client = replace(self, channel=channel)
+            updated_client = self.model_copy(update={"channel": channel})
             return FlextResult[FlextGrpcClient].ok(updated_client)
         except Exception as e:
             return FlextResult[FlextGrpcClient].fail(f"Channel creation failed: {e}")
 
+    def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcClient]:
+        """Create a copy of the client with updated attributes.
 
-@dataclass
+        Args:
+            **kwargs: Attributes to update in the copy
+
+        Returns:
+            FlextResult[FlextGrpcClient]: Success with updated client copy
+
+        Example:
+            >>> client = FlextGrpcClient(
+            ...     id="test-client",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> result = client.copy_with(options={"timeout": 30})
+            >>> if result.is_success:
+            ...     print(result.data.options)
+            {'timeout': 30}
+
+        """
+        try:
+            updated_client = self.model_copy(update=kwargs)
+            return FlextResult[FlextGrpcClient].ok(updated_client)
+        except Exception as e:
+            return FlextResult[FlextGrpcClient].fail(f"Failed to copy client: {e}")
+
+
 class FlextGrpcStream(FlextGrpcEntity):
     """gRPC stream entity representing streaming operations and flow control.
 
@@ -932,7 +1032,7 @@ class FlextGrpcStream(FlextGrpcEntity):
       - All stream configuration must be consistent
 
     Example:
-      >>> from datetime import datetime, timezone
+      >>> from datetime import UTC, datetime, timezone
       >>> stream = FlextGrpcStream(
       ...     id="data-stream",
       ...     method_name="StreamData",
@@ -947,7 +1047,31 @@ class FlextGrpcStream(FlextGrpcEntity):
     """
 
     method_name: str = ""
-    stream_type: FlextGrpcTypes.Core.GrpcStreamType = "unary"
+    stream_type: FlextGrpcTypes.GrpcStreamType = "unary"
+
+    @field_validator("method_name")
+    @classmethod
+    def validate_method_name(cls, v: str) -> str:
+        """Validate method name is not empty."""
+        if not v or not v.strip():
+            msg = "Method name cannot be empty"
+            raise ValueError(msg)
+        return v.strip()
+
+    @field_validator("stream_type")
+    @classmethod
+    def validate_stream_type(cls, v: str) -> str:
+        """Validate stream type is valid."""
+        valid_stream_types = [
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
+        ]
+        if v not in valid_stream_types:
+            msg = f"Invalid stream type: {v}"
+            raise ValueError(msg)
+        return v
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate stream domain business rules and configuration.
@@ -966,7 +1090,7 @@ class FlextGrpcStream(FlextGrpcEntity):
         Example:
             >>> stream = FlextGrpcStream(
             ...     id="invalid-stream",
-            ...     method_name="",  # Invalid empty method name
+            ...     method_name="",
             ...     stream_type="unary",
             ...     created_at=datetime.now(timezone.utc),
             ... )
@@ -980,24 +1104,41 @@ class FlextGrpcStream(FlextGrpcEntity):
         if not self.method_name or not self.method_name.strip():
             return FlextResult[None].fail("Stream method name cannot be empty")
 
-        valid_types = {"unary", "server_streaming", "client_streaming", "bidirectional"}
-        if self.stream_type not in valid_types:
+        valid_stream_types = [
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
+        ]
+        if self.stream_type not in valid_stream_types:
             return FlextResult[None].fail(f"Invalid stream type: {self.stream_type}")
+
         return FlextResult[None].ok(None)
 
     @property
     def is_streaming(self: Self) -> bool:
-        """Check if this is a streaming operation (not unary).
+        """Check if stream supports streaming operations.
 
         Returns:
-            bool: True for any streaming type, False for unary operations
+            bool: True if stream type supports streaming, False for unary
 
         Example:
-            >>> unary_stream = FlextGrpcStream(stream_type="unary")
+            >>> unary_stream = FlextGrpcStream(
+            ...     id="unary-stream",
+            ...     method_name="GetUser",
+            ...     stream_type="unary",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
             >>> print(unary_stream.is_streaming)
             False
-            >>> bidirectional_stream = FlextGrpcStream(stream_type="bidirectional")
-            >>> print(bidirectional_stream.is_streaming)
+
+            >>> server_stream = FlextGrpcStream(
+            ...     id="server-stream",
+            ...     method_name="StreamData",
+            ...     stream_type="server_streaming",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> print(server_stream.is_streaming)
             True
 
         """
@@ -1005,57 +1146,91 @@ class FlextGrpcStream(FlextGrpcEntity):
 
     @property
     def is_server_streaming(self: Self) -> bool:
-        """Check if server can send multiple responses.
+        """Check if stream supports server streaming operations.
 
         Returns:
-            bool: True for server_streaming or bidirectional, False otherwise
+            bool: True if server streaming, False otherwise
 
         Example:
-            >>> server_stream = FlextGrpcStream(stream_type="server_streaming")
-            >>> print(server_stream.is_server_streaming)
+            >>> stream = FlextGrpcStream(
+            ...     id="server-stream",
+            ...     method_name="StreamData",
+            ...     stream_type="server_streaming",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> print(stream.is_server_streaming)
             True
-            >>> client_stream = FlextGrpcStream(stream_type="client_streaming")
-            >>> print(client_stream.is_server_streaming)
-            False
 
         """
-        return self.stream_type in {"server_streaming", "bidirectional"}
+        return self.stream_type == "server_streaming"
 
     @property
     def is_client_streaming(self: Self) -> bool:
-        """Check if client can send multiple requests.
+        """Check if stream supports client streaming operations.
 
         Returns:
-            bool: True for client_streaming or bidirectional, False otherwise
+            bool: True if client streaming, False otherwise
 
         Example:
-            >>> client_stream = FlextGrpcStream(stream_type="client_streaming")
-            >>> print(client_stream.is_client_streaming)
+            >>> stream = FlextGrpcStream(
+            ...     id="client-stream",
+            ...     method_name="UploadData",
+            ...     stream_type="client_streaming",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> print(stream.is_client_streaming)
             True
-            >>> server_stream = FlextGrpcStream(stream_type="server_streaming")
-            >>> print(server_stream.is_client_streaming)
-            False
 
         """
-        return self.stream_type in {"client_streaming", "bidirectional"}
+        return self.stream_type == "client_streaming"
 
     @property
     def is_bidirectional(self: Self) -> bool:
-        """Check if this is bidirectional streaming.
+        """Check if stream supports bidirectional streaming operations.
 
         Returns:
-            bool: True only for bidirectional streaming, False otherwise
+            bool: True if bidirectional streaming, False otherwise
 
         Example:
-            >>> bidirectional_stream = FlextGrpcStream(stream_type="bidirectional")
-            >>> print(bidirectional_stream.is_bidirectional)
+            >>> stream = FlextGrpcStream(
+            ...     id="bidirectional-stream",
+            ...     method_name="Chat",
+            ...     stream_type="bidirectional",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> print(stream.is_bidirectional)
             True
-            >>> unary_stream = FlextGrpcStream(stream_type="unary")
-            >>> print(unary_stream.is_bidirectional)
-            False
 
         """
         return self.stream_type == "bidirectional"
+
+    def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcStream]:
+        """Create a copy of the stream with updated attributes.
+
+        Args:
+            **kwargs: Attributes to update in the copy
+
+        Returns:
+            FlextResult[FlextGrpcStream]: Success with updated stream copy
+
+        Example:
+            >>> stream = FlextGrpcStream(
+            ...     id="test-stream",
+            ...     method_name="GetData",
+            ...     stream_type="unary",
+            ...     created_at=datetime.now(timezone.utc),
+            ... )
+            >>> result = stream.copy_with(stream_type="server_streaming")
+            >>> if result.is_success:
+            ...     print(result.data.stream_type)
+            server_streaming
+
+        """
+        try:
+            updated_stream = self.model_copy(update=kwargs)
+            return FlextResult[FlextGrpcStream].ok(updated_stream)
+        except Exception as e:
+            return FlextResult[FlextGrpcStream].fail(f"Failed to copy stream: {e}")
 
 
 # ELIMINATED: Factory pattern removed - use direct entity construction

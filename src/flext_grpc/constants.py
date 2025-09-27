@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Final
 
-from flext_core import FlextConstants, FlextTypes
+from flext_core import FlextConstants
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -35,63 +35,53 @@ class FlextGrpcConstants(FlextConstants):
     # Project metadata (Final attributes inherited from FlextConstants)
     # CONSTANTS_VERSION, PROJECT_PREFIX, PROJECT_NAME inherited from FlextConstants
 
-    class Network:
-        """gRPC network configuration constants."""
+    # gRPC-specific network constants
+    DEFAULT_GRPC_PORT: Final[int] = 50051  # Standard gRPC port
+    HOST_NAME_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
 
-        # Use FlextConstants for common network patterns
-        DEFAULT_HOST: Final[str] = FlextConstants.Platform.DEFAULT_HOST
-        MIN_PORT: Final[int] = FlextConstants.Network.MIN_PORT
-        MAX_PORT: Final[int] = FlextConstants.Network.MAX_PORT
+    # Port validation constants
+    MIN_PORT: Final[int] = FlextConstants.Network.MIN_PORT
+    MAX_PORT: Final[int] = FlextConstants.Network.MAX_PORT
 
-        # gRPC-specific network constants
-        DEFAULT_PORT: Final[int] = 50051  # Standard gRPC port
-        HOST_NAME_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
+    # Default timeout constant
+    DEFAULT_TIMEOUT: Final[float] = FlextConstants.Network.DEFAULT_TIMEOUT
 
-    class Service:
-        """gRPC service configuration constants."""
+    # Additional platform constants for gRPC
+    METRICS_PORT: Final[int] = 9090  # Prometheus metrics port
+    GRPC_DEFAULT_PORT: Final[int] = 50051  # Alias for DEFAULT_GRPC_PORT
+    PRODUCTION_HOST: Final[str] = "127.0.0.1"  # Localhost for production binding
+    LOCALHOST_IP: Final[str] = "127.0.0.1"  # Localhost IP address
 
-        # Use FlextConstants for common service patterns
-        DEFAULT_TIMEOUT: Final[int] = FlextConstants.Network.DEFAULT_TIMEOUT
+    # gRPC keepalive constants (in milliseconds)
+    DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000  # 30 seconds
+    DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
-        # gRPC-specific service constants
-        DEFAULT_MAX_WORKERS: Final[int] = FlextConstants.Container.MAX_WORKERS
-        MIN_WORKERS: Final[int] = FlextConstants.Container.MIN_WORKERS
-        MAX_WORKERS: Final[int] = 100
-        MIN_REQUIRED_ARGS: Final[int] = 2
+    # gRPC-specific service constants
+    DEFAULT_MAX_WORKERS: Final[int] = FlextConstants.Container.MAX_WORKERS
+    MIN_WORKERS: Final[int] = FlextConstants.Container.MIN_WORKERS
+    MAX_WORKERS: Final[int] = 100
+    MIN_REQUIRED_ARGS: Final[int] = 2
 
-    class Validation:
-        """gRPC validation constants."""
+    # gRPC-specific validation constants
+    MAX_SERVICE_NAME_LENGTH: Final[int] = 255
+    MAX_METHOD_NAME_LENGTH: Final[int] = 200
 
-        # Use FlextConstants for common validation patterns
-        MIN_TIMEOUT_SECONDS: Final[float] = 0.1
-        MAX_TIMEOUT_SECONDS: Final[float] = (
-            FlextConstants.Performance.MAX_TIMEOUT_SECONDS
-        )
+    # gRPC-specific error and status messages
+    SERVICE_START_FAILED: Final[str] = "gRPC service failed to start: {error}"
+    SERVICE_STARTED: Final[str] = "gRPC service started on {host}:{port}"
+    CONNECTION_FAILED: Final[str] = "gRPC connection failed: {error}"
+    TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
 
-        # gRPC-specific validation constants
-        MAX_SERVICE_NAME_LENGTH: Final[int] = 255
-        MAX_METHOD_NAME_LENGTH: Final[int] = 200
+    # gRPC-specific errors
+    GRPC_SERVICE_ERROR: Final[str] = "GRPC_SERVICE_ERROR"
+    GRPC_CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
+    GRPC_TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
 
-    class Messages:
-        """gRPC-specific error and status messages."""
-
-        SERVICE_START_FAILED: Final[str] = "gRPC service failed to start: {error}"
-        SERVICE_STARTED: Final[str] = "gRPC service started on {host}:{port}"
-        CONNECTION_FAILED: Final[str] = "gRPC connection failed: {error}"
-        TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
-
-    class Errors:
-        """gRPC-specific error codes extending FlextConstants.Errors."""
-
-        # Compose with FlextConstants base errors
-        BASE_ERROR: Final[str] = f"GRPC_{FlextConstants.Errors.VALIDATION_ERROR}"
-
-        # gRPC-specific errors
-        GRPC_SERVICE_ERROR: Final[str] = "GRPC_SERVICE_ERROR"
-        GRPC_CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
-        GRPC_TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
+    # gRPC-specific network constants (not overriding parent)
+    GRPC_DEFAULT_HOST: Final[str] = "127.0.0.1"
+    GRPC_DEFAULT_TIMEOUT: Final[float] = 30.0
 
 
-__all__: FlextTypes.Core.StringList = [
+__all__: list[str] = [
     "FlextGrpcConstants",
 ]

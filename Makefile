@@ -16,8 +16,8 @@ COV_DIR := flext_grpc
 MIN_COVERAGE := 100
 
 # gRPC Configuration
-GRPC_HOST := localhost
-GRPC_PORT := 50051
+GRPC_HOST := ${FlextGrpcConstants.Network.DEFAULT_HOST}
+GRPC_PORT := ${FlextGrpcConstants.Network.DEFAULT_PORT}
 GRPC_MAX_WORKERS := 10
 
 # Export Configuration

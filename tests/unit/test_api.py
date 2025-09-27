@@ -16,7 +16,6 @@ from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcConfig,
     FlextGrpcServer,
-    FlextGrpcService,
     FlextGrpcStream,
     create_channel,
     create_client,
@@ -28,6 +27,7 @@ from flext_grpc import (
     parse_address,
     validate_address,
 )
+from flext_grpc.entities import FlextGrpcService
 
 
 class TestAPIFunctions:
@@ -40,8 +40,8 @@ class TestAPIFunctions:
         if server.host != "localhost":
             raise AssertionError(f"Expected {'localhost'}, got {server.host}")
         assert server.port == 50051
-        if server.max_workers != 10:
-            raise AssertionError(f"Expected {10}, got {server.max_workers}")
+        if server.max_workers != 4:
+            raise AssertionError(f"Expected {4}, got {server.max_workers}")
         assert server.state == "stopped"
         if len(server.services) != 0:
             raise AssertionError(f"Expected {0}, got {len(server.services)}")
@@ -132,12 +132,14 @@ class TestAPIFunctions:
         if config.host != "localhost":
             raise AssertionError(f"Expected {'localhost'}, got {config.host}")
         assert config.port == 50051
-        if config.max_workers != 10:
-            raise AssertionError(f"Expected {10}, got {config.max_workers}")
+        if config.max_workers != 4:
+            raise AssertionError(f"Expected {4}, got {config.max_workers}")
         assert config.timeout == 30.0
 
         # Test with custom parameters
-        custom_config = create_config("0.0.0.0", 8080, 20, 60.0)
+        custom_config = create_config(
+            host="0.0.0.0", port=8080, max_workers=20, timeout=60.0
+        )
         if custom_config.host != "0.0.0.0":
             raise AssertionError(f"Expected {'0.0.0.0'}, got {custom_config.host}")
         assert custom_config.port == 8080
@@ -156,7 +158,7 @@ class TestAPIFunctions:
 
         for address in valid_addresses:
             result = validate_address(address)
-            assert result.success, f"Address {address} should be valid"
+            assert result.is_success, f"Address {address} should be valid"
             if not (result.data):
                 raise AssertionError(f"Expected True, got {result.data}")
 
@@ -291,11 +293,11 @@ class TestAPIFunctions:
         stream = create_stream("test_method", "server_streaming")
 
         # Validate all entities
-        assert server.validate_business_rules().success
-        assert client.validate_business_rules().success
-        assert channel.validate_business_rules().success
-        assert service.validate_business_rules().success
-        assert stream.validate_business_rules().success
+        assert server.validate_business_rules().is_success
+        assert client.validate_business_rules().is_success
+        assert channel.validate_business_rules().is_success
+        assert service.validate_business_rules().is_success
+        assert stream.validate_business_rules().is_success
 
     def test_factory_functions_use_proper_ids(self) -> None:
         """Test that factory functions generate proper IDs."""
@@ -332,4 +334,4 @@ class TestAPIFunctions:
         # All should have timestamps within expected range
         entities = [server, client, channel, service, stream]
         for entity in entities:
-            assert before <= entity.created_at.root <= after
+            assert before <= entity.created_at <= after

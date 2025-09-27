@@ -12,11 +12,11 @@ from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcPlatform,
     FlextGrpcServer,
-    FlextGrpcService,
     create_complete_setup,
     create_server,
     create_service,
 )
+from flext_grpc.entities import FlextGrpcService
 
 
 class TestRealBusinessScenarios:
@@ -39,18 +39,18 @@ class TestRealBusinessScenarios:
 
         # 3. Validate business rules
         server_validation = user_server.validate_business_rules()
-        assert server_validation.success, (
+        assert server_validation.is_success, (
             f"Server validation failed: {server_validation.error}"
         )
 
         service_validation = user_service.validate_business_rules()
-        assert service_validation.success, (
+        assert service_validation.is_success, (
             f"Service validation failed: {service_validation.error}"
         )
 
         # 4. Test server lifecycle management
         start_result = user_server.start()
-        assert start_result.success, f"Failed to start server: {start_result.error}"
+        assert start_result.is_success, f"Failed to start server: {start_result.error}"
 
         starting_server = start_result.data
         assert starting_server is not None
@@ -58,7 +58,9 @@ class TestRealBusinessScenarios:
 
         # 5. Complete startup process
         running_result = starting_server.mark_running()
-        assert running_result.success, f"Failed to mark running: {running_result.error}"
+        assert running_result.is_success, (
+            f"Failed to mark running: {running_result.error}"
+        )
 
         running_server = running_result.data
         assert running_server is not None
@@ -67,7 +69,7 @@ class TestRealBusinessScenarios:
 
         # 6. Register service with running server
         service_add_result = running_server.add_service(user_service)
-        assert service_add_result.success, (
+        assert service_add_result.is_success, (
             f"Failed to add service: {service_add_result.error}"
         )
 
@@ -80,7 +82,7 @@ class TestRealBusinessScenarios:
 
         # 7. Test graceful shutdown
         stop_result = server_with_service.stop()
-        assert stop_result.success, f"Failed to stop server: {stop_result.error}"
+        assert stop_result.is_success, f"Failed to stop server: {stop_result.error}"
 
         stopping_server = stop_result.data
         assert stopping_server is not None
@@ -88,7 +90,9 @@ class TestRealBusinessScenarios:
 
         # 8. Complete shutdown
         stopped_result = stopping_server.mark_stopped()
-        assert stopped_result.success, f"Failed to mark stopped: {stopped_result.error}"
+        assert stopped_result.is_success, (
+            f"Failed to mark stopped: {stopped_result.error}"
+        )
 
         final_server = stopped_result.data
         assert final_server is not None
@@ -119,22 +123,22 @@ class TestRealBusinessScenarios:
         )
 
         # 2. Validate all services
-        assert auth_server.validate_business_rules().success
-        assert user_server.validate_business_rules().success
+        assert auth_server.validate_business_rules().is_success
+        assert user_server.validate_business_rules().is_success
 
         # 3. Use platform to start services (tests real platform operations)
         auth_start = platform.start_server(auth_server)
         user_start = platform.start_server(user_server)
 
         # Platform should handle gracefully whether services actually start or not
-        assert auth_start.success or auth_start.is_failure
-        assert user_start.success or user_start.is_failure
+        assert auth_start.is_success or auth_start.is_failure
+        assert user_start.is_success or user_start.is_failure
 
         # 4. Test platform status operations
         auth_status = platform.get_server_status(auth_server)
-        assert auth_status.success or auth_status.is_failure
+        assert auth_status.is_success or auth_status.is_failure
 
-        if auth_status.success:
+        if auth_status.is_success:
             status_data = auth_status.data
             assert isinstance(status_data, dict)
             assert "address" in status_data
@@ -144,7 +148,7 @@ class TestRealBusinessScenarios:
 
         # 5. Test platform service coordination
         user_status = platform.get_server_status(user_server)
-        assert user_status.success or user_status.is_failure
+        assert user_status.is_success or user_status.is_failure
 
     def test_service_evolution_scenario(self) -> None:
         """Test evolving a service by adding methods (real business scenario)."""
@@ -156,14 +160,14 @@ class TestRealBusinessScenarios:
             ["ProcessPayment", "GetPaymentStatus"],
         )
 
-        assert payment_service_v1.validate_business_rules().success
+        assert payment_service_v1.validate_business_rules().is_success
         assert payment_service_v1.has_method("ProcessPayment")
         assert payment_service_v1.has_method("GetPaymentStatus")
         assert not payment_service_v1.has_method("RefundPayment")  # Not in v1
 
         # 2. Evolve to v2 by adding methods
         add_refund_result = payment_service_v1.add_method("RefundPayment")
-        assert add_refund_result.success, (
+        assert add_refund_result.is_success, (
             f"Failed to add method: {add_refund_result.error}"
         )
 
@@ -175,7 +179,7 @@ class TestRealBusinessScenarios:
 
         # 3. Add another v2 method
         add_webhook_result = payment_service_v2.add_method("ConfigureWebhook")
-        assert add_webhook_result.success
+        assert add_webhook_result.is_success
 
         payment_service_v2_final = add_webhook_result.data
         assert payment_service_v2_final is not None
@@ -215,13 +219,13 @@ class TestRealBusinessScenarios:
         assert server.host == "localhost"
         assert server.port == 50073
         assert server.address == "localhost:50073"
-        assert server.validate_business_rules().success
+        assert server.validate_business_rules().is_success
 
         # 4. Test client configuration
         assert client.channel is not None
         assert client.channel.target == "localhost:50073"
         assert client.target == "localhost:50073"
-        assert client.validate_business_rules().success
+        assert client.validate_business_rules().is_success
 
         # 5. Test service configuration
         assert service.name == "NotificationService"
@@ -230,11 +234,11 @@ class TestRealBusinessScenarios:
         assert service.has_method("SendPush")
         assert service.has_method("GetNotificationHistory")
         assert len(service.methods) == 4
-        assert service.validate_business_rules().success
+        assert service.validate_business_rules().is_success
 
         # 6. Test integration between components
         service_add_result = server.add_service(service)
-        assert service_add_result.success
+        assert service_add_result.is_success
 
         integrated_server = service_add_result.data
         assert integrated_server is not None
@@ -266,16 +270,16 @@ class TestRealBusinessScenarios:
         for config in invalid_configs:
             server = FlextGrpcServer(
                 id=f"invalid-{config['port']}",
-                host=config["host"],
-                port=config["port"],
-                max_workers=config.get("max_workers", 10),
+                host=str(config["host"]),
+                port=int(config["port"]),
+                max_workers=int(config.get("max_workers", 10)),
                 created_at=datetime.now(UTC),
             )
 
             validation = server.validate_business_rules()
             assert validation.is_failure, f"Should have failed for config: {config}"
             assert validation.error is not None
-            assert config["error"] in validation.error
+            assert str(config["error"]) in validation.error
 
         # 2. Test invalid service configurations
         empty_service = FlextGrpcService(
@@ -340,8 +344,8 @@ class TestRealBusinessScenarios:
 
         # 2. Validate all services
         for svc in services:
-            assert svc["server"].validate_business_rules().success
-            assert svc["service"].validate_business_rules().success
+            assert svc["server"].validate_business_rules().is_success
+            assert svc["service"].validate_business_rules().is_success
 
         # 3. Test platform can handle multiple service operations
         results = []
@@ -360,11 +364,11 @@ class TestRealBusinessScenarios:
         # 4. Validate platform handled all operations gracefully
         for result in results:
             # Platform should handle gracefully whether operations succeed or fail
-            assert result["start"].success or result["start"].is_failure
-            assert result["status"].success or result["status"].is_failure
+            assert result["start"].is_success or result["start"].is_failure
+            assert result["status"].is_success or result["status"].is_failure
 
             # If status succeeded, validate data structure
-            if result["status"].success:
+            if result["status"].is_success:
                 status_data = result["status"].data
                 assert isinstance(status_data, dict)
                 assert all(

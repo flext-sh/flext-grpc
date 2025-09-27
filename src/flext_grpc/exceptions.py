@@ -68,7 +68,9 @@ class FlextGrpcValidationError(FlextGrpcError):
       Field validation error handling:
 
       >>> try:
-      ...     server = FlextGrpcServer(host="", port=50051)
+      ...     server = FlextGrpcServer(
+      ...         host="", port=FlextGrpcConstants.Network.DEFAULT_PORT
+      ...     )
       ... except FlextGrpcValidationError as e:
       ...     if e.field_name:
       ...         print(f"Validation failed for field '{e.field_name}': {e}")
@@ -128,12 +130,16 @@ class FlextGrpcConnectionError(FlextGrpcError):
       Connection error handling with retry logic:
 
       >>> try:
-      ...     client = create_client("unreachable-server:50051")
+      ...     client = create_client(
+      ...         f"unreachable-server:{FlextGrpcConstants.Network.DEFAULT_PORT}"
+      ...     )
       ...     platform.connect_client(client)
       ... except FlextGrpcConnectionError as e:
       ...     logger.warning(f"Connection failed: {e}")
       ...     # Implement retry logic or fallback
-      ...     backup_client = create_client("backup-server:50051")
+      ...     backup_client = create_client(
+      ...         f"backup-server:{FlextGrpcConstants.Network.DEFAULT_PORT}"
+      ...     )
 
     Integration:
       Used throughout the platform for:
