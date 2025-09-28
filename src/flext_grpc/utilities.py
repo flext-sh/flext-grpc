@@ -45,16 +45,6 @@ class FlextGrpcUtilities(FlextUtilities):
 
     Follows FLEXT pattern: single class with nested subclasses.
     """
-    
-    if TYPE_CHECKING:
-        MessageValidation: type[MessageValidation]
-        ProtobufConversion: type[ProtobufConversion]
-        ChannelManagement: type[ChannelManagement]
-        StreamingHelpers: type[StreamingHelpers]
-        ServiceDiscovery: type[ServiceDiscovery]
-        ErrorHandling: type[ErrorHandling]
-        MetricsCollection: type[MetricsCollection]
-        SystemUtilities: type[SystemUtilities]
 
     def __init__(self) -> None:
         """Initialize FlextGrpcUtilities service."""
@@ -498,6 +488,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
+
                 def data_iterator() -> Iterator[T]:
                     yield from data
 
@@ -752,7 +743,9 @@ class FlextGrpcUtilities(FlextUtilities):
                 return FlextResult[str].fail(f"Error message formatting failed: {e}")
 
         @staticmethod
-        def handle_grpc_error(error: grpc.RpcError | None) -> FlextResult[dict[str, Any]]:
+        def handle_grpc_error(
+            error: grpc.RpcError | None,
+        ) -> FlextResult[dict[str, Any]]:
             """Handle and categorize gRPC errors.
 
             Args:
@@ -763,6 +756,9 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
+                if error is None:
+                    return FlextResult[dict[str, Any]].fail("Error is None")
+
                 error_info: dict[str, Any] = {
                     "code": error.code().name if hasattr(error, "code") else "UNKNOWN",
                     "details": error.details()

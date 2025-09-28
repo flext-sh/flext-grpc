@@ -257,7 +257,9 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_performance_metrics_valid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with valid times."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, Any]] = utilities.MetricsCollection.collect_performance_metrics(1000.0, 1001.0)
+        result: FlextResult[dict[str, Any]] = (
+            utilities.MetricsCollection.collect_performance_metrics(1000.0, 1001.0)
+        )
 
         assert result.is_success
         assert isinstance(result.data, dict)
@@ -267,7 +269,9 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_performance_metrics_invalid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid times."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, Any]] = utilities.MetricsCollection.collect_performance_metrics(None, None)
+        result: FlextResult[dict[str, Any]] = (
+            utilities.MetricsCollection.collect_performance_metrics(None, None)
+        )
 
         assert result.is_success is False
         assert result.error is not None

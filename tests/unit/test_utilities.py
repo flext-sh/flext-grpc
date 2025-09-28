@@ -7,12 +7,13 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from datetime import UTC, datetime
-from typing import Any
+from typing import Any, cast
 from unittest.mock import MagicMock, patch
 
 import grpc
 from google.protobuf import json_format
 from google.protobuf.message import Message as ProtobufMessage
+from google.protobuf.struct_pb2 import Struct
 
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.utilities import FlextGrpcUtilities
@@ -165,12 +166,8 @@ class TestProtobufConversion:
         """Test converting dict to protobuf with valid data."""
         data_dict = {"message": "test", "timestamp": 1234567890}
 
-        # Create a proper mock class that satisfies type[ProtobufMessage]
-        class MockProtobufClass(ProtobufMessage):
-            def __init__(self) -> None:
-                super().__init__()
-        
-        mock_message_class = MockProtobufClass
+        # Use a real protobuf message class for testing
+        mock_message_class = Struct
         mock_instance = MagicMock(spec=ProtobufMessage)
 
         with patch.object(json_format, "ParseDict") as mock_parse:
@@ -191,13 +188,13 @@ class TestProtobufConversion:
         data_dict = {"invalid_field": "test"}
 
         # Create a proper mock class that satisfies type[ProtobufMessage]
-        class MockProtobufClass(ProtobufMessage):
+        error_msg = "Invalid protobuf data"
+
+        class MockProtobufClass:
             def __init__(self) -> None:
-                super().__init__()
-                msg = "Invalid protobuf data"
-                raise ValueError(msg)
-        
-        mock_message_class = MockProtobufClass
+                raise ValueError(error_msg)
+
+        mock_message_class = cast("type[ProtobufMessage]", MockProtobufClass)
 
         result = self.utilities.ProtobufConversion.dict_to_protobuf(
             data_dict, mock_message_class
@@ -369,11 +366,13 @@ class TestStreamingHelpers:
     def test_validate_stream_metadata_valid(self) -> None:
         """Test validating stream metadata with valid data."""
         mock_metadata = MagicMock()
-        def mock_iter(self: Any) -> Iterator[tuple[str, str]]:
+
+        def mock_iter(_self: object) -> Iterator[tuple[str, str]]:
             return iter([
                 ("key1", "value1"),
                 ("key2", "value2"),
             ])
+
         mock_metadata.__iter__ = mock_iter
 
         result = self.utilities.StreamingHelpers.validate_stream_metadata(mock_metadata)
@@ -404,8 +403,10 @@ class TestServiceDiscovery:
         """Test service discovery with invalid channel."""
         mock_channel = MagicMock()
         # Simulate channel that raises exception when accessed
-        def mock_bool(self: Any) -> bool:
+
+        def mock_bool(_self: object) -> bool:
             return False
+
         mock_channel.__bool__ = mock_bool
 
         result = self.utilities.ServiceDiscovery.discover_services(mock_channel)

@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import math
 import weakref
-from collections import namedtuple
 from collections.abc import AsyncGenerator, Generator
 from contextlib import asynccontextmanager, contextmanager
 from dataclasses import dataclass
@@ -47,7 +46,7 @@ from itertools import (
     tee,
     zip_longest,
 )
-from typing import Any
+from typing import NamedTuple
 
 from flext_grpc.entities import FlextGrpcServer
 from flext_grpc.services import FlextGrpcService
@@ -74,7 +73,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(long_command, server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_unicode_command_name(self) -> None:
         """Test execute with unicode command name."""
@@ -89,7 +88,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(unicode_command, server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_special_characters_command_name(self) -> None:
         """Test execute with special characters command name."""
@@ -104,7 +103,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(special_command, server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_numeric_command_name(self) -> None:
         """Test execute with numeric command name."""
@@ -118,7 +117,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(12345), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_boolean_command_name(self) -> None:
         """Test execute with boolean command name."""
@@ -132,7 +131,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(True), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_float_command_name(self) -> None:
         """Test execute with float command name."""
@@ -146,7 +145,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(math.pi), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_decimal_command_name(self) -> None:
         """Test execute with decimal command name."""
@@ -160,7 +159,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(Decimal("3.14")), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_fraction_command_name(self) -> None:
         """Test execute with fraction command name."""
@@ -174,7 +173,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(Fraction(22, 7)), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_lambda_command_name(self) -> None:
         """Test execute with lambda command name."""
@@ -188,7 +187,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(lambda x: x), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_generator_command_name(self) -> None:
         """Test execute with generator command name."""
@@ -205,7 +204,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(gen()), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_class_command_name(self) -> None:
         """Test execute with class command name."""
@@ -222,7 +221,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(TestClass), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_instance_command_name(self) -> None:
         """Test execute with instance command name."""
@@ -239,7 +238,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(TestClass()), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_function_command_name(self) -> None:
         """Test execute with function command name."""
@@ -256,7 +255,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(test_func), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_method_command_name(self) -> None:
         """Test execute with method command name."""
@@ -275,7 +274,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(obj.test_method), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_property_command_name(self) -> None:
         """Test execute with property command name."""
@@ -289,13 +288,13 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         class TestClass:
             @property
             def test_property(self) -> str:
-                return "start"
+                return "invalid_command"
 
         obj = TestClass()
         result = self.service.execute(str(obj.test_property), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_descriptor_command_name(self) -> None:
         """Test execute with descriptor command name."""
@@ -307,13 +306,13 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         )
 
         class TestDescriptor:
-            def __get__(self, obj: Any, objtype: type | None = None) -> str:
+            def __get__(self, obj: object | None, objtype: type | None = None) -> str:
                 return "start"
 
         result = self.service.execute(str(TestDescriptor()), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_metaclass_command_name(self) -> None:
         """Test execute with metaclass command name."""
@@ -330,7 +329,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(TestMeta), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_enum_command_name(self) -> None:
         """Test execute with enum command name."""
@@ -347,7 +346,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(TestEnum.START), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_namedtuple_command_name(self) -> None:
         """Test execute with namedtuple command name."""
@@ -358,11 +357,13 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        TestTuple = namedtuple("TestTuple", ["command"])
+        class TestTuple(NamedTuple):
+            command: str
+
         result = self.service.execute(str(TestTuple("start")), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_dataclass_command_name(self) -> None:
         """Test execute with dataclass command name."""
@@ -380,7 +381,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(TestDataClass("start")), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_slots_command_name(self) -> None:
         """Test execute with slots command name."""
@@ -391,7 +392,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        class TestSlots:
+        class TestSlots:  # noqa: B903
             __slots__ = ["command"]
 
             def __init__(self, command: str) -> None:
@@ -400,7 +401,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         result = self.service.execute(str(TestSlots("start")), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_weakref_command_name(self) -> None:
         """Test execute with weakref command name."""
@@ -411,11 +412,14 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        obj = object()
+        class TestObj:
+            pass
+
+        obj = TestObj()
         result = self.service.execute(str(weakref.ref(obj)), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_proxy_command_name(self) -> None:
         """Test execute with proxy command name."""
@@ -426,11 +430,14 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        obj = object()
-        result = self.service.execute(weakref.proxy(obj), server)
+        class TestObj:
+            pass
+
+        obj = TestObj()
+        result = self.service.execute(str(weakref.proxy(obj)), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_contextmanager_command_name(self) -> None:
         """Test execute with contextmanager command name."""
@@ -445,10 +452,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         def test_context() -> Generator[str]:
             yield "start"
 
-        result = self.service.execute(test_context(), server)
+        result = self.service.execute(str(test_context()), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_async_contextmanager_command_name(self) -> None:
         """Test execute with async contextmanager command name."""
@@ -460,13 +467,13 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         )
 
         @asynccontextmanager
-        async def test_async_context() -> AsyncGenerator[str]:
+        async def test_async_context() -> AsyncGenerator[str]:  # noqa: RUF029
             yield "start"
 
-        result = self.service.execute(test_async_context(), server)
+        result = self.service.execute(str(test_async_context()), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_partial_command_name(self) -> None:
         """Test execute with partial command name."""
@@ -480,10 +487,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         def test_func(x: str, y: str) -> str:
             return f"{x}{y}"
 
-        result = self.service.execute(partial(test_func, "start"), server)
+        result = self.service.execute(str(partial(test_func, "start")), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_wraps_command_name(self) -> None:
         """Test execute with wraps command name."""
@@ -494,10 +501,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        def test_decorator(func: Any) -> Any:
-            @wraps(func)
-            def wrapper(*args: Any, **kwargs: Any) -> Any:
-                return func(*args, **kwargs)
+        def test_decorator(func: object) -> object:
+            @wraps(func)  # type: ignore[arg-type]
+            def wrapper(*args: object, **kwargs: object) -> object:
+                return func(*args, **kwargs)  # type: ignore[misc]
 
             return wrapper
 
@@ -505,10 +512,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         def test_func() -> str:
             return "start"
 
-        result = self.service.execute(test_func, server)
+        result = self.service.execute(str(test_func), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_lru_cache_command_name(self) -> None:
         """Test execute with lru_cache command name."""
@@ -523,10 +530,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         def test_func(x: str) -> str:
             return f"start{x}"
 
-        result = self.service.execute(test_func, server)
+        result = self.service.execute(str(test_func), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_singledispatch_command_name(self) -> None:
         """Test execute with singledispatch command name."""
@@ -538,13 +545,13 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         )
 
         @singledispatch
-        def test_func(arg: Any) -> str:
+        def test_func(arg: object) -> str:
             return f"start{arg}"
 
-        result = self.service.execute(test_func, server)
+        result = self.service.execute(str(test_func), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_singledispatchmethod_command_name(self) -> None:
         """Test execute with singledispatchmethod command name."""
@@ -557,14 +564,14 @@ class TestFlextGrpcServiceEdgeCasesSimple:
 
         class TestClass:
             @singledispatchmethod
-            def test_method(self, arg: Any) -> str:
+            def test_method(self, arg: object) -> str:
                 return f"start{arg}"
 
         obj = TestClass()
-        result = self.service.execute(obj.test_method, server)
+        result = self.service.execute(str(obj.test_method), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_cached_property_command_name(self) -> None:
         """Test execute with cached_property command name."""
@@ -578,13 +585,13 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         class TestClass:
             @cached_property
             def test_property(self) -> str:
-                return "start"
+                return "invalid_command"
 
         obj = TestClass()
-        result = self.service.execute(obj.test_property, server)
+        result = self.service.execute(str(obj.test_property), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_total_ordering_command_name(self) -> None:
         """Test execute with total_ordering command name."""
@@ -601,15 +608,22 @@ class TestFlextGrpcServiceEdgeCasesSimple:
                 self.value = value
 
             def __eq__(self, other: object) -> bool:
+                if not isinstance(other, TestClass):
+                    return False
                 return self.value == other.value
 
-            def __lt__(self, other: Any) -> bool:
+            def __lt__(self, other: object) -> bool:
+                if not isinstance(other, TestClass):
+                    return NotImplemented
                 return self.value < other.value
 
-        result = self.service.execute(TestClass("start"), server)
+            def __hash__(self) -> int:
+                return hash(self.value)
+
+        result = self.service.execute(str(TestClass("start")), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_reduce_command_name(self) -> None:
         """Test execute with reduce command name."""
@@ -620,10 +634,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(reduce, server)
+        result = self.service.execute(str(reduce), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_accumulate_command_name(self) -> None:
         """Test execute with accumulate command name."""
@@ -634,10 +648,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(accumulate, server)
+        result = self.service.execute(str(accumulate), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_chain_command_name(self) -> None:
         """Test execute with chain command name."""
@@ -648,10 +662,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(chain, server)
+        result = self.service.execute(str(chain), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_combinations_command_name(self) -> None:
         """Test execute with combinations command name."""
@@ -662,10 +676,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(combinations, server)
+        result = self.service.execute(str(combinations), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_permutations_command_name(self) -> None:
         """Test execute with permutations command name."""
@@ -676,10 +690,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(permutations, server)
+        result = self.service.execute(str(permutations), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_product_command_name(self) -> None:
         """Test execute with product command name."""
@@ -690,10 +704,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(product, server)
+        result = self.service.execute(str(product), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_cycle_command_name(self) -> None:
         """Test execute with cycle command name."""
@@ -704,10 +718,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(cycle, server)
+        result = self.service.execute(str(cycle), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_repeat_command_name(self) -> None:
         """Test execute with repeat command name."""
@@ -718,10 +732,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(repeat, server)
+        result = self.service.execute(str(repeat), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_count_command_name(self) -> None:
         """Test execute with count command name."""
@@ -732,10 +746,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(count, server)
+        result = self.service.execute(str(count), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_islice_command_name(self) -> None:
         """Test execute with islice command name."""
@@ -746,10 +760,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(islice, server)
+        result = self.service.execute(str(islice), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_tee_command_name(self) -> None:
         """Test execute with tee command name."""
@@ -760,10 +774,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(tee, server)
+        result = self.service.execute(str(tee), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_zip_longest_command_name(self) -> None:
         """Test execute with zip_longest command name."""
@@ -774,10 +788,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(zip_longest, server)
+        result = self.service.execute(str(zip_longest), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_groupby_command_name(self) -> None:
         """Test execute with groupby command name."""
@@ -788,10 +802,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(groupby, server)
+        result = self.service.execute(str(groupby), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_filterfalse_command_name(self) -> None:
         """Test execute with filterfalse command name."""
@@ -802,10 +816,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(filterfalse, server)
+        result = self.service.execute(str(filterfalse), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_dropwhile_command_name(self) -> None:
         """Test execute with dropwhile command name."""
@@ -816,10 +830,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(dropwhile, server)
+        result = self.service.execute(str(dropwhile), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_takewhile_command_name(self) -> None:
         """Test execute with takewhile command name."""
@@ -830,10 +844,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(takewhile, server)
+        result = self.service.execute(str(takewhile), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_compress_command_name(self) -> None:
         """Test execute with compress command name."""
@@ -844,10 +858,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(compress, server)
+        result = self.service.execute(str(compress), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_starmap_command_name(self) -> None:
         """Test execute with starmap command name."""
@@ -858,10 +872,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(starmap, server)
+        result = self.service.execute(str(starmap), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_pairwise_command_name(self) -> None:
         """Test execute with pairwise command name."""
@@ -872,10 +886,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(pairwise, server)
+        result = self.service.execute(str(pairwise), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_batched_command_name(self) -> None:
         """Test execute with batched command name."""
@@ -886,10 +900,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(batched, server)
+        result = self.service.execute(str(batched), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_execute_with_combinations_with_replacement_command_name(self) -> None:
         """Test execute with combinations_with_replacement command name."""
@@ -900,7 +914,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(combinations_with_replacement, server)
+        result = self.service.execute(str(combinations_with_replacement), server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
