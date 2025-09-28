@@ -140,7 +140,7 @@ class TestFlextGrpcService:
         if not service:
             return FlextResult.fail(f"Unknown service type: {service_type}")
 
-        return service.execute(command, entity, *remaining_args, **kwargs)  # type: ignore[arg-type]
+        return service.execute(command, entity, *remaining_args, **kwargs)
 
     def test_server_start_invalid_host_fails(self) -> None:
         """Test server start with invalid host fails."""

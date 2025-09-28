@@ -25,12 +25,12 @@ class TestGrpcFields:
 
     def test_grpc_host_field_valid(self) -> None:
         """Test grpc_host_field with valid values."""
-        field: FieldInfo = grpc_host_field()
+        field = grpc_host_field()
         assert isinstance(field, FieldInfo)
 
         # Test with valid host
         class TestModel(BaseModel):
-            host: str = grpc_host_field()  # type: ignore[assignment]
+            host: str = grpc_host_field()
 
         model = TestModel(host="localhost")
         assert model.host == "localhost"
@@ -45,7 +45,7 @@ class TestGrpcFields:
         """Test grpc_host_field with invalid values."""
 
         class TestModel(BaseModel):
-            host: str = grpc_host_field()  # type: ignore[assignment]
+            host: str = grpc_host_field()
 
         # Test empty host
         with pytest.raises(ValidationError) as exc_info:
@@ -64,11 +64,11 @@ class TestGrpcFields:
 
     def test_grpc_port_field_valid(self) -> None:
         """Test grpc_port_field with valid values."""
-        field: FieldInfo = grpc_port_field()
+        field = grpc_port_field()
         assert isinstance(field, FieldInfo)
 
         class TestModel(BaseModel):
-            port: int = grpc_port_field()  # type: ignore[assignment]
+            port: int = grpc_port_field()
 
         model = TestModel(port=8080)
         assert model.port == 8080
@@ -83,7 +83,7 @@ class TestGrpcFields:
         """Test grpc_port_field with invalid values."""
 
         class TestModel(BaseModel):
-            port: int = grpc_port_field()  # type: ignore[assignment]
+            port: int = grpc_port_field()
 
         # Test port too low
         with pytest.raises(ValidationError) as exc_info:
@@ -97,11 +97,11 @@ class TestGrpcFields:
 
     def test_grpc_service_name_field_valid(self) -> None:
         """Test grpc_service_name_field with valid values."""
-        field: FieldInfo = grpc_service_name_field()
+        field = grpc_service_name_field()
         assert isinstance(field, FieldInfo)
 
         class TestModel(BaseModel):
-            service_name: str = grpc_service_name_field()  # type: ignore[assignment]
+            service_name: str = grpc_service_name_field()
 
         model = TestModel(service_name="UserService")
         assert model.service_name == "UserService"
@@ -116,7 +116,7 @@ class TestGrpcFields:
         """Test grpc_service_name_field with invalid values."""
 
         class TestModel(BaseModel):
-            service_name: str = grpc_service_name_field()  # type: ignore[assignment]
+            service_name: str = grpc_service_name_field()
 
         # Test empty service name
         with pytest.raises(ValidationError) as exc_info:
@@ -135,11 +135,11 @@ class TestGrpcFields:
 
     def test_grpc_method_name_field_valid(self) -> None:
         """Test grpc_method_name_field with valid values."""
-        field: FieldInfo = grpc_method_name_field()
+        field = grpc_method_name_field()
         assert isinstance(field, FieldInfo)
 
         class TestModel(BaseModel):
-            method_name: str = grpc_method_name_field()  # type: ignore[assignment]
+            method_name: str = grpc_method_name_field()
 
         model = TestModel(method_name="GetUser")
         assert model.method_name == "GetUser"
@@ -154,7 +154,7 @@ class TestGrpcFields:
         """Test grpc_method_name_field with invalid values."""
 
         class TestModel(BaseModel):
-            method_name: str = grpc_method_name_field()  # type: ignore[assignment]
+            method_name: str = grpc_method_name_field()
 
         # Test empty method name
         with pytest.raises(ValidationError) as exc_info:
@@ -173,11 +173,11 @@ class TestGrpcFields:
 
     def test_grpc_timeout_field_valid(self) -> None:
         """Test grpc_timeout_field with valid values."""
-        field: FieldInfo = grpc_timeout_field()
+        field = grpc_timeout_field()
         assert isinstance(field, FieldInfo)
 
         class TestModel(BaseModel):
-            timeout: float = grpc_timeout_field()  # type: ignore[assignment]
+            timeout: float = grpc_timeout_field()
 
         model = TestModel(timeout=30.0)
         assert model.timeout == 30.0
@@ -192,7 +192,7 @@ class TestGrpcFields:
         """Test grpc_timeout_field with invalid values."""
 
         class TestModel(BaseModel):
-            timeout: float = grpc_timeout_field()  # type: ignore[assignment]
+            timeout: float = grpc_timeout_field()
 
         # Test timeout too low
         with pytest.raises(ValidationError) as exc_info:
@@ -206,11 +206,11 @@ class TestGrpcFields:
 
     def test_grpc_workers_field_valid(self) -> None:
         """Test grpc_workers_field with valid values."""
-        field: FieldInfo = grpc_workers_field()
+        field = grpc_workers_field()
         assert isinstance(field, FieldInfo)
 
         class TestModel(BaseModel):
-            workers: int = grpc_workers_field()  # type: ignore[assignment]
+            workers: int = grpc_workers_field()
 
         model = TestModel(workers=1)
         assert model.workers == 1
@@ -225,7 +225,7 @@ class TestGrpcFields:
         """Test grpc_workers_field with invalid values."""
 
         class TestModel(BaseModel):
-            workers: int = grpc_workers_field()  # type: ignore[assignment]
+            workers: int = grpc_workers_field()
 
         # Test workers too low
         with pytest.raises(ValidationError) as exc_info:
@@ -240,17 +240,17 @@ class TestGrpcFields:
     def test_field_defaults(self) -> None:
         """Test that fields have correct default values."""
         # Test host field default
-        host_field: FieldInfo = grpc_host_field()
+        host_field = grpc_host_field()
         assert host_field.default == FlextGrpcConstants.GRPC_DEFAULT_HOST
 
         # Test port field default
-        port_field: FieldInfo = grpc_port_field()
+        port_field = grpc_port_field()
         assert port_field.default == FlextGrpcConstants.GRPC_DEFAULT_PORT
 
         # Test timeout field default
-        timeout_field: FieldInfo = grpc_timeout_field()
+        timeout_field = grpc_timeout_field()
         assert timeout_field.default == FlextGrpcConstants.GRPC_DEFAULT_TIMEOUT
 
         # Test workers field default
-        workers_field: FieldInfo = grpc_workers_field()
+        workers_field = grpc_workers_field()
         assert workers_field.default == 10

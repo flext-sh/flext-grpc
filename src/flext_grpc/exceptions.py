@@ -88,7 +88,6 @@ class FlextGrpcValidationError(FlextGrpcError):
     """
 
     @override
-    @override
     def __init__(self, message: str, field_name: str | None = None) -> None:
         """Initialize validation error with message and optional field context.
 
@@ -243,7 +242,6 @@ class FlextGrpcConfigurationError(FlextGrpcError):
 
     """
 
-    @override
     @override
     def __init__(
         self,

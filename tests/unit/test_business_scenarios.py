@@ -8,6 +8,9 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
+import pytest
+from pydantic import ValidationError
+
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcPlatform,
@@ -282,30 +285,30 @@ class TestRealBusinessScenarios:
             assert str(config["error"]) in validation.error
 
         # 2. Test invalid service configurations
-        empty_service = FlextGrpcService(
-            id="empty-service",
-            name="",  # Invalid empty name
-            methods=["method1"],
-            created_at=datetime.now(UTC),
-        )
+        with pytest.raises(ValidationError) as exc_info:
+            FlextGrpcService(
+                id="empty-service",
+                name="",  # Invalid empty name
+                methods=["method1"],
+                created_at=datetime.now(UTC),
+            )
 
-        validation = empty_service.validate_business_rules()
-        assert validation.is_failure
-        assert validation.error is not None
-        assert "name cannot be empty" in validation.error
+        # Verify the error message contains expected text
+        error_str = str(exc_info.value)
+        assert "service name cannot be empty" in error_str.lower()
 
         # 3. Test service without methods
-        no_methods_service = FlextGrpcService(
-            id="no-methods-service",
-            name="ValidService",
-            methods=[],  # No methods
-            created_at=datetime.now(UTC),
-        )
+        with pytest.raises(ValidationError) as exc_info:
+            FlextGrpcService(
+                id="no-methods-service",
+                name="ValidService",
+                methods=[],  # No methods
+                created_at=datetime.now(UTC),
+            )
 
-        validation = no_methods_service.validate_business_rules()
-        assert validation.is_failure
-        assert validation.error is not None
-        assert "must have at least one method" in validation.error
+        # Verify the error message contains expected text
+        error_str = str(exc_info.value)
+        assert "methods list cannot be empty" in error_str.lower()
 
     def test_concurrent_service_management_scenario(self) -> None:
         """Test managing multiple services concurrently (real scenario)."""

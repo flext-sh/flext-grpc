@@ -5,7 +5,9 @@ Tests the FlextGrpcUtilities class and its nested utility classes.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from datetime import UTC, datetime
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import grpc
@@ -140,7 +142,8 @@ class TestMessageValidation:
         mock_msg2.HasField.return_value = True
         mock_msg2.SerializeToString.return_value = b"serialized"
 
-        messages = [mock_msg1, mock_msg2]
+        # Cast to proper type to satisfy type checker
+        messages: list[ProtobufMessage] = [mock_msg1, mock_msg2]
 
         result = self.utilities.MessageValidation.validate_stream_message_sequence(
             messages
@@ -161,16 +164,24 @@ class TestProtobufConversion:
     def test_dict_to_protobuf_valid(self) -> None:
         """Test converting dict to protobuf with valid data."""
         data_dict = {"message": "test", "timestamp": 1234567890}
-        mock_message_class = MagicMock()
-        mock_instance = MagicMock()
-        mock_message_class.return_value = mock_instance
+
+        # Create a proper mock class that satisfies type[ProtobufMessage]
+        class MockProtobufClass(ProtobufMessage):
+            def __init__(self) -> None:
+                super().__init__()
+        
+        mock_message_class = MockProtobufClass
+        mock_instance = MagicMock(spec=ProtobufMessage)
 
         with patch.object(json_format, "ParseDict") as mock_parse:
             mock_parse.return_value = None  # ParseDict doesn't return anything
 
-            result = self.utilities.ProtobufConversion.dict_to_protobuf(
-                data_dict, mock_message_class
-            )
+            with patch.object(
+                mock_message_class, "__call__", return_value=mock_instance
+            ):
+                result = self.utilities.ProtobufConversion.dict_to_protobuf(
+                    data_dict, mock_message_class
+                )
 
         assert result.is_success
         assert result.data == mock_instance
@@ -178,8 +189,15 @@ class TestProtobufConversion:
     def test_dict_to_protobuf_invalid_data(self) -> None:
         """Test converting dict to protobuf with invalid data."""
         data_dict = {"invalid_field": "test"}
-        mock_message_class = MagicMock()
-        mock_message_class.side_effect = Exception("Invalid protobuf data")
+
+        # Create a proper mock class that satisfies type[ProtobufMessage]
+        class MockProtobufClass(ProtobufMessage):
+            def __init__(self) -> None:
+                super().__init__()
+                msg = "Invalid protobuf data"
+                raise ValueError(msg)
+        
+        mock_message_class = MockProtobufClass
 
         result = self.utilities.ProtobufConversion.dict_to_protobuf(
             data_dict, mock_message_class
@@ -278,7 +296,9 @@ class TestChannelManagement:
             mock_future.result.return_value = None  # No exception means ready
             mock_ready_future.return_value = mock_future
 
-            result = self.utilities.ChannelManagement.check_channel_connectivity(mock_channel)
+            result = self.utilities.ChannelManagement.check_channel_connectivity(
+                mock_channel
+            )
 
         assert result.is_success
         assert result.data is True
@@ -289,7 +309,9 @@ class TestChannelManagement:
         mock_channel.close.side_effect = Exception("Channel error")
 
         with patch("grpc.channel_ready_future", side_effect=Exception("Channel error")):
-            result = self.utilities.ChannelManagement.check_channel_connectivity(mock_channel)
+            result = self.utilities.ChannelManagement.check_channel_connectivity(
+                mock_channel
+            )
 
         assert result.is_failure
         assert result.error is not None
@@ -331,21 +353,28 @@ class TestStreamingHelpers:
 
         assert iterator is not None
         # Test that we can iterate through it
-        items = list(iterator)
+        items: list[dict[str, str]] = list(iterator)
         assert len(items) == 2
 
     def test_create_request_stream_empty(self) -> None:
         """Test creating request stream with empty data."""
-        iterator = self.utilities.StreamingHelpers.create_request_stream([])
+        iterator: Iterator[Any] = (
+            self.utilities.StreamingHelpers.create_request_stream([])
+        )
 
         assert iterator is not None
-        items = list(iterator)
+        items: list[Any] = list(iterator)
         assert len(items) == 0
 
     def test_validate_stream_metadata_valid(self) -> None:
         """Test validating stream metadata with valid data."""
         mock_metadata = MagicMock()
-        mock_metadata.__iter__ = lambda _: iter([("key1", "value1"), ("key2", "value2")])
+        def mock_iter(self: Any) -> Iterator[tuple[str, str]]:
+            return iter([
+                ("key1", "value1"),
+                ("key2", "value2"),
+            ])
+        mock_metadata.__iter__ = mock_iter
 
         result = self.utilities.StreamingHelpers.validate_stream_metadata(mock_metadata)
 
@@ -375,7 +404,9 @@ class TestServiceDiscovery:
         """Test service discovery with invalid channel."""
         mock_channel = MagicMock()
         # Simulate channel that raises exception when accessed
-        mock_channel.__bool__ = lambda _: False
+        def mock_bool(self: Any) -> bool:
+            return False
+        mock_channel.__bool__ = mock_bool
 
         result = self.utilities.ServiceDiscovery.discover_services(mock_channel)
 
@@ -393,9 +424,9 @@ class TestErrorHandling:
 
     def test_handle_grpc_error_connection_error(self) -> None:
         """Test handling gRPC connection error."""
-        error = grpc.RpcError()
-        error.code = lambda: grpc.StatusCode.UNAVAILABLE
-        error.details = lambda: "Connection failed"
+        error = MagicMock(spec=grpc.RpcError)
+        error.code = MagicMock(return_value=grpc.StatusCode.UNAVAILABLE)
+        error.details = MagicMock(return_value="Connection failed")
 
         result = self.utilities.ErrorHandling.handle_grpc_error(error)
 
@@ -406,9 +437,9 @@ class TestErrorHandling:
 
     def test_handle_grpc_error_unknown_error(self) -> None:
         """Test handling unknown gRPC error."""
-        error = grpc.RpcError()
-        error.code = lambda: grpc.StatusCode.UNKNOWN
-        error.details = lambda: "Unknown error"
+        error = MagicMock(spec=grpc.RpcError)
+        error.code = MagicMock(return_value=grpc.StatusCode.UNKNOWN)
+        error.details = MagicMock(return_value="Unknown error")
 
         result = self.utilities.ErrorHandling.handle_grpc_error(error)
 
@@ -419,8 +450,8 @@ class TestErrorHandling:
 
     def test_is_retryable_error_retryable(self) -> None:
         """Test checking retryable error."""
-        error = grpc.RpcError()
-        error.code = lambda: grpc.StatusCode.UNAVAILABLE
+        error = MagicMock(spec=grpc.RpcError)
+        error.code = MagicMock(return_value=grpc.StatusCode.UNAVAILABLE)
 
         result = self.utilities.ErrorHandling.is_retryable_error(error)
 
@@ -429,8 +460,8 @@ class TestErrorHandling:
 
     def test_is_retryable_error_not_retryable(self) -> None:
         """Test checking non-retryable error."""
-        error = grpc.RpcError()
-        error.code = lambda: grpc.StatusCode.INVALID_ARGUMENT
+        error = MagicMock(spec=grpc.RpcError)
+        error.code = MagicMock(return_value=grpc.StatusCode.INVALID_ARGUMENT)
 
         result = self.utilities.ErrorHandling.is_retryable_error(error)
 
@@ -454,7 +485,7 @@ class TestMetricsCollection:
             created_at=datetime.now(UTC),  # Ensure timezone-aware datetime
             total_requests_sent=100,
             error_count=5,
-            average_latency_ms=50.0
+            average_latency_ms=50.0,
         )
 
         result = self.utilities.MetricsCollection.collect_stream_metrics(stream_info)
@@ -469,7 +500,7 @@ class TestMetricsCollection:
             service_name="test-service",
             request_count=1000,
             error_count=50,
-            avg_response_time=0.1
+            avg_response_time=0.1,
         )
 
         assert result.is_success

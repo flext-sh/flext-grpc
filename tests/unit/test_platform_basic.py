@@ -70,7 +70,7 @@ class TestFlextGrpcPlatformBasic:
             created_at=datetime.now(UTC),
         )
 
-        with patch.object(platform.ServerManagement, 'start_server') as mock_start:
+        with patch.object(platform.ServerManagement, "start_server") as mock_start:
             mock_result = MagicMock()
             mock_result.is_success = True
             mock_result.value = server
@@ -93,7 +93,7 @@ class TestFlextGrpcPlatformBasic:
             created_at=datetime.now(UTC),
         )
 
-        with patch.object(platform.ServerManagement, 'stop_server') as mock_stop:
+        with patch.object(platform.ServerManagement, "stop_server") as mock_stop:
             mock_result = MagicMock()
             mock_result.is_success = True
             mock_result.value = server
@@ -114,7 +114,7 @@ class TestFlextGrpcPlatformBasic:
             created_at=datetime.now(UTC),
         )
 
-        with patch.object(platform.ClientManagement, 'connect_client') as mock_connect:
+        with patch.object(platform.ClientManagement, "connect_client") as mock_connect:
             mock_result = MagicMock()
             mock_result.is_success = True
             mock_result.value = client
@@ -135,7 +135,7 @@ class TestFlextGrpcPlatformBasic:
             created_at=datetime.now(UTC),
         )
 
-        with patch('flext_grpc.platform.FlextGrpcService') as mock_service_class:
+        with patch("flext_grpc.platform.FlextGrpcService") as mock_service_class:
             mock_service = MagicMock()
             mock_service_class.return_value = mock_service
             mock_result = MagicMock()
@@ -160,7 +160,9 @@ class TestFlextGrpcPlatformBasic:
             created_at=datetime.now(UTC),
         )
 
-        with patch.object(platform.ServerManagement, 'get_server_status') as mock_status:
+        with patch.object(
+            platform.ServerManagement, "get_server_status"
+        ) as mock_status:
             mock_result = MagicMock()
             mock_result.is_success = True
             mock_result.value = {"status": "running"}
@@ -183,7 +185,7 @@ class TestFlextGrpcPlatformBasic:
             created_at=datetime.now(UTC),
         )
 
-        with patch('flext_grpc.platform.FlextGrpcService') as mock_service_class:
+        with patch("flext_grpc.platform.FlextGrpcService") as mock_service_class:
             mock_service = MagicMock()
             mock_service_class.return_value = mock_service
             mock_result = MagicMock()
@@ -199,7 +201,7 @@ class TestFlextGrpcPlatformBasic:
         """Test create_server_setup method."""
         platform = FlextGrpcPlatform()
 
-        with patch('flext_grpc.platform.create_server') as mock_create_server:
+        with patch("flext_grpc.platform.create_server") as mock_create_server:
             mock_server = FlextGrpcServer(
                 id="test-server",
                 host="localhost",
@@ -215,7 +217,7 @@ class TestFlextGrpcPlatformBasic:
                 port=50051,
                 max_workers=10,
                 service_name="test-service",
-                methods=["TestMethod"]
+                methods=["TestMethod"],
             )
 
         assert result.is_success
@@ -224,7 +226,7 @@ class TestFlextGrpcPlatformBasic:
         """Test create_client_setup method."""
         platform = FlextGrpcPlatform()
 
-        with patch('flext_grpc.platform.create_client') as mock_create_client:
+        with patch("flext_grpc.platform.create_client") as mock_create_client:
             mock_client = FlextGrpcClient(
                 id="test-client",
                 target="localhost:50051",

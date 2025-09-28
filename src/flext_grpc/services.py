@@ -9,9 +9,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import contextlib
-import gc
 import logging
-import sys
 import threading
 import time
 from collections import deque
@@ -21,7 +19,6 @@ from queue import Queue
 from typing import Any, Protocol, cast, override
 
 import grpc
-import psutil
 
 from flext_core import (
     FlextConstants,
@@ -45,6 +42,7 @@ from flext_grpc.proto import (
     add_FlextGrpcServiceServicer_to_server,
 )
 from flext_grpc.real_servicer import create_real_servicer
+from flext_grpc.utilities import FlextGrpcUtilities
 
 CLIENT_STREAMING_BUFFER_THRESHOLD = 1000
 SERVER_STREAMING_BATCH_SIZE = 100
@@ -87,34 +85,6 @@ class GrpcServerProtocol(Protocol):
 
 
 # Use direct types - no legacy aliases
-
-
-def get_system_memory_usage() -> float:
-    """Get current system memory usage as percentage (0.0 to 1.0)."""
-    return psutil.virtual_memory().percent / 100.0
-
-
-def get_buffer_size_bytes(
-    buffer: list[object] | deque[object],
-) -> int:
-    """Estimate buffer size in bytes using sys.getsizeof recursively."""
-    total_size = sys.getsizeof(buffer)
-    for item in buffer:
-        total_size += sys.getsizeof(item)
-        # If item is a dict or complex object, add its size
-        if hasattr(item, "__dict__"):
-            total_size += sys.getsizeof(vars(item))
-        elif isinstance(item, dict):
-            total_size += sum(
-                sys.getsizeof(k) + sys.getsizeof(v) for k, v in item.items()
-            )
-    return total_size
-
-
-def trigger_memory_cleanup() -> None:
-    """Trigger garbage collection to free memory."""
-    gc.collect()  # Full garbage collection
-    gc.collect()  # Run twice for better cleanup
 
 
 class FlextGrpcService(
@@ -1050,7 +1020,9 @@ class FlextGrpcService(
                     total_memory += int(buffer_size)
 
         self._global_metrics["total_memory_used_bytes"] = total_memory
-        self._global_metrics["memory_pressure_score"] = get_system_memory_usage()
+        self._global_metrics["memory_pressure_score"] = (
+            FlextGrpcUtilities.SystemUtilities.get_system_memory_usage()
+        )
 
     def _create_stream(
         self,
@@ -1197,8 +1169,10 @@ class FlextGrpcService(
         request_buffer = stream_info.get("request_buffer", [])
         if not isinstance(request_buffer, list):
             return FlextResult[dict[str, object]].fail("Invalid request buffer type")
-        current_buffer_size = get_buffer_size_bytes(request_buffer)
-        system_memory = get_system_memory_usage()
+        current_buffer_size = FlextGrpcUtilities.SystemUtilities.get_buffer_size_bytes(
+            request_buffer
+        )
+        system_memory = FlextGrpcUtilities.SystemUtilities.get_system_memory_usage()
 
         # Update memory tracking
         stream_info["buffer_size_bytes"] = current_buffer_size
@@ -1242,7 +1216,7 @@ class FlextGrpcService(
 
             # Trigger garbage collection if memory pressure is high
             if system_memory > MEMORY_PRESSURE_THRESHOLD:
-                trigger_memory_cleanup()
+                FlextGrpcUtilities.SystemUtilities.trigger_memory_cleanup()
 
             result = {
                 "sent": str(data),

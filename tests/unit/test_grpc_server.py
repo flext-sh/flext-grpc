@@ -21,10 +21,10 @@ from flext_grpc.entities import FlextGrpcService
 
 # Import protobuf modules for testing - these are generated files
 try:
-    from . import echo_pb2, echo_pb2_grpc  # type: ignore[import-untyped]
+    from . import echo_pb2, echo_pb2_grpc
 except ImportError:
-    import echo_pb2  # type: ignore[import-untyped]
-    import echo_pb2_grpc  # type: ignore[import-untyped]
+    import echo_pb2
+    import echo_pb2_grpc
 
 
 class TestRealGrpcServer:

@@ -1,4 +1,4 @@
-"""Additional tests for flext_grpc.services module.
+"""Comprehensive tests for flext_grpc.services module.
 
 Tests additional functionality to improve coverage.
 """
@@ -12,38 +12,35 @@ from flext_grpc.entities import FlextGrpcClient, FlextGrpcServer, FlextGrpcStrea
 from flext_grpc.services import FlextGrpcService
 
 
-class TestFlextGrpcServiceAdditional:
-    """Additional tests for FlextGrpcService to improve coverage."""
+class TestFlextGrpcServiceComprehensive:
+    """Comprehensive tests for FlextGrpcService to improve coverage."""
 
     def setup_method(self) -> None:
         """Set up test fixtures."""
         self.service = FlextGrpcService()
+        self.now = datetime.now(UTC)
 
-    def test_execute_invalid_command(self) -> None:
-        """Test execute with invalid command."""
-        server = FlextGrpcServer(
-            id="test-server",
-            host="localhost",
-            port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
-        )
-
-        result = self.service.execute("invalid_command", server)
+    def test_execute_with_none_entity(self) -> None:
+        """Test execute with None entity."""
+        result = self.service.execute("start", None)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Entity instance required" in result.error
 
-    def test_execute_start_command_with_server(self) -> None:
-        """Test execute with start command and server."""
+    def test_execute_with_invalid_entity_type(self) -> None:
+        """Test execute with invalid entity type."""
+        result = self.service.execute("start", "invalid_entity")
+
+        assert result.is_success is False
+        assert "Invalid entity type" in result.error
+
+    def test_execute_start_with_server_success(self) -> None:
+        """Test execute start command with server success."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_start_server") as mock_start:
@@ -57,15 +54,13 @@ class TestFlextGrpcServiceAdditional:
         assert result.is_success
         mock_start.assert_called_once_with(server)
 
-    def test_execute_stop_command_with_server(self) -> None:
-        """Test execute with stop command and server."""
+    def test_execute_stop_with_server_success(self) -> None:
+        """Test execute stop command with server success."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_stop_server") as mock_stop:
@@ -79,13 +74,12 @@ class TestFlextGrpcServiceAdditional:
         assert result.is_success
         mock_stop.assert_called_once_with(server)
 
-    def test_execute_connect_command_with_client(self) -> None:
-        """Test execute with connect command and client."""
+    def test_execute_connect_with_client_success(self) -> None:
+        """Test execute connect command with client success."""
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_connect_client") as mock_connect:
@@ -99,13 +93,12 @@ class TestFlextGrpcServiceAdditional:
         assert result.is_success
         mock_connect.assert_called_once_with(client)
 
-    def test_execute_disconnect_command_with_client(self) -> None:
-        """Test execute with disconnect command and client."""
+    def test_execute_disconnect_with_client_success(self) -> None:
+        """Test execute disconnect command with client success."""
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_disconnect_client") as mock_disconnect:
@@ -119,13 +112,12 @@ class TestFlextGrpcServiceAdditional:
         assert result.is_success
         mock_disconnect.assert_called_once_with(client)
 
-    def test_execute_call_command_with_client(self) -> None:
-        """Test execute with call command and client."""
+    def test_execute_call_with_client_success(self) -> None:
+        """Test execute call command with client success."""
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_make_call") as mock_call:
@@ -139,13 +131,13 @@ class TestFlextGrpcServiceAdditional:
         assert result.is_success
         mock_call.assert_called_once_with(client, "TestMethod", arg1="value1")
 
-    def test_execute_stream_command_with_stream(self) -> None:
-        """Test execute with stream command and stream."""
+    def test_execute_stream_with_stream_success(self) -> None:
+        """Test execute stream command with stream success."""
         stream = FlextGrpcStream(
             id="test-stream",
             method_name="TestMethod",
             stream_type="unary",
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_send_data") as mock_send:
@@ -159,15 +151,13 @@ class TestFlextGrpcServiceAdditional:
         assert result.is_success
         mock_send.assert_called_once_with(stream, data="test_data")
 
-    def test_execute_status_command_with_server(self) -> None:
-        """Test execute with status command and server."""
+    def test_execute_status_with_server_success(self) -> None:
+        """Test execute status command with server success."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_get_server_status") as mock_status:
@@ -187,9 +177,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch("grpc.server") as mock_grpc_server:
@@ -199,6 +187,7 @@ class TestFlextGrpcServiceAdditional:
             result = self.service._start_server(server)
 
         assert result.is_success
+        assert server.grpc_server == mock_server_instance
 
     def test_start_server_failure(self) -> None:
         """Test _start_server with failure."""
@@ -206,9 +195,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch("grpc.server", side_effect=Exception("Server start failed")):
@@ -223,9 +210,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # Mock the server with a grpc_server
@@ -243,9 +228,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # No grpc_server set
@@ -259,8 +242,7 @@ class TestFlextGrpcServiceAdditional:
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch("grpc.insecure_channel") as mock_channel:
@@ -270,14 +252,14 @@ class TestFlextGrpcServiceAdditional:
             result = self.service._connect_client(client)
 
         assert result.is_success
+        assert client.channel == mock_channel_instance
 
     def test_connect_client_failure(self) -> None:
         """Test _connect_client with connection failure."""
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch("grpc.insecure_channel", side_effect=Exception("Connection failed")):
@@ -291,8 +273,7 @@ class TestFlextGrpcServiceAdditional:
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # Mock the client with a channel
@@ -309,8 +290,7 @@ class TestFlextGrpcServiceAdditional:
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # No channel set
@@ -324,8 +304,7 @@ class TestFlextGrpcServiceAdditional:
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # Mock the client with a channel and stub
@@ -348,8 +327,7 @@ class TestFlextGrpcServiceAdditional:
         client = FlextGrpcClient(
             id="test-client",
             target="localhost:50051",
-            channel=None,
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         result = self.service._make_call(client, "TestMethod")
@@ -363,7 +341,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-stream",
             method_name="TestMethod",
             stream_type="unary",
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch.object(self.service, "_handle_server_streaming") as mock_handle:
@@ -383,9 +361,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # Mock the server with a grpc_server
@@ -403,9 +379,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-server",
             host="localhost",
             port=50051,
-            max_workers=10,
-            services=[],
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # No grpc_server set
@@ -420,7 +394,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-stream",
             method_name="TestMethod",
             stream_type="server_streaming",
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # Mock the stream with a grpc_stub
@@ -442,7 +416,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-stream",
             method_name="TestMethod",
             stream_type="server_streaming",
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         # No grpc_stub set
@@ -457,7 +431,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-stream",
             method_name="TestMethod",
             stream_type="unary",
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch("grpc.insecure_channel") as mock_channel:
@@ -474,7 +448,7 @@ class TestFlextGrpcServiceAdditional:
             id="test-stream",
             method_name="TestMethod",
             stream_type="unary",
-            created_at=datetime.now(UTC),
+            created_at=self.now,
         )
 
         with patch(
@@ -484,3 +458,57 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert "Stream creation failed" in result.error
+
+    def test_execute_with_unknown_command(self) -> None:
+        """Test execute with unknown command."""
+        server = FlextGrpcServer(
+            id="test-server",
+            host="localhost",
+            port=50051,
+            created_at=self.now,
+        )
+
+        result = self.service.execute("unknown_command", server)
+
+        assert result.is_success is False
+        assert "Unknown command" in result.error
+
+    def test_execute_with_wrong_entity_type_for_command(self) -> None:
+        """Test execute with wrong entity type for command."""
+        client = FlextGrpcClient(
+            id="test-client",
+            target="localhost:50051",
+            created_at=self.now,
+        )
+
+        # Try to start a client (should fail)
+        result = self.service.execute("start", client)
+
+        assert result.is_success is False
+        assert "Invalid entity type" in result.error
+
+    def test_execute_call_with_invalid_method_name(self) -> None:
+        """Test execute call with invalid method name."""
+        client = FlextGrpcClient(
+            id="test-client",
+            target="localhost:50051",
+            created_at=self.now,
+        )
+
+        result = self.service.execute("call", client, "", arg1="value1")
+
+        assert result.is_success is False
+        assert "Method name must be a string" in result.error
+
+    def test_execute_call_with_whitespace_method_name(self) -> None:
+        """Test execute call with whitespace-only method name."""
+        client = FlextGrpcClient(
+            id="test-client",
+            target="localhost:50051",
+            created_at=self.now,
+        )
+
+        result = self.service.execute("call", client, "   ", arg1="value1")
+
+        assert result.is_success is False
+        assert "Method name must be a string" in result.error

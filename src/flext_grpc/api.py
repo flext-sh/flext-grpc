@@ -339,7 +339,7 @@ def create_complete_setup(
 
     """
     if service_methods is None:
-        service_methods = []
+        service_methods = ["DefaultMethod"]
 
     # Create components using the fixed factory functions
     server = create_server(host, port)

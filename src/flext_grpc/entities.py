@@ -18,7 +18,6 @@ from flext_core import (
     FlextConstants,
     FlextModels,
     FlextResult,
-    FlextTypes,
 )
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
@@ -679,7 +678,32 @@ class FlextGrpcService(FlextGrpcEntity):
     """
 
     name: str = ""
-    methods: FlextTypes.Core.StringList = Field(default_factory=list)
+    methods: FlextGrpcTypes.Core.StringList = Field(default_factory=list)
+
+    @field_validator("name")
+    @classmethod
+    def validate_name(cls, v: str) -> str:
+        """Validate service name is not empty."""
+        if not v or not v.strip():
+            msg = "Service name cannot be empty"
+            raise ValueError(msg)
+        return v.strip()
+
+    @field_validator("methods")
+    @classmethod
+    def validate_methods(cls, v: list[str]) -> list[str]:
+        """Validate methods list is not empty and contains valid method names."""
+        if not v:
+            msg = "Methods list cannot be empty"
+            raise ValueError(msg)
+
+        # Validate each method name
+        for method in v:
+            if not method or not method.strip():
+                msg = "Method names cannot be empty"
+                raise ValueError(msg)
+
+        return v
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate service domain business rules and method definitions.

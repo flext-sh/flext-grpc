@@ -5,8 +5,11 @@ Tests the main FlextGrpcUtilities class and key methods.
 
 from __future__ import annotations
 
+from collections.abc import Iterator
+from typing import Any
 from unittest.mock import MagicMock, patch
 
+from flext_core import FlextResult
 from flext_grpc.utilities import FlextGrpcUtilities
 
 
@@ -48,6 +51,7 @@ class TestFlextGrpcUtilitiesSimple:
         result = utilities.MessageValidation.validate_protobuf_message(None)
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Invalid message instance" in result.error
 
     def test_message_validation_validate_protobuf_message_valid(self) -> None:
@@ -72,6 +76,7 @@ class TestFlextGrpcUtilitiesSimple:
         result = utilities.MessageValidation.validate_stream_message_sequence([])
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Message sequence cannot be empty" in result.error
 
     def test_protobuf_conversion_dict_to_protobuf_success(self) -> None:
@@ -79,13 +84,20 @@ class TestFlextGrpcUtilitiesSimple:
         utilities = FlextGrpcUtilities()
 
         # Use empty dict to avoid protobuf validation issues
-        data_dict = {}
+        data_dict: dict[str, Any] = {}
+
+        # Create a proper mock message class
         mock_message_class = MagicMock()
         mock_instance = MagicMock()
         mock_message_class.return_value = mock_instance
 
+        # Configure the mock to behave like a protobuf message class
+        mock_message_class.__name__ = "MockMessage"
+        mock_message_class.__bases__ = (object,)
+
         result = utilities.ProtobufConversion.dict_to_protobuf(
-            data_dict, mock_message_class
+            data_dict,
+            mock_message_class,
         )
 
         assert result.is_success
@@ -95,16 +107,18 @@ class TestFlextGrpcUtilitiesSimple:
         """Test ProtobufConversion.dict_to_protobuf with conversion error."""
         utilities = FlextGrpcUtilities()
 
-        data_dict = {"test": "data"}
+        data_dict: dict[str, Any] = {"test": "data"}
         mock_message_class = MagicMock()
         mock_message_class.side_effect = Exception("Conversion failed")
 
         result = utilities.ProtobufConversion.dict_to_protobuf(
-            data_dict, mock_message_class
+            data_dict,
+            mock_message_class,
         )
 
         assert result.is_success is False
-        assert "Failed to convert dict to protobuf" in result.error
+        assert result.error is not None
+        assert "Dict to protobuf conversion failed" in result.error
 
     def test_channel_management_create_secure_channel(self) -> None:
         """Test ChannelManagement.create_secure_channel."""
@@ -139,25 +153,29 @@ class TestFlextGrpcUtilitiesSimple:
     def test_channel_management_get_channel_state_none(self) -> None:
         """Test ChannelManagement.get_channel_state with None channel."""
         utilities = FlextGrpcUtilities()
-        result = utilities.ChannelManagement.get_channel_state(None)
+        result: FlextResult[str] = utilities.ChannelManagement.get_channel_state(None)
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Channel is None" in result.error
 
     def test_channel_management_close_channel_none(self) -> None:
         """Test ChannelManagement.close_channel with None channel."""
         utilities = FlextGrpcUtilities()
-        result = utilities.ChannelManagement.close_channel(None)
+        result: FlextResult[None] = utilities.ChannelManagement.close_channel(None)
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Channel is None" in result.error
 
     def test_streaming_helpers_create_stream_iterator(self) -> None:
         """Test StreamingHelpers.create_stream_iterator."""
         utilities = FlextGrpcUtilities()
 
-        test_data = [{"message": "test1"}, {"message": "test2"}]
-        result = utilities.StreamingHelpers.create_stream_iterator(test_data)
+        test_data: list[dict[str, str]] = [{"message": "test1"}, {"message": "test2"}]
+        result: FlextResult[Iterator[dict[str, str]]] = (
+            utilities.StreamingHelpers.create_stream_iterator(test_data)
+        )
 
         assert result.is_success
         iterator = result.data
@@ -173,10 +191,13 @@ class TestFlextGrpcUtilitiesSimple:
         """Test StreamingHelpers.create_stream_iterator with empty data."""
         utilities = FlextGrpcUtilities()
 
-        result = utilities.StreamingHelpers.create_stream_iterator([])
+        result: FlextResult[Iterator[Any]] = (
+            utilities.StreamingHelpers.create_stream_iterator([])
+        )
 
         assert result.is_success
         iterator = result.data
+        assert iterator is not None
         items = list(iterator)
         assert len(items) == 0
 
@@ -188,7 +209,7 @@ class TestFlextGrpcUtilitiesSimple:
             mock_channel_instance = MagicMock()
             mock_channel.return_value = mock_channel_instance
 
-            result = utilities.ServiceDiscovery.discover_services("localhost:50051")
+            result = utilities.ServiceDiscovery.discover_services(mock_channel_instance)
 
         assert result.is_success
         assert isinstance(result.data, list)
@@ -196,15 +217,20 @@ class TestFlextGrpcUtilitiesSimple:
     def test_error_handling_handle_grpc_error_none(self) -> None:
         """Test ErrorHandling.handle_grpc_error with None error."""
         utilities = FlextGrpcUtilities()
-        result = utilities.ErrorHandling.handle_grpc_error(None)
+        result: FlextResult[dict[str, Any]] = utilities.ErrorHandling.handle_grpc_error(
+            None
+        )
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Error is None" in result.error
 
     def test_error_handling_format_error_message_valid(self) -> None:
         """Test ErrorHandling.format_error_message with valid message."""
         utilities = FlextGrpcUtilities()
-        result = utilities.ErrorHandling.format_error_message("Test error")
+        result: FlextResult[str] = utilities.ErrorHandling.format_error_message(
+            "Test error"
+        )
 
         assert result.is_success
         assert "Test error" in result.data
@@ -212,7 +238,7 @@ class TestFlextGrpcUtilitiesSimple:
     def test_error_handling_format_error_message_none(self) -> None:
         """Test ErrorHandling.format_error_message with None message."""
         utilities = FlextGrpcUtilities()
-        result = utilities.ErrorHandling.format_error_message(None)
+        result: FlextResult[str] = utilities.ErrorHandling.format_error_message(None)
 
         assert result.is_success
         assert "Unknown error" in result.data
@@ -220,15 +246,18 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_channel_metrics_none(self) -> None:
         """Test MetricsCollection.collect_channel_metrics with None channel."""
         utilities = FlextGrpcUtilities()
-        result = utilities.MetricsCollection.collect_channel_metrics(None)
+        result: FlextResult[dict[str, Any]] = (
+            utilities.MetricsCollection.collect_channel_metrics(None)
+        )
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Channel is None" in result.error
 
     def test_metrics_collection_collect_performance_metrics_valid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with valid times."""
         utilities = FlextGrpcUtilities()
-        result = utilities.MetricsCollection.collect_performance_metrics(1000.0, 1001.0)
+        result: FlextResult[dict[str, Any]] = utilities.MetricsCollection.collect_performance_metrics(1000.0, 1001.0)
 
         assert result.is_success
         assert isinstance(result.data, dict)
@@ -238,7 +267,8 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_performance_metrics_invalid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid times."""
         utilities = FlextGrpcUtilities()
-        result = utilities.MetricsCollection.collect_performance_metrics(None, None)
+        result: FlextResult[dict[str, Any]] = utilities.MetricsCollection.collect_performance_metrics(None, None)
 
         assert result.is_success is False
+        assert result.error is not None
         assert "Invalid time parameters" in result.error

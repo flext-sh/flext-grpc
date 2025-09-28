@@ -91,11 +91,12 @@ class TestAPIFunctions:
 
     def test_create_service(self) -> None:
         """Test create_service function."""
-        service = create_service("TestService")
+        service = create_service("TestService", ["TestMethod"])
         assert isinstance(service, FlextGrpcService)
         if service.name != "TestService":
             raise AssertionError(f"Expected {'TestService'}, got {service.name}")
-        assert len(service.methods) == 0
+        assert len(service.methods) == 1
+        assert service.methods[0] == "TestMethod"
 
         # Test with methods
         methods = ["method1", "method2"]
@@ -304,7 +305,7 @@ class TestAPIFunctions:
         server = create_server()
         client = create_client("localhost:50051")
         channel = create_channel("localhost:50051")
-        service = create_service("TestService")
+        service = create_service("TestService", ["TestMethod"])
         stream = create_stream("test_method")
 
         # All should have non-empty IDs
@@ -326,7 +327,7 @@ class TestAPIFunctions:
         server = create_server()
         client = create_client("localhost:50051")
         channel = create_channel("localhost:50051")
-        service = create_service("TestService")
+        service = create_service("TestService", ["TestMethod"])
         stream = create_stream("test_method")
 
         after = datetime.now(UTC)

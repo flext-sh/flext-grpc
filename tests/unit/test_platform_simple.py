@@ -109,7 +109,6 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
         client = FlextGrpcClient(
             id="test-client",
-            target="localhost:50051",
             channel=None,
             created_at=datetime.now(UTC),
         )
@@ -130,12 +129,11 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
         client = FlextGrpcClient(
             id="test-client",
-            target="localhost:50051",
             channel=None,
             created_at=datetime.now(UTC),
         )
 
-        with patch('flext_grpc.platform.FlextGrpcService') as mock_service_class:
+        with patch("flext_grpc.platform.FlextGrpcService") as mock_service_class:
             mock_service = MagicMock()
             mock_service_class.return_value = mock_service
             mock_result = MagicMock()
@@ -148,12 +146,11 @@ class TestFlextGrpcPlatformSimple:
         assert result.is_success
         assert result.value["status"] == "connected"
 
-    def test_call_method(self) -> None:
-        """Test call_method method."""
+    def test_make_call(self) -> None:
+        """Test make_call method."""
         platform = FlextGrpcPlatform()
         client = FlextGrpcClient(
             id="test-client",
-            target="localhost:50051",
             channel=None,
             created_at=datetime.now(UTC),
         )
@@ -164,13 +161,13 @@ class TestFlextGrpcPlatformSimple:
             mock_result.value = {"result": "success"}
             mock_call.return_value = mock_result
 
-            result = platform.call_method(client, "TestMethod", arg1="value1")
+            result = platform.make_call(client, "TestMethod", arg1="value1")
 
         assert result.is_success
         mock_call.assert_called_once_with(client, "TestMethod", arg1="value1")
 
-    def test_create_stream_setup(self) -> None:
-        """Test create_stream_setup method."""
+    def test_create_stream(self) -> None:
+        """Test create_stream method."""
         platform = FlextGrpcPlatform()
 
         with patch.object(
@@ -187,7 +184,7 @@ class TestFlextGrpcPlatformSimple:
             mock_result.value = mock_stream
             mock_create.return_value = mock_result
 
-            result = platform.create_stream_setup("unary", "TestMethod")
+            result = platform.create_stream("unary", "TestMethod")
 
         assert result.is_success
         mock_create.assert_called_once_with("unary", "TestMethod")
@@ -248,7 +245,6 @@ class TestFlextGrpcPlatformSimple:
         with patch("flext_grpc.platform.create_client") as mock_create_client:
             mock_client = FlextGrpcClient(
                 id="test-client",
-                target="localhost:50051",
                 channel=None,
                 created_at=datetime.now(UTC),
             )
@@ -263,8 +259,8 @@ class TestFlextGrpcPlatformSimple:
         platform = FlextGrpcPlatform()
 
         with (
-            patch.object(platform, "create_server_setup") as mock_server_setup,
-            patch.object(platform, "create_client_setup") as mock_client_setup,
+            patch("flext_grpc.platform.create_server") as mock_create_server,
+            patch("flext_grpc.platform.create_client") as mock_create_client,
         ):
             # Mock server setup success
             mock_server = FlextGrpcServer(
@@ -275,22 +271,15 @@ class TestFlextGrpcPlatformSimple:
                 services=[],
                 created_at=datetime.now(UTC),
             )
-            mock_server_result = MagicMock()
-            mock_server_result.is_success = True
-            mock_server_result.value = mock_server
-            mock_server_setup.return_value = mock_server_result
+            mock_create_server.return_value = mock_server
 
             # Mock client setup success
             mock_client = FlextGrpcClient(
                 id="test-client",
-                target="localhost:50051",
                 channel=None,
                 created_at=datetime.now(UTC),
             )
-            mock_client_result = MagicMock()
-            mock_client_result.is_success = True
-            mock_client_result.value = mock_client
-            mock_client_setup.return_value = mock_client_result
+            mock_create_client.return_value = mock_client
 
             result = platform.create_complete_setup(
                 server_host="localhost",

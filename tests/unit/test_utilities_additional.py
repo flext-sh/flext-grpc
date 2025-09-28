@@ -5,11 +5,10 @@ Tests additional functionality to improve coverage.
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from collections.abc import Iterator
 from unittest.mock import MagicMock, patch
 
 import grpc
-import pytest
 
 from flext_grpc.utilities import FlextGrpcUtilities
 
@@ -26,7 +25,9 @@ class TestFlextGrpcUtilitiesAdditional:
         mock_message = MagicMock()
         mock_message.DESCRIPTOR = None
 
-        result = self.utilities.MessageValidation.validate_protobuf_message(mock_message)
+        result = self.utilities.MessageValidation.validate_protobuf_message(
+            mock_message
+        )
 
         assert result.is_success is False
         assert "Message descriptor is None" in result.error
@@ -36,12 +37,16 @@ class TestFlextGrpcUtilitiesAdditional:
         mock_message = MagicMock(spec=[])
         # No DESCRIPTOR attribute
 
-        result = self.utilities.MessageValidation.validate_protobuf_message(mock_message)
+        result = self.utilities.MessageValidation.validate_protobuf_message(
+            mock_message
+        )
 
         assert result.is_success is False
         assert "Message descriptor not available" in result.error
 
-    def test_message_validation_validate_protobuf_message_serialization_failure(self) -> None:
+    def test_message_validation_validate_protobuf_message_serialization_failure(
+        self,
+    ) -> None:
         """Test MessageValidation.validate_protobuf_message with serialization failure."""
         mock_message = MagicMock()
         mock_message.DESCRIPTOR = MagicMock()
@@ -49,12 +54,16 @@ class TestFlextGrpcUtilitiesAdditional:
         mock_message.HasField.return_value = True
         mock_message.SerializeToString.side_effect = Exception("Serialization failed")
 
-        result = self.utilities.MessageValidation.validate_protobuf_message(mock_message)
+        result = self.utilities.MessageValidation.validate_protobuf_message(
+            mock_message
+        )
 
         assert result.is_success is False
         assert "Message serialization failed" in result.error
 
-    def test_message_validation_validate_protobuf_message_validation_failure(self) -> None:
+    def test_message_validation_validate_protobuf_message_validation_failure(
+        self,
+    ) -> None:
         """Test MessageValidation.validate_protobuf_message with validation failure."""
         mock_message = MagicMock()
         mock_message.DESCRIPTOR = MagicMock()
@@ -62,7 +71,9 @@ class TestFlextGrpcUtilitiesAdditional:
         mock_message.HasField.return_value = True
         mock_message.SerializeToString.side_effect = Exception("Validation failed")
 
-        result = self.utilities.MessageValidation.validate_protobuf_message(mock_message)
+        result = self.utilities.MessageValidation.validate_protobuf_message(
+            mock_message
+        )
 
         assert result.is_success is False
         assert "Message validation failed" in result.error
@@ -72,7 +83,7 @@ class TestFlextGrpcUtilitiesAdditional:
         mock_message = MagicMock()
         mock_dict = {"message": "test", "timestamp": 1234567890}
 
-        with patch('json_format.MessageToDict', return_value=mock_dict):
+        with patch("json_format.MessageToDict", return_value=mock_dict):
             result = self.utilities.ProtobufConversion.protobuf_to_dict(mock_message)
 
         assert result.is_success
@@ -82,7 +93,9 @@ class TestFlextGrpcUtilitiesAdditional:
         """Test ProtobufConversion.protobuf_to_dict with conversion failure."""
         mock_message = MagicMock()
 
-        with patch('json_format.MessageToDict', side_effect=Exception("Conversion failed")):
+        with patch(
+            "json_format.MessageToDict", side_effect=Exception("Conversion failed")
+        ):
             result = self.utilities.ProtobufConversion.protobuf_to_dict(mock_message)
 
         assert result.is_success is False
@@ -160,7 +173,7 @@ class TestFlextGrpcUtilitiesAdditional:
         """Test ServiceDiscovery.discover_services with discovery failure."""
         target = "invalid-target"
 
-        with patch('grpc.insecure_channel', side_effect=Exception("Connection failed")):
+        with patch("grpc.insecure_channel", side_effect=Exception("Connection failed")):
             result = self.utilities.ServiceDiscovery.discover_services(target)
 
         assert result.is_success is False
@@ -209,7 +222,9 @@ class TestFlextGrpcUtilitiesAdditional:
         assert result.is_success is False
         assert "Failed to collect channel metrics" in result.error
 
-    def test_metrics_collection_collect_performance_metrics_invalid_start_time(self) -> None:
+    def test_metrics_collection_collect_performance_metrics_invalid_start_time(
+        self,
+    ) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid start time."""
         result = self.utilities.MetricsCollection.collect_performance_metrics(
             None, 1001.0
@@ -218,7 +233,9 @@ class TestFlextGrpcUtilitiesAdditional:
         assert result.is_success is False
         assert "Invalid time parameters" in result.error
 
-    def test_metrics_collection_collect_performance_metrics_invalid_end_time(self) -> None:
+    def test_metrics_collection_collect_performance_metrics_invalid_end_time(
+        self,
+    ) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid end time."""
         result = self.utilities.MetricsCollection.collect_performance_metrics(
             1000.0, None
@@ -227,10 +244,13 @@ class TestFlextGrpcUtilitiesAdditional:
         assert result.is_success is False
         assert "Invalid time parameters" in result.error
 
-    def test_metrics_collection_collect_performance_metrics_negative_duration(self) -> None:
+    def test_metrics_collection_collect_performance_metrics_negative_duration(
+        self,
+    ) -> None:
         """Test MetricsCollection.collect_performance_metrics with negative duration."""
         result = self.utilities.MetricsCollection.collect_performance_metrics(
-            1001.0, 1000.0  # End time before start time
+            1001.0,
+            1000.0,  # End time before start time
         )
 
         assert result.is_success is False
@@ -238,16 +258,22 @@ class TestFlextGrpcUtilitiesAdditional:
 
     def test_streaming_helpers_create_stream_iterator_with_error(self) -> None:
         """Test StreamingHelpers.create_stream_iterator with iterator error."""
-        def error_stream_data():
-            yield {"message": "test1"}
-            raise Exception("Iterator error")
 
-        result = self.utilities.StreamingHelpers.create_stream_iterator(error_stream_data())
+        def error_stream_data() -> Iterator[dict[str, str]]:
+            yield {"message": "test1"}
+            error_msg = "Iterator error"
+            raise RuntimeError(error_msg)
+
+        result = self.utilities.StreamingHelpers.create_stream_iterator(
+            error_stream_data()
+        )
 
         assert result.is_success is False
         assert "Failed to create stream iterator" in result.error
 
-    def test_message_validation_validate_stream_message_sequence_with_validation_error(self) -> None:
+    def test_message_validation_validate_stream_message_sequence_with_validation_error(
+        self,
+    ) -> None:
         """Test MessageValidation.validate_stream_message_sequence with validation error."""
         mock_msg = MagicMock()
         mock_msg.DESCRIPTOR = MagicMock()
@@ -257,12 +283,16 @@ class TestFlextGrpcUtilitiesAdditional:
 
         messages = [mock_msg]
 
-        result = self.utilities.MessageValidation.validate_stream_message_sequence(messages)
+        result = self.utilities.MessageValidation.validate_stream_message_sequence(
+            messages
+        )
 
         assert result.is_success is False
         assert "Message 0 validation failed" in result.error
 
-    def test_message_validation_validate_stream_message_sequence_with_order_validation(self) -> None:
+    def test_message_validation_validate_stream_message_sequence_with_order_validation(
+        self,
+    ) -> None:
         """Test MessageValidation.validate_stream_message_sequence with order validation."""
         mock_msg1 = MagicMock()
         mock_msg1.DESCRIPTOR = MagicMock()

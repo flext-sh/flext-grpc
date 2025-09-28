@@ -56,6 +56,17 @@ class FlextGrpcModels(FlextModels):
                 raise ValueError(msg)
             return v
 
+        @field_validator("max_workers")
+        @classmethod
+        def validate_max_workers(cls, v: int) -> int:
+            """Validate max_workers is within valid range."""
+            min_workers = 1
+            max_workers = 100
+            if not (min_workers <= v <= max_workers):
+                msg = f"Max workers must be between {min_workers} and {max_workers}"
+                raise ValueError(msg)
+            return v
+
     class ClientConfig(BaseModel):
         """gRPC client configuration model."""
 
