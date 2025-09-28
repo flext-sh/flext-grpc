@@ -184,7 +184,11 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        result = self.service.execute(str(lambda x: x), server)
+        def identity_func(x: object) -> object:
+            """Identity function for testing."""
+            return x
+
+        result = self.service.execute(str(identity_func), server)
 
         assert result.is_success is False
         assert result.error is not None and "Unknown server command" in result.error
@@ -392,7 +396,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        class TestSlots:  # noqa: B903
+        class TestSlots:
             __slots__ = ["command"]
 
             def __init__(self, command: str) -> None:
@@ -467,7 +471,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         )
 
         @asynccontextmanager
-        async def test_async_context() -> AsyncGenerator[str]:  # noqa: RUF029
+        async def test_async_context() -> AsyncGenerator[str]:
             yield "start"
 
         result = self.service.execute(str(test_async_context()), server)
@@ -502,9 +506,9 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         )
 
         def test_decorator(func: object) -> object:
-            @wraps(func)  # type: ignore[arg-type]
+            @wraps(func)
             def wrapper(*args: object, **kwargs: object) -> object:
-                return func(*args, **kwargs)  # type: ignore[misc]
+                return func(*args, **kwargs)
 
             return wrapper
 

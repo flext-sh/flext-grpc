@@ -148,7 +148,7 @@ class TestFlextGrpcPlatformBasic:
         assert result.is_success
         assert result.value["status"] == "connected"
 
-    def test_get_server_status(self) -> None:
+    def test_get_status(self) -> None:
         """Test get_server_status method."""
         platform = FlextGrpcPlatform()
         server = FlextGrpcServer(

@@ -193,7 +193,9 @@ class TestFlextGrpcRealServicer:
         def error_iterator() -> Iterator[StreamRequest]:
             error_msg = "Iterator error"
             raise RuntimeError(error_msg)
-            yield  # unreachable
+            yield StreamRequest(
+                data="", sequence=0, client_id=""
+            )  # This line is unreachable but satisfies type checker
 
         response = self.servicer.ClientStream(error_iterator(), self.context)
 
@@ -230,7 +232,9 @@ class TestFlextGrpcRealServicer:
         def error_iterator() -> Iterator[StreamRequest]:
             error_msg = "Bidirectional error"
             raise RuntimeError(error_msg)
-            yield  # unreachable
+            yield StreamRequest(
+                data="", sequence=0, client_id=""
+            )  # This line is unreachable but satisfies type checker
 
         response_iterator = self.servicer.BidirectionalStream(
             error_iterator(), self.context

@@ -14,7 +14,7 @@ from __future__ import annotations
 import contextlib
 from datetime import UTC, datetime
 
-from flext_core import FlextConstants, FlextTypes
+from flext_core import FlextConstants
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -26,6 +26,7 @@ from flext_grpc import (
     FlextGrpcStream,
 )
 from flext_grpc.entities import FlextGrpcService
+from flext_grpc.typings import FlextGrpcTypes
 
 
 class GrpcServerManager:
@@ -106,7 +107,7 @@ class GrpcServerManager:
 
         return results
 
-    def get_server_status(self) -> dict[str, FlextTypes.Core.Headers]:
+    def get_server_status(self) -> dict[str, FlextGrpcTypes.Core.GrpcHeaders]:
         """Get status of all servers."""
         status = {}
 
@@ -184,7 +185,7 @@ class GrpcClientPool:
         self,
         method_name: str,
         data: object = None,
-    ) -> FlextTypes.Core.Dict:
+    ) -> FlextGrpcTypes.Core.GrpcDict:
         """Broadcast a method call to all connected clients."""
         results = {}
 
@@ -215,7 +216,7 @@ class ServiceRegistry:
     def __init__(self) -> None:
         """Initialize the service registry."""
         self.services: dict[str, FlextGrpcService] = {}
-        self.service_servers: FlextTypes.Core.Headers = {}  # service_id -> server_id
+        self.service_servers: FlextGrpcTypes.Core.GrpcHeaders = {}  # service_id -> server_id
 
     def register_service(self, service: FlextGrpcService, server_id: str) -> bool:
         """Register a service with a server."""
@@ -227,7 +228,7 @@ class ServiceRegistry:
         self.service_servers[str(service.id)] = server_id
         return True
 
-    def discover_services(self) -> dict[str, FlextTypes.Core.Dict]:
+    def discover_services(self) -> dict[str, FlextGrpcTypes.Core.GrpcDict]:
         """Discover all registered services."""
         discovery = {}
 
@@ -242,7 +243,9 @@ class ServiceRegistry:
 
         return discovery
 
-    def find_service_by_method(self, method_name: str) -> list[FlextTypes.Core.Headers]:
+    def find_service_by_method(
+        self, method_name: str
+    ) -> list[FlextGrpcTypes.Core.GrpcHeaders]:
         """Find services that support a specific method."""
         matches: list[dict[str, str]] = []
 

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
+from typing import Any, cast
 
 import grpc
 import pytest
@@ -19,12 +20,15 @@ from flext_grpc import (
 )
 from flext_grpc.entities import FlextGrpcService
 
-# Import protobuf modules for testing - these are generated files
-try:
-    from . import echo_pb2, echo_pb2_grpc
-except ImportError:
-    import echo_pb2
-    import echo_pb2_grpc
+# Import protobuf modules for testing - use existing flext_grpc proto files
+from flext_grpc.proto import (
+    EchoRequest,
+    EchoResponse,
+    FlextGrpcServiceServicer,
+    FlextGrpcServiceStub,
+    add_FlextGrpcServiceServicer_to_server,
+    flext_grpc_pb2 as flext__grpc__pb2,
+)
 
 
 class TestRealGrpcServer:
@@ -111,18 +115,20 @@ class TestRealGrpcServer:
         """Test registering a real service and making real gRPC calls."""
         try:
             # Try to import the generated protobuf files
-            class EchoServicer(echo_pb2_grpc.EchoServiceServicer):
-                def echo(
+            class EchoServicer(FlextGrpcServiceServicer):
+                def Echo(
                     self,
-                    request: echo_pb2.EchoRequest,
-                    _context: grpc.ServicerContext,
-                ) -> echo_pb2.EchoResponse:
-                    return echo_pb2.EchoResponse(message=f"Echo: {request.message}")
+                    request: Any,
+                    context: grpc.ServicerContext,
+                ) -> Any:
+                    # Cast to EchoRequest for type safety
+                    echo_request = cast("EchoRequest", request)
+                    return EchoResponse(message=f"Echo: {echo_request.message}")
 
             # Start real server with the service
             server = grpc.server(ThreadPoolExecutor(max_workers=2))
             echo_servicer = EchoServicer()
-            echo_pb2_grpc.add_EchoServiceServicer_to_server(echo_servicer, server)
+            add_FlextGrpcServiceServicer_to_server(echo_servicer, server)
 
             port = server.add_insecure_port("localhost:0")
             server.start()
@@ -159,8 +165,8 @@ class TestRealGrpcServer:
                     grpc.channel_ready_future(channel).result(timeout=5.0)
 
                     # Create stub and make real call
-                    stub = echo_pb2_grpc.EchoServiceStub(channel)
-                    request = echo_pb2.EchoRequest(message="Hello Real gRPC!")
+                    stub = FlextGrpcServiceStub(channel)
+                    request = flext__grpc__pb2.EchoRequest(message="Hello Real gRPC!")
                     response = stub.Echo(request)
 
                     # Validate real response

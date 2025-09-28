@@ -62,6 +62,16 @@ class FlextGrpcConstants(FlextConstants):
     MAX_WORKERS: Final[int] = 100
     MIN_REQUIRED_ARGS: Final[int] = 2
 
+    # Production validation constants
+    PRODUCTION_MIN_WORKERS: Final[int] = 5
+    PRODUCTION_MIN_PORT: Final[int] = 1024
+    HIGH_WORKER_THRESHOLD: Final[int] = 20
+    HIGH_WORKER_TIMEOUT: Final[float] = 30.0
+    PRODUCTION_RETRY_ATTEMPTS: Final[int] = 3
+    PRODUCTION_RETRY_TIMEOUT: Final[float] = 30.0
+    MAX_RETRY_ATTEMPTS: Final[int] = 5
+    HIGH_RETRY_TIMEOUT: Final[float] = 10.0
+
     # gRPC-specific validation constants
     MAX_SERVICE_NAME_LENGTH: Final[int] = 255
     MAX_METHOD_NAME_LENGTH: Final[int] = 200
@@ -80,6 +90,23 @@ class FlextGrpcConstants(FlextConstants):
     # gRPC-specific network constants (not overriding parent)
     GRPC_DEFAULT_HOST: Final[str] = "127.0.0.1"
     GRPC_DEFAULT_TIMEOUT: Final[float] = 30.0
+
+    # Performance and health check constants
+    PERFORMANCE_EXCELLENT_LATENCY_MS: Final[int] = 100
+    PERFORMANCE_GOOD_LATENCY_MS: Final[int] = 500
+    PERFORMANCE_ACCEPTABLE_LATENCY_MS: Final[int] = 1000
+    PERFORMANCE_EXCELLENT_ERROR_RATE: Final[float] = 1.0
+    PERFORMANCE_GOOD_ERROR_RATE: Final[float] = 5.0
+    PERFORMANCE_ACCEPTABLE_ERROR_RATE: Final[float] = 10.0
+    HEALTH_CHECK_AGE_RECENT_SECONDS: Final[int] = 300  # 5 minutes
+    SUCCESS_RATE_HEALTHY_PERCENT: Final[float] = 95.0
+    RESPONSE_TIME_HEALTHY_MS: Final[int] = 1000
+
+    # Request size limits
+    MAX_REQUEST_SIZE_MB: Final[int] = 10
+
+    # Error rate limits
+    MAX_ERROR_RATE_PERCENT: Final[float] = 100.0
 
 
 __all__: list[str] = [

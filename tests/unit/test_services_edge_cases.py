@@ -481,7 +481,7 @@ class TestFlextGrpcServiceEdgeCases:
         )
 
         class TestDescriptor:
-            def __get__(self, obj: Any, objtype: type | None = None) -> str:  # noqa: ANN401
+            def __get__(self, obj: Any, objtype: type | None = None) -> str:
                 return "invalid_command"
 
         result = self.service.execute(str(TestDescriptor()), server)
@@ -532,7 +532,7 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
-        TestTuple = namedtuple("TestTuple", ["command"])  # noqa: PYI024
+        TestTuple = namedtuple("TestTuple", ["command"])
         result = self.service.execute(str(TestTuple("start")), server)
 
         assert result.is_success is False
@@ -565,7 +565,7 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
-        class TestSlots:  # noqa: B903
+        class TestSlots:
             __slots__ = ["command"]
 
             def __init__(self, command: str) -> None:
@@ -640,7 +640,7 @@ class TestFlextGrpcServiceEdgeCases:
         )
 
         @asynccontextmanager
-        async def test_async_context() -> AsyncGenerator[str]:  # noqa: RUF029
+        async def test_async_context() -> AsyncGenerator[str]:
             yield "start"
 
         result = self.service.execute(str(test_async_context()), server)
@@ -674,9 +674,9 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
-        def test_decorator(func: Any) -> Any:  # noqa: ANN401
+        def test_decorator(func: Any) -> Any:
             @wraps(func)
-            def wrapper(*args: Any, **kwargs: Any) -> Any:  # noqa: ANN401
+            def wrapper(*args: Any, **kwargs: Any) -> Any:
                 return func(*args, **kwargs)
 
             return wrapper
@@ -718,7 +718,7 @@ class TestFlextGrpcServiceEdgeCases:
         )
 
         @singledispatch
-        def test_func(arg: Any) -> str:  # noqa: ANN401
+        def test_func(arg: Any) -> str:
             return f"start{arg}"
 
         result = self.service.execute(str(test_func), server)
@@ -737,7 +737,7 @@ class TestFlextGrpcServiceEdgeCases:
 
         class TestClass:
             @singledispatchmethod
-            def test_method(self, arg: Any) -> str:  # noqa: ANN401
+            def test_method(self, arg: Any) -> str:
                 return f"start{arg}"
 
         obj = TestClass()
@@ -776,14 +776,14 @@ class TestFlextGrpcServiceEdgeCases:
         )
 
         @total_ordering
-        class TestClass:  # noqa: PLW1641
+        class TestClass:
             def __init__(self, value: str) -> None:
                 self.value = value
 
             def __eq__(self, other: object) -> bool:
                 return isinstance(other, TestClass) and self.value == other.value
 
-            def __lt__(self, other: Any) -> bool:  # noqa: ANN401
+            def __lt__(self, other: Any) -> bool:
                 return self.value < other.value
 
         result = self.service.execute(str(TestClass("start")), server)

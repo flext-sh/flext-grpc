@@ -1273,7 +1273,7 @@ class FlextGrpcService(
                 response_count += 1
 
                 # Limit responses to prevent infinite loops
-                if response_count >= 10:  # noqa: PLR2004
+                if response_count >= 10:
                     break
 
             # Update sequence counter

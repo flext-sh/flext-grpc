@@ -43,7 +43,7 @@ class FlextGrpcEntity(FlextModels.Entity):
 
     # Entity fields
     created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
-    updated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+    updated_at: datetime | None = Field(default_factory=lambda: datetime.now(UTC))
 
     @property
     def entity_type(self: Self) -> str:
@@ -72,6 +72,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
       target: gRPC target address for connection (host:port format)
       state: Current connection state (idle, connecting, ready, etc.)
       options: Additional gRPC channel options and configuration
+      grpc_channel: Optional gRPC channel object for low-level operations
 
     State Transitions:
       idle -> connecting -> ready -> shutdown
@@ -103,6 +104,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
     )
     state: FlextGrpcTypes.GrpcChannelState = "idle"
     options: dict[str, object] = Field(default_factory=dict)
+    grpc_channel: object | None = None
 
     @field_validator("state")
     @classmethod
@@ -333,6 +335,7 @@ class FlextGrpcServer(FlextGrpcEntity):
     state: FlextGrpcTypes.GrpcServerState = "stopped"
     max_workers: int = 10
     services: list[FlextGrpcService] = Field(default_factory=list)
+    grpc_server: object | None = None
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate server domain business rules and configuration.
@@ -876,6 +879,7 @@ class FlextGrpcClient(FlextGrpcEntity):
 
     channel: FlextGrpcChannel | None = None
     options: dict[str, object] = Field(default_factory=dict)
+    grpc_stub: object | None = None
 
     def validate_business_rules(self: Self) -> FlextResult[None]:
         """Validate client domain business rules and configuration.
@@ -1072,6 +1076,7 @@ class FlextGrpcStream(FlextGrpcEntity):
 
     method_name: str = ""
     stream_type: FlextGrpcTypes.GrpcStreamType = "unary"
+    grpc_stub: object | None = None
 
     @field_validator("method_name")
     @classmethod

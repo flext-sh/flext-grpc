@@ -10,7 +10,6 @@ from datetime import UTC, datetime
 
 import pytest
 
-from flext_core import FlextTypes
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -28,6 +27,7 @@ from flext_grpc import (
     validate_address,
 )
 from flext_grpc.entities import FlextGrpcService
+from flext_grpc.typings import FlextGrpcTypes
 
 
 class TestAPIFunctions:
@@ -66,7 +66,7 @@ class TestAPIFunctions:
         assert client.channel.state == "idle"
 
         # Test with options
-        options: FlextTypes.Core.Dict = {"timeout": 30}
+        options: FlextGrpcTypes.Core.GrpcDict = {"timeout": 30}
         client_with_options = create_client("localhost:50051", options)
         if client_with_options.options != options:
             raise AssertionError(
@@ -82,7 +82,7 @@ class TestAPIFunctions:
         assert channel.state == "idle"
 
         # Test with options
-        options: FlextTypes.Core.Dict = {"compression": "gzip"}
+        options: FlextGrpcTypes.Core.GrpcDict = {"compression": "gzip"}
         channel_with_options = create_channel("localhost:50051", options)
         if channel_with_options.options != options:
             raise AssertionError(
@@ -223,7 +223,7 @@ class TestAPIFunctions:
         self._validate_default_values(setup)
         self._validate_custom_setup()
 
-    def _validate_setup_components(self, setup: FlextTypes.Core.Dict) -> None:
+    def _validate_setup_components(self, setup: FlextGrpcTypes.Core.GrpcDict) -> None:
         """Validate setup components are present and correct types."""
         # Check all components are created
         required_keys = ["server", "client", "service", "target"]
@@ -239,7 +239,7 @@ class TestAPIFunctions:
         assert isinstance(setup["service"], FlextGrpcService)
         assert isinstance(setup["target"], str)
 
-    def _validate_default_values(self, setup: FlextTypes.Core.Dict) -> None:
+    def _validate_default_values(self, setup: FlextGrpcTypes.Core.GrpcDict) -> None:
         """Validate default values in setup."""
         # All imports are at the top of the file
 

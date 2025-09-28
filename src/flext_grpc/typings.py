@@ -58,6 +58,34 @@ class FlextGrpcTypes(FlextTypes):
     # GRPC SERVER TYPES - Complex server management types
     # =========================================================================
 
+    # =========================================================================
+    # GRPC CORE TYPES - Commonly used gRPC-specific types
+    # =========================================================================
+
+    class Core(FlextTypes.Core):
+        """Core gRPC types extending FlextTypes.Core."""
+
+        # gRPC basic types
+        type GrpcDict = dict[str, object]
+        type GrpcHeaders = dict[str, str]
+        type GrpcMetadata = dict[str, object]
+        type GrpcConfigDict = dict[str, str | int | bool | object]
+
+        # gRPC network types
+        type GrpcAddress = dict[str, str | int]
+        type GrpcEndpoint = dict[str, str | int | bool]
+        type GrpcConnection = dict[str, object]
+
+        # gRPC service types
+        type GrpcServiceData = dict[str, object]
+        type GrpcMethodData = dict[str, object]
+        type GrpcRequestDict = dict[str, object]
+        type GrpcResponseDict = dict[str, object]
+
+        # gRPC stream types
+        type GrpcStreamData = dict[str, object]
+        type GrpcStreamMeta = dict[str, str | int | bool]
+
     class Server:
         """gRPC server complex types."""
 

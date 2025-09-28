@@ -572,12 +572,15 @@ class FlextGrpcUtilities(FlextUtilities):
                 metadata_dict: dict[str, str] = {}
                 # Convert gRPC metadata to dictionary
                 for key, value in metadata:
-                    # Ensure value is converted to string
+                    # Ensure key and value are converted to string
+                    str_key = (
+                        key.decode("utf-8") if isinstance(key, bytes) else str(key)
+                    )
                     if isinstance(value, bytes):
                         str_value = value.decode("utf-8")
                     else:
-                        str_value = str(value)  # type: ignore[assignment]
-                    metadata_dict[key] = str_value
+                        str_value = str(value)
+                    metadata_dict[str_key] = str_value
 
                 return FlextResult[dict[str, str]].ok(metadata_dict)
             except Exception as e:
@@ -964,6 +967,44 @@ class FlextGrpcUtilities(FlextUtilities):
                 return FlextResult[FlextGrpcModels.ServiceMetrics].fail(
                     f"Service metrics collection failed: {e}"
                 )
+
+    class SystemUtilities:
+        """System-level utilities for gRPC operations."""
+
+        @staticmethod
+        def get_system_memory_usage() -> float:
+            """Get current system memory usage percentage."""
+            try:
+                import psutil
+
+                return psutil.virtual_memory().percent
+            except ImportError:
+                return 0.0
+
+        @staticmethod
+        def get_buffer_size_bytes(buffer_name: str | list) -> int:
+            """Get buffer size in bytes for given buffer name or list."""
+            if isinstance(buffer_name, list):
+                # Calculate size based on list length (rough estimate)
+                return len(buffer_name) * 1024  # 1KB per item
+
+            # Placeholder implementation for string names
+            buffer_sizes = {
+                "default": 1024 * 1024,  # 1MB
+                "large": 10 * 1024 * 1024,  # 10MB
+                "small": 64 * 1024,  # 64KB
+            }
+            return buffer_sizes.get(buffer_name, 1024 * 1024)
+
+        @staticmethod
+        def trigger_memory_cleanup() -> None:
+            """Trigger system memory cleanup."""
+            try:
+                import gc
+
+                gc.collect()
+            except ImportError:
+                pass
 
     async def execute_async(self) -> FlextResult[dict[str, Any]]:
         """Execute utilities service operation asynchronously."""

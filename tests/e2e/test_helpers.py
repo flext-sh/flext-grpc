@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import FlextTypes
 from flext_grpc import FlextGrpcClient, FlextGrpcServer
 from flext_grpc.entities import FlextGrpcService
+from flext_grpc.typings import FlextGrpcTypes
 
 
 def assert_server_from_setup(
@@ -46,7 +46,7 @@ def assert_service_from_setup(
     return service_entity
 
 
-def assert_dict_from_result(result_data: object) -> FlextTypes.Core.Dict:
+def assert_dict_from_result(result_data: object) -> FlextGrpcTypes.Core.GrpcDict:
     """Type-safe dict extraction from FlextResult data - DRY pattern."""
     if result_data is None:
         msg = "Result data cannot be None"

@@ -34,10 +34,11 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import cast
 
 import pytest
 
-from flext_core import FlextResult, FlextTypes, FlextUtilities
+from flext_core import FlextResult, FlextUtilities
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -49,6 +50,7 @@ from flext_grpc import (
     create_stream,
 )
 from flext_grpc.entities import FlextGrpcService
+from flext_grpc.typings import FlextGrpcTypes
 
 
 def _assert_error_contains(result: object, expected_text: str) -> None:
@@ -72,7 +74,7 @@ def _assert_client_result(result: object) -> object:
     return result.data
 
 
-def _assert_dict_result(result: object) -> FlextTypes.Core.Dict:
+def _assert_dict_result(result: object) -> FlextGrpcTypes.Core.GrpcDict:
     """Helper function to assert dict result success."""
     assert hasattr(result, "is_success") and result.is_success
     assert hasattr(result, "data") and result.data is not None
@@ -140,7 +142,22 @@ class TestFlextGrpcService:
         if not service:
             return FlextResult.fail(f"Unknown service type: {service_type}")
 
-        return service.execute(command, entity, *remaining_args, **kwargs)
+        # Cast entity to the expected type for the service
+
+        if service_type == "server":
+            typed_entity = cast("FlextGrpcServer", entity)
+        elif service_type == "client":
+            typed_entity = cast("FlextGrpcClient", entity)
+        elif service_type == "stream":
+            typed_entity = cast("FlextGrpcStream", entity)
+        else:
+            # For other types, cast to the union type expected by the service
+            typed_entity = cast(
+                "FlextGrpcClient | FlextGrpcServer | FlextGrpcStream | dict[str, object] | None",
+                entity,
+            )
+
+        return service.execute(command, typed_entity, *remaining_args, **kwargs)
 
     def test_server_start_invalid_host_fails(self) -> None:
         """Test server start with invalid host fails."""

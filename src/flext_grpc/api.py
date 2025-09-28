@@ -183,8 +183,16 @@ def create_service(
     if isinstance(name, FlextGrpcModels.ServiceDefinition):
         definition = name
     else:
+        # Convert single method string to list
+        if isinstance(methods, str):
+            methods_list = [methods]
+        elif methods is None:
+            methods_list = []
+        else:
+            methods_list = methods
+
         definition = FlextGrpcModels.ServiceDefinition(
-            service_name=name, methods=methods or []
+            service_name=name, methods=methods_list
         )
 
     # Create service entity using standardized models
@@ -244,7 +252,6 @@ def create_stream(
 
         stream_info = FlextGrpcModels.StreamInfo(
             stream_id=str(uuid4()),
-            method_name=method_name,
             stream_type=stream_type,
             target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",  # Default target
         )

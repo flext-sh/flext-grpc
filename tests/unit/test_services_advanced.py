@@ -6,9 +6,9 @@ Tests additional functionality to improve coverage.
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any
 from unittest.mock import MagicMock, patch
 
+from flext_core import FlextResult
 from flext_grpc.entities import FlextGrpcClient, FlextGrpcServer, FlextGrpcStream
 from flext_grpc.services import FlextGrpcService
 
@@ -21,7 +21,9 @@ class TestFlextGrpcServiceAdvanced:
         self.service = FlextGrpcService()
         self.now = datetime.now(UTC)
 
-    def _create_mock_result(self, is_success: bool, error: str | None = None) -> Any:
+    def _create_mock_result(
+        self, is_success: bool, error: str | None = None
+    ) -> FlextResult[object]:
         """Create a properly typed mock result."""
         mock_result = MagicMock()
         mock_result.is_success = is_success
@@ -347,8 +349,8 @@ class TestFlextGrpcServiceAdvanced:
             result.error is not None and "Stream data handling failed" in result.error
         )
 
-    def test_get_server_status_with_status_retrieval_error(self) -> None:
-        """Test _get_server_status with status retrieval error."""
+    def test_get_status_with_status_retrieval_error(self) -> None:
+        """Test _get_status with status retrieval error."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",

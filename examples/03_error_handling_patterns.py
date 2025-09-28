@@ -14,7 +14,7 @@ from __future__ import annotations
 import asyncio
 from typing import NoReturn
 
-from flext_core import FlextConstants, FlextLogger, FlextResult, FlextTypes
+from flext_core import FlextConstants, FlextLogger, FlextResult
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
@@ -24,6 +24,7 @@ from flext_grpc import (
     FlextGrpcValidationError,
     create_config,
 )
+from flext_grpc.typings import FlextGrpcTypes
 
 # Setup logging
 logger = FlextLogger(__name__)
@@ -32,7 +33,7 @@ logger = FlextLogger(__name__)
 def validate_user_input(
     username: str,
     email: str,
-) -> FlextResult[FlextTypes.Core.Headers]:
+) -> FlextResult[FlextGrpcTypes.Core.GrpcHeaders]:
     """Validate user input with FlextGrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
@@ -50,13 +51,15 @@ def validate_user_input(
         if not email or "@" not in email:
             _raise_email_error()
 
-        return FlextResult[FlextTypes.Core.Headers].ok(
+        return FlextResult[FlextGrpcTypes.Core.GrpcHeaders].ok(
             {"username": username, "email": email},
         )
 
     except FlextGrpcValidationError as e:
         logger.exception("Validation failed", field=e.field_name, error=str(e))
-        return FlextResult[FlextTypes.Core.Headers].fail(f"Validation error: {e}")
+        return FlextResult[FlextGrpcTypes.Core.GrpcHeaders].fail(
+            f"Validation error: {e}"
+        )
 
 
 def create_server_config(port: int, workers: int) -> FlextResult[object]:

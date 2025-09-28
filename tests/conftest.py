@@ -10,8 +10,9 @@ from __future__ import annotations
 
 import pytest
 
-from flext_core import FlextConstants, FlextContainer, FlextTypes
+from flext_core import FlextConstants, FlextContainer
 from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc.typings import FlextGrpcTypes
 
 
 @pytest.fixture(autouse=True)
@@ -22,7 +23,7 @@ def clean_container() -> object:
 
 
 @pytest.fixture
-def sample_grpc_config() -> FlextTypes.Core.Dict:
+def sample_grpc_config() -> FlextGrpcTypes.Core.GrpcDict:
     """Sample gRPC configuration for tests."""
     return {
         "host": FlextConstants.Platform.DEFAULT_HOST,
@@ -33,7 +34,7 @@ def sample_grpc_config() -> FlextTypes.Core.Dict:
 
 
 @pytest.fixture
-def test_addresses() -> dict[str, FlextTypes.Core.StringList]:
+def test_addresses() -> dict[str, list[str]]:
     """Test addresses for validation."""
     return {
         "valid": [

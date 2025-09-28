@@ -160,7 +160,7 @@ class TestFlextGrpcServiceComprehensive:
             created_at=self.now,
         )
 
-        with patch.object(self.service, "_get_server_status") as mock_status:
+        with patch.object(self.service, "_get_status") as mock_status:
             mock_result = MagicMock()
             mock_result.is_success = True
             mock_result.value = {"status": "running"}
@@ -355,8 +355,8 @@ class TestFlextGrpcServiceComprehensive:
         assert result.is_success
         mock_handle.assert_called_once()
 
-    def test_get_server_status_success(self) -> None:
-        """Test _get_server_status with successful status check."""
+    def test_get_status_success(self) -> None:
+        """Test _get_status with successful status check."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
@@ -368,13 +368,13 @@ class TestFlextGrpcServiceComprehensive:
         mock_grpc_server = MagicMock()
         server.grpc_server = mock_grpc_server
 
-        result = self.service._get_server_status(server)
+        result = self.service._get_status(server)
 
         assert result.is_success
         assert "status" in result.value
 
-    def test_get_server_status_no_grpc_server(self) -> None:
-        """Test _get_server_status when no grpc_server is set."""
+    def test_get_status_no_grpc_server(self) -> None:
+        """Test _get_status when no grpc_server is set."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
@@ -383,7 +383,7 @@ class TestFlextGrpcServiceComprehensive:
         )
 
         # No grpc_server set
-        result = self.service._get_server_status(server)
+        result = self.service._get_status(server)
 
         assert result.is_success is False
         assert "No active gRPC server" in result.error
