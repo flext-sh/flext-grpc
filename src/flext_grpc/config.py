@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Self, cast
+from typing import Self
 
 from pydantic import Field, field_validator
 from pydantic_settings import SettingsConfigDict
@@ -106,8 +106,8 @@ class FlextGrpcConfig(FlextConfig):
     @classmethod
     def validate_timeout(cls, v: float) -> float:
         """Validate timeout is within valid range."""
-        min_timeout_seconds = 0.1
-        max_timeout_seconds = 300.0  # 5 minutes
+        min_timeout_seconds = FlextGrpcConstants.MIN_TIMEOUT_SECONDS
+        max_timeout_seconds = FlextGrpcConstants.MAX_TIMEOUT_SECONDS
         if not (min_timeout_seconds <= v <= max_timeout_seconds):
             msg = f"Timeout {v} must be between {min_timeout_seconds} and {max_timeout_seconds} seconds"
             raise ValueError(msg)
@@ -135,30 +135,19 @@ class FlextGrpcConfig(FlextConfig):
         cls, environment: str, **overrides: object
     ) -> FlextGrpcConfig:
         """Create configuration for specific environment using enhanced singleton pattern."""
-        instance = cls.get_or_create_shared_instance(
+        return cls.get_or_create_shared_instance(
             project_name="flext-grpc", environment=environment, **overrides
         )
-        return cls.model_validate(instance.model_dump())
 
     @classmethod
     def create_default(cls) -> FlextGrpcConfig:
         """Create default configuration instance using enhanced singleton pattern."""
-        return cls(
-            host=FlextConstants.Platform.DEFAULT_HOST,
-            port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
-            max_workers=FlextGrpcConstants.DEFAULT_MAX_WORKERS,
-            timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
-        )
+        return cls.get_or_create_shared_instance(project_name="flext-grpc")
 
     @classmethod
     def get_global_instance(cls) -> FlextGrpcConfig:
         """Get the global singleton instance using enhanced FlextConfig pattern."""
-        if (
-            not hasattr(cls, "_shared_instance")
-            or getattr(cls, "_shared_instance", None) is None
-        ):
-            setattr(cls, "_shared_instance", cls.create_default())
-        return cast("FlextGrpcConfig", getattr(cls, "_shared_instance"))
+        return cls.get_or_create_shared_instance(project_name="flext-grpc")
 
     @classmethod
     def reset_global_instance(cls) -> None:

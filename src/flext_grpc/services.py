@@ -71,17 +71,17 @@ HIGH_PRESSURE_RATIO_THRESHOLD = 0.9
 
 # Protocol for gRPC objects (since we can't import their types)
 class GrpcChannelProtocol(Protocol):
-    """Protocol for gRPC channel objects."""
+    """Protocol for gRPC channel objects - DEPRECATED: Use FlextGrpcProtocols.ChannelProtocol."""
 
     def close(self) -> None:
-        """Close the gRPC channel."""
+        """Close the gRPC channel - DEPRECATED: Use FlextGrpcProtocols.ChannelProtocol."""
 
 
 class GrpcServerProtocol(Protocol):
-    """Protocol for gRPC server objects."""
+    """Protocol for gRPC server objects - DEPRECATED: Use FlextGrpcProtocols.ServerProtocol."""
 
     def stop(self, grace: float) -> None:
-        """Stop the gRPC server with grace period."""
+        """Stop the gRPC server with grace period - DEPRECATED: Use FlextGrpcProtocols.ServerProtocol."""
 
 
 # Use direct types - no legacy aliases
@@ -1273,7 +1273,7 @@ class FlextGrpcService(
                 response_count += 1
 
                 # Limit responses to prevent infinite loops
-                if response_count >= 10:
+                if response_count >= FlextGrpcConstants.MAX_RESPONSE_COUNT:
                     break
 
             # Update sequence counter

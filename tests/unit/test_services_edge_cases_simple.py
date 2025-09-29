@@ -7,8 +7,8 @@ from __future__ import annotations
 
 import math
 import weakref
-from collections.abc import AsyncGenerator, Generator
-from contextlib import asynccontextmanager, contextmanager
+from collections.abc import Generator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -396,11 +396,9 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
+        @dataclass(slots=True)
         class TestSlots:
-            __slots__ = ["command"]
-
-            def __init__(self, command: str) -> None:
-                self.command = command
+            command: str
 
         result = self.service.execute(str(TestSlots("start")), server)
 
@@ -470,8 +468,8 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        @asynccontextmanager
-        async def test_async_context() -> AsyncGenerator[str]:
+        @contextmanager
+        def test_async_context() -> Generator[str]:
             yield "start"
 
         result = self.service.execute(str(test_async_context()), server)

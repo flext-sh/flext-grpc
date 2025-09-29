@@ -10,12 +10,21 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import gc
 import time
 from collections.abc import AsyncIterator, Iterator
 from datetime import UTC, datetime
 from typing import Any, ClassVar
 
 import grpc
+
+try:
+    import psutil
+
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    psutil = None
+    PSUTIL_AVAILABLE = False
 from google.protobuf import json_format
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.message import Message as ProtobufMessage
@@ -573,7 +582,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 # Convert gRPC metadata to dictionary
                 for key, value in metadata:
                     # Ensure key and value are converted to string
-                    str_key = (
+                    str_key: str = (
                         key.decode("utf-8") if isinstance(key, bytes) else str(key)
                     )
                     if isinstance(value, bytes):
@@ -974,12 +983,10 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def get_system_memory_usage() -> float:
             """Get current system memory usage percentage."""
-            try:
-                import psutil
-
-                return psutil.virtual_memory().percent
-            except ImportError:
+            if not PSUTIL_AVAILABLE or psutil is None:
                 return 0.0
+
+            return psutil.virtual_memory().percent
 
         @staticmethod
         def get_buffer_size_bytes(buffer_name: str | list) -> int:
@@ -999,12 +1006,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def trigger_memory_cleanup() -> None:
             """Trigger system memory cleanup."""
-            try:
-                import gc
-
-                gc.collect()
-            except ImportError:
-                pass
+            gc.collect()
 
     async def execute_async(self) -> FlextResult[dict[str, Any]]:
         """Execute utilities service operation asynchronously."""

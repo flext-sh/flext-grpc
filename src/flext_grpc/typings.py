@@ -24,8 +24,8 @@ from typing import (
 from flext_core import FlextLogger, FlextTypes
 
 # Type aliases for convenience
-ConfigValue = FlextTypes.ConfigValue
-JsonValue = FlextTypes.JsonValue
+type ConfigValue = FlextTypes.ConfigValue
+type JsonValue = FlextTypes.JsonValue
 
 # =============================================================================
 # GRPC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for gRPC operations

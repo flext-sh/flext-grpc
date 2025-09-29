@@ -108,6 +108,17 @@ class FlextGrpcConstants(FlextConstants):
     # Error rate limits
     MAX_ERROR_RATE_PERCENT: Final[float] = 100.0
 
+    # Platform configuration constants
+    PRODUCTION_MIN_CONCURRENT_STREAMS: Final[int] = 50
+    PRODUCTION_MIN_KEEPALIVE_TIME_MS: Final[int] = 30000
+    MAX_CONCURRENT_STREAMS_LIMIT: Final[int] = 10000
+
+    # Service constants
+    # Timeout validation constants
+    MIN_TIMEOUT_SECONDS: Final[float] = 0.1
+    MAX_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
+    MAX_RESPONSE_COUNT: Final[int] = 10
+
 
 __all__: list[str] = [
     "FlextGrpcConstants",

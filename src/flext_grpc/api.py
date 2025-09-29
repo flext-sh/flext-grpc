@@ -159,14 +159,14 @@ def create_channel(
 
 def create_service(
     name: str | FlextGrpcModels.ServiceDefinition = "DefaultService",
-    methods: list[str] | None = None,
+    methods: str | list[str] | None = None,
 ) -> FlextGrpcService:
     """Create gRPC service using FlextGrpcModels.ServiceDefinition.
 
     Args:
       definition: Service definition model (preferred)
       name: Service name
-      methods: List of method names (default: empty list)
+      methods: Method name, list of method names, or None (default: empty list)
 
     Returns:
       Created service entity

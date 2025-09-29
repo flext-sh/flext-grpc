@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import cast
 
 import grpc
 import pytest
@@ -116,11 +116,11 @@ class TestRealGrpcServer:
         try:
             # Try to import the generated protobuf files
             class EchoServicer(FlextGrpcServiceServicer):
-                def Echo(
+                def echo(
                     self,
-                    request: Any,
-                    context: grpc.ServicerContext,
-                ) -> Any:
+                    request: object,
+                    _context: grpc.ServicerContext,
+                ) -> object:
                     # Cast to EchoRequest for type safety
                     echo_request = cast("EchoRequest", request)
                     return EchoResponse(message=f"Echo: {echo_request.message}")

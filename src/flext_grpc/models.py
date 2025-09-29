@@ -163,7 +163,10 @@ class FlextGrpcModels(FlextModels):
             default=FlextGrpcConstants.DEFAULT_GRPC_PORT,
             description="Server port number",
         )
-        max_workers: int = Field(default=10, description="Maximum worker threads")
+        max_workers: int = Field(
+            default=FlextGrpcConstants.DEFAULT_MAX_WORKERS,
+            description="Maximum worker threads",
+        )
         timeout: float = Field(
             default=FlextConstants.Network.DEFAULT_TIMEOUT,
             description="Request timeout in seconds",
@@ -254,7 +257,10 @@ class FlextGrpcModels(FlextModels):
             default=FlextConstants.Network.DEFAULT_TIMEOUT,
             description="Request timeout",
         )
-        retry_attempts: int = Field(default=3, description="Maximum retry attempts")
+        retry_attempts: int = Field(
+            default=FlextConstants.Reliability.MAX_RETRY_ATTEMPTS,
+            description="Maximum retry attempts",
+        )
 
         @computed_field
         @property
@@ -611,7 +617,7 @@ class FlextGrpcModels(FlextModels):
         def server_uptime_seconds(self) -> float | None:
             """Computed field for server uptime in seconds."""
             if self.started_at and self.status == "running":
-                return (datetime.now() - self.started_at).total_seconds()
+                return (datetime.now(UTC) - self.started_at).total_seconds()
             return None
 
         @computed_field
@@ -671,7 +677,7 @@ class FlextGrpcModels(FlextModels):
         def connection_duration_seconds(self) -> float | None:
             """Computed field for connection duration in seconds."""
             if self.connected_at and self.status == "connected":
-                return (datetime.now() - self.connected_at).total_seconds()
+                return (datetime.now(UTC) - self.connected_at).total_seconds()
             return None
 
         @computed_field
@@ -719,7 +725,7 @@ class FlextGrpcModels(FlextModels):
         @property
         def channel_age_seconds(self) -> float:
             """Computed field for channel age in seconds."""
-            return (datetime.now() - self.created_at).total_seconds()
+            return (datetime.now(UTC) - self.created_at).total_seconds()
 
         @computed_field
         @property
@@ -898,7 +904,7 @@ class FlextGrpcModels(FlextModels):
         @property
         def health_check_age_seconds(self) -> float:
             """Computed field for health check age in seconds."""
-            return (datetime.now() - self.timestamp).total_seconds()
+            return (datetime.now(UTC) - self.timestamp).total_seconds()
 
         @computed_field
         @property
@@ -910,7 +916,8 @@ class FlextGrpcModels(FlextModels):
                 "is_healthy": self.status == "serving",
                 "age_seconds": self.health_check_age_seconds,
                 "has_details": self.details is not None,
-                "is_recent": self.health_check_age_seconds < 300,  # Less than 5 minutes
+                "is_recent": self.health_check_age_seconds
+                < FlextGrpcConstants.HEALTH_CHECK_AGE_RECENT_SECONDS,
             }
 
         @model_validator(mode="after")
@@ -966,8 +973,10 @@ class FlextGrpcModels(FlextModels):
                 "average_response_time_ms": self.average_response_time_ms,
                 "active_connections": self.active_connections,
                 "failed_requests": self.failed_requests,
-                "is_healthy": self.success_rate_percent > 95.0
-                and self.average_response_time_ms < 1000,
+                "is_healthy": self.success_rate_percent
+                > FlextGrpcConstants.SUCCESS_RATE_HEALTHY_PERCENT
+                and self.average_response_time_ms
+                < FlextGrpcConstants.RESPONSE_TIME_HEALTHY_MS,
             }
 
         @model_validator(mode="after")
@@ -1006,7 +1015,8 @@ class FlextGrpcModels(FlextModels):
             default=True, description="Enable health checking"
         )
         max_concurrent_streams: int = Field(
-            default=100, description="Maximum concurrent streams"
+            default=FlextGrpcConstants.PRODUCTION_MIN_CONCURRENT_STREAMS,
+            description="Maximum concurrent streams",
         )
         keepalive_time_ms: int = Field(
             default=FlextGrpcConstants.DEFAULT_KEEPALIVE_TIME_MS,
@@ -1029,8 +1039,10 @@ class FlextGrpcModels(FlextModels):
                 "keepalive_timeout_seconds": self.keepalive_timeout_ms / 1000,
                 "is_production_ready": (
                     self.enable_health_check
-                    and self.max_concurrent_streams >= 50
-                    and self.keepalive_time_ms >= 30000
+                    and self.max_concurrent_streams
+                    >= FlextGrpcConstants.PRODUCTION_MIN_CONCURRENT_STREAMS
+                    and self.keepalive_time_ms
+                    >= FlextGrpcConstants.PRODUCTION_MIN_KEEPALIVE_TIME_MS
                 ),
             }
 
@@ -1043,8 +1055,11 @@ class FlextGrpcModels(FlextModels):
                 raise ValueError(error_message)
 
             # Max concurrent streams should be reasonable
-            if self.max_concurrent_streams > 10000:
-                error_message = "Max concurrent streams seems excessive (>10000)"
+            if (
+                self.max_concurrent_streams
+                > FlextGrpcConstants.MAX_CONCURRENT_STREAMS_LIMIT
+            ):
+                error_message = f"Max concurrent streams seems excessive (>{FlextGrpcConstants.MAX_CONCURRENT_STREAMS_LIMIT})"
                 raise ValueError(error_message)
 
             return self

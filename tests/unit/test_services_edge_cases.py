@@ -7,9 +7,8 @@ from __future__ import annotations
 
 import math
 import weakref
-from collections import namedtuple
-from collections.abc import AsyncGenerator, Generator
-from contextlib import asynccontextmanager, contextmanager
+from collections.abc import Generator
+from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from decimal import Decimal
@@ -47,7 +46,7 @@ from itertools import (
     tee,
     zip_longest,
 )
-from typing import Any
+from typing import NamedTuple
 
 from flext_grpc.entities import FlextGrpcServer
 from flext_grpc.services import FlextGrpcService
@@ -481,7 +480,7 @@ class TestFlextGrpcServiceEdgeCases:
         )
 
         class TestDescriptor:
-            def __get__(self, obj: Any, objtype: type | None = None) -> str:
+            def __get__(self, obj: object | None, objtype: type | None = None) -> str:
                 return "invalid_command"
 
         result = self.service.execute(str(TestDescriptor()), server)
@@ -532,7 +531,9 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
-        TestTuple = namedtuple("TestTuple", ["command"])
+        class TestTuple(NamedTuple):
+            command: str
+
         result = self.service.execute(str(TestTuple("start")), server)
 
         assert result.is_success is False
@@ -565,11 +566,9 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
+        @dataclass(slots=True)
         class TestSlots:
-            __slots__ = ["command"]
-
-            def __init__(self, command: str) -> None:
-                self.command = command
+            command: str
 
         result = self.service.execute(str(TestSlots("start")), server)
 
@@ -639,8 +638,8 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
-        @asynccontextmanager
-        async def test_async_context() -> AsyncGenerator[str]:
+        @contextmanager
+        def test_async_context() -> Generator[str]:
             yield "start"
 
         result = self.service.execute(str(test_async_context()), server)
@@ -674,9 +673,9 @@ class TestFlextGrpcServiceEdgeCases:
             created_at=self.now,
         )
 
-        def test_decorator(func: Any) -> Any:
+        def test_decorator(func: object) -> object:
             @wraps(func)
-            def wrapper(*args: Any, **kwargs: Any) -> Any:
+            def wrapper(*args: object, **kwargs: object) -> object:
                 return func(*args, **kwargs)
 
             return wrapper
@@ -718,7 +717,7 @@ class TestFlextGrpcServiceEdgeCases:
         )
 
         @singledispatch
-        def test_func(arg: Any) -> str:
+        def test_func(arg: object) -> str:
             return f"start{arg}"
 
         result = self.service.execute(str(test_func), server)
@@ -737,7 +736,7 @@ class TestFlextGrpcServiceEdgeCases:
 
         class TestClass:
             @singledispatchmethod
-            def test_method(self, arg: Any) -> str:
+            def test_method(self, arg: object) -> str:
                 return f"start{arg}"
 
         obj = TestClass()
@@ -783,7 +782,10 @@ class TestFlextGrpcServiceEdgeCases:
             def __eq__(self, other: object) -> bool:
                 return isinstance(other, TestClass) and self.value == other.value
 
-            def __lt__(self, other: Any) -> bool:
+            def __hash__(self) -> int:
+                return hash(self.value)
+
+            def __lt__(self, other: object) -> bool:
                 return self.value < other.value
 
         result = self.service.execute(str(TestClass("start")), server)

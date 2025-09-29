@@ -39,6 +39,7 @@ from flext_grpc.exceptions import (
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.platform import FlextGrpcPlatform
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
+from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import (
     FlextGrpcClientService,
     FlextGrpcServerService,
@@ -76,6 +77,7 @@ __all__: list[str] = [
     "FlextGrpcError",
     "FlextGrpcModels",
     "FlextGrpcPlatform",
+    "FlextGrpcProtocols",
     "FlextGrpcServer",
     "FlextGrpcServerService",
     "FlextGrpcService",

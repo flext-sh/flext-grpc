@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from pydantic import Field
+from pydantic.fields import FieldInfo
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -19,7 +20,7 @@ from flext_grpc.constants import FlextGrpcConstants
 def grpc_host_field(
     default: str = FlextGrpcConstants.GRPC_DEFAULT_HOST,
     description: str = "gRPC server host address",
-) -> Field:
+) -> FieldInfo:
     """Create a validated gRPC host field."""
     return Field(
         default=default,
@@ -34,7 +35,7 @@ def grpc_host_field(
 def grpc_port_field(
     default: int = FlextGrpcConstants.GRPC_DEFAULT_PORT,
     description: str = "gRPC server port number",
-) -> Field:
+) -> FieldInfo:
     """Create a validated gRPC port field."""
     return Field(
         default=default,
@@ -47,7 +48,7 @@ def grpc_port_field(
 # Service name field validation
 def grpc_service_name_field(
     description: str = "gRPC service name",
-) -> Field:
+) -> FieldInfo:
     """Create a validated gRPC service name field."""
     return Field(
         description=description,
@@ -60,7 +61,7 @@ def grpc_service_name_field(
 # Method name field validation
 def grpc_method_name_field(
     description: str = "gRPC method name",
-) -> Field:
+) -> FieldInfo:
     """Create a validated gRPC method name field."""
     return Field(
         description=description,
@@ -74,7 +75,7 @@ def grpc_method_name_field(
 def grpc_timeout_field(
     default: float = FlextGrpcConstants.GRPC_DEFAULT_TIMEOUT,
     description: str = "gRPC operation timeout in seconds",
-) -> Field:
+) -> FieldInfo:
     """Create a validated gRPC timeout field."""
     return Field(
         default=default,
@@ -88,7 +89,7 @@ def grpc_timeout_field(
 def grpc_workers_field(
     default: int = 10,
     description: str = "Maximum number of gRPC worker threads",
-) -> Field:
+) -> FieldInfo:
     """Create a validated gRPC workers field."""
     return Field(
         default=default,
