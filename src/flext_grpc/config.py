@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Self
+from typing import Self, cast
 
 from pydantic import Field, field_validator
 from pydantic_settings import SettingsConfigDict
@@ -135,19 +135,28 @@ class FlextGrpcConfig(FlextConfig):
         cls, environment: str, **overrides: object
     ) -> FlextGrpcConfig:
         """Create configuration for specific environment using enhanced singleton pattern."""
-        return cls.get_or_create_shared_instance(
-            project_name="flext-grpc", environment=environment, **overrides
+        return cast(
+            "FlextGrpcConfig",
+            cls.get_or_create_shared_instance(
+                project_name="flext-grpc", environment=environment, **overrides
+            ),
         )
 
     @classmethod
     def create_default(cls) -> FlextGrpcConfig:
         """Create default configuration instance using enhanced singleton pattern."""
-        return cls.get_or_create_shared_instance(project_name="flext-grpc")
+        return cast(
+            "FlextGrpcConfig",
+            cls.get_or_create_shared_instance(project_name="flext-grpc"),
+        )
 
     @classmethod
     def get_global_instance(cls) -> FlextGrpcConfig:
         """Get the global singleton instance using enhanced FlextConfig pattern."""
-        return cls.get_or_create_shared_instance(project_name="flext-grpc")
+        return cast(
+            "FlextGrpcConfig",
+            cls.get_or_create_shared_instance(project_name="flext-grpc"),
+        )
 
     @classmethod
     def reset_global_instance(cls) -> None:
