@@ -459,8 +459,8 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         assert result.is_success is False
         assert result.error is not None and "Unknown server command" in result.error
 
-    def test_execute_with_async_contextmanager_command_name(self) -> None:
-        """Test execute with async contextmanager command name."""
+    def test_execute_with_contextmanager_command_name(self) -> None:
+        """Test execute with contextmanager command name."""
         server = FlextGrpcServer(
             id="test-server",
             host="localhost",
@@ -469,10 +469,10 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         )
 
         @contextmanager
-        def test_async_context() -> Generator[str]:
+        def test_context() -> Generator[str]:
             yield "start"
 
-        result = self.service.execute(str(test_async_context()), server)
+        result = self.service.execute(str(test_context()), server)
 
         assert result.is_success is False
         assert result.error is not None and "Unknown server command" in result.error

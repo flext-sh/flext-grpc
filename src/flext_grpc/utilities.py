@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import gc
 import time
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import Iterator
 from datetime import UTC, datetime
 from typing import Any, ClassVar
 
@@ -508,15 +508,15 @@ class FlextGrpcUtilities(FlextUtilities):
                 )
 
         @staticmethod
-        async def collect_stream_responses[T](
-            stream: AsyncIterator[T],
+        def collect_stream_responses[T](
+            stream: Iterator[T],
             max_messages: int = 1000,
             timeout_seconds: float = 30.0,
         ) -> FlextResult[list[T]]:
-            """Collect responses from async gRPC stream with limits.
+            """Collect responses from gRPC stream with limits.
 
             Args:
-                stream: Async iterator of gRPC responses
+                stream: iterator of gRPC responses
                 max_messages: Maximum number of messages to collect
                 timeout_seconds: Timeout for stream collection
 
@@ -528,7 +528,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 responses: list[T] = []
                 start_time = time.time()
 
-                async for response in stream:
+                for response in stream:
                     if len(responses) >= max_messages:
                         return FlextResult[list[T]].fail(
                             f"Stream exceeded maximum messages ({max_messages})"
@@ -598,13 +598,13 @@ class FlextGrpcUtilities(FlextUtilities):
                 )
 
         @staticmethod
-        async def stream_with_heartbeat[T](
-            stream: AsyncIterator[T], heartbeat_interval: float = 30.0
-        ) -> AsyncIterator[T]:
+        def stream_with_heartbeat[T](
+            stream: Iterator[T], heartbeat_interval: float = 30.0
+        ) -> Iterator[T]:
             """Add heartbeat capability to gRPC stream.
 
             Args:
-                stream: Original async stream
+                stream: Original stream
                 heartbeat_interval: Heartbeat interval in seconds
 
             Yields:
@@ -613,7 +613,7 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             last_heartbeat = time.time()
 
-            async for item in stream:
+            for item in stream:
                 current_time = time.time()
                 if current_time - last_heartbeat > heartbeat_interval:
                     # In a real implementation, this could send a heartbeat message
@@ -1008,8 +1008,8 @@ class FlextGrpcUtilities(FlextUtilities):
             """Trigger system memory cleanup."""
             gc.collect()
 
-    async def execute_async(self) -> FlextResult[dict[str, Any]]:
-        """Execute utilities service operation asynchronously."""
+    def execute(self) -> FlextResult[dict[str, Any]]:
+        """Execute utilities service operation hronously."""
         return FlextResult[dict[str, Any]].ok({
             "status": "operational",
             "service": "flext-grpc-utilities",

@@ -178,7 +178,7 @@ class FlextGrpcTimeoutError(FlextGrpcError):
       ...     response = platform.make_call(client, "ProcessLargeDataset", dataset)
       ... except FlextGrpcTimeoutError as e:
       ...     logger.warning(f"Operation timed out: {e}")
-      ...     # Adjust timeout or implement async processing
+      ...     # Adjust timeout or implement processing
       ...     metrics.increment("grpc.timeout.ProcessLargeDataset")
 
     Integration:

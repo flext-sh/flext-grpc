@@ -102,7 +102,7 @@ platform = FlextGrpcPlatform()
 print(f"Server state: {server.state}")
 
 # Attempt startup with error handling
-start_result = await platform.start_server(server)
+start_result = platform.start_server(server)
 if start_result.is_failure:
     print(f"Startup failed: {start_result.error}")
 ```
@@ -139,7 +139,7 @@ Based on 2025 gRPC Python best practices:
 
 1. **Reuse channels and stubs** to avoid connection overhead
 2. **Use keepalive pings** for long-lived connections
-3. **Consider asyncio** for improved streaming performance
+3. **Consider * for improved streaming performance
 4. **Validate inputs** even with protobuf type checking
 
 ### Security Patterns

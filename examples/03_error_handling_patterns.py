@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import asyncio
+import time
 from typing import NoReturn
 
 from flext_core import FlextConstants, FlextLogger, FlextResult
@@ -264,32 +264,32 @@ def demonstrate_error_context() -> None:
     )
 
 
-async def async_error_handling() -> FlextResult[str]:
-    """Demonstrate error handling in async contexts."""
-    logger.info("Testing async error handling patterns")
+def error_handling() -> FlextResult[str]:
+    """Demonstrate error handling in contexts."""
+    logger.info("Testing error handling patterns")
 
-    def _raise_async_timeout() -> NoReturn:
-        msg = "Async operation timed out"
+    def _raise_timeout() -> NoReturn:
+        msg = "operation timed out"
         raise FlextGrpcTimeoutError(msg)
 
     try:
-        # Simulate async operation that might fail
-        await asyncio.sleep(0.1)  # Simulate work
+        # Simulate operation that might fail
+        time.sleep(0.1)  # Simulate work
 
         # Check for error condition
         error_condition = True  # Simulate error condition
         if error_condition:
-            _raise_async_timeout()
+            _raise_timeout()
 
         # This would only execute if error_condition is False
-        return FlextResult[str].ok("Async operation completed")
+        return FlextResult[str].ok("operation completed")
 
     except FlextGrpcTimeoutError as e:
-        logger.exception("Async timeout occurred", error=str(e))
-        return FlextResult[str].fail(f"Async error: {e}")
+        logger.exception("timeout occurred", error=str(e))
+        return FlextResult[str].fail(f"error: {e}")
     except Exception as e:
-        logger.exception("Unexpected async error", error=str(e))
-        return FlextResult[str].fail(f"Unexpected async error: {e}")
+        logger.exception("Unexpected error", error=str(e))
+        return FlextResult[str].fail(f"Unexpected error: {e}")
 
 
 def main() -> None:
@@ -316,16 +316,16 @@ def main() -> None:
     else:
         logger.error(f"❌ Recovery failed: {recovery_result.error}")
 
-    # Async error handling
-    logger.info("\n⚡ 4. Async Error Handling")
+    # error handling
+    logger.info("\n⚡ 4. Error Handling")
     try:
-        async_result = asyncio.run(async_error_handling())
-        if async_result.is_success:
-            logger.info(f"✅ Async result: {async_result.data}")
+        result = error_handling()
+        if result.is_success:
+            logger.info(f"✅ result: {result.data}")
         else:
-            logger.error(f"❌ Async failed: {async_result.error}")
+            logger.error(f"❌ failed: {result.error}")
     except Exception:
-        logger.exception("❌ Async exception occurred")
+        logger.exception("❌ exception occurred")
 
     logger.info("\n🎉 Error handling examples completed!")
     logger.info("Key takeaways:")

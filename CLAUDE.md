@@ -1,22 +1,39 @@
 # FLEXT-GRPC CLAUDE.MD
 
-**Enterprise gRPC Microservices Foundation for FLEXT Ecosystem**  
-**Version**: 1.0.0 | **Authority**: GRPC MICROSERVICES FOUNDATION | **Updated**: 2025-01-08  
+**Enterprise gRPC Microservices Foundation for FLEXT Ecosystem**
+**Version**: 1.0.0 | **Authority**: GRPC MICROSERVICES FOUNDATION | **Updated**: 2025-01-08
 **Status**: Production-ready gRPC communication platform with zero errors across all quality gates · 1.0.0 Release Preparation
+
+## 📋 DOCUMENT STRUCTURE & REFERENCES
+
+**Quick Links**:
+- **[~/.claude/commands/flext.md](~/.claude/commands/flext.md)**: Optimization command for module refactoring (USE with `/flext` command)
+- **[../CLAUDE.md](../CLAUDE.md)**: FLEXT ecosystem standards and domain library rules
+- **[README.md](README.md)**: Project overview and gRPC usage documentation
+
+**Document Purpose**:
+- **This file (CLAUDE.md)**: Project-specific flext-grpc standards, gRPC MICROSERVICES patterns, and distributed communication
+- **flext.md command**: Practical refactoring workflows and MCP tool usage patterns (HOW-TO)
+- **Workspace CLAUDE.md**: Domain library standards and ecosystem architectural principles (WHAT and WHY)
+
+**DO NOT DUPLICATE**: This file focuses on flext-grpc microservices authority specifics. The `/flext` command provides workflows. The workspace CLAUDE.md provides ecosystem-wide gRPC domain library rules.
 
 **References**: See [../CLAUDE.md](../CLAUDE.md) for FLEXT ecosystem standards and [README.md](README.md) for project overview.
 
 **Hierarchy**: This document provides project-specific standards based on workspace-level patterns defined in [../CLAUDE.md](../CLAUDE.md). For architectural principles, quality gates, and MCP server usage, reference the main workspace standards.
 
-## 🔗 MCP SERVER INTEGRATION
+## 🔗 MCP SERVER INTEGRATION (MANDATORY)
 
-| MCP Server              | Purpose                                             | Status     |
-| ----------------------- | --------------------------------------------------- | ---------- |
-| **serena**              | gRPC codebase analysis and microservices navigation | **ACTIVE** |
-| **sequential-thinking** | gRPC architecture and streaming problem solving     | **ACTIVE** |
-| **github**              | gRPC ecosystem integration and service PRs          | **ACTIVE** |
+As defined in [../CLAUDE.md](../CLAUDE.md), all FLEXT development MUST use:
 
-**Usage**: `claude mcp list` for available servers, leverage for gRPC-specific development patterns and microservices analysis.
+| MCP Server              | Purpose                                                  | Status          |
+| ----------------------- | -------------------------------------------------------- | --------------- |
+| **serena-flext**        | Semantic code analysis, symbol manipulation, refactoring | **MANDATORY**   |
+| **sequential-thinking** | gRPC architecture and streaming problem decomposition    | **RECOMMENDED** |
+| **context7**            | Third-party library documentation (grpcio, protobuf)     | **RECOMMENDED** |
+| **github**              | Repository operations and gRPC microservices PRs         | **ACTIVE**      |
+
+**Usage**: Reference [~/.claude/commands/flext.md](~/.claude/commands/flext.md) for MCP workflows. Use `/flext` command for gRPC module optimization and microservices refactoring.
 
 **Copyright (c) 2025 FLEXT Team. All rights reserved.**
 **License**: MIT
