@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import cast
 
 from flext_core import (
     FlextConstants,
@@ -35,7 +35,7 @@ from flext_grpc.entities import (
 from flext_grpc.services import FlextGrpcService
 
 
-class FlextGrpcPlatform(FlextService[dict[str, Any]]):
+class FlextGrpcPlatform(FlextService[dict[str, object]]):
     """Unified gRPC platform facade providing high-level operations.
 
     This class serves as the main entry point for gRPC operations,
@@ -49,7 +49,7 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
     - Service-oriented architecture
     """
 
-    def __init__(self, config: dict[str, Any] | None = None) -> None:
+    def __init__(self, config: dict[str, object] | None = None) -> None:
         """Initialize the gRPC platform facade.
 
         Args:
@@ -67,7 +67,7 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
         self._stream_service: FlextGrpcService = FlextGrpcService()
 
     @property
-    def config(self) -> dict[str, Any]:
+    def config(self) -> dict[str, object]:
         """Get the platform configuration."""
         return self._config
 
@@ -81,14 +81,14 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
         """Get the main service processor."""
         return self._service_processor
 
-    def execute(self) -> FlextResult[dict[str, Any]]:
+    def execute(self) -> FlextResult[dict[str, object]]:
         """Execute the main platform operation.
 
         Returns:
             FlextResult containing platform status and capabilities
 
         """
-        return FlextResult[dict[str, Any]].ok({
+        return FlextResult[dict[str, object]].ok({
             "status": "operational",
             "platform": "flext-grpc",
             "capabilities": [
@@ -125,7 +125,9 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
         """
         return self.ServerManagement.stop_server(server)
 
-    def get_server_status(self, server: FlextGrpcServer) -> FlextResult[dict[str, Any]]:
+    def get_server_status(
+        self, server: FlextGrpcServer
+    ) -> FlextResult[dict[str, object]]:
         """Get server status.
 
         Args:
@@ -149,7 +151,9 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
         """
         return self.ClientManagement.connect_client(client)
 
-    def get_client_status(self, client: FlextGrpcClient) -> FlextResult[dict[str, Any]]:
+    def get_client_status(
+        self, client: FlextGrpcClient
+    ) -> FlextResult[dict[str, object]]:
         """Get client status.
 
         Args:
@@ -162,14 +166,16 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
         service_processor = FlextGrpcService()
         result = service_processor.execute("status", client)
         return (
-            FlextResult[dict[str, Any]].ok(cast("dict[str, Any]", result.unwrap()))
+            FlextResult[dict[str, object]].ok(
+                cast("dict[str, object]", result.unwrap())
+            )
             if result.is_success
-            else FlextResult[dict[str, Any]].fail(result.error or "Unknown error")
+            else FlextResult[dict[str, object]].fail(result.error or "Unknown error")
         )
 
     def make_call(
         self, client: FlextGrpcClient, method_name: str, **kwargs: object
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Make a gRPC call.
 
         Args:
@@ -396,7 +402,9 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
             )
 
         @staticmethod
-        def get_server_status(server: FlextGrpcServer) -> FlextResult[dict[str, Any]]:
+        def get_server_status(
+            server: FlextGrpcServer,
+        ) -> FlextResult[dict[str, object]]:
             """Get server status.
 
             Args:
@@ -409,9 +417,13 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
             service_processor = FlextGrpcService()
             result = service_processor.execute("status", server)
             return (
-                FlextResult[dict[str, Any]].ok(cast("dict[str, Any]", result.unwrap()))
+                FlextResult[dict[str, object]].ok(
+                    cast("dict[str, object]", result.unwrap())
+                )
                 if result.is_success
-                else FlextResult[dict[str, Any]].fail(result.error or "Unknown error")
+                else FlextResult[dict[str, object]].fail(
+                    result.error or "Unknown error"
+                )
             )
 
     class ClientManagement:
@@ -462,7 +474,7 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
         @staticmethod
         def call_method(
             client: FlextGrpcClient, method_name: str, **kwargs: object
-        ) -> FlextResult[dict[str, Any]]:
+        ) -> FlextResult[dict[str, object]]:
             """Call a method on a gRPC client.
 
             Args:
@@ -477,9 +489,13 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
             service_processor = FlextGrpcService()
             result = service_processor.execute("call", client, method_name, **kwargs)
             return (
-                FlextResult[dict[str, Any]].ok(cast("dict[str, Any]", result.unwrap()))
+                FlextResult[dict[str, object]].ok(
+                    cast("dict[str, object]", result.unwrap())
+                )
                 if result.is_success
-                else FlextResult[dict[str, Any]].fail(result.error or "Unknown error")
+                else FlextResult[dict[str, object]].fail(
+                    result.error or "Unknown error"
+                )
             )
 
     class StreamManagement:
@@ -505,7 +521,7 @@ class FlextGrpcPlatform(FlextService[dict[str, Any]]):
 
         @staticmethod
         def send_data(
-            stream: FlextGrpcStream, data: dict[str, Any]
+            stream: FlextGrpcStream, data: dict[str, object]
         ) -> FlextResult[FlextGrpcStream]:
             """Send data through a stream.
 

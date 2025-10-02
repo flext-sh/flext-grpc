@@ -35,7 +35,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Message validation failed" in result.error
+        assert result.error is not None and "Message validation failed" in result.error
 
     def test_message_validation_validate_protobuf_message_with_descriptor_fields_error(
         self,
@@ -51,7 +51,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Message validation failed" in result.error
+        assert result.error is not None and "Message validation failed" in result.error
 
     def test_message_validation_validate_stream_message_sequence_with_empty_messages(
         self,
@@ -69,7 +69,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.MessageValidation.validate_stream_message_sequence(None)
 
         assert result.is_success is False
-        assert "Messages list is None" in result.error
+        assert result.error is not None and "Messages list is None" in result.error
 
     def test_message_validation_validate_stream_message_sequence_with_invalid_message_type(
         self,
@@ -80,7 +80,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         ])
 
         assert result.is_success is False
-        assert "Invalid message type" in result.error
+        assert result.error is not None and "Invalid message type" in result.error
 
     def test_message_validation_validate_stream_message_sequence_with_order_mismatch(
         self,
@@ -108,14 +108,14 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Message order mismatch" in result.error
+        assert result.error is not None and "Message order mismatch" in result.error
 
     def test_protobuf_conversion_dict_to_protobuf_with_none_dict(self) -> None:
         """Test ProtobufConversion.dict_to_protobuf with None dict."""
         result = self.utilities.ProtobufConversion.dict_to_protobuf(None, MagicMock())
 
         assert result.is_success is False
-        assert "Data dictionary is None" in result.error
+        assert result.error is not None and "Data dictionary is None" in result.error
 
     def test_protobuf_conversion_dict_to_protobuf_with_none_message_class(self) -> None:
         """Test ProtobufConversion.dict_to_protobuf with None message class."""
@@ -124,7 +124,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Message class is None" in result.error
+        assert result.error is not None and "Message class is None" in result.error
 
     def test_protobuf_conversion_dict_to_protobuf_with_invalid_dict_type(self) -> None:
         """Test ProtobufConversion.dict_to_protobuf with invalid dict type."""
@@ -133,7 +133,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Data must be a dictionary" in result.error
+        assert result.error is not None and "Data must be a dictionary" in result.error
 
     def test_protobuf_conversion_dict_to_protobuf_with_invalid_message_class_type(
         self,
@@ -144,14 +144,17 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Message class must be callable" in result.error
+        assert (
+            result.error is not None
+            and "Message class must be callable" in result.error
+        )
 
     def test_protobuf_conversion_protobuf_to_dict_with_none_message(self) -> None:
         """Test ProtobufConversion.protobuf_to_dict with None message."""
         result = self.utilities.ProtobufConversion.protobuf_to_dict(None)
 
         assert result.is_success is False
-        assert "Protobuf message is None" in result.error
+        assert result.error is not None and "Protobuf message is None" in result.error
 
     def test_protobuf_conversion_protobuf_to_dict_with_invalid_message_type(
         self,
@@ -160,14 +163,16 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.ProtobufConversion.protobuf_to_dict("invalid_message")
 
         assert result.is_success is False
-        assert "Invalid protobuf message type" in result.error
+        assert (
+            result.error is not None and "Invalid protobuf message type" in result.error
+        )
 
     def test_protobuf_conversion_serialize_protobuf_with_none_message(self) -> None:
         """Test ProtobufConversion.serialize_protobuf with None message."""
         result = self.utilities.ProtobufConversion.serialize_protobuf(None)
 
         assert result.is_success is False
-        assert "Protobuf message is None" in result.error
+        assert result.error is not None and "Protobuf message is None" in result.error
 
     def test_protobuf_conversion_serialize_protobuf_with_invalid_message_type(
         self,
@@ -176,14 +181,16 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.ProtobufConversion.serialize_protobuf("invalid_message")
 
         assert result.is_success is False
-        assert "Invalid protobuf message type" in result.error
+        assert (
+            result.error is not None and "Invalid protobuf message type" in result.error
+        )
 
     def test_channel_management_get_channel_state_with_none_channel(self) -> None:
         """Test ChannelManagement.get_channel_state with None channel."""
         result = self.utilities.ChannelManagement.get_channel_state(None)
 
         assert result.is_success is False
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_channel_management_get_channel_state_with_invalid_channel_type(
         self,
@@ -192,28 +199,28 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.ChannelManagement.get_channel_state("invalid_channel")
 
         assert result.is_success is False
-        assert "Invalid channel type" in result.error
+        assert result.error is not None and "Invalid channel type" in result.error
 
     def test_channel_management_close_channel_with_none_channel(self) -> None:
         """Test ChannelManagement.close_channel with None channel."""
         result = self.utilities.ChannelManagement.close_channel(None)
 
         assert result.is_success is False
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_channel_management_close_channel_with_invalid_channel_type(self) -> None:
         """Test ChannelManagement.close_channel with invalid channel type."""
         result = self.utilities.ChannelManagement.close_channel("invalid_channel")
 
         assert result.is_success is False
-        assert "Invalid channel type" in result.error
+        assert result.error is not None and "Invalid channel type" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_none_request(self) -> None:
         """Test StreamingHelpers.validate_stream_request with None request."""
         result = self.utilities.StreamingHelpers.validate_stream_request(None)
 
         assert result.is_success is False
-        assert "Request data is None" in result.error
+        assert result.error is not None and "Request data is None" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_invalid_request_type(
         self,
@@ -224,7 +231,10 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Request data must be a dictionary" in result.error
+        assert (
+            result.error is not None
+            and "Request data must be a dictionary" in result.error
+        )
 
     def test_streaming_helpers_validate_stream_request_with_missing_method_field(
         self,
@@ -235,7 +245,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "method" in result.error
+        assert result.error is not None and "method" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_empty_method_field(
         self,
@@ -246,7 +256,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "Method cannot be empty" in result.error
+        assert result.error is not None and "Method cannot be empty" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_whitespace_method_field(
         self,
@@ -257,7 +267,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "Method cannot be empty" in result.error
+        assert result.error is not None and "Method cannot be empty" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_missing_data_field(
         self,
@@ -268,7 +278,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "data" in result.error
+        assert result.error is not None and "data" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_empty_data_field(
         self,
@@ -279,7 +289,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "Data cannot be empty" in result.error
+        assert result.error is not None and "Data cannot be empty" in result.error
 
     def test_streaming_helpers_validate_stream_request_with_whitespace_data_field(
         self,
@@ -290,14 +300,14 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "Data cannot be empty" in result.error
+        assert result.error is not None and "Data cannot be empty" in result.error
 
     def test_streaming_helpers_create_stream_iterator_with_none_iterator(self) -> None:
         """Test StreamingHelpers.create_stream_iterator with None iterator."""
         result = self.utilities.StreamingHelpers.create_stream_iterator(None)
 
         assert result.is_success is False
-        assert "Iterator is None" in result.error
+        assert result.error is not None and "Iterator is None" in result.error
 
     def test_streaming_helpers_create_stream_iterator_with_invalid_iterator_type(
         self,
@@ -308,7 +318,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid iterator type" in result.error
+        assert result.error is not None and "Invalid iterator type" in result.error
 
     def test_streaming_helpers_create_stream_iterator_with_empty_iterator(self) -> None:
         """Test StreamingHelpers.create_stream_iterator with empty iterator."""
@@ -336,28 +346,31 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Failed to create stream iterator" in result.error
+        assert (
+            result.error is not None
+            and "Failed to create stream iterator" in result.error
+        )
 
     def test_service_discovery_discover_services_with_none_target(self) -> None:
         """Test ServiceDiscovery.discover_services with None target."""
         result = self.utilities.ServiceDiscovery.discover_services(None)
 
         assert result.is_success is False
-        assert "Target is None" in result.error
+        assert result.error is not None and "Target is None" in result.error
 
     def test_service_discovery_discover_services_with_empty_target(self) -> None:
         """Test ServiceDiscovery.discover_services with empty target."""
         result = self.utilities.ServiceDiscovery.discover_services("")
 
         assert result.is_success is False
-        assert "Target cannot be empty" in result.error
+        assert result.error is not None and "Target cannot be empty" in result.error
 
     def test_service_discovery_discover_services_with_whitespace_target(self) -> None:
         """Test ServiceDiscovery.discover_services with whitespace-only target."""
         result = self.utilities.ServiceDiscovery.discover_services("   ")
 
         assert result.is_success is False
-        assert "Target cannot be empty" in result.error
+        assert result.error is not None and "Target cannot be empty" in result.error
 
     def test_service_discovery_discover_services_with_invalid_target_format(
         self,
@@ -368,7 +381,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid target format" in result.error
+        assert result.error is not None and "Invalid target format" in result.error
 
     def test_service_discovery_discover_services_with_channel_creation_error(
         self,
@@ -382,7 +395,9 @@ class TestFlextGrpcUtilitiesAdvanced:
             result = self.utilities.ServiceDiscovery.discover_services(target)
 
         assert result.is_success is False
-        assert "Failed to discover services" in result.error
+        assert (
+            result.error is not None and "Failed to discover services" in result.error
+        )
 
     def test_service_discovery_discover_services_with_service_discovery_error(
         self,
@@ -400,21 +415,23 @@ class TestFlextGrpcUtilitiesAdvanced:
             result = self.utilities.ServiceDiscovery.discover_services(target)
 
         assert result.is_success is False
-        assert "Failed to discover services" in result.error
+        assert (
+            result.error is not None and "Failed to discover services" in result.error
+        )
 
     def test_error_handling_handle_grpc_error_with_none_error(self) -> None:
         """Test ErrorHandling.handle_grpc_error with None error."""
         result = self.utilities.ErrorHandling.handle_grpc_error(None)
 
         assert result.is_success is False
-        assert "Error is None" in result.error
+        assert result.error is not None and "Error is None" in result.error
 
     def test_error_handling_handle_grpc_error_with_invalid_error_type(self) -> None:
         """Test ErrorHandling.handle_grpc_error with invalid error type."""
         result = self.utilities.ErrorHandling.handle_grpc_error("invalid_error")
 
         assert result.is_success is False
-        assert "Invalid error type" in result.error
+        assert result.error is not None and "Invalid error type" in result.error
 
     def test_error_handling_handle_grpc_error_with_error_code_call_failure(
         self,
@@ -427,7 +444,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.ErrorHandling.handle_grpc_error(error)
 
         assert result.is_success is False
-        assert "Failed to get error code" in result.error
+        assert result.error is not None and "Failed to get error code" in result.error
 
     def test_error_handling_handle_grpc_error_with_error_details_call_failure(
         self,
@@ -440,21 +457,27 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.ErrorHandling.handle_grpc_error(error)
 
         assert result.is_success is False
-        assert "Failed to get error details" in result.error
+        assert (
+            result.error is not None and "Failed to get error details" in result.error
+        )
 
     def test_error_handling_format_error_message_with_empty_message(self) -> None:
         """Test ErrorHandling.format_error_message with empty message."""
         result = self.utilities.ErrorHandling.format_error_message("")
 
         assert result.is_success is False
-        assert "Error message cannot be empty" in result.error
+        assert (
+            result.error is not None and "Error message cannot be empty" in result.error
+        )
 
     def test_error_handling_format_error_message_with_whitespace_message(self) -> None:
         """Test ErrorHandling.format_error_message with whitespace-only message."""
         result = self.utilities.ErrorHandling.format_error_message("   ")
 
         assert result.is_success is False
-        assert "Error message cannot be empty" in result.error
+        assert (
+            result.error is not None and "Error message cannot be empty" in result.error
+        )
 
     def test_error_handling_format_error_message_with_invalid_message_type(
         self,
@@ -463,14 +486,17 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.ErrorHandling.format_error_message(123)
 
         assert result.is_success is False
-        assert "Error message must be a string" in result.error
+        assert (
+            result.error is not None
+            and "Error message must be a string" in result.error
+        )
 
     def test_metrics_collection_collect_channel_metrics_with_none_channel(self) -> None:
         """Test MetricsCollection.collect_channel_metrics with None channel."""
         result = self.utilities.MetricsCollection.collect_channel_metrics(None)
 
         assert result.is_success is False
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_metrics_collection_collect_channel_metrics_with_invalid_channel_type(
         self,
@@ -481,7 +507,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid channel type" in result.error
+        assert result.error is not None and "Invalid channel type" in result.error
 
     def test_metrics_collection_collect_channel_metrics_with_channel_state_error(
         self,
@@ -493,7 +519,10 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.MetricsCollection.collect_channel_metrics(mock_channel)
 
         assert result.is_success is False
-        assert "Failed to collect channel metrics" in result.error
+        assert (
+            result.error is not None
+            and "Failed to collect channel metrics" in result.error
+        )
 
     def test_metrics_collection_collect_performance_metrics_with_invalid_start_time_type(
         self,
@@ -504,7 +533,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_with_invalid_end_time_type(
         self,
@@ -515,7 +544,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_with_negative_start_time(
         self,
@@ -526,7 +555,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_with_negative_end_time(
         self,
@@ -537,7 +566,7 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_with_zero_duration(
         self,
@@ -580,49 +609,49 @@ class TestFlextGrpcUtilitiesAdvanced:
         result = self.utilities.execute("test_command", "test_data")
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_no_arguments(self) -> None:
         """Test utilities execute with no arguments."""
         result = self.utilities.execute()
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_none_command(self) -> None:
         """Test utilities execute with None command."""
         result = self.utilities.execute(None)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_empty_command(self) -> None:
         """Test utilities execute with empty command."""
         result = self.utilities.execute("")
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_whitespace_command(self) -> None:
         """Test utilities execute with whitespace-only command."""
         result = self.utilities.execute("   ")
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_invalid_command_type(self) -> None:
         """Test utilities execute with invalid command type."""
         result = self.utilities.execute(123)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_multiple_arguments(self) -> None:
         """Test utilities execute with multiple arguments."""
         result = self.utilities.execute("test_command", "arg1", "arg2", "arg3")
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_keyword_arguments(self) -> None:
         """Test utilities execute with keyword arguments."""
@@ -631,11 +660,11 @@ class TestFlextGrpcUtilitiesAdvanced:
         )
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")
 
     def test_utilities_execute_with_mixed_arguments(self) -> None:
         """Test utilities execute with mixed arguments."""
         result = self.utilities.execute("test_command", "arg1", "arg2", kwarg1="value1")
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert "Unknown command" in (result.error or "")

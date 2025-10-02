@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from typing import Any, cast
+from typing import cast
 
 from flext_core import FlextResult
 from flext_grpc import (
@@ -36,10 +36,11 @@ class TestPlatformIntegration:
         entity: FlextGrpcServer | FlextGrpcClient | FlextGrpcStream | None = None,
         *args: object,
         **kwargs: object,
-    ) -> FlextResult[Any]:
+    ) -> FlextResult[object]:
         """Route service commands to appropriate service instances."""
         return cast(
-            "FlextResult[Any]", self.service.execute(command, entity, *args, **kwargs)
+            "FlextResult[object]",
+            self.service.execute(command, entity, *args, **kwargs),
         )
 
     def test_platform_server_lifecycle(self) -> None:
@@ -141,18 +142,20 @@ class TestPlatformIntegration:
         server = create_server("localhost", 9003)
 
         # Test server operations through service
-        start_result: FlextResult[Any] = self.execute_service_command("start", server)
+        start_result: FlextResult[object] = self.execute_service_command(
+            "start", server
+        )
         assert start_result.is_success
 
         # Test same operations through platform
-        platform_start_result: FlextResult[Any] = cast(
-            "FlextResult[Any]", self.platform.server_operation("start", server)
+        platform_start_result: FlextResult[object] = cast(
+            "FlextResult[object]", self.platform.server_operation("start", server)
         )
         assert platform_start_result.is_success
 
         # Results should be consistent
-        service_server: Any = start_result.data
-        platform_server: Any = platform_start_result.data
+        service_server: object = start_result.data
+        platform_server: object = platform_start_result.data
         if (
             hasattr(service_server, "state")
             and hasattr(platform_server, "state")
@@ -172,8 +175,8 @@ class TestPlatformIntegration:
 
         # 2. Add service to server
         service_entity = create_service("IntegrationService", ["integration_method"])
-        add_service_result: FlextResult[Any] = cast(
-            "FlextResult[Any]",
+        add_service_result: FlextResult[object] = cast(
+            "FlextResult[object]",
             self.platform.server_operation(
                 "add_service",
                 started_server,
@@ -181,7 +184,7 @@ class TestPlatformIntegration:
             ),
         )
         assert add_service_result.is_success
-        server_with_service: Any = add_service_result.data
+        server_with_service: object = add_service_result.data
         if (
             hasattr(server_with_service, "services")
             and server_with_service.services
@@ -250,7 +253,7 @@ class TestPlatformIntegration:
         invalid_server = create_server("", 0)  # Invalid configuration
 
         # Service level
-        service_result: FlextResult[Any] = self.execute_service_command(
+        service_result: FlextResult[object] = self.execute_service_command(
             "start", invalid_server
         )
         assert service_result.is_failure
@@ -274,8 +277,10 @@ class TestPlatformIntegration:
         server = create_server("localhost", 9005)
 
         # Start through service
-        service_result: FlextResult[Any] = self.execute_service_command("start", server)
-        service_server: Any = service_result.data
+        service_result: FlextResult[object] = self.execute_service_command(
+            "start", server
+        )
+        service_server: object = service_result.data
 
         # Check status through platform
         platform_status: FlextResult[dict[str, object]] = (

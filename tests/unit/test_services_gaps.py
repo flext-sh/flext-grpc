@@ -44,7 +44,7 @@ class TestServicesValidationGaps:
         assert result.is_failure
         assert result.error is not None
         assert result.error is not None
-        assert "Unknown server command" in result.error
+        assert result.error is not None and "Unknown server command" in result.error
 
     def test_client_service_unknown_command(self) -> None:
         """Test client service with unknown command."""
@@ -57,7 +57,7 @@ class TestServicesValidationGaps:
         result = service.execute("unknown_command", client)
         assert result.is_failure
         assert result.error is not None
-        assert "Unknown client command" in result.error
+        assert result.error is not None and "Unknown client command" in result.error
 
     def test_stream_service_unknown_command(self) -> None:
         """Test stream service with unknown command."""
@@ -72,7 +72,7 @@ class TestServicesValidationGaps:
         result = service.execute("unknown_command", stream)
         assert result.is_failure
         assert result.error is not None
-        assert "Unknown stream command" in result.error
+        assert result.error is not None and "Unknown stream command" in result.error
 
     def test_server_service_invalid_server_state(self) -> None:
         """Test server service operations with invalid server state."""
@@ -89,7 +89,7 @@ class TestServicesValidationGaps:
         result = service.execute("start", server)
         assert result.is_failure
         assert result.error is not None
-        assert "Server validation failed" in result.error
+        assert result.error is not None and "Server validation failed" in result.error
 
     def test_client_service_missing_channel(self) -> None:
         """Test client operations when channel is None."""
@@ -103,7 +103,7 @@ class TestServicesValidationGaps:
         result = service.execute("connect", client)
         assert result.is_failure
         assert result.error is not None
-        assert "has no channel" in result.error
+        assert result.error is not None and "has no channel" in result.error
 
     def test_client_service_call_not_connected(self) -> None:
         """Test client call when not connected."""
@@ -123,7 +123,10 @@ class TestServicesValidationGaps:
         result = service.execute("call", client, "TestMethod", {"data": "test"})
         assert result.is_failure
         assert result.error is not None
-        assert "Cannot make call with disconnected client" in result.error
+        assert (
+            result.error is not None
+            and "Cannot make call with disconnected client" in result.error
+        )
 
     def test_server_service_add_service_wrong_state(self) -> None:
         """Test adding service to server in wrong state."""
@@ -147,7 +150,10 @@ class TestServicesValidationGaps:
         result = service.execute("add_service", server, grpc_service)
         assert result.is_failure
         assert result.error is not None
-        assert "Cannot add service to server in state" in result.error
+        assert (
+            result.error is not None
+            and "Cannot add service to server in state" in result.error
+        )
 
     def test_stream_service_validation_errors(self) -> None:
         """Test stream service with validation errors."""
@@ -163,7 +169,7 @@ class TestServicesValidationGaps:
         result = service.execute("create", stream)
         assert result.is_failure
         assert result.error is not None
-        assert "Stream validation failed" in result.error
+        assert result.error is not None and "Stream validation failed" in result.error
 
     def test_service_execute_insufficient_arguments_variations(self) -> None:
         """Test various insufficient argument scenarios."""
@@ -199,4 +205,6 @@ class TestServicesValidationGaps:
         result = client_service.execute("call", client)  # Missing method name
         assert result.is_failure
         assert result.error is not None
-        assert "Method name must be a string" in result.error
+        assert (
+            result.error is not None and "Method name must be a string" in result.error
+        )

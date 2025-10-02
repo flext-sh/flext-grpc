@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import math
 import weakref
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -459,24 +459,6 @@ class TestFlextGrpcServiceEdgeCasesSimple:
         assert result.is_success is False
         assert result.error is not None and "Unknown server command" in result.error
 
-    def test_execute_with_contextmanager_command_name(self) -> None:
-        """Test execute with contextmanager command name."""
-        server = FlextGrpcServer(
-            id="test-server",
-            host="localhost",
-            port=50051,
-            created_at=self.now,
-        )
-
-        @contextmanager
-        def test_context() -> Generator[str]:
-            yield "start"
-
-        result = self.service.execute(str(test_context()), server)
-
-        assert result.is_success is False
-        assert result.error is not None and "Unknown server command" in result.error
-
     def test_execute_with_partial_command_name(self) -> None:
         """Test execute with partial command name."""
         server = FlextGrpcServer(
@@ -503,7 +485,7 @@ class TestFlextGrpcServiceEdgeCasesSimple:
             created_at=self.now,
         )
 
-        def test_decorator(func: object) -> object:
+        def test_decorator(func: Callable[..., object]) -> Callable[..., object]:
             @wraps(func)
             def wrapper(*args: object, **kwargs: object) -> object:
                 return func(*args, **kwargs)

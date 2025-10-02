@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import importlib.metadata
+from typing import Final
 
 from flext_core import FlextContainer, FlextResult
 from flext_grpc.api import (
@@ -47,23 +48,24 @@ from flext_grpc.services import (
     FlextGrpcStreamService,
 )
 from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc.version import VERSION, FlextGrpcVersion
 
-# Export commonly used types for convenience
 TGrpcTarget = FlextGrpcTypes.TGrpcTarget
 GrpcTarget = FlextGrpcTypes.GrpcTarget
 
-# Export validation functions for convenience
 flext_grpc_validate_target = FlextGrpcTypes.GrpcValidation.validate_target
 flext_grpc_parse_target = FlextGrpcTypes.GrpcValidation.parse_target
 
-try:
-    __version__ = importlib.metadata.version("flext-grpc")
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "1.0.0"
+__version__ = importlib.metadata.version("flext-grpc")
 
-__version_info__ = tuple(int(x) for x in __version__.split(".") if x.isdigit())
+PROJECT_VERSION: Final[FlextGrpcVersion] = VERSION
 
-__all__: list[str] = [
+__version__: str = VERSION.version
+__version_info__: tuple[int | str, ...] = VERSION.version_info
+
+__all__ = [
+    "PROJECT_VERSION",
+    "VERSION",
     "EchoRequest",
     "FlextContainer",
     "FlextGrpcChannel",
@@ -87,6 +89,7 @@ __all__: list[str] = [
     "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcValidationError",
+    "FlextGrpcVersion",
     "FlextResult",
     "GrpcTarget",
     "TGrpcTarget",
@@ -105,19 +108,14 @@ __all__: list[str] = [
     "validate_address",
 ]
 
-
-# Module metadata for API documentation and tooling
 __architecture__ = "Clean Architecture + DDD"
-__author__ = "FLEXT Development Team"
-__license__ = "MIT"
+
 __copyright__ = "Copyright (c) 2025 FLEXT Contributors"
 __status__ = "Production"
-__maintainer__ = "FLEXT Development Team"
+
 __email__ = "noreply@flext.dev"
 __url__ = "https://github.com/flext/flext-grpc"
-__description__ = "Enterprise gRPC communication platform with Clean Architecture"
 
-# API stability and compatibility information
 __api_version__ = "1.0"
 __stability__ = "stable"
 __compatibility__ = "Python 3.13+"

@@ -58,7 +58,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Invalid message instance" in result.error
+        assert result.error is not None and "Invalid message instance" in result.error
 
     def test_message_validation_validate_protobuf_message_no_descriptor(self) -> None:
         """Test MessageValidation.validate_protobuf_message with no DESCRIPTOR."""
@@ -70,7 +70,10 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Message descriptor not available" in result.error
+        assert (
+            result.error is not None
+            and "Message descriptor not available" in result.error
+        )
 
     def test_message_validation_validate_protobuf_message_descriptor_none(self) -> None:
         """Test MessageValidation.validate_protobuf_message with None descriptor."""
@@ -83,7 +86,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Message descriptor is None" in result.error
+        assert result.error is not None and "Message descriptor is None" in result.error
 
     def test_message_validation_validate_protobuf_message_serialization_failure(
         self,
@@ -101,7 +104,9 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Message serialization failed" in result.error
+        assert (
+            result.error is not None and "Message serialization failed" in result.error
+        )
 
     def test_message_validation_validate_protobuf_message_validation_failure(
         self,
@@ -123,7 +128,10 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Required field 'test_field' is missing" in result.error
+        assert (
+            result.error is not None
+            and "Required field 'test_field' is missing" in result.error
+        )
 
     def test_message_validation_validate_stream_message_sequence_success(self) -> None:
         """Test MessageValidation.validate_stream_message_sequence with success."""
@@ -202,7 +210,9 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Message 0 validation failed" in result.error
+        assert (
+            result.error is not None and "Message 0 validation failed" in result.error
+        )
 
     def test_protobuf_conversion_dict_to_protobuf_success(self) -> None:
         """Test ProtobufConversion.dict_to_protobuf with success."""
@@ -234,7 +244,10 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Dict to protobuf conversion failed" in result.error
+        assert (
+            result.error is not None
+            and "Dict to protobuf conversion failed" in result.error
+        )
 
     def test_protobuf_conversion_protobuf_to_dict_success(self) -> None:
         """Test ProtobufConversion.protobuf_to_dict with success."""
@@ -259,7 +272,10 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Protobuf to dict conversion failed" in result.error
+        assert (
+            result.error is not None
+            and "Protobuf to dict conversion failed" in result.error
+        )
 
     def test_protobuf_conversion_serialize_message_success(self) -> None:
         """Test ProtobufConversion.serialize_message with success."""
@@ -281,7 +297,9 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Message serialization failed" in result.error
+        assert (
+            result.error is not None and "Message serialization failed" in result.error
+        )
 
     def test_channel_management_get_channel_state_success(self) -> None:
         """Test ChannelManagement.get_channel_state with success."""
@@ -304,7 +322,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_channel_management_close_channel_success(self) -> None:
         """Test ChannelManagement.close_channel with success."""
@@ -324,7 +342,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Channel closure failed" in result.error
+        assert result.error is not None and "Channel closure failed" in result.error
 
     def test_streaming_helpers_create_stream_iterator_success(self) -> None:
         """Test StreamingHelpers.create_stream_iterator with success."""
@@ -377,7 +395,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         # The method should fail because the channel is treated as None
         assert result.is_success is False
         assert result.error is not None
-        assert "Invalid channel provided" in result.error
+        assert result.error is not None and "Invalid channel provided" in result.error
 
     def test_error_handling_handle_grpc_error_success(self) -> None:
         """Test ErrorHandling.handle_grpc_error with success."""
@@ -457,7 +475,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_metrics_collection_collect_performance_metrics_success(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with success."""
@@ -484,7 +502,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_invalid_end_time(
         self,
@@ -496,7 +514,7 @@ class TestFlextGrpcUtilitiesComprehensive:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_negative_duration(
         self,

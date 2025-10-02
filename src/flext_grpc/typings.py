@@ -14,12 +14,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from typing import (
-    Literal,
-    Protocol,
-    override,
-    runtime_checkable,
-)
+from typing import Literal, Protocol, override, runtime_checkable
 
 from flext_core import FlextLogger, FlextTypes
 

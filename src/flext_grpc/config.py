@@ -18,11 +18,6 @@ from flext_core import (
 )
 from flext_grpc.constants import FlextGrpcConstants
 
-# Constants are now imported from flext_grpc.constants - NO DUPLICATION
-
-# Use FlextGrpcConstants from constants file
-
-
 # Generate gRPC-specific exceptions
 _grpc_exceptions = FlextExceptions.create_module_exception_classes("flext_grpc")
 FlextGrpcConfigurationError = _grpc_exceptions["FLEXT_GRPCConfigurationError"]

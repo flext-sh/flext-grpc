@@ -30,7 +30,7 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Message descriptor is None" in result.error
+        assert result.error is not None and "Message descriptor is None" in result.error
 
     def test_message_validation_validate_protobuf_message_no_descriptor(self) -> None:
         """Test MessageValidation.validate_protobuf_message with no DESCRIPTOR attribute."""
@@ -42,7 +42,10 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Message descriptor not available" in result.error
+        assert (
+            result.error is not None
+            and "Message descriptor not available" in result.error
+        )
 
     def test_message_validation_validate_protobuf_message_serialization_failure(
         self,
@@ -59,7 +62,9 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Message serialization failed" in result.error
+        assert (
+            result.error is not None and "Message serialization failed" in result.error
+        )
 
     def test_message_validation_validate_protobuf_message_validation_failure(
         self,
@@ -76,7 +81,7 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Message validation failed" in result.error
+        assert result.error is not None and "Message validation failed" in result.error
 
     def test_protobuf_conversion_protobuf_to_dict_success(self) -> None:
         """Test ProtobufConversion.protobuf_to_dict with successful conversion."""
@@ -99,7 +104,10 @@ class TestFlextGrpcUtilitiesAdditional:
             result = self.utilities.ProtobufConversion.protobuf_to_dict(mock_message)
 
         assert result.is_success is False
-        assert "Failed to convert protobuf to dict" in result.error
+        assert (
+            result.error is not None
+            and "Failed to convert protobuf to dict" in result.error
+        )
 
     def test_protobuf_conversion_serialize_protobuf_success(self) -> None:
         """Test ProtobufConversion.serialize_protobuf with successful serialization."""
@@ -120,7 +128,10 @@ class TestFlextGrpcUtilitiesAdditional:
         result = self.utilities.ProtobufConversion.serialize_protobuf(mock_message)
 
         assert result.is_success is False
-        assert "Failed to serialize protobuf message" in result.error
+        assert (
+            result.error is not None
+            and "Failed to serialize protobuf message" in result.error
+        )
 
     def test_channel_management_get_channel_state_success(self) -> None:
         """Test ChannelManagement.get_channel_state with successful state retrieval."""
@@ -149,7 +160,7 @@ class TestFlextGrpcUtilitiesAdditional:
         result = self.utilities.ChannelManagement.close_channel(mock_channel)
 
         assert result.is_success is False
-        assert "Channel closure failed" in result.error
+        assert result.error is not None and "Channel closure failed" in result.error
 
     def test_streaming_helpers_validate_stream_request_valid(self) -> None:
         """Test StreamingHelpers.validate_stream_request with valid request."""
@@ -167,7 +178,7 @@ class TestFlextGrpcUtilitiesAdditional:
         result = self.utilities.StreamingHelpers.validate_stream_request(request_data)
 
         assert result.is_success is False
-        assert "method" in result.error
+        assert result.error is not None and "method" in result.error
 
     def test_service_discovery_discover_services_failure(self) -> None:
         """Test ServiceDiscovery.discover_services with discovery failure."""
@@ -177,7 +188,9 @@ class TestFlextGrpcUtilitiesAdditional:
             result = self.utilities.ServiceDiscovery.discover_services(target)
 
         assert result.is_success is False
-        assert "Failed to discover services" in result.error
+        assert (
+            result.error is not None and "Failed to discover services" in result.error
+        )
 
     def test_error_handling_handle_grpc_error_connection_error(self) -> None:
         """Test ErrorHandling.handle_grpc_error with connection error."""
@@ -188,7 +201,7 @@ class TestFlextGrpcUtilitiesAdditional:
         result = self.utilities.ErrorHandling.handle_grpc_error(error)
 
         assert result.is_success is False
-        assert "Connection error" in result.error
+        assert result.error is not None and "Connection error" in result.error
 
     def test_error_handling_handle_grpc_error_unknown_error(self) -> None:
         """Test ErrorHandling.handle_grpc_error with unknown error."""
@@ -199,7 +212,7 @@ class TestFlextGrpcUtilitiesAdditional:
         result = self.utilities.ErrorHandling.handle_grpc_error(error)
 
         assert result.is_success is False
-        assert "Unknown error" in result.error
+        assert result.error is not None and "Unknown error" in result.error
 
     def test_metrics_collection_collect_channel_metrics_success(self) -> None:
         """Test MetricsCollection.collect_channel_metrics with successful collection."""
@@ -220,7 +233,10 @@ class TestFlextGrpcUtilitiesAdditional:
         result = self.utilities.MetricsCollection.collect_channel_metrics(mock_channel)
 
         assert result.is_success is False
-        assert "Failed to collect channel metrics" in result.error
+        assert (
+            result.error is not None
+            and "Failed to collect channel metrics" in result.error
+        )
 
     def test_metrics_collection_collect_performance_metrics_invalid_start_time(
         self,
@@ -231,7 +247,7 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_invalid_end_time(
         self,
@@ -242,7 +258,7 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_metrics_collection_collect_performance_metrics_negative_duration(
         self,
@@ -254,7 +270,7 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error
 
     def test_streaming_helpers_create_stream_iterator_with_error(self) -> None:
         """Test StreamingHelpers.create_stream_iterator with iterator error."""
@@ -269,7 +285,10 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Failed to create stream iterator" in result.error
+        assert (
+            result.error is not None
+            and "Failed to create stream iterator" in result.error
+        )
 
     def test_message_validation_validate_stream_message_sequence_with_validation_error(
         self,
@@ -288,7 +307,9 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Message 0 validation failed" in result.error
+        assert (
+            result.error is not None and "Message 0 validation failed" in result.error
+        )
 
     def test_message_validation_validate_stream_message_sequence_with_order_validation(
         self,
@@ -316,4 +337,4 @@ class TestFlextGrpcUtilitiesAdditional:
         )
 
         assert result.is_success is False
-        assert "Sequence validation failed" in result.error
+        assert result.error is not None and "Sequence validation failed" in result.error

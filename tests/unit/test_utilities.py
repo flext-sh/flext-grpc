@@ -7,7 +7,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from datetime import UTC, datetime
-from typing import Any, cast
+from typing import cast
 from unittest.mock import MagicMock, patch
 
 import grpc
@@ -68,7 +68,7 @@ class TestMessageValidation:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Invalid message instance" in result.error
+        assert result.error is not None and "Invalid message instance" in result.error
 
     def test_validate_protobuf_message_valid(self) -> None:
         """Test validation with valid message."""
@@ -118,7 +118,7 @@ class TestMessageValidation:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Request validation failed" in result.error
+        assert result.error is not None and "Request validation failed" in result.error
 
     def test_validate_stream_message_sequence_empty(self) -> None:
         """Test stream message sequence validation with empty sequence."""
@@ -126,7 +126,10 @@ class TestMessageValidation:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Message sequence cannot be empty" in result.error
+        assert (
+            result.error is not None
+            and "Message sequence cannot be empty" in result.error
+        )
 
     def test_validate_stream_message_sequence_valid(self) -> None:
         """Test stream message sequence validation with valid messages."""
@@ -202,7 +205,10 @@ class TestProtobufConversion:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Dict to protobuf conversion failed" in result.error
+        assert (
+            result.error is not None
+            and "Dict to protobuf conversion failed" in result.error
+        )
 
     def test_protobuf_to_dict_valid(self) -> None:
         """Test converting protobuf to dict with valid message."""
@@ -226,7 +232,10 @@ class TestProtobufConversion:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Protobuf to dict conversion failed" in result.error
+        assert (
+            result.error is not None
+            and "Protobuf to dict conversion failed" in result.error
+        )
 
     def test_serialize_protobuf_valid(self) -> None:
         """Test protobuf serialization with valid message."""
@@ -248,7 +257,9 @@ class TestProtobufConversion:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Message serialization failed" in result.error
+        assert (
+            result.error is not None and "Message serialization failed" in result.error
+        )
 
 
 class TestChannelManagement:
@@ -312,7 +323,10 @@ class TestChannelManagement:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Channel connectivity check failed" in result.error
+        assert (
+            result.error is not None
+            and "Channel connectivity check failed" in result.error
+        )
 
     def test_close_channel_valid(self) -> None:
         """Test closing channel with valid channel."""
@@ -332,7 +346,7 @@ class TestChannelManagement:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Channel closure failed" in result.error
+        assert result.error is not None and "Channel closure failed" in result.error
 
 
 class TestStreamingHelpers:
@@ -355,12 +369,12 @@ class TestStreamingHelpers:
 
     def test_create_request_stream_empty(self) -> None:
         """Test creating request stream with empty data."""
-        iterator: Iterator[Any] = (
+        iterator: Iterator[object] = (
             self.utilities.StreamingHelpers.create_request_stream([])
         )
 
         assert iterator is not None
-        items: list[Any] = list(iterator)
+        items: list[object] = list(iterator)
         assert len(items) == 0
 
     def test_validate_stream_metadata_valid(self) -> None:
@@ -413,7 +427,7 @@ class TestServiceDiscovery:
 
         assert result.is_failure
         assert result.error is not None
-        assert "Invalid channel provided" in result.error
+        assert result.error is not None and "Invalid channel provided" in result.error
 
 
 class TestErrorHandling:

@@ -34,7 +34,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown command" in result.error
 
     def test_execute_start_command_with_server(self) -> None:
         """Test execute with start command and server."""
@@ -217,7 +217,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Server start failed" in result.error
+        assert result.error is not None and "Server start failed" in result.error
 
     def test_stop_server_success(self) -> None:
         """Test _stop_server with successful stop."""
@@ -255,7 +255,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "No active gRPC server" in result.error
+        assert result.error is not None and "No active gRPC server" in result.error
 
     def test_connect_client_success(self) -> None:
         """Test _connect_client with successful connection."""
@@ -288,7 +288,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Connection failed" in result.error
+        assert result.error is not None and "Connection failed" in result.error
 
     def test_disconnect_client_success(self) -> None:
         """Test _disconnect_client with successful disconnection."""
@@ -322,7 +322,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "No active gRPC channel" in result.error
+        assert result.error is not None and "No active gRPC channel" in result.error
 
     def test_make_call_success(self) -> None:
         """Test _make_call with successful call."""
@@ -344,7 +344,7 @@ class TestFlextGrpcServiceAdditional:
         mock_stub.TestMethod = mock_method
         mock_method.return_value = {"result": "success"}
 
-        result = self.service._make_call(client, "TestMethod", arg1="value1")
+        result = self.service._make_call(client, "TestMethod", request="test_request")
 
         assert result.is_success
 
@@ -357,11 +357,11 @@ class TestFlextGrpcServiceAdditional:
             created_at=datetime.now(UTC),
         )
 
-        result = self.service._make_call(client, "TestMethod")
+        result = self.service._make_call(client, "TestMethod", request=None)
 
         assert result.is_success is False
         assert result.error is not None
-        assert "No active gRPC channel" in result.error
+        assert result.error is not None and "No active gRPC channel" in result.error
 
     def test_send_data_success(self) -> None:
         """Test _send_data with successful send."""
@@ -419,7 +419,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "No active gRPC server" in result.error
+        assert result.error is not None and "No active gRPC server" in result.error
 
     def test_handle_server_streaming_success(self) -> None:
         """Test _handle_server_streaming with successful streaming."""
@@ -457,7 +457,7 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "No active gRPC stub" in result.error
+        assert result.error is not None and "No active gRPC stub" in result.error
 
     def test_create_stream_success(self) -> None:
         """Test _create_stream with successful stream creation."""
@@ -492,4 +492,4 @@ class TestFlextGrpcServiceAdditional:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Stream creation failed" in result.error
+        assert result.error is not None and "Stream creation failed" in result.error

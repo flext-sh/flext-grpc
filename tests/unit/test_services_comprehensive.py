@@ -25,14 +25,14 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service.execute("start", None)
 
         assert result.is_success is False
-        assert "Entity instance required" in result.error
+        assert result.error is not None and "Entity instance required" in result.error
 
     def test_execute_with_invalid_entity_type(self) -> None:
         """Test execute with invalid entity type."""
         result = self.service.execute("start", "invalid_entity")
 
         assert result.is_success is False
-        assert "Invalid entity type" in result.error
+        assert result.error is not None and "Invalid entity type" in result.error
 
     def test_execute_start_with_server_success(self) -> None:
         """Test execute start command with server success."""
@@ -202,7 +202,7 @@ class TestFlextGrpcServiceComprehensive:
             result = self.service._start_server(server)
 
         assert result.is_success is False
-        assert "Server start failed" in result.error
+        assert result.error is not None and "Server start failed" in result.error
 
     def test_stop_server_success(self) -> None:
         """Test _stop_server with successful stop."""
@@ -235,7 +235,7 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service._stop_server(server)
 
         assert result.is_success is False
-        assert "No active gRPC server" in result.error
+        assert result.error is not None and "No active gRPC server" in result.error
 
     def test_connect_client_success(self) -> None:
         """Test _connect_client with successful connection."""
@@ -266,7 +266,7 @@ class TestFlextGrpcServiceComprehensive:
             result = self.service._connect_client(client)
 
         assert result.is_success is False
-        assert "Connection failed" in result.error
+        assert result.error is not None and "Connection failed" in result.error
 
     def test_disconnect_client_success(self) -> None:
         """Test _disconnect_client with successful disconnection."""
@@ -297,7 +297,7 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service._disconnect_client(client)
 
         assert result.is_success is False
-        assert "No active gRPC channel" in result.error
+        assert result.error is not None and "No active gRPC channel" in result.error
 
     def test_make_call_success(self) -> None:
         """Test _make_call with successful call."""
@@ -318,7 +318,7 @@ class TestFlextGrpcServiceComprehensive:
         mock_stub.TestMethod = mock_method
         mock_method.return_value = {"result": "success"}
 
-        result = self.service._make_call(client, "TestMethod", arg1="value1")
+        result = self.service._make_call(client, "TestMethod", request="test_request")
 
         assert result.is_success
 
@@ -330,10 +330,10 @@ class TestFlextGrpcServiceComprehensive:
             created_at=self.now,
         )
 
-        result = self.service._make_call(client, "TestMethod")
+        result = self.service._make_call(client, "TestMethod", request=None)
 
         assert result.is_success is False
-        assert "No active gRPC channel" in result.error
+        assert result.error is not None and "No active gRPC channel" in result.error
 
     def test_send_data_success(self) -> None:
         """Test _send_data with successful send."""
@@ -386,7 +386,7 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service._get_status(server)
 
         assert result.is_success is False
-        assert "No active gRPC server" in result.error
+        assert result.error is not None and "No active gRPC server" in result.error
 
     def test_handle_server_streaming_success(self) -> None:
         """Test _handle_server_streaming with successful streaming."""
@@ -406,7 +406,7 @@ class TestFlextGrpcServiceComprehensive:
         mock_response.data = "test_response"
         mock_stub.TestMethod.return_value = [mock_response]
 
-        result = self.service._handle_server_streaming(stream)
+        result = self.service._handle_server_streaming(stream, {}, None, None, stub)
 
         assert result.is_success
 
@@ -420,10 +420,10 @@ class TestFlextGrpcServiceComprehensive:
         )
 
         # No grpc_stub set
-        result = self.service._handle_server_streaming(stream)
+        result = self.service._handle_server_streaming(stream, {}, None, None, stub)
 
         assert result.is_success is False
-        assert "No active gRPC stub" in result.error
+        assert result.error is not None and "No active gRPC stub" in result.error
 
     def test_create_stream_success(self) -> None:
         """Test _create_stream with successful stream creation."""
@@ -457,7 +457,7 @@ class TestFlextGrpcServiceComprehensive:
             result = self.service._create_stream(stream)
 
         assert result.is_success is False
-        assert "Stream creation failed" in result.error
+        assert result.error is not None and "Stream creation failed" in result.error
 
     def test_execute_with_unknown_command(self) -> None:
         """Test execute with unknown command."""
@@ -471,7 +471,7 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service.execute("unknown_command", server)
 
         assert result.is_success is False
-        assert "Unknown command" in result.error
+        assert result.error is not None and "Unknown command" in result.error
 
     def test_execute_with_wrong_entity_type_for_command(self) -> None:
         """Test execute with wrong entity type for command."""
@@ -485,7 +485,7 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service.execute("start", client)
 
         assert result.is_success is False
-        assert "Invalid entity type" in result.error
+        assert result.error is not None and "Invalid entity type" in result.error
 
     def test_execute_call_with_invalid_method_name(self) -> None:
         """Test execute call with invalid method name."""
@@ -498,7 +498,9 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service.execute("call", client, "", arg1="value1")
 
         assert result.is_success is False
-        assert "Method name must be a string" in result.error
+        assert (
+            result.error is not None and "Method name must be a string" in result.error
+        )
 
     def test_execute_call_with_whitespace_method_name(self) -> None:
         """Test execute call with whitespace-only method name."""
@@ -511,4 +513,6 @@ class TestFlextGrpcServiceComprehensive:
         result = self.service.execute("call", client, "   ", arg1="value1")
 
         assert result.is_success is False
-        assert "Method name must be a string" in result.error
+        assert (
+            result.error is not None and "Method name must be a string" in result.error
+        )

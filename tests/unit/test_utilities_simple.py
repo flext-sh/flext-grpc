@@ -6,7 +6,6 @@ Tests the main FlextGrpcUtilities class and key methods.
 from __future__ import annotations
 
 from collections.abc import Iterator
-from typing import Any
 from unittest.mock import MagicMock, patch
 
 from flext_core import FlextResult
@@ -52,7 +51,7 @@ class TestFlextGrpcUtilitiesSimple:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Invalid message instance" in result.error
+        assert result.error is not None and "Invalid message instance" in result.error
 
     def test_message_validation_validate_protobuf_message_valid(self) -> None:
         """Test MessageValidation.validate_protobuf_message with valid message."""
@@ -77,14 +76,17 @@ class TestFlextGrpcUtilitiesSimple:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Message sequence cannot be empty" in result.error
+        assert (
+            result.error is not None
+            and "Message sequence cannot be empty" in result.error
+        )
 
     def test_protobuf_conversion_dict_to_protobuf_success(self) -> None:
         """Test ProtobufConversion.dict_to_protobuf with successful conversion."""
         utilities = FlextGrpcUtilities()
 
         # Use empty dict to avoid protobuf validation issues
-        data_dict: dict[str, Any] = {}
+        data_dict: dict[str, object] = {}
 
         # Create a proper mock message class
         mock_message_class = MagicMock()
@@ -107,7 +109,7 @@ class TestFlextGrpcUtilitiesSimple:
         """Test ProtobufConversion.dict_to_protobuf with conversion error."""
         utilities = FlextGrpcUtilities()
 
-        data_dict: dict[str, Any] = {"test": "data"}
+        data_dict: dict[str, object] = {"test": "data"}
         mock_message_class = MagicMock()
         mock_message_class.side_effect = Exception("Conversion failed")
 
@@ -118,7 +120,10 @@ class TestFlextGrpcUtilitiesSimple:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Dict to protobuf conversion failed" in result.error
+        assert (
+            result.error is not None
+            and "Dict to protobuf conversion failed" in result.error
+        )
 
     def test_channel_management_create_secure_channel(self) -> None:
         """Test ChannelManagement.create_secure_channel."""
@@ -157,7 +162,7 @@ class TestFlextGrpcUtilitiesSimple:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_channel_management_close_channel_none(self) -> None:
         """Test ChannelManagement.close_channel with None channel."""
@@ -166,7 +171,7 @@ class TestFlextGrpcUtilitiesSimple:
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_streaming_helpers_create_stream_iterator(self) -> None:
         """Test StreamingHelpers.create_stream_iterator."""
@@ -191,7 +196,7 @@ class TestFlextGrpcUtilitiesSimple:
         """Test StreamingHelpers.create_stream_iterator with empty data."""
         utilities = FlextGrpcUtilities()
 
-        result: FlextResult[Iterator[Any]] = (
+        result: FlextResult[Iterator[object]] = (
             utilities.StreamingHelpers.create_stream_iterator([])
         )
 
@@ -217,13 +222,13 @@ class TestFlextGrpcUtilitiesSimple:
     def test_error_handling_handle_grpc_error_none(self) -> None:
         """Test ErrorHandling.handle_grpc_error with None error."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, Any]] = utilities.ErrorHandling.handle_grpc_error(
-            None
+        result: FlextResult[dict[str, object]] = (
+            utilities.ErrorHandling.handle_grpc_error(None)
         )
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Error is None" in result.error
+        assert result.error is not None and "Error is None" in result.error
 
     def test_error_handling_format_error_message_valid(self) -> None:
         """Test ErrorHandling.format_error_message with valid message."""
@@ -246,18 +251,18 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_channel_metrics_none(self) -> None:
         """Test MetricsCollection.collect_channel_metrics with None channel."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, Any]] = (
+        result: FlextResult[dict[str, object]] = (
             utilities.MetricsCollection.collect_channel_metrics(None)
         )
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Channel is None" in result.error
+        assert result.error is not None and "Channel is None" in result.error
 
     def test_metrics_collection_collect_performance_metrics_valid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with valid times."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, Any]] = (
+        result: FlextResult[dict[str, object]] = (
             utilities.MetricsCollection.collect_performance_metrics(1000.0, 1001.0)
         )
 
@@ -269,10 +274,10 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_performance_metrics_invalid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid times."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, Any]] = (
+        result: FlextResult[dict[str, object]] = (
             utilities.MetricsCollection.collect_performance_metrics(None, None)
         )
 
         assert result.is_success is False
         assert result.error is not None
-        assert "Invalid time parameters" in result.error
+        assert result.error is not None and "Invalid time parameters" in result.error

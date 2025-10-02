@@ -14,7 +14,6 @@ import gc
 import time
 from collections.abc import Iterator
 from datetime import UTC, datetime
-from typing import Any, ClassVar
 
 import grpc
 
@@ -25,9 +24,7 @@ try:
 except ImportError:
     psutil = None
     PSUTIL_AVAILABLE = False
-from google.protobuf import json_format
-from google.protobuf.descriptor import FieldDescriptor
-from google.protobuf.message import Message as ProtobufMessage
+from typing import ClassVar
 
 from flext_core import (
     FlextContainer,
@@ -35,6 +32,10 @@ from flext_core import (
     FlextResult,
     FlextUtilities,
 )
+from google.protobuf import json_format
+from google.protobuf.descriptor import FieldDescriptor
+from google.protobuf.message import Message as ProtobufMessage
+
 from flext_grpc.models import FlextGrpcModels
 
 __all__ = ["FlextGrpcUtilities"]
@@ -61,14 +62,14 @@ class FlextGrpcUtilities(FlextUtilities):
         self._container = FlextContainer.get_global()
         self._logger = FlextLogger(__name__)
 
-    def execute(self) -> FlextResult[dict[str, Any]]:
+    def execute(self) -> FlextResult[dict[str, object]]:
         """Execute the main domain service operation.
 
         Returns:
-            FlextResult[dict[str, Any]]: Service status and capabilities.
+            FlextResult[dict[str, object]]: Service status and capabilities.
 
         """
-        return FlextResult[dict[str, Any]].ok({
+        return FlextResult[dict[str, object]].ok({
             "status": "operational",
             "service": "flext-grpc-utilities",
             "capabilities": [
@@ -219,7 +220,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def protobuf_to_dict(
             message_instance: ProtobufMessage,
-        ) -> FlextResult[dict[str, Any]]:
+        ) -> FlextResult[dict[str, object]]:
             """Convert protobuf message to dictionary.
 
             Args:
@@ -234,15 +235,15 @@ class FlextGrpcUtilities(FlextUtilities):
                     message_instance,
                     preserving_proto_field_name=True,
                 )
-                return FlextResult[dict[str, Any]].ok(dict_data)
+                return FlextResult[dict[str, object]].ok(dict_data)
             except Exception as e:
-                return FlextResult[dict[str, Any]].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Protobuf to dict conversion failed: {e}"
                 )
 
         @staticmethod
         def dict_to_protobuf(
-            data: dict[str, Any], message_class: type[ProtobufMessage]
+            data: dict[str, object], message_class: type[ProtobufMessage]
         ) -> FlextResult[ProtobufMessage]:
             """Convert dictionary to protobuf message.
 
@@ -349,7 +350,7 @@ class FlextGrpcUtilities(FlextUtilities):
     class ChannelManagement:
         """gRPC channel management utilities."""
 
-        DEFAULT_CHANNEL_OPTIONS: ClassVar[list[tuple[str, Any]]] = [
+        DEFAULT_CHANNEL_OPTIONS: ClassVar[list[tuple[str, object]]] = [
             ("grpc.keepalive_time_ms", 30000),
             ("grpc.keepalive_timeout_ms", 5000),
             ("grpc.keepalive_permit_without_calls", True),
@@ -362,7 +363,7 @@ class FlextGrpcUtilities(FlextUtilities):
         def create_secure_channel(
             target: str,
             credentials: grpc.ChannelCredentials | None = None,
-            options: list[tuple[str, Any]] | None = None,
+            options: list[tuple[str, object]] | None = None,
         ) -> FlextResult[grpc.Channel]:
             """Create secure gRPC channel with default options.
 
@@ -393,7 +394,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
         @staticmethod
         def create_insecure_channel(
-            target: str, options: list[tuple[str, Any]] | None = None
+            target: str, options: list[tuple[str, object]] | None = None
         ) -> FlextResult[grpc.Channel]:
             """Create insecure gRPC channel for development.
 
@@ -757,7 +758,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def handle_grpc_error(
             error: grpc.RpcError | None,
-        ) -> FlextResult[dict[str, Any]]:
+        ) -> FlextResult[dict[str, object]]:
             """Handle and categorize gRPC errors.
 
             Args:
@@ -769,22 +770,24 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if error is None:
-                    return FlextResult[dict[str, Any]].fail("Error is None")
+                    return FlextResult[dict[str, object]].fail("Error is None")
 
-                error_info: dict[str, Any] = {
+                error_info: dict[str, object] = {
                     "code": error.code().name if hasattr(error, "code") else "UNKNOWN",
                     "details": error.details()
                     if hasattr(error, "details")
                     else str(error),
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return FlextResult[dict[str, Any]].ok(error_info)
+                return FlextResult[dict[str, object]].ok(error_info)
             except Exception as e:
-                return FlextResult[dict[str, Any]].fail(f"Error handling failed: {e}")
+                return FlextResult[dict[str, object]].fail(
+                    f"Error handling failed: {e}"
+                )
 
         @staticmethod
         def create_grpc_status(
-            code: grpc.StatusCode, message: str, details: list[Any] | None = None
+            code: grpc.StatusCode, message: str, details: list[object] | None = None
         ) -> FlextResult[dict[str, object]]:
             """Create gRPC status for error responses.
 
@@ -846,7 +849,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def collect_channel_metrics(
             channel: grpc.Channel | None,
-        ) -> FlextResult[dict[str, Any]]:
+        ) -> FlextResult[dict[str, object]]:
             """Collect metrics from gRPC channel.
 
             Args:
@@ -858,7 +861,7 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if channel is None:
-                    return FlextResult[dict[str, Any]].fail("Channel is None")
+                    return FlextResult[dict[str, object]].fail("Channel is None")
 
                 # Basic channel metrics (placeholder implementation)
                 metrics = {
@@ -866,16 +869,16 @@ class FlextGrpcUtilities(FlextUtilities):
                     "connection_count": 1,
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return FlextResult[dict[str, Any]].ok(metrics)
+                return FlextResult[dict[str, object]].ok(metrics)
             except Exception as e:
-                return FlextResult[dict[str, Any]].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Channel metrics collection failed: {e}"
                 )
 
         @staticmethod
         def collect_performance_metrics(
             start_time: float | None, end_time: float | None
-        ) -> FlextResult[dict[str, Any]]:
+        ) -> FlextResult[dict[str, object]]:
             """Collect performance metrics from timing data.
 
             Args:
@@ -888,7 +891,9 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if start_time is None or end_time is None:
-                    return FlextResult[dict[str, Any]].fail("Invalid time parameters")
+                    return FlextResult[dict[str, object]].fail(
+                        "Invalid time parameters"
+                    )
 
                 duration_ms = (end_time - start_time) * 1000
                 metrics = {
@@ -897,9 +902,9 @@ class FlextGrpcUtilities(FlextUtilities):
                     "end_time": end_time,
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return FlextResult[dict[str, Any]].ok(metrics)
+                return FlextResult[dict[str, object]].ok(metrics)
             except Exception as e:
-                return FlextResult[dict[str, Any]].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Performance metrics collection failed: {e}"
                 )
 
@@ -1008,9 +1013,9 @@ class FlextGrpcUtilities(FlextUtilities):
             """Trigger system memory cleanup."""
             gc.collect()
 
-    def execute(self) -> FlextResult[dict[str, Any]]:
+    def execute(self) -> FlextResult[dict[str, object]]:
         """Execute utilities service operation hronously."""
-        return FlextResult[dict[str, Any]].ok({
+        return FlextResult[dict[str, object]].ok({
             "status": "operational",
             "service": "flext-grpc-utilities",
             "timestamp": datetime.now(UTC).isoformat(),

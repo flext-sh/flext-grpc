@@ -13,18 +13,18 @@ import logging
 import threading
 import time
 from collections import deque
-from collections.abc import Callable, Iterator
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import Any, Protocol, cast, override
+from typing import Protocol, cast, override
 
 import grpc
-
 from flext_core import (
     FlextConstants,
     FlextResult,
     FlextService,
 )
+
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcClient,
@@ -850,7 +850,7 @@ class FlextGrpcService(
                     echo_request = EchoRequest(message=str(request))
 
                 # Make REAL gRPC call
-                grpc_response = stub.Echo(cast("Any", echo_request))
+                grpc_response = stub.Echo(cast("object", echo_request))
 
                 # Convert to result format
                 response = {
@@ -865,7 +865,7 @@ class FlextGrpcService(
 
             elif method == "HealthCheck":
                 health_request = HealthRequest(service="FlextGrpcService")
-                health_response = stub.HealthCheck(cast("Any", health_request))
+                health_response = stub.HealthCheck(cast("object", health_request))
 
                 response = {
                     "method": "HealthCheck",
@@ -879,7 +879,7 @@ class FlextGrpcService(
             else:
                 # For other methods, create a generic Echo call
                 echo_request = EchoRequest(message=f"Method: {method}")
-                grpc_response = stub.Echo(cast("Any", echo_request))
+                grpc_response = stub.Echo(cast("object", echo_request))
 
                 response = {
                     "method": "method",
@@ -1205,7 +1205,9 @@ class FlextGrpcService(
 
         if should_flush:
             # Make real client streaming call with all buffered requests
-            response = stub.ClientStream(cast("Iterator[Any]", iter(buffered_requests)))
+            response = stub.ClientStream(
+                cast("Iterator[object]", iter(buffered_requests))
+            )
 
             # Clear buffer after successful call and trigger memory cleanup if needed
             request_buffer.clear()
@@ -1257,7 +1259,7 @@ class FlextGrpcService(
         """Handle server streaming with multiple responses."""
         try:
             # Make real server streaming call
-            response_iterator = stub.ServerStream(cast("Any", stream_request))
+            response_iterator = stub.ServerStream(cast("object", stream_request))
 
             # Collect all responses from the stream
             responses = []
