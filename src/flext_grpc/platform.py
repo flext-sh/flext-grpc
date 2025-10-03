@@ -391,4 +391,3 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             return FlextResult[dict[str, FlextGrpcServer | FlextGrpcClient]].fail(
                 error_msg
             )
-

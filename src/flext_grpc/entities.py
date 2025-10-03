@@ -1317,7 +1317,21 @@ class FlextGrpcEntities(FlextModels):
 # This was a wrapper pattern violation that provided no value
 # According to zero tolerance policy, entities should be created directly
 
+# Module-level aliases for backward compatibility and direct imports
+FlextGrpcEntity = FlextGrpcEntities.Entity
+FlextGrpcChannel = FlextGrpcEntities.Channel
+FlextGrpcServer = FlextGrpcEntities.Server
+FlextGrpcService = FlextGrpcEntities.Service
+FlextGrpcClient = FlextGrpcEntities.Client
+FlextGrpcStream = FlextGrpcEntities.Stream
 
 __all__ = [
+    # Direct entity exports for clean API access
+    "FlextGrpcChannel",
+    "FlextGrpcClient",
     "FlextGrpcEntities",
+    "FlextGrpcEntity",
+    "FlextGrpcServer",
+    "FlextGrpcService",
+    "FlextGrpcStream",
 ]
