@@ -23,13 +23,7 @@ from flext_grpc.api import (
 )
 from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
-from flext_grpc.entities import (
-    FlextGrpcChannel,
-    FlextGrpcClient,
-    FlextGrpcEntity,
-    FlextGrpcServer,
-    FlextGrpcStream,
-)
+from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.exceptions import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
