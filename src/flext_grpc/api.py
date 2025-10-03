@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 from uuid import uuid4
 
-from flext_core import FlextConstants, FlextResult
+from flext_core import FlextConstants, FlextResult, FlextTypes
 from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
@@ -70,7 +70,7 @@ def create_client(
     target: str | FlextGrpcModels.ClientConfig = FlextConstants.Platform.DEFAULT_HOST
     + ":"
     + str(FlextGrpcConstants.DEFAULT_GRPC_PORT),
-    options: dict[str, object] | None = None,
+    options: FlextTypes.Dict | None = None,
 ) -> FlextGrpcClient:
     """Create gRPC client using FlextGrpcModels.ClientConfig.
 
@@ -122,7 +122,7 @@ def create_channel(
     target: str | FlextGrpcModels.ChannelConfig = FlextConstants.Platform.DEFAULT_HOST
     + ":"
     + str(FlextGrpcConstants.DEFAULT_GRPC_PORT),
-    options: dict[str, object] | None = None,
+    options: FlextTypes.Dict | None = None,
 ) -> FlextGrpcChannel:
     """Create gRPC channel using FlextGrpcModels.ChannelConfig.
 
@@ -159,7 +159,7 @@ def create_channel(
 
 def create_service(
     name: str | FlextGrpcModels.ServiceDefinition = "DefaultService",
-    methods: str | list[str] | None = None,
+    methods: str | FlextTypes.StringList | None = None,
 ) -> FlextGrpcService:
     """Create gRPC service using FlextGrpcModels.ServiceDefinition.
 
@@ -276,29 +276,29 @@ def create_config(
     max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
     timeout: float = FlextConstants.Network.DEFAULT_TIMEOUT,
 ) -> FlextGrpcConfig:
-    """Create gRPC configuration using FlextGrpcModels.ServerConfig.
+    """Create gRPC configuration using FlextGrpcModels.ServerConfig as source.
 
     Args:
-      server_config: Server configuration model (preferred)
-      host: Server host address (default: FlextConstants.Platform.DEFAULT_HOST)
-      port: Server port number (default: FlextGrpcConstants.DEFAULT_GRPC_PORT)
-      max_workers: Maximum worker threads (default: FlextGrpcConstants.DEFAULT_MAX_WORKERS)
-      timeout: Operation timeout in seconds (default: FlextConstants.Network.DEFAULT_TIMEOUT)
+        server_config: Server configuration model (preferred)
+        host: Server host address (fallback)
+        port: Server port number (fallback)
+        max_workers: Maximum worker threads (fallback)
+        timeout: Operation timeout in seconds (fallback)
 
     Returns:
-      Created configuration object
+        Created and validated configuration object
 
     Raises:
-      ValueError: If configuration parameters are invalid
+        ValueError: If configuration parameters are invalid
 
     Example:
-      >>> server_config = FlextGrpcModels.ServerConfig(
-      ...     host=FlextConstants.Platform.DEFAULT_HOST,
-      ...     port=FlextGrpcConstants.DEFAULT_GRPC_PORT,
-      ...     max_workers=10,
-      ... )
-      >>> config = create_config(server_config=server_config)
-      >>> print(f"Config created: {config.get_address()}")
+        >>> server_config = FlextGrpcModels.ServerConfig(
+        ...     host="localhost",
+        ...     port=50051,
+        ...     max_workers=10,
+        ... )
+        >>> config = create_config(server_config=server_config)
+        >>> print(f"Config created: {config.server_address}")
 
     """
     # Use provided server_config or create from parameters
@@ -307,13 +307,8 @@ def create_config(
             host=host, port=port, max_workers=max_workers, timeout=timeout
         )
 
-    # Create FlextGrpcConfig using standardized models
-    return FlextGrpcConfig(
-        host=server_config.host,
-        port=server_config.port,
-        max_workers=server_config.max_workers,
-        timeout=server_config.timeout,
-    )
+    # Create FlextGrpcConfig from server_config (source of truth)
+    return FlextGrpcConfig.from_server_config(server_config)
 
 
 def create_complete_setup(
@@ -321,28 +316,28 @@ def create_complete_setup(
     port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
     service_name: str = "DefaultService",
     service_methods: FlextGrpcTypes.Core.StringList | None = None,
-) -> dict[str, object]:
+) -> FlextTypes.Dict:
     """Create complete gRPC setup with server, client, service, and target.
 
     Args:
-      host: Server host address (default: FlextConstants.Platform.DEFAULT_HOST)
-      port: Server port number (default: FlextGrpcConstants.DEFAULT_GRPC_PORT)
-      service_name: Service name (default: DefaultService)
-      service_methods: List of service methods (default: empty list)
+        host: Server host address (default: FlextConstants.Platform.DEFAULT_HOST)
+        port: Server port number (default: FlextGrpcConstants.DEFAULT_GRPC_PORT)
+        service_name: Service name (default: DefaultService)
+        service_methods: List of service methods (default: empty list)
 
     Returns:
-      Dictionary containing server, client, service, and target with gRPC-specific types
+        Dictionary containing server, client, service, and target with gRPC-specific types
 
     Example:
-      >>> setup = create_complete_setup(
-      ...     FlextConstants.Platform.DEFAULT_HOST,
-      ...     FlextGrpcConstants.DEFAULT_GRPC_PORT,
-      ...     "MyService",
-      ... )
-      >>> server = setup["server"]
-      >>> client = setup["client"]
-      >>> service = setup["service"]
-      >>> target = setup["target"]
+        >>> setup = create_complete_setup(
+        ...     FlextConstants.Platform.DEFAULT_HOST,
+        ...     FlextGrpcConstants.DEFAULT_GRPC_PORT,
+        ...     "MyService",
+        ... )
+        >>> server = setup["server"]
+        >>> client = setup["client"]
+        >>> service = setup["service"]
+        >>> target = setup["target"]
 
     """
     if service_methods is None:

@@ -22,6 +22,7 @@ from flext_grpc.entities import FlextGrpcService
 
 # Import protobuf modules for testing - use existing flext_grpc proto files
 from flext_grpc.proto import (
+    EchoRequest,
     EchoResponse,
     FlextGrpcServiceServicer,
     FlextGrpcServiceStub,

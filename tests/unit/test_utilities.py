@@ -15,6 +15,7 @@ from google.protobuf import json_format
 from google.protobuf.message import Message as ProtobufMessage
 from google.protobuf.struct_pb2 import Struct
 
+from flext_core import FlextTypes
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.utilities import FlextGrpcUtilities
 
@@ -364,7 +365,7 @@ class TestStreamingHelpers:
 
         assert iterator is not None
         # Test that we can iterate through it
-        items: list[dict[str, str]] = list(iterator)
+        items: list[FlextTypes.StringDict] = list(iterator)
         assert len(items) == 2
 
     def test_create_request_stream_empty(self) -> None:
@@ -374,7 +375,7 @@ class TestStreamingHelpers:
         )
 
         assert iterator is not None
-        items: list[object] = list(iterator)
+        items: FlextTypes.List = list(iterator)
         assert len(items) == 0
 
     def test_validate_stream_metadata_valid(self) -> None:

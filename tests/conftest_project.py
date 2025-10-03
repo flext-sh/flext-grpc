@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import pytest
 
-from flext_core import FlextConstants, FlextContainer
+from flext_core import FlextConstants, FlextContainer, FlextTypes
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
 
@@ -34,7 +34,7 @@ def sample_grpc_config() -> FlextGrpcTypes.Core.GrpcDict:
 
 
 @pytest.fixture
-def test_addresses() -> dict[str, list[str]]:
+def test_addresses() -> dict[str, FlextTypes.StringList]:
     """Test addresses for validation."""
     return {
         "valid": [

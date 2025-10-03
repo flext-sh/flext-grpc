@@ -14,7 +14,7 @@ from __future__ import annotations
 import contextlib
 from datetime import UTC, datetime
 
-from flext_core import FlextConstants
+from flext_core import FlextConstants, FlextTypes
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -71,7 +71,7 @@ class GrpcServerManager:
 
         return servers
 
-    def start_all_servers(self) -> dict[str, bool]:
+    def start_all_servers(self) -> FlextTypes.BoolDict:
         """Start all servers in the pool."""
         results = {}
 
@@ -87,7 +87,7 @@ class GrpcServerManager:
 
         return results
 
-    def stop_all_servers(self) -> dict[str, bool]:
+    def stop_all_servers(self) -> FlextTypes.BoolDict:
         """Stop all servers in the pool."""
         results = {}
 
@@ -132,7 +132,7 @@ class GrpcClientPool:
         """Initialize the gRPC client pool."""
         self.client_service = FlextGrpcClientService()
         self.clients: dict[str, FlextGrpcClient] = {}
-        self.connection_status: dict[str, bool] = {}
+        self.connection_status: FlextTypes.BoolDict = {}
 
     def create_clients_for_servers(
         self,
@@ -163,7 +163,7 @@ class GrpcClientPool:
 
         return clients
 
-    def connect_all_clients(self) -> dict[str, bool]:
+    def connect_all_clients(self) -> FlextTypes.BoolDict:
         """Connect all clients in the pool."""
         results = {}
 
@@ -247,7 +247,7 @@ class ServiceRegistry:
         self, method_name: str
     ) -> list[FlextGrpcTypes.Core.GrpcHeaders]:
         """Find services that support a specific method."""
-        matches: list[dict[str, str]] = []
+        matches: list[FlextTypes.StringDict] = []
 
         for service_id, service in self.services.items():
             if service.has_method(method_name):
@@ -440,7 +440,7 @@ def example_5_error_handling() -> None:
     # Try to call method on disconnected client
     channel = FlextGrpcChannel(
         id="test-channel",
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",  # GrpcTarget is type alias, not constructor
+        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",
         created_at=datetime.now(UTC),
     )
 

@@ -12,7 +12,7 @@ from unittest.mock import MagicMock, patch
 import grpc
 from google.protobuf.message import Message as ProtobufMessage
 
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 from flext_grpc.utilities import FlextGrpcUtilities
 
 
@@ -348,7 +348,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         """Test StreamingHelpers.create_stream_iterator with success."""
         test_data = [{"message": "test1"}, {"message": "test2"}]
 
-        result: FlextResult[Iterator[dict[str, str]]] = (
+        result: FlextResult[Iterator[FlextTypes.StringDict]] = (
             self.utilities.StreamingHelpers.create_stream_iterator(test_data)
         )
 
@@ -457,7 +457,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         """Test MetricsCollection.collect_channel_metrics with success."""
         mock_channel = MagicMock()
 
-        result: FlextResult[dict[str, str]] = (
+        result: FlextResult[FlextTypes.StringDict] = (
             self.utilities.MetricsCollection.collect_channel_metrics(mock_channel)
         )
 
@@ -469,7 +469,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         """Test MetricsCollection.collect_channel_metrics with failure."""
         mock_channel = None  # Test with None channel
 
-        result: FlextResult[dict[str, str]] = (
+        result: FlextResult[FlextTypes.StringDict] = (
             self.utilities.MetricsCollection.collect_channel_metrics(mock_channel)
         )
 
@@ -482,7 +482,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         start_time = 1000.0
         end_time = 1001.0
 
-        result: FlextResult[dict[str, float]] = (
+        result: FlextResult[FlextTypes.FloatDict] = (
             self.utilities.MetricsCollection.collect_performance_metrics(
                 start_time, end_time
             )
@@ -496,7 +496,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         self,
     ) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid start time."""
-        result: FlextResult[dict[str, float]] = (
+        result: FlextResult[FlextTypes.FloatDict] = (
             self.utilities.MetricsCollection.collect_performance_metrics(None, 1001.0)
         )
 
@@ -508,7 +508,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         self,
     ) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid end time."""
-        result: FlextResult[dict[str, float]] = (
+        result: FlextResult[FlextTypes.FloatDict] = (
             self.utilities.MetricsCollection.collect_performance_metrics(1000.0, None)
         )
 
@@ -520,7 +520,7 @@ class TestFlextGrpcUtilitiesComprehensive:
         self,
     ) -> None:
         """Test MetricsCollection.collect_performance_metrics with negative duration."""
-        result: FlextResult[dict[str, float]] = (
+        result: FlextResult[FlextTypes.FloatDict] = (
             self.utilities.MetricsCollection.collect_performance_metrics(
                 1001.0,
                 1000.0,  # End time before start time

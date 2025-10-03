@@ -38,7 +38,7 @@ from flext_grpc import FlextGrpcServerService, FlextGrpcConfig
 class GrpcServiceManager:
     """Service manager using gRPC with flext-core integration."""
 
-    def start_grpc_services(self) -> FlextResult[list[str]]:
+    def start_grpc_services(self) -> FlextResult[FlextTypes.StringList]:
         container = FlextContainer.get_global()
         # Implementation uses flext-core patterns
         return FlextResult.ok(["service1", "service2"])

@@ -13,11 +13,17 @@ from __future__ import annotations
 from typing import cast
 
 from flext_core import (
+    FlextBus,
     FlextConstants,
     FlextContainer,
+    FlextContext,
+    FlextDispatcher,
     FlextLogger,
+    FlextProcessors,
+    FlextRegistry,
     FlextResult,
     FlextService,
+    FlextTypes,
 )
 from flext_grpc.api import (
     create_client,
@@ -35,7 +41,7 @@ from flext_grpc.entities import (
 from flext_grpc.services import FlextGrpcService
 
 
-class FlextGrpcPlatform(FlextService[dict[str, object]]):
+class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
     """Unified gRPC platform facade providing high-level operations.
 
     This class serves as the main entry point for gRPC operations,
@@ -49,25 +55,38 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
     - Service-oriented architecture
     """
 
-    def __init__(self, config: dict[str, object] | None = None) -> None:
-        """Initialize the gRPC platform facade.
+    def __init__(self, config: FlextTypes.Dict | None = None) -> None:
+        """Initialize the gRPC platform facade with complete FLEXT ecosystem integration.
+
+        Uses single FlextGrpcService instance with nested management classes
+        for optimal resource usage and clean architecture.
 
         Args:
             config: Optional configuration dictionary
 
         """
         super().__init__()
+
+        # Complete FLEXT ecosystem integration
         self._container = FlextContainer.get_global()
+        self._context = FlextContext()
+        self._bus = FlextBus()
+        self._dispatcher = FlextDispatcher()
+        self._processors = FlextProcessors()
+        self._registry = FlextRegistry(dispatcher=self._dispatcher)
         self._logger = FlextLogger(__name__)
+
+        # Single unified service instance (not multiple instances)
         self._service_processor: FlextGrpcService = FlextGrpcService()
         self._config = config or {}
 
-        self._server_service: FlextGrpcService = FlextGrpcService()
-        self._client_service: FlextGrpcService = FlextGrpcService()
-        self._stream_service: FlextGrpcService = FlextGrpcService()
+        # Reference the same service for all operations (better resource usage)
+        self._server_service = self._service_processor
+        self._client_service = self._service_processor
+        self._stream_service = self._service_processor
 
     @property
-    def config(self) -> dict[str, object]:
+    def config(self) -> FlextTypes.Dict:
         """Get the platform configuration."""
         return self._config
 
@@ -81,14 +100,14 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         """Get the main service processor."""
         return self._service_processor
 
-    def execute(self) -> FlextResult[dict[str, object]]:
+    def execute(self) -> FlextResult[FlextTypes.Dict]:
         """Execute the main platform operation.
 
         Returns:
             FlextResult containing platform status and capabilities
 
         """
-        return FlextResult[dict[str, object]].ok({
+        return FlextResult[FlextTypes.Dict].ok({
             "status": "operational",
             "platform": "flext-grpc",
             "capabilities": [
@@ -127,7 +146,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
 
     def get_server_status(
         self, server: FlextGrpcServer
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[FlextTypes.Dict]:
         """Get server status.
 
         Args:
@@ -153,7 +172,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
 
     def get_client_status(
         self, client: FlextGrpcClient
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[FlextTypes.Dict]:
         """Get client status.
 
         Args:
@@ -166,16 +185,14 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         service_processor = FlextGrpcService()
         result = service_processor.execute("status", client)
         return (
-            FlextResult[dict[str, object]].ok(
-                cast("dict[str, object]", result.unwrap())
-            )
+            FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
             if result.is_success
-            else FlextResult[dict[str, object]].fail(result.error or "Unknown error")
+            else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
         )
 
     def make_call(
         self, client: FlextGrpcClient, method_name: str, **kwargs: object
-    ) -> FlextResult[dict[str, object]]:
+    ) -> FlextResult[FlextTypes.Dict]:
         """Make a gRPC call.
 
         Args:
@@ -206,7 +223,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
 
     def server_operation(
         self, operation: str, server: FlextGrpcServer, **kwargs: object
-    ) -> FlextResult[FlextGrpcServer | dict[str, object]]:
+    ) -> FlextResult[FlextGrpcServer | FlextTypes.Dict]:
         """Perform a server operation.
 
         Args:
@@ -220,7 +237,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         """
         service_processor = FlextGrpcService()
         result = service_processor.execute(operation, server, **kwargs)
-        return cast("FlextResult[FlextGrpcServer | dict[str, object]]", result)
+        return cast("FlextResult[FlextGrpcServer | FlextTypes.Dict]", result)
 
     def create_server_setup(
         self,
@@ -228,7 +245,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
         max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
         service_name: str = "default-service",
-        methods: list[str] | None = None,
+        methods: FlextTypes.StringList | None = None,
     ) -> FlextResult[FlextGrpcServer]:
         """Create a complete server setup with service.
 
@@ -304,7 +321,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         server_port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
         server_max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
         service_name: str = "default-service",
-        methods: list[str] | None = None,
+        methods: FlextTypes.StringList | None = None,
     ) -> FlextResult[dict[str, FlextGrpcServer | FlextGrpcClient]]:
         """Create a complete gRPC setup with server, client, and service.
 
@@ -404,7 +421,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         @staticmethod
         def get_server_status(
             server: FlextGrpcServer,
-        ) -> FlextResult[dict[str, object]]:
+        ) -> FlextResult[FlextTypes.Dict]:
             """Get server status.
 
             Args:
@@ -417,13 +434,11 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
             service_processor = FlextGrpcService()
             result = service_processor.execute("status", server)
             return (
-                FlextResult[dict[str, object]].ok(
-                    cast("dict[str, object]", result.unwrap())
+                FlextResult[FlextTypes.Dict].ok(
+                    cast("FlextTypes.Dict", result.unwrap())
                 )
                 if result.is_success
-                else FlextResult[dict[str, object]].fail(
-                    result.error or "Unknown error"
-                )
+                else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
             )
 
     class ClientManagement:
@@ -474,7 +489,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
         @staticmethod
         def call_method(
             client: FlextGrpcClient, method_name: str, **kwargs: object
-        ) -> FlextResult[dict[str, object]]:
+        ) -> FlextResult[FlextTypes.Dict]:
             """Call a method on a gRPC client.
 
             Args:
@@ -489,13 +504,11 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
             service_processor = FlextGrpcService()
             result = service_processor.execute("call", client, method_name, **kwargs)
             return (
-                FlextResult[dict[str, object]].ok(
-                    cast("dict[str, object]", result.unwrap())
+                FlextResult[FlextTypes.Dict].ok(
+                    cast("FlextTypes.Dict", result.unwrap())
                 )
                 if result.is_success
-                else FlextResult[dict[str, object]].fail(
-                    result.error or "Unknown error"
-                )
+                else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
             )
 
     class StreamManagement:
@@ -521,7 +534,7 @@ class FlextGrpcPlatform(FlextService[dict[str, object]]):
 
         @staticmethod
         def send_data(
-            stream: FlextGrpcStream, data: dict[str, object]
+            stream: FlextGrpcStream, data: FlextTypes.Dict
         ) -> FlextResult[FlextGrpcStream]:
             """Send data through a stream.
 

@@ -2,34 +2,29 @@
 
 from __future__ import annotations
 
-from typing import Final, cast
+from importlib.metadata import metadata
+from typing import Final, NamedTuple
 
-from flext_core.metadata import (
-    FlextProjectMetadata,
-    FlextProjectVersion,
-    build_metadata_exports,
+_metadata = metadata("flext-grpc")
+
+__version__ = _metadata["Version"]
+__version_info__ = tuple(
+    int(part) if part.isdigit() else part for part in __version__.split(".")
 )
 
-_metadata = build_metadata_exports(__file__)
-globals().update(_metadata)
-_metadata_obj = cast("FlextProjectMetadata", _metadata["__flext_metadata__"])
 
-
-class FlextGrpcVersion(FlextProjectVersion):
+class FlextGrpcVersion(NamedTuple):
     """Structured metadata for the flext grpc distribution."""
+
+    version: str
+    version_info: tuple[int | str, ...]
 
     @classmethod
     def current(cls) -> FlextGrpcVersion:
         """Return canonical metadata loaded from pyproject.toml."""
-        return cls.from_metadata(_metadata_obj)
+        return cls(version=__version__, version_info=__version_info__)
 
 
 VERSION: Final[FlextGrpcVersion] = FlextGrpcVersion.current()
-__version__: Final[str] = VERSION.version
-__version_info__: Final[tuple[int | str, ...]] = VERSION.version_info
-
-for _name in tuple(_metadata):
-    if _name not in {"__version__", "__version_info__"}:
-        globals().pop(_name, None)
 
 __all__ = ["VERSION", "FlextGrpcVersion", "__version__", "__version_info__"]

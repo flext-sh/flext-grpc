@@ -156,8 +156,8 @@ platform = FlextGrpcPlatform(container=container)
 # Client for FlexCore service
 flexcore_client = FlextGrpcClient(
     id="flexcore-client",
-    host=FlextConstants.Platform.DEFAULT_HOST,
-    port=FlextConstants.Platform.DEFAULT_HTTP_PORT,  # FlexCore gRPC port
+    host=FlextConstants["Platform.DEFAULT_HOST"],
+    port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
     created_at=datetime.now(timezone.utc)
 )
 
@@ -183,7 +183,7 @@ from flext_grpc import FlextGrpcConfig
 
 # Production configuration
 prod_config = FlextGrpcConfig(
-    host=FlextConstants.Platform.PRODUCTION_HOST,
+    host=FlextConstants["Platform.PRODUCTION_HOST"],
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=20,
     timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,

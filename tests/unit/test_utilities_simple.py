@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Iterator
 from unittest.mock import MagicMock, patch
 
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 from flext_grpc.utilities import FlextGrpcUtilities
 
 
@@ -86,7 +86,7 @@ class TestFlextGrpcUtilitiesSimple:
         utilities = FlextGrpcUtilities()
 
         # Use empty dict to avoid protobuf validation issues
-        data_dict: dict[str, object] = {}
+        data_dict: FlextTypes.Dict = {}
 
         # Create a proper mock message class
         mock_message_class = MagicMock()
@@ -109,7 +109,7 @@ class TestFlextGrpcUtilitiesSimple:
         """Test ProtobufConversion.dict_to_protobuf with conversion error."""
         utilities = FlextGrpcUtilities()
 
-        data_dict: dict[str, object] = {"test": "data"}
+        data_dict: FlextTypes.Dict = {"test": "data"}
         mock_message_class = MagicMock()
         mock_message_class.side_effect = Exception("Conversion failed")
 
@@ -177,8 +177,11 @@ class TestFlextGrpcUtilitiesSimple:
         """Test StreamingHelpers.create_stream_iterator."""
         utilities = FlextGrpcUtilities()
 
-        test_data: list[dict[str, str]] = [{"message": "test1"}, {"message": "test2"}]
-        result: FlextResult[Iterator[dict[str, str]]] = (
+        test_data: list[FlextTypes.StringDict] = [
+            {"message": "test1"},
+            {"message": "test2"},
+        ]
+        result: FlextResult[Iterator[FlextTypes.StringDict]] = (
             utilities.StreamingHelpers.create_stream_iterator(test_data)
         )
 
@@ -222,7 +225,7 @@ class TestFlextGrpcUtilitiesSimple:
     def test_error_handling_handle_grpc_error_none(self) -> None:
         """Test ErrorHandling.handle_grpc_error with None error."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, object]] = (
+        result: FlextResult[FlextTypes.Dict] = (
             utilities.ErrorHandling.handle_grpc_error(None)
         )
 
@@ -251,7 +254,7 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_channel_metrics_none(self) -> None:
         """Test MetricsCollection.collect_channel_metrics with None channel."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, object]] = (
+        result: FlextResult[FlextTypes.Dict] = (
             utilities.MetricsCollection.collect_channel_metrics(None)
         )
 
@@ -262,7 +265,7 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_performance_metrics_valid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with valid times."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, object]] = (
+        result: FlextResult[FlextTypes.Dict] = (
             utilities.MetricsCollection.collect_performance_metrics(1000.0, 1001.0)
         )
 
@@ -274,7 +277,7 @@ class TestFlextGrpcUtilitiesSimple:
     def test_metrics_collection_collect_performance_metrics_invalid(self) -> None:
         """Test MetricsCollection.collect_performance_metrics with invalid times."""
         utilities = FlextGrpcUtilities()
-        result: FlextResult[dict[str, object]] = (
+        result: FlextResult[FlextTypes.Dict] = (
             utilities.MetricsCollection.collect_performance_metrics(None, None)
         )
 

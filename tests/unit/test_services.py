@@ -38,7 +38,7 @@ from typing import cast
 
 import pytest
 
-from flext_core import FlextResult, FlextUtilities
+from flext_core import FlextResult, FlextTypes, FlextUtilities
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,
@@ -121,7 +121,7 @@ class TestFlextGrpcService:
         *args: object,
         **kwargs: object,
     ) -> FlextResult[
-        FlextGrpcServer | FlextGrpcClient | FlextGrpcStream | dict[str, object]
+        FlextGrpcServer | FlextGrpcClient | FlextGrpcStream | FlextTypes.Dict
     ]:
         """Route service commands to appropriate service instances."""
         # Check if we have required arguments first
@@ -153,7 +153,7 @@ class TestFlextGrpcService:
         else:
             # For other types, cast to the union type expected by the service
             typed_entity = cast(
-                "FlextGrpcClient | FlextGrpcServer | FlextGrpcStream | dict[str, object] | None",
+                "FlextGrpcClient | FlextGrpcServer | FlextGrpcStream | FlextTypes.Dict | None",
                 entity,
             )
 

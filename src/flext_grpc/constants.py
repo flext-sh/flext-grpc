@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from typing import Final
 
-from flext_core import FlextConstants
+from flext_core import FlextConstants, FlextTypes
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -60,6 +60,7 @@ class FlextGrpcConstants(FlextConstants):
     DEFAULT_MAX_WORKERS: Final[int] = FlextConstants.Container.MAX_WORKERS
     MIN_WORKERS: Final[int] = FlextConstants.Container.MIN_WORKERS
     MAX_WORKERS: Final[int] = 100
+    DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
     MIN_REQUIRED_ARGS: Final[int] = 2
 
     # Production validation constants
@@ -120,6 +121,6 @@ class FlextGrpcConstants(FlextConstants):
     MAX_RESPONSE_COUNT: Final[int] = 10
 
 
-__all__: list[str] = [
+__all__: FlextTypes.StringList = [
     "FlextGrpcConstants",
 ]

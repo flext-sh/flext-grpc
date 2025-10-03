@@ -45,7 +45,6 @@ from flext_grpc.services import (
     FlextGrpcClientService,
     FlextGrpcServerService,
     FlextGrpcService,
-    FlextGrpcStreamService,
 )
 from flext_grpc.typings import FlextGrpcTypes
 from flext_grpc.version import VERSION, FlextGrpcVersion
@@ -85,7 +84,6 @@ __all__ = [
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcStream",
-    "FlextGrpcStreamService",
     "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcValidationError",

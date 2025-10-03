@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 
 import grpc
 
+from flext_core import FlextTypes
 from flext_grpc.utilities import FlextGrpcUtilities
 
 
@@ -275,7 +276,7 @@ class TestFlextGrpcUtilitiesAdditional:
     def test_streaming_helpers_create_stream_iterator_with_error(self) -> None:
         """Test StreamingHelpers.create_stream_iterator with iterator error."""
 
-        def error_stream_data() -> Iterator[dict[str, str]]:
+        def error_stream_data() -> Iterator[FlextTypes.StringDict]:
             yield {"message": "test1"}
             error_msg = "Iterator error"
             raise RuntimeError(error_msg)

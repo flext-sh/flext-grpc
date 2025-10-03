@@ -18,6 +18,7 @@ from flext_core import (
     FlextConstants,
     FlextModels,
     FlextResult,
+    FlextTypes,
 )
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
@@ -103,7 +104,7 @@ class FlextGrpcChannel(FlextGrpcEntity):
         default_factory=lambda: ""  # GrpcTarget is a type alias for str, not a constructor
     )
     state: FlextGrpcTypes.GrpcChannelState = "idle"
-    options: dict[str, object] = Field(default_factory=dict)
+    options: FlextTypes.Dict = Field(default_factory=dict)
     grpc_channel: object | None = None
 
     @field_validator("state")
@@ -694,7 +695,7 @@ class FlextGrpcService(FlextGrpcEntity):
 
     @field_validator("methods")
     @classmethod
-    def validate_methods(cls, v: list[str]) -> list[str]:
+    def validate_methods(cls, v: FlextTypes.StringList) -> FlextTypes.StringList:
         """Validate methods list is not empty and contains valid method names."""
         if not v:
             msg = "Methods list cannot be empty"
@@ -878,7 +879,7 @@ class FlextGrpcClient(FlextGrpcEntity):
     """
 
     channel: FlextGrpcChannel | None = None
-    options: dict[str, object] = Field(default_factory=dict)
+    options: FlextTypes.Dict = Field(default_factory=dict)
     grpc_stub: object | None = None
 
     def validate_business_rules(self: Self) -> FlextResult[None]:

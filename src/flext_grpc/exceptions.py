@@ -44,6 +44,33 @@ class FlextGrpcError(FlextExceptions.BaseError):
       depending on application requirements.
     """
 
+    @override
+    def __init__(
+        self,
+        message: str,
+        **kwargs: object,
+    ) -> None:
+        """Initialize gRPC error with context using helpers.
+
+        Args:
+            message: Error message
+            **kwargs: Additional context (context, correlation_id, error_code)
+
+        """
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context
+        context = self._build_context(base_context)
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
+
 
 class FlextGrpcValidationError(FlextGrpcError):
     """gRPC validation error with comprehensive field context and validation details.
@@ -88,20 +115,41 @@ class FlextGrpcValidationError(FlextGrpcError):
     """
 
     @override
-    def __init__(self, message: str, field_name: str | None = None) -> None:
-        """Initialize validation error with message and optional field context.
+    def __init__(
+        self,
+        message: str,
+        *,
+        field_name: str | None = None,
+        **kwargs: object,
+    ) -> None:
+        """Initialize validation error with message and optional field context using helpers.
 
         Args:
-            message (str): Detailed validation error message for user feedback.
-            field_name (str | None): Name of field that failed validation.
+            message: Detailed validation error message for user feedback.
+            field_name: Name of field that failed validation.
                 Provides context for error identification and resolution.
-
-        Returns:
-            object: Description of return value.
+            **kwargs: Additional context (context, correlation_id, error_code)
 
         """
-        super().__init__(message)
+        # Store field_name before extracting common kwargs
         self.field_name = field_name
+
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context with validation-specific fields
+        context = self._build_context(
+            base_context,
+            field_name=field_name,
+        )
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_VALIDATION_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
 
 
 class FlextGrpcConnectionError(FlextGrpcError):
@@ -149,6 +197,33 @@ class FlextGrpcConnectionError(FlextGrpcError):
 
     """
 
+    @override
+    def __init__(
+        self,
+        message: str,
+        **kwargs: object,
+    ) -> None:
+        """Initialize connection error with context using helpers.
+
+        Args:
+            message: Error message
+            **kwargs: Additional context (context, correlation_id, error_code)
+
+        """
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context
+        context = self._build_context(base_context)
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_CONNECTION_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
+
 
 class FlextGrpcTimeoutError(FlextGrpcError):
     """gRPC timeout error with comprehensive deadline and operation context.
@@ -189,6 +264,33 @@ class FlextGrpcTimeoutError(FlextGrpcError):
       - Performance monitoring and SLA tracking
 
     """
+
+    @override
+    def __init__(
+        self,
+        message: str,
+        **kwargs: object,
+    ) -> None:
+        """Initialize timeout error with context using helpers.
+
+        Args:
+            message: Error message
+            **kwargs: Additional context (context, correlation_id, error_code)
+
+        """
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context
+        context = self._build_context(base_context)
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_TIMEOUT_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
 
 
 class FlextGrpcConfigurationError(FlextGrpcError):
@@ -246,22 +348,43 @@ class FlextGrpcConfigurationError(FlextGrpcError):
     def __init__(
         self,
         message: str,
+        *,
         config_key: str | None = None,
         config_value: object = None,
+        **kwargs: object,
     ) -> None:
-        """Initialize configuration error with detailed context information.
+        """Initialize configuration error with detailed context information using helpers.
 
         Args:
-            message (str): Detailed configuration error message for user feedback.
-            config_key (str | None): Configuration key that caused the error.
+            message: Detailed configuration error message for user feedback.
+            config_key: Configuration key that caused the error.
                 Provides context for identifying and fixing configuration issues.
-            config_value (object): Invalid configuration value for analysis.
+            config_value: Invalid configuration value for analysis.
                 Enables debugging and validation rule development.
+            **kwargs: Additional context (context, correlation_id, error_code)
 
         """
-        super().__init__(message)
+        # Store config-specific attributes before extracting common kwargs
         self.config_key = config_key
         self.config_value = config_value
+
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context with configuration-specific fields
+        context = self._build_context(
+            base_context,
+            config_key=config_key,
+            config_value=config_value,
+        )
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_CONFIG_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
 
 
 class FlextGrpcChannelError(FlextGrpcError):
@@ -272,6 +395,33 @@ class FlextGrpcChannelError(FlextGrpcError):
     and channel lifecycle errors.
     """
 
+    @override
+    def __init__(
+        self,
+        message: str,
+        **kwargs: object,
+    ) -> None:
+        """Initialize channel error with context using helpers.
+
+        Args:
+            message: Error message
+            **kwargs: Additional context (context, correlation_id, error_code)
+
+        """
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context
+        context = self._build_context(base_context)
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_CHANNEL_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
+
 
 class FlextGrpcServiceError(FlextGrpcError):
     """gRPC service error for service registration and management issues.
@@ -281,6 +431,33 @@ class FlextGrpcServiceError(FlextGrpcError):
     errors and troubleshooting.
     """
 
+    @override
+    def __init__(
+        self,
+        message: str,
+        **kwargs: object,
+    ) -> None:
+        """Initialize service error with context using helpers.
+
+        Args:
+            message: Error message
+            **kwargs: Additional context (context, correlation_id, error_code)
+
+        """
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context
+        context = self._build_context(base_context)
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_SERVICE_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
+
 
 class FlextGrpcStreamError(FlextGrpcError):
     """gRPC stream error for streaming operation issues.
@@ -289,6 +466,33 @@ class FlextGrpcStreamError(FlextGrpcError):
     stream creation, data flow, and stream lifecycle errors.
     Provides context for streaming-specific troubleshooting.
     """
+
+    @override
+    def __init__(
+        self,
+        message: str,
+        **kwargs: object,
+    ) -> None:
+        """Initialize stream error with context using helpers.
+
+        Args:
+            message: Error message
+            **kwargs: Additional context (context, correlation_id, error_code)
+
+        """
+        # Extract common parameters using helper
+        base_context, correlation_id, error_code = self._extract_common_kwargs(kwargs)
+
+        # Build context
+        context = self._build_context(base_context)
+
+        # Call parent with complete error information
+        super().__init__(
+            message,
+            code=error_code or "GRPC_STREAM_ERROR",
+            context=context,
+            correlation_id=correlation_id,
+        )
 
 
 __all__ = [

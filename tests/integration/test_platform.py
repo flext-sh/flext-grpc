@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import cast
 
-from flext_core import FlextResult
+from flext_core import FlextResult, FlextTypes
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcPlatform,
@@ -55,11 +55,11 @@ class TestPlatformIntegration:
         assert started_server.is_running
 
         # Get server status
-        status_result: FlextResult[dict[str, object]] = self.platform.get_server_status(
+        status_result: FlextResult[FlextTypes.Dict] = self.platform.get_server_status(
             started_server
         )
         assert status_result.is_success
-        status: dict[str, object] = status_result.data
+        status: FlextTypes.Dict = status_result.data
         if status["address"] != "localhost:9000":
             address_msg: str = f"Expected {'localhost:9000'}, got {status['address']}"
             raise AssertionError(address_msg)
@@ -92,11 +92,11 @@ class TestPlatformIntegration:
         assert connected_client.is_connected
 
         # Get client status
-        status_result: FlextResult[dict[str, object]] = self.platform.get_client_status(
+        status_result: FlextResult[FlextTypes.Dict] = self.platform.get_client_status(
             connected_client
         )
         assert status_result.is_success
-        status: dict[str, object] = status_result.data
+        status: FlextTypes.Dict = status_result.data
         if not (status["is_connected"]):
             connected_msg: str = f"Expected True, got {status['is_connected']}"
             raise AssertionError(connected_msg)
@@ -106,13 +106,13 @@ class TestPlatformIntegration:
         assert status["channel_state"] == "ready"
 
         # Make call
-        call_result: FlextResult[dict[str, object]] = self.platform.make_call(
+        call_result: FlextResult[FlextTypes.Dict] = self.platform.make_call(
             connected_client,
             "test_method",
             data="test",
         )
         assert call_result.is_success
-        response: dict[str, object] = call_result.data
+        response: FlextTypes.Dict = call_result.data
         if response["status"] != "success":
             status_msg: str = f"Expected {'success'}, got {response['status']}"
             raise AssertionError(status_msg)
@@ -203,14 +203,14 @@ class TestPlatformIntegration:
         connected_client: FlextGrpcClient = connect_result.data
 
         # 4. Make call through client
-        call_result: FlextResult[dict[str, object]] = self.platform.make_call(
+        call_result: FlextResult[FlextTypes.Dict] = self.platform.make_call(
             connected_client,
             "integration_method",
             integration=True,
             test_data=[1, 2, 3],
         )
         assert call_result.is_success
-        response: dict[str, object] = call_result.data
+        response: FlextTypes.Dict = call_result.data
         if response["method"] != "integration_method":
             method_name_msg: str = (
                 f"Expected {'integration_method'}, got {response['method']}"
@@ -233,11 +233,11 @@ class TestPlatformIntegration:
         assert stream.is_bidirectional
 
         # 6. Get final status
-        final_status: FlextResult[dict[str, object]] = self.platform.get_server_status(
+        final_status: FlextResult[FlextTypes.Dict] = self.platform.get_server_status(
             started_server
         )
         assert final_status.is_success
-        status: dict[str, object] = final_status.data
+        status: FlextTypes.Dict = final_status.data
         if status["service_count"] != 1:
             service_count_final_msg: str = (
                 f"Expected {1}, got {status['service_count']}"
@@ -283,10 +283,10 @@ class TestPlatformIntegration:
         service_server: object = service_result.data
 
         # Check status through platform
-        platform_status: FlextResult[dict[str, object]] = (
-            self.platform.get_server_status(cast("FlextGrpcServer", service_server))
+        platform_status: FlextResult[FlextTypes.Dict] = self.platform.get_server_status(
+            cast("FlextGrpcServer", service_server)
         )
-        status: dict[str, object] = platform_status.data
+        status: FlextTypes.Dict = platform_status.data
 
         # States should be consistent
         assert cast("FlextGrpcServer", service_server).is_running
@@ -312,7 +312,7 @@ class TestPlatformIntegration:
         # All servers should be running independently
         for server in started_servers:
             assert server.is_running
-            status_result: FlextResult[dict[str, object]] = (
+            status_result: FlextResult[FlextTypes.Dict] = (
                 self.platform.get_server_status(server)
             )
             assert status_result.is_success

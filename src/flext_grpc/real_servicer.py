@@ -18,6 +18,7 @@ from flext_core.constants import FlextConstants
 # Import protobuf classes - these are dynamically generated
 from grpc import ServicerContext
 
+from flext_core import FlextTypes
 from flext_grpc.proto.flext_grpc_pb2 import (
     EchoRequest,
     EchoResponse,
@@ -107,7 +108,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
     ) -> StreamResponse:
         """Real client streaming implementation."""
         try:
-            messages: list[str] = []
+            messages: FlextTypes.StringList = []
             sequence_count = FlextConstants.Performance.MIN_CURRENT_STEP
 
             # Process all incoming requests

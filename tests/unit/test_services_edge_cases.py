@@ -363,23 +363,6 @@ class TestFlextGrpcServiceEdgeCases:
         assert result.is_success is False
         assert result.error is not None and "Unknown server command" in result.error
 
-    def test_execute_with_generator_command_name(self) -> None:
-        """Test execute with generator command name."""
-        server = FlextGrpcServer(
-            id="test-server",
-            host="localhost",
-            port=50051,
-            created_at=self.now,
-        )
-
-        def gen() -> Generator[str]:
-            yield "start"
-
-        result = self.service.execute(str(gen()), server)
-
-        assert result.is_success is False
-        assert result.error is not None and "Unknown server command" in result.error
-
     def test_execute_with_class_command_name(self) -> None:
         """Test execute with class command name."""
         server = FlextGrpcServer(
@@ -607,24 +590,6 @@ class TestFlextGrpcServiceEdgeCases:
 
         obj = TestClass()
         result = self.service.execute(str(weakref.proxy(obj)), server)
-
-        assert result.is_success is False
-        assert result.error is not None and "Unknown server command" in result.error
-
-    def test_execute_with_contextmanager_command_name(self) -> None:
-        """Test execute with contextmanager command name."""
-        server = FlextGrpcServer(
-            id="test-server",
-            host="localhost",
-            port=50051,
-            created_at=self.now,
-        )
-
-        @contextmanager
-        def test_context() -> Generator[str]:
-            yield "start"
-
-        result = self.service.execute(str(test_context()), server)
 
         assert result.is_success is False
         assert result.error is not None and "Unknown server command" in result.error

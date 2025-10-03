@@ -406,7 +406,9 @@ class TestFlextGrpcServiceComprehensive:
         mock_response.data = "test_response"
         mock_stub.TestMethod.return_value = [mock_response]
 
-        result = self.service._handle_server_streaming(stream, {}, None, None, stub)
+        result = self.service._handle_server_streaming(
+            stream, {}, None, None, mock_stub
+        )
 
         assert result.is_success
 
@@ -420,7 +422,7 @@ class TestFlextGrpcServiceComprehensive:
         )
 
         # No grpc_stub set
-        result = self.service._handle_server_streaming(stream, {}, None, None, stub)
+        result = self.service._handle_server_streaming(stream, {}, None, None, None)
 
         assert result.is_success is False
         assert result.error is not None and "No active gRPC stub" in result.error

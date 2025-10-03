@@ -104,8 +104,8 @@ from flext_grpc import FlextGrpcConfig
 
 config = FlextGrpcConfig(
     # Connection settings
-    keepalive_time_ms=FlextConstants.Network.KEEPALIVE_TIME_MS,      # 30 seconds
-    keepalive_timeout_ms=FlextConstants.Network.KEEPALIVE_TIMEOUT_MS,    # 5 seconds
+    keepalive_time_ms=FlextConstants["Network.KEEPALIVE_TIME_MS"],      # 30 seconds
+    keepalive_timeout_ms=FlextConstants["Network.KEEPALIVE_TIMEOUT_MS"],    # 5 seconds
     keepalive_permit_without_calls=True,
 
     # Message size limits
@@ -201,7 +201,7 @@ def create_dev_config() -> FlextGrpcConfig:
 ```python
 def create_prod_config() -> FlextGrpcConfig:
     return FlextGrpcConfig(
-        host=FlextConstants.Platform.PRODUCTION_HOST,
+        host=FlextConstants["Platform.PRODUCTION_HOST"],
         port=FlextGrpcConstants.Network.DEFAULT_PORT,
         max_workers=50,
         timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
@@ -212,7 +212,7 @@ def create_prod_config() -> FlextGrpcConfig:
         tls_key_file="/etc/ssl/server.key",
 
         # Performance settings
-        keepalive_time_ms=FlextConstants.Network.KEEPALIVE_TIME_MS,
+        keepalive_time_ms=FlextConstants["Network.KEEPALIVE_TIME_MS"],
         max_receive_message_length=16*1024*1024,  # 16MB
 
         # Monitoring

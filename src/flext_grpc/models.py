@@ -18,7 +18,7 @@ from pydantic import (
     model_validator,
 )
 
-from flext_core import FlextConstants, FlextModels
+from flext_core import FlextConstants, FlextModels, FlextTypes
 from flext_grpc.constants import FlextGrpcConstants
 
 
@@ -87,7 +87,7 @@ class FlextGrpcModels(FlextModels):
 
     @computed_field
     @property
-    def grpc_model_summary(self) -> dict[str, str]:
+    def grpc_model_summary(self) -> FlextTypes.StringDict:
         """Computed field returning a summary of all available gRPC models."""
         return {
             "ServerConfig": "gRPC server configuration with validation",
@@ -129,7 +129,7 @@ class FlextGrpcModels(FlextModels):
 
     @field_serializer("grpc_model_summary")
     def serialize_grpc_model_summary(
-        self, value: dict[str, str], _info: object
+        self, value: FlextTypes.StringDict, _info: object
     ) -> dict[str, dict[str, int | str] | str]:
         """Serialize gRPC model summary with additional metadata."""
         return {
@@ -144,16 +144,8 @@ class FlextGrpcModels(FlextModels):
         }
 
     # Core gRPC Configuration Models
-    class ServerConfig(BaseModel):
+    class ServerConfig(FlextModels.StrictArbitraryTypesModel):
         """gRPC server configuration model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         host: str = Field(
             default=FlextConstants.Platform.DEFAULT_HOST,
@@ -180,7 +172,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def server_summary(self) -> dict[str, object]:
+        def server_summary(self) -> FlextTypes.Dict:
             """Computed field for server configuration summary."""
             return {
                 "address": self.server_address,
@@ -241,16 +233,8 @@ class FlextGrpcModels(FlextModels):
                 raise ValueError(msg)
             return v
 
-    class ClientConfig(BaseModel):
+    class ClientConfig(FlextModels.StrictArbitraryTypesModel):
         """gRPC client configuration model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         target: str = Field(description="Target server address")
         timeout: float = Field(
@@ -264,7 +248,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def client_summary(self) -> dict[str, object]:
+        def client_summary(self) -> FlextTypes.Dict:
             """Computed field for client configuration summary."""
             return {
                 "target": self.target,
@@ -311,26 +295,18 @@ class FlextGrpcModels(FlextModels):
                 raise ValueError(msg)
             return v.strip()
 
-    class ChannelConfig(BaseModel):
+    class ChannelConfig(FlextModels.StrictArbitraryTypesModel):
         """gRPC channel configuration model."""
 
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
-
         address: str = Field(description="Channel target address")
-        options: dict[str, object] | None = Field(
+        options: FlextTypes.Dict | None = Field(
             default=None, description="Channel options"
         )
         credentials: str | None = Field(default=None, description="Channel credentials")
 
         @computed_field
         @property
-        def channel_summary(self) -> dict[str, object]:
+        def channel_summary(self) -> FlextTypes.Dict:
             """Computed field for channel configuration summary."""
             return {
                 "address": self.address,
@@ -358,16 +334,8 @@ class FlextGrpcModels(FlextModels):
             return value
 
     # Stream Management Models
-    class StreamInfo(BaseModel):
+    class StreamInfo(FlextModels.StrictArbitraryTypesModel):
         """Comprehensive stream information tracking model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         stream_id: str = Field(description="Unique stream identifier")
         stream_type: str = Field(
@@ -411,7 +379,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def stream_performance_summary(self) -> dict[str, object]:
+        def stream_performance_summary(self) -> FlextTypes.Dict:
             """Computed field for stream performance metrics."""
             success_rate = (
                 (
@@ -464,16 +432,8 @@ class FlextGrpcModels(FlextModels):
                 return "***INTERNAL_ENDPOINT***"
             return value
 
-    class StreamMetrics(BaseModel):
+    class StreamMetrics(FlextModels.StrictArbitraryTypesModel):
         """Stream performance metrics model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         stream_id: str = Field(description="Associated stream identifier")
         throughput_rps: float = Field(default=0.0, description="Requests per second")
@@ -508,7 +468,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def metrics_summary(self) -> dict[str, object]:
+        def metrics_summary(self) -> FlextTypes.Dict:
             """Computed field for comprehensive metrics summary."""
             return {
                 "throughput_rps": self.throughput_rps,
@@ -539,19 +499,11 @@ class FlextGrpcModels(FlextModels):
             return self
 
     # Service and Entity Models
-    class ServiceDefinition(BaseModel):
+    class ServiceDefinition(FlextModels.StrictArbitraryTypesModel):
         """gRPC service definition model."""
 
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
-
         service_name: str = Field(description="Service name")
-        methods: list[str] = Field(
+        methods: FlextTypes.StringList = Field(
             default_factory=list, description="Available service methods"
         )
         package: str | None = Field(default=None, description="Service package name")
@@ -559,7 +511,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def service_summary(self) -> dict[str, object]:
+        def service_summary(self) -> FlextTypes.Dict:
             """Computed field for service definition summary."""
             return {
                 "service_name": self.service_name,
@@ -588,22 +540,14 @@ class FlextGrpcModels(FlextModels):
 
             return self
 
-    class ServerEntity(BaseModel):
+    class ServerEntity(FlextModels.Entity):
         """gRPC server entity model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         server_id: str = Field(description="Unique server identifier")
         address: str = Field(description="Server address")
         status: str = Field(default="stopped", description="Server status")
-        services: list[dict[str, str | list[str] | dict[str, object]]] = Field(
-            default_factory=list, description="Registered services"
+        services: list[dict[str, str | FlextTypes.StringList | FlextTypes.Dict]] = (
+            Field(default_factory=list, description="Registered services")
         )
         created_at: datetime = Field(
             default_factory=datetime.now, description="Server creation time"
@@ -622,7 +566,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def server_entity_summary(self) -> dict[str, object]:
+        def server_entity_summary(self) -> FlextTypes.Dict:
             """Computed field for server entity summary."""
             return {
                 "server_id": self.server_id,
@@ -649,16 +593,8 @@ class FlextGrpcModels(FlextModels):
 
             return self
 
-    class ClientEntity(BaseModel):
+    class ClientEntity(FlextModels.Entity):
         """gRPC client entity model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         client_id: str = Field(description="Unique client identifier")
         target: str = Field(description="Target server address")
@@ -682,7 +618,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def client_entity_summary(self) -> dict[str, object]:
+        def client_entity_summary(self) -> FlextTypes.Dict:
             """Computed field for client entity summary."""
             return {
                 "client_id": self.client_id,
@@ -703,16 +639,8 @@ class FlextGrpcModels(FlextModels):
 
             return self
 
-    class ChannelEntity(BaseModel):
+    class ChannelEntity(FlextModels.Entity):
         """gRPC channel entity model."""
-
-        model_config = ConfigDict(
-            validate_assignment=True,
-            use_enum_values=True,
-            arbitrary_types_allowed=True,
-            extra="forbid",
-            validate_return=True,
-        )
 
         channel_id: str = Field(description="Unique channel identifier")
         target: str = Field(description="Channel target address")
@@ -729,7 +657,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def channel_entity_summary(self) -> dict[str, object]:
+        def channel_entity_summary(self) -> FlextTypes.Dict:
             """Computed field for channel entity summary."""
             return {
                 "channel_id": self.channel_id,
@@ -754,7 +682,7 @@ class FlextGrpcModels(FlextModels):
 
         request_id: str = Field(description="Unique request identifier")
         method: str = Field(description="gRPC method name")
-        payload: dict[str, object] = Field(
+        payload: FlextTypes.Dict = Field(
             default_factory=dict, description="Request payload"
         )
         metadata: dict[str, str] = Field(
@@ -766,7 +694,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def request_summary(self) -> dict[str, object]:
+        def request_summary(self) -> FlextTypes.Dict:
             """Computed field for request summary."""
             return {
                 "request_id": self.request_id,
@@ -779,8 +707,8 @@ class FlextGrpcModels(FlextModels):
 
         @field_serializer("payload")
         def serialize_payload(
-            self, value: dict[str, object], _info: object
-        ) -> dict[str, object]:
+            self, value: FlextTypes.Dict, _info: object
+        ) -> FlextTypes.Dict:
             """Serialize payload with sensitive data masking."""
             # Mask sensitive keys in payload
             sensitive_keys = {
@@ -813,7 +741,7 @@ class FlextGrpcModels(FlextModels):
 
         request_id: str = Field(description="Associated request identifier")
         success: bool = Field(description="Response success status")
-        payload: dict[str, object] | None = Field(
+        payload: FlextTypes.Dict | None = Field(
             default=None, description="Response payload"
         )
         error: str | None = Field(default=None, description="Error message if failed")
@@ -826,7 +754,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def response_summary(self) -> dict[str, object]:
+        def response_summary(self) -> FlextTypes.Dict:
             """Computed field for response summary."""
             return {
                 "request_id": self.request_id,
@@ -855,8 +783,8 @@ class FlextGrpcModels(FlextModels):
 
         @field_serializer("payload")
         def serialize_response_payload(
-            self, value: dict[str, object] | None, _info: object
-        ) -> dict[str, object] | None:
+            self, value: FlextTypes.Dict | None, _info: object
+        ) -> FlextTypes.Dict | None:
             """Serialize response payload with sensitive data masking."""
             if not value:
                 return value
@@ -908,7 +836,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def health_summary(self) -> dict[str, object]:
+        def health_summary(self) -> FlextTypes.Dict:
             """Computed field for health check summary."""
             return {
                 "service_name": self.service_name,
@@ -964,7 +892,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def service_metrics_summary(self) -> dict[str, object]:
+        def service_metrics_summary(self) -> FlextTypes.Dict:
             """Computed field for service metrics summary."""
             return {
                 "service_name": self.service_name,
@@ -1029,7 +957,7 @@ class FlextGrpcModels(FlextModels):
 
         @computed_field
         @property
-        def platform_config_summary(self) -> dict[str, object]:
+        def platform_config_summary(self) -> FlextTypes.Dict:
             """Computed field for platform configuration summary."""
             return {
                 "enable_reflection": self.enable_reflection,
@@ -1067,7 +995,7 @@ class FlextGrpcModels(FlextModels):
         @field_serializer("keepalive_time_ms", "keepalive_timeout_ms")
         def serialize_keepalive_values(
             self, value: int, _info: object
-        ) -> dict[str, object]:
+        ) -> FlextTypes.Dict:
             """Serialize keepalive values with human-readable format."""
             return {
                 "milliseconds": value,
