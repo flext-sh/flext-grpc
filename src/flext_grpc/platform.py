@@ -76,14 +76,9 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
         self._registry = FlextRegistry(dispatcher=self._dispatcher)
         self._logger = FlextLogger(__name__)
 
-        # Single unified service instance (not multiple instances)
+        # Single unified service instance for all operations
         self._service_processor: FlextGrpcService = FlextGrpcService()
         self._config = config or {}
-
-        # Reference the same service for all operations (better resource usage)
-        self._server_service = self._service_processor
-        self._client_service = self._service_processor
-        self._stream_service = self._service_processor
 
     @property
     def config(self) -> FlextTypes.Dict:
@@ -130,7 +125,12 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the started server
 
         """
-        return self.ServerManagement.start_server(server)
+        result = self._service_processor.execute("start", server)
+        return (
+            FlextResult[FlextGrpcServer].ok(cast("FlextGrpcServer", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextGrpcServer].fail(result.error or "Unknown error")
+        )
 
     def stop_server(self, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
         """Stop a gRPC server.
@@ -142,7 +142,12 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the stopped server
 
         """
-        return self.ServerManagement.stop_server(server)
+        result = self._service_processor.execute("stop", server)
+        return (
+            FlextResult[FlextGrpcServer].ok(cast("FlextGrpcServer", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextGrpcServer].fail(result.error or "Unknown error")
+        )
 
     def get_server_status(
         self, server: FlextGrpcServer
@@ -156,7 +161,12 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing server status
 
         """
-        return self.ServerManagement.get_server_status(server)
+        result = self._service_processor.execute("status", server)
+        return (
+            FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
+        )
 
     def connect_client(self, client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
         """Connect a gRPC client.
@@ -168,7 +178,12 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the connected client
 
         """
-        return self.ClientManagement.connect_client(client)
+        result = self._service_processor.execute("connect", client)
+        return (
+            FlextResult[FlextGrpcClient].ok(cast("FlextGrpcClient", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextGrpcClient].fail(result.error or "Unknown error")
+        )
 
     def get_client_status(
         self, client: FlextGrpcClient
@@ -182,8 +197,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing client status
 
         """
-        service_processor = FlextGrpcService()
-        result = service_processor.execute("status", client)
+        result = self._service_processor.execute("status", client)
         return (
             FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
             if result.is_success
@@ -204,7 +218,12 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the call result
 
         """
-        return self.ClientManagement.call_method(client, method_name, **kwargs)
+        result = self._service_processor.execute("call", client, method_name, **kwargs)
+        return (
+            FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
+        )
 
     def create_stream(
         self, stream_type: str = "unary", method_name: str = "DefaultMethod"
@@ -219,7 +238,8 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the created stream
 
         """
-        return self.StreamManagement.create_stream_setup(stream_type, method_name)
+        stream = create_stream(method_name=method_name, stream_type=stream_type)
+        return FlextResult[FlextGrpcStream].ok(stream)
 
     def server_operation(
         self, operation: str, server: FlextGrpcServer, **kwargs: object
@@ -235,8 +255,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the operation result
 
         """
-        service_processor = FlextGrpcService()
-        result = service_processor.execute(operation, server, **kwargs)
+        result = self._service_processor.execute(operation, server, **kwargs)
         return cast("FlextResult[FlextGrpcServer | FlextTypes.Dict]", result)
 
     def create_server_setup(
@@ -373,206 +392,3 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
                 error_msg
             )
 
-    class ServerManagement:
-        """Nested class for server management operations."""
-
-        @staticmethod
-        def start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
-            """Start a gRPC server.
-
-            Args:
-                server: Server entity to start
-
-            Returns:
-                FlextResult containing the started server
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("start", server)
-            return (
-                FlextResult[FlextGrpcServer].ok(
-                    cast("FlextGrpcServer", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextGrpcServer].fail(result.error or "Unknown error")
-            )
-
-        @staticmethod
-        def stop_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]:
-            """Stop a gRPC server.
-
-            Args:
-                server: Server entity to stop
-
-            Returns:
-                FlextResult containing the stopped server
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("stop", server)
-            return (
-                FlextResult[FlextGrpcServer].ok(
-                    cast("FlextGrpcServer", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextGrpcServer].fail(result.error or "Unknown error")
-            )
-
-        @staticmethod
-        def get_server_status(
-            server: FlextGrpcServer,
-        ) -> FlextResult[FlextTypes.Dict]:
-            """Get server status.
-
-            Args:
-                server: Server entity to check
-
-            Returns:
-                FlextResult containing server status
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("status", server)
-            return (
-                FlextResult[FlextTypes.Dict].ok(
-                    cast("FlextTypes.Dict", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
-            )
-
-    class ClientManagement:
-        """Nested class for client management operations."""
-
-        @staticmethod
-        def connect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
-            """Connect a gRPC client.
-
-            Args:
-                client: Client entity to connect
-
-            Returns:
-                FlextResult containing the connected client
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("connect", client)
-            return (
-                FlextResult[FlextGrpcClient].ok(
-                    cast("FlextGrpcClient", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextGrpcClient].fail(result.error or "Unknown error")
-            )
-
-        @staticmethod
-        def disconnect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
-            """Disconnect a gRPC client.
-
-            Args:
-                client: Client entity to disconnect
-
-            Returns:
-                FlextResult containing the disconnected client
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("disconnect", client)
-            return (
-                FlextResult[FlextGrpcClient].ok(
-                    cast("FlextGrpcClient", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextGrpcClient].fail(result.error or "Unknown error")
-            )
-
-        @staticmethod
-        def call_method(
-            client: FlextGrpcClient, method_name: str, **kwargs: object
-        ) -> FlextResult[FlextTypes.Dict]:
-            """Call a method on a gRPC client.
-
-            Args:
-                client: Client entity
-                method_name: Name of the method to call
-                **kwargs: Method arguments
-
-            Returns:
-                FlextResult containing the method result
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("call", client, method_name, **kwargs)
-            return (
-                FlextResult[FlextTypes.Dict].ok(
-                    cast("FlextTypes.Dict", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
-            )
-
-    class StreamManagement:
-        """Nested class for stream management operations."""
-
-        @staticmethod
-        def create_stream_setup(
-            stream_type: str = "unary",
-            method_name: str = "DefaultMethod",
-        ) -> FlextResult[FlextGrpcStream]:
-            """Create a stream setup.
-
-            Args:
-                stream_type: Type of stream (unary, streaming, bidirectional)
-                method_name: Name of the gRPC method
-
-            Returns:
-                FlextResult containing the created stream
-
-            """
-            stream = create_stream(method_name=method_name, stream_type=stream_type)
-            return FlextResult[FlextGrpcStream].ok(stream)
-
-        @staticmethod
-        def send_data(
-            stream: FlextGrpcStream, data: FlextTypes.Dict
-        ) -> FlextResult[FlextGrpcStream]:
-            """Send data through a stream.
-
-            Args:
-                stream: Stream entity
-                data: Data to send
-
-            Returns:
-                FlextResult containing the stream
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("send", stream, data)
-            return (
-                FlextResult[FlextGrpcStream].ok(
-                    cast("FlextGrpcStream", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextGrpcStream].fail(result.error or "Unknown error")
-            )
-
-        @staticmethod
-        def close_stream(stream: FlextGrpcStream) -> FlextResult[FlextGrpcStream]:
-            """Close a stream.
-
-            Args:
-                stream: Stream entity to close
-
-            Returns:
-                FlextResult containing the closed stream
-
-            """
-            service_processor = FlextGrpcService()
-            result = service_processor.execute("close", stream)
-            return (
-                FlextResult[FlextGrpcStream].ok(
-                    cast("FlextGrpcStream", result.unwrap())
-                )
-                if result.is_success
-                else FlextResult[FlextGrpcStream].fail(result.error or "Unknown error")
-            )
