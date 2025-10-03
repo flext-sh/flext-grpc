@@ -68,6 +68,7 @@ __all__ = [
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcConstants",
+    "FlextGrpcEntities",
     "FlextGrpcEntity",
     "FlextGrpcError",
     "FlextGrpcModels",
@@ -111,3 +112,10 @@ __url__ = "https://github.com/flext/flext-grpc"
 __api_version__ = "1.0"
 __stability__ = "stable"
 __compatibility__ = "Python 3.13+"
+
+# Backward compatibility aliases for nested entity classes
+FlextGrpcEntity = FlextGrpcEntities.Entity
+FlextGrpcChannel = FlextGrpcEntities.Channel
+FlextGrpcServer = FlextGrpcEntities.Server
+FlextGrpcClient = FlextGrpcEntities.Client
+FlextGrpcStream = FlextGrpcEntities.Stream
