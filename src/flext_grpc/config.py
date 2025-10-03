@@ -80,7 +80,7 @@ class FlextGrpcConfig(FlextConfig):
         le=FlextConstants.Network.MAX_PORT,
         examples=[50051, 8080, 443]
     )
-    environment: Literal["development", "staging", "production"] = Field(
+    environment: str = Field(
         default="development",
         description="Deployment environment",
         examples=["development", "production"]
@@ -374,7 +374,7 @@ class FlextGrpcConfig(FlextConfig):
             "timeout": self.client_timeout,
             "keepalive_time": self.client_keepalive_time,
             "keepalive_timeout": self.client_keepalive_timeout,
-            "max_connection_age": self.max_connection_age,
+            "max_connection_age": self.client_max_connection_age,
             "tls_enabled": self.tls_enabled,
             "tls_ca_file": self.tls_ca_file,
             "auth_enabled": self.auth_enabled,
@@ -459,11 +459,11 @@ class FlextGrpcConfig(FlextConfig):
     @classmethod
     def create_for_environment(
         cls,
-        environment: Literal["development", "staging", "production"],
+        environment: str,
         **overrides: Any
     ) -> FlextGrpcConfig:
         """Create configuration optimized for specific environment."""
-        config_overrides = {"environment": environment}
+        config_overrides: dict[str, Any] = {"environment": environment}
 
         # Environment-specific defaults
         if environment == "production":
