@@ -23,7 +23,9 @@ from flext_grpc.models import FlextGrpcModels
 
 # Generate gRPC-specific exceptions
 _grpc_exceptions = FlextExceptions.create_module_exception_classes("flext_grpc")
-FlextGrpcConfigurationError = _grpc_exceptions.get("FlextGrpcConfigurationError", Exception)
+FlextGrpcConfigurationError = _grpc_exceptions.get(
+    "FlextGrpcConfigurationError", Exception
+)
 
 
 class FlextGrpcConfig(FlextConfig):
@@ -61,9 +63,9 @@ class FlextGrpcConfig(FlextConfig):
                     "port": 50051,
                     "environment": "development",
                     "security": {"tls_enabled": False},
-                    "performance": {"max_workers": 10}
+                    "performance": {"max_workers": 10},
                 }
-            ]
+            ],
         },
     )
 
@@ -71,19 +73,19 @@ class FlextGrpcConfig(FlextConfig):
     host: str = Field(
         default=FlextGrpcModels.ServerConfig.model_fields["host"].default,
         description="gRPC server bind host",
-        examples=["localhost", "127.0.0.1", "grpc.example.com"]
+        examples=["localhost", "127.0.0.1", "grpc.example.com"],
     )
     port: int = Field(
         default=FlextGrpcModels.ServerConfig.model_fields["port"].default,
         description="gRPC server bind port",
         ge=FlextConstants.Network.MIN_PORT,
         le=FlextConstants.Network.MAX_PORT,
-        examples=[50051, 8080, 443]
+        examples=[50051, 8080, 443],
     )
     environment: str = Field(
         default="development",
         description="Deployment environment",
-        examples=["development", "production"]
+        examples=["development", "production"],
     )
 
     # === SERVER LIFECYCLE CONFIGURATION ===
@@ -92,21 +94,21 @@ class FlextGrpcConfig(FlextConfig):
         description="Maximum worker threads for request processing",
         ge=FlextGrpcConstants.MIN_WORKERS,
         le=FlextGrpcConstants.MAX_WORKERS,
-        examples=[4, 10, 50]
+        examples=[4, 10, 50],
     )
     max_concurrent_rpcs: int = Field(
         default=FlextGrpcConstants.DEFAULT_MAX_CONCURRENT_RPCS,
         description="Maximum concurrent RPC calls",
         ge=1,
         le=10000,
-        examples=[100, 1000, 5000]
+        examples=[100, 1000, 5000],
     )
     server_shutdown_timeout: float = Field(
         default=30.0,
         description="Graceful shutdown timeout in seconds",
         gt=0,
         le=300,
-        examples=[30.0, 60.0, 120.0]
+        examples=[30.0, 60.0, 120.0],
     )
 
     # === CLIENT CONFIGURATION ===
@@ -115,25 +117,22 @@ class FlextGrpcConfig(FlextConfig):
         description="Default client request timeout",
         gt=0,
         le=300,
-        examples=[30.0, 60.0, 120.0]
+        examples=[30.0, 60.0, 120.0],
     )
     client_keepalive_time: float = Field(
         default=30.0,
         description="Client keepalive ping interval",
         gt=0,
-        examples=[30.0, 60.0]
+        examples=[30.0, 60.0],
     )
     client_keepalive_timeout: float = Field(
-        default=5.0,
-        description="Client keepalive timeout",
-        gt=0,
-        examples=[5.0, 10.0]
+        default=5.0, description="Client keepalive timeout", gt=0, examples=[5.0, 10.0]
     )
     client_max_connection_age: float = Field(
         default=300.0,
         description="Maximum connection age before recreation",
         gt=0,
-        examples=[300.0, 600.0]
+        examples=[300.0, 600.0],
     )
 
     # === MESSAGE SIZE LIMITS ===
@@ -142,148 +141,123 @@ class FlextGrpcConfig(FlextConfig):
         description="Maximum receive message size in bytes",
         ge=1024,
         le=100 * 1024 * 1024,  # 100MB
-        examples=[4194304, 10485760, 52428800]
+        examples=[4194304, 10485760, 52428800],
     )
     max_send_message_length: int = Field(
         default=4 * 1024 * 1024,  # 4MB
         description="Maximum send message size in bytes",
         ge=1024,
         le=100 * 1024 * 1024,  # 100MB
-        examples=[4194304, 10485760, 52428800]
+        examples=[4194304, 10485760, 52428800],
     )
 
     # === STREAMING CONFIGURATION ===
     streaming_enabled: bool = Field(
-        default=True,
-        description="Enable streaming operations",
-        examples=[True, False]
+        default=True, description="Enable streaming operations", examples=[True, False]
     )
     max_concurrent_streams: int = Field(
         default=100,
         description="Maximum concurrent streams per connection",
         ge=1,
         le=1000,
-        examples=[10, 50, 100]
+        examples=[10, 50, 100],
     )
     stream_timeout: float = Field(
         default=300.0,
         description="Default stream operation timeout",
         gt=0,
-        examples=[300.0, 600.0]
+        examples=[300.0, 600.0],
     )
 
     # === SECURITY CONFIGURATION ===
     tls_enabled: bool = Field(
-        default=False,
-        description="Enable TLS/SSL encryption",
-        examples=[False, True]
+        default=False, description="Enable TLS/SSL encryption", examples=[False, True]
     )
     tls_cert_file: str | None = Field(
         default=None,
         description="Path to TLS certificate file",
-        examples=["/path/to/cert.pem"]
+        examples=["/path/to/cert.pem"],
     )
     tls_key_file: str | None = Field(
         default=None,
         description="Path to TLS private key file",
-        examples=["/path/to/key.pem"]
+        examples=["/path/to/key.pem"],
     )
     tls_ca_file: str | None = Field(
         default=None,
         description="Path to TLS CA certificate file",
-        examples=["/path/to/ca.pem"]
+        examples=["/path/to/ca.pem"],
     )
     auth_enabled: bool = Field(
-        default=False,
-        description="Enable authentication",
-        examples=[False, True]
+        default=False, description="Enable authentication", examples=[False, True]
     )
     auth_token: str | None = Field(
-        default=None,
-        description="Authentication token",
-        examples=["your-secret-token"]
+        default=None, description="Authentication token", examples=["your-secret-token"]
     )
 
     # === MONITORING CONFIGURATION ===
     metrics_enabled: bool = Field(
-        default=True,
-        description="Enable metrics collection",
-        examples=[True, False]
+        default=True, description="Enable metrics collection", examples=[True, False]
     )
     metrics_interval: float = Field(
         default=60.0,
         description="Metrics collection interval",
         gt=0,
-        examples=[30.0, 60.0, 300.0]
+        examples=[30.0, 60.0, 300.0],
     )
     tracing_enabled: bool = Field(
-        default=False,
-        description="Enable distributed tracing",
-        examples=[False, True]
+        default=False, description="Enable distributed tracing", examples=[False, True]
     )
     health_check_enabled: bool = Field(
-        default=True,
-        description="Enable health check endpoint",
-        examples=[True, False]
+        default=True, description="Enable health check endpoint", examples=[True, False]
     )
     health_check_interval: float = Field(
-        default=30.0,
-        description="Health check interval",
-        gt=0,
-        examples=[30.0, 60.0]
+        default=30.0, description="Health check interval", gt=0, examples=[30.0, 60.0]
     )
 
     # === SERVICE DISCOVERY ===
     service_discovery_enabled: bool = Field(
-        default=False,
-        description="Enable service discovery",
-        examples=[False, True]
+        default=False, description="Enable service discovery", examples=[False, True]
     )
     service_registry_type: Literal["consul", "etcd", "zookeeper", "dns"] | None = Field(
-        default=None,
-        description="Service registry type",
-        examples=["consul", "etcd"]
+        default=None, description="Service registry type", examples=["consul", "etcd"]
     )
     service_registry_host: str | None = Field(
         default=None,
         description="Service registry host",
-        examples=["localhost", "consul.example.com"]
+        examples=["localhost", "consul.example.com"],
     )
     service_registry_port: int | None = Field(
-        default=None,
-        description="Service registry port",
-        examples=[8500, 2379]
+        default=None, description="Service registry port", examples=[8500, 2379]
     )
 
     # === LOAD BALANCING ===
-    load_balancing_policy: Literal["round_robin", "least_requests", "ring_hash"] = Field(
-        default="round_robin",
-        description="Load balancing policy",
-        examples=["round_robin", "least_requests"]
+    load_balancing_policy: Literal["round_robin", "least_requests", "ring_hash"] = (
+        Field(
+            default="round_robin",
+            description="Load balancing policy",
+            examples=["round_robin", "least_requests"],
+        )
     )
     max_connection_pool_size: int = Field(
         default=10,
         description="Maximum connection pool size",
         ge=1,
         le=100,
-        examples=[5, 10, 20]
+        examples=[5, 10, 20],
     )
 
     # === ADVANCED FEATURES ===
     compression_enabled: bool = Field(
-        default=True,
-        description="Enable message compression",
-        examples=[True, False]
+        default=True, description="Enable message compression", examples=[True, False]
     )
     compression_algorithm: Literal["gzip", "deflate", "none"] = Field(
         default="gzip",
         description="Compression algorithm",
-        examples=["gzip", "deflate"]
+        examples=["gzip", "deflate"],
     )
     interceptors_enabled: bool = Field(
-        default=True,
-        description="Enable gRPC interceptors",
-        examples=[True, False]
+        default=True, description="Enable gRPC interceptors", examples=[True, False]
     )
 
     @field_validator("host")
@@ -291,7 +265,9 @@ class FlextGrpcConfig(FlextConfig):
     def validate_host(cls, v: str) -> str:
         """Validate host using FlextGrpcModels.ServerConfig as source."""
         try:
-            FlextGrpcModels.ServerConfig(host=v, port=50051, max_workers=10, timeout=30.0)
+            FlextGrpcModels.ServerConfig(
+                host=v, port=50051, max_workers=10, timeout=30.0
+            )
             return v.strip()
         except Exception as e:
             msg = f"Invalid host: {e}"
@@ -302,7 +278,9 @@ class FlextGrpcConfig(FlextConfig):
     def validate_port(cls, v: int) -> int:
         """Validate port using FlextGrpcModels.ServerConfig as source."""
         try:
-            FlextGrpcModels.ServerConfig(host="localhost", port=v, max_workers=10, timeout=30.0)
+            FlextGrpcModels.ServerConfig(
+                host="localhost", port=v, max_workers=10, timeout=30.0
+            )
             return v
         except Exception as e:
             msg = f"Invalid port: {e}"
@@ -313,7 +291,9 @@ class FlextGrpcConfig(FlextConfig):
     def validate_max_workers(cls, v: int) -> int:
         """Validate max workers using FlextGrpcModels.ServerConfig as source."""
         try:
-            FlextGrpcModels.ServerConfig(host="localhost", port=50051, max_workers=v, timeout=30.0)
+            FlextGrpcModels.ServerConfig(
+                host="localhost", port=50051, max_workers=v, timeout=30.0
+            )
             return v
         except Exception as e:
             msg = f"Invalid max_workers: {e}"
@@ -361,7 +341,9 @@ class FlextGrpcConfig(FlextConfig):
                 self.health_check_enabled = True  # Force health checks in production
         elif self.environment == "development":
             # Relaxed defaults for development
-            self.client_timeout = min(self.client_timeout, 60.0)  # Shorter timeouts for faster feedback
+            self.client_timeout = min(
+                self.client_timeout, 60.0
+            )  # Shorter timeouts for faster feedback
         return self
 
     def get_server_address(self) -> str:
@@ -458,9 +440,7 @@ class FlextGrpcConfig(FlextConfig):
 
     @classmethod
     def create_for_environment(
-        cls,
-        environment: str,
-        **overrides: Any
+        cls, environment: str, **overrides: Any
     ) -> FlextGrpcConfig:
         """Create configuration optimized for specific environment."""
         config_overrides: dict[str, Any] = {"environment": environment}
@@ -519,9 +499,7 @@ class FlextGrpcConfig(FlextConfig):
 
     @classmethod
     def from_server_config(
-        cls,
-        server_config: FlextGrpcModels.ServerConfig,
-        **overrides: Any
+        cls, server_config: FlextGrpcModels.ServerConfig, **overrides: Any
     ) -> FlextGrpcConfig:
         """Create from FlextGrpcModels.ServerConfig (source of truth)."""
         data = server_config.model_dump()

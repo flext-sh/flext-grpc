@@ -430,7 +430,9 @@ class FlextGrpcService(
         running_result: FlextResult[FlextGrpcServer] = configured_server.mark_running()
         if running_result.is_failure:
             # Cleanup on failure
-            cast("FlextGrpcProtocols.Grpc.ServerProtocol", grpc_server).stop_server(grace_period=1.0)
+            cast("FlextGrpcProtocols.Grpc.ServerProtocol", grpc_server).stop_server(
+                grace_period=1.0
+            )
             self._active_servers.pop(server_key, None)
             return running_result
 
@@ -742,7 +744,9 @@ class FlextGrpcService(
             return FlextResult[FlextGrpcClient].fail("Client channel cannot be None")
         connect_result = client.channel.connect()
         if connect_result.is_failure:
-            cast("FlextGrpcProtocols.Grpc.ClientProtocol", grpc_channel).disconnect_client(client.channel)
+            cast(
+                "FlextGrpcProtocols.Grpc.ClientProtocol", grpc_channel
+            ).disconnect_client(client.channel)
             self._active_channels.pop(target, None)
             return FlextResult[FlextGrpcClient].fail(
                 f"Channel connection failed: {connect_result.error}",
@@ -752,7 +756,9 @@ class FlextGrpcService(
         # Transition: connecting → ready
         ready_result = connecting_channel.mark_ready()
         if ready_result.is_failure:
-            cast("FlextGrpcProtocols.Grpc.ClientProtocol", grpc_channel).disconnect_client(connecting_channel)
+            cast(
+                "FlextGrpcProtocols.Grpc.ClientProtocol", grpc_channel
+            ).disconnect_client(connecting_channel)
             self._active_channels.pop(target, None)
             return FlextResult[FlextGrpcClient].fail(
                 f"Channel ready transition failed: {ready_result.error}",
@@ -783,7 +789,9 @@ class FlextGrpcService(
             # Close REAL gRPC channel if it exists
             if target in self._active_channels:
                 grpc_channel = self._active_channels[target]
-                cast("FlextGrpcProtocols.Grpc.ClientProtocol", grpc_channel).disconnect_client(grpc_channel)
+                cast(
+                    "FlextGrpcProtocols.Grpc.ClientProtocol", grpc_channel
+                ).disconnect_client(grpc_channel)
 
                 # Remove from active channels
                 del self._active_channels[target]
@@ -1323,12 +1331,20 @@ class FlextGrpcClientService(FlextService[FlextGrpcClient]):
     def connect(self, target: str) -> FlextResult[FlextGrpcClient]:
         """Connect to gRPC server at target address."""
         result = self._service.execute(f"client.connect:{target}", None)
-        return FlextResult[FlextGrpcClient].ok(cast("FlextGrpcClient", result.unwrap())) if result.is_success else FlextResult[FlextGrpcClient].fail(result.error)
+        return (
+            FlextResult[FlextGrpcClient].ok(cast("FlextGrpcClient", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextGrpcClient].fail(result.error)
+        )
 
     def disconnect(self, client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]:
         """Disconnect gRPC client."""
         result = self._service.execute(f"client.disconnect:{client.id}", client)
-        return FlextResult[FlextGrpcClient].ok(cast("FlextGrpcClient", result.unwrap())) if result.is_success else FlextResult[FlextGrpcClient].fail(result.error)
+        return (
+            FlextResult[FlextGrpcClient].ok(cast("FlextGrpcClient", result.unwrap()))
+            if result.is_success
+            else FlextResult[FlextGrpcClient].fail(result.error)
+        )
 
     def call(
         self, client: FlextGrpcClient, method: str, request: object
@@ -1337,7 +1353,11 @@ class FlextGrpcClientService(FlextService[FlextGrpcClient]):
         result = self._service.execute(
             f"client.call:{method}", {"client": client, "request": request}
         )
-        return FlextResult[object].ok(result.unwrap()) if result.is_success else FlextResult[object].fail(result.error)
+        return (
+            FlextResult[object].ok(result.unwrap())
+            if result.is_success
+            else FlextResult[object].fail(result.error)
+        )
 
 
 class FlextGrpcServerService(FlextGrpcService):
