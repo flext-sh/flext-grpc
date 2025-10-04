@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import cast
 
 from flext_core import FlextResult, FlextTypes
+
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcPlatform,

@@ -11,11 +11,11 @@ from typing import cast
 from unittest.mock import MagicMock, patch
 
 import grpc
+from flext_core import FlextTypes
 from google.protobuf import json_format
 from google.protobuf.message import Message as ProtobufMessage
 from google.protobuf.struct_pb2 import Struct
 
-from flext_core import FlextTypes
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.utilities import FlextGrpcUtilities
 

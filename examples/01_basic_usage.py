@@ -15,6 +15,7 @@ import contextlib
 from datetime import UTC, datetime
 
 from flext_core import FlextConstants
+
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

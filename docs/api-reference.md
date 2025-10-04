@@ -161,7 +161,7 @@ if result.success:
 
 Establishes client connection with retry logic.
 
-##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> FlextResult[dict]`
+##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> FlextResult[FlextTypes.Dict]`
 
 Makes a service call through the client.
 
@@ -270,7 +270,7 @@ Streaming operations for all gRPC patterns.
 
 Sends data through the stream.
 
-##### `receive_data() -> FlextResult[dict]`
+##### `receive_data() -> FlextResult[FlextTypes.Dict]`
 
 Receives data from the stream.
 

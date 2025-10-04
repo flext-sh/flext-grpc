@@ -26,10 +26,6 @@ except ImportError:
     PSUTIL_AVAILABLE = False
 from typing import ClassVar, cast
 
-from google.protobuf import json_format
-from google.protobuf.descriptor import FieldDescriptor
-from google.protobuf.message import Message as ProtobufMessage
-
 from flext_core import (
     FlextContainer,
     FlextLogger,
@@ -37,6 +33,10 @@ from flext_core import (
     FlextTypes,
     FlextUtilities,
 )
+from google.protobuf import json_format
+from google.protobuf.descriptor import FieldDescriptor
+from google.protobuf.message import Message as ProtobufMessage
+
 from flext_grpc.models import FlextGrpcModels
 
 __all__ = ["FlextGrpcUtilities"]
@@ -584,14 +584,18 @@ class FlextGrpcUtilities(FlextUtilities):
                 metadata_dict: FlextTypes.StringDict = {}
                 # Convert gRPC metadata to dictionary
                 for key, value in metadata:
-                    # Ensure key and value are converted to string
-                    str_key: str = (
-                        key.decode("utf-8") if isinstance(key, bytes) else str(key)
-                    )
+                    # Convert key to string - separate logic for type inference
+                    if isinstance(key, bytes):
+                        str_key = key.decode("utf-8")
+                    else:
+                        str_key = str(key)
+
+                    # Convert value to string - separate logic for type inference
                     if isinstance(value, bytes):
                         str_value = value.decode("utf-8")
                     else:
                         str_value = str(value)
+
                     metadata_dict[str_key] = str_value
 
                 return FlextResult[FlextTypes.StringDict].ok(metadata_dict)

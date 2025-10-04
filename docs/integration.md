@@ -167,7 +167,7 @@ class FlextServiceConnector:
         self.service_name = service_name
         self.config = FlextGrpcConfig(host=target_host, port=target_port)
 
-    def call_service(self, method: str, data: dict) -> FlextResult[dict]:
+    def call_service(self, method: str, data: dict) -> FlextResult[FlextTypes.Dict]:
         """Make gRPC call to another FLEXT service."""
 
         return (
@@ -180,7 +180,7 @@ class FlextServiceConnector:
         """Connect to target service."""
         return client.connect()
 
-    def _make_call(self, client: FlextGrpcClient, method: str, data: dict) -> FlextResult[dict]:
+    def _make_call(self, client: FlextGrpcClient, method: str, data: dict) -> FlextResult[FlextTypes.Dict]:
         """Make the actual service call."""
         # gRPC call implementation
         return FlextResult.ok({"response": "data"})

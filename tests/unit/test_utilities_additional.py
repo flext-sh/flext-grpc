@@ -9,8 +9,8 @@ from collections.abc import Iterator
 from unittest.mock import MagicMock, patch
 
 import grpc
-
 from flext_core import FlextTypes
+
 from flext_grpc.utilities import FlextGrpcUtilities
 
 

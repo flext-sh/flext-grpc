@@ -9,6 +9,7 @@ from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
 from flext_core import FlextResult
+
 from flext_grpc.entities import FlextGrpcClient, FlextGrpcServer, FlextGrpcStream
 from flext_grpc.services import FlextGrpcService
 

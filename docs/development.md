@@ -131,7 +131,7 @@ class GrpcService(Generic[T]):
     def __init__(self, config: T) -> None:
         self._config = config
 
-    def process(self, data: dict) -> FlextResult[dict]:
+    def process(self, data: dict) -> FlextResult[FlextTypes.Dict]:
         # Implementation with proper typing
         return FlextResult.ok({"processed": data})
 ```

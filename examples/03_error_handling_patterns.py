@@ -15,6 +15,7 @@ import time
 from typing import NoReturn
 
 from flext_core import FlextConstants, FlextLogger, FlextResult
+
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,

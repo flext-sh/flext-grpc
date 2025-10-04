@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 from flext_core import FlextContainer
+
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

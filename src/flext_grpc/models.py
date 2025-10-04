@@ -8,6 +8,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Self
 
+from flext_core import FlextConstants, FlextModels, FlextTypes
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -18,7 +19,6 @@ from pydantic import (
     model_validator,
 )
 
-from flext_core import FlextConstants, FlextModels, FlextTypes
 from flext_grpc.constants import FlextGrpcConstants
 
 

@@ -10,7 +10,11 @@ import importlib.metadata
 from typing import Final
 
 from flext_core import FlextContainer, FlextResult
+
 from flext_grpc.api import (
+    FlextGrpc,  # Main unified facade
+)
+from flext_grpc.compat import (
     create_channel,
     create_client,
     create_complete_setup,
@@ -25,21 +29,20 @@ from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.exceptions import (
+    # Backward compatibility aliases
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcError,
+    FlextGrpcExceptions,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
+from flext_grpc.fields import FlextGrpcFields
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.platform import FlextGrpcPlatform
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
-from flext_grpc.services import (
-    FlextGrpcClientService,
-    FlextGrpcServerService,
-    FlextGrpcService,
-)
+from flext_grpc.services import FlextGrpcService
 from flext_grpc.typings import FlextGrpcTypes
 from flext_grpc.version import VERSION, FlextGrpcVersion
 
@@ -49,11 +52,12 @@ GrpcTarget = FlextGrpcTypes.GrpcTarget
 flext_grpc_validate_target = FlextGrpcTypes.GrpcValidation.validate_target
 flext_grpc_parse_target = FlextGrpcTypes.GrpcValidation.parse_target
 
-__version__ = importlib.metadata.version("flext-grpc")
+try:
+    __version__ = importlib.metadata.version("flext-grpc")
+except importlib.metadata.PackageNotFoundError:
+    __version__ = VERSION.version
 
 PROJECT_VERSION: Final[FlextGrpcVersion] = VERSION
-
-__version__: str = VERSION.version
 __version_info__: tuple[int | str, ...] = VERSION.version_info
 
 __all__ = [
@@ -61,9 +65,10 @@ __all__ = [
     "VERSION",
     "EchoRequest",
     "FlextContainer",
+    "FlextGrpc",
     "FlextGrpcChannel",
     "FlextGrpcClient",
-    "FlextGrpcClientService",
+    "FlextGrpcClientService",  # Backward compatibility alias
     "FlextGrpcConfig",
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
@@ -71,14 +76,17 @@ __all__ = [
     "FlextGrpcEntities",
     "FlextGrpcEntity",
     "FlextGrpcError",
+    "FlextGrpcExceptions",
+    "FlextGrpcFields",
     "FlextGrpcModels",
     "FlextGrpcPlatform",
     "FlextGrpcProtocols",
     "FlextGrpcServer",
-    "FlextGrpcServerService",
+    "FlextGrpcServerService",  # Backward compatibility alias
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcStream",
+    "FlextGrpcStreamService",  # Backward compatibility alias
     "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcValidationError",
@@ -118,4 +126,9 @@ FlextGrpcEntity = FlextGrpcEntities.Entity
 FlextGrpcChannel = FlextGrpcEntities.Channel
 FlextGrpcServer = FlextGrpcEntities.Server
 FlextGrpcClient = FlextGrpcEntities.Client
-FlextGrpcStream = FlextGrpcEntities.Stream
+FlextGrpcStream = FlextGrpcEntities.GrpcStream
+
+# Backward compatibility aliases for nested service classes
+FlextGrpcClientService = FlextGrpcService.ClientService
+FlextGrpcServerService = FlextGrpcService.ServerService
+FlextGrpcStreamService = FlextGrpcService.StreamService

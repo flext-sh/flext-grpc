@@ -23,7 +23,7 @@ def test_version_fallback() -> None:
         # All imports are at the top of the file
 
         importlib.reload(flext_grpc)
-        assert flext_grpc.__version__ == "1.0.0"
+        assert flext_grpc.__version__ == "0.9.0"
 
 
 def test_version_info_parsing() -> None:

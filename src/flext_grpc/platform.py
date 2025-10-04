@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import logging
 from typing import cast
 
 from flext_core import (
@@ -25,6 +26,7 @@ from flext_core import (
     FlextService,
     FlextTypes,
 )
+
 from flext_grpc.api import (
     create_client,
     create_server,
@@ -32,6 +34,7 @@ from flext_grpc.api import (
     create_stream,
     validate_address,
 )
+from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcClient,
@@ -41,7 +44,7 @@ from flext_grpc.entities import (
 from flext_grpc.services import FlextGrpcService
 
 
-class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
+class FlextGrpcPlatform(FlextService[FlextGrpcConfig]):
     """Unified gRPC platform facade providing high-level operations.
 
     This class serves as the main entry point for gRPC operations,
@@ -55,7 +58,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
     - Service-oriented architecture
     """
 
-    def __init__(self, config: FlextTypes.Dict | None = None) -> None:
+    def __init__(self, config: FlextGrpcConfig | None = None) -> None:
         """Initialize the gRPC platform facade with complete FLEXT ecosystem integration.
 
         Uses single FlextGrpcService instance with nested management classes
@@ -74,14 +77,16 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
         self._dispatcher = FlextDispatcher()
         self._processors = FlextProcessors()
         self._registry = FlextRegistry(dispatcher=self._dispatcher)
-        self._logger = FlextLogger(__name__)
+        self._logger: logging.Logger = FlextLogger(__name__) or logging.getLogger(
+            __name__
+        )
 
         # Single unified service instance for all operations
         self._service_processor: FlextGrpcService = FlextGrpcService()
-        self._config = config or {}
+        self._config = config or FlextGrpcConfig()
 
     @property
-    def config(self) -> FlextTypes.Dict:
+    def config(self) -> FlextGrpcConfig | None:
         """Get the platform configuration."""
         return self._config
 
@@ -125,7 +130,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the started server
 
         """
-        result = self._service_processor.execute("start", server)
+        result = self._service_processor.execute_grpc("start", server)
         return (
             FlextResult[FlextGrpcServer].ok(cast("FlextGrpcServer", result.unwrap()))
             if result.is_success
@@ -142,7 +147,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the stopped server
 
         """
-        result = self._service_processor.execute("stop", server)
+        result = self._service_processor.execute_grpc("stop", server)
         return (
             FlextResult[FlextGrpcServer].ok(cast("FlextGrpcServer", result.unwrap()))
             if result.is_success
@@ -161,9 +166,9 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing server status
 
         """
-        result = self._service_processor.execute("status", server)
+        result = self._service_processor.execute_grpc("status", server)
         return (
-            FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
+            FlextResult[FlextTypes.Dict].ok(result.unwrap())
             if result.is_success
             else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
         )
@@ -178,7 +183,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the connected client
 
         """
-        result = self._service_processor.execute("connect", client)
+        result = self._service_processor.execute_grpc("connect", client)
         return (
             FlextResult[FlextGrpcClient].ok(cast("FlextGrpcClient", result.unwrap()))
             if result.is_success
@@ -197,9 +202,9 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing client status
 
         """
-        result = self._service_processor.execute("status", client)
+        result = self._service_processor.execute_grpc("status", client)
         return (
-            FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
+            FlextResult[FlextTypes.Dict].ok(result.unwrap())
             if result.is_success
             else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
         )
@@ -218,9 +223,11 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the call result
 
         """
-        result = self._service_processor.execute("call", client, method_name, **kwargs)
+        result = self._service_processor.execute_grpc(
+            "call", client, method_name, **kwargs
+        )
         return (
-            FlextResult[FlextTypes.Dict].ok(cast("FlextTypes.Dict", result.unwrap()))
+            FlextResult[FlextTypes.Dict].ok(result.unwrap())
             if result.is_success
             else FlextResult[FlextTypes.Dict].fail(result.error or "Unknown error")
         )
@@ -255,7 +262,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
             FlextResult containing the operation result
 
         """
-        result = self._service_processor.execute(operation, server, **kwargs)
+        result = self._service_processor.execute_grpc(operation, server, **kwargs)
         return cast("FlextResult[FlextGrpcServer | FlextTypes.Dict]", result)
 
     def create_server_setup(
@@ -290,7 +297,7 @@ class FlextGrpcPlatform(FlextService[FlextTypes.Dict]):
                     methods=methods,
                 )
                 # Add service to server
-                add_result = self._service_processor.execute(
+                add_result = self._service_processor.execute_grpc(
                     "add_service", server, service
                 )
                 if add_result.is_failure:

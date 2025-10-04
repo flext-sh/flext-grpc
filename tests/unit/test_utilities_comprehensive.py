@@ -10,9 +10,9 @@ from typing import cast
 from unittest.mock import MagicMock, patch
 
 import grpc
+from flext_core import FlextResult, FlextTypes
 from google.protobuf.message import Message as ProtobufMessage
 
-from flext_core import FlextResult, FlextTypes
 from flext_grpc.utilities import FlextGrpcUtilities
 
 

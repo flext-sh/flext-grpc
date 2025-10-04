@@ -12,14 +12,14 @@ from datetime import UTC, datetime
 from typing import Self
 from uuid import uuid4
 
-from pydantic import Field, field_validator
-
 from flext_core import (
     FlextConstants,
     FlextModels,
     FlextResult,
     FlextTypes,
 )
+from pydantic import Field, field_validator
+
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
 
@@ -221,11 +221,11 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if self.state != "idle":
-                return FlextResult["FlextGrpcEntities.Channel"].fail(
+                return FlextResult.fail(
                     f"Cannot connect from state: {self.state}",
                 )
             connecting_channel = self.model_copy(update={"state": "connecting"})
-            return FlextResult["FlextGrpcEntities.Channel"].ok(connecting_channel)
+            return FlextResult.ok(connecting_channel)
 
         def mark_ready(self: Self) -> FlextResult[FlextGrpcEntities.Channel]:
             """Mark channel as ready for communication.
@@ -251,11 +251,11 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if self.state != "connecting":
-                return FlextResult["FlextGrpcEntities.Channel"].fail(
+                return FlextResult.fail(
                     f"Cannot mark ready from state: {self.state}",
                 )
             ready_channel = self.model_copy(update={"state": "ready"})
-            return FlextResult["FlextGrpcEntities.Channel"].ok(ready_channel)
+            return FlextResult.ok(ready_channel)
 
         def disconnect(self: Self) -> FlextResult[FlextGrpcEntities.Channel]:
             """Disconnect the channel and reset to idle state.
@@ -279,7 +279,7 @@ class FlextGrpcEntities(FlextModels):
 
             """
             idle_channel = self.model_copy(update={"state": "idle"})
-            return FlextResult["FlextGrpcEntities.Channel"].ok(idle_channel)
+            return FlextResult.ok(idle_channel)
 
         def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcEntities.Channel]:
             """Create a copy of the channel with updated attributes.
@@ -305,11 +305,9 @@ class FlextGrpcEntities(FlextModels):
             """
             try:
                 updated_channel = self.model_copy(update=kwargs)
-                return FlextResult["FlextGrpcEntities.Channel"].ok(updated_channel)
+                return FlextResult.ok(updated_channel)
             except Exception as e:
-                return FlextResult["FlextGrpcEntities.Channel"].fail(
-                    f"Failed to copy channel: {e}"
-                )
+                return FlextResult.fail(f"Failed to copy channel: {e}")
 
     class Server(Entity):
         """gRPC server entity implementing complete server lifecycle management.
@@ -510,12 +508,10 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if self.state in {"running", "starting"}:
-                return FlextResult["FlextGrpcEntities.Server"].fail(
-                    f"Server already {self.state}"
-                )
+                return FlextResult.fail(f"Server already {self.state}")
 
             starting_server = self.model_copy(update={"state": "starting"})
-            return FlextResult["FlextGrpcEntities.Server"].ok(starting_server)
+            return FlextResult.ok(starting_server)
 
         def mark_running(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Mark server as running after successful startup.
@@ -541,12 +537,12 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if self.state != "starting":
-                return FlextResult["FlextGrpcEntities.Server"].fail(
+                return FlextResult.fail(
                     f"Cannot mark running from state: {self.state}",
                 )
 
             running_server = self.model_copy(update={"state": "running"})
-            return FlextResult["FlextGrpcEntities.Server"].ok(running_server)
+            return FlextResult.ok(running_server)
 
         def stop(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Initiate server shutdown state transition.
@@ -572,12 +568,10 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if self.state in {"stopped", "stopping"}:
-                return FlextResult["FlextGrpcEntities.Server"].fail(
-                    f"Server already {self.state}"
-                )
+                return FlextResult.fail(f"Server already {self.state}")
 
             stopping_server = self.model_copy(update={"state": "stopping"})
-            return FlextResult["FlextGrpcEntities.Server"].ok(stopping_server)
+            return FlextResult.ok(stopping_server)
 
         def mark_stopped(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Mark server as stopped after successful shutdown.
@@ -604,11 +598,11 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if self.state not in {"stopping", "running"}:
-                return FlextResult["FlextGrpcEntities.Server"].fail(
+                return FlextResult.fail(
                     f"Cannot mark stopped from state: {self.state}",
                 )
             stopped_server = self.model_copy(update={"state": "stopped"})
-            return FlextResult["FlextGrpcEntities.Server"].ok(stopped_server)
+            return FlextResult.ok(stopped_server)
 
         def add_service(
             self, service: FlextGrpcEntities.Service
@@ -647,14 +641,12 @@ class FlextGrpcEntities(FlextModels):
             """
             for existing_service in self.services:
                 if existing_service.name == service.name:
-                    return FlextResult["FlextGrpcEntities.Server"].fail(
-                        "Service already exists"
-                    )
+                    return FlextResult.fail("Service already exists")
 
             updated_server = self.model_copy(
                 update={"services": [*self.services, service]}
             )
-            return FlextResult["FlextGrpcEntities.Server"].ok(updated_server)
+            return FlextResult.ok(updated_server)
 
         def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcEntities.Server]:
             """Create a copy of the server with updated attributes.
@@ -680,11 +672,9 @@ class FlextGrpcEntities(FlextModels):
             """
             try:
                 updated_server = self.model_copy(update=kwargs)
-                return FlextResult["FlextGrpcEntities.Server"].ok(updated_server)
+                return FlextResult.ok(updated_server)
             except Exception as e:
-                return FlextResult["FlextGrpcEntities.Server"].fail(
-                    f"Failed to copy server: {e}"
-                )
+                return FlextResult.fail(f"Failed to copy server: {e}")
 
     class Service(Entity):
         """gRPC service entity representing service definitions and method registry.
@@ -843,19 +833,15 @@ class FlextGrpcEntities(FlextModels):
 
             """
             if not method_name or not method_name.strip():
-                return FlextResult["FlextGrpcEntities.Service"].fail(
-                    "Method name cannot be empty"
-                )
+                return FlextResult.fail("Method name cannot be empty")
 
             if method_name in self.methods:
-                return FlextResult["FlextGrpcEntities.Service"].fail(
-                    "Method already exists"
-                )
+                return FlextResult.fail("Method already exists")
 
             updated_service = self.model_copy(
                 update={"methods": [*self.methods, method_name]}
             )
-            return FlextResult["FlextGrpcEntities.Service"].ok(updated_service)
+            return FlextResult.ok(updated_service)
 
         def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcEntities.Service]:
             """Create a copy of the service with updated attributes.
@@ -881,11 +867,9 @@ class FlextGrpcEntities(FlextModels):
             """
             try:
                 updated_service = self.model_copy(update=kwargs)
-                return FlextResult["FlextGrpcEntities.Service"].ok(updated_service)
+                return FlextResult.ok(updated_service)
             except Exception as e:
-                return FlextResult["FlextGrpcEntities.Service"].fail(
-                    f"Failed to copy service: {e}"
-                )
+                return FlextResult.fail(f"Failed to copy service: {e}")
 
     class Client(Entity):
         """gRPC client entity implementing connection management and communication.
@@ -1050,11 +1034,9 @@ class FlextGrpcEntities(FlextModels):
                 )
 
                 updated_client = self.model_copy(update={"channel": channel})
-                return FlextResult["FlextGrpcEntities.Client"].ok(updated_client)
+                return FlextResult.ok(updated_client)
             except Exception as e:
-                return FlextResult["FlextGrpcEntities.Client"].fail(
-                    f"Channel creation failed: {e}"
-                )
+                return FlextResult.fail(f"Channel creation failed: {e}")
 
         def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcEntities.Client]:
             """Create a copy of the client with updated attributes.
@@ -1078,13 +1060,11 @@ class FlextGrpcEntities(FlextModels):
             """
             try:
                 updated_client = self.model_copy(update=kwargs)
-                return FlextResult["FlextGrpcEntities.Client"].ok(updated_client)
+                return FlextResult.ok(updated_client)
             except Exception as e:
-                return FlextResult["FlextGrpcEntities.Client"].fail(
-                    f"Failed to copy client: {e}"
-                )
+                return FlextResult.fail(f"Failed to copy client: {e}")
 
-    class Stream(Entity):
+    class GrpcStream(Entity):
         """gRPC stream entity representing streaming operations and flow control.
 
         Domain entity that encapsulates gRPC streaming functionality including
@@ -1282,7 +1262,9 @@ class FlextGrpcEntities(FlextModels):
             """
             return self.stream_type == "bidirectional"
 
-        def copy_with(self, **kwargs: object) -> FlextResult[FlextGrpcEntities.Stream]:
+        def copy_with(
+            self, **kwargs: object
+        ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
             """Create a copy of the stream with updated attributes.
 
             Args:
@@ -1306,11 +1288,9 @@ class FlextGrpcEntities(FlextModels):
             """
             try:
                 updated_stream = self.model_copy(update=kwargs)
-                return FlextResult["FlextGrpcEntities.Stream"].ok(updated_stream)
+                return FlextResult.ok(updated_stream)
             except Exception as e:
-                return FlextResult["FlextGrpcEntities.Stream"].fail(
-                    f"Failed to copy stream: {e}"
-                )
+                return FlextResult.fail(f"Failed to copy stream: {e}")
 
 
 # ELIMINATED: Factory pattern removed - use direct entity construction
@@ -1323,7 +1303,7 @@ FlextGrpcChannel = FlextGrpcEntities.Channel
 FlextGrpcServer = FlextGrpcEntities.Server
 FlextGrpcService = FlextGrpcEntities.Service
 FlextGrpcClient = FlextGrpcEntities.Client
-FlextGrpcStream = FlextGrpcEntities.Stream
+FlextGrpcStream = FlextGrpcEntities.GrpcStream
 
 __all__ = [
     # Direct entity exports for clean API access

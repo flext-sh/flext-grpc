@@ -37,8 +37,8 @@ from datetime import UTC, datetime
 from typing import cast
 
 import pytest
-
 from flext_core import FlextResult, FlextTypes, FlextUtilities
+
 from flext_grpc import (
     FlextGrpcChannel,
     FlextGrpcClient,

@@ -7,17 +7,18 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, Literal
-
-from pydantic import Field, field_validator, model_validator
-from pydantic_settings import SettingsConfigDict
+from typing import Literal
 
 from flext_core import (
     FlextConfig,
     FlextConstants,
     FlextExceptions,
     FlextResult,
+    FlextTypes,
 )
+from pydantic import Field, field_validator, model_validator
+from pydantic_settings import SettingsConfigDict
+
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.models import FlextGrpcModels
 
@@ -112,6 +113,13 @@ class FlextGrpcConfig(FlextConfig):
     )
 
     # === CLIENT CONFIGURATION ===
+    timeout: float = Field(
+        default=FlextConstants.Network.DEFAULT_TIMEOUT,
+        description="Default timeout for operations",
+        gt=0,
+        le=300,
+        examples=[30.0, 60.0, 120.0],
+    )
     client_timeout: float = Field(
         default=FlextConstants.Network.DEFAULT_TIMEOUT,
         description="Default client request timeout",
@@ -350,7 +358,7 @@ class FlextGrpcConfig(FlextConfig):
         """Get the full server address as host:port."""
         return f"{self.host}:{self.port}"
 
-    def get_client_config(self) -> dict[str, Any]:
+    def get_client_config(self) -> FlextTypes.Dict:
         """Get client-specific configuration subset."""
         return {
             "timeout": self.client_timeout,
@@ -365,7 +373,7 @@ class FlextGrpcConfig(FlextConfig):
             "compression_algorithm": self.compression_algorithm,
         }
 
-    def get_server_config(self) -> dict[str, Any]:
+    def get_server_config(self) -> FlextTypes.Dict:
         """Get server-specific configuration subset."""
         return {
             "host": self.host,
@@ -388,7 +396,7 @@ class FlextGrpcConfig(FlextConfig):
             "interceptors_enabled": self.interceptors_enabled,
         }
 
-    def get_streaming_config(self) -> dict[str, Any]:
+    def get_streaming_config(self) -> FlextTypes.Dict:
         """Get streaming-specific configuration subset."""
         return {
             "streaming_enabled": self.streaming_enabled,
@@ -404,7 +412,7 @@ class FlextGrpcConfig(FlextConfig):
         """Check if running in development environment."""
         return self.environment == "development"
 
-    def get_environment_config(self) -> dict[str, Any]:
+    def get_environment_config(self) -> FlextTypes.Dict:
         """Get environment-specific configuration."""
         base_config = {
             "environment": self.environment,
@@ -428,7 +436,7 @@ class FlextGrpcConfig(FlextConfig):
         return base_config
 
     @classmethod
-    def create_from_env(cls, **overrides: Any) -> FlextGrpcConfig:
+    def create_from_env(cls, **overrides: object) -> FlextGrpcConfig:
         """Create configuration instance with environment variable loading and overrides.
 
         Uses FlextConfig's advanced loading capabilities:
@@ -440,10 +448,10 @@ class FlextGrpcConfig(FlextConfig):
 
     @classmethod
     def create_for_environment(
-        cls, environment: str, **overrides: Any
+        cls, environment: str, **overrides: object
     ) -> FlextGrpcConfig:
         """Create configuration optimized for specific environment."""
-        config_overrides: dict[str, Any] = {"environment": environment}
+        config_overrides: FlextTypes.Dict = {"environment": environment}
 
         # Environment-specific defaults
         if environment == "production":
@@ -465,12 +473,12 @@ class FlextGrpcConfig(FlextConfig):
         config_overrides.update(overrides)
         return cls(**config_overrides)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> FlextTypes.Dict:
         """Convert configuration to dictionary for serialization."""
         return self.model_dump()
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> FlextGrpcConfig:
+    def from_dict(cls, data: FlextTypes.Dict) -> FlextGrpcConfig:
         """Create configuration from dictionary."""
         return cls(**data)
 
@@ -499,7 +507,7 @@ class FlextGrpcConfig(FlextConfig):
 
     @classmethod
     def from_server_config(
-        cls, server_config: FlextGrpcModels.ServerConfig, **overrides: Any
+        cls, server_config: FlextGrpcModels.ServerConfig, **overrides: object
     ) -> FlextGrpcConfig:
         """Create from FlextGrpcModels.ServerConfig (source of truth)."""
         data = server_config.model_dump()

@@ -77,6 +77,10 @@ class FlextGrpcConstants(FlextConstants):
     MAX_SERVICE_NAME_LENGTH: Final[int] = 255
     MAX_METHOD_NAME_LENGTH: Final[int] = 200
 
+    # Address parsing constants
+    ADDRESS_PARTS_COUNT: Final[int] = 2
+    MAX_PORT_NUMBER: Final[int] = 65535
+
     # gRPC-specific error and status messages
     SERVICE_START_FAILED: Final[str] = "gRPC service failed to start: {error}"
     SERVICE_STARTED: Final[str] = "gRPC service started on {host}:{port}"
