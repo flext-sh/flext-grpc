@@ -34,8 +34,7 @@ from flext_core import (
     FlextTypes,
 )
 
-# NOTE: Imports from flext_grpc.api moved to top level to fix linting
-from flext_grpc.api import create_client, create_stream
+# Factory methods now implemented directly in service class
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcClient,
@@ -43,6 +42,7 @@ from flext_grpc.entities import (
     FlextGrpcService as FlextGrpcServiceEntity,
     FlextGrpcStream,
 )
+from flext_grpc.utilities import FlextGrpcUtilities
 
 # gRPC streaming constants
 from flext_grpc.proto import (
@@ -174,12 +174,31 @@ class FlextGrpcService(
         """Get server status and metrics."""
         return self._get_server_status(server)
 
+    # === FACTORY METHODS ===
+
+    def _create_client_entity(
+        self, target: str, options: FlextTypes.Dict | None = None
+    ) -> FlextResult[FlextGrpcClient]:
+        """Create a gRPC client entity using utilities."""
+        return FlextGrpcUtilities.create_client_entity(target, options)
+
+    def _create_stream_entity(
+        self, method_name: str, stream_type: str
+    ) -> FlextResult[FlextGrpcStream]:
+        """Create a gRPC stream entity using utilities."""
+        return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)
+
     # === CLIENT OPERATIONS ===
 
     def connect_client(self, target: str) -> FlextResult[FlextGrpcClient]:
         """Connect to gRPC server at target."""
-        # Create client entity first
-        client = create_client(target=target)
+        # Create client entity directly
+        client_result = self._create_client_entity(target=target)
+        if client_result.is_failure:
+            return FlextResult.fail(
+                f"Client entity creation failed: {client_result.error}"
+            )
+        client = client_result.unwrap()
         return self._connect_client(client)
 
     def disconnect_client(
@@ -206,10 +225,15 @@ class FlextGrpcService(
         self, stream_type: str = "unary", **kwargs: object
     ) -> FlextResult[FlextGrpcStream]:
         """Create gRPC stream."""
-        stream = create_stream(
+        stream_result = self._create_stream_entity(
             method_name=kwargs.get("method_name", "DefaultMethod"),
             stream_type=stream_type,
         )
+        if stream_result.is_failure:
+            return FlextResult.fail(
+                f"Stream entity creation failed: {stream_result.error}"
+            )
+        stream = stream_result.unwrap()
         return self._create_stream(stream, kwargs.get("target"))
 
     def send_data(

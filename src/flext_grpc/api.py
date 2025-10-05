@@ -9,19 +9,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import logging
 import re
 from uuid import uuid4
 
 from flext_core import (
-    FlextBus,
     FlextConstants,
     FlextContainer,
-    FlextContext,
-    FlextDispatcher,
     FlextLogger,
-    FlextProcessors,
-    FlextRegistry,
     FlextResult,
     FlextService,
     FlextTypes,
@@ -37,7 +31,7 @@ from flext_grpc.entities import (
     FlextGrpcStream,
 )
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.services import FlextGrpcService as FlextGrpcServiceImpl
+# Service logic implemented directly in facade following FLEXT patterns
 from flext_grpc.typings import FlextGrpcTypes
 
 
@@ -59,23 +53,16 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         """Initialize unified gRPC facade with complete FLEXT integration."""
         super().__init__()
 
-        # Complete FLEXT ecosystem integration
+        # Core FLEXT integration
         self._container = FlextContainer.get_global()
-        self._context = FlextContext()
-        self._bus = FlextBus()
-        self._dispatcher = FlextDispatcher()
-        self._processors = FlextProcessors()
-        self._registry = FlextRegistry(dispatcher=self._dispatcher)
-        self._logger: logging.Logger = FlextLogger(__name__) or logging.getLogger(
-            __name__
-        )
+        self._logger = FlextLogger(__name__)
 
         # Core service implementation
         self._service = FlextGrpcServiceImpl()
         self._config = config or FlextGrpcConfig()
 
     @property
-    def config(self) -> FlextGrpcConfig | None:
+    def config(self) -> FlextGrpcConfig:
         """Get facade configuration."""
         return self._config
 
@@ -87,24 +74,17 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
 
     def create_server(
         self,
-        host: str | FlextGrpcModels.ServerConfig = FlextConstants.Platform.DEFAULT_HOST,
+        host: str = FlextConstants.Platform.DEFAULT_HOST,
         port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
         max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
     ) -> FlextResult[FlextGrpcServer]:
         """Create gRPC server entity."""
         try:
-            if isinstance(host, FlextGrpcModels.ServerConfig):
-                config = host
-            else:
-                config = FlextGrpcModels.ServerConfig(
-                    host=host, port=port, max_workers=max_workers
-                )
-
             server = FlextGrpcServer(
                 id=str(uuid4()),
-                host=config.host,
-                port=config.port,
-                max_workers=config.max_workers,
+                host=host,
+                port=port,
+                max_workers=max_workers,
                 state="stopped",
                 services=[],
             )
@@ -114,26 +94,16 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
 
     def create_client(
         self,
-        target: str
-        | FlextGrpcModels.ClientConfig = FlextConstants.Platform.DEFAULT_HOST
+        target: str = FlextConstants.Platform.DEFAULT_HOST
         + ":"
         + str(FlextGrpcConstants.DEFAULT_GRPC_PORT),
         options: FlextTypes.Dict | None = None,
     ) -> FlextResult[FlextGrpcClient]:
         """Create gRPC client entity."""
         try:
-            if isinstance(target, FlextGrpcModels.ClientConfig):
-                config = target
-            else:
-                config = FlextGrpcModels.ClientConfig(
-                    target=target,
-                    timeout=FlextGrpcConstants.DEFAULT_TIMEOUT,
-                    retry_attempts=3,
-                )
-
             channel = FlextGrpcChannel(
                 id=str(uuid4()),
-                target=config.target,
+                target=target,
                 state="idle",
                 options=options or {},
             )
@@ -174,29 +144,15 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
 
     def create_service(
         self,
-        name: str | FlextGrpcModels.ServiceDefinition = "DefaultService",
-        methods: str | FlextTypes.StringList | None = None,
+        name: str = "DefaultService",
+        methods: FlextTypes.StringList | None = None,
     ) -> FlextResult[FlextGrpcService]:
         """Create gRPC service entity."""
         try:
-            if isinstance(name, FlextGrpcModels.ServiceDefinition):
-                definition = name
-            else:
-                if isinstance(methods, str):
-                    methods_list = [methods]
-                elif methods is None:
-                    methods_list = []
-                else:
-                    methods_list = methods
-
-                definition = FlextGrpcModels.ServiceDefinition(
-                    service_name=name, methods=methods_list
-                )
-
             service = FlextGrpcService(
                 id=str(uuid4()),
-                name=definition.service_name,
-                methods=definition.methods,
+                name=name,
+                methods=methods or [],
             )
             return FlextResult.ok(service)
         except Exception as e:
@@ -407,7 +363,67 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
             return FlextResult.fail(f"Complete setup creation failed: {e}")
 
 
+# === MODULE-LEVEL FUNCTIONS ===
+
+
+# Use flext-core container for singleton management
+def _get_flext_grpc_instance() -> FlextGrpc:
+    """Get or create singleton FlextGrpc instance for module-level functions."""
+    container = FlextContainer.get_global()
+    instance_key = "flext_grpc_singleton"
+
+    if not container.has(instance_key):
+        container.register(instance_key, FlextGrpc())
+
+    return container.get(instance_key)
+
+
+def create_server(
+    host: str = FlextConstants.Platform.DEFAULT_HOST,
+    port: int = FlextGrpcConstants.DEFAULT_GRPC_PORT,
+    max_workers: int = FlextGrpcConstants.DEFAULT_MAX_WORKERS,
+    timeout: float = FlextGrpcConstants.DEFAULT_TIMEOUT,
+) -> FlextResult[FlextGrpcServer]:
+    """Create a gRPC server."""
+    return _get_flext_grpc_instance().create_server(host, port, max_workers, timeout)
+
+
+def create_client(
+    target: str,
+    timeout: float = FlextGrpcConstants.DEFAULT_TIMEOUT,
+) -> FlextResult[FlextGrpcClient]:
+    """Create a gRPC client."""
+    return _get_flext_grpc_instance().create_client(target, timeout)
+
+
+def create_service(
+    name: str,
+    methods: FlextTypes.StringList,
+) -> FlextResult[FlextGrpcService]:
+    """Create a gRPC service."""
+    return _get_flext_grpc_instance().create_service(name, methods)
+
+
+def create_stream(
+    method_name: str,
+    stream_type: str = "unary",
+) -> FlextResult[FlextGrpcStream]:
+    """Create a gRPC stream."""
+    return _get_flext_grpc_instance().create_stream(method_name, stream_type)
+
+
+def validate_address(address: str) -> FlextResult[bool]:
+    """Validate a gRPC address."""
+    return _get_flext_grpc_instance().validate_address(address)
+
+
 __all__ = [
     # Main facade
     "FlextGrpc",
+    "create_client",
+    # Module-level functions
+    "create_server",
+    "create_service",
+    "create_stream",
+    "validate_address",
 ]

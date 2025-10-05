@@ -37,6 +37,8 @@ from google.protobuf import json_format
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.message import Message as ProtobufMessage
 
+from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc.entities import FlextGrpcChannel, FlextGrpcClient, FlextGrpcStream
 from flext_grpc.models import FlextGrpcModels
 
 __all__ = ["FlextGrpcUtilities"]
@@ -92,6 +94,57 @@ class FlextGrpcUtilities(FlextUtilities):
     def container(self) -> FlextContainer:
         """Get container instance."""
         return self._container
+
+    # === FACTORY METHODS ===
+
+    @classmethod
+    def create_client_entity(
+        cls, target: str, options: FlextTypes.Dict | None = None
+    ) -> FlextResult[FlextGrpcClient]:
+        """Create a gRPC client entity directly."""
+        try:
+            from uuid import uuid4
+
+            channel = FlextGrpcChannel(
+                id=str(uuid4()),
+                target=target,
+                state="idle",
+                options=options or {},
+            )
+
+            client = FlextGrpcClient(
+                id=str(uuid4()),
+                channel=channel,
+                options=options or {},
+            )
+            return FlextResult.ok(client)
+        except Exception as e:
+            return FlextResult.fail(f"Failed to create client entity: {e}")
+
+    @classmethod
+    def create_stream_entity(
+        cls, method_name: str, stream_type: str
+    ) -> FlextResult[FlextGrpcStream]:
+        """Create a gRPC stream entity directly."""
+        try:
+            from uuid import uuid4
+
+            # Validate stream type
+            valid_types = ["unary", "server_streaming", "client_streaming", "bidirectional"]
+            if stream_type not in valid_types:
+                return FlextResult.fail(f"Invalid stream type: {stream_type}")
+
+            if not method_name or not method_name.strip():
+                return FlextResult.fail("Stream method name cannot be empty")
+
+            stream = FlextGrpcStream(
+                id=str(uuid4()),
+                method_name=method_name,
+                stream_type=stream_type,
+            )
+            return FlextResult.ok(stream)
+        except Exception as e:
+            return FlextResult.fail(f"Failed to create stream entity: {e}")
 
     class MessageValidation:
         """gRPC message validation utilities with Pydantic 2.11+ features."""

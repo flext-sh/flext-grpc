@@ -1,9 +1,10 @@
 """FLEXT gRPC Advanced Usage Examples - Complex scenarios and enterprise patterns.
 
 This module demonstrates advanced usage patterns and enterprise-grade scenarios
-for the FLEXT gRPC communication platform, showcasing complex entity management,
-service coordination, streaming patterns, and production-ready configurations
-following Clean Architecture and Domain-Driven Design principles.
+for the FLEXT gRPC communication platform, showcasing the unified FlextGrpc facade
+for complex entity management, service coordination, streaming patterns, and
+production-ready configurations following Clean Architecture and Domain-Driven
+Design principles.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -11,31 +12,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import contextlib
-from datetime import UTC, datetime
+from flext_core import FlextConstants, FlextResult, FlextTypes
 
-from flext_core import FlextConstants, FlextTypes
-
-from flext_grpc import (
-    FlextGrpcChannel,
-    FlextGrpcClient,
-    FlextGrpcClientService,
-    FlextGrpcConfig,
-    FlextGrpcConstants,
-    FlextGrpcServer,
-    FlextGrpcServerService,
-    FlextGrpcStream,
-)
-from flext_grpc.entities import FlextGrpcService
-from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc import FlextGrpc, FlextGrpcConfig
+from flext_grpc.entities import FlextGrpcServer
 
 
 class GrpcServerManager:
-    """Advanced server management example."""
+    """Advanced server management example using FlextGrpc facade."""
 
     def __init__(self) -> None:
-        """Initialize the gRPC server manager."""
-        self.server_service = FlextGrpcServerService()
+        """Initialize the gRPC server manager with facade."""
+        self.grpc = FlextGrpc()
         self.servers: dict[str, FlextGrpcServer] = {}
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
@@ -43,45 +31,50 @@ class GrpcServerManager:
         self,
         base_port: int = 8000,
         count: int = 3,
-    ) -> list[FlextGrpcServer]:
-        """Create a pool of servers on consecutive ports."""
-        servers: list[FlextGrpcServer] = []
+    ) -> list[FlextResult]:
+        """Create a pool of servers on consecutive ports through facade."""
+        server_results: list[FlextResult] = []
 
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
 
-            config = FlextGrpcConfig(
+            # Create config through facade
+            config_result = self.grpc.create_config(
                 host=FlextConstants.Platform.DEFAULT_HOST,
                 port=port,
                 max_workers=10 + (i * 5),  # Vary workers
                 timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
             )
 
-            server = FlextGrpcServer(
-                id=server_id,
-                host=config.host,
-                port=config.port,
-                max_workers=config.max_workers,
-                created_at=datetime.now(UTC),
+            if config_result.is_failure:
+                server_results.append(config_result)
+                continue
+
+            config = config_result.unwrap()
+            self.server_configs[server_id] = config
+
+            # Create server through facade
+            server_result = self.grpc.create_server(
+                host=config.host, port=config.port, max_workers=config.max_workers
             )
 
-            self.servers[server_id] = server
-            self.server_configs[server_id] = config
-            servers.append(server)
+            if server_result.is_success:
+                server = server_result.unwrap()
+                self.servers[server_id] = server
 
-        return servers
+            server_results.append(server_result)
+
+        return server_results
 
     def start_all_servers(self) -> FlextTypes.BoolDict:
-        """Start all servers in the pool."""
+        """Start all servers in the pool through facade."""
         results = {}
 
         for server_id, server in self.servers.items():
-            start_result = self.server_service.execute("start", server)
-            if start_result.is_success and isinstance(
-                start_result.data, FlextGrpcServer
-            ):
-                self.servers[server_id] = start_result.data
+            start_result = self.grpc.start_server(server)
+            if start_result.is_success:
+                self.servers[server_id] = start_result.unwrap()
                 results[server_id] = True
             else:
                 results[server_id] = False
@@ -89,17 +82,14 @@ class GrpcServerManager:
         return results
 
     def stop_all_servers(self) -> FlextTypes.BoolDict:
-        """Stop all servers in the pool."""
+        """Stop all servers in the pool through facade."""
         results = {}
 
         for server_id, server in self.servers.items():
             if server.is_running:
-                stop_result = self.server_service.execute("stop", server)
-                if stop_result.is_success and isinstance(
-                    stop_result.data,
-                    FlextGrpcServer,
-                ):
-                    self.servers[server_id] = stop_result.data
+                stop_result = self.grpc.stop_server(server)
+                if stop_result.is_success:
+                    self.servers[server_id] = stop_result.unwrap()
                     results[server_id] = True
                 else:
                     results[server_id] = False
@@ -108,12 +98,13 @@ class GrpcServerManager:
 
         return results
 
-    def get_server_status(self) -> dict[str, FlextGrpcTypes.Core.GrpcHeaders]:
-        """Get status of all servers."""
+    def get_server_status(self) -> dict[str, dict[str, str]]:
+        """Get status of all servers through facade."""
         status = {}
 
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
+            status_result = self.grpc.get_server_status(server)
             status[server_id] = {
                 "address": server.address,
                 "state": server.state,
@@ -121,358 +112,220 @@ class GrpcServerManager:
                 "timeout": f"{config.timeout}s",
                 "is_running": str(server.is_running),
                 "is_valid": str(server.validate_business_rules().is_success),
+                "facade_status": str(status_result.is_success),
             }
 
         return status
 
 
-class GrpcClientPool:
-    """Advanced client pool management."""
+class AdvancedGrpcOperations:
+    """Advanced gRPC operations using FlextGrpc facade."""
 
     def __init__(self) -> None:
-        """Initialize the gRPC client pool."""
-        self.client_service = FlextGrpcClientService()
-        self.clients: dict[str, FlextGrpcClient] = {}
-        self.connection_status: FlextTypes.BoolDict = {}
+        """Initialize advanced operations with facade."""
+        self.grpc = FlextGrpc()
 
-    def create_clients_for_servers(
+    def create_complete_setup(
         self,
-        servers: list[FlextGrpcServer],
-    ) -> list[FlextGrpcClient]:
-        """Create clients for a list of servers."""
-        clients: list[FlextGrpcClient] = []
+        host: str = FlextConstants.Platform.DEFAULT_HOST,
+        port: int = 8080,
+        service_name: str = "AdvancedService",
+        methods: list[str] | None = None,
+    ) -> FlextResult[dict]:
+        """Create a complete gRPC setup through facade."""
+        if methods is None:
+            methods = ["ProcessData", "GetStatus", "StreamResults"]
 
-        for i, server in enumerate(servers):
-            client_id = f"client-for-{server.id}"
-            target = server.address
+        # Use the facade's complete setup method
+        return self.grpc.create_complete_setup(
+            host=host, port=port, service_name=service_name, methods=methods
+        )
 
-            channel = FlextGrpcChannel(
-                id=f"channel-{i}",
-                target=target,  # GrpcTarget is type alias, not constructor
-                created_at=datetime.now(UTC),
+    def demonstrate_streaming(self) -> None:
+        """Demonstrate streaming operations through facade."""
+        # Create different stream types
+        stream_types = [
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
+        ]
+
+        for stream_type in stream_types:
+            stream_result = self.grpc.create_stream(
+                method_name=f"{stream_type.capitalize()}Method", stream_type=stream_type
             )
-
-            client = FlextGrpcClient(
-                id=client_id,
-                channel=channel,
-                created_at=datetime.now(UTC),
-            )
-
-            self.clients[client_id] = client
-            self.connection_status[client_id] = False
-            clients.append(client)
-
-        return clients
-
-    def connect_all_clients(self) -> FlextTypes.BoolDict:
-        """Connect all clients in the pool."""
-        results = {}
-
-        for client_id, client in self.clients.items():
-            connect_result = self.client_service.execute("connect", client)
-            if connect_result.is_success and isinstance(
-                connect_result.data,
-                FlextGrpcClient,
-            ):
-                self.clients[client_id] = connect_result.data
-                self.connection_status[client_id] = True
-                results[client_id] = True
+            if stream_result.is_success:
+                stream = stream_result.unwrap()
+                print(f"Created {stream_type} stream: {stream.id}")
             else:
-                results[client_id] = False
-
-        return results
-
-    def broadcast_call(
-        self,
-        method_name: str,
-        data: object = None,
-    ) -> FlextGrpcTypes.Core.GrpcDict:
-        """Broadcast a method call to all connected clients."""
-        results = {}
-
-        for client_id, client in self.clients.items():
-            if self.connection_status[client_id] and client.is_connected:
-                call_result = self.client_service.execute(
-                    "call",
-                    client,
-                    method_name=method_name,
-                    data=data,
-                )
-                if call_result.is_success:
-                    results[client_id] = call_result.data or {
-                        "method": method_name,
-                        "status": "success",
-                    }
-                else:
-                    results[client_id] = {"error": call_result.error}
-            else:
-                results[client_id] = {"error": "Client not connected"}
-
-        return results
-
-
-class ServiceRegistry:
-    """Service registration and discovery example."""
-
-    def __init__(self) -> None:
-        """Initialize the service registry."""
-        self.services: dict[str, FlextGrpcService] = {}
-        self.service_servers: FlextGrpcTypes.Core.GrpcHeaders = {}  # service_id -> server_id
-
-    def register_service(self, service: FlextGrpcService, server_id: str) -> bool:
-        """Register a service with a server."""
-        validation = service.validate_business_rules()
-        if validation.is_failure:
-            return False
-
-        self.services[str(service.id)] = service
-        self.service_servers[str(service.id)] = server_id
-        return True
-
-    def discover_services(self) -> dict[str, FlextGrpcTypes.Core.GrpcDict]:
-        """Discover all registered services."""
-        discovery = {}
-
-        for service_id, service in self.services.items():
-            server_id = self.service_servers[service_id]
-            discovery[service_id] = {
-                "name": service.name,
-                "methods": service.methods,
-                "server_id": server_id,
-                "method_count": len(service.methods),
-            }
-
-        return discovery
-
-    def find_service_by_method(
-        self, method_name: str
-    ) -> list[FlextGrpcTypes.Core.GrpcHeaders]:
-        """Find services that support a specific method."""
-        matches: list[FlextTypes.StringDict] = []
-
-        for service_id, service in self.services.items():
-            if service.has_method(method_name):
-                server_id = self.service_servers[service_id]
-                matches.append(
-                    {
-                        "service_id": service_id,
-                        "service_name": service.name,
-                        "server_id": server_id,
-                    },
-                )
-
-        return matches
+                print(f"Failed to create {stream_type} stream: {stream_result.error}")
 
 
 def example_1_server_pool() -> None:
-    """Example 1: Server pool management."""
+    """Example 1: Server pool management through facade."""
     manager = GrpcServerManager()
 
-    # Create server pool
-    manager.create_server_pool(base_port=8000, count=3)
+    # Create server pool through facade
+    server_results = manager.create_server_pool(base_port=8000, count=3)
+    successful_creations = sum(1 for result in server_results if result.is_success)
+    print(f"Created {successful_creations}/{len(server_results)} servers")
 
-    # Start all servers
+    # Start all servers through facade
     start_results = manager.start_all_servers()
-    sum(1 for success in start_results.values() if success)
+    successful_starts = sum(1 for success in start_results.values() if success)
+    print(f"Started {successful_starts}/{len(start_results)} servers")
 
-    # Get status
+    # Get status through facade
     status = manager.get_server_status()
-    for _server_id, _info in status.items():
-        pass
+    for server_id, info in status.items():
+        print(f"Server {server_id}: {info['state']}, running: {info['is_running']}")
 
-    # Stop all servers
+    # Stop all servers through facade
     stop_results = manager.stop_all_servers()
-    sum(1 for success in stop_results.values() if success)
+    successful_stops = sum(1 for success in stop_results.values() if success)
+    print(f"Stopped {successful_stops}/{len(stop_results)} servers")
 
 
 def example_2_client_pool() -> None:
-    """Example 2: Client pool and broadcasting."""
-    # Create servers first
-    server_manager = GrpcServerManager()
-    servers = server_manager.create_server_pool(base_port=8100, count=2)
-    server_manager.start_all_servers()
+    """Example 2: Advanced operations through facade."""
+    # Initialize advanced operations
+    ops = AdvancedGrpcOperations()
 
-    # Create client pool
-    client_pool = GrpcClientPool()
-    client_pool.create_clients_for_servers(servers)
-
-    # Connect all clients
-    connect_results = client_pool.connect_all_clients()
-    sum(1 for success in connect_results.values() if success)
-
-    # Broadcast method calls
-    broadcast_results = client_pool.broadcast_call(
-        "GetStatus",
-        {"timestamp": datetime.now(UTC).isoformat()},
+    # Create complete setup through facade
+    setup_result = ops.create_complete_setup(
+        host="localhost",
+        port=8080,
+        service_name="AdvancedService",
+        methods=["ProcessData", "GetStatus", "StreamResults"],
     )
 
-    for result in broadcast_results.values():
-        if isinstance(result, dict) and "error" not in result:
-            pass
+    if setup_result.is_success:
+        setup = setup_result.unwrap()
+        print(
+            f"Created setup with server: {setup['server'].id}, client: {setup['client'].id}"
+        )
+    else:
+        print(f"Setup creation failed: {setup_result.error}")
 
-    # Cleanup
-    server_manager.stop_all_servers()
+    # Demonstrate streaming operations
+    ops.demonstrate_streaming()
 
 
-def example_3_service_registry() -> None:
-    """Example 3: Service registry and discovery."""
-    registry = ServiceRegistry()
+def example_3_service_creation() -> None:
+    """Example 3: Service creation patterns through facade."""
+    # Initialize facade
+    grpc = FlextGrpc()
 
-    # Register multiple services
-    user_service = FlextGrpcService(
-        id="user-service",
-        name="UserService",
-        methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser", "ListUsers"],
-        created_at=datetime.now(UTC),
-    )
+    # Create different types of services through facade
+    services = [
+        ("UserService", ["GetUser", "CreateUser", "UpdateUser"]),
+        ("OrderService", ["GetOrder", "CreateOrder", "UpdateOrder"]),
+        ("NotificationService", ["SendNotification", "GetNotifications"]),
+    ]
 
-    order_service = FlextGrpcService(
-        id="order-service",
-        name="OrderService",
-        methods=["GetOrder", "CreateOrder", "UpdateOrder", "CancelOrder", "ListOrders"],
-        created_at=datetime.now(UTC),
-    )
+    created_services = []
+    for service_name, methods in services:
+        service_result = grpc.create_service(name=service_name, methods=methods)
 
-    notification_service = FlextGrpcService(
-        id="notification-service",
-        name="NotificationService",
-        methods=["SendNotification", "GetNotifications", "MarkAsRead"],
-        created_at=datetime.now(UTC),
-    )
+        if service_result.is_success:
+            service = service_result.unwrap()
+            created_services.append(service)
+            print(
+                f"Created service: {service.name} with {len(service.methods)} methods"
+            )
+        else:
+            print(f"Failed to create {service_name}: {service_result.error}")
 
-    # Register services with different servers
-    registry.register_service(user_service, "server-1")
-    registry.register_service(order_service, "server-2")
-    registry.register_service(notification_service, "server-3")
-
-    # Discover all services
-    discovery = registry.discover_services()
-    for _info in discovery.values():
-        pass
-
-    # Find services by method
-    get_services = registry.find_service_by_method("GetUser")
-    create_services = registry.find_service_by_method("CreateOrder")
-
-    for _service in get_services:
-        pass
-
-    for _service in create_services:
-        pass
+    print(f"Successfully created {len(created_services)} services")
 
 
 def example_4_streaming() -> None:
-    """Example 4: Streaming scenarios."""
-    # Create different stream types
-    streams = [
-        FlextGrpcStream(
-            id="unary-stream",
-            method_name="GetUser",
-            stream_type="unary",
-            created_at=datetime.now(UTC),
-        ),
-        FlextGrpcStream(
-            id="server-stream",
-            method_name="StreamMessages",
-            stream_type="server_streaming",
-            created_at=datetime.now(UTC),
-        ),
-        FlextGrpcStream(
-            id="client-stream",
-            method_name="UploadData",
-            stream_type="client_streaming",
-            created_at=datetime.now(UTC),
-        ),
-        FlextGrpcStream(
-            id="bidi-stream",
-            method_name="Chat",
-            stream_type="bidirectional",
-            created_at=datetime.now(UTC),
-        ),
+    """Example 4: Streaming operations through facade."""
+    # Initialize facade
+    grpc = FlextGrpc()
+
+    # Create different stream types through facade
+    stream_configs = [
+        ("GetUser", "unary"),
+        ("StreamMessages", "server_streaming"),
+        ("UploadData", "client_streaming"),
+        ("Chat", "bidirectional"),
     ]
 
-    for stream in streams:
-        validation = stream.validate_business_rules()
-        if validation.is_failure:
-            pass
+    created_streams = []
+    for method_name, stream_type in stream_configs:
+        stream_result = grpc.create_stream(
+            method_name=method_name, stream_type=stream_type
+        )
+
+        if stream_result.is_success:
+            stream = stream_result.unwrap()
+            created_streams.append(stream)
+            print(f"Created {stream_type} stream for method: {method_name}")
+        else:
+            print(f"Failed to create {stream_type} stream: {stream_result.error}")
+
+    print(f"Successfully created {len(created_streams)} streaming operations")
 
 
 def example_5_error_handling() -> None:
-    """Example 5: Comprehensive error handling."""
-    server_service = FlextGrpcServerService()
+    """Example 5: Comprehensive error handling through facade."""
+    # Initialize facade
+    grpc = FlextGrpc()
 
-    # Server error scenarios
+    print("Testing various error scenarios through FlextGrpc facade...")
 
-    # Try to start invalid server
-    try:
-        invalid_server = FlextGrpcServer(
-            id="invalid-server",
-            host="",  # Invalid
-            port=0,  # Invalid
-            created_at=datetime.now(UTC),
+    # Test invalid server creation
+    invalid_server_result = grpc.create_server(host="", port=0)
+    if invalid_server_result.is_failure:
+        print(
+            f"✓ Invalid server creation properly failed: {invalid_server_result.error}"
         )
-        invalid_server.validate_business_rules()
-    except (RuntimeError, ValueError, TypeError):
-        pass
 
-    # Try to start already running server
-    server = FlextGrpcServer(
-        id="test-server",
-        created_at=datetime.now(UTC),
-    )
+    # Test invalid client creation
+    invalid_client_result = grpc.create_client(target="")
+    if invalid_client_result.is_failure:
+        print(
+            f"✓ Invalid client creation properly failed: {invalid_client_result.error}"
+        )
 
-    start1 = server_service.execute("start", server)
-    if start1.is_success and isinstance(start1.data, FlextGrpcServer):
-        running_server = start1.data
-        server_service.execute("start", running_server)
+    # Test invalid channel creation
+    invalid_channel_result = grpc.create_channel(target="")
+    if invalid_channel_result.is_failure:
+        print(
+            f"✓ Invalid channel creation properly failed: {invalid_channel_result.error}"
+        )
 
-    # Client error scenarios
+    # Test invalid config creation
+    invalid_config_result = grpc.create_config(host="", port=0)
+    if invalid_config_result.is_failure:
+        print(
+            f"✓ Invalid config creation properly failed: {invalid_config_result.error}"
+        )
 
-    # Try to connect client without channel
-    no_channel_client = FlextGrpcClient(
-        id="no-channel-client",
-        channel=None,
-        created_at=datetime.now(UTC),
-    )
+    # Test invalid service creation
+    invalid_service_result = grpc.create_service(name="", methods=[])
+    if invalid_service_result.is_failure:
+        print(
+            f"✓ Invalid service creation properly failed: {invalid_service_result.error}"
+        )
 
-    client_service = FlextGrpcClientService()
-    client_service.execute("connect", no_channel_client)
+    # Test invalid stream creation
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
+    if invalid_stream_result.is_failure:
+        print(
+            f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"
+        )
 
-    # Try to call method on disconnected client
-    channel = FlextGrpcChannel(
-        id="test-channel",
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.DEFAULT_GRPC_PORT}",
-        created_at=datetime.now(UTC),
-    )
-
-    disconnected_client = FlextGrpcClient(
-        id="disconnected-client",
-        channel=channel,
-        created_at=datetime.now(UTC),
-    )
-
-    client_service.execute("call", disconnected_client, method_name="TestMethod")
-
-    # Configuration error scenarios
-
-    with contextlib.suppress(Exception):
-        FlextGrpcConfig(host="")
-
-    with contextlib.suppress(Exception):
-        FlextGrpcConfig(port=0)
-
-    with contextlib.suppress(Exception):
-        FlextGrpcConfig(max_workers=0)
-
-    with contextlib.suppress(Exception):
-        FlextGrpcConfig(timeout=-1.0)
+    print("Error handling validation completed - all invalid inputs properly rejected")
 
 
 def main() -> None:
     """Run all advanced examples."""
     example_1_server_pool()
     example_2_client_pool()
-    example_3_service_registry()
+    example_3_service_creation()
     example_4_streaming()
     example_5_error_handling()
 
