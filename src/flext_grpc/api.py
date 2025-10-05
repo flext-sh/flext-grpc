@@ -31,6 +31,7 @@ from flext_grpc.entities import (
     FlextGrpcStream,
 )
 from flext_grpc.models import FlextGrpcModels
+
 # Service logic implemented directly in facade following FLEXT patterns
 from flext_grpc.typings import FlextGrpcTypes
 

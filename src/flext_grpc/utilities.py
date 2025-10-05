@@ -37,7 +37,6 @@ from google.protobuf import json_format
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.message import Message as ProtobufMessage
 
-from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcChannel, FlextGrpcClient, FlextGrpcStream
 from flext_grpc.models import FlextGrpcModels
 
@@ -130,7 +129,12 @@ class FlextGrpcUtilities(FlextUtilities):
             from uuid import uuid4
 
             # Validate stream type
-            valid_types = ["unary", "server_streaming", "client_streaming", "bidirectional"]
+            valid_types = [
+                "unary",
+                "server_streaming",
+                "client_streaming",
+                "bidirectional",
+            ]
             if stream_type not in valid_types:
                 return FlextResult.fail(f"Invalid stream type: {stream_type}")
 

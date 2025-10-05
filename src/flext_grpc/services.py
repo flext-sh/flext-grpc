@@ -42,7 +42,6 @@ from flext_grpc.entities import (
     FlextGrpcService as FlextGrpcServiceEntity,
     FlextGrpcStream,
 )
-from flext_grpc.utilities import FlextGrpcUtilities
 
 # gRPC streaming constants
 from flext_grpc.proto import (
