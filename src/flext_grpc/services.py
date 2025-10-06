@@ -74,7 +74,7 @@ class FlextGrpcServices(FlextService):
         self._dispatcher = FlextDispatcher()
         self._processors = FlextProcessors()
         self._registry = FlextRegistry(dispatcher=self._dispatcher)
-        self._logger = FlextLogger(__name__)
+        self.logger = FlextLogger(__name__)
 
         # Server management
         self._active_servers: dict[str, FlextGrpcProtocols.Grpc.ServerProtocol] = {}

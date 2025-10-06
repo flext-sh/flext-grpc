@@ -57,7 +57,7 @@ class FlextGrpc(FlextService):
         self._dispatcher = FlextDispatcher()
         self._processors = FlextProcessors()
         self._registry = FlextRegistry(dispatcher=self._dispatcher)
-        self._logger = FlextLogger(__name__)
+        self.logger = FlextLogger(__name__)
 
         # Core service and configuration
         self._service = FlextGrpcServices()
