@@ -5,21 +5,21 @@ from typing import Protocol, runtime_checkable
 from flext_core import FlextProtocols, FlextResult, FlextTypes
 
 
-class FlextGrpcProtocols:
-    """Unified gRPC protocols following FLEXT domain extension pattern.
+class FlextGrpcProtocols(FlextProtocols):
+    """Unified gRPC protocols extending FLEXT foundation protocols.
 
-    This class consolidates gRPC microservices protocols while explicitly
-    re-exporting foundation protocols for backward compatibility and clean access.
+    This class extends FlextProtocols with gRPC-specific protocols while maintaining
+    all foundation protocols from flext-core.
 
     Architecture:
-        - RE-EXPORTS: Foundation protocols from flext-core for unified access
-        - EXTENDS: gRPC-specific protocols in Grpc namespace
-        - MAINTAINS: Zero breaking changes through explicit re-export pattern
+        - EXTENDS: FlextProtocols with all foundation protocols
+        - ADDS: gRPC-specific protocols in Grpc namespace
+        - MAINTAINS: Zero breaking changes through inheritance pattern
 
     Usage:
         from flext_grpc.protocols import FlextGrpcProtocols
 
-        # Foundation access (re-exported)
+        # Foundation access (inherited)
         FlextGrpcProtocols.Foundation.ResultProtocol
 
         # gRPC-specific access
@@ -27,17 +27,10 @@ class FlextGrpcProtocols:
     """
 
     # =========================================================================
-    # FOUNDATION PROTOCOL RE-EXPORTS (from flext-core)
+    # GRPC-SPECIFIC PROTOCOLS (Extending foundation protocols)
     # =========================================================================
-    # Explicitly re-export foundation protocols for unified access.
-    # This maintains backward compatibility while providing clean namespace access.
-
-    Foundation = FlextProtocols.Foundation
-    Domain = FlextProtocols.Domain
-    Application = FlextProtocols.Application
-    Infrastructure = FlextProtocols.Infrastructure
-    Extensions = FlextProtocols.Extensions
-    Commands = FlextProtocols.Commands
+    # Domain-specific protocols for gRPC server management, client communication,
+    # streaming operations, service definitions, channel management, metrics, and configuration.
 
     # =========================================================================
     # GRPC-SPECIFIC PROTOCOLS
@@ -265,28 +258,6 @@ class FlextGrpcProtocols:
             def validate_address(self, address: str) -> FlextResult[bool]:
                 """Validate gRPC address format."""
                 ...
-
-    # =========================================================================
-    # BACKWARD COMPATIBILITY ALIASES
-    # =========================================================================
-    # Maintain existing attribute names for zero breaking changes.
-
-    ServerProtocol = Grpc.ServerProtocol
-    ClientProtocol = Grpc.ClientProtocol
-    StreamingProtocol = Grpc.StreamingProtocol
-    ServiceProtocol = Grpc.ServiceProtocol
-    ChannelProtocol = Grpc.ChannelProtocol
-    MetricsProtocol = Grpc.MetricsProtocol
-    ConfigurationProtocol = Grpc.ConfigurationProtocol
-
-    # Additional convenience aliases
-    GrpcServerProtocol = Grpc.ServerProtocol
-    GrpcClientProtocol = Grpc.ClientProtocol
-    GrpcStreamProtocol = Grpc.StreamingProtocol
-    GrpcServiceProtocol = Grpc.ServiceProtocol
-    GrpcChannelProtocol = Grpc.ChannelProtocol
-    GrpcMetricsProtocol = Grpc.MetricsProtocol
-    GrpcConfigProtocol = Grpc.ConfigurationProtocol
 
 
 __all__ = [

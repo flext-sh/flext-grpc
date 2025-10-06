@@ -139,7 +139,7 @@ Based on 2025 gRPC Python best practices:
 
 1. **Reuse channels and stubs** to avoid connection overhead
 2. **Use keepalive pings** for long-lived connections
-3. \*_Consider _ for improved streaming performance
+3. \*_Consider_ for improved streaming performance
 4. **Validate inputs** even with protobuf type checking
 
 ### Security Patterns

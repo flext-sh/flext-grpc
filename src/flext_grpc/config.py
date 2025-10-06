@@ -18,41 +18,39 @@ from flext_grpc.constants import FlextGrpcConstants
 class FlextGrpcConfig(FlextConfig):
     """gRPC configuration extending FlextConfig with gRPC-specific settings.
 
-    Inherits ALL FlextConfig capabilities (environment loading, validation, etc.)
+    Inherits ALL FlextConfig capabilities (configuration management, environment variables, etc.)
     and adds gRPC-specific configuration fields.
     """
 
     # gRPC Server Configuration
-    grpc_host: str = Field(
+    host: str = Field(
         default=FlextConstants.Platform.DEFAULT_HOST, description="gRPC server host"
     )
-    grpc_port: int = Field(
-        default=FlextGrpcConstants.DEFAULT_GRPC_PORT,
+    port: int = Field(
+        default=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
         ge=1,
         le=65535,
         description="gRPC server port",
     )
-    grpc_max_workers: int = Field(
-        default=FlextGrpcConstants.DEFAULT_MAX_WORKERS,
+    max_workers: int = Field(
+        default=FlextGrpcConstants.Service.DEFAULT_MAX_WORKERS,
         ge=1,
         le=100,
         description="Maximum gRPC worker threads",
     )
 
     # gRPC Client Configuration
-    grpc_timeout: float = Field(
+    timeout: float = Field(
         default=FlextConstants.Network.DEFAULT_TIMEOUT,
         gt=0,
         description="gRPC client timeout",
     )
 
     # gRPC Security
-    grpc_tls_enabled: bool = Field(default=False, description="Enable gRPC TLS")
+    tls_enabled: bool = Field(default=False, description="Enable gRPC TLS")
 
     # gRPC Streaming
-    grpc_streaming_enabled: bool = Field(
-        default=True, description="Enable gRPC streaming"
-    )
+    streaming_enabled: bool = Field(default=True, description="Enable gRPC streaming")
 
 
 __all__ = [

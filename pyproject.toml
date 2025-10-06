@@ -17,8 +17,8 @@
         "Typing :: Typed",
     ]
     dependencies = [
-        "grpcio (>=1.74.1)",
-        "grpcio-tools (>=1.74.1)",
+        "grpcio (==1.75.1)",
+        "grpcio-tools (>=1.75.1)",
         "prometheus-client (>=0.22.1)",
         "protobuf (>=6.30.2)",
         "psutil (>=5.9.0)",
@@ -171,7 +171,7 @@
         develop = true
         path    = "../flext-core"
 
-    [tool.poetry.dependencies.flext-observability]
+        [tool.poetry.dependencies.flext-observability]
         develop = true
         path    = "../flext-observability"
 

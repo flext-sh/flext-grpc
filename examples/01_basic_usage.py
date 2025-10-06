@@ -1,7 +1,7 @@
 """FLEXT gRPC Basic Usage Examples - Core functionality and facade patterns.
 
 This module demonstrates the fundamental operations and patterns of the FLEXT gRPC
-communication platform, showcasing the unified FlextGrpc facade for entity creation,
+communication platform, showcasing the unified FlextGrpcApi facade for entity creation,
 validation, configuration, and service operations following Clean Architecture and
 Domain-Driven Design principles.
 
@@ -13,13 +13,13 @@ from __future__ import annotations
 
 from flext_core import FlextConstants
 
-from flext_grpc import FlextGrpc
+from flext_grpc import FlextGrpcApi
 
 
 def example_1_basic_entities() -> None:
-    """Example 1: Creating and using basic gRPC entities through FlextGrpc facade."""
+    """Example 1: Creating and using basic gRPC entities through FlextGrpcApi facade."""
     # Initialize the unified gRPC facade
-    grpc = FlextGrpc()
+    grpc = FlextGrpcApi()
 
     # Create a gRPC server through facade
     server_result = grpc.create_server(
@@ -58,15 +58,15 @@ def example_1_basic_entities() -> None:
 
 
 def example_2_configuration() -> None:
-    """Example 2: Using configuration through FlextGrpc facade."""
+    """Example 2: Using configuration through FlextGrpcApi facade."""
     # Initialize facade
-    grpc = FlextGrpc()
+    grpc = FlextGrpcApi()
 
     # Create default configuration through facade
     config_result = grpc.create_config()
     if config_result.is_success:
         config = config_result.unwrap()
-        print(f"Created config with host: {config.grpc_host}, port: {config.grpc_port}")
+        print(f"Created config with host: {config.host}, port: {config.port}")
 
     # Create custom configuration through facade
     custom_config_result = grpc.create_config(
@@ -78,9 +78,7 @@ def example_2_configuration() -> None:
 
     if custom_config_result.is_success:
         custom_config = custom_config_result.unwrap()
-        print(
-            f"Created custom config: {custom_config.grpc_host}:{custom_config.grpc_port}"
-        )
+        print(f"Created custom config: {custom_config.host}:{custom_config.port}")
 
     # Configuration validation - invalid config will fail
     invalid_config_result = grpc.create_config(host="", port=0)
@@ -89,9 +87,9 @@ def example_2_configuration() -> None:
 
 
 def example_3_operations() -> None:
-    """Example 3: Using gRPC operations through FlextGrpc facade."""
+    """Example 3: Using gRPC operations through FlextGrpcApi facade."""
     # Initialize facade
-    grpc = FlextGrpc()
+    grpc = FlextGrpcApi()
 
     # Create and start server through facade
     server_result = grpc.create_server(
@@ -143,9 +141,9 @@ def example_3_operations() -> None:
 
 
 def example_4_validation() -> None:
-    """Example 4: Domain validation through FlextGrpc facade."""
+    """Example 4: Domain validation through FlextGrpcApi facade."""
     # Initialize facade
-    grpc = FlextGrpc()
+    grpc = FlextGrpcApi()
 
     # Valid entities through facade
     valid_server_result = grpc.create_server(
@@ -193,9 +191,9 @@ def example_4_validation() -> None:
 
 
 def example_5_state_transitions() -> None:
-    """Example 5: State transitions through FlextGrpc facade."""
+    """Example 5: State transitions through FlextGrpcApi facade."""
     # Initialize facade
-    grpc = FlextGrpc()
+    grpc = FlextGrpcApi()
 
     # Create channel through facade
     channel_result = grpc.create_channel(

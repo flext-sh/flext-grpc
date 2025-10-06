@@ -76,6 +76,38 @@ class FlextGrpcExceptions:
           depending on application requirements.
         """
 
+        def _extract_common_kwargs(
+            self, kwargs: dict[str, object]
+        ) -> tuple[dict[str, object] | None, str | None, str | None]:
+            """Extract common error parameters from kwargs."""
+            context = kwargs.get("context")
+            correlation_id = kwargs.get("correlation_id")
+            error_code = kwargs.get("error_code")
+
+            # Ensure proper types
+            if context is not None and not isinstance(context, dict):
+                context = None
+            if correlation_id is not None and not isinstance(correlation_id, str):
+                correlation_id = None
+            if error_code is not None and not isinstance(error_code, str):
+                error_code = None
+
+            return context, correlation_id, error_code
+
+        def _build_context(
+            self, base_context: dict[str, object] | None
+        ) -> dict[str, object]:
+            """Build complete error context."""
+            context = base_context or {}
+
+            # Add gRPC-specific context if not present
+            if "error_type" not in context:
+                context["error_type"] = "grpc_error"
+            if "component" not in context:
+                context["component"] = "flext_grpc"
+
+            return context
+
         @override
         def __init__(
             self,
@@ -100,8 +132,8 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
 
@@ -181,10 +213,23 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_VALIDATION_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_VALIDATION_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
+
+        def _build_context(
+            self, base_context: dict[str, object] | None, field_name: str | None = None
+        ) -> dict[str, object]:
+            """Build validation error context with field-specific information."""
+            context = super()._build_context(base_context)
+
+            # Add validation-specific context
+            if field_name is not None:
+                context["field_name"] = field_name
+                context["error_type"] = "validation_error"
+
+            return context
 
     class ConnectionError(BaseError):
         """gRPC connection error with comprehensive network and channel context.
@@ -255,8 +300,8 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_CONNECTION_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_CONNECTION_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
 
@@ -324,8 +369,8 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_TIMEOUT_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_TIMEOUT_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
 
@@ -419,10 +464,28 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_CONFIG_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_CONFIG_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
+
+        def _build_context(
+            self,
+            base_context: dict[str, object] | None,
+            config_key: str | None = None,
+            config_value: object = None,
+        ) -> dict[str, object]:
+            """Build configuration error context with config-specific information."""
+            context = super()._build_context(base_context)
+
+            # Add configuration-specific context
+            if config_key is not None:
+                context["config_key"] = config_key
+            if config_value is not None:
+                context["config_value"] = config_value
+                context["error_type"] = "configuration_error"
+
+            return context
 
     class ChannelError(BaseError):
         """gRPC channel error for channel state and lifecycle issues.
@@ -456,8 +519,8 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_CHANNEL_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_CHANNEL_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
 
@@ -493,8 +556,8 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_SERVICE_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_SERVICE_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
 
@@ -530,31 +593,12 @@ class FlextGrpcExceptions:
             # Call parent with complete error information
             super().__init__(
                 message,
-                code=error_code or "GRPC_STREAM_ERROR",
-                context=context,
+                error_code=error_code or "GRPC_STREAM_ERROR",
+                metadata=context,
                 correlation_id=correlation_id,
             )
 
 
-# Backward compatibility aliases for existing code
-FlextGrpcError = FlextGrpcExceptions.BaseError
-FlextGrpcValidationError = FlextGrpcExceptions.ValidationError
-FlextGrpcConnectionError = FlextGrpcExceptions.ConnectionError
-FlextGrpcTimeoutError = FlextGrpcExceptions.TimeoutError
-FlextGrpcConfigurationError = FlextGrpcExceptions.ConfigurationError
-FlextGrpcChannelError = FlextGrpcExceptions.ChannelError
-FlextGrpcServiceError = FlextGrpcExceptions.ServiceError
-FlextGrpcStreamError = FlextGrpcExceptions.StreamError
-
 __all__ = [
-    # Backward compatibility aliases
-    "FlextGrpcChannelError",
-    "FlextGrpcConfigurationError",
-    "FlextGrpcConnectionError",
-    "FlextGrpcError",
     "FlextGrpcExceptions",
-    "FlextGrpcServiceError",
-    "FlextGrpcStreamError",
-    "FlextGrpcTimeoutError",
-    "FlextGrpcValidationError",
 ]

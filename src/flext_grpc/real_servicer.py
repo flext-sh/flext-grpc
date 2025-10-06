@@ -27,9 +27,19 @@ from flext_grpc.proto.flext_grpc_pb2 import (
     StreamRequest,
     StreamResponse,
 )
-from flext_grpc.proto.flext_grpc_pb2_grpc import (
-    FlextGrpcServiceServicer,
-)
+
+try:
+    from flext_grpc.proto.flext_grpc_pb2_grpc import (
+        FlextGrpcServiceServicer,
+    )
+except RuntimeError as e:
+    if "grpc package installed is at version" in str(e):
+        # Create dummy class for version mismatch
+        class FlextGrpcServiceServicer:
+            """Dummy servicer class for version mismatch scenarios."""
+
+    else:
+        raise
 
 
 class FlextGrpcRealServicer(FlextGrpcServiceServicer):

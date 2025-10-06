@@ -1,8 +1,26 @@
-# flext-grpc
+# FLEXT-GRPC
 
-gRPC communication library for the FLEXT ecosystem using Clean Architecture patterns.
+[![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
+[![Development](https://img.shields.io/badge/status-development-orange.svg)](#)
+[![gRPC Communication](https://img.shields.io/badge/grpc-communication-green.svg)](#)
+[![Documentation](https://img.shields.io/badge/docs-organized-blue.svg)](./docs/)
+[![GitHub](https://img.shields.io/badge/github-flext--grpc-black.svg)](https://github.com/flext/flext-grpc)
 
-> **⚠️ STATUS**: Development - Core functionality operational, test coverage at 26%
+**gRPC communication library** for the FLEXT ecosystem using Clean Architecture patterns and railway-oriented programming.
+
+> **⚠️ STATUS**: Development - Core functionality operational, test coverage at 26%, protobuf integration verified
+
+## 📚 Documentation
+
+**Complete documentation is available in the organized FLEXT documentation:**
+
+- **[📖 Full Documentation](../docs/projects/flext-grpc/)** - Comprehensive guides, API reference, and examples
+- **[🚀 Getting Started](../docs/projects/flext-grpc/guides/getting-started.md)** - Quick start guide
+- **[🏗️ Architecture](../docs/projects/flext-grpc/architecture/architecture.md)** - System design and patterns
+- **[🔌 API Reference](../docs/projects/flext-grpc/api/api-reference.md)** - Complete API documentation
+- **[⚙️ Configuration](../docs/projects/flext-grpc/guides/configuration.md)** - Configuration patterns
+
+---
 
 ---
 
