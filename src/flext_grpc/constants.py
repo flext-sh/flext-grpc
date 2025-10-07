@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Final
+from typing import Final, Literal
 
 from flext_core import FlextConstants, FlextTypes
 
@@ -169,7 +169,7 @@ class FlextGrpcConstants(FlextConstants):
             "shutdown",
         )
         type ChannelState = Literal[
-            idle, connecting, ready, transient_failure, shutdown
+            "idle", "connecting", "ready", "transient_failure", "shutdown"
         ]
 
         # Server state literals
@@ -179,7 +179,7 @@ class FlextGrpcConstants(FlextConstants):
             "running",
             "stopping",
         )
-        type ServerState = Literal[stopped, starting, running, stopping]
+        type ServerState = Literal["stopped", "starting", "running", "stopping"]
 
         # Stream type literals
         STREAM_TYPES: Final[tuple[str, ...]] = (
@@ -189,7 +189,7 @@ class FlextGrpcConstants(FlextConstants):
             "bidirectional",
         )
         type StreamType = Literal[
-            unary, server_streaming, client_streaming, bidirectional
+            "unary", "server_streaming", "client_streaming", "bidirectional"
         ]
 
         # Load balancing policy literals
@@ -200,12 +200,12 @@ class FlextGrpcConstants(FlextConstants):
             "xds_cluster_resolver",
         )
         type LoadBalancingPolicy = Literal[
-            round_robin, pick_first, grpclb, xds_cluster_resolver
+            "round_robin", "pick_first", "grpclb", "xds_cluster_resolver"
         ]
 
         # Compression literals
         COMPRESSION_TYPES: Final[tuple[str, ...]] = ("none", "gzip", "deflate")
-        type CompressionType = Literal[none, gzip, deflate]
+        type CompressionType = Literal["none", "gzip", "deflate"]
 
 
 __all__: FlextTypes.StringList = [
