@@ -13,7 +13,7 @@ import gc
 import time
 from collections.abc import Iterator
 from datetime import UTC, datetime
-from typing import Any, ClassVar, cast
+from typing import ClassVar, cast
 from uuid import uuid4
 
 try:
@@ -343,8 +343,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def dict_to_protobuf(
-            data: FlextTypes.Dict, message_class: type[Any]
-        ) -> FlextResult[Any]:
+            data: FlextTypes.Dict, message_class: type[object]
+        ) -> FlextResult[object]:
             """Convert dictionary to protobuf message.
 
             Args:
@@ -414,8 +414,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def json_to_protobuf(
-            json_str: str, message_class: type[Any]
-        ) -> FlextResult[Any]:
+            json_str: str, message_class: type[object]
+        ) -> FlextResult[object]:
             """Convert JSON string to protobuf message.
 
             Args:
