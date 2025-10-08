@@ -28,7 +28,6 @@
     ]
     description = "FLEXT gRPC - High-Performance gRPC Services"
     keywords = [
-        "",
         "enterprise",
         "flext",
         "grpc",
@@ -125,6 +124,7 @@
         "htmlcov",
         "node_modules",
         "reports",
+            "tests",
         "vendor",
         "venv",
     ]

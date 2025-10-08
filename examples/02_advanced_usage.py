@@ -154,7 +154,7 @@ class AdvancedGrpcOperations:
         for stream_type in stream_types:
             stream_result = self.grpc.create_stream(
                 method_name=f"{stream_type.capitalize()}Method",
-                stream_type=stream_type,  # type: ignore[arg-type]
+                stream_type=stream_type,
             )
             if stream_result.is_success:
                 stream = stream_result.unwrap()
