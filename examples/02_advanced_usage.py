@@ -1,7 +1,7 @@
 """FLEXT gRPC Advanced Usage Examples - Complex scenarios and enterprise patterns.
 
 This module demonstrates advanced usage patterns and enterprise-grade scenarios
-for the FLEXT gRPC communication platform, showcasing the unified FlextGrpcApi facade
+for the FLEXT gRPC communication platform, showcasing the unified FlextGrpc facade
 for complex entity management, service coordination, streaming patterns, and
 production-ready configurations following Clean Architecture and Domain-Driven
 Design principles.
@@ -12,18 +12,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextConstants, FlextResult, FlextTypes
+from flext_core import FlextConstants, FlextResult
 
-from flext_grpc import FlextGrpcApi, FlextGrpcConfig
+from flext_grpc import FlextGrpc, FlextGrpcConfig
 from flext_grpc.entities import FlextGrpcServer
 
 
 class GrpcServerManager:
-    """Advanced server management example using FlextGrpcApi facade."""
+    """Advanced server management example using FlextGrpc facade."""
 
     def __init__(self) -> None:
         """Initialize the gRPC server manager with facade."""
-        self.grpc = FlextGrpcApi()
+        self.grpc = FlextGrpc()
         self.servers: dict[str, FlextGrpcServer] = {}
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
@@ -67,7 +67,7 @@ class GrpcServerManager:
 
         return server_results
 
-    def start_all_servers(self) -> FlextTypes.BoolDict:
+    def start_all_servers(self) -> dict[str, bool]:
         """Start all servers in the pool through facade."""
         results = {}
 
@@ -81,7 +81,7 @@ class GrpcServerManager:
 
         return results
 
-    def stop_all_servers(self) -> FlextTypes.BoolDict:
+    def stop_all_servers(self) -> dict[str, bool]:
         """Stop all servers in the pool through facade."""
         results = {}
 
@@ -119,11 +119,11 @@ class GrpcServerManager:
 
 
 class AdvancedGrpcOperations:
-    """Advanced gRPC operations using FlextGrpcApi facade."""
+    """Advanced gRPC operations using FlextGrpc facade."""
 
     def __init__(self) -> None:
         """Initialize advanced operations with facade."""
-        self.grpc = FlextGrpcApi()
+        self.grpc = FlextGrpc()
 
     def create_complete_setup(
         self,
@@ -153,7 +153,8 @@ class AdvancedGrpcOperations:
 
         for stream_type in stream_types:
             stream_result = self.grpc.create_stream(
-                method_name=f"{stream_type.capitalize()}Method", stream_type=stream_type
+                method_name=f"{stream_type.capitalize()}Method",
+                stream_type=stream_type,  # type: ignore[arg-type]
             )
             if stream_result.is_success:
                 stream = stream_result.unwrap()
@@ -215,7 +216,7 @@ def example_2_client_pool() -> None:
 def example_3_service_creation() -> None:
     """Example 3: Service creation patterns through facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Create different types of services through facade
     services = [
@@ -243,7 +244,7 @@ def example_3_service_creation() -> None:
 def example_4_streaming() -> None:
     """Example 4: Streaming operations through facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Create different stream types through facade
     stream_configs = [
@@ -256,7 +257,8 @@ def example_4_streaming() -> None:
     created_streams = []
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
-            method_name=method_name, stream_type=stream_type
+            method_name=method_name,
+            stream_type=stream_type,  # type: ignore[arg-type]
         )
 
         if stream_result.is_success:
@@ -272,9 +274,9 @@ def example_4_streaming() -> None:
 def example_5_error_handling() -> None:
     """Example 5: Comprehensive error handling through facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
-    print("Testing various error scenarios through FlextGrpcApi facade...")
+    print("Testing various error scenarios through FlextGrpc facade...")
 
     # Test invalid server creation
     invalid_server_result = grpc.create_server(host="", port=0)
@@ -312,7 +314,7 @@ def example_5_error_handling() -> None:
         )
 
     # Test invalid stream creation
-    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore[arg-type]
     if invalid_stream_result.is_failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"

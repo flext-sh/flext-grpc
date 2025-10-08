@@ -16,42 +16,28 @@ from datetime import UTC, datetime
 from typing import ClassVar, cast
 from uuid import uuid4
 
-try:
-    import psutil
+# Required imports - grpc and protobuf are mandatory dependencies
+import grpc
 
-    PSUTIL_AVAILABLE = True
-except ImportError:
-    psutil = None
-    PSUTIL_AVAILABLE = False
-
-try:
-    import grpc
-    from google.protobuf import json_format
-    from google.protobuf.descriptor import FieldDescriptor
-    from google.protobuf.json_format import MessageToDict, MessageToJson, ParseDict
-    from google.protobuf.message import Message
-
-    PROTOBUF_AVAILABLE = True
-except ImportError:
-    # Fallback for when protobuf is not available
-    grpc = None
-    json_format = None
-    Message = object
-    FieldDescriptor = object
-    MessageToDict = None
-    MessageToJson = None
-    ParseDict = None
-    PROTOBUF_AVAILABLE = False
-
+# Required imports - psutil is mandatory dependency
+import psutil
 from flext_core import (
     FlextLogger,
     FlextResult,
     FlextTypes,
 )
+from google.protobuf import json_format
+from google.protobuf.descriptor import FieldDescriptor
+from google.protobuf.json_format import MessageToDict, MessageToJson
+from google.protobuf.message import Message
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcChannel, FlextGrpcClient, FlextGrpcStream
 from flext_grpc.models import FlextGrpcModels
+
+# Availability flags for optional dependencies
+PSUTIL_AVAILABLE = True
+PROTOBUF_AVAILABLE = True
 
 # Define proper type alias
 ProtobufMessage = Message

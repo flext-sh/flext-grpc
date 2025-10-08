@@ -23,9 +23,8 @@ from flext_grpc import (
     FlextGrpcError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
-    create_config,
 )
-from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc.typings import FlextGrpcTypings
 
 # Setup logging
 logger = FlextLogger(__name__)
@@ -34,7 +33,7 @@ logger = FlextLogger(__name__)
 def validate_user_input(
     username: str,
     email: str,
-) -> FlextResult[FlextGrpcTypes.Core.GrpcHeaders]:
+) -> FlextResult[FlextGrpcTypings.Core.GrpcHeaders]:
     """Validate user input with FlextGrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
@@ -52,13 +51,13 @@ def validate_user_input(
         if not email or "@" not in email:
             _raise_email_error()
 
-        return FlextResult[FlextGrpcTypes.Core.GrpcHeaders].ok(
+        return FlextResult[FlextGrpcTypings.Core.GrpcHeaders].ok(
             {"username": username, "email": email},
         )
 
     except FlextGrpcValidationError as e:
         logger.exception("Validation failed", field=e.field_name, error=str(e))
-        return FlextResult[FlextGrpcTypes.Core.GrpcHeaders].fail(
+        return FlextResult[FlextGrpcTypings.Core.GrpcHeaders].fail(
             f"Validation error: {e}"
         )
 
@@ -91,11 +90,11 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
             _raise_workers_error()
 
         try:
-            config = create_config(
-                host=FlextGrpcConstants.GRPC_DEFAULT_HOST,
-                port=port,
-                max_workers=workers,
-            )
+            config = {
+                "host": FlextGrpcConstants.Network.DEFAULT_HOST,
+                "port": port,
+                "max_workers": workers,
+            }
             return FlextResult[object].ok(config)
         except Exception as e:
             return FlextResult[object].fail(str(e))
@@ -172,7 +171,9 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
     logger.info("✅ User input validation passed")
 
     # Step 2: Create server configuration
-    config_result = create_server_config(FlextGrpcConstants.GRPC_DEFAULT_PORT, 4)
+    config_result = create_server_config(
+        FlextGrpcConstants.Network.DEFAULT_GRPC_PORT, 4
+    )
     if config_result.is_failure:
         return FlextResult[str].fail(
             f"Pipeline failed at configuration: {config_result.error}",

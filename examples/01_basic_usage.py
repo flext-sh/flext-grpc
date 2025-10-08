@@ -1,7 +1,7 @@
 """FLEXT gRPC Basic Usage Examples - Core functionality and facade patterns.
 
 This module demonstrates the fundamental operations and patterns of the FLEXT gRPC
-communication platform, showcasing the unified FlextGrpcApi facade for entity creation,
+communication platform, showcasing the unified FlextGrpc facade for entity creation,
 validation, configuration, and service operations following Clean Architecture and
 Domain-Driven Design principles.
 
@@ -13,13 +13,13 @@ from __future__ import annotations
 
 from flext_core import FlextConstants
 
-from flext_grpc import FlextGrpcApi
+from flext_grpc import FlextGrpc
 
 
 def example_1_basic_entities() -> None:
-    """Example 1: Creating and using basic gRPC entities through FlextGrpcApi facade."""
+    """Example 1: Creating and using basic gRPC entities through FlextGrpc facade."""
     # Initialize the unified gRPC facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Create a gRPC server through facade
     server_result = grpc.create_server(
@@ -58,9 +58,9 @@ def example_1_basic_entities() -> None:
 
 
 def example_2_configuration() -> None:
-    """Example 2: Using configuration through FlextGrpcApi facade."""
+    """Example 2: Using configuration through FlextGrpc facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Create default configuration through facade
     config_result = grpc.create_config()
@@ -87,9 +87,9 @@ def example_2_configuration() -> None:
 
 
 def example_3_operations() -> None:
-    """Example 3: Using gRPC operations through FlextGrpcApi facade."""
+    """Example 3: Using gRPC operations through FlextGrpc facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Create and start server through facade
     server_result = grpc.create_server(
@@ -141,9 +141,9 @@ def example_3_operations() -> None:
 
 
 def example_4_validation() -> None:
-    """Example 4: Domain validation through FlextGrpcApi facade."""
+    """Example 4: Domain validation through FlextGrpc facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Valid entities through facade
     valid_server_result = grpc.create_server(
@@ -191,9 +191,9 @@ def example_4_validation() -> None:
 
 
 def example_5_state_transitions() -> None:
-    """Example 5: State transitions through FlextGrpcApi facade."""
+    """Example 5: State transitions through FlextGrpc facade."""
     # Initialize facade
-    grpc = FlextGrpcApi()
+    grpc = FlextGrpc()
 
     # Create channel through facade
     channel_result = grpc.create_channel(
