@@ -51,7 +51,7 @@ class FlextGrpcConstants(FlextConstants):
         # Additional platform constants for gRPC
         METRICS_PORT: Final[int] = 9090  # Prometheus metrics port
         GRPC_DEFAULT_PORT: Final[int] = 50051  # Alias for DEFAULT_GRPC_PORT
-        PRODUCTION_HOST: Final[str] = "127.0.0.1"  # Localhost for production binding
+        HOST: Final[str] = "127.0.0.1"  # Localhost for production binding
         LOCALHOST_IP: Final[str] = "127.0.0.1"  # Localhost IP address
 
         # gRPC keepalive constants (in milliseconds)
@@ -131,8 +131,8 @@ class FlextGrpcConstants(FlextConstants):
         # Error rate limits
         MAX_ERROR_RATE_PERCENT: Final[float] = 100.0
         # Platform configuration constants
-        PRODUCTION_MIN_CONCURRENT_STREAMS: Final[int] = 50
-        PRODUCTION_MIN_KEEPALIVE_TIME_MS: Final[int] = 30000
+        MIN_CONCURRENT_STREAMS: Final[int] = 50
+        MIN_KEEPALIVE_TIME_MS: Final[int] = 30000
         MAX_CONCURRENT_STREAMS_LIMIT: Final[int] = 10000
 
     class Timeouts:

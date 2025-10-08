@@ -258,7 +258,7 @@ def example_4_streaming() -> None:
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
             method_name=method_name,
-            stream_type=stream_type,  # type: ignore[arg-type]
+            stream_type=stream_type,
         )
 
         if stream_result.is_success:
@@ -314,7 +314,7 @@ def example_5_error_handling() -> None:
         )
 
     # Test invalid stream creation
-    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore[arg-type]
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.is_failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"
