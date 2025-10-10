@@ -6,10 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc.__version__ import __version__, __version_info__
-
 from typing import Final
 
+from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
 from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
@@ -29,7 +28,6 @@ from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import FlextGrpcServices
 from flext_grpc.typings import FlextGrpcTypings
 from flext_grpc.utilities import FlextGrpcUtilities
-from flext_grpc.version import VERSION, FlextGrpcVersion
 
 # Exception aliases for backward compatibility
 FlextGrpcError = FlextGrpcExceptions.BaseError
@@ -41,13 +39,7 @@ FlextGrpcConfigurationError = FlextGrpcExceptions.ConfigurationError
 # Service aliases for backward compatibility
 FlextGrpcService = FlextGrpcServices
 
-PROJECT_VERSION: Final[FlextGrpcVersion] = VERSION
-__version__ = VERSION.version
-__version_info__: tuple[int | str, ...] = VERSION.version_info
-
 __all__ = [
-    "PROJECT_VERSION",
-    "VERSION",
     "EchoRequest",
     "FlextGrpc",
     "FlextGrpcChannel",

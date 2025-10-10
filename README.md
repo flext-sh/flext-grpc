@@ -56,7 +56,7 @@ Provides gRPC communication patterns for microservices within the FLEXT data int
 
 - **Source Code**: 4,923 lines across 13 modules
 - **Test Suite**: 18,018 lines across multiple test files
-- **Test Coverage**: 26% (verified via pytest --cov)
+- **Test Coverage**: 39% (verified via pytest --cov)
 - **Import Status**: ✅ All core modules importable after protobuf fixes
 
 ### Verified Working Functionality
@@ -113,7 +113,7 @@ poetry install
 # Run individual test
 poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
 
-# Check coverage (currently 26%)
+# Check coverage (currently 39%)
 poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 
 # Type checking
@@ -219,4 +219,4 @@ MIT License
 
 **flext-grpc v0.9.9** - gRPC communication library for FLEXT ecosystem.
 
-**Current Focus**: Improving test coverage from 26% to meet the 90% requirement while maintaining working core functionality.
+**Current Focus**: Improving test coverage from 39% to meet the 90% requirement while fixing 28 failing tests.
