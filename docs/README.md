@@ -19,7 +19,7 @@ Technical documentation for **flext-grpc** gRPC library implementation.
 ## Current Status
 
 - **Core Operations**: Server/client creation functional
-- **Test Coverage**: 26% (needs improvement to reach 90% target)
+- **Test Coverage**: 39% (needs improvement to reach 90% target)
 - **Import System**: All modules importable after protobuf fixes
 - **Code Statistics**: 4,923 source lines, 18,018 test lines
 

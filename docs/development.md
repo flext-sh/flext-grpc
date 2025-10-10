@@ -54,7 +54,7 @@ make format                # Auto-format code (black + ruff)
 make security              # Security scanning (bandit + pip-audit)
 
 # Testing
-make test                  # Full test suite (currently blocked)
+make test                  # Full test suite (28 failures need fixing)
 make test-unit             # Unit tests only
 make test-integration      # Integration tests
 make test-e2e              # End-to-end tests
@@ -77,7 +77,7 @@ make validate
 make lint                  # Zero Ruff violations
 make type-check            # Zero MyPy errors (strict mode)
 make security              # Zero critical security issues
-make test                  # All tests pass (when protobuf fixed)
+make test                  # All tests pass (currently 28 failing, needs bug fixes)
 ```
 
 ## Code Standards

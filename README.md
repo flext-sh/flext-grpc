@@ -127,7 +127,7 @@ poetry run ruff check src/
 
 - **Import Validation**: ✅ Core functionality importable
 - **Basic Operations**: ✅ Server/client creation working
-- **Test Coverage**: ⚠️ 26% (needs improvement from pyproject.toml requirement of 90%)
+- **Test Coverage**: ⚠️ 39% (needs improvement from pyproject.toml requirement of 90%)
 - **Type Safety**: Available via mypy
 - **Code Quality**: Available via ruff
 
@@ -139,7 +139,7 @@ poetry run ruff check src/
 
 - **Test Structure**: 18,018 lines across comprehensive test suite
 - **Test Execution**: Individual tests can run successfully
-- **Coverage Results**: 26% actual coverage (1,322 total statements, 902 missed)
+- **Coverage Results**: 39% actual coverage (1,798 total statements, 956 missed)
 - **Coverage Target**: 90% configured in pyproject.toml (not currently met)
 
 ### Test Execution Examples
@@ -158,7 +158,7 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 
 ## 📊 Development Status
 
-### Current Version (0.9.9)
+### Current Version (0.9.0)
 
 **Working**:
 
@@ -168,13 +168,14 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 
 **Needs Work**:
 
-- Test coverage improvement (26% → 90% target)
+- Test coverage improvement (39% → 90% target)
+- Fix 28 failing tests (critical bugs in services, exceptions, protocols)
 - Full test suite validation
 - Complete protobuf integration testing
 
 ### Next Steps
 
-1. **Test Coverage** - Address the 74 percentage point gap to meet 90% requirement
+1. **Test Coverage** - Address the 51 percentage point gap to meet 90% requirement
 2. **Test Suite Validation** - Ensure all 18,018 lines of tests execute reliably
 3. **Integration Testing** - Verify actual gRPC server/client communication
 4. **Production Features** - Health checking, authentication, TLS

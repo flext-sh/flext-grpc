@@ -100,7 +100,7 @@ print(f"Config: {config.host}:{config.port}")
 # Run a basic test
 poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
 
-# Check test coverage (currently 26%)
+# Check test coverage (currently 39%)
 poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 
 # Type checking
@@ -135,7 +135,7 @@ print(f'✅ Server creation: {server.address}')
 
 ### Test Coverage
 
-- **Current**: 26% coverage (902 of 1,322 statements missed)
+- **Current**: 39% coverage (956 of 1,798 statements missed)
 - **Target**: 90% (configured in pyproject.toml)
 - **Gap**: 64 percentage points to address
 
