@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import FlextCore
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -49,30 +49,6 @@ class FlextGrpcConfig(FlextCore.Config):
 
     # gRPC Streaming
     streaming_enabled: bool = Field(default=True, description="Enable gRPC streaming")
-
-    # === CONFIG MODELS (moved from models.py) ===
-
-    class ServerConfig(BaseModel):
-        """Basic server configuration."""
-
-        host: str = Field(default=FlextCore.Constants.Platform.DEFAULT_HOST)
-        port: int = Field(default=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT)
-        max_workers: int = Field(default=FlextGrpcConstants.Service.DEFAULT_MAX_WORKERS)
-        timeout: float = Field(default=FlextGrpcConstants.Network.DEFAULT_TIMEOUT)
-
-    class ClientConfig(BaseModel):
-        """Basic client configuration."""
-
-        target: str = Field(
-            default=f"{FlextCore.Constants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
-        )
-        timeout: float = Field(default=FlextGrpcConstants.Network.DEFAULT_TIMEOUT)
-
-    class ChannelConfig(BaseModel):
-        """Basic channel configuration."""
-
-        address: str
-        options: dict | None = None
 
 
 __all__ = [

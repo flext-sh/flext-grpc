@@ -16,14 +16,7 @@ from flext_grpc.entities import (
 from flext_grpc.exceptions import (
     FlextGrpcExceptions,
 )
-from flext_grpc.models import (
-    GrpcHealthCheck,
-    GrpcRequest,
-    ServiceDefinition,
-    ServiceMetrics,
-    StreamInfo,
-    StreamMetrics,
-)
+from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import FlextGrpcServices
@@ -50,6 +43,7 @@ __all__ = [
     "FlextGrpcEntities",
     "FlextGrpcError",
     "FlextGrpcExceptions",
+    "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcService",
     "FlextGrpcServiceStub",

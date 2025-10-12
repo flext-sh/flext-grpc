@@ -29,14 +29,7 @@ from google.protobuf.message import Message
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
-from flext_grpc.models import (
-    GrpcHealthCheck,
-    GrpcRequest,
-    ServiceDefinition,
-    ServiceMetrics,
-    StreamInfo,
-    StreamMetrics,
-)
+from flext_grpc.models import FlextGrpcModels
 
 # Availability flags for optional dependencies
 PSUTIL_AVAILABLE = True
@@ -215,7 +208,7 @@ class FlextGrpcUtilities:
         @staticmethod
         def validate_grpc_request(
             request: GrpcRequest,
-        ) -> FlextCore.Result[GrpcRequest]:
+        ) -> FlextCore.Result[FlextGrpcModels.GrpcRequest]:
             """Validate gRPC request using Pydantic validation.
 
             Args:
@@ -227,10 +220,14 @@ class FlextGrpcUtilities:
             """
             try:
                 # Pydantic validation happens automatically during construction
-                validated_request = GrpcRequest.model_validate(request.model_dump())
-                return FlextCore.Result[GrpcRequest].ok(validated_request)
+                validated_request = FlextGrpcModels.GrpcRequest.model_validate(
+                    request.model_dump()
+                )
+                return FlextCore.Result[FlextGrpcModels.GrpcRequest].ok(
+                    validated_request
+                )
             except Exception as e:
-                return FlextCore.Result[GrpcRequest].fail(
+                return FlextCore.Result[FlextGrpcModels.GrpcRequest].fail(
                     f"Request validation failed: {e}"
                 )
 
@@ -852,7 +849,7 @@ class FlextGrpcUtilities:
         @staticmethod
         def validate_service_health(
             channel: object, service_name: str = ""
-        ) -> FlextCore.Result[GrpcHealthCheck]:
+        ) -> FlextCore.Result[FlextGrpcModels.GrpcHealthCheck]:
             """Check service health using gRPC health checking protocol.
 
             Args:
@@ -867,7 +864,7 @@ class FlextGrpcUtilities:
                 # Use gRPC health checking protocol
                 # Check if channel is active
                 if not channel:
-                    return FlextCore.Result[GrpcHealthCheck].fail(
+                    return FlextCore.Result[FlextGrpcModels.GrpcHealthCheck].fail(
                         "Invalid channel provided"
                     )
 
@@ -879,9 +876,11 @@ class FlextGrpcUtilities:
                     status="serving",
                     timestamp=datetime.now(UTC),
                 )
-                return FlextCore.Result[GrpcHealthCheck].ok(health_check)
+                return FlextCore.Result[FlextGrpcModels.GrpcHealthCheck].ok(
+                    health_check
+                )
             except Exception as e:
-                return FlextCore.Result[GrpcHealthCheck].fail(
+                return FlextCore.Result[FlextGrpcModels.GrpcHealthCheck].fail(
                     f"Health check failed: {e}"
                 )
 

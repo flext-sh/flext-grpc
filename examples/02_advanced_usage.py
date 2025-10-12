@@ -86,7 +86,7 @@ class GrpcServerManager:
         results = {}
 
         for server_id, server in self.servers.items():
-            if server.is_running:
+            if server.state == "running":
                 stop_result = self.grpc.stop_server(server)
                 if stop_result.is_success:
                     self.servers[server_id] = stop_result.unwrap()
@@ -106,11 +106,11 @@ class GrpcServerManager:
             config = self.server_configs[server_id]
             status_result = self.grpc.get_server_status(server)
             status[server_id] = {
-                "address": server.address,
+                "address": f"{server.host}:{server.port}",
                 "state": server.state,
                 "max_workers": str(server.max_workers),
                 "timeout": f"{config.timeout}s",
-                "is_running": str(server.is_running),
+                "is_running": str(server.state == "running"),
                 "is_valid": str(server.validate_business_rules().is_success),
                 "facade_status": str(status_result.is_success),
             }
