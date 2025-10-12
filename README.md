@@ -36,7 +36,7 @@ Provides gRPC communication patterns for microservices within the FLEXT data int
 
 ### Integration with FLEXT Ecosystem
 
-- **flext-core** → Uses FlextResult, FlextContainer, FlextLogger patterns
+- **flext-core** → Uses FlextCore.Result, FlextCore.Container, FlextCore.Logger patterns
 - **FLEXT projects** → Intended as gRPC communication foundation
 
 ---
@@ -47,9 +47,9 @@ Provides gRPC communication patterns for microservices within the FLEXT data int
 
 | Pattern            | Status         | Notes                                    |
 | ------------------ | -------------- | ---------------------------------------- |
-| FlextResult        | ✅ Implemented | Used throughout API                      |
-| FlextContainer     | ✅ Implemented | Dependency injection present             |
-| FlextLogger        | ✅ Implemented | Logging infrastructure                   |
+| FlextCore.Result        | ✅ Implemented | Used throughout API                      |
+| FlextCore.Container     | ✅ Implemented | Dependency injection present             |
+| FlextCore.Logger        | ✅ Implemented | Logging infrastructure                   |
 | Clean Architecture | ✅ Implemented | Domain/service/infrastructure separation |
 
 ### Technical Details

@@ -88,10 +88,10 @@ All code must follow flext-core architectural patterns:
 
 ```python
 # ✅ CORRECT - Railway-oriented programming
-from flext_core import FlextResult
+from flext_core import FlextCore
 from flext_grpc import FlextGrpcConfig
 
-def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcConfig]:
+def create_validated_config(host: str, port: int) -> FlextCore.Result[FlextGrpcConfig]:
     """Create and validate gRPC configuration."""
 
     return (
@@ -116,24 +116,24 @@ Complete type annotations are mandatory:
 
 ```python
 from typing import Protocol, TypeVar, Generic
-from flext_core import FlextResult
+from flext_core import FlextCore
 from flext_grpc import FlextGrpcServer
 
 T = TypeVar('T')
 
 # Protocol for dependency injection
 class GrpcServerProtocol(Protocol):
-    def start(self) -> FlextResult[FlextGrpcServer]: ...
-    def stop(self) -> FlextResult[FlextGrpcServer]: ...
+    def start(self) -> FlextCore.Result[FlextGrpcServer]: ...
+    def stop(self) -> FlextCore.Result[FlextGrpcServer]: ...
 
 # Generic service class
 class GrpcService(Generic[T]):
     def __init__(self, config: T) -> None:
         self._config = config
 
-    def process(self, data: dict) -> FlextResult[FlextTypes.Dict]:
+    def process(self, data: dict) -> FlextCore.Result[FlextCore.Types.Dict]:
         # Implementation with proper typing
-        return FlextResult.ok({"processed": data})
+        return FlextCore.Result.ok({"processed": data})
 ```
 
 ### Domain Patterns
@@ -141,35 +141,35 @@ class GrpcService(Generic[T]):
 Follow Domain-Driven Design patterns:
 
 ```python
-from flext_core import FlextModels
+from flext_core import FlextCore
 from flext_grpc.typings import TGrpcServerState
 
-class FlextGrpcServer(FlextModels.Entity):
+class FlextGrpcServer(FlextCore.Models.Entity):
     """Domain entity with business logic."""
 
     host: str
     port: int
     state: TGrpcServerState = "stopped"
 
-    def start(self) -> FlextResult[FlextGrpcServer]:
+    def start(self) -> FlextCore.Result[FlextGrpcServer]:
         """State transition with business rules validation."""
 
         if self.state != "stopped":
-            return FlextResult.fail(f"Cannot start from state: {self.state}")
+            return FlextCore.Result.fail(f"Cannot start from state: {self.state}")
 
         # State transition
-        return FlextResult.ok(self.copy_with(state="starting"))
+        return FlextCore.Result.ok(self.copy_with(state="starting"))
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextCore.Result[None]:
         """Domain validation rules."""
 
         if not self.host:
-            return FlextResult.fail("Host cannot be empty")
+            return FlextCore.Result.fail("Host cannot be empty")
 
         if self.port < 1024 or self.port > 65535:
-            return FlextResult.fail(f"Invalid port: {self.port}")
+            return FlextCore.Result.fail(f"Invalid port: {self.port}")
 
-        return FlextResult.ok(None)
+        return FlextCore.Result.ok(None)
 ```
 
 ## Testing Standards
@@ -196,7 +196,7 @@ tests/
 
 ```python
 import pytest
-from flext_core import FlextResult
+from flext_core import FlextCore
 from flext_grpc import FlextGrpcConfig, create_server
 
 class TestGrpcServer:
@@ -286,7 +286,7 @@ Maintain strict layer boundaries:
 
 ```python
 # Domain Layer - No dependencies on other layers
-class FlextGrpcServer(FlextModels.Entity):
+class FlextGrpcServer(FlextCore.Models.Entity):
     # Pure business logic, no infrastructure concerns
     pass
 
@@ -299,43 +299,43 @@ class FlextGrpcServerService:
 from flext_grpc.entities import FlextGrpcServer
 from flext_grpc.services import FlextGrpcServerService
 
-def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcConfig) -> FlextCore.Result[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
 
 ### Dependency Injection
 
-Use FlextContainer for all dependencies:
+Use FlextCore.Container for all dependencies:
 
 ```python
-from flext_core import FlextContainer, FlextLogger
+from flext_core import FlextCore
 from flext_grpc import FlextGrpcPlatform
 
 class GrpcServiceManager:
     """Service manager using dependency injection."""
 
     def __init__(self) -> None:
-        self._container = FlextContainer.get_global()
-        self.logger = FlextLogger(__name__)
+        self._container = FlextCore.Container.get_global()
+        self.logger = FlextCore.Logger(__name__)
 
-    def initialize(self) -> FlextResult[None]:
+    def initialize(self) -> FlextCore.Result[None]:
         """Initialize with dependency injection."""
 
         # Register services
         platform = FlextGrpcPlatform()
         self._container.register("grpc_platform", platform)
 
-        return FlextResult.ok(None)
+        return FlextCore.Result.ok(None)
 
-    def get_platform(self) -> FlextResult[FlextGrpcPlatform]:
+    def get_platform(self) -> FlextCore.Result[FlextGrpcPlatform]:
         """Retrieve platform from container."""
 
         platform_result = self._container.get("grpc_platform")
         if platform_result.success:
-            return FlextResult.ok(platform_result.unwrap())
+            return FlextCore.Result.ok(platform_result.unwrap())
 
-        return FlextResult.fail("Platform not initialized")
+        return FlextCore.Result.fail("Platform not initialized")
 ```
 
 ## Documentation Standards
@@ -345,20 +345,20 @@ class GrpcServiceManager:
 All public APIs require comprehensive docstrings:
 
 ```python
-from flext_core import FlextResult
+from flext_core import FlextCore
 from flext_grpc import FlextGrpcConfig, FlextGrpcServer
 
-def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcConfig) -> FlextCore.Result[FlextGrpcServer]:
     """Create a gRPC server with the specified configuration.
 
     Creates and validates a gRPC server instance using Clean Architecture
-    patterns with comprehensive error handling through FlextResult.
+    patterns with comprehensive error handling through FlextCore.Result.
 
     Args:
         config: gRPC server configuration with validation rules
 
     Returns:
-        FlextResult[FlextGrpcServer]: Success with server instance, or
+        FlextCore.Result[FlextGrpcServer]: Success with server instance, or
             failure with detailed error message
 
     Example:
@@ -369,11 +369,11 @@ def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
         ...     print(f"Server: {server.host}:{server.port}")
 
     Integration:
-        Integrates with FlextContainer for dependency injection and
+        Integrates with FlextCore.Container for dependency injection and
         follows FLEXT ecosystem patterns for consistency.
 
     Raises:
-        No exceptions - all errors returned via FlextResult pattern.
+        No exceptions - all errors returned via FlextCore.Result pattern.
     """
     # Implementation
     pass
@@ -384,7 +384,7 @@ def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
 Use comments sparingly for complex business logic:
 
 ```python
-def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None]:
+def validate_server_state(self, new_state: TGrpcServerState) -> FlextCore.Result[None]:
     """Validate server state transition."""
 
     # State machine validation - only specific transitions allowed
@@ -396,11 +396,11 @@ def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None
     }
 
     if new_state not in valid_transitions.get(self.state, []):
-        return FlextResult.fail(
+        return FlextCore.Result.fail(
             f"Invalid state transition: {self.state} → {new_state}"
         )
 
-    return FlextResult.ok(None)
+    return FlextCore.Result.ok(None)
 ```
 
 ## Contributing Process
@@ -532,7 +532,7 @@ make type-check
 # Common fixes:
 # - Add missing return type annotations
 # - Import proper types from typing module
-# - Use FlextResult for all fallible operations
+# - Use FlextCore.Result for all fallible operations
 ```
 
 **Test Failures**

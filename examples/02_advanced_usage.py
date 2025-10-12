@@ -12,10 +12,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextConstants, FlextResult
+from flext_core import FlextCore
 
 from flext_grpc import FlextGrpc, FlextGrpcConfig
-from flext_grpc.entities import FlextGrpcServer
+from flext_grpc.entities import FlextGrpcEntities
 
 
 class GrpcServerManager:
@@ -24,16 +24,16 @@ class GrpcServerManager:
     def __init__(self) -> None:
         """Initialize the gRPC server manager with facade."""
         self.grpc = FlextGrpc()
-        self.servers: dict[str, FlextGrpcServer] = {}
+        self.servers: dict[str, FlextGrpcEntities.Server] = {}
         self.server_configs: dict[str, FlextGrpcConfig] = {}
 
     def create_server_pool(
         self,
         base_port: int = 8000,
         count: int = 3,
-    ) -> list[FlextResult]:
+    ) -> list[FlextCore.Result]:
         """Create a pool of servers on consecutive ports through facade."""
-        server_results: list[FlextResult] = []
+        server_results: list[FlextCore.Result] = []
 
         for i in range(count):
             server_id = f"pool-server-{i}"
@@ -41,10 +41,10 @@ class GrpcServerManager:
 
             # Create config through facade
             config_result = self.grpc.create_config(
-                host=FlextConstants.Platform.DEFAULT_HOST,
+                host=FlextCore.Constants.Platform.DEFAULT_HOST,
                 port=port,
                 max_workers=10 + (i * 5),  # Vary workers
-                timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
+                timeout=FlextCore.Constants.Network.DEFAULT_TIMEOUT,
             )
 
             if config_result.is_failure:
@@ -127,11 +127,11 @@ class AdvancedGrpcOperations:
 
     def create_complete_setup(
         self,
-        host: str = FlextConstants.Platform.DEFAULT_HOST,
+        host: str = FlextCore.Constants.Platform.DEFAULT_HOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
-        methods: list[str] | None = None,
-    ) -> FlextResult[dict]:
+        methods: FlextCore.Types.StringList | None = None,
+    ) -> FlextCore.Result[dict]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]
@@ -154,7 +154,7 @@ class AdvancedGrpcOperations:
         for stream_type in stream_types:
             stream_result = self.grpc.create_stream(
                 method_name=f"{stream_type.capitalize()}Method",
-                stream_type=stream_type,
+                stream_type=stream_type,  # type: ignore[arg-type]
             )
             if stream_result.is_success:
                 stream = stream_result.unwrap()
@@ -258,7 +258,7 @@ def example_4_streaming() -> None:
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
             method_name=method_name,
-            stream_type=stream_type,
+            stream_type=stream_type,  # type: ignore[arg-type]
         )
 
         if stream_result.is_success:
@@ -314,7 +314,7 @@ def example_5_error_handling() -> None:
         )
 
     # Test invalid stream creation
-    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore[arg-type]
     if invalid_stream_result.is_failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"

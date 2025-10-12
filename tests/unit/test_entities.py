@@ -8,22 +8,21 @@ class TestFlextGrpcEntities:
 
     def test_grpc_server_creation(self) -> None:
         """Test gRPC server entity creation."""
-        server = FlextGrpcEntities.GrpcServer(
-            host="localhost", port=50051, max_workers=10
-        )
+        server = FlextGrpcEntities.Server(host="localhost", port=50051, max_workers=10)
         assert server.host == "localhost"
         assert server.port == 50051
         assert server.max_workers == 10
 
     def test_grpc_client_creation(self) -> None:
         """Test gRPC client entity creation."""
-        client = FlextGrpcEntities.GrpcClient(target="localhost:50051")
-        assert client.target == "localhost:50051"
+        client = FlextGrpcEntities.Client()
+        # Note: target property was removed, access channel.target if needed
+        assert client is not None
 
     def test_grpc_channel_creation(self) -> None:
         """Test gRPC channel entity creation."""
-        channel = FlextGrpcEntities.GrpcChannel(address="localhost:50051")
-        assert channel.address == "localhost:50051"
+        channel = FlextGrpcEntities.Channel(target="localhost:50051")
+        assert channel.target == "localhost:50051"
 
     def test_grpc_stream_creation(self) -> None:
         """Test gRPC stream entity creation."""

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-FLEXT-gRPC Documentation Optimization System
+"""FLEXT-gRPC Documentation Optimization System.
 
 Automated content optimization and enhancement utilities for documentation maintenance.
 
@@ -8,29 +7,36 @@ Author: FLEXT-gRPC Documentation Maintenance System
 Version: 1.0.0
 """
 
-import os
-import re
 import json
+import operator
+import re
+import sys
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from datetime import datetime
+from typing import Any
+
 import frontmatter
-import markdown
-from bs4 import BeautifulSoup
+from flext_core import FlextCore
 
 
 class DocumentationOptimizer:
     """Main class for documentation optimization and enhancement."""
 
-    def __init__(self, root_path: str = "."):
+    def __init__(self, root_path: str = ".") -> None:
+        """Initialize the documentation optimizer.
+
+        Args:
+            root_path: Root path for documentation optimization.
+
+        """
         self.root_path = Path(root_path)
         self.config = self._load_config()
 
-    def _load_config(self) -> Dict[str, Any]:
+    def _load_config(self) -> dict[str, Any]:
         """Load optimization configuration."""
         config_path = self.root_path / "docs" / "maintenance" / "config.json"
         if config_path.exists():
-            with open(config_path, 'r') as f:
+            with Path(config_path).open("r", encoding="utf-8") as f:
                 return json.load(f)
 
         # Default configuration
@@ -41,25 +47,25 @@ class DocumentationOptimizer:
                 "update_metadata": True,
                 "fix_common_issues": True,
                 "max_toc_depth": 3,
-                "toc_min_headings": 3
+                "toc_min_headings": 3,
             },
             "formatting": {
                 "max_line_length": 88,
                 "consistent_list_markers": True,
                 "fix_heading_spacing": True,
-                "normalize_emphasis": True
+                "normalize_emphasis": True,
             },
             "metadata": {
                 "auto_update_dates": True,
                 "add_missing_titles": True,
-                "standardize_tags": True
-            }
+                "standardize_tags": True,
+            },
         }
 
-    def optimize_file(self, file_path: Path, dry_run: bool = False) -> Dict[str, Any]:
+    def optimize_file(self, file_path: Path, dry_run: bool = False) -> dict[str, Any]:
         """Optimize a single documentation file."""
         # Read original content
-        original_content = file_path.read_text(encoding='utf-8')
+        original_content = file_path.read_text(encoding="utf-8")
 
         # Parse frontmatter
         try:
@@ -97,13 +103,15 @@ class DocumentationOptimizer:
 
         # Create optimized content
         if metadata:
-            optimized_content = frontmatter.dumps(post.__class__(content, **metadata))
+            optimized_content = frontmatter.dumps(
+                post.__class__(content, **metadata) if post else content
+            )
         else:
             optimized_content = content
 
         # Save changes if not dry run
         if not dry_run and optimized_content != original_content:
-            file_path.write_text(optimized_content, encoding='utf-8')
+            file_path.write_text(optimized_content, encoding="utf-8")
 
         return {
             "file_path": str(file_path.relative_to(self.root_path)),
@@ -111,37 +119,41 @@ class DocumentationOptimizer:
             "issues_fixed": issues_fixed,
             "changed": optimized_content != original_content,
             "original_size": len(original_content),
-            "optimized_size": len(optimized_content)
+            "optimized_size": len(optimized_content),
         }
 
-    def _fix_formatting(self, content: str) -> Tuple[str, List[str]]:
+    def _fix_formatting(self, content: str) -> tuple[str, FlextCore.Types.StringList]:
         """Fix common formatting issues."""
         fixes_applied = []
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Fix line length issues
         max_length = self.config["formatting"]["max_line_length"]
         for i, line in enumerate(lines):
-            if len(line) > max_length and not line.startswith('```') and not line.strip().startswith('|'):
+            if (
+                len(line) > max_length
+                and not line.startswith("```")
+                and not line.strip().startswith("|")
+            ):
                 # Try to break long lines (simple approach)
-                if ' ' in line[max_length//2:]:
-                    space_index = line.rfind(' ', 0, max_length)
+                if " " in line[max_length // 2 :]:
+                    space_index = line.rfind(" ", 0, max_length)
                     if space_index > max_length // 2:
-                        lines[i] = line[:space_index] + '\n' + line[space_index+1:]
-                        fixes_applied.append(f"Fixed long line at {i+1}")
+                        lines[i] = line[:space_index] + "\n" + line[space_index + 1 :]
+                        fixes_applied.append(f"Fixed long line at {i + 1}")
 
         # Fix heading spacing
         if self.config["formatting"]["fix_heading_spacing"]:
             for i, line in enumerate(lines):
-                if re.match(r'^#{1,6}[^#\s]', line):
-                    lines[i] = re.sub(r'^(#{1,6})([^#\s])', r'\1 \2', line)
-                    fixes_applied.append(f"Fixed heading spacing at {i+1}")
+                if re.match(r"^#{1,6}[^#\s]", line):
+                    lines[i] = re.sub(r"^(#{1,6})([^#\s])", r"\1 \2", line)
+                    fixes_applied.append(f"Fixed heading spacing at {i + 1}")
 
         # Consistent list markers
         if self.config["formatting"]["consistent_list_markers"]:
             list_markers = []
             for line in lines:
-                match = re.match(r'^([-*+])\s', line)
+                match = re.match(r"^([-*+])\s", line)
                 if match:
                     list_markers.append(match.group(1))
 
@@ -150,42 +162,48 @@ class DocumentationOptimizer:
                 primary_marker = max(set(list_markers), key=list_markers.count)
 
                 for i, line in enumerate(lines):
-                    if re.match(r'^[-*+]\s', line) and not line.startswith(primary_marker):
-                        lines[i] = re.sub(r'^[-*+]', primary_marker, line)
-                        fixes_applied.append(f"Standardized list marker at {i+1}")
+                    if re.match(r"^[-*+]\s", line) and not line.startswith(
+                        primary_marker
+                    ):
+                        lines[i] = re.sub(r"^[-*+]", primary_marker, line)
+                        fixes_applied.append(f"Standardized list marker at {i + 1}")
 
         # Normalize emphasis
         if self.config["formatting"]["normalize_emphasis"]:
             # Convert mixed emphasis to consistent style
             # This is a simplified approach - prefer asterisks over underscores
-            content_temp = '\n'.join(lines)
+            content_temp = "\n".join(lines)
 
             # Convert _text_ to *text* for italics
-            italic_count = len(re.findall(r'_[^_]+_', content_temp))
+            italic_count = len(re.findall(r"_[^_]+_", content_temp))
             if italic_count > 0:
-                content_temp = re.sub(r'_(.*?)_', r'*\1*', content_temp)
+                content_temp = re.sub(r"_(.*?)_", r"*\1*", content_temp)
                 if italic_count > 1:
-                    fixes_applied.append(f"Normalized {italic_count} italic emphasis styles")
+                    fixes_applied.append(
+                        f"Normalized {italic_count} italic emphasis styles"
+                    )
 
             # Convert __text__ to **text** for bold
-            bold_count = len(re.findall(r'__[^_]+__', content_temp))
+            bold_count = len(re.findall(r"__[^_]+__", content_temp))
             if bold_count > 0:
-                content_temp = re.sub(r'__(.*?)__', r'**\1**', content_temp)
+                content_temp = re.sub(r"__(.*?)__", r"**\1**", content_temp)
                 if bold_count > 1:
-                    fixes_applied.append(f"Normalized {bold_count} bold emphasis styles")
+                    fixes_applied.append(
+                        f"Normalized {bold_count} bold emphasis styles"
+                    )
 
-            lines = content_temp.split('\n')
+            lines = content_temp.split("\n")
 
-        return '\n'.join(lines), fixes_applied
+        return "\n".join(lines), fixes_applied
 
-    def _add_table_of_contents(self, content: str, file_path: Path) -> Tuple[str, bool]:
+    def _add_table_of_contents(self, content: str, file_path: Path) -> tuple[str, bool]:
         """Add table of contents if appropriate."""
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Find all headings
         headings = []
         for i, line in enumerate(lines):
-            match = re.match(r'^(#{1,6})\s+(.+)$', line)
+            match = re.match(r"^(#{1,6})\s+(.+)$", line)
             if match:
                 level = len(match.group(1))
                 title = match.group(2).strip()
@@ -199,88 +217,94 @@ class DocumentationOptimizer:
             return content, False
 
         # Check if TOC already exists
-        toc_markers = ['## Table of Contents', '## TOC', '## Contents']
+        toc_markers = ["## Table of Contents", "## TOC", "## Contents"]
         for line in lines[:20]:  # Check first 20 lines
             if any(marker.lower() in line.lower() for marker in toc_markers):
                 return content, False
 
         # Generate TOC
-        toc_lines = ['## Table of Contents', '']
-        for line_num, level, title in headings:
+        toc_lines = ["## Table of Contents", ""]
+        for _line_num, level, title in headings:
             if level <= max_depth:
-                indent = '  ' * (level - 1)
+                indent = "  " * (level - 1)
                 # Create anchor link
-                anchor = re.sub(r'[^\w\s-]', '', title.lower().replace(' ', '-'))
-                toc_lines.append(f'{indent}- [{title}](#{anchor})')
+                anchor = re.sub(r"[^\w\s-]", "", title.lower().replace(" ", "-"))
+                toc_lines.append(f"{indent}- [{title}](#{anchor})")
 
-        toc_lines.append('')
+        toc_lines.append("")
 
         # Find where to insert TOC (after title/metadata, before first heading)
         insert_pos = 0
         for i, line in enumerate(lines):
-            if re.match(r'^#{1,6}\s+', line):
+            if re.match(r"^#{1,6}\s+", line):
                 insert_pos = i
                 break
 
         # Insert TOC
         optimized_lines = lines[:insert_pos] + toc_lines + lines[insert_pos:]
 
-        return '\n'.join(optimized_lines), True
+        return "\n".join(optimized_lines), True
 
-    def _update_metadata(self, metadata: Dict[str, Any], file_path: Path) -> Tuple[Dict[str, Any], List[str]]:
+    def _update_metadata(
+        self, metadata: dict[str, Any], file_path: Path
+    ) -> tuple[dict[str, Any], FlextCore.Types.StringList]:
         """Update and enhance metadata."""
         updates = []
 
         # Auto-update dates
         if self.config["metadata"]["auto_update_dates"]:
-            current_date = datetime.now().isoformat()
+            current_date = datetime.now(UTC).isoformat()
 
-            if 'updated' not in metadata and 'last_updated' not in metadata:
-                metadata['updated'] = current_date
+            if "updated" not in metadata and "last_updated" not in metadata:
+                metadata["updated"] = current_date
                 updates.append("Added update timestamp")
-            elif 'updated' in metadata:
-                metadata['updated'] = current_date
+            elif "updated" in metadata:
+                metadata["updated"] = current_date
                 updates.append("Updated timestamp")
-            elif 'last_updated' in metadata:
-                metadata['last_updated'] = current_date
+            elif "last_updated" in metadata:
+                metadata["last_updated"] = current_date
                 updates.append("Updated last_updated timestamp")
 
         # Add missing titles
-        if self.config["metadata"]["add_missing_titles"] and 'title' not in metadata:
+        if self.config["metadata"]["add_missing_titles"] and "title" not in metadata:
             # Generate title from filename
-            title = file_path.stem.replace('_', ' ').replace('-', ' ').title()
-            metadata['title'] = title
+            title = file_path.stem.replace("_", " ").replace("-", " ").title()
+            metadata["title"] = title
             updates.append(f"Added title: {title}")
 
         # Standardize tags
-        if self.config["metadata"]["standardize_tags"] and 'tags' in metadata:
-            if isinstance(metadata['tags'], str):
-                metadata['tags'] = [tag.strip() for tag in metadata['tags'].split(',')]
+        if self.config["metadata"]["standardize_tags"] and "tags" in metadata:
+            if isinstance(metadata["tags"], str):
+                metadata["tags"] = [tag.strip() for tag in metadata["tags"].split(",")]
                 updates.append("Standardized tags format")
 
         return metadata, updates
 
-    def _fix_common_issues(self, content: str) -> Tuple[str, List[str]]:
+    def _fix_common_issues(
+        self, content: str
+    ) -> tuple[str, FlextCore.Types.StringList]:
         """Fix common documentation issues."""
         fixes = []
 
         # Fix trailing whitespace
-        lines = content.split('\n')
+        lines = content.split("\n")
         original_lines = len([line for line in lines if line.rstrip() != line])
         if original_lines > 0:
             lines = [line.rstrip() for line in lines]
             fixes.append(f"Removed trailing whitespace from {original_lines} lines")
 
         # Fix multiple consecutive blank lines (limit to 2)
-        content_temp = '\n'.join(lines)
-        original_blank_lines = len(re.findall(r'\n\n\n+', content_temp))
+        content_temp = "\n".join(lines)
+        original_blank_lines = len(re.findall(r"\n\n\n+", content_temp))
         if original_blank_lines > 0:
-            content_temp = re.sub(r'\n\n\n+', '\n\n', content_temp)
-            fixes.append(f"Reduced consecutive blank lines in {original_blank_lines} places")
-            lines = content_temp.split('\n')
+            content_temp = re.sub(r"\n\n\n+", "\n\n", content_temp)
+            fixes.append(
+                f"Reduced consecutive blank lines in {original_blank_lines} places"
+            )
+            lines = content_temp.split("\n")
 
         # Fix missing alt text for images (basic check)
-        image_matches = re.findall(r'!\[\]\([^)]+\)', content_temp)
+        image_matches = re.findall(r"!\[\]\([^)]+\)", content_temp)
         if image_matches:
             for match in image_matches:
                 alt_text = f"![Image]({match[5:]}"  # Add generic alt text
@@ -290,14 +314,14 @@ class DocumentationOptimizer:
         # Fix broken internal links (basic)
         # This would require more complex logic to be truly effective
 
-        return '\n'.join(lines), fixes
+        return "\n".join(lines), fixes
 
-    def optimize_all_files(self, files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, Any]:
+    def optimize_all_files(
+        self, files: list[Path] | None = None, dry_run: bool = False
+    ) -> dict[str, Any]:
         """Optimize all documentation files."""
         if files is None:
             files = self._discover_files()
-
-        print(f"🔧 Optimizing {len(files)} documentation files...")
 
         results = []
         total_optimizations = 0
@@ -309,107 +333,110 @@ class DocumentationOptimizer:
                 result = self.optimize_file(file_path, dry_run=dry_run)
                 results.append(result)
 
-                if result['changed']:
+                if result["changed"]:
                     files_changed += 1
-                    total_optimizations += len(result['optimizations_applied'])
-                    total_issues_fixed += result['issues_fixed']
+                    total_optimizations += len(result["optimizations_applied"])
+                    total_issues_fixed += result["issues_fixed"]
 
-                    if result['optimizations_applied']:
-                        print(f"  ✅ {file_path.name}: {len(result['optimizations_applied'])} optimizations")
-                    else:
-                        print(f"  ⚪ {file_path.name}: No changes needed")
-                else:
-                    print(f"  ⚪ {file_path.name}: No changes needed")
+                    if result["optimizations_applied"]:
+                        pass
 
             except Exception as e:
-                print(f"  ❌ Error optimizing {file_path}: {e}")
                 results.append({
                     "file_path": str(file_path.relative_to(self.root_path)),
                     "error": str(e),
-                    "changed": False
+                    "changed": False,
                 })
 
-        summary = {
+        return {
             "total_files_processed": len(results),
             "files_changed": files_changed,
             "total_optimizations_applied": total_optimizations,
             "total_issues_fixed": total_issues_fixed,
             "dry_run": dry_run,
-            "results": results
+            "results": results,
         }
 
-        return summary
-
-    def _discover_files(self) -> List[Path]:
+    def _discover_files(self) -> list[Path]:
         """Discover documentation files to optimize."""
         files = []
         patterns = ["*.md", "*.mdx"]
 
         for pattern in patterns:
-            for file_path in self.root_path.rglob(pattern):
-                if not any(excl in str(file_path) for excl in [".git", "node_modules", "__pycache__", ".venv"]):
-                    files.append(file_path)
+            files.extend(
+                file_path
+                for file_path in self.root_path.rglob(pattern)
+                if not any(
+                    excl in str(file_path)
+                    for excl in [".git", "node_modules", "__pycache__", ".venv"]
+                )
+            )
 
         return sorted(files)
 
-    def save_report(self, summary: Dict[str, Any], output_path: Optional[Path] = None):
+    def save_report(
+        self, summary: dict[str, Any], output_path: Path | None = None
+    ) -> None:
         """Save optimization report."""
         if output_path is None:
             from datetime import datetime
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            output_path = self.root_path / "docs" / "maintenance" / "reports" / f"optimization_{timestamp}.json"
+
+            timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+            output_path = (
+                self.root_path
+                / "docs"
+                / "maintenance"
+                / "reports"
+                / f"optimization_{timestamp}.json"
+            )
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
-        with open(output_path, 'w') as f:
+        with Path(output_path).open("w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2)
 
-        print(f"📊 Optimization report saved to: {output_path}")
-
-    def print_summary(self, summary: Dict[str, Any]):
+    def print_summary(self, summary: dict[str, Any]) -> None:
         """Print optimization summary."""
-        print("
-🔧 Documentation Optimization Summary"        print(f"{'='*50}")
-        print(f"Files Processed: {summary['total_files_processed']}")
-        print(f"Files Changed: {summary['files_changed']}")
-        print(f"Optimizations Applied: {summary['total_optimizations_applied']}")
-        print(f"Issues Fixed: {summary['total_issues_fixed']}")
-
-        if summary.get('dry_run'):
-            print("  📝 Dry run - no files modified")
+        if summary.get("dry_run"):
+            pass
 
         # Show top optimizations
-        if summary['results']:
-            optimization_counts = {}
-            for result in summary['results']:
-                for opt in result.get('optimizations_applied', []):
+        if summary["results"]:
+            optimization_counts: dict[str, int] = {}
+            for result in summary["results"]:
+                for opt in result.get("optimizations_applied", []):
                     if opt not in optimization_counts:
                         optimization_counts[opt] = 0
                     optimization_counts[opt] += 1
 
             if optimization_counts:
-                print("
-📋 Optimizations Applied:"                for opt, count in sorted(optimization_counts.items(), key=lambda x: x[1], reverse=True):
-                    print(f"  • {opt}: {count} files")
+                for opt, _count in sorted(
+                    optimization_counts.items(),
+                    key=operator.itemgetter(1),
+                    reverse=True,
+                ):
+                    pass
 
 
 class DocumentationEnhancer:
     """Advanced documentation enhancement utilities."""
 
-    def __init__(self, root_path: str = "."):
+    def __init__(self, root_path: str = ".") -> None:
         self.root_path = Path(root_path)
 
-    def enhance_readability(self, content: str) -> Tuple[str, List[str]]:
+    def enhance_readability(
+        self, content: str
+    ) -> tuple[str, FlextCore.Types.StringList]:
         """Enhance content readability."""
         enhancements = []
 
         # Add section breaks for long content
-        lines = content.split('\n')
+        lines = content.split("\n")
 
         # Suggest adding more headings for long sections
         heading_positions = []
         for i, line in enumerate(lines):
-            if re.match(r'^#{1,6}\s+', line):
+            if re.match(r"^#{1,6}\s+", line):
                 heading_positions.append(i)
 
         # Check for long sections without subheadings
@@ -427,7 +454,9 @@ class DocumentationEnhancer:
 
         return content, enhancements
 
-    def add_cross_references(self, content: str, all_files: List[Path]) -> Tuple[str, List[str]]:
+    def add_cross_references(
+        self, content: str, all_files: list[Path]
+    ) -> tuple[str, FlextCore.Types.StringList]:
         """Add intelligent cross-references between documents."""
         references_added = []
 
@@ -436,7 +465,9 @@ class DocumentationEnhancer:
 
         return content, references_added
 
-    def generate_related_links(self, file_path: Path, all_files: List[Path]) -> List[str]:
+    def generate_related_links(
+        self, file_path: Path, all_files: list[Path]
+    ) -> FlextCore.Types.StringList:
         """Generate suggestions for related documentation links."""
         suggestions = []
 
@@ -448,26 +479,26 @@ class DocumentationEnhancer:
                 other_name = other_file.stem.lower()
 
                 # Simple keyword matching
-                if any(keyword in filename and keyword in other_name
-                      for keyword in ['api', 'config', 'install', 'guide', 'reference']):
+                if any(
+                    keyword in filename and keyword in other_name
+                    for keyword in ["api", "config", "install", "guide", "reference"]
+                ):
                     suggestions.append(f"Consider linking to {other_file.name}")
 
         return suggestions
 
-    def validate_content_completeness(self, content: str, file_path: Path) -> Dict[str, Any]:
+    def validate_content_completeness(
+        self, content: str, file_path: Path
+    ) -> dict[str, Any]:
         """Validate content completeness and suggest improvements."""
-        validation = {
-            "score": 100,
-            "missing_elements": [],
-            "suggestions": []
-        }
+        validation = {"score": 100, "missing_elements": [], "suggestions": []}
 
         # Check for common documentation elements
         checks = {
-            "code_examples": bool(re.search(r'```', content)),
-            "links": bool(re.findall(r'\[([^\]]+)\]\([^)]+\)', content)),
-            "headings": bool(re.findall(r'^#{1,6}\s+', content, re.MULTILINE)),
-            "lists": bool(re.findall(r'^[-*+]\s', content, re.MULTILINE))
+            "code_examples": bool(r"```" in content),
+            "links": bool(re.findall(r"\[([^\]]+)\]\([^)]+\)", content)),
+            "headings": bool(re.findall(r"^#{1,6}\s+", content, re.MULTILINE)),
+            "lists": bool(re.findall(r"^[-*+]\s", content, re.MULTILINE)),
         }
 
         missing_count = sum(1 for check, present in checks.items() if not present)
@@ -484,14 +515,18 @@ class DocumentationEnhancer:
         return validation
 
 
-def main():
+def main() -> int:
     """Main entry point for documentation optimization."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="FLEXT-gRPC Documentation Optimization System")
+    parser = argparse.ArgumentParser(
+        description="FLEXT-gRPC Documentation Optimization System"
+    )
     parser.add_argument("--path", default=".", help="Root path to optimize")
     parser.add_argument("--output", help="Output path for report")
-    parser.add_argument("--dry-run", action="store_true", help="Show changes without applying them")
+    parser.add_argument(
+        "--dry-run", action="store_true", help="Show changes without applying them"
+    )
     parser.add_argument("--file", help="Optimize only specific file")
     parser.add_argument("--quiet", action="store_true", help="Suppress progress output")
 
@@ -501,23 +536,16 @@ def main():
     optimizer = DocumentationOptimizer(args.path)
 
     # Determine files to process
-    if args.file:
-        files = [Path(args.file)]
-    else:
-        files = optimizer._discover_files()
+    files = [Path(args.file)] if args.file else optimizer._discover_files()
 
     if not files:
-        print("❌ No documentation files found!")
         return 1
 
     # Run optimization
     summary = optimizer.optimize_all_files(files, dry_run=args.dry_run)
 
     # Save report
-    if args.output:
-        output_path = Path(args.output)
-    else:
-        output_path = None
+    output_path = Path(args.output) if args.output else None
 
     optimizer.save_report(summary, output_path)
 
@@ -529,4 +557,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

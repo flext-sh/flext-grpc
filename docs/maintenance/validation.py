@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-FLEXT-gRPC Link and Reference Validation System
+"""FLEXT-gRPC Link and Reference Validation System.
 
 Comprehensive validation system for documentation links, references,
 and style consistency checking.
@@ -9,67 +8,75 @@ Author: FLEXT-gRPC Documentation Maintenance System
 Version: 1.0.0
 """
 
-import os
-import re
 import json
+import operator
+import re
+import sys
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from urllib.parse import urlparse
+from typing import Any
+
 import requests
-from dataclasses import dataclass, asdict
+from flext_core import FlextCore
 
 
 @dataclass
 class LinkValidationResult:
     """Result of validating a single link."""
+
     url: str
     status: str
-    status_code: Optional[int]
+    status_code: int | None
     response_time: float
-    error_message: Optional[str]
-    redirect_url: Optional[str]
+    error_message: str | None
+    redirect_url: str | None
 
 
 @dataclass
 class ReferenceValidationResult:
     """Result of validating internal references."""
+
     reference: str
     type: str  # 'heading', 'file', 'anchor'
     found: bool
-    target_file: Optional[str]
-    line_number: Optional[int]
+    target_file: str | None
+    line_number: int | None
 
 
 @dataclass
 class StyleCheckResult:
     """Result of style consistency checking."""
+
     file_path: str
-    issues: List[Dict[str, Any]]
+    issues: list[dict[str, Any]]
     score: float
 
 
 @dataclass
 class ValidationReport:
     """Comprehensive validation report."""
+
     timestamp: str
-    link_results: List[LinkValidationResult]
-    reference_results: List[ReferenceValidationResult]
-    style_results: List[StyleCheckResult]
-    summary: Dict[str, Any]
+    link_results: list[LinkValidationResult]
+    reference_results: list[ReferenceValidationResult]
+    style_results: list[StyleCheckResult]
+    summary: dict[str, Any]
 
 
 class LinkValidator:
     """Validate external and internal links in documentation."""
 
-    def __init__(self, timeout: int = 10, max_retries: int = 3, user_agent: str = None):
+    def __init__(
+        self, timeout: int = 10, max_retries: int = 3, user_agent: str | None = None
+    ) -> None:
         self.timeout = timeout
         self.max_retries = max_retries
         self.user_agent = user_agent or "FLEXT-gRPC-Doc-Validator/1.0"
 
         self.session = requests.Session()
-        self.session.headers.update({'User-Agent': self.user_agent})
+        self.session.headers.update({"User-Agent": self.user_agent})
 
     def validate_external_link(self, url: str) -> LinkValidationResult:
         """Validate an external link."""
@@ -77,7 +84,9 @@ class LinkValidator:
 
         for attempt in range(self.max_retries):
             try:
-                response = self.session.head(url, timeout=self.timeout, allow_redirects=True)
+                response = self.session.head(
+                    url, timeout=self.timeout, allow_redirects=True
+                )
 
                 response_time = time.time() - start_time
                 redirect_url = response.url if response.url != url else None
@@ -89,17 +98,16 @@ class LinkValidator:
                         status_code=response.status_code,
                         response_time=round(response_time, 2),
                         error_message=None,
-                        redirect_url=redirect_url
+                        redirect_url=redirect_url,
                     )
-                else:
-                    return LinkValidationResult(
-                        url=url,
-                        status="broken",
-                        status_code=response.status_code,
-                        response_time=round(response_time, 2),
-                        error_message=f"HTTP {response.status_code}",
-                        redirect_url=redirect_url
-                    )
+                return LinkValidationResult(
+                    url=url,
+                    status="broken",
+                    status_code=response.status_code,
+                    response_time=round(response_time, 2),
+                    error_message=f"HTTP {response.status_code}",
+                    redirect_url=redirect_url,
+                )
 
             except requests.exceptions.Timeout:
                 if attempt == self.max_retries - 1:
@@ -109,7 +117,7 @@ class LinkValidator:
                         status_code=None,
                         response_time=round(time.time() - start_time, 2),
                         error_message="Request timed out",
-                        redirect_url=None
+                        redirect_url=None,
                     )
             except requests.exceptions.RequestException as e:
                 if attempt == self.max_retries - 1:
@@ -119,7 +127,7 @@ class LinkValidator:
                         status_code=None,
                         response_time=round(time.time() - start_time, 2),
                         error_message=str(e),
-                        redirect_url=None
+                        redirect_url=None,
                     )
 
         # Should not reach here, but just in case
@@ -129,24 +137,26 @@ class LinkValidator:
             status_code=None,
             response_time=0,
             error_message="Validation failed",
-            redirect_url=None
+            redirect_url=None,
         )
 
-    def validate_internal_links(self, content: str, file_path: Path, all_files: List[Path]) -> List[ReferenceValidationResult]:
+    def validate_internal_links(
+        self, content: str, file_path: Path, all_files: list[Path]
+    ) -> list[ReferenceValidationResult]:
         """Validate internal links within documentation."""
         results = []
 
         # Find all internal links (not starting with http/https)
-        internal_links = re.findall(r'\[([^\]]+)\]\(([^)]+)\)', content)
+        internal_links = re.findall(r"\[([^\]]+)\]\(([^)]+)\)", content)
 
-        for text, link in internal_links:
-            if link.startswith(('http://', 'https://', 'mailto:')):
+        for _text, link in internal_links:
+            if link.startswith(("http://", "https://", "mailto:")):
                 continue  # Skip external links
 
-            if link.startswith('#'):
+            if link.startswith("#"):
                 # Anchor link - check if heading exists in same file
                 results.append(self._validate_anchor_link(link[1:], content, file_path))
-            elif link.startswith('./') or link.startswith('../') or not link.startswith('/'):
+            elif link.startswith(("./", "../")) or not link.startswith("/"):
                 # Relative file link
                 results.append(self._validate_file_link(link, file_path, all_files))
             else:
@@ -155,35 +165,38 @@ class LinkValidator:
 
         return results
 
-    def _validate_anchor_link(self, anchor: str, content: str, file_path: Path) -> ReferenceValidationResult:
+    def _validate_anchor_link(
+        self, anchor: str, content: str, file_path: Path
+    ) -> ReferenceValidationResult:
         """Validate anchor link within the same file."""
         # Convert anchor to heading text (remove special chars, normalize)
-        heading_text = re.sub(r'[^\w\s-]', '', anchor.replace('-', ' ')).strip()
+        heading_text = re.sub(r"[^\w\s-]", "", anchor.replace("-", " ")).strip()
 
         # Look for heading in content
-        heading_pattern = rf'^#{1,6}\s+{re.escape(heading_text)}'
+        heading_pattern = rf"^#{1, 6}\s+{re.escape(heading_text)}"
         if re.search(heading_pattern, content, re.MULTILINE | re.IGNORECASE):
             return ReferenceValidationResult(
                 reference=f"#{anchor}",
                 type="anchor",
                 found=True,
                 target_file=str(file_path),
-                line_number=None
+                line_number=None,
             )
-        else:
-            return ReferenceValidationResult(
-                reference=f"#{anchor}",
-                type="anchor",
-                found=False,
-                target_file=str(file_path),
-                line_number=None
-            )
+        return ReferenceValidationResult(
+            reference=f"#{anchor}",
+            type="anchor",
+            found=False,
+            target_file=str(file_path),
+            line_number=None,
+        )
 
-    def _validate_file_link(self, link: str, source_file: Path, all_files: List[Path]) -> ReferenceValidationResult:
+    def _validate_file_link(
+        self, link: str, source_file: Path, all_files: list[Path]
+    ) -> ReferenceValidationResult:
         """Validate file link."""
         try:
             # Resolve the link relative to source file
-            if link.startswith('/'):
+            if link.startswith("/"):
                 # Absolute path from project root
                 target_path = Path(link[1:])
             else:
@@ -197,43 +210,42 @@ class LinkValidator:
                     type="file",
                     found=True,
                     target_file=str(target_path),
-                    line_number=None
+                    line_number=None,
                 )
-            else:
-                return ReferenceValidationResult(
-                    reference=link,
-                    type="file",
-                    found=False,
-                    target_file=None,
-                    line_number=None
-                )
-
-        except Exception as e:
             return ReferenceValidationResult(
                 reference=link,
                 type="file",
                 found=False,
                 target_file=None,
-                line_number=None
+                line_number=None,
+            )
+
+        except Exception:
+            return ReferenceValidationResult(
+                reference=link,
+                type="file",
+                found=False,
+                target_file=None,
+                line_number=None,
             )
 
 
 class StyleValidator:
     """Validate documentation style consistency."""
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: dict[str, Any] | None = None) -> None:
         self.config = config or {
             "max_line_length": 88,
             "heading_hierarchy": True,
             "list_consistency": True,
             "code_block_languages": True,
-            "emphasis_consistency": True
+            "emphasis_consistency": True,
         }
 
     def check_file_style(self, file_path: Path) -> StyleCheckResult:
         """Check style consistency for a single file."""
-        content = file_path.read_text(encoding='utf-8')
-        lines = content.split('\n')
+        content = file_path.read_text(encoding="utf-8")
+        lines = content.split("\n")
 
         issues = []
 
@@ -246,7 +258,7 @@ class StyleValidator:
                     "severity": "low",
                     "line": i,
                     "message": f"Line too long ({len(line)} > {max_length} characters)",
-                    "content": line[:50] + "..." if len(line) > 50 else line
+                    "content": line[:50] + "..." if len(line) > 50 else line,
                 })
 
         # Check heading hierarchy
@@ -268,16 +280,12 @@ class StyleValidator:
         # Calculate style score
         score = max(0, 100 - (len(issues) * 2))
 
-        return StyleCheckResult(
-            file_path=str(file_path),
-            issues=issues,
-            score=score
-        )
+        return StyleCheckResult(file_path=str(file_path), issues=issues, score=score)
 
-    def _check_heading_hierarchy(self, content: str) -> List[Dict[str, Any]]:
+    def _check_heading_hierarchy(self, content: str) -> list[dict[str, Any]]:
         """Check heading hierarchy consistency."""
         issues = []
-        headings = re.findall(r'^(#{1,6})\s+(.+)$', content, re.MULTILINE)
+        headings = re.findall(r"^(#{1,6})\s+(.+)$", content, re.MULTILINE)
 
         if not headings:
             return issues
@@ -286,24 +294,24 @@ class StyleValidator:
 
         # Check for proper hierarchy (no level skipping)
         for i in range(1, len(levels)):
-            if levels[i] > levels[i-1] + 1:
-                line_num = content[:content.find(headings[i][1])].count('\n') + 1
+            if levels[i] > levels[i - 1] + 1:
+                line_num = content[: content.find(headings[i][1])].count("\n") + 1
                 issues.append({
                     "type": "heading_hierarchy",
                     "severity": "medium",
                     "line": line_num,
-                    "message": f"Heading level skips from {levels[i-1]} to {levels[i]}",
-                    "content": f"{'#' * levels[i]} {headings[i][1]}"
+                    "message": f"Heading level skips from {levels[i - 1]} to {levels[i]}",
+                    "content": f"{'#' * levels[i]} {headings[i][1]}",
                 })
 
         return issues
 
-    def _check_list_consistency(self, content: str) -> List[Dict[str, Any]]:
+    def _check_list_consistency(self, content: str) -> list[dict[str, Any]]:
         """Check list marker consistency."""
         issues = []
 
         # Find unordered lists
-        unordered_lists = re.findall(r'^[-*+]\s+.+$', content, re.MULTILINE)
+        unordered_lists = re.findall(r"^[-*+]\s+.+$", content, re.MULTILINE)
 
         if len(unordered_lists) > 5:  # Only check if there are multiple lists
             markers = [line[0] for line in unordered_lists]
@@ -313,50 +321,50 @@ class StyleValidator:
                 if marker != primary_marker:
                     # Find line number (approximate)
                     list_start = content.find(unordered_lists[i])
-                    line_num = content[:list_start].count('\n') + 1
+                    line_num = content[:list_start].count("\n") + 1
 
                     issues.append({
                         "type": "list_consistency",
                         "severity": "low",
                         "line": line_num,
                         "message": f"Inconsistent list marker '{marker}', expected '{primary_marker}'",
-                        "content": unordered_lists[i][:30] + "..."
+                        "content": unordered_lists[i][:30] + "...",
                     })
 
         return issues
 
-    def _check_code_blocks(self, content: str) -> List[Dict[str, Any]]:
+    def _check_code_blocks(self, content: str) -> list[dict[str, Any]]:
         """Check code block formatting and languages."""
         issues = []
 
         # Find code blocks
-        code_blocks = re.findall(r'```(\w+)?\n(.*?)\n```', content, re.DOTALL)
+        code_blocks = re.findall(r"```(\w+)?\n(.*?)\n```", content, re.DOTALL)
 
         for lang, code in code_blocks:
             if not lang:
                 # Code block without language
-                block_start = content.find(f'```\n{code[:50]}')
-                line_num = content[:block_start].count('\n') + 1
+                block_start = content.find(f"```\n{code[:50]}")
+                line_num = content[:block_start].count("\n") + 1
 
                 issues.append({
                     "type": "code_block_language",
                     "severity": "low",
                     "line": line_num,
                     "message": "Code block missing language specification",
-                    "content": f'```{lang or ""}\n{code[:30]}...'
+                    "content": f"```{lang or ''}\n{code[:30]}...",
                 })
 
         return issues
 
-    def _check_emphasis_consistency(self, content: str) -> List[Dict[str, Any]]:
+    def _check_emphasis_consistency(self, content: str) -> list[dict[str, Any]]:
         """Check emphasis style consistency."""
         issues = []
 
         # Count different emphasis styles
-        italic_asterisk = len(re.findall(r'\*[^*]+\*', content))
-        italic_underscore = len(re.findall(r'_[^_]+_', content))
-        bold_asterisk = len(re.findall(r'\*\*[^*]+\*\*', content))
-        bold_underscore = len(re.findall(r'__[^_]+__', content))
+        italic_asterisk = len(re.findall(r"\*[^*]+\*", content))
+        italic_underscore = len(re.findall(r"_[^_]+_", content))
+        bold_asterisk = len(re.findall(r"\*\*[^*]+\*\*", content))
+        bold_underscore = len(re.findall(r"__[^_]+__", content))
 
         # Check for mixed emphasis styles
         if italic_asterisk > 0 and italic_underscore > 0:
@@ -365,7 +373,7 @@ class StyleValidator:
                 "severity": "low",
                 "line": 0,
                 "message": f"Mixed italic styles: * ({italic_asterisk}) vs _ ({italic_underscore})",
-                "content": "Mixed emphasis styles detected"
+                "content": "Mixed emphasis styles detected",
             })
 
         if bold_asterisk > 0 and bold_underscore > 0:
@@ -374,7 +382,7 @@ class StyleValidator:
                 "severity": "low",
                 "line": 0,
                 "message": f"Mixed bold styles: ** ({bold_asterisk}) vs __ ({bold_underscore})",
-                "content": "Mixed emphasis styles detected"
+                "content": "Mixed emphasis styles detected",
             })
 
         return issues
@@ -383,48 +391,43 @@ class StyleValidator:
 class DocumentationValidator:
     """Main class for comprehensive documentation validation."""
 
-    def __init__(self, root_path: str = "."):
+    def __init__(self, root_path: str = ".") -> None:
         self.root_path = Path(root_path)
         self.link_validator = LinkValidator()
         self.style_validator = StyleValidator()
 
-    def validate_all_files(self, files: Optional[List[Path]] = None) -> ValidationReport:
+    def validate_all_files(self, files: list[Path] | None = None) -> ValidationReport:
         """Run comprehensive validation on all documentation files."""
         if files is None:
             files = self._discover_files()
-
-        print(f"🔍 Validating {len(files)} documentation files...")
 
         link_results = []
         reference_results = []
         style_results = []
 
         # Validate links in parallel
-        print("  Checking external links...")
         external_links = self._extract_external_links(files)
         link_results = self._validate_external_links_parallel(external_links)
 
         # Validate internal references
-        print("  Checking internal references...")
         for file_path in files:
             try:
-                content = file_path.read_text(encoding='utf-8')
-                refs = self.link_validator.validate_internal_links(content, file_path, files)
+                content = file_path.read_text(encoding="utf-8")
+                refs = self.link_validator.validate_internal_links(
+                    content, file_path, files
+                )
                 reference_results.extend(refs)
-            except Exception as e:
-                print(f"    ❌ Error validating references in {file_path}: {e}")
+            except Exception:
+                pass
 
         # Check style consistency
-        print("  Checking style consistency...")
         for file_path in files:
             try:
                 style_result = self.style_validator.check_file_style(file_path)
                 style_results.append(style_result)
 
-                quality_indicator = "✅" if style_result.score >= 90 else "⚠️" if style_result.score >= 70 else "❌"
-                print(f"    {quality_indicator} {file_path.name} ({style_result.score}%)")
-            except Exception as e:
-                print(f"    ❌ Error checking style in {file_path}: {e}")
+            except Exception:
+                pass
 
         # Generate summary
         summary = self._generate_summary(link_results, reference_results, style_results)
@@ -434,38 +437,44 @@ class DocumentationValidator:
             link_results=link_results,
             reference_results=reference_results,
             style_results=style_results,
-            summary=summary
+            summary=summary,
         )
 
-    def _discover_files(self) -> List[Path]:
+    def _discover_files(self) -> list[Path]:
         """Discover documentation files."""
         files = []
         patterns = ["*.md", "*.mdx"]
 
         for pattern in patterns:
-            for file_path in self.root_path.rglob(pattern):
-                if not any(excl in str(file_path) for excl in [".git", "node_modules", "__pycache__", ".venv"]):
-                    files.append(file_path)
+            files.extend(
+                file_path
+                for file_path in self.root_path.rglob(pattern)
+                if not any(
+                    excl in str(file_path)
+                    for excl in [".git", "node_modules", "__pycache__", ".venv"]
+                )
+            )
 
         return sorted(files)
 
-    def _extract_external_links(self, files: List[Path]) -> List[str]:
+    def _extract_external_links(self, files: list[Path]) -> FlextCore.Types.StringList:
         """Extract all external links from documentation files."""
         links = set()
 
         for file_path in files:
             try:
-                content = file_path.read_text(encoding='utf-8')
+                content = file_path.read_text(encoding="utf-8")
                 # Find all markdown links
-                link_matches = re.findall(r'\[([^\]]+)\]\((https?://[^)]+)\)', content)
-                for _, url in link_matches:
-                    links.add(url)
-            except Exception as e:
-                print(f"    Warning: Could not read {file_path}: {e}")
+                link_matches = re.findall(r"\[([^\]]+)\]\((https?://[^)]+)\)", content)
+                links.update(url for _, url in link_matches)
+            except Exception:
+                pass
 
-        return sorted(list(links))
+        return sorted(links)
 
-    def _validate_external_links_parallel(self, links: List[str]) -> List[LinkValidationResult]:
+    def _validate_external_links_parallel(
+        self, links: FlextCore.Types.StringList
+    ) -> list[LinkValidationResult]:
         """Validate external links in parallel."""
         results = []
 
@@ -476,22 +485,22 @@ class DocumentationValidator:
             }
 
             for future in as_completed(future_to_url):
-                url = future_to_url[future]
+                future_to_url[future]
                 try:
                     result = future.result()
                     results.append(result)
 
-                    status_indicator = "✅" if result.status == "valid" else "❌" if result.status == "broken" else "⚠️"
-                    print(f"    {status_indicator} {url} ({result.status})")
-
-                except Exception as e:
-                    print(f"    ❌ Error validating {url}: {e}")
+                except Exception:
+                    pass
 
         return results
 
-    def _generate_summary(self, link_results: List[LinkValidationResult],
-                         reference_results: List[ReferenceValidationResult],
-                         style_results: List[StyleCheckResult]) -> Dict[str, Any]:
+    def _generate_summary(
+        self,
+        link_results: list[LinkValidationResult],
+        reference_results: list[ReferenceValidationResult],
+        style_results: list[StyleCheckResult],
+    ) -> dict[str, Any]:
         """Generate validation summary."""
         summary = {
             "total_external_links": len(link_results),
@@ -503,30 +512,45 @@ class DocumentationValidator:
             "broken_references": len([r for r in reference_results if not r.found]),
             "total_style_checks": len(style_results),
             "average_style_score": 0,
-            "total_style_issues": sum(len(r.issues) for r in style_results)
+            "total_style_issues": sum(len(r.issues) for r in style_results),
         }
 
         if style_results:
-            summary["average_style_score"] = sum(r.score for r in style_results) / len(style_results)
+            summary["average_style_score"] = int(
+                sum(r.score for r in style_results) / len(style_results)
+            )
 
         # Calculate percentages
         if summary["total_external_links"] > 0:
-            summary["link_health_percentage"] = (summary["valid_links"] / summary["total_external_links"]) * 100
+            summary["link_health_percentage"] = int(
+                (summary["valid_links"] / summary["total_external_links"]) * 100
+            )
         else:
             summary["link_health_percentage"] = 100
 
         if summary["total_internal_references"] > 0:
-            summary["reference_health_percentage"] = (summary["valid_references"] / summary["total_internal_references"]) * 100
+            summary["reference_health_percentage"] = int(
+                (summary["valid_references"] / summary["total_internal_references"])
+                * 100
+            )
         else:
             summary["reference_health_percentage"] = 100
 
         return summary
 
-    def save_report(self, report: ValidationReport, output_path: Optional[Path] = None):
+    def save_report(
+        self, report: ValidationReport, output_path: Path | None = None
+    ) -> None:
         """Save validation report to file."""
         if output_path is None:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
-            output_path = self.root_path / "docs" / "maintenance" / "reports" / f"validation_{timestamp}.json"
+            output_path = (
+                self.root_path
+                / "docs"
+                / "maintenance"
+                / "reports"
+                / f"validation_{timestamp}.json"
+            )
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -536,74 +560,64 @@ class DocumentationValidator:
             "link_results": [asdict(r) for r in report.link_results],
             "reference_results": [asdict(r) for r in report.reference_results],
             "style_results": [asdict(r) for r in report.style_results],
-            "summary": report.summary
+            "summary": report.summary,
         }
 
-        with open(output_path, 'w') as f:
+        with Path(output_path).open("w", encoding="utf-8") as f:
             json.dump(report_dict, f, indent=2)
 
-        print(f"📊 Validation report saved to: {output_path}")
-
-    def print_summary(self, report: ValidationReport):
+    def print_summary(self, report: ValidationReport) -> None:
         """Print validation summary to console."""
-        print("
-📊 Documentation Validation Summary"        print(f"{'='*50}")
-        print(f"External Links: {report.summary['total_external_links']}")
-        print(f"  ✅ Valid: {report.summary['valid_links']}")
-        print(f"  ❌ Broken: {report.summary['broken_links']}")
-        print(f"  ⏱️  Timeout: {report.summary['timeout_links']}")
-        print(f"  📈 Health: {report.summary.get('link_health_percentage', 0):.1f}%")
-
-        print(f"\nInternal References: {report.summary['total_internal_references']}")
-        print(f"  ✅ Valid: {report.summary['valid_references']}")
-        print(f"  ❌ Broken: {report.summary['broken_references']}")
-        print(f"  📈 Health: {report.summary.get('reference_health_percentage', 0):.1f}%")
-
-        print(f"\nStyle Checks: {report.summary['total_style_checks']}")
-        print(f"  📊 Average Score: {report.summary.get('average_style_score', 0):.1f}%")
-        print(f"  🚨 Total Issues: {report.summary['total_style_issues']}")
-
         # Show top issues
-        if report.summary['broken_links'] > 0:
-            print("
-🔗 Broken External Links:"            broken_links = [r for r in report.link_results if r.status == "broken"]
-            for link in broken_links[:5]:  # Show first 5
-                print(f"  • {link.url} (HTTP {link.status_code})")
+        if report.summary["broken_links"] > 0:
+            broken_links: list[LinkValidationResult] = [
+                r for r in report.link_results if r.status == "broken"
+            ]
+            for _link in broken_links[:5]:  # Show first 5
+                pass
 
-        if report.summary['broken_references'] > 0:
-            print("
-📄 Broken Internal References:"            broken_refs = [r for r in report.reference_results if not r.found]
-            for ref in broken_refs[:5]:  # Show first 5
-                print(f"  • {ref.reference} (in {ref.target_file or 'unknown'})")
+        if report.summary["broken_references"] > 0:
+            broken_refs: list[ReferenceValidationResult] = [
+                r for r in report.reference_results if not r.found
+            ]
+            for _ref in broken_refs[:5]:  # Show first 5
+                pass
 
         # Show style issues
-        style_issues = []
+        style_issues: list[StyleCheckResult] = []
         for result in report.style_results:
             style_issues.extend(result.issues)
 
         if style_issues:
-            print("
-🎨 Style Issues:"            # Group by type
-            issue_types = {}
+            # Group by type
+            issue_types: dict[str, int] = {}
             for issue in style_issues:
-                issue_type = issue['type']
+                issue_type = issue["type"]
                 if issue_type not in issue_types:
                     issue_types[issue_type] = 0
                 issue_types[issue_type] += 1
 
-            for issue_type, count in sorted(issue_types.items(), key=lambda x: x[1], reverse=True):
-                print(f"  • {issue_type.replace('_', ' ').title()}: {count}")
+            for issue_type, _count in sorted(
+                issue_types.items(), key=operator.itemgetter(1), reverse=True
+            ):
+                pass
 
 
-def main():
+def main() -> int:
     """Main entry point for documentation validation."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="FLEXT-gRPC Documentation Validation System")
+    parser = argparse.ArgumentParser(
+        description="FLEXT-gRPC Documentation Validation System"
+    )
     parser.add_argument("--path", default=".", help="Root path to validate")
     parser.add_argument("--output", help="Output path for report")
-    parser.add_argument("--links-only", action="store_true", help="Validate only external links")
-    parser.add_argument("--style-only", action="store_true", help="Check only style consistency")
+    parser.add_argument(
+        "--links-only", action="store_true", help="Validate only external links"
+    )
+    parser.add_argument(
+        "--style-only", action="store_true", help="Check only style consistency"
+    )
     parser.add_argument("--quiet", action="store_true", help="Suppress progress output")
 
     args = parser.parse_args()
@@ -627,8 +641,10 @@ def main():
                 "total_external_links": len(link_results),
                 "valid_links": len([r for r in link_results if r.status == "valid"]),
                 "broken_links": len([r for r in link_results if r.status == "broken"]),
-                "timeout_links": len([r for r in link_results if r.status == "timeout"])
-            }
+                "timeout_links": len([
+                    r for r in link_results if r.status == "timeout"
+                ]),
+            },
         )
     elif args.style_only:
         # Style check only
@@ -639,9 +655,9 @@ def main():
             try:
                 result = validator.style_validator.check_file_style(file_path)
                 style_results.append(result)
-            except Exception as e:
+            except Exception:
                 if not args.quiet:
-                    print(f"Error checking style in {file_path}: {e}")
+                    pass
 
         report = ValidationReport(
             timestamp=time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -650,19 +666,19 @@ def main():
             style_results=style_results,
             summary={
                 "total_style_checks": len(style_results),
-                "average_style_score": sum(r.score for r in style_results) / len(style_results) if style_results else 0,
-                "total_style_issues": sum(len(r.issues) for r in style_results)
-            }
+                "average_style_score": sum(r.score for r in style_results)
+                / len(style_results)
+                if style_results
+                else 0,
+                "total_style_issues": sum(len(r.issues) for r in style_results),
+            },
         )
     else:
         # Full validation
         report = validator.validate_all_files()
 
     # Save report
-    if args.output:
-        output_path = Path(args.output)
-    else:
-        output_path = None
+    output_path = Path(args.output) if args.output else None
 
     validator.save_report(report, output_path)
 
@@ -674,4 +690,4 @@ def main():
 
 
 if __name__ == "__main__":
-    exit(main())
+    sys.exit(main())

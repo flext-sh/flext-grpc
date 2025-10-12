@@ -12,14 +12,14 @@ from __future__ import annotations
 
 from typing import Final, Literal
 
-from flext_core import FlextConstants, FlextTypes
+from flext_core import FlextCore
 
 
-class FlextGrpcConstants(FlextConstants):
+class FlextGrpcConstants(FlextCore.Constants):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
-    constants redefined for gRPC context. NO direct imports from FlextConstants
+    constants redefined for gRPC context. NO direct imports from FlextCore.Constants
     should be used - all constants must come from this class.
 
     Layer N Foundation: gRPC domain-specific constants building on flext-core Layer 0.
@@ -34,7 +34,7 @@ class FlextGrpcConstants(FlextConstants):
     """
 
     class Network:
-        """gRPC network constants extending FlextConstants.Network."""
+        """gRPC network constants extending FlextCore.Constants.Network."""
 
         # gRPC-specific network constants - OVERRIDE parent constants for gRPC context
         DEFAULT_HOST: Final[str] = "127.0.0.1"  # gRPC default host
@@ -59,7 +59,7 @@ class FlextGrpcConstants(FlextConstants):
         DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
     class Service:
-        """gRPC service constants extending FlextConstants.Service."""
+        """gRPC service constants extending FlextCore.Constants.Service."""
 
         # gRPC-specific service constants - OVERRIDE parent constants
         DEFAULT_MAX_WORKERS: Final[int] = 10  # gRPC default workers
@@ -82,7 +82,7 @@ class FlextGrpcConstants(FlextConstants):
         HIGH_RETRY_TIMEOUT: Final[float] = 10.0
 
     class Validation:
-        """gRPC validation constants extending FlextConstants.Validation."""
+        """gRPC validation constants extending FlextCore.Constants.Validation."""
 
         # Additional gRPC-specific constants
         ADDRESS_PARTS_COUNT: Final[int] = 2
@@ -208,6 +208,6 @@ class FlextGrpcConstants(FlextConstants):
         type CompressionType = Literal["none", "gzip", "deflate"]
 
 
-__all__: FlextTypes.StringList = [
+__all__: FlextCore.Types.StringList = [
     "FlextGrpcConstants",
 ]

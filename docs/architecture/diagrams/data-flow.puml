@@ -1,0 +1,60 @@
+@startuml FLEXT-gRPC Data Flow Diagram
+
+title FLEXT-gRPC Data Flow and Processing
+
+actor "FLEXT Developer" as developer
+participant "Application Code" as app
+participant "FLEXT-gRPC API" as api
+participant "Service Layer" as service
+participant "Domain Entities" as domain
+participant "Protocol Buffers" as protobuf
+participant "gRPC Channel" as channel
+participant "External Service" as external
+
+== Request Initiation ==
+developer -> app: Call FLEXT-gRPC API
+app -> api: create_client() or create_server()
+
+== Configuration Processing ==
+api -> service: Instantiate service with config
+service -> domain: Create domain entities
+domain -> protobuf: Validate message schemas
+
+== Connection Establishment ==
+api -> channel: Establish gRPC connection
+channel -> external: Open network connection
+external --> channel: Connection acknowledged
+channel --> api: Connection ready
+
+== Data Transmission ==
+app -> api: Send request data
+api -> service: Process business logic
+service -> domain: Apply domain rules
+domain -> protobuf: Serialize to protobuf
+protobuf -> channel: Send over gRPC
+channel -> external: Transmit data
+
+== Response Processing ==
+external --> channel: Send response data
+channel --> protobuf: Receive protobuf data
+protobuf --> domain: Deserialize to domain objects
+domain --> service: Apply business rules
+service --> api: Return processed result
+api --> app: Deliver to application
+
+== Error Handling ==
+external --> channel: Error response
+channel --> protobuf: Error serialization
+protobuf --> domain: Domain error creation
+domain --> service: Error propagation
+service --> api: FlextCore.Result.Failure()
+api --> app: Error handling
+
+== Cleanup ==
+app -> api: Close connection
+api -> service: Shutdown services
+service -> domain: Clean up entities
+domain -> channel: Close connections
+channel -> external: Disconnect
+
+@enduml

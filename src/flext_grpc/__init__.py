@@ -6,23 +6,24 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Final
-
 from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
 from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
-    FlextGrpcChannel,
-    FlextGrpcClient,
     FlextGrpcEntities,
-    FlextGrpcServer,
-    FlextGrpcStream,
 )
 from flext_grpc.exceptions import (
     FlextGrpcExceptions,
 )
-from flext_grpc.models import FlextGrpcModels
+from flext_grpc.models import (
+    GrpcHealthCheck,
+    GrpcRequest,
+    ServiceDefinition,
+    ServiceMetrics,
+    StreamInfo,
+    StreamMetrics,
+)
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import FlextGrpcServices
@@ -42,8 +43,6 @@ FlextGrpcService = FlextGrpcServices
 __all__ = [
     "EchoRequest",
     "FlextGrpc",
-    "FlextGrpcChannel",
-    "FlextGrpcClient",
     "FlextGrpcConfig",
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
@@ -51,18 +50,27 @@ __all__ = [
     "FlextGrpcEntities",
     "FlextGrpcError",
     "FlextGrpcExceptions",
-    "FlextGrpcModels",
     "FlextGrpcProtocols",
-    "FlextGrpcServer",
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcServices",
-    "FlextGrpcStream",
     "FlextGrpcTimeoutError",
     "FlextGrpcTypings",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
     "FlextGrpcVersion",
+    "GrpcHealthCheck",
+    "GrpcHealthCheck",
+    "GrpcRequest",
+    "GrpcRequest",
+    "ServiceDefinition",
+    "ServiceDefinition",
+    "ServiceMetrics",
+    "ServiceMetrics",
+    "StreamInfo",
+    "StreamInfo",
+    "StreamMetrics",
+    "StreamMetrics",
     "__version__",
     "__version_info__",
 ]

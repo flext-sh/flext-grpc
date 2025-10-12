@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_core import FlextExceptions
+from flext_core import FlextCore
 
 
 class FlextGrpcExceptions:
@@ -48,12 +48,12 @@ class FlextGrpcExceptions:
       specific and general error handling depending on requirements.
     """
 
-    class BaseError(FlextExceptions.BaseError):
+    class BaseError(FlextCore.Exceptions.BaseError):
         """Base exception for all FLEXT gRPC platform errors.
 
         Root exception class for the FLEXT gRPC error hierarchy, providing
         a common base for all gRPC-specific exceptions. Extends the flext-core
-        FlextExceptions foundation while enabling specific gRPC error handling.
+        FlextCore.Exceptions foundation while enabling specific gRPC error handling.
 
         This base class enables comprehensive error handling patterns:
         - Catch all gRPC errors with single exception type
@@ -77,8 +77,8 @@ class FlextGrpcExceptions:
         """
 
         def _extract_common_kwargs(
-            self, kwargs: dict[str, object]
-        ) -> tuple[dict[str, object] | None, str | None, str | None]:
+            self, kwargs: FlextCore.Types.Dict
+        ) -> tuple[FlextCore.Types.Dict | None, str | None, str | None]:
             """Extract common error parameters from kwargs."""
             context = kwargs.get("context")
             correlation_id = kwargs.get("correlation_id")
@@ -95,8 +95,8 @@ class FlextGrpcExceptions:
             return context, correlation_id, error_code
 
         def _build_context(
-            self, base_context: dict[str, object] | None
-        ) -> dict[str, object]:
+            self, base_context: FlextCore.Types.Dict | None
+        ) -> FlextCore.Types.Dict:
             """Build complete error context."""
             context = base_context or {}
 
@@ -219,8 +219,10 @@ class FlextGrpcExceptions:
             )
 
         def _build_context(
-            self, base_context: dict[str, object] | None, field_name: str | None = None
-        ) -> dict[str, object]:
+            self,
+            base_context: FlextCore.Types.Dict | None,
+            field_name: str | None = None,
+        ) -> FlextCore.Types.Dict:
             """Build validation error context with field-specific information."""
             context = super()._build_context(base_context)
 
@@ -471,10 +473,10 @@ class FlextGrpcExceptions:
 
         def _build_context(
             self,
-            base_context: dict[str, object] | None,
+            base_context: FlextCore.Types.Dict | None,
             config_key: str | None = None,
             config_value: object = None,
-        ) -> dict[str, object]:
+        ) -> FlextCore.Types.Dict:
             """Build configuration error context with config-specific information."""
             context = super()._build_context(base_context)
 

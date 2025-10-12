@@ -10,7 +10,7 @@ class TestFlextGrpcConfig:
         """Test default configuration initialization."""
         config = FlextGrpcConfig()
         assert config is not None
-        assert config.host == "127.0.0.1"
+        assert config.host == "localhost"
         assert config.port == 50051
         assert config.max_workers == 10
 

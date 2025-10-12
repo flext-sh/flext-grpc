@@ -33,7 +33,7 @@ examples/
 - FlextGrpcServer entity creation and validation
 - Domain rule validation patterns
 - State transition management
-- FlextResult pattern usage
+- FlextCore.Result pattern usage
 
 **Usage**:
 
@@ -98,11 +98,11 @@ FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 ### Comprehensive Error Patterns
 
 **File**: `03_error_handling_patterns.py`  
-**Purpose**: Demonstrates enterprise-grade error handling using FlextResult patterns
+**Purpose**: Demonstrates enterprise-grade error handling using FlextCore.Result patterns
 
 **Key Concepts**:
 
-- FlextResult success/failure handling
+- FlextCore.Result success/failure handling
 - Domain validation error management
 - Error propagation patterns
 - Logging and monitoring integration
@@ -137,7 +137,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Key Integration Points**:
 
-- FlexCore (Go) service communication (port ${FlextConstants.Platform.DEFAULT_HTTP_PORT})
+- FlexCore (Go) service communication (port ${FlextCore.Constants.Platform.DEFAULT_HTTP_PORT})
 - FLEXT Service (Go/Python) integration (port 8081)
 - flext-core foundation pattern usage
 - flext-observability monitoring integration
@@ -150,14 +150,14 @@ from flext_core import get_flext_container
 from datetime import datetime, timezone
 
 # Integration with FLEXT ecosystem
-container = FlextContainer.get_global()
+container = FlextCore.Container.get_global()
 platform = FlextGrpcPlatform(container=container)
 
 # Client for FlexCore service
 flexcore_client = FlextGrpcClient(
     id="flexcore-client",
-    host=FlextConstants["Platform.DEFAULT_HOST"],
-    port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
+    host=FlextCore.Constants["Platform.DEFAULT_HOST"],
+    port=FlextCore.Constants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
     created_at=datetime.now(timezone.utc)
 )
 
@@ -183,7 +183,7 @@ from flext_grpc import FlextGrpcConfig
 
 # Production configuration
 prod_config = FlextGrpcConfig(
-    host=FlextConstants["Platform.PRODUCTION_HOST"],
+    host=FlextCore.Constants["Platform.PRODUCTION_HOST"],
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=20,
     timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
@@ -290,7 +290,7 @@ print(f"Server created: {server.id}")
 ```python
 from flext_grpc import FlextGrpcServerService
 
-# Service operations with FlextResult handling
+# Service operations with FlextCore.Result handling
 service = FlextGrpcServerService()
 result = service.execute("start", server)
 
@@ -323,7 +323,7 @@ if server_result.success:
 
 - ✅ Entity creation and validation (basic_usage.py)
 - ✅ Domain service operations and state management
-- ✅ Error handling patterns with FlextResult
+- ✅ Error handling patterns with FlextCore.Result
 - ✅ Configuration management and validation
 - ✅ Factory function usage (API functions)
 
@@ -346,10 +346,10 @@ if server_result.success:
 **Current Working Functionality** (Real, not aspirational):
 
 1. **Entity Creation**: FlextGrpcServer, FlextGrpcClient entities with validation
-2. **Domain Validation**: Entity.validate_domain_rules() with FlextResult patterns
+2. **Domain Validation**: Entity.validate_domain_rules() with FlextCore.Result patterns
 3. **State Management**: Entity state transitions (stopped → starting → running)
 4. **Configuration**: FlextGrpcConfig with validation and defaults
-5. **Error Handling**: FlextResult success/failure patterns
+5. **Error Handling**: FlextCore.Result success/failure patterns
 6. **API Functions**: create_server(), create_client() factory functions
 
 **What Examples DON'T Demonstrate** (Missing functionality):
@@ -390,7 +390,7 @@ For current development gaps and realistic timelines, see [../docs/TODO.md](../d
 
 - **Professional Code**: Enterprise-grade code quality
 - **Comprehensive Comments**: Clear explanations for complex concepts
-- **Error Handling**: Proper FlextResult pattern usage
+- **Error Handling**: Proper FlextCore.Result pattern usage
 - **Performance Awareness**: Efficient resource usage
 - **Security Conscious**: No hardcoded secrets or insecure patterns
 
@@ -419,7 +419,7 @@ from flext_grpc import (
     FlextGrpcServer,
     FlextGrpcConfig
 )
-from flext_core import FlextResult
+from flext_core import FlextCore
 from datetime import datetime, timezone
 
 def main() -> None:

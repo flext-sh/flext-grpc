@@ -33,7 +33,7 @@ class TestFlextGrpc:
     def test_create_stream(self) -> None:
         """Test stream creation."""
         grpc = FlextGrpc()
-        result = grpc.create_stream("unary", "test_method")
+        result = grpc.create_stream("test_method", "unary")
         assert result.is_success
 
     def test_validate_target(self) -> None:
