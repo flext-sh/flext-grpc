@@ -11,13 +11,13 @@ FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with compreh
 
 ### Test Suite Overview
 
-| Metric | Current Value | Target | Status |
-|--------|----------------|--------|--------|
-| **Total Tests** | 64 | 150+ | ⚠️ Needs expansion |
-| **Passing Tests** | 36 | 64 | ❌ Critical failures |
-| **Failing Tests** | 28 | 0 | ❌ Must fix |
-| **Code Coverage** | 39% | 90% | ❌ Major gap |
-| **Test Execution** | Individual tests work | Full suite passes | ❌ Suite failures |
+| Metric             | Current Value         | Target            | Status               |
+| ------------------ | --------------------- | ----------------- | -------------------- |
+| **Total Tests**    | 64                    | 150+              | ⚠️ Needs expansion   |
+| **Passing Tests**  | 36                    | 64                | ❌ Critical failures |
+| **Failing Tests**  | 28                    | 0                 | ❌ Must fix          |
+| **Code Coverage**  | 39%                   | 90%               | ❌ Major gap         |
+| **Test Execution** | Individual tests work | Full suite passes | ❌ Suite failures    |
 
 ### Test Coverage by Module
 
@@ -38,6 +38,7 @@ TOTAL                                          1798    956    380     14    39%
 ### Critical Test Failures (28/64)
 
 #### High Priority Failures
+
 1. **FlextGrpcServices Initialization** (4 failures)
    - **Issue**: Logger property setter missing
    - **Error**: `AttributeError: property 'logger' of 'FlextGrpcServices' object has no setter`
@@ -63,6 +64,7 @@ TOTAL                                          1798    956    380     14    39%
    - **Tests**: `test_init_default`
 
 #### Medium Priority Failures
+
 5. **Protobuf Utilities** (1 failure)
    - **Issue**: Protobuf utility functions not properly tested
    - **Error**: Test implementation issues
@@ -76,6 +78,7 @@ TOTAL                                          1798    956    380     14    39%
    - **Tests**: `test_grpc_*_creation`
 
 #### Low Priority Failures
+
 7. **API Operations** (12 failures)
    - **Issue**: Various API validation and operation failures
    - **Error**: API method implementation issues
@@ -87,18 +90,21 @@ TOTAL                                          1798    956    380     14    39%
 ### Test Categories
 
 #### 1. Unit Tests (Primary Focus)
+
 - **Scope**: Individual functions, classes, and modules
 - **Coverage Target**: 90%+ for all modules
 - **Tools**: pytest, coverage.py
 - **Current Status**: 39% overall coverage, critical failures
 
 #### 2. Integration Tests (Secondary Focus)
+
 - **Scope**: Multi-component interactions, real gRPC operations
 - **Coverage Target**: All gRPC communication patterns
 - **Tools**: pytest-asyncio, grpcio testing
 - **Current Status**: Not implemented
 
 #### 3. End-to-End Tests (Future Focus)
+
 - **Scope**: Complete gRPC workflows with FLEXT ecosystem
 - **Coverage Target**: Full microservices scenarios
 - **Tools**: Custom test harness
@@ -107,16 +113,19 @@ TOTAL                                          1798    956    380     14    39%
 ### Testing Priorities
 
 #### Phase 1: Bug Fixes & Coverage (Immediate)
+
 1. **Fix Critical Failures**: Resolve all 28 test failures
 2. **Achieve 90% Coverage**: Target high-impact modules
 3. **Implement Integration Tests**: Real gRPC server/client testing
 
 #### Phase 2: Integration & Performance (Next)
+
 1. **Streaming Operations**: Test all four gRPC patterns
 2. **Performance Testing**: Load and stress testing
 3. **FLEXT Integration**: Ecosystem interaction testing
 
 #### Phase 3: E2E & Observability (Future)
+
 1. **End-to-End Workflows**: Complete microservices scenarios
 2. **Monitoring Integration**: Metrics and tracing validation
 3. **Production Validation**: Enterprise deployment testing
@@ -126,6 +135,7 @@ TOTAL                                          1798    956    380     14    39%
 ### Immediate Actions (Fix Critical Failures)
 
 #### 1. Fix FlextGrpcServices Logger Property
+
 ```python
 # Issue: Property setter missing
 # Location: src/flext_grpc/services.py:77
@@ -134,6 +144,7 @@ TOTAL                                          1798    956    380     14    39%
 ```
 
 #### 2. Correct Exception Constructors
+
 ```python
 # Issue: Wrong parameter signatures
 # Location: src/flext_grpc/exceptions.py
@@ -142,6 +153,7 @@ TOTAL                                          1798    956    380     14    39%
 ```
 
 #### 3. Add Protocol Decorators
+
 ```python
 # Issue: @runtime_checkable missing
 # Location: src/flext_grpc/protocols.py
@@ -150,6 +162,7 @@ TOTAL                                          1798    956    380     14    39%
 ```
 
 #### 4. Update Configuration Tests
+
 ```python
 # Issue: Default host changed
 # Location: tests/unit/test_config.py
@@ -161,14 +174,17 @@ TOTAL                                          1798    956    380     14    39%
 #### High Priority Modules (< 50% coverage)
 
 ##### services.py (15% → 90%)
+
 **Current Issues**: Initialization failures, missing service tests
 **Required Tests**:
+
 - Service lifecycle management (init/start/stop)
 - gRPC method registration and invocation
 - Error handling in service operations
 - Platform abstraction testing
 
 **Test Structure**:
+
 ```python
 def test_service_initialization():
     """Test FlextGrpcServices proper initialization."""
@@ -189,14 +205,17 @@ def test_service_lifecycle():
 ```
 
 ##### api.py (26% → 90%)
+
 **Current Issues**: API validation failures
 **Required Tests**:
+
 - Server creation with various configurations
 - Client creation and target validation
 - Stream creation for all gRPC patterns
 - Error conditions and validation
 
 **Test Structure**:
+
 ```python
 def test_create_server_valid_config():
     """Test server creation with valid configuration."""
@@ -213,14 +232,17 @@ def test_create_client_target_validation():
 ```
 
 ##### entities.py (36% → 90%)
+
 **Current Issues**: Entity creation failures
 **Required Tests**:
+
 - Server entity state transitions
 - Client entity connection management
 - Channel entity lifecycle
 - Stream entity operations
 
 **Test Structure**:
+
 ```python
 def test_server_entity_lifecycle():
     """Test server entity state management."""
@@ -242,14 +264,18 @@ def test_server_entity_lifecycle():
 #### Medium Priority Modules (50-80% coverage)
 
 ##### utilities.py (18% → 90%)
+
 **Required Tests**:
+
 - Protobuf utility functions
 - Configuration helpers
 - Validation utilities
 - Common gRPC operations
 
 ##### real_servicer.py (24% → 90%)
+
 **Required Tests**:
+
 - gRPC servicer implementation
 - Method handlers
 - Request/response processing
@@ -258,6 +284,7 @@ def test_server_entity_lifecycle():
 ### Integration Testing Implementation
 
 #### Real gRPC Server Testing
+
 ```python
 import pytest
 import grpc
@@ -278,6 +305,7 @@ async def test_real_grpc_server_operations(grpc_server):
 ```
 
 #### Streaming Operations Testing
+
 ```python
 @pytest.mark.asyncio
 async def test_server_streaming():
@@ -302,6 +330,7 @@ async def test_server_streaming():
 ### Daily Development Testing
 
 #### Quick Test Execution
+
 ```bash
 # Run all tests
 make test
@@ -314,6 +343,7 @@ PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc 
 ```
 
 #### Test Debugging
+
 ```bash
 # Run single failing test
 PYTHONPATH=src poetry run pytest tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
@@ -328,6 +358,7 @@ PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb
 ### Continuous Integration Testing
 
 #### Quality Gates
+
 ```bash
 # Complete validation pipeline
 make validate
@@ -340,6 +371,7 @@ make test         # Test execution
 ```
 
 #### Coverage Validation
+
 ```bash
 # Coverage report
 PYTHONPATH=src poetry run pytest --cov=src/flext_grpc --cov-report=html
@@ -355,6 +387,7 @@ PYTHONPATH=src poetry run pytest --cov=src/flext_grpc --cov-fail-under=90
 ### Integration Testing Setup
 
 #### gRPC Test Server
+
 ```python
 # conftest.py
 @pytest.fixture
@@ -375,6 +408,7 @@ async def grpc_server():
 ```
 
 #### Test Client Setup
+
 ```python
 @pytest.fixture
 async def grpc_client(grpc_server):
@@ -393,6 +427,7 @@ async def grpc_client(grpc_server):
 ## Test Organization
 
 ### Directory Structure
+
 ```
 tests/
 ├── unit/                          # Unit tests
@@ -415,6 +450,7 @@ tests/
 ```
 
 ### Test Naming Conventions
+
 ```python
 def test_{module}_{operation}_{condition}():
     """Test {module} {operation} under {condition}."""
@@ -427,6 +463,7 @@ def test_{operation}_with_{configuration}():
 ```
 
 ### Test Categories and Markers
+
 ```python
 @pytest.mark.unit
 def test_unit_functionality():
@@ -448,12 +485,14 @@ def test_known_issue():
 ## Success Metrics
 
 ### Phase 1 Success Criteria
+
 - ✅ **All Tests Passing**: 64/64 tests pass (currently 28 failing)
 - ✅ **90%+ Coverage**: Overall coverage meets target (currently 39%)
 - ✅ **Integration Tests**: Real gRPC operations tested
 - ✅ **Quality Gates**: All validation checks pass
 
 ### Coverage Targets by Module
+
 - **services.py**: 90%+ (currently 15%)
 - **api.py**: 90%+ (currently 26%)
 - **entities.py**: 90%+ (currently 36%)
@@ -462,6 +501,7 @@ def test_known_issue():
 - **typings.py**: 90%+ (currently 93%)
 
 ### Test Quality Metrics
+
 - **Test Execution Time**: < 30 seconds for unit tests
 - **Flakiness**: < 1% failure rate on stable tests
 - **Maintainability**: Clear test names and documentation
@@ -470,20 +510,24 @@ def test_known_issue():
 ## Risk Assessment
 
 ### High Risk
+
 1. **Critical Bug Fixes**: Logger property and exception constructor fixes may have cascading effects
 2. **Integration Complexity**: Real gRPC testing may introduce flakiness and complexity
 
 ### Medium Risk
+
 1. **Coverage Achievement**: Reaching 90% coverage requires significant test implementation
 2. **Test Maintenance**: Large test suite requires ongoing maintenance
 
 ### Low Risk
+
 1. **Test Framework**: pytest is stable and well-established
 2. **Coverage Tools**: coverage.py provides reliable metrics
 
 ## Future Testing Enhancements
 
 ### Performance Testing
+
 ```python
 def test_grpc_performance_under_load():
     """Test gRPC operations under high load."""
@@ -494,6 +538,7 @@ def test_grpc_performance_under_load():
 ```
 
 ### Load Testing
+
 ```python
 def test_grpc_scalability_limits():
     """Test gRPC system scalability limits."""
@@ -504,6 +549,7 @@ def test_grpc_scalability_limits():
 ```
 
 ### Chaos Testing
+
 ```python
 def test_grpc_fault_tolerance():
     """Test gRPC system fault tolerance."""

@@ -33,11 +33,13 @@ print('✅ All components importable')
 ### Symptom: Audit fails with import errors
 
 **Error:**
+
 ```
 ModuleNotFoundError: No module named 'frontmatter'
 ```
 
 **Solution:**
+
 ```bash
 # Install missing dependencies
 pip install -r docs/maintenance/requirements.txt
@@ -54,6 +56,7 @@ python -c "import frontmatter, requests, markdown; print('✅ Dependencies insta
 **Cause:** Configuration thresholds too strict or content issues
 
 **Diagnosis:**
+
 ```bash
 # Check current configuration
 cat docs/maintenance/config.json | jq '.audit.quality_thresholds'
@@ -63,6 +66,7 @@ PYTHONPATH=. python docs/maintenance/audit.py --verbose
 ```
 
 **Solution:**
+
 ```bash
 # Adjust quality thresholds if needed
 # Edit docs/maintenance/config.json
@@ -84,6 +88,7 @@ make docs-fix
 **Cause:** Custom content patterns not recognized
 
 **Solution:**
+
 ```python
 # Create custom audit rules
 # docs/maintenance/custom_rules.py
@@ -99,11 +104,13 @@ CUSTOM_AUDIT_RULES = {
 ### Symptom: Link validation times out
 
 **Error:**
+
 ```
 TimeoutError: Request timed out
 ```
 
 **Solution:**
+
 ```bash
 # Increase timeout in config
 # Edit docs/maintenance/config.json
@@ -131,6 +138,7 @@ TimeoutError: Request timed out
 **Cause:** Dynamic URLs or authentication requirements
 
 **Solution:**
+
 ```bash
 # Add to ignore patterns
 # docs/maintenance/config.json
@@ -148,11 +156,13 @@ TimeoutError: Request timed out
 ### Symptom: Style validation too strict
 
 **Error:**
+
 ```
 Line too long (120 > 88 characters)
 ```
 
 **Solution:**
+
 ```bash
 # Adjust style rules
 # docs/maintenance/config.json
@@ -171,6 +181,7 @@ Line too long (120 > 88 characters)
 **Cause:** File permissions or dry-run mode
 
 **Diagnosis:**
+
 ```bash
 # Check file permissions
 ls -la docs/README.md
@@ -180,6 +191,7 @@ grep -A5 "dry_run" docs/maintenance/optimization.py
 ```
 
 **Solution:**
+
 ```bash
 # Fix permissions
 chmod 644 docs/README.md
@@ -196,6 +208,7 @@ PYTHONPATH=. python docs/maintenance/optimization.py --file docs/README.md
 **Cause:** Insufficient headings or configuration
 
 **Solution:**
+
 ```bash
 # Check heading count
 grep -c "^#" docs/README.md
@@ -215,11 +228,13 @@ grep -c "^#" docs/README.md
 ### Symptom: Git operations fail
 
 **Error:**
+
 ```
 GitCommandError: 'git commit' failed
 ```
 
 **Solution:**
+
 ```bash
 # Check git status
 git status
@@ -237,6 +252,7 @@ git log --oneline -5
 **Cause:** Concurrent edits to same files
 
 **Solution:**
+
 ```bash
 # Check for conflicts
 git status | grep "both modified"
@@ -253,11 +269,13 @@ make docs-backup
 ### Symptom: Reports not generating
 
 **Error:**
+
 ```
 FileNotFoundError: No audit report found
 ```
 
 **Solution:**
+
 ```bash
 # Ensure reports directory exists
 mkdir -p docs/maintenance/reports
@@ -274,6 +292,7 @@ make docs-report
 **Cause:** Missing CSS or JavaScript
 
 **Solution:**
+
 ```bash
 # Check dashboard file
 cat docs/maintenance/dashboard.html | head -20
@@ -290,6 +309,7 @@ firefox docs/maintenance/dashboard.html
 ### Symptom: System completely broken
 
 **Emergency Reset:**
+
 ```bash
 # Complete system reset
 make docs-emergency-reset
@@ -304,6 +324,7 @@ python docs/maintenance/audit.py --test-system
 ### Symptom: Data corruption in reports
 
 **Recovery:**
+
 ```bash
 # Clear corrupted reports
 rm -rf docs/maintenance/reports/*.json
@@ -401,12 +422,14 @@ grep -c "failed\|error" docs/maintenance/logs/*.log
 ### Community Support
 
 1. **Check Existing Issues**
+
    ```bash
    # Search in issue tracker
    gh issue list --search "maintenance framework"
    ```
 
 2. **Gather Diagnostic Information**
+
    ```bash
    # Create diagnostic bundle
    tar -czf diagnostic_$(date +%Y%m%d).tar.gz \
@@ -417,6 +440,7 @@ grep -c "failed\|error" docs/maintenance/logs/*.log
    ```
 
 3. **Report Template**
+
    ```
    Issue: [Brief description]
    Steps to reproduce: [Commands executed]

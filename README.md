@@ -45,12 +45,12 @@ Provides gRPC communication patterns for microservices within the FLEXT data int
 
 ### FLEXT Integration Status
 
-| Pattern            | Status         | Notes                                    |
-| ------------------ | -------------- | ---------------------------------------- |
-| FlextCore.Result        | ✅ Implemented | Used throughout API                      |
-| FlextCore.Container     | ✅ Implemented | Dependency injection present             |
-| FlextCore.Logger        | ✅ Implemented | Logging infrastructure                   |
-| Clean Architecture | ✅ Implemented | Domain/service/infrastructure separation |
+| Pattern             | Status         | Notes                                    |
+| ------------------- | -------------- | ---------------------------------------- |
+| FlextCore.Result    | ✅ Implemented | Used throughout API                      |
+| FlextCore.Container | ✅ Implemented | Dependency injection present             |
+| FlextCore.Logger    | ✅ Implemented | Logging infrastructure                   |
+| Clean Architecture  | ✅ Implemented | Domain/service/infrastructure separation |
 
 ### Technical Details
 

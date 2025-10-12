@@ -1,6 +1,7 @@
 # ADR-001: Clean Architecture Adoption
 
 ## Status
+
 Accepted
 
 ## Context
@@ -8,6 +9,7 @@ Accepted
 FLEXT-gRPC was initially developed with a traditional layered architecture, but as the codebase grew to include domain entities, service coordination, infrastructure concerns, and FLEXT ecosystem integration, the code became increasingly complex and difficult to maintain.
 
 The main issues we were facing:
+
 - Mixed concerns across layers (business logic mixed with infrastructure)
 - Difficult unit testing due to tight coupling
 - Complex dependency management
@@ -15,6 +17,7 @@ The main issues we were facing:
 - Difficult to understand the codebase for new team members
 
 We needed an architectural approach that would:
+
 - Provide clear separation of concerns
 - Enable easy testing and mocking
 - Support clean dependency management
@@ -51,6 +54,7 @@ Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapte
 ```
 
 With the following principles:
+
 - **Dependency Inversion**: Higher layers don't depend on lower layers
 - **Domain Centrality**: Business logic is independent of frameworks
 - **Interface Segregation**: Clear interfaces between layers
@@ -61,24 +65,28 @@ With the following principles:
 ### Positive Consequences
 
 **Better Testability**
+
 - Domain entities can be tested in isolation
 - Dependencies can be easily mocked
 - Unit tests don't require infrastructure setup
 - Faster test execution and better coverage
 
 **Improved Maintainability**
+
 - Clear responsibilities for each layer
 - Easier to locate and modify code
 - Reduced coupling between components
 - Better code organization and navigation
 
 **Enhanced Flexibility**
+
 - Infrastructure can be swapped without affecting business logic
 - New features can be added without breaking existing code
 - Technology migrations are easier
 - Framework upgrades don't affect core logic
 
 **Better Developer Experience**
+
 - Clear architectural boundaries
 - Easier onboarding for new developers
 - Consistent patterns throughout codebase
@@ -87,18 +95,21 @@ With the following principles:
 ### Negative Consequences
 
 **Increased Complexity**
+
 - More files and classes to manage
 - Additional interfaces and abstractions
 - Learning curve for new team members
 - More boilerplate code
 
 **Development Overhead**
+
 - Longer initial development time
 - More classes and interfaces to maintain
 - Additional complexity in simple operations
 - More decisions about layer placement
 
 **Performance Considerations**
+
 - Additional indirection through interfaces
 - Potential performance overhead from abstraction layers
 - Need to be careful about performance-critical paths
@@ -106,28 +117,36 @@ With the following principles:
 ## Alternatives Considered
 
 ### Traditional Layered Architecture
+
 **Rejected because:**
+
 - Doesn't provide enough separation of concerns
 - Business logic still coupled to infrastructure
 - Difficult to test business rules in isolation
 - Hard to swap implementations
 
 ### Hexagonal Architecture
+
 **Not chosen because:**
+
 - More complex than needed for our use case
 - Additional complexity in ports and adapters
 - Overkill for a library rather than a full application
 - Team familiarity with Clean Architecture patterns
 
 ### Onion Architecture
+
 **Not chosen because:**
+
 - Similar to Clean Architecture but with more layers
 - Additional complexity without clear benefits
 - Team already familiar with Clean Architecture
 - Simpler approach better suited for library development
 
 ### Microservices Architecture
+
 **Not applicable because:**
+
 - FLEXT-gRPC is a library, not a service
 - Would be overkill for a communication library
 - Clean Architecture provides better separation within a single codebase
@@ -137,18 +156,21 @@ With the following principles:
 ### Layer Boundaries
 
 **Domain Layer**
+
 - Pure business logic, no external dependencies
 - State machines and business rules
 - Entity validation and business constraints
 - Independent of frameworks and infrastructure
 
 **Application Layer**
+
 - Orchestrates domain objects
 - Contains use cases and application logic
 - Coordinates between domain and infrastructure
 - Defines application-specific interfaces
 
 **Infrastructure Layer**
+
 - External concerns (grpcio, protobuf, networking)
 - Framework and library integrations
 - Configuration and environment concerns
@@ -190,6 +212,7 @@ class GrpcServerAdapter(ServerInterface):
 This ADR established the fundamental architectural approach for FLEXT-gRPC. All subsequent development follows these Clean Architecture principles. The architecture has proven effective for maintainability and testability, though it does add some initial complexity.
 
 The layer separation has been particularly valuable for:
+
 - Unit testing (domain logic can be tested without grpcio)
 - Framework independence (could swap grpcio for other protocols)
 - Feature development (new features fit cleanly into layers)

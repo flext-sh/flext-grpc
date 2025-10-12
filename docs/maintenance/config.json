@@ -7,7 +7,13 @@
   "audit": {
     "enabled": true,
     "file_patterns": ["*.md", "*.mdx"],
-    "exclude_dirs": [".git", "node_modules", "__pycache__", ".venv", "docs/maintenance"],
+    "exclude_dirs": [
+      ".git",
+      "node_modules",
+      "__pycache__",
+      ".venv",
+      "docs/maintenance"
+    ],
     "quality_thresholds": {
       "excellent": 90,
       "good": 80,
@@ -27,12 +33,7 @@
     "link_timeout": 10,
     "max_concurrent_checks": 5,
     "retry_failed_links": 2,
-    "ignore_patterns": [
-      "localhost",
-      "127.0.0.1",
-      "*.local",
-      "example.com"
-    ]
+    "ignore_patterns": ["localhost", "127.0.0.1", "*.local", "example.com"]
   },
   "style": {
     "enabled": true,

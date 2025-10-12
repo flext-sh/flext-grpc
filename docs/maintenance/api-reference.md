@@ -23,60 +23,73 @@ auditor = DocumentationAuditor(root_path=".")
 #### Methods
 
 ##### `discover_files() -> List[Path]`
+
 Discover all documentation files to audit.
 
 **Returns**: List of Path objects for documentation files
 
 **Example**:
+
 ```python
 files = auditor.discover_files()
 print(f"Found {len(files)} documentation files")
 ```
 
 ##### `audit_file(file_path: Path) -> AuditResult`
+
 Perform comprehensive audit of a single file.
 
 **Parameters**:
+
 - `file_path`: Path to the file to audit
 
 **Returns**: AuditResult object with quality metrics
 
 **Example**:
+
 ```python
 result = auditor.audit_file(Path("docs/README.md"))
 print(f"Quality Score: {result.quality_score}%")
 ```
 
 ##### `run_audit(files: Optional[List[Path]] = None) -> AuditReport`
+
 Run complete audit on specified or all files.
 
 **Parameters**:
+
 - `files`: Optional list of files to audit (discovers all if None)
 
 **Returns**: AuditReport with comprehensive results
 
 **Example**:
+
 ```python
 report = auditor.run_audit()
 print(f"Overall Quality: {report.average_quality}%")
 ```
 
 ##### `save_report(report: AuditReport, output_path: Optional[Path] = None)`
+
 Save audit report to JSON file.
 
 **Parameters**:
+
 - `report`: AuditReport to save
 - `output_path`: Optional output path (auto-generates if None)
 
 **Example**:
+
 ```python
 auditor.save_report(report, Path("reports/audit.json"))
 ```
 
 ##### `print_summary(report: AuditReport)`
+
 Print formatted audit summary to console.
 
 **Parameters**:
+
 - `report`: AuditReport to summarize
 
 ## 🔗 Validation API
@@ -94,14 +107,17 @@ validator = LinkValidator(timeout=10, max_retries=3)
 #### Methods
 
 ##### `validate_external_link(url: str) -> LinkValidationResult`
+
 Validate a single external link.
 
 **Parameters**:
+
 - `url`: URL to validate
 
 **Returns**: LinkValidationResult with validation details
 
 **Example**:
+
 ```python
 result = validator.validate_external_link("https://github.com")
 if result.status == "valid":
@@ -111,9 +127,11 @@ else:
 ```
 
 ##### `validate_internal_links(content: str, file_path: Path, all_files: List[Path]) -> List[ReferenceValidationResult]`
+
 Validate internal links within documentation.
 
 **Parameters**:
+
 - `content`: File content to analyze
 - `file_path`: Path of the file being validated
 - `all_files`: List of all documentation files
@@ -133,14 +151,17 @@ style_validator = StyleValidator()
 #### Methods
 
 ##### `check_file_style(file_path: Path) -> StyleCheckResult`
+
 Check style consistency for a file.
 
 **Parameters**:
+
 - `file_path`: Path to file to check
 
 **Returns**: StyleCheckResult with issues and score
 
 **Example**:
+
 ```python
 result = style_validator.check_file_style(Path("docs/README.md"))
 print(f"Style Score: {result.score}%")
@@ -163,24 +184,29 @@ optimizer = DocumentationOptimizer(root_path=".")
 #### Methods
 
 ##### `optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, Any]`
+
 Optimize a single documentation file.
 
 **Parameters**:
+
 - `file_path`: Path to file to optimize
 - `dry_run`: If True, don't save changes
 
 **Returns**: Dictionary with optimization results
 
 **Example**:
+
 ```python
 result = optimizer.optimize_file(Path("docs/README.md"))
 print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
 
 ##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, Any]`
+
 Optimize all documentation files.
 
 **Parameters**:
+
 - `files`: Optional list of files (discovers all if None)
 - `dry_run`: If True, don't save changes
 
@@ -201,15 +227,18 @@ sync = DocumentationSynchronizer(root_path=".")
 #### Methods
 
 ##### `sync_changes(changes: List[Dict[str, Any]], action: str = "maintenance") -> Dict[str, Any]`
+
 Synchronize documentation changes with git.
 
 **Parameters**:
+
 - `changes`: List of change dictionaries
 - `action`: Action description for commit message
 
 **Returns**: Dictionary with synchronization results
 
 **Example**:
+
 ```python
 changes = [
     {"file_path": "docs/README.md", "changed": True, "optimizations_applied": ["TOC added"]}
@@ -219,17 +248,21 @@ print(f"Committed: {result['commit_created']}")
 ```
 
 ##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, Any]]`
+
 Detect potential merge conflicts.
 
 **Parameters**:
+
 - `target_branch`: Branch to check conflicts against
 
 **Returns**: List of conflict descriptions
 
 ##### `generate_changelog(since_commit: Optional[str] = None) -> str`
+
 Generate changelog from recent changes.
 
 **Parameters**:
+
 - `since_commit`: Starting commit (optional)
 
 **Returns**: Formatted changelog string
@@ -249,9 +282,11 @@ reporter = DocumentationReporter(root_path=".")
 #### Methods
 
 ##### `generate_comprehensive_report(audit_report, validation_report, optimization_report) -> Dict[str, Any]`
+
 Generate comprehensive quality report.
 
 **Parameters**:
+
 - `audit_report`: Audit results
 - `validation_report`: Validation results
 - `optimization_report`: Optimization results
@@ -259,23 +294,29 @@ Generate comprehensive quality report.
 **Returns**: Comprehensive report dictionary
 
 ##### `generate_dashboard(report_data: Dict, output_path: Optional[Path] = None)`
+
 Generate HTML dashboard.
 
 **Parameters**:
+
 - `report_data`: Report data to visualize
 - `output_path`: Optional output path
 
 ##### `export_csv_report(report_data: Dict, output_path: Path)`
+
 Export report data to CSV.
 
 **Parameters**:
+
 - `report_data`: Report data to export
 - `output_path`: CSV output path
 
 ##### `generate_trend_report(days: int = 30) -> Dict[str, Any]`
+
 Generate trend analysis report.
 
 **Parameters**:
+
 - `days`: Number of days to analyze
 
 **Returns**: Trend analysis results
@@ -295,14 +336,17 @@ automation = AutomatedMaintenance(root_path=".")
 #### Methods
 
 ##### `run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, Any]`
+
 Run scheduled maintenance tasks.
 
 **Parameters**:
+
 - `maintenance_type`: Type of maintenance ("daily", "weekly", "monthly")
 
 **Returns**: Maintenance execution results
 
 **Example**:
+
 ```python
 result = automation.run_scheduled_maintenance("weekly")
 print(f"Tasks completed: {len(result['tasks_completed'])}")
@@ -311,6 +355,7 @@ print(f"Tasks completed: {len(result['tasks_completed'])}")
 ## 📋 Data Structures
 
 ### AuditResult
+
 ```python
 @dataclass
 class AuditResult:
@@ -329,6 +374,7 @@ class AuditResult:
 ```
 
 ### AuditReport
+
 ```python
 @dataclass
 class AuditReport:
@@ -344,6 +390,7 @@ class AuditReport:
 ```
 
 ### LinkValidationResult
+
 ```python
 @dataclass
 class LinkValidationResult:
@@ -356,6 +403,7 @@ class LinkValidationResult:
 ```
 
 ### ReferenceValidationResult
+
 ```python
 @dataclass
 class ReferenceValidationResult:
@@ -367,6 +415,7 @@ class ReferenceValidationResult:
 ```
 
 ### StyleCheckResult
+
 ```python
 @dataclass
 class StyleCheckResult:
@@ -584,10 +633,10 @@ def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, Any]:
 name: Documentation Maintenance
 on:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM
+    - cron: "0 2 * * *" # Daily at 2 AM
   pull_request:
     paths:
-      - 'docs/**'
+      - "docs/**"
 
 jobs:
   maintenance:
@@ -597,7 +646,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
       - name: Install Dependencies
         run: pip install -r docs/maintenance/requirements.txt
       - name: Run Maintenance
