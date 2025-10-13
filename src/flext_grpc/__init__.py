@@ -17,6 +17,14 @@ from flext_grpc.exceptions import (
     FlextGrpcExceptions,
 )
 from flext_grpc.models import FlextGrpcModels
+
+# Model aliases for backward compatibility
+GrpcHealthCheck = FlextGrpcModels.Domain.GrpcHealthCheck
+GrpcRequest = FlextGrpcModels.Domain.GrpcRequest
+ServiceDefinition = FlextGrpcModels.Domain.ServiceDefinition
+ServiceMetrics = FlextGrpcModels.Domain.ServiceMetrics
+StreamInfo = FlextGrpcModels.Domain.StreamInfo
+StreamMetrics = FlextGrpcModels.Domain.StreamMetrics
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import FlextGrpcServices
@@ -54,16 +62,10 @@ __all__ = [
     "FlextGrpcValidationError",
     "FlextGrpcVersion",
     "GrpcHealthCheck",
-    "GrpcHealthCheck",
-    "GrpcRequest",
     "GrpcRequest",
     "ServiceDefinition",
-    "ServiceDefinition",
-    "ServiceMetrics",
     "ServiceMetrics",
     "StreamInfo",
-    "StreamInfo",
-    "StreamMetrics",
     "StreamMetrics",
     "__version__",
     "__version_info__",

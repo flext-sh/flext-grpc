@@ -7,6 +7,7 @@ Author: FLEXT-gRPC Documentation Maintenance System
 Version: 1.0.0
 """
 
+import argparse
 import json
 import operator
 import re
@@ -379,8 +380,6 @@ class DocumentationOptimizer:
     ) -> None:
         """Save optimization report."""
         if output_path is None:
-            from datetime import datetime
-
             timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
             output_path = (
                 self.root_path
@@ -517,8 +516,6 @@ class DocumentationEnhancer:
 
 def main() -> int:
     """Main entry point for documentation optimization."""
-    import argparse
-
     parser = argparse.ArgumentParser(
         description="FLEXT-gRPC Documentation Optimization System"
     )

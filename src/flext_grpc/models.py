@@ -26,85 +26,93 @@ class FlextGrpcModels(FlextCore.Models):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class StreamInfo(BaseModel):
-        """Basic stream information."""
+    class Domain:
+        """Domain models for gRPC core business entities."""
 
-        stream_id: str
-        stream_type: str
-        target: str
-        created_at: datetime = Field(default_factory=datetime.now)
-        total_requests_sent: int = Field(default=0)
-        average_latency_ms: float = Field(default=0.0)
-        error_count: int = Field(default=0)
+        class StreamInfo(BaseModel):
+            """Basic stream information."""
 
-    class GrpcRequest(BaseModel):
-        """Basic gRPC request model."""
+            stream_id: str
+            stream_type: str
+            target: str
+            created_at: datetime = Field(default_factory=datetime.now)
+            total_requests_sent: int = Field(default=0)
+            average_latency_ms: float = Field(default=0.0)
+            error_count: int = Field(default=0)
 
-        method: str = Field(description="gRPC method name")
-        data: dict | None = Field(default=None, description="Request data")
-        metadata: dict | None = Field(default=None, description="Request metadata")
+        class GrpcRequest(BaseModel):
+            """Basic gRPC request model."""
 
-    class GrpcHealthCheck(BaseModel):
-        """gRPC health check model."""
+            method: str = Field(description="gRPC method name")
+            data: dict | None = Field(default=None, description="Request data")
+            metadata: dict | None = Field(default=None, description="Request metadata")
 
-        service_name: str = Field(description="Service name")
-        status: str = Field(description="Health status")
-        timestamp: datetime = Field(description="Check timestamp")
+        class GrpcHealthCheck(BaseModel):
+            """gRPC health check model."""
 
-    class ServiceDefinition(BaseModel):
-        """gRPC service definition model."""
+            service_name: str = Field(description="Service name")
+            status: str = Field(description="Health status")
+            timestamp: datetime = Field(description="Check timestamp")
 
-        service_name: str = Field(description="Service name")
-        methods: FlextCore.Types.StringList = Field(
-            default_factory=list, description="Service methods"
-        )
-        endpoint: str | None = Field(default=None, description="Service endpoint")
-        metadata: dict | None = Field(default=None, description="Service metadata")
+        class ServiceDefinition(BaseModel):
+            """gRPC service definition model."""
 
-    class StreamMetrics(BaseModel):
-        """gRPC stream metrics model."""
+            service_name: str = Field(description="Service name")
+            methods: list[str] = Field(
+                default_factory=list, description="Service methods"
+            )
+            endpoint: str | None = Field(default=None, description="Service endpoint")
+            metadata: dict | None = Field(default=None, description="Service metadata")
 
-        stream_id: str = Field(description="Stream ID")
-        throughput_rps: float = Field(description="Throughput in requests per second")
-        latency_p50: float = Field(description="50th percentile latency")
-        latency_p95: float = Field(description="95th percentile latency")
-        latency_p99: float = Field(description="99th percentile latency")
-        error_rate: float = Field(description="Error rate")
-        memory_usage_bytes: int = Field(description="Memory usage in bytes")
+        class StreamMetrics(BaseModel):
+            """gRPC stream metrics model."""
 
-    class ServiceMetrics(BaseModel):
-        """gRPC service metrics model."""
+            stream_id: str = Field(description="Stream ID")
+            throughput_rps: float = Field(
+                description="Throughput in requests per second"
+            )
+            latency_p50: float = Field(description="50th percentile latency")
+            latency_p95: float = Field(description="95th percentile latency")
+            latency_p99: float = Field(description="99th percentile latency")
+            error_rate: float = Field(description="Error rate")
+            memory_usage_bytes: int = Field(description="Memory usage in bytes")
 
-        service_name: str = Field(description="Service name")
-        total_requests: int = Field(description="Total requests")
-        successful_requests: int = Field(description="Successful requests")
-        failed_requests: int = Field(description="Failed requests")
-        avg_response_time: float = Field(description="Average response time")
-        active_connections: int = Field(description="Active connections")
+        class ServiceMetrics(BaseModel):
+            """gRPC service metrics model."""
+
+            service_name: str = Field(description="Service name")
+            total_requests: int = Field(description="Total requests")
+            successful_requests: int = Field(description="Successful requests")
+            failed_requests: int = Field(description="Failed requests")
+            avg_response_time: float = Field(description="Average response time")
+            active_connections: int = Field(description="Active connections")
 
     # =========================================================================
     # CONFIGURATION MODELS - Configuration-related models
     # =========================================================================
 
-    class ServerConfig(BaseModel):
-        """Basic server configuration."""
+    class Config:
+        """Configuration models for gRPC settings."""
 
-        host: str = Field(default="localhost")
-        port: int = Field(default=50051)
-        max_workers: int = Field(default=10)
-        timeout: float = Field(default=30.0)
+        class ServerConfig(BaseModel):
+            """Basic server configuration."""
 
-    class ClientConfig(BaseModel):
-        """Basic client configuration."""
+            host: str = Field(default="localhost")
+            port: int = Field(default=50051)
+            max_workers: int = Field(default=10)
+            timeout: float = Field(default=30.0)
 
-        target: str = Field(default="localhost:50051")
-        timeout: float = Field(default=30.0)
+        class ClientConfig(BaseModel):
+            """Basic client configuration."""
 
-    class ChannelConfig(BaseModel):
-        """Basic channel configuration."""
+            target: str = Field(default="localhost:50051")
+            timeout: float = Field(default=30.0)
 
-        address: str
-        options: dict | None = None
+        class ChannelConfig(BaseModel):
+            """Basic channel configuration."""
+
+            address: str
+            options: dict | None = None
 
 
 __all__ = ["FlextGrpcModels"]

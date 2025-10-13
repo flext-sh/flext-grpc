@@ -207,8 +207,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def validate_grpc_request(
-            request: GrpcRequest,
-        ) -> FlextCore.Result[FlextGrpcModels.GrpcRequest]:
+            request: FlextGrpcModels.Domain.GrpcRequest,
+        ) -> FlextCore.Result[FlextGrpcModels.Domain.GrpcRequest]:
             """Validate gRPC request using Pydantic validation.
 
             Args:
@@ -220,14 +220,14 @@ class FlextGrpcUtilities:
             """
             try:
                 # Pydantic validation happens automatically during construction
-                validated_request = FlextGrpcModels.GrpcRequest.model_validate(
+                validated_request = FlextGrpcModels.Domain.GrpcRequest.model_validate(
                     request.model_dump()
                 )
-                return FlextCore.Result[FlextGrpcModels.GrpcRequest].ok(
+                return FlextCore.Result[FlextGrpcModels.Domain.GrpcRequest].ok(
                     validated_request
                 )
             except Exception as e:
-                return FlextCore.Result[FlextGrpcModels.GrpcRequest].fail(
+                return FlextCore.Result[FlextGrpcModels.Domain.GrpcRequest].fail(
                     f"Request validation failed: {e}"
                 )
 
@@ -849,7 +849,7 @@ class FlextGrpcUtilities:
         @staticmethod
         def validate_service_health(
             channel: object, service_name: str = ""
-        ) -> FlextCore.Result[FlextGrpcModels.GrpcHealthCheck]:
+        ) -> FlextCore.Result[FlextGrpcModels.Domain.GrpcHealthCheck]:
             """Check service health using gRPC health checking protocol.
 
             Args:
@@ -864,23 +864,23 @@ class FlextGrpcUtilities:
                 # Use gRPC health checking protocol
                 # Check if channel is active
                 if not channel:
-                    return FlextCore.Result[FlextGrpcModels.GrpcHealthCheck].fail(
-                        "Invalid channel provided"
-                    )
+                    return FlextCore.Result[
+                        FlextGrpcModels.Domain.GrpcHealthCheck
+                    ].fail("Invalid channel provided")
 
                 # Channel state is not directly accessible, use a default state
                 # In a real implementation, this would check actual channel state
                 # For now, assume channel is ready unless explicitly shutdown
-                health_check = GrpcHealthCheck(
+                health_check = FlextGrpcModels.Domain.GrpcHealthCheck(
                     service_name=service_name,
                     status="serving",
                     timestamp=datetime.now(UTC),
                 )
-                return FlextCore.Result[FlextGrpcModels.GrpcHealthCheck].ok(
+                return FlextCore.Result[FlextGrpcModels.Domain.GrpcHealthCheck].ok(
                     health_check
                 )
             except Exception as e:
-                return FlextCore.Result[FlextGrpcModels.GrpcHealthCheck].fail(
+                return FlextCore.Result[FlextGrpcModels.Domain.GrpcHealthCheck].fail(
                     f"Health check failed: {e}"
                 )
 
@@ -889,7 +889,7 @@ class FlextGrpcUtilities:
             service_name: str,
             endpoint: str | None = None,
             metadata: FlextCore.Types.StringDict | None = None,
-        ) -> FlextCore.Result[ServiceDefinition]:
+        ) -> FlextCore.Result[FlextGrpcModels.Domain.ServiceDefinition]:
             """Register service endpoint for discovery.
 
             Args:
@@ -902,7 +902,7 @@ class FlextGrpcUtilities:
 
             """
             try:
-                service_def = ServiceDefinition(
+                service_def = FlextGrpcModels.Domain.ServiceDefinition(
                     service_name=service_name,
                     methods=[],  # Default empty methods list
                 )
@@ -913,9 +913,11 @@ class FlextGrpcUtilities:
                 if metadata:
                     logger = FlextCore.Logger(__name__)
                     logger.debug(f"Service {service_name} metadata: {metadata}")
-                return FlextCore.Result[ServiceDefinition].ok(service_def)
+                return FlextCore.Result[FlextGrpcModels.Domain.ServiceDefinition].ok(
+                    service_def
+                )
             except Exception as e:
-                return FlextCore.Result[ServiceDefinition].fail(
+                return FlextCore.Result[FlextGrpcModels.Domain.ServiceDefinition].fail(
                     f"Service registration failed: {e}"
                 )
 
@@ -1111,8 +1113,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def collect_stream_metrics(
-            stream_info: StreamInfo,
-        ) -> FlextCore.Result[StreamMetrics]:
+            stream_info: FlextGrpcModels.Domain.StreamInfo,
+        ) -> FlextCore.Result[FlextGrpcModels.Domain.StreamMetrics]:
             """Collect metrics from stream information.
 
             Args:
@@ -1128,7 +1130,7 @@ class FlextGrpcUtilities:
                     datetime.now(UTC) - stream_info.created_at
                 ).total_seconds()
 
-                metrics = StreamMetrics(
+                metrics = FlextGrpcModels.Domain.StreamMetrics(
                     stream_id=stream_info.stream_id,
                     throughput_rps=stream_info.total_requests_sent
                     / max(duration_seconds, 1),
@@ -1142,9 +1144,11 @@ class FlextGrpcUtilities:
                     * 100,
                     memory_usage_bytes=0,  # Placeholder for memory usage
                 )
-                return FlextCore.Result[StreamMetrics].ok(metrics)
+                return FlextCore.Result[FlextGrpcModels.Domain.StreamMetrics].ok(
+                    metrics
+                )
             except Exception as e:
-                return FlextCore.Result[StreamMetrics].fail(
+                return FlextCore.Result[FlextGrpcModels.Domain.StreamMetrics].fail(
                     f"Metrics collection failed: {e}"
                 )
 
@@ -1154,7 +1158,7 @@ class FlextGrpcUtilities:
             request_count: int,
             error_count: int,
             avg_response_time: float,
-        ) -> FlextCore.Result[ServiceMetrics]:
+        ) -> FlextCore.Result[FlextGrpcModels.Domain.ServiceMetrics]:
             """Collect service-level metrics.
 
             Args:
@@ -1168,7 +1172,7 @@ class FlextGrpcUtilities:
 
             """
             try:
-                metrics = ServiceMetrics(
+                metrics = FlextGrpcModels.Domain.ServiceMetrics(
                     service_name=service_name,
                     total_requests=request_count,
                     successful_requests=request_count - error_count,
@@ -1176,8 +1180,8 @@ class FlextGrpcUtilities:
                     avg_response_time=avg_response_time,
                     active_connections=1,  # Placeholder for active connections
                 )
-                return FlextCore.Result[ServiceMetrics].ok(metrics)
+                return FlextCore.Result[FlextGrpcModels.Domain.ServiceMetrics].ok(metrics)
             except Exception as e:
-                return FlextCore.Result[ServiceMetrics].fail(
+                return FlextCore.Result[FlextGrpcModels.Domain.ServiceMetrics].fail(
                     f"Service metrics collection failed: {e}"
                 )

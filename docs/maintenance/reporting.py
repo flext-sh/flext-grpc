@@ -7,6 +7,7 @@ Author: FLEXT-gRPC Documentation Maintenance System
 Version: 1.0.0
 """
 
+import argparse
 import csv
 import json
 import sys
@@ -579,8 +580,6 @@ class DocumentationReporter:
 
 def main() -> int:
     """Main entry point for documentation reporting."""
-    import argparse
-
     parser = argparse.ArgumentParser(
         description="FLEXT-gRPC Documentation Quality Assurance Reporting"
     )

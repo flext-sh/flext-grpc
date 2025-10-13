@@ -9,6 +9,7 @@ Author: FLEXT-gRPC Documentation Maintenance System
 Version: 1.0.0
 """
 
+import argparse
 import json
 import re
 import sys
@@ -23,6 +24,7 @@ try:
 
     FRONTMATTER_AVAILABLE = True
 except ImportError:
+    frontmatter = None
     FRONTMATTER_AVAILABLE = False
 import requests
 from flext_core import FlextCore
@@ -139,7 +141,7 @@ class DocumentationAuditor:
         content = file_path.read_text(encoding="utf-8")
 
         # Parse frontmatter if present
-        if FRONTMATTER_AVAILABLE:
+        if FRONTMATTER_AVAILABLE and frontmatter is not None:
             try:
                 post = frontmatter.loads(content)
                 metadata = dict(post.metadata)
@@ -296,7 +298,7 @@ class DocumentationAuditor:
                     updated_date = datetime.fromtimestamp(last_updated, tz=UTC)
 
                 days_since_updated = (datetime.now(UTC) - updated_date).days
-                if days_since_updated > DocumentationAudit.THRESHOLD_DAYS:
+                if days_since_updated > DocumentationAuditor.THRESHOLD_DAYS:
                     score -= min(30, (days_since_updated - threshold_days) / 5 * 5)
             except Exception:
                 score -= 10  # Invalid date format
@@ -362,7 +364,7 @@ class DocumentationAuditor:
             })
 
         # Warnings
-        if len(lines) > DocumentationAudit.MAX_FILE_LENGTH:
+        if len(lines) > DocumentationAuditor.MAX_FILE_LENGTH:
             warnings.append({
                 "type": "long_file",
                 "severity": "medium",
@@ -567,8 +569,6 @@ class DocumentationAuditor:
 
 def main() -> int:
     """Main entry point for documentation audit."""
-    import argparse
-
     parser = argparse.ArgumentParser(
         description="FLEXT-gRPC Documentation Audit System"
     )

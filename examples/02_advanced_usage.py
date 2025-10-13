@@ -12,10 +12,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import cast
+
 from flext_core import FlextCore
 
 from flext_grpc import FlextGrpc, FlextGrpcConfig
 from flext_grpc.entities import FlextGrpcEntities
+from flext_grpc.typings import FlextGrpcTypings
 
 
 class GrpcServerManager:
@@ -152,9 +155,11 @@ class AdvancedGrpcOperations:
         ]
 
         for stream_type in stream_types:
+            # Cast to proper literal type
+            typed_stream_type = cast("FlextGrpcTypings.GrpcStreamType", stream_type)
             stream_result = self.grpc.create_stream(
                 method_name=f"{stream_type.capitalize()}Method",
-                stream_type=stream_type,  # type: ignore[arg-type]
+                stream_type=typed_stream_type,
             )
             if stream_result.is_success:
                 stream = stream_result.unwrap()
@@ -256,9 +261,11 @@ def example_4_streaming() -> None:
 
     created_streams = []
     for method_name, stream_type in stream_configs:
+        # Cast to proper literal type
+        typed_stream_type = cast("FlextGrpcTypings.GrpcStreamType", stream_type)
         stream_result = grpc.create_stream(
             method_name=method_name,
-            stream_type=stream_type,  # type: ignore[arg-type]
+            stream_type=typed_stream_type,
         )
 
         if stream_result.is_success:
@@ -313,7 +320,7 @@ def example_5_error_handling() -> None:
             f"✓ Invalid service creation properly failed: {invalid_service_result.error}"
         )
 
-    # Test invalid stream creation
+    # Test invalid stream creation (bypass type checking for intentional invalid input)
     invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore[arg-type]
     if invalid_stream_result.is_failure:
         print(

@@ -16,6 +16,11 @@ from typing import Any
 
 import git
 
+# Import maintenance modules
+from audit import DocumentationAuditor
+from optimization import DocumentationOptimizer
+from validation import DocumentationValidator
+
 
 class DocumentationSynchronizer:
     """Handle version control integration and automated synchronization."""
@@ -322,11 +327,6 @@ class AutomatedMaintenance:
         }
 
         try:
-            # Import maintenance modules
-            from audit import DocumentationAuditor
-            from optimization import DocumentationOptimizer
-            from validation import DocumentationValidator
-
             # Run audit
             auditor = DocumentationAuditor(str(self.root_path))
             files = auditor.discover_files()
