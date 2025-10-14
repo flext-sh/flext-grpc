@@ -5,6 +5,7 @@ All domain models consolidated into a single class with nested structures.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations

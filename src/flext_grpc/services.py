@@ -5,6 +5,7 @@ Contains all server, client, and streaming functionality with nested helpers.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
 """
 
 from __future__ import annotations
