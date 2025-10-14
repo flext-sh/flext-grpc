@@ -283,14 +283,16 @@ Changes:
                         status_code = line[:2]
                         file_path = line[3:]
 
-                        if status_code[0] in {"M", "A", "D", "R"}:
-                            if "docs/" in file_path:
-                                if status_code[0] == "M":
-                                    changes["modified"].append(file_path)
-                                elif status_code[0] == "A":
-                                    changes["added"].append(file_path)
-                                elif status_code[0] == "D":
-                                    changes["deleted"].append(file_path)
+                        if (
+                            status_code[0] in {"M", "A", "D", "R"}
+                            and "docs/" in file_path
+                        ):
+                            if status_code[0] == "M":
+                                changes["modified"].append(file_path)
+                            elif status_code[0] == "A":
+                                changes["added"].append(file_path)
+                            elif status_code[0] == "D":
+                                changes["deleted"].append(file_path)
 
             # Check for untracked files
             untracked = self.repo.untracked_files

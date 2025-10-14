@@ -132,17 +132,17 @@ class DocumentationOptimizer:
         # Fix line length issues
         max_length = self.config["formatting"]["max_line_length"]
         for i, line in enumerate(lines):
+            # Fix line length issues
             if (
                 len(line) > max_length
                 and not line.startswith("```")
                 and not line.strip().startswith("|")
+                and " " in line[max_length // 2 :]
             ):
-                # Try to break long lines (simple approach)
-                if " " in line[max_length // 2 :]:
-                    space_index = line.rfind(" ", 0, max_length)
-                    if space_index > max_length // 2:
-                        lines[i] = line[:space_index] + "\n" + line[space_index + 1 :]
-                        fixes_applied.append(f"Fixed long line at {i + 1}")
+                space_index = line.rfind(" ", 0, max_length)
+                if space_index > max_length // 2:
+                    lines[i] = line[:space_index] + "\n" + line[space_index + 1 :]
+                    fixes_applied.append(f"Fixed long line at {i + 1}")
 
         # Fix heading spacing
         if self.config["formatting"]["fix_heading_spacing"]:
@@ -275,10 +275,13 @@ class DocumentationOptimizer:
             updates.append(f"Added title: {title}")
 
         # Standardize tags
-        if self.config["metadata"]["standardize_tags"] and "tags" in metadata:
-            if isinstance(metadata["tags"], str):
-                metadata["tags"] = [tag.strip() for tag in metadata["tags"].split(",")]
-                updates.append("Standardized tags format")
+        if (
+            self.config["metadata"]["standardize_tags"]
+            and "tags" in metadata
+            and isinstance(metadata["tags"], str)
+        ):
+            metadata["tags"] = [tag.strip() for tag in metadata["tags"].split(",")]
+            updates.append("Standardized tags format")
 
         return metadata, updates
 
