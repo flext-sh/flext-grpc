@@ -72,7 +72,7 @@ class DocumentationOptimizer:
         # Parse frontmatter
         try:
             post = frontmatter.loads(original_content)
-            metadata = dict(post.metadata)
+            metadata = dict[str, object](post.metadata)
             content = post.content
         except:
             metadata = {}

@@ -44,8 +44,12 @@ class FlextGrpcModels(FlextCore.Models):
             """Basic gRPC request model."""
 
             method: str = Field(description="gRPC method name")
-            data: dict | None = Field(default=None, description="Request data")
-            metadata: dict | None = Field(default=None, description="Request metadata")
+            data: dict[str, object] | None = Field(
+                default=None, description="Request data"
+            )
+            metadata: dict[str, object] | None = Field(
+                default=None, description="Request metadata"
+            )
 
         class GrpcHealthCheck(BaseModel):
             """gRPC health check model."""
@@ -62,7 +66,9 @@ class FlextGrpcModels(FlextCore.Models):
                 default_factory=list, description="Service methods"
             )
             endpoint: str | None = Field(default=None, description="Service endpoint")
-            metadata: dict | None = Field(default=None, description="Service metadata")
+            metadata: dict[str, object] | None = Field(
+                default=None, description="Service metadata"
+            )
 
         class StreamMetrics(BaseModel):
             """gRPC stream metrics model."""
@@ -112,7 +118,7 @@ class FlextGrpcModels(FlextCore.Models):
             """Basic channel configuration."""
 
             address: str
-            options: dict | None = None
+            options: dict[str, object] | None = None
 
 
 __all__ = ["FlextGrpcModels"]

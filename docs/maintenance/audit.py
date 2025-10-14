@@ -143,7 +143,7 @@ class DocumentationAuditor:
         if FRONTMATTER_AVAILABLE and frontmatter is not None:
             try:
                 post = frontmatter.loads(content)
-                metadata = dict(post.metadata)
+                metadata = dict[str, object](post.metadata)
                 content_body = post.content
             except Exception:
                 metadata = {}

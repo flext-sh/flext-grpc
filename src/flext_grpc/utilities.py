@@ -332,7 +332,7 @@ class FlextGrpcUtilities:
                 return FlextCore.Result[FlextCore.Types.Dict].ok(dict_data)
             except Exception as e:
                 return FlextCore.Result[FlextCore.Types.Dict].fail(
-                    f"Protobuf to dict conversion failed: {e}"
+                    f"Protobuf to dict[str, object] conversion failed: {e}"
                 )
 
         @staticmethod
