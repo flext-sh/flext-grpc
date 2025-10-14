@@ -17,7 +17,6 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 try:
     import frontmatter
@@ -42,10 +41,10 @@ class AuditResult:
     structure_score: float
     completeness_score: float
     freshness_score: float
-    issues: list[dict[str, Any]]
-    warnings: list[dict[str, Any]]
-    suggestions: list[dict[str, Any]]
-    metadata: dict[str, Any]
+    issues: list[dict[str, object]]
+    warnings: list[dict[str, object]]
+    suggestions: list[dict[str, object]]
+    metadata: dict[str, object]
 
 
 @dataclass
@@ -57,10 +56,10 @@ class AuditReport:
     total_size: int
     average_quality: float
     quality_distribution: dict[str, int]
-    critical_issues: list[dict[str, Any]]
-    recommendations: list[dict[str, Any]]
+    critical_issues: list[dict[str, object]]
+    recommendations: list[dict[str, object]]
     file_results: list[AuditResult]
-    summary: dict[str, Any]
+    summary: dict[str, object]
 
 
 class DocumentationAuditor:
@@ -84,7 +83,7 @@ class DocumentationAuditor:
         self.config = self._load_config()
         self.results: list[AuditResult] = []
 
-    def _load_config(self) -> dict[str, Any]:
+    def _load_config(self) -> dict[str, object]:
         """Load audit configuration."""
         config_path = self.root_path / "docs" / "maintenance" / "config.json"
         if config_path.exists():
@@ -232,7 +231,7 @@ class DocumentationAuditor:
 
         return max(0, score)
 
-    def _analyze_completeness(self, content: str, metadata: dict[str, Any]) -> float:
+    def _analyze_completeness(self, content: str, metadata: dict[str, object]) -> float:
         """Analyze documentation completeness."""
         score = 100.0
 
@@ -274,7 +273,7 @@ class DocumentationAuditor:
         return max(0, score)
 
     def _analyze_freshness(
-        self, last_modified: float, metadata: dict[str, Any]
+        self, last_modified: float, metadata: dict[str, object]
     ) -> float:
         """Analyze documentation freshness."""
         score = 100.0
@@ -338,9 +337,11 @@ class DocumentationAuditor:
         self,
         content: str,
         lines: FlextCore.Types.StringList,
-        metadata: dict[str, Any],
+        metadata: dict[str, object],
         file_path: Path,
-    ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    ) -> tuple[
+        list[dict[str, object]], list[dict[str, object]], list[dict[str, object]]
+    ]:
         """Detect specific issues, warnings, and suggestions."""
         issues = []
         warnings = []

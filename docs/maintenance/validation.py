@@ -16,7 +16,6 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any
 
 import requests
 from flext_core import FlextCore
@@ -50,7 +49,7 @@ class StyleCheckResult:
     """Result of style consistency checking."""
 
     file_path: str
-    issues: list[dict[str, Any]]
+    issues: list[dict[str, object]]
     score: float
 
 
@@ -62,7 +61,7 @@ class ValidationReport:
     link_results: list[LinkValidationResult]
     reference_results: list[ReferenceValidationResult]
     style_results: list[StyleCheckResult]
-    summary: dict[str, Any]
+    summary: dict[str, object]
 
 
 class LinkValidator:
@@ -233,7 +232,7 @@ class LinkValidator:
 class StyleValidator:
     """Validate documentation style consistency."""
 
-    def __init__(self, config: dict[str, Any] | None = None) -> None:
+    def __init__(self, config: dict[str, object] | None = None) -> None:
         self.config = config or {
             "max_line_length": 88,
             "heading_hierarchy": True,
@@ -282,7 +281,7 @@ class StyleValidator:
 
         return StyleCheckResult(file_path=str(file_path), issues=issues, score=score)
 
-    def _check_heading_hierarchy(self, content: str) -> list[dict[str, Any]]:
+    def _check_heading_hierarchy(self, content: str) -> list[dict[str, object]]:
         """Check heading hierarchy consistency."""
         issues = []
         headings = re.findall(r"^(#{1,6})\s+(.+)$", content, re.MULTILINE)
@@ -306,7 +305,7 @@ class StyleValidator:
 
         return issues
 
-    def _check_list_consistency(self, content: str) -> list[dict[str, Any]]:
+    def _check_list_consistency(self, content: str) -> list[dict[str, object]]:
         """Check list marker consistency."""
         issues = []
 
@@ -333,7 +332,7 @@ class StyleValidator:
 
         return issues
 
-    def _check_code_blocks(self, content: str) -> list[dict[str, Any]]:
+    def _check_code_blocks(self, content: str) -> list[dict[str, object]]:
         """Check code block formatting and languages."""
         issues = []
 
@@ -356,7 +355,7 @@ class StyleValidator:
 
         return issues
 
-    def _check_emphasis_consistency(self, content: str) -> list[dict[str, Any]]:
+    def _check_emphasis_consistency(self, content: str) -> list[dict[str, object]]:
         """Check emphasis style consistency."""
         issues = []
 
@@ -500,7 +499,7 @@ class DocumentationValidator:
         link_results: list[LinkValidationResult],
         reference_results: list[ReferenceValidationResult],
         style_results: list[StyleCheckResult],
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Generate validation summary."""
         summary = {
             "total_external_links": len(link_results),

@@ -14,7 +14,6 @@ import sys
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 
 @dataclass
@@ -58,7 +57,7 @@ class DocumentationReporter:
 
     def generate_comprehensive_report(
         self, audit_report: dict, validation_report: dict, optimization_report: dict
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Generate comprehensive quality report from all maintenance data."""
         timestamp = datetime.now(UTC).isoformat()
 
@@ -205,7 +204,7 @@ class DocumentationReporter:
 
         return trends
 
-    def _load_historical_data(self) -> list[dict[str, Any]]:
+    def _load_historical_data(self) -> list[dict[str, object]]:
         """Load historical quality metrics."""
         historical = []
 
@@ -230,7 +229,7 @@ class DocumentationReporter:
 
     def _identify_critical_issues(
         self, audit_report: dict, validation_report: dict
-    ) -> list[dict[str, Any]]:
+    ) -> list[dict[str, object]]:
         """Identify critical documentation issues."""
         # Audit critical issues
         critical_issues = [
@@ -273,8 +272,8 @@ class DocumentationReporter:
         return critical_issues
 
     def _generate_recommendations(
-        self, metrics: QualityMetrics, critical_issues: list[dict[str, Any]]
-    ) -> list[dict[str, Any]]:
+        self, metrics: QualityMetrics, critical_issues: list[dict[str, object]]
+    ) -> list[dict[str, object]]:
         """Generate improvement recommendations."""
         recommendations = []
 
@@ -336,7 +335,7 @@ class DocumentationReporter:
 
         return recommendations
 
-    def generate_dashboard(self, report_data: dict[str, Any]) -> str:
+    def generate_dashboard(self, report_data: dict[str, object]) -> str:
         """Generate HTML dashboard from report data."""
         metrics = report_data.get("quality_metrics", {})
 
@@ -442,7 +441,9 @@ class DocumentationReporter:
             return "Needs Work"
         return "Critical"
 
-    def export_csv_report(self, report_data: dict[str, Any], output_path: Path) -> None:
+    def export_csv_report(
+        self, report_data: dict[str, object], output_path: Path
+    ) -> None:
         """Export report data to CSV format."""
         rows = []
 
@@ -501,8 +502,8 @@ class DocumentationReporter:
             writer.writerows(rows)
 
     def send_notifications(
-        self, report_data: dict[str, Any], notification_config: dict[str, Any]
-    ) -> dict[str, Any]:
+        self, report_data: dict[str, object], notification_config: dict[str, object]
+    ) -> dict[str, object]:
         """Send notifications about critical issues."""
         # This would integrate with email/Slack/etc.
         # For now, return mock result
@@ -527,7 +528,7 @@ class DocumentationReporter:
 
         return notification
 
-    def generate_trend_report(self, days: int = 30) -> dict[str, Any]:
+    def generate_trend_report(self, days: int = 30) -> dict[str, object]:
         """Generate trend analysis report."""
         # Load historical data
         historical = self._load_historical_data()

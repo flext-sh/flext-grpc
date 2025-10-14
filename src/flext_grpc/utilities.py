@@ -1180,7 +1180,9 @@ class FlextGrpcUtilities:
                     avg_response_time=avg_response_time,
                     active_connections=1,  # Placeholder for active connections
                 )
-                return FlextCore.Result[FlextGrpcModels.Domain.ServiceMetrics].ok(metrics)
+                return FlextCore.Result[FlextGrpcModels.Domain.ServiceMetrics].ok(
+                    metrics
+                )
             except Exception as e:
                 return FlextCore.Result[FlextGrpcModels.Domain.ServiceMetrics].fail(
                     f"Service metrics collection failed: {e}"

@@ -183,7 +183,7 @@ optimizer = DocumentationOptimizer(root_path=".")
 
 #### Methods
 
-##### `optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, Any]`
+##### `optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, object]`
 
 Optimize a single documentation file.
 
@@ -201,7 +201,7 @@ result = optimizer.optimize_file(Path("docs/README.md"))
 print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
 
-##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, Any]`
+##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`
 
 Optimize all documentation files.
 
@@ -226,7 +226,7 @@ sync = DocumentationSynchronizer(root_path=".")
 
 #### Methods
 
-##### `sync_changes(changes: List[Dict[str, Any]], action: str = "maintenance") -> Dict[str, Any]`
+##### `sync_changes(changes: List[Dict[str, object]], action: str = "maintenance") -> Dict[str, object]`
 
 Synchronize documentation changes with git.
 
@@ -247,7 +247,7 @@ result = sync.sync_changes(changes, "optimization")
 print(f"Committed: {result['commit_created']}")
 ```
 
-##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, Any]]`
+##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`
 
 Detect potential merge conflicts.
 
@@ -281,7 +281,7 @@ reporter = DocumentationReporter(root_path=".")
 
 #### Methods
 
-##### `generate_comprehensive_report(audit_report, validation_report, optimization_report) -> Dict[str, Any]`
+##### `generate_comprehensive_report(audit_report, validation_report, optimization_report) -> Dict[str, object]`
 
 Generate comprehensive quality report.
 
@@ -311,7 +311,7 @@ Export report data to CSV.
 - `report_data`: Report data to export
 - `output_path`: CSV output path
 
-##### `generate_trend_report(days: int = 30) -> Dict[str, Any]`
+##### `generate_trend_report(days: int = 30) -> Dict[str, object]`
 
 Generate trend analysis report.
 
@@ -335,7 +335,7 @@ automation = AutomatedMaintenance(root_path=".")
 
 #### Methods
 
-##### `run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, Any]`
+##### `run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, object]`
 
 Run scheduled maintenance tasks.
 
@@ -367,10 +367,10 @@ class AuditResult:
     structure_score: float
     completeness_score: float
     freshness_score: float
-    issues: List[Dict[str, Any]]
-    warnings: List[Dict[str, Any]]
-    suggestions: List[Dict[str, Any]]
-    metadata: Dict[str, Any]
+    issues: List[Dict[str, object]]
+    warnings: List[Dict[str, object]]
+    suggestions: List[Dict[str, object]]
+    metadata: Dict[str, object]
 ```
 
 ### AuditReport
@@ -383,10 +383,10 @@ class AuditReport:
     total_size: int
     average_quality: float
     quality_distribution: Dict[str, int]
-    critical_issues: List[Dict[str, Any]]
-    recommendations: List[Dict[str, Any]]
+    critical_issues: List[Dict[str, object]]
+    recommendations: List[Dict[str, object]]
     file_results: List[AuditResult]
-    summary: Dict[str, Any]
+    summary: Dict[str, object]
 ```
 
 ### LinkValidationResult
@@ -420,7 +420,7 @@ class ReferenceValidationResult:
 @dataclass
 class StyleCheckResult:
     file_path: str
-    issues: List[Dict[str, Any]]
+    issues: List[Dict[str, object]]
     score: float
 ```
 
@@ -591,7 +591,7 @@ except Exception as e:
 ### Quality Metrics
 
 ```python
-def get_quality_metrics(audit_report: AuditReport) -> Dict[str, Any]:
+def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
     """Extract quality metrics from audit report."""
     return {
         "overall_score": audit_report.average_quality,
@@ -605,7 +605,7 @@ def get_quality_metrics(audit_report: AuditReport) -> Dict[str, Any]:
 ### Trend Analysis
 
 ```python
-def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, Any]:
+def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, object]:
     """Analyze quality trends over time."""
     if len(reports) < 2:
         return {"error": "Need at least 2 reports for trend analysis"}

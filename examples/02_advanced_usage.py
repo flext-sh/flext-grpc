@@ -321,7 +321,7 @@ def example_5_error_handling() -> None:
         )
 
     # Test invalid stream creation (bypass type checking for intentional invalid input)
-    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore[arg-type]
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.is_failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"

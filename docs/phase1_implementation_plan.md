@@ -104,10 +104,10 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
   ```python
   # Current (broken)
-  def __init__(self, message: str, config_key: str = None, config_value: Any = None):
+  def __init__(self, message: str, config_key: str = None, config_value: object = None):
 
   # Fix: Correct parameter signatures
-  def __init__(self, message: str, config_key: str | None = None, config_value: Any = None):
+  def __init__(self, message: str, config_key: str | None = None, config_value: object = None):
   ```
 
 - **Tests Affected**: 6 exception construction tests

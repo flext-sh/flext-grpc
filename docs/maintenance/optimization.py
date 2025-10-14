@@ -14,7 +14,6 @@ import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 import frontmatter
 from flext_core import FlextCore
@@ -33,7 +32,7 @@ class DocumentationOptimizer:
         self.root_path = Path(root_path)
         self.config = self._load_config()
 
-    def _load_config(self) -> dict[str, Any]:
+    def _load_config(self) -> dict[str, object]:
         """Load optimization configuration."""
         config_path = self.root_path / "docs" / "maintenance" / "config.json"
         if config_path.exists():
@@ -63,7 +62,9 @@ class DocumentationOptimizer:
             },
         }
 
-    def optimize_file(self, file_path: Path, dry_run: bool = False) -> dict[str, Any]:
+    def optimize_file(
+        self, file_path: Path, dry_run: bool = False
+    ) -> dict[str, object]:
         """Optimize a single documentation file."""
         # Read original content
         original_content = file_path.read_text(encoding="utf-8")
@@ -247,8 +248,8 @@ class DocumentationOptimizer:
         return "\n".join(optimized_lines), True
 
     def _update_metadata(
-        self, metadata: dict[str, Any], file_path: Path
-    ) -> tuple[dict[str, Any], FlextCore.Types.StringList]:
+        self, metadata: dict[str, object], file_path: Path
+    ) -> tuple[dict[str, object], FlextCore.Types.StringList]:
         """Update and enhance metadata."""
         updates = []
 
@@ -319,7 +320,7 @@ class DocumentationOptimizer:
 
     def optimize_all_files(
         self, files: list[Path] | None = None, dry_run: bool = False
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Optimize all documentation files."""
         if files is None:
             files = self._discover_files()
@@ -376,7 +377,7 @@ class DocumentationOptimizer:
         return sorted(files)
 
     def save_report(
-        self, summary: dict[str, Any], output_path: Path | None = None
+        self, summary: dict[str, object], output_path: Path | None = None
     ) -> None:
         """Save optimization report."""
         if output_path is None:
@@ -394,7 +395,7 @@ class DocumentationOptimizer:
         with Path(output_path).open("w", encoding="utf-8") as f:
             json.dump(summary, f, indent=2)
 
-    def print_summary(self, summary: dict[str, Any]) -> None:
+    def print_summary(self, summary: dict[str, object]) -> None:
         """Print optimization summary."""
         if summary.get("dry_run"):
             pass
@@ -488,7 +489,7 @@ class DocumentationEnhancer:
 
     def validate_content_completeness(
         self, content: str, file_path: Path
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Validate content completeness and suggest improvements."""
         validation = {"score": 100, "missing_elements": [], "suggestions": []}
 

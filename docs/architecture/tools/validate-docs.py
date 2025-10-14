@@ -10,7 +10,6 @@ import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 
 class ArchitectureValidator:
@@ -33,11 +32,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, Any]] = []
-        self.warnings: list[dict[str, Any]] = []
-        self.recommendations: list[dict[str, Any]] = []
+        self.issues: list[dict[str, object]] = []
+        self.warnings: list[dict[str, object]] = []
+        self.recommendations: list[dict[str, object]] = []
 
-    def validate_all(self) -> dict[str, Any]:
+    def validate_all(self) -> dict[str, object]:
         """Run all validation checks."""
         # Reset collections
         self.issues = []
@@ -276,7 +275,7 @@ class ArchitectureValidator:
                     "message": "Architecture documentation contains outdated test coverage metrics",
                 })
 
-    def _generate_summary(self) -> dict[str, Any]:
+    def _generate_summary(self) -> dict[str, object]:
         """Generate validation summary."""
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
@@ -308,7 +307,7 @@ class ArchitectureValidator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-    def _print_results(self, summary: dict[str, Any]) -> None:
+    def _print_results(self, summary: dict[str, object]) -> None:
         """Print validation results."""
         if self.issues:
             for _issue in self.issues[:3]:  # Show first 3
@@ -323,7 +322,7 @@ class ArchitectureValidator:
                 pass
 
 
-def save_report(results: dict[str, Any], output_path: Path | None = None) -> None:
+def save_report(results: dict[str, object], output_path: Path | None = None) -> None:
     """Save validation report to file."""
     if output_path is None:
         timestamp: str = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")

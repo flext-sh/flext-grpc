@@ -12,7 +12,6 @@ import sys
 import time
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any
 
 import git
 
@@ -37,7 +36,7 @@ class DocumentationSynchronizer:
         except git.InvalidGitRepositoryError:
             return None
 
-    def _load_config(self) -> dict[str, Any]:
+    def _load_config(self) -> dict[str, object]:
         """Load synchronization configuration."""
         config_path = self.root_path / "docs" / "maintenance" / "config.json"
         if config_path.exists():
@@ -65,8 +64,8 @@ class DocumentationSynchronizer:
         }
 
     def sync_changes(
-        self, changes: list[dict[str, Any]], action: str = "maintenance"
-    ) -> dict[str, Any]:
+        self, changes: list[dict[str, object]], action: str = "maintenance"
+    ) -> dict[str, object]:
         """Synchronize documentation changes with version control."""
         if not self.repo:
             return {"error": "Not a git repository"}
@@ -116,7 +115,7 @@ class DocumentationSynchronizer:
         return result
 
     def _generate_commit_message(
-        self, action: str, changes: list[dict[str, Any]]
+        self, action: str, changes: list[dict[str, object]]
     ) -> str:
         """Generate descriptive commit message."""
         template = self.config["sync"]["commit_message_template"]
@@ -145,7 +144,7 @@ Changes:
 
         return template.format(action=action, details=details)
 
-    def detect_conflicts(self, target_branch: str = "main") -> list[dict[str, Any]]:
+    def detect_conflicts(self, target_branch: str = "main") -> list[dict[str, object]]:
         """Detect potential merge conflicts before synchronization."""
         if not self.repo:
             return []
@@ -178,8 +177,8 @@ Changes:
         return conflicts
 
     def resolve_conflicts(
-        self, conflicts: list[dict[str, Any]], strategy: str = "manual"
-    ) -> dict[str, Any]:
+        self, conflicts: list[dict[str, object]], strategy: str = "manual"
+    ) -> dict[str, object]:
         """Attempt to resolve detected conflicts."""
         resolution = {"strategy": strategy, "resolved": 0, "failed": 0, "details": []}
 
@@ -194,7 +193,7 @@ Changes:
 
     def create_pull_request(
         self, branch_name: str, title: str, description: str
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Create a pull request for documentation changes."""
         result = {"created": False, "pr_url": None, "errors": []}
 
@@ -267,7 +266,7 @@ Changes:
         except Exception as e:
             return f"Changelog generation failed: {e}"
 
-    def monitor_file_changes(self) -> dict[str, Any]:
+    def monitor_file_changes(self) -> dict[str, object]:
         """Monitor documentation files for changes."""
         if not self.repo:
             return {"error": "Not a git repository"}
@@ -317,7 +316,7 @@ class AutomatedMaintenance:
 
     def run_scheduled_maintenance(
         self, maintenance_type: str = "daily"
-    ) -> dict[str, Any]:
+    ) -> dict[str, object]:
         """Run scheduled maintenance tasks."""
         result = {
             "maintenance_type": maintenance_type,
@@ -369,7 +368,7 @@ class AutomatedMaintenance:
 
         return result
 
-    def _save_maintenance_report(self, report_data: dict[str, Any]) -> None:
+    def _save_maintenance_report(self, report_data: dict[str, object]) -> None:
         """Save comprehensive maintenance report."""
         timestamp = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
         report_path = (
