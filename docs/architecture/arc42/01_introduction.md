@@ -18,7 +18,7 @@
 - Complete gRPC protocol abstraction (unary, server streaming, client streaming, bidirectional)
 - Protocol Buffer message generation and validation
 - Connection lifecycle management and error handling
-- FLEXT ecosystem integration (FlextCore.Result, FlextCore.Container, FlextCore.Logger)
+- FLEXT ecosystem integration (FlextResult, FlextContainer, FlextLogger)
 - Security features (mTLS, authentication, authorization)
 - Monitoring and observability integration
 
@@ -127,13 +127,13 @@
 
 ### FLEXT Ecosystem Terms
 
-| Term                    | Definition                                                       |
-| ----------------------- | ---------------------------------------------------------------- |
-| **FlextCore.Result[T]** | Railway pattern implementation for functional error handling     |
-| **FlextCore.Container** | Dependency injection container for service management            |
-| **FlextCore.Service**   | Base class for service implementations with lifecycle management |
-| **FlextCore.Logger**    | Structured logging interface with correlation IDs                |
-| **FLEXT-Core**          | Foundation library providing common patterns and utilities       |
+| Term               | Definition                                                       |
+| ------------------ | ---------------------------------------------------------------- |
+| **FlextResult[T]** | Railway pattern implementation for functional error handling     |
+| **FlextContainer** | Dependency injection container for service management            |
+| **FlextService**   | Base class for service implementations with lifecycle management |
+| **FlextLogger**    | Structured logging interface with correlation IDs                |
+| **FLEXT-Core**     | Foundation library providing common patterns and utilities       |
 
 ### Business Terms
 

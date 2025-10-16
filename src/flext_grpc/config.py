@@ -7,26 +7,26 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextCore
+from flext_core import FlextConfig, FlextConstants
 from pydantic import Field
 
 from flext_grpc.constants import FlextGrpcConstants
 
 
-class FlextGrpcConfig(FlextCore.Config):
-    """gRPC configuration extending FlextCore.Config with gRPC-specific settings.
+class FlextGrpcConfig(FlextConfig):
+    """gRPC configuration extending FlextConfig with gRPC-specific settings.
 
-    Inherits ALL FlextCore.Config capabilities (configuration management, environment variables, etc.)
+    Inherits ALL FlextConfig capabilities (configuration management, environment variables, etc.)
     and adds gRPC-specific configuration fields.
     """
 
     # gRPC Server Configuration
     host: str = Field(
-        default=FlextCore.Constants.Platform.DEFAULT_HOST,
+        default=FlextConstants.Platform.DEFAULT_HOST,
         description="gRPC server host",
     )
     port: int = Field(
-        default=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
+        default=FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT,
         ge=1,
         le=65535,
         description="gRPC server port",
@@ -39,8 +39,8 @@ class FlextGrpcConfig(FlextCore.Config):
     )
 
     # gRPC Client Configuration
-    timeout: float = Field(
-        default=FlextCore.Constants.Network.DEFAULT_TIMEOUT,
+    grpc_timeout: float = Field(
+        default=FlextConstants.Network.DEFAULT_TIMEOUT,
         gt=0,
         description="gRPC client timeout",
     )

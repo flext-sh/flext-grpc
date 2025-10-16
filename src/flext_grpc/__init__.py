@@ -14,10 +14,12 @@ from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcEntities,
 )
-from flext_grpc.exceptions import (
-    FlextGrpcExceptions,
-)
 from flext_grpc.models import FlextGrpcModels
+from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
+from flext_grpc.protocols import FlextGrpcProtocols
+from flext_grpc.services import FlextGrpcServices
+from flext_grpc.typings import FlextGrpcTypings
+from flext_grpc.utilities import FlextGrpcUtilities
 
 # Model aliases for backward compatibility
 GrpcHealthCheck = FlextGrpcModels.Domain.GrpcHealthCheck
@@ -26,18 +28,7 @@ ServiceDefinition = FlextGrpcModels.Domain.ServiceDefinition
 ServiceMetrics = FlextGrpcModels.Domain.ServiceMetrics
 StreamInfo = FlextGrpcModels.Domain.StreamInfo
 StreamMetrics = FlextGrpcModels.Domain.StreamMetrics
-from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
-from flext_grpc.protocols import FlextGrpcProtocols
-from flext_grpc.services import FlextGrpcServices
-from flext_grpc.typings import FlextGrpcTypings
-from flext_grpc.utilities import FlextGrpcUtilities
 
-# Exception aliases for backward compatibility
-FlextGrpcError = FlextGrpcExceptions.BaseError
-FlextGrpcValidationError = FlextGrpcExceptions.ValidationError
-FlextGrpcConnectionError = FlextGrpcExceptions.ConnectionError
-FlextGrpcTimeoutError = FlextGrpcExceptions.TimeoutError
-FlextGrpcConfigurationError = FlextGrpcExceptions.ConfigurationError
 
 # Service aliases for backward compatibility
 FlextGrpcService = FlextGrpcServices
@@ -46,22 +37,15 @@ __all__ = [
     "EchoRequest",
     "FlextGrpc",
     "FlextGrpcConfig",
-    "FlextGrpcConfigurationError",
-    "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcEntities",
-    "FlextGrpcError",
-    "FlextGrpcExceptions",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcServices",
-    "FlextGrpcTimeoutError",
     "FlextGrpcTypings",
     "FlextGrpcUtilities",
-    "FlextGrpcValidationError",
-    "FlextGrpcVersion",
     "GrpcHealthCheck",
     "GrpcRequest",
     "ServiceDefinition",

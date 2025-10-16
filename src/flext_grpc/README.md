@@ -40,7 +40,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 - Command Pattern: Operations executed through `execute()` methods
 - Template Method: Shared validation logic across services
-- Result Pattern: All operations return `FlextCore.Result` for railway-oriented programming
+- Result Pattern: All operations return `FlextResult` for railway-oriented programming
 - CQRS: Command/Query separation with proper handler dispatch
 
 #### **`platform.py`** - Platform Facade Layer
@@ -67,7 +67,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Purpose**: Type-safe configuration with validation
 **Components**:
 
-- `FlextGrpcConfig` - Main configuration class extending `FlextCore.Config`
+- `FlextGrpcConfig` - Main configuration class extending `FlextConfig`
 - Field validators for host, port, workers, timeout
 - Environment variable integration
 - Address formatting and validation utilities
@@ -84,7 +84,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Purpose**: Single source of truth for all platform constants
 **Components**:
 
-- `FlextGrpcConstants` - Main constants class extending `FlextCore.Constants`
+- `FlextGrpcConstants` - Main constants class extending `FlextConstants`
 - Network defaults (host, port, ranges)
 - Service limits (workers, timeouts, validation)
 - Validation patterns and configuration templates
@@ -187,7 +187,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 - **Command Pattern**: Service operations with unified interface
 - **Template Method**: Shared validation across services
 - **Factory Pattern**: Consistent entity creation
-- **Result Pattern**: Railway-oriented programming with FlextCore.Result
+- **Result Pattern**: Railway-oriented programming with FlextResult
 - **State Machine**: Entity lifecycle management
 - **Dependency Injection**: Global container integration
 
@@ -205,7 +205,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 1. Implement domain service in `services.py`
 2. Use Command pattern with `execute()` method
 3. Leverage shared validation mixin
-4. Return FlextCore.Result for consistent error handling
+4. Return FlextResult for consistent error handling
 
 ### **API Development**
 

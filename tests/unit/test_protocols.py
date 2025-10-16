@@ -57,6 +57,6 @@ class TestFlextGrpcProtocols:
         assert issubclass(FlextGrpcProtocols.Grpc.StreamingProtocol, Protocol)
         assert issubclass(FlextGrpcProtocols.Grpc.ServiceProtocol, Protocol)
 
-        # Note: These protocols inherit from concrete classes (FlextCore.Protocols.Domain.Service),
+        # Note: These protocols inherit from concrete classes (FlextProtocols.Service),
         # so they cannot be @runtime_checkable. This is expected behavior for protocols
         # that extend domain services while maintaining Protocol typing benefits.

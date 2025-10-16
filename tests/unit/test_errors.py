@@ -37,7 +37,7 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_core import FlextCore
+from flext_core import FlextExceptions
 
 from flext_grpc import (
     FlextGrpcConfigurationError,
@@ -61,11 +61,11 @@ class TestFlextGrpcError:
         assert isinstance(error, Exception)
 
     def test_base_error_inheritance(self) -> None:
-        """Test FlextGrpcError inherits from FlextCore.Exceptions."""
+        """Test FlextGrpcError inherits from FlextExceptions."""
         # All imports are at the top of the file
 
         error = FlextGrpcError("test")
-        assert isinstance(error, FlextCore.Exceptions.BaseError)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcValidationError:
@@ -107,7 +107,7 @@ class TestFlextGrpcValidationError:
         # All imports are at the top of the file
 
         error = FlextGrpcValidationError("test")
-        assert isinstance(error, FlextCore.Exceptions.BaseError)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcConnectionError:
@@ -126,7 +126,7 @@ class TestFlextGrpcConnectionError:
         # All imports are at the top of the file
 
         error = FlextGrpcConnectionError("test")
-        assert isinstance(error, FlextCore.Exceptions.BaseError)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcTimeoutError:
@@ -145,7 +145,7 @@ class TestFlextGrpcTimeoutError:
         # All imports are at the top of the file
 
         error = FlextGrpcTimeoutError("test")
-        assert isinstance(error, FlextCore.Exceptions.BaseError)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestFlextGrpcConfigurationError:
@@ -194,7 +194,7 @@ class TestFlextGrpcConfigurationError:
         # All imports are at the top of the file
 
         error = FlextGrpcConfigurationError("test")
-        assert isinstance(error, FlextCore.Exceptions.BaseError)
+        assert isinstance(error, FlextExceptions.BaseError)
 
 
 class TestErrorIntegration:
@@ -219,7 +219,7 @@ class TestErrorIntegration:
         """Test error hierarchy follows flext-core patterns."""
         # All imports are at the top of the file
 
-        # All should inherit from FlextCore.Exceptions through their specific parents
+        # All should inherit from FlextExceptions through their specific parents
         errors = [
             FlextGrpcError("test"),
             FlextGrpcValidationError("test"),
@@ -228,20 +228,16 @@ class TestErrorIntegration:
             FlextGrpcConfigurationError("test"),
         ]
 
-        # Test that FlextGrpcError inherits from FlextCore.Exceptions (base case)
-        assert isinstance(FlextGrpcError("test"), FlextCore.Exceptions.BaseError)
+        # Test that FlextGrpcError inherits from FlextExceptions (base case)
+        assert isinstance(FlextGrpcError("test"), FlextExceptions.BaseError)
 
         # Test that specialized errors inherit from their respective flext-core parents
-        assert isinstance(
-            FlextGrpcValidationError("test"), FlextCore.Exceptions.BaseError
-        )
-        assert isinstance(
-            FlextGrpcConnectionError("test"), FlextCore.Exceptions.BaseError
-        )
-        assert isinstance(FlextGrpcTimeoutError("test"), FlextCore.Exceptions.BaseError)
+        assert isinstance(FlextGrpcValidationError("test"), FlextExceptions.BaseError)
+        assert isinstance(FlextGrpcConnectionError("test"), FlextExceptions.BaseError)
+        assert isinstance(FlextGrpcTimeoutError("test"), FlextExceptions.BaseError)
         assert isinstance(
             FlextGrpcConfigurationError("test"),
-            FlextCore.Exceptions.BaseError,
+            FlextExceptions.BaseError,
         )
 
         # All errors should be Exception instances

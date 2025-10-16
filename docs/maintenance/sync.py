@@ -168,11 +168,13 @@ Changes:
                 )
 
         except Exception as e:
-            conflicts.append({
-                "type": "error",
-                "message": f"Conflict detection failed: {e}",
-                "severity": "high",
-            })
+            conflicts.append(
+                {
+                    "type": "error",
+                    "message": f"Conflict detection failed: {e}",
+                    "severity": "high",
+                }
+            )
 
         return conflicts
 
@@ -358,12 +360,14 @@ class AutomatedMaintenance:
             )
 
             # Generate reports
-            self._save_maintenance_report({
-                "audit": audit_report,
-                "validation": validation_report,
-                "optimization": optimization_summary,
-                "summary": result,
-            })
+            self._save_maintenance_report(
+                {
+                    "audit": audit_report,
+                    "validation": validation_report,
+                    "optimization": optimization_summary,
+                    "summary": result,
+                }
+            )
 
         except Exception as e:
             result["errors"].append(f"Maintenance failed: {e}")

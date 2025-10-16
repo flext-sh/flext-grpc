@@ -18,7 +18,9 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 
 import requests
-from flext_core import FlextCore
+from flext_core import (
+    FlextTypes,
+)
 
 
 @dataclass
@@ -252,13 +254,15 @@ class StyleValidator:
         max_length = self.config["max_line_length"]
         for i, line in enumerate(lines, 1):
             if len(line) > max_length:
-                issues.append({
-                    "type": "line_too_long",
-                    "severity": "low",
-                    "line": i,
-                    "message": f"Line too long ({len(line)} > {max_length} characters)",
-                    "content": line[:50] + "..." if len(line) > 50 else line,
-                })
+                issues.append(
+                    {
+                        "type": "line_too_long",
+                        "severity": "low",
+                        "line": i,
+                        "message": f"Line too long ({len(line)} > {max_length} characters)",
+                        "content": line[:50] + "..." if len(line) > 50 else line,
+                    }
+                )
 
         # Check heading hierarchy
         if self.config["heading_hierarchy"]:
@@ -295,13 +299,15 @@ class StyleValidator:
         for i in range(1, len(levels)):
             if levels[i] > levels[i - 1] + 1:
                 line_num = content[: content.find(headings[i][1])].count("\n") + 1
-                issues.append({
-                    "type": "heading_hierarchy",
-                    "severity": "medium",
-                    "line": line_num,
-                    "message": f"Heading level skips from {levels[i - 1]} to {levels[i]}",
-                    "content": f"{'#' * levels[i]} {headings[i][1]}",
-                })
+                issues.append(
+                    {
+                        "type": "heading_hierarchy",
+                        "severity": "medium",
+                        "line": line_num,
+                        "message": f"Heading level skips from {levels[i - 1]} to {levels[i]}",
+                        "content": f"{'#' * levels[i]} {headings[i][1]}",
+                    }
+                )
 
         return issues
 
@@ -322,13 +328,15 @@ class StyleValidator:
                     list_start = content.find(unordered_lists[i])
                     line_num = content[:list_start].count("\n") + 1
 
-                    issues.append({
-                        "type": "list_consistency",
-                        "severity": "low",
-                        "line": line_num,
-                        "message": f"Inconsistent list marker '{marker}', expected '{primary_marker}'",
-                        "content": unordered_lists[i][:30] + "...",
-                    })
+                    issues.append(
+                        {
+                            "type": "list_consistency",
+                            "severity": "low",
+                            "line": line_num,
+                            "message": f"Inconsistent list marker '{marker}', expected '{primary_marker}'",
+                            "content": unordered_lists[i][:30] + "...",
+                        }
+                    )
 
         return issues
 
@@ -345,13 +353,15 @@ class StyleValidator:
                 block_start = content.find(f"```\n{code[:50]}")
                 line_num = content[:block_start].count("\n") + 1
 
-                issues.append({
-                    "type": "code_block_language",
-                    "severity": "low",
-                    "line": line_num,
-                    "message": "Code block missing language specification",
-                    "content": f"```{lang or ''}\n{code[:30]}...",
-                })
+                issues.append(
+                    {
+                        "type": "code_block_language",
+                        "severity": "low",
+                        "line": line_num,
+                        "message": "Code block missing language specification",
+                        "content": f"```{lang or ''}\n{code[:30]}...",
+                    }
+                )
 
         return issues
 
@@ -367,22 +377,26 @@ class StyleValidator:
 
         # Check for mixed emphasis styles
         if italic_asterisk > 0 and italic_underscore > 0:
-            issues.append({
-                "type": "emphasis_consistency",
-                "severity": "low",
-                "line": 0,
-                "message": f"Mixed italic styles: * ({italic_asterisk}) vs _ ({italic_underscore})",
-                "content": "Mixed emphasis styles detected",
-            })
+            issues.append(
+                {
+                    "type": "emphasis_consistency",
+                    "severity": "low",
+                    "line": 0,
+                    "message": f"Mixed italic styles: * ({italic_asterisk}) vs _ ({italic_underscore})",
+                    "content": "Mixed emphasis styles detected",
+                }
+            )
 
         if bold_asterisk > 0 and bold_underscore > 0:
-            issues.append({
-                "type": "emphasis_consistency",
-                "severity": "low",
-                "line": 0,
-                "message": f"Mixed bold styles: ** ({bold_asterisk}) vs __ ({bold_underscore})",
-                "content": "Mixed emphasis styles detected",
-            })
+            issues.append(
+                {
+                    "type": "emphasis_consistency",
+                    "severity": "low",
+                    "line": 0,
+                    "message": f"Mixed bold styles: ** ({bold_asterisk}) vs __ ({bold_underscore})",
+                    "content": "Mixed emphasis styles detected",
+                }
+            )
 
         return issues
 
@@ -456,7 +470,7 @@ class DocumentationValidator:
 
         return sorted(files)
 
-    def _extract_external_links(self, files: list[Path]) -> FlextCore.Types.StringList:
+    def _extract_external_links(self, files: list[Path]) -> FlextTypes.StringList:
         """Extract all external links from documentation files."""
         links = set()
 
@@ -472,7 +486,7 @@ class DocumentationValidator:
         return sorted(links)
 
     def _validate_external_links_parallel(
-        self, links: FlextCore.Types.StringList
+        self, links: FlextTypes.StringList
     ) -> list[LinkValidationResult]:
         """Validate external links in parallel."""
         results = []
@@ -640,9 +654,9 @@ def main() -> int:
                 "total_external_links": len(link_results),
                 "valid_links": len([r for r in link_results if r.status == "valid"]),
                 "broken_links": len([r for r in link_results if r.status == "broken"]),
-                "timeout_links": len([
-                    r for r in link_results if r.status == "timeout"
-                ]),
+                "timeout_links": len(
+                    [r for r in link_results if r.status == "timeout"]
+                ),
             },
         )
     elif args.style_only:

@@ -31,7 +31,7 @@ from flext_grpc import create_client
 client = create_client("localhost", 50051)
 ```
 
-#### `create_config(**kwargs) -> FlextCore.Result[FlextGrpcConfig]`
+#### `create_config(**kwargs) -> FlextResult[FlextGrpcConfig]`
 
 Creates and validates a gRPC configuration.
 
@@ -60,7 +60,7 @@ Server entity with lifecycle management and state transitions.
 
 **Methods:**
 
-##### `start() -> FlextCore.Result[FlextGrpcServer]`
+##### `start() -> FlextResult[FlextGrpcServer]`
 
 Starts the server (state transition: stopped → starting).
 
@@ -73,11 +73,11 @@ if start_result.success:
     assert starting_server.state == "starting"
 ```
 
-##### `stop() -> FlextCore.Result[FlextGrpcServer]`
+##### `stop() -> FlextResult[FlextGrpcServer]`
 
 Stops the server (state transition: running → stopping).
 
-##### `validate_business_rules() -> FlextCore.Result[None]`
+##### `validate_business_rules() -> FlextResult[None]`
 
 Validates server configuration and business rules.
 
@@ -101,11 +101,11 @@ Client entity for gRPC communication.
 
 **Methods:**
 
-##### `connect() -> FlextCore.Result[FlextGrpcClient]`
+##### `connect() -> FlextResult[FlextGrpcClient]`
 
 Establishes connection to the server.
 
-##### `disconnect() -> FlextCore.Result[FlextGrpcClient]`
+##### `disconnect() -> FlextResult[FlextGrpcClient]`
 
 Closes connection to the server.
 
@@ -122,7 +122,7 @@ Configuration value object with validation.
 
 **Methods:**
 
-##### `validate() -> FlextCore.Result[None]`
+##### `validate() -> FlextResult[None]`
 
 Validates configuration parameters.
 
@@ -142,7 +142,7 @@ Unified facade for all gRPC operations.
 
 **Methods:**
 
-##### `start_server(server: FlextGrpcServer) -> FlextCore.Result[FlextGrpcServer]`
+##### `start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`
 
 Starts a gRPC server with complete lifecycle management.
 
@@ -157,11 +157,11 @@ if result.success:
     running_server = result.unwrap()
 ```
 
-##### `connect_client(client: FlextGrpcClient) -> FlextCore.Result[FlextGrpcClient]`
+##### `connect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]`
 
 Establishes client connection with retry logic.
 
-##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> FlextCore.Result[FlextCore.Types.Dict]`
+##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> FlextResult[FlextTypes.Dict]`
 
 Makes a service call through the client.
 
@@ -171,7 +171,7 @@ Domain service for server operations.
 
 **Methods:**
 
-##### `execute(operation: str, server: FlextGrpcServer) -> FlextCore.Result[FlextGrpcServer]`
+##### `execute(operation: str, server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`
 
 Executes server operations using Command pattern.
 
@@ -266,15 +266,15 @@ Streaming operations for all gRPC patterns.
 
 **Methods:**
 
-##### `send_data(data: dict) -> FlextCore.Result[None]`
+##### `send_data(data: dict) -> FlextResult[None]`
 
 Sends data through the stream.
 
-##### `receive_data() -> FlextCore.Result[FlextCore.Types.Dict]`
+##### `receive_data() -> FlextResult[FlextTypes.Dict]`
 
 Receives data from the stream.
 
-##### `close() -> FlextCore.Result[None]`
+##### `close() -> FlextResult[None]`
 
 Closes the stream.
 
@@ -284,15 +284,15 @@ Service for managing streaming operations.
 
 **Methods:**
 
-##### `create_server_stream(method: str, config: dict) -> FlextCore.Result[FlextGrpcStream]`
+##### `create_server_stream(method: str, config: dict) -> FlextResult[FlextGrpcStream]`
 
 Creates a server streaming operation.
 
-##### `create_client_stream(method: str, config: dict) -> FlextCore.Result[FlextGrpcStream]`
+##### `create_client_stream(method: str, config: dict) -> FlextResult[FlextGrpcStream]`
 
 Creates a client streaming operation.
 
-##### `create_bidirectional_stream(method: str, config: dict) -> FlextCore.Result[FlextGrpcStream]`
+##### `create_bidirectional_stream(method: str, config: dict) -> FlextResult[FlextGrpcStream]`
 
 Creates a bidirectional streaming operation.
 
@@ -300,7 +300,7 @@ Creates a bidirectional streaming operation.
 
 ### Address Parsing
 
-#### `parse_address(address: str) -> FlextCore.Result[tuple[str, int]]`
+#### `parse_address(address: str) -> FlextResult[tuple[str, int]]`
 
 Parses a gRPC address string into host and port components.
 
@@ -313,7 +313,7 @@ if result.success:
     print(f"Host: {host}, Port: {port}")
 ```
 
-#### `validate_address(address: str) -> FlextCore.Result[None]`
+#### `validate_address(address: str) -> FlextResult[None]`
 
 Validates a gRPC address string.
 
@@ -329,13 +329,32 @@ if validation.is_failure:
 
 ### Railway-Oriented Programming
 
-All fallible operations return `FlextCore.Result[T]` for composable error handling:
+All fallible operations return `FlextResult[T]` for composable error handling:
 
 ```python
 from flext_grpc import create_config, create_server
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 
-def setup_grpc_server(host: str, port: int) -> FlextCore.Result[str]:
+def setup_grpc_server(host: str, port: int) -> FlextResult[str]:
     return (
         create_config(host=host, port=port)
         .flat_map(lambda config: create_server(config))
@@ -349,13 +368,32 @@ if result.success:
 
 ### Dependency Injection
 
-Integration with FlextCore.Container:
+Integration with FlextContainer:
 
 ```python
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 from flext_grpc import FlextGrpcPlatform
 
-container = FlextCore.Container.get_global()
+container = FlextContainer.get_global()
 platform = container.get("grpc_platform")
 
 if platform.success:

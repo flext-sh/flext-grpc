@@ -279,59 +279,69 @@ class DocumentationReporter:
 
         # Based on quality scores
         if metrics.overall_score < 80:
-            recommendations.append({
-                "priority": "high",
-                "category": "overall_quality",
-                "action": "Implement comprehensive quality improvement program",
-                "estimated_effort": "2-4 weeks",
-                "impact": "high",
-            })
+            recommendations.append(
+                {
+                    "priority": "high",
+                    "category": "overall_quality",
+                    "action": "Implement comprehensive quality improvement program",
+                    "estimated_effort": "2-4 weeks",
+                    "impact": "high",
+                }
+            )
 
         if metrics.link_health_score < 90:
-            recommendations.append({
-                "priority": "medium",
-                "category": "link_maintenance",
-                "action": "Fix broken external links and implement regular link checking",
-                "estimated_effort": "1 week",
-                "impact": "medium",
-            })
+            recommendations.append(
+                {
+                    "priority": "medium",
+                    "category": "link_maintenance",
+                    "action": "Fix broken external links and implement regular link checking",
+                    "estimated_effort": "1 week",
+                    "impact": "medium",
+                }
+            )
 
         if metrics.freshness_score < 85:
-            recommendations.append({
-                "priority": "medium",
-                "category": "content_freshness",
-                "action": "Update outdated content and implement freshness monitoring",
-                "estimated_effort": "1-2 weeks",
-                "impact": "medium",
-            })
+            recommendations.append(
+                {
+                    "priority": "medium",
+                    "category": "content_freshness",
+                    "action": "Update outdated content and implement freshness monitoring",
+                    "estimated_effort": "1-2 weeks",
+                    "impact": "medium",
+                }
+            )
 
         # Based on critical issues
         if any(issue["type"] == "audit" for issue in critical_issues):
-            recommendations.append({
-                "priority": "high",
-                "category": "audit_issues",
-                "action": "Resolve all critical audit issues immediately",
-                "estimated_effort": "3-5 days",
-                "impact": "high",
-            })
+            recommendations.append(
+                {
+                    "priority": "high",
+                    "category": "audit_issues",
+                    "action": "Resolve all critical audit issues immediately",
+                    "estimated_effort": "3-5 days",
+                    "impact": "high",
+                }
+            )
 
         # Proactive recommendations
-        recommendations.extend([
-            {
-                "priority": "low",
-                "category": "automation",
-                "action": "Implement automated maintenance scheduling",
-                "estimated_effort": "1 week",
-                "impact": "medium",
-            },
-            {
-                "priority": "low",
-                "category": "monitoring",
-                "action": "Set up continuous quality monitoring and alerting",
-                "estimated_effort": "1 week",
-                "impact": "medium",
-            },
-        ])
+        recommendations.extend(
+            [
+                {
+                    "priority": "low",
+                    "category": "automation",
+                    "action": "Implement automated maintenance scheduling",
+                    "estimated_effort": "1 week",
+                    "impact": "medium",
+                },
+                {
+                    "priority": "low",
+                    "category": "monitoring",
+                    "action": "Set up continuous quality monitoring and alerting",
+                    "estimated_effort": "1 week",
+                    "impact": "medium",
+                },
+            ]
+        )
 
         return recommendations
 
@@ -450,36 +460,48 @@ class DocumentationReporter:
         # Quality metrics
         metrics = report_data.get("quality_metrics", {})
         rows.append(["Metric", "Value", "Status"])
-        rows.append([
-            "Overall Score",
-            f"{metrics.get('overall_score', 0)}%",
-            self._get_status_text(metrics.get("overall_score", 0)),
-        ])
-        rows.append([
-            "Structure",
-            f"{metrics.get('structure_score', 0)}%",
-            self._get_status_text(metrics.get("structure_score", 0)),
-        ])
-        rows.append([
-            "Accuracy",
-            f"{metrics.get('accuracy_score', 0)}%",
-            self._get_status_text(metrics.get("accuracy_score", 0)),
-        ])
-        rows.append([
-            "Completeness",
-            f"{metrics.get('completeness_score', 0)}%",
-            self._get_status_text(metrics.get("completeness_score", 0)),
-        ])
-        rows.append([
-            "Freshness",
-            f"{metrics.get('freshness_score', 0)}%",
-            self._get_status_text(metrics.get("freshness_score", 0)),
-        ])
-        rows.append([
-            "Link Health",
-            f"{metrics.get('link_health_score', 0)}%",
-            self._get_status_text(metrics.get("link_health_score", 0)),
-        ])
+        rows.append(
+            [
+                "Overall Score",
+                f"{metrics.get('overall_score', 0)}%",
+                self._get_status_text(metrics.get("overall_score", 0)),
+            ]
+        )
+        rows.append(
+            [
+                "Structure",
+                f"{metrics.get('structure_score', 0)}%",
+                self._get_status_text(metrics.get("structure_score", 0)),
+            ]
+        )
+        rows.append(
+            [
+                "Accuracy",
+                f"{metrics.get('accuracy_score', 0)}%",
+                self._get_status_text(metrics.get("accuracy_score", 0)),
+            ]
+        )
+        rows.append(
+            [
+                "Completeness",
+                f"{metrics.get('completeness_score', 0)}%",
+                self._get_status_text(metrics.get("completeness_score", 0)),
+            ]
+        )
+        rows.append(
+            [
+                "Freshness",
+                f"{metrics.get('freshness_score', 0)}%",
+                self._get_status_text(metrics.get("freshness_score", 0)),
+            ]
+        )
+        rows.append(
+            [
+                "Link Health",
+                f"{metrics.get('link_health_score', 0)}%",
+                self._get_status_text(metrics.get("link_health_score", 0)),
+            ]
+        )
 
         # Critical issues
         rows.append([])

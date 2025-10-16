@@ -33,7 +33,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 #### High Priority Fixes
 
 1. **FlextGrpcServices Logger Property** (4 failures)
-   - Issue: `self.logger = FlextCore.Logger(__name__)` fails with "property has no setter"
+   - Issue: `self.logger = FlextLogger(__name__)` fails with "property has no setter"
    - Impact: Core service class cannot be instantiated
    - Solution: Fix property setter implementation
 
@@ -87,10 +87,10 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
   ```python
   # Current (broken)
-  self.logger = FlextCore.Logger(__name__)  # AttributeError: property has no setter
+  self.logger = FlextLogger(__name__)  # AttributeError: property has no setter
 
   # Fix: Use proper property assignment or initialization
-  self._logger = FlextCore.Logger(__name__)
+  self._logger = FlextLogger(__name__)
   ```
 
 - **Tests Affected**: 4 service initialization tests
@@ -215,13 +215,13 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 4: Error Path and Edge Case Testing (Priority: MEDIUM)
 
-**Goal**: Test all FlextCore.Result error paths and edge conditions
+**Goal**: Test all FlextResult error paths and edge conditions
 **Estimated Effort**: 2 days
 **Success Criteria**: Complete error condition coverage
 
-#### 4.1 FlextCore.Result Error Testing
+#### 4.1 FlextResult Error Testing
 
-- **Requirements**: Test all error paths return proper FlextCore.Result.Fail
+- **Requirements**: Test all error paths return proper FlextResult.Fail
 - **Test Scenarios**:
   - Invalid configuration parameters
   - Network connection failures

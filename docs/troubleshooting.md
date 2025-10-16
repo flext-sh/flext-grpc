@@ -111,10 +111,10 @@ if start_result.is_failure:
 
 ### gRPC Service Development
 
-1. **Always use FlextCore.Result patterns**:
+1. **Always use FlextResult patterns**:
 
    ```python
-   def my_grpc_method() -> FlextCore.Result[ResponseType]:
+   def my_grpc_method() -> FlextResult[ResponseType]:
        # Explicit error handling, no exceptions
    ```
 
@@ -184,7 +184,7 @@ print('Core functionality verified')
 ## Getting Help
 
 1. **Check this troubleshooting guide** for common issues
-2. **Review logs** using FlextCore.Logger output for detailed error information
+2. **Review logs** using FlextLogger output for detailed error information
 3. **Validate configuration** using provided diagnostic commands
 4. **Test minimal examples** to isolate issues
 

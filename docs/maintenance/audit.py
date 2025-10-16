@@ -18,6 +18,10 @@ from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
 
+from flext_core import (
+    FlextTypes,
+)
+
 try:
     import frontmatter
 
@@ -26,7 +30,6 @@ except ImportError:
     frontmatter = None
     FRONTMATTER_AVAILABLE = False
 import requests
-from flext_core import FlextCore
 
 
 @dataclass
@@ -195,9 +198,7 @@ class DocumentationAuditor:
             metadata=metadata,
         )
 
-    def _analyze_structure(
-        self, content: str, lines: FlextCore.Types.StringList
-    ) -> float:
+    def _analyze_structure(self, content: str, lines: FlextTypes.StringList) -> float:
         """Analyze document structure quality."""
         score = 100.0
 
@@ -336,7 +337,7 @@ class DocumentationAuditor:
     def _detect_issues(
         self,
         content: str,
-        lines: FlextCore.Types.StringList,
+        lines: FlextTypes.StringList,
         metadata: dict[str, object],
         file_path: Path,
     ) -> tuple[
@@ -349,38 +350,46 @@ class DocumentationAuditor:
 
         # Critical issues
         if len(content.strip()) == 0:
-            issues.append({
-                "type": "empty_file",
-                "severity": "critical",
-                "message": f"File {file_path} appears to be empty",
-                "line": 0,
-            })
+            issues.append(
+                {
+                    "type": "empty_file",
+                    "severity": "critical",
+                    "message": f"File {file_path} appears to be empty",
+                    "line": 0,
+                }
+            )
 
         if not re.search(r"^#{1,6}\s+", content, re.MULTILINE):
-            issues.append({
-                "type": "no_headings",
-                "severity": "high",
-                "message": "No headings found - document lacks structure",
-                "line": 0,
-            })
+            issues.append(
+                {
+                    "type": "no_headings",
+                    "severity": "high",
+                    "message": "No headings found - document lacks structure",
+                    "line": 0,
+                }
+            )
 
         # Warnings
         if len(lines) > DocumentationAuditor.MAX_FILE_LENGTH:
-            warnings.append({
-                "type": "long_file",
-                "severity": "medium",
-                "message": f"File {file_path} is very long ({len(lines)} lines) - consider splitting",
-                "line": 0,
-            })
+            warnings.append(
+                {
+                    "type": "long_file",
+                    "severity": "medium",
+                    "message": f"File {file_path} is very long ({len(lines)} lines) - consider splitting",
+                    "line": 0,
+                }
+            )
 
         todos = re.findall(r"\b(TODO|FIXME|XXX)\b", content, re.IGNORECASE)
         if todos:
-            warnings.append({
-                "type": "todo_markers",
-                "severity": "low",
-                "message": f"Found {len(todos)} TODO/FIXME markers",
-                "line": 0,
-            })
+            warnings.append(
+                {
+                    "type": "todo_markers",
+                    "severity": "low",
+                    "message": f"Found {len(todos)} TODO/FIXME markers",
+                    "line": 0,
+                }
+            )
 
         # Check for broken external links (basic check)
         if self.config["content"]["check_external_links"]:
@@ -389,41 +398,51 @@ class DocumentationAuditor:
                 try:
                     response = requests.head(url, timeout=5, allow_redirects=True)
                     if response.status_code >= self.HTTP_CLIENT_ERROR_START:
-                        warnings.append({
-                            "type": "broken_link",
-                            "severity": "medium",
-                            "message": f"Link may be broken: {url}",
-                            "line": 0,
-                        })
+                        warnings.append(
+                            {
+                                "type": "broken_link",
+                                "severity": "medium",
+                                "message": f"Link may be broken: {url}",
+                                "line": 0,
+                            }
+                        )
                 except Exception:
-                    warnings.append({
-                        "type": "link_check_failed",
-                        "severity": "low",
-                        "message": f"Could not verify link: {url}",
-                        "line": 0,
-                    })
+                    warnings.append(
+                        {
+                            "type": "link_check_failed",
+                            "severity": "low",
+                            "message": f"Could not verify link: {url}",
+                            "line": 0,
+                        }
+                    )
 
         # Suggestions
         if not metadata.get("title"):
-            suggestions.append({
-                "type": "add_title",
-                "message": "Consider adding a title in frontmatter",
-                "action": "Add 'title: \"Document Title\"' to frontmatter",
-            })
+            suggestions.append(
+                {
+                    "type": "add_title",
+                    "message": "Consider adding a title in frontmatter",
+                    "action": "Add 'title: \"Document Title\"' to frontmatter",
+                }
+            )
 
         if r"```" not in content:
-            suggestions.append({
-                "type": "add_code_examples",
-                "message": "Consider adding code examples",
-                "action": "Add code blocks with ```language syntax",
-            })
+            suggestions.append(
+                {
+                    "type": "add_code_examples",
+                    "message": "Consider adding code examples",
+                    "action": "Add code blocks with ```language syntax",
+                }
+            )
 
         if not re.search(r"!\[", content):
-            suggestions.append({
-                "type": "add_visuals",
-                "message": "Consider adding diagrams or images",
-                "action": "Add relevant images with ![alt text](path)",
-            })
+            suggestions.append(
+                {
+                    "type": "add_visuals",
+                    "message": "Consider adding diagrams or images",
+                    "action": "Add relevant images with ![alt text](path)",
+                }
+            )
 
         return issues, warnings, suggestions
 

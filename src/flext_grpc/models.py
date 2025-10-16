@@ -12,12 +12,12 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from flext_core import FlextCore
+from flext_core import FlextModels
 from pydantic import BaseModel, Field
 
 
-class FlextGrpcModels(FlextCore.Models):
-    """gRPC domain models extending flext-core FlextCore.Models.
+class FlextGrpcModels(FlextModels):
+    """gRPC domain models extending flext-core FlextModels.
 
     Consolidated namespace class containing all gRPC domain models as nested classes.
     Follows FLEXT principles with clean separation of concerns and SOLID design.

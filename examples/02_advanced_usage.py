@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import cast
 
-from flext_core import FlextCore
+from flext_core import FlextConstants, FlextResult, FlextTypes
 
 from flext_grpc import FlextGrpc, FlextGrpcConfig
 from flext_grpc.entities import FlextGrpcEntities
@@ -35,9 +35,9 @@ class GrpcServerManager:
         self,
         base_port: int = 8000,
         count: int = 3,
-    ) -> list[FlextCore.Result]:
+    ) -> list[FlextResult]:
         """Create a pool of servers on consecutive ports through facade."""
-        server_results: list[FlextCore.Result] = []
+        server_results: list[FlextResult] = []
 
         for i in range(count):
             server_id = f"pool-server-{i}"
@@ -45,10 +45,10 @@ class GrpcServerManager:
 
             # Create config through facade
             config_result = self.grpc.create_config(
-                host=FlextCore.Constants.Platform.DEFAULT_HOST,
+                host=FlextConstants.Platform.DEFAULT_HOST,
                 port=port,
                 max_workers=10 + (i * 5),  # Vary workers
-                timeout=FlextCore.Constants.Network.DEFAULT_TIMEOUT,
+                timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
             )
 
             if config_result.is_failure:
@@ -131,11 +131,11 @@ class AdvancedGrpcOperations:
 
     def create_complete_setup(
         self,
-        host: str = FlextCore.Constants.Platform.DEFAULT_HOST,
+        host: str = FlextConstants.Platform.DEFAULT_HOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
-        methods: FlextCore.Types.StringList | None = None,
-    ) -> FlextCore.Result[dict]:
+        methods: FlextTypes.StringList | None = None,
+    ) -> FlextResult[dict]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]

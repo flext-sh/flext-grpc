@@ -16,7 +16,9 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 import frontmatter
-from flext_core import FlextCore
+from flext_core import (
+    FlextTypes,
+)
 
 
 class DocumentationOptimizer:
@@ -124,7 +126,7 @@ class DocumentationOptimizer:
             "optimized_size": len(optimized_content),
         }
 
-    def _fix_formatting(self, content: str) -> tuple[str, FlextCore.Types.StringList]:
+    def _fix_formatting(self, content: str) -> tuple[str, FlextTypes.StringList]:
         """Fix common formatting issues."""
         fixes_applied = []
         lines = content.split("\n")
@@ -249,7 +251,7 @@ class DocumentationOptimizer:
 
     def _update_metadata(
         self, metadata: dict[str, object], file_path: Path
-    ) -> tuple[dict[str, object], FlextCore.Types.StringList]:
+    ) -> tuple[dict[str, object], FlextTypes.StringList]:
         """Update and enhance metadata."""
         updates = []
 
@@ -285,9 +287,7 @@ class DocumentationOptimizer:
 
         return metadata, updates
 
-    def _fix_common_issues(
-        self, content: str
-    ) -> tuple[str, FlextCore.Types.StringList]:
+    def _fix_common_issues(self, content: str) -> tuple[str, FlextTypes.StringList]:
         """Fix common documentation issues."""
         fixes = []
 
@@ -347,11 +347,13 @@ class DocumentationOptimizer:
                         pass
 
             except Exception as e:
-                results.append({
-                    "file_path": str(file_path.relative_to(self.root_path)),
-                    "error": str(e),
-                    "changed": False,
-                })
+                results.append(
+                    {
+                        "file_path": str(file_path.relative_to(self.root_path)),
+                        "error": str(e),
+                        "changed": False,
+                    }
+                )
 
         return {
             "total_files_processed": len(results),
@@ -427,9 +429,7 @@ class DocumentationEnhancer:
     def __init__(self, root_path: str = ".") -> None:
         self.root_path = Path(root_path)
 
-    def enhance_readability(
-        self, content: str
-    ) -> tuple[str, FlextCore.Types.StringList]:
+    def enhance_readability(self, content: str) -> tuple[str, FlextTypes.StringList]:
         """Enhance content readability."""
         enhancements = []
 
@@ -459,7 +459,7 @@ class DocumentationEnhancer:
 
     def add_cross_references(
         self, content: str, all_files: list[Path]
-    ) -> tuple[str, FlextCore.Types.StringList]:
+    ) -> tuple[str, FlextTypes.StringList]:
         """Add intelligent cross-references between documents."""
         references_added = []
 
@@ -470,7 +470,7 @@ class DocumentationEnhancer:
 
     def generate_related_links(
         self, file_path: Path, all_files: list[Path]
-    ) -> FlextCore.Types.StringList:
+    ) -> FlextTypes.StringList:
         """Generate suggestions for related documentation links."""
         suggestions = []
 

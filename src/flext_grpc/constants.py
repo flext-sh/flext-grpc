@@ -13,14 +13,14 @@ from __future__ import annotations
 
 from typing import Final, Literal
 
-from flext_core import FlextCore
+from flext_core import FlextConstants, FlextTypes
 
 
-class FlextGrpcConstants(FlextCore.Constants):
+class FlextGrpcConstants(FlextConstants):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
-    constants redefined for gRPC context. NO direct imports from FlextCore.Constants
+    constants redefined for gRPC context. NO direct imports from FlextConstants
     should be used - all constants must come from this class.
 
     Layer N Foundation: gRPC domain-specific constants building on flext-core Layer 0.
@@ -29,25 +29,27 @@ class FlextGrpcConstants(FlextCore.Constants):
         ```python
         from flext_grpc.constants import FlextGrpcConstants
 
-        timeout = FlextGrpcConstants.Network.DEFAULT_TIMEOUT
-        port = FlextGrpcConstants.Network.DEFAULT_GRPC_PORT
+        timeout = FlextGrpcConstants.GrpcNetwork.DEFAULT_TIMEOUT
+        port = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
         ```
     """
 
-    class Network:
-        """gRPC network constants extending FlextCore.Constants.Network."""
+    class GrpcNetwork:
+        """gRPC-specific network constants."""
 
-        # gRPC-specific network constants - OVERRIDE parent constants for gRPC context
+        # gRPC-specific network constants
         DEFAULT_HOST: Final[str] = "127.0.0.1"  # gRPC default host
         DEFAULT_GRPC_PORT: Final[int] = 50051  # Standard gRPC port
         HOST_NAME_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
 
-        # Port validation constants - OVERRIDE for gRPC-specific ranges
+        # Port validation constants for gRPC
         MIN_PORT: Final[int] = 1  # gRPC allows port 1
         MAX_PORT: Final[int] = 65535  # Standard port range
 
-        # Default timeout constant - OVERRIDE for gRPC context
-        DEFAULT_TIMEOUT: Final[float] = 30.0  # gRPC default timeout
+        # Default timeout constant for gRPC context
+        DEFAULT_TIMEOUT: Final[float] = float(
+            FlextConstants.Network.DEFAULT_TIMEOUT
+        )  # gRPC default timeout
 
         # Additional platform constants for gRPC
         METRICS_PORT: Final[int] = 9090  # Prometheus metrics port
@@ -60,7 +62,7 @@ class FlextGrpcConstants(FlextCore.Constants):
         DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
     class Service:
-        """gRPC service constants extending FlextCore.Constants.Service."""
+        """gRPC service constants extending FlextConstants.Service."""
 
         # gRPC-specific service constants - OVERRIDE parent constants
         DEFAULT_MAX_WORKERS: Final[int] = 10  # gRPC default workers
@@ -76,14 +78,16 @@ class FlextGrpcConstants(FlextCore.Constants):
         MIN_WORKERS: Final[int] = 5
         MIN_PORT: Final[int] = 1024
         HIGH_WORKER_THRESHOLD: Final[int] = 20
-        HIGH_WORKER_TIMEOUT: Final[float] = 30.0
+        HIGH_WORKER_TIMEOUT: Final[float] = float(
+            FlextConstants.Network.DEFAULT_TIMEOUT
+        )
         RETRY_ATTEMPTS: Final[int] = 3
-        RETRY_TIMEOUT: Final[float] = 30.0
+        RETRY_TIMEOUT: Final[float] = float(FlextConstants.Network.DEFAULT_TIMEOUT)
         MAX_RETRY_ATTEMPTS: Final[int] = 5  # Maximum retry attempts for gRPC
         HIGH_RETRY_TIMEOUT: Final[float] = 10.0
 
-    class Validation:
-        """gRPC validation constants extending FlextCore.Constants.Validation."""
+    class GrpcValidation:
+        """gRPC validation constants extending FlextConstants.Validation."""
 
         # Additional gRPC-specific constants
         ADDRESS_PARTS_COUNT: Final[int] = 2
@@ -93,7 +97,7 @@ class FlextGrpcConstants(FlextCore.Constants):
         MAX_SERVICE_NAME_LENGTH: Final[int] = 255
         MAX_METHOD_NAME_LENGTH: Final[int] = 200
 
-    class Messages:
+    class GrpcMessages:
         """gRPC-specific error and status messages."""
 
         # gRPC-specific error and status messages
@@ -102,7 +106,7 @@ class FlextGrpcConstants(FlextCore.Constants):
         CONNECTION_FAILED: Final[str] = "gRPC connection failed: {error}"
         TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
 
-    class Errors:
+    class GrpcErrors:
         """gRPC-specific error codes."""
 
         # gRPC-specific errors
@@ -110,7 +114,7 @@ class FlextGrpcConstants(FlextCore.Constants):
         GRPC_CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
         GRPC_TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
 
-    class Performance:
+    class GrpcPerformance:
         """gRPC performance and health check constants."""
 
         # Performance and health check constants
@@ -124,7 +128,7 @@ class FlextGrpcConstants(FlextCore.Constants):
         SUCCESS_RATE_HEALTHY_PERCENT: Final[float] = 95.0
         RESPONSE_TIME_HEALTHY_MS: Final[int] = 1000
 
-    class Limits:
+    class GrpcLimits:
         """gRPC request and error rate limits."""
 
         # Request size limits
@@ -156,7 +160,9 @@ class FlextGrpcConstants(FlextCore.Constants):
         MEMORY_PRESSURE_THRESHOLD: Final[float] = 0.8
         STREAM_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
         MAX_CONCURRENT_STREAMS: Final[int] = 100
-        HEARTBEAT_INTERVAL_SECONDS: Final[float] = 30.0
+        HEARTBEAT_INTERVAL_SECONDS: Final[float] = float(
+            FlextConstants.Network.DEFAULT_TIMEOUT
+        )
 
     class Literals:
         """gRPC-specific literal types following FLEXT patterns."""
@@ -209,6 +215,6 @@ class FlextGrpcConstants(FlextCore.Constants):
         type CompressionType = Literal["none", "gzip", "deflate"]
 
 
-__all__: FlextCore.Types.StringList = [
+__all__: FlextTypes.StringList = [
     "FlextGrpcConstants",
 ]

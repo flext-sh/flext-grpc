@@ -196,7 +196,7 @@ docs/architecture/
 | ADR     | Title                               | Status         | Impact |
 | ------- | ----------------------------------- | -------------- | ------ |
 | ADR-001 | Clean Architecture Adoption         | ✅ Implemented | High   |
-| ADR-002 | FlextCore.Result Railway Pattern    | ✅ Implemented | High   |
+| ADR-002 | FlextResult Railway Pattern         | ✅ Implemented | High   |
 | ADR-003 | Protocol Buffer Generation Strategy | ⚠️ Blocked     | High   |
 | ADR-004 | C4 Model Documentation              | ✅ Implemented | Medium |
 
@@ -255,7 +255,7 @@ make docs-diagrams-validate
 
 Person(user, "FLEXT Developer", "Develops microservices using FLEXT ecosystem")
 System(flext_grpc, "FLEXT-gRPC", "Enterprise gRPC communication library")
-System_Ext(flext_core, "FLEXT-Core", "Foundation library with FlextCore.Result patterns")
+System_Ext(flext_core, "FLEXT-Core", "Foundation library with FlextResult patterns")
 System_Ext(flext_observability, "FLEXT-Observability", "Monitoring and metrics")
 System_Ext(grpc_clients, "gRPC Clients", "Other microservices")
 

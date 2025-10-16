@@ -47,7 +47,7 @@ external --> channel: Error response
 channel --> protobuf: Error serialization
 protobuf --> domain: Domain error creation
 domain --> service: Error propagation
-service --> api: FlextCore.Result.Failure()
+service --> api: FlextResult.Failure()
 api --> app: Error handling
 
 == Cleanup ==

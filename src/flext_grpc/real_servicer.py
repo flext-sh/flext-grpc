@@ -14,7 +14,7 @@ from collections.abc import Iterator
 from typing import override
 
 import grpc
-from flext_core import FlextCore
+from flext_core import FlextConstants, FlextTypes
 
 # Import protobuf classes - these are dynamically generated
 from grpc import ServicerContext
@@ -28,18 +28,9 @@ from flext_grpc.proto.flext_grpc_pb2 import (
     StreamResponse,
 )
 
-try:
-    from flext_grpc.proto.flext_grpc_pb2_grpc import (
-        FlextGrpcServiceServicer,
-    )
-except RuntimeError as e:
-    if "grpc package installed is at version" in str(e):
-        # Create dummy class for version mismatch
-        class FlextGrpcServiceServicer:
-            """Dummy servicer class for version mismatch scenarios."""
-
-    else:
-        raise
+from .proto.flext_grpc_pb2_grpc import (
+    FlextGrpcServiceServicer,
+)
 
 
 class FlextGrpcRealServicer(FlextGrpcServiceServicer):
@@ -118,8 +109,8 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
     ) -> StreamResponse:
         """Real client streaming implementation."""
         try:
-            messages: FlextCore.Types.StringList = []
-            sequence_count = FlextCore.Constants.Performance.MIN_CURRENT_STEP
+            messages: FlextTypes.StringList = []
+            sequence_count = FlextConstants.Performance.MIN_CURRENT_STEP
 
             # Process all incoming requests
             for request in request_iterator:

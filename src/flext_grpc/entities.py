@@ -13,18 +13,24 @@ from datetime import UTC, datetime
 from typing import Self
 from uuid import uuid4
 
-from flext_core import FlextCore
+from flext_core import (
+    FlextConstants,
+    FlextModels,
+    FlextResult,
+    FlextService,
+    FlextTypes,
+)
 from pydantic import Field, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypings
 
 
-class FlextGrpcEntities(FlextCore.Service):
-    """Unified gRPC entities class extending FlextCore.Service with maximum flext-core integration.
+class FlextGrpcEntities(FlextService):
+    """Unified gRPC entities class extending FlextService with maximum flext-core integration.
 
     Provides a single class containing all gRPC entity definitions, leveraging:
-    - FlextCore.Service for domain service patterns and principles
+    - FlextService for domain service patterns and principles
     - Computed fields for derived properties
     - Cross-field validation for entity consistency
     - Type-safe entity relationships and state management
@@ -35,14 +41,14 @@ class FlextGrpcEntities(FlextCore.Service):
 
     # === BASE ENTITY DEFINITIONS ===
 
-    class Entity(FlextCore.Models.Entity):
+    class Entity(FlextModels.Entity):
         """Base entity class for all gRPC domain entities.
 
         Provides common functionality for gRPC entities following unified FLEXT patterns.
         All gRPC entities inherit from this base class to ensure consistent behavior.
 
         Features:
-          - Inherits FlextCore.Models with immutable behavior and validation
+          - Inherits FlextModels with immutable behavior and validation
           - Implements entity_type property for runtime type identification
           - Supports business rule validation through validate_business_rules()
 
@@ -57,14 +63,14 @@ class FlextGrpcEntities(FlextCore.Service):
         created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
         updated_at: datetime | None = Field(default_factory=lambda: datetime.now(UTC))
 
-        def copy_with(self: Self, **kwargs: object) -> FlextCore.Result[Self]:
+        def copy_with(self: Self, **kwargs: object) -> FlextResult[Self]:
             """Create a copy of the entity with updated attributes.
 
             Args:
                 **kwargs: Attributes to update in the copy
 
             Returns:
-                FlextCore.Result[Self]: Success with updated entity copy
+                FlextResult[Self]: Success with updated entity copy
 
             Example:
                 >>> entity = Server(id="test", created_at=datetime.now(timezone.utc))
@@ -76,9 +82,9 @@ class FlextGrpcEntities(FlextCore.Service):
             """
             try:
                 updated_entity = self.model_copy(update=kwargs)
-                return FlextCore.Result.ok(updated_entity)
+                return FlextResult.ok(updated_entity)
             except Exception as e:
-                return FlextCore.Result.fail(
+                return FlextResult.fail(
                     f"Failed to copy {self.__class__.__name__}: {e}"
                 )
 
@@ -108,11 +114,11 @@ class FlextGrpcEntities(FlextCore.Service):
           >>> from datetime import UTC, datetime, timezone
           >>> channel = Channel(
           ...     id="main-channel",
-          ...     target=f"{FlextCore.Constants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}",
+          ...     target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}",
           ...     state="idle",
           ...     created_at=datetime.now(timezone.utc),
           ... )
-          >>> connect_result: FlextCore.Result[object] = channel.connect()
+          >>> connect_result: FlextResult[object] = channel.connect()
           >>> if connect_result.is_success:
           ...     connecting_channel = connect_result.data
           ...     print(connecting_channel.state)
@@ -124,7 +130,7 @@ class FlextGrpcEntities(FlextCore.Service):
             default_factory=lambda: ""  # GrpcTarget is a type alias for str, not a constructor
         )
         state: FlextGrpcTypings.GrpcChannelState = "idle"
-        options: FlextCore.Types.Dict = Field(default_factory=dict)
+        options: FlextTypes.Dict = Field(default_factory=dict)
         grpc_channel: object | None = None
 
         @field_validator("state")
@@ -140,14 +146,14 @@ class FlextGrpcEntities(FlextCore.Service):
                 raise ValueError(msg)
             return v
 
-        def validate_business_rules(self: Self) -> FlextCore.Result[None]:
+        def validate_business_rules(self: Self) -> FlextResult[None]:
             """Validate channel domain business rules.
 
             Ensures channel configuration meets business requirements including
             target validation, state consistency, and option validation.
 
             Returns:
-                FlextCore.Result[None]: Success with None data, or failure with error message
+                FlextResult[None]: Success with None data, or failure with error message
 
             Domain Rules Validated:
                 - Target cannot be empty or whitespace-only
@@ -160,7 +166,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     target="",
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = channel.validate_business_rules()
+                >>> result: FlextResult[object] = channel.validate_business_rules()
                 >>> print(result.is_failure)
                 True
                 >>> print(result.error)
@@ -168,14 +174,12 @@ class FlextGrpcEntities(FlextCore.Service):
 
             """
             if not self.target or not str(self.target).strip():
-                return FlextCore.Result[None].fail("Channel target cannot be empty")
+                return FlextResult[None].fail("Channel target cannot be empty")
 
             valid_states = set(FlextGrpcConstants.Literals.CHANNEL_STATES)
             if self.state not in valid_states:
-                return FlextCore.Result[None].fail(
-                    f"Invalid channel state: {self.state}"
-                )
-            return FlextCore.Result[None].ok(None)
+                return FlextResult[None].fail(f"Invalid channel state: {self.state}")
+            return FlextResult[None].ok(None)
 
         def is_ready(self: Self) -> bool:
             """Check if channel is ready for gRPC communication.
@@ -193,14 +197,14 @@ class FlextGrpcEntities(FlextCore.Service):
             """
             return self.state == "ready"
 
-        def connect(self: Self) -> FlextCore.Result[FlextGrpcEntities.Channel]:
+        def connect(self: Self) -> FlextResult[FlextGrpcEntities.Channel]:
             """Initiate channel connection state transition.
 
             Transitions channel from 'idle' state to 'connecting' state following
             proper state machine rules. Only allows connection from idle state.
 
             Returns:
-                FlextCore.Result['Channel']: Success with connecting channel,
+                FlextResult['Channel']: Success with connecting channel,
                     or failure if invalid state transition
 
             State Transition:
@@ -210,27 +214,27 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> channel = Channel(
                 ...     id=test, state=idle, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = channel.connect()
+                >>> result: FlextResult[object] = channel.connect()
                 >>> if result.is_success:
                 ...     print(result.data.state)
                 'connecting'
 
             """
             if self.state != "idle":
-                return FlextCore.Result.fail(
+                return FlextResult.fail(
                     f"Cannot connect from state: {self.state}",
                 )
             connecting_channel = self.model_copy(update={"state": "connecting"})
-            return FlextCore.Result.ok(connecting_channel)
+            return FlextResult.ok(connecting_channel)
 
-        def mark_ready(self: Self) -> FlextCore.Result[FlextGrpcEntities.Channel]:
+        def mark_ready(self: Self) -> FlextResult[FlextGrpcEntities.Channel]:
             """Mark channel as ready for communication.
 
             Transitions channel from 'connecting' state to 'ready' state following
             proper state machine rules. Only allows ready transition from connecting state.
 
             Returns:
-                FlextCore.Result['Channel']: Success with ready channel,
+                FlextResult['Channel']: Success with ready channel,
                     or failure if invalid state transition
 
             State Transition:
@@ -240,27 +244,27 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> channel = Channel(
                 ...     id=test, state=connecting, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = channel.mark_ready()
+                >>> result: FlextResult[object] = channel.mark_ready()
                 >>> if result.is_success:
                 ...     print(result.data.state)
                 'ready'
 
             """
             if self.state != "connecting":
-                return FlextCore.Result.fail(
+                return FlextResult.fail(
                     f"Cannot mark ready from state: {self.state}",
                 )
             ready_channel = self.model_copy(update={"state": "ready"})
-            return FlextCore.Result.ok(ready_channel)
+            return FlextResult.ok(ready_channel)
 
-        def disconnect(self: Self) -> FlextCore.Result[FlextGrpcEntities.Channel]:
+        def disconnect(self: Self) -> FlextResult[FlextGrpcEntities.Channel]:
             """Disconnect the channel and reset to idle state.
 
             Transitions channel to 'idle' state from any current state. This is a
             safe operation that can be performed from any state to reset the channel.
 
             Returns:
-                FlextCore.Result['Channel']: Success with idle channel
+                FlextResult['Channel']: Success with idle channel
 
             State Transition:
                 any_state -> idle
@@ -269,13 +273,13 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> channel = Channel(
                 ...     id=test, state=ready, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = channel.disconnect()
+                >>> result: FlextResult[object] = channel.disconnect()
                 >>> print(result.data.state)
                 'idle'
 
             """
             idle_channel = self.model_copy(update={"state": "idle"})
-            return FlextCore.Result.ok(idle_channel)
+            return FlextResult.ok(idle_channel)
 
     class Server(Entity):
         """gRPC server entity implementing complete server lifecycle management.
@@ -310,7 +314,7 @@ class FlextGrpcEntities(FlextCore.Service):
           >>> from datetime import UTC, datetime, timezone
           >>> server = Server(
           ...     id="production-server",
-          ...     host=FlextCore.Constants.Platform.DEFAULT_HOST,
+          ...     host=FlextConstants.Platform.DEFAULT_HOST,
           ...     port=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
           ...     max_workers=20,
           ...     created_at=datetime.now(timezone.utc),
@@ -318,20 +322,20 @@ class FlextGrpcEntities(FlextCore.Service):
           >>> validation = server.validate_business_rules()
           >>> print(validation.is_success)
           True
-          >>> start_result: FlextCore.Result[object] = server.start()
+          >>> start_result: FlextResult[object] = server.start()
           >>> print(start_result.data.state)
           'starting'
 
         """
 
-        host: str = FlextCore.Constants.Platform.DEFAULT_HOST
-        port: int = FlextGrpcConstants.Network.DEFAULT_GRPC_PORT
+        host: str = FlextConstants.Platform.DEFAULT_HOST
+        port: int = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
         state: FlextGrpcTypings.GrpcServerState = "stopped"
         max_workers: int = 10
         services: list[FlextGrpcEntities.Service] = Field(default_factory=list)
         grpc_server: object | None = None
 
-        def validate_business_rules(self: Self) -> FlextCore.Result[None]:
+        def validate_business_rules(self: Self) -> FlextResult[None]:
             """Validate server domain business rules and configuration.
 
             Ensures server configuration meets business requirements including
@@ -339,7 +343,7 @@ class FlextGrpcEntities(FlextCore.Service):
             All domain rules are enforced to maintain data integrity and operational safety.
 
             Returns:
-                FlextCore.Result[None]: Success with None data, or failure with error
+                FlextResult[None]: Success with None data, or failure with error
 
             Domain Rules Validated:
                 - Host cannot be empty or whitespace-only
@@ -355,7 +359,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     port=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = server.validate_business_rules()
+                >>> result: FlextResult[object] = server.validate_business_rules()
                 >>> print(result.is_failure)
                 True
                 >>> print(result.error)
@@ -363,14 +367,12 @@ class FlextGrpcEntities(FlextCore.Service):
 
                 >>> valid_server = Server(
                 ...     id="production-server",
-                ...     host=FlextCore.Constants.Platform.DEFAULT_HOST,
+                ...     host=FlextConstants.Platform.DEFAULT_HOST,
                 ...     port=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
                 ...     max_workers=10,
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = (
-                ...     valid_server.validate_business_rules()
-                ... )
+                >>> result: FlextResult[object] = valid_server.validate_business_rules()
                 >>> print(result.is_success)
                 True
 
@@ -385,37 +387,35 @@ class FlextGrpcEntities(FlextCore.Service):
 
             """
             if not self.host or not self.host.strip():
-                return FlextCore.Result[None].fail("Server host cannot be empty")
+                return FlextResult[None].fail("Server host cannot be empty")
 
             # Allow port 0 for automatic port selection by gRPC
             if self.port != 0 and not (
-                FlextCore.Constants.Network.MIN_PORT
+                FlextConstants.Network.MIN_PORT
                 <= self.port
-                <= FlextCore.Constants.Network.MAX_PORT
+                <= FlextConstants.Network.MAX_PORT
             ):
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"Invalid port: {self.port} "
-                    f"(must be 0 for auto-selection or {FlextCore.Constants.Network.MIN_PORT}-{FlextCore.Constants.Network.MAX_PORT})",
+                    f"(must be 0 for auto-selection or {FlextConstants.Network.MIN_PORT}-{FlextConstants.Network.MAX_PORT})",
                 )
 
             if self.max_workers < 1:
-                return FlextCore.Result[None].fail("Max workers must be >= 1")
+                return FlextResult[None].fail("Max workers must be >= 1")
 
             valid_states = set(FlextGrpcConstants.Literals.SERVER_STATES)
             if self.state not in valid_states:
-                return FlextCore.Result[None].fail(
-                    f"Invalid server state: {self.state}"
-                )
-            return FlextCore.Result[None].ok(None)
+                return FlextResult[None].fail(f"Invalid server state: {self.state}")
+            return FlextResult[None].ok(None)
 
-        def start(self: Self) -> FlextCore.Result[FlextGrpcEntities.Server]:
+        def start(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Initiate server startup state transition.
 
             Transitions server from 'stopped' state to 'starting' state following
             proper state machine rules. Prevents starting running/starting servers.
 
             Returns:
-                FlextCore.Result['Server']: Success with starting server,
+                FlextResult['Server']: Success with starting server,
                     or failure if invalid state transition
 
             State Transition:
@@ -425,7 +425,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> server = Server(
                 ...     state=stopped, id=test, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = server.start()
+                >>> result: FlextResult[object] = server.start()
                 >>> if result.is_success:
                 ...     print(result.data.state)
                 'starting'
@@ -433,25 +433,25 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> running_server = Server(
                 ...     state=running, id=test2, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = running_server.start()
+                >>> result: FlextResult[object] = running_server.start()
                 >>> print(result.is_failure)
                 True
 
             """
             if self.state in {"running", "starting"}:
-                return FlextCore.Result.fail(f"Server already {self.state}")
+                return FlextResult.fail(f"Server already {self.state}")
 
             starting_server = self.model_copy(update={"state": "starting"})
-            return FlextCore.Result.ok(starting_server)
+            return FlextResult.ok(starting_server)
 
-        def mark_running(self: Self) -> FlextCore.Result[FlextGrpcEntities.Server]:
+        def mark_running(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Mark server as running after successful startup.
 
             Transitions server from 'starting' state to 'running' state following
             proper state machine rules. Only allows running transition from starting state.
 
             Returns:
-                FlextCore.Result['Server']: Success with running server,
+                FlextResult['Server']: Success with running server,
                     or failure if invalid state transition
 
             State Transition:
@@ -461,28 +461,28 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> server = Server(
                 ...     state=starting, id=test, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = server.mark_running()
+                >>> result: FlextResult[object] = server.mark_running()
                 >>> if result.is_success:
                 ...     print(result.data.state)
                 'running'
 
             """
             if self.state != "starting":
-                return FlextCore.Result.fail(
+                return FlextResult.fail(
                     f"Cannot mark running from state: {self.state}",
                 )
 
             running_server = self.model_copy(update={"state": "running"})
-            return FlextCore.Result.ok(running_server)
+            return FlextResult.ok(running_server)
 
-        def stop(self: Self) -> FlextCore.Result[FlextGrpcEntities.Server]:
+        def stop(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Initiate server shutdown state transition.
 
             Transitions server from 'running' state to 'stopping' state following
             proper state machine rules. Prevents stopping stopped/stopping servers.
 
             Returns:
-                FlextCore.Result['Server']: Success with stopping server,
+                FlextResult['Server']: Success with stopping server,
                     or failure if invalid state transition
 
             State Transition:
@@ -492,26 +492,26 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> server = Server(
                 ...     state=running, id=test, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = server.stop()
+                >>> result: FlextResult[object] = server.stop()
                 >>> if result.is_success:
                 ...     print(result.data.state)
                 'stopping'
 
             """
             if self.state in {"stopped", "stopping"}:
-                return FlextCore.Result.fail(f"Server already {self.state}")
+                return FlextResult.fail(f"Server already {self.state}")
 
             stopping_server = self.model_copy(update={"state": "stopping"})
-            return FlextCore.Result.ok(stopping_server)
+            return FlextResult.ok(stopping_server)
 
-        def mark_stopped(self: Self) -> FlextCore.Result[FlextGrpcEntities.Server]:
+        def mark_stopped(self: Self) -> FlextResult[FlextGrpcEntities.Server]:
             """Mark server as stopped after successful shutdown.
 
             Transitions server from 'stopping' or 'running' state to 'stopped' state.
             Allows emergency stop from running state or normal completion from stopping.
 
             Returns:
-                FlextCore.Result['Server']: Success with stopped server,
+                FlextResult['Server']: Success with stopped server,
                     or failure if invalid state transition
 
             State Transitions:
@@ -522,22 +522,22 @@ class FlextGrpcEntities(FlextCore.Service):
                 >>> server = Server(
                 ...     state=stopping, id=test, created_at=datetime.now(timezone.utc)
                 ... )
-                >>> result: FlextCore.Result[object] = server.mark_stopped()
+                >>> result: FlextResult[object] = server.mark_stopped()
                 >>> if result.is_success:
                 ...     print(result.data.state)
                 'stopped'
 
             """
             if self.state not in {"stopping", "running"}:
-                return FlextCore.Result.fail(
+                return FlextResult.fail(
                     f"Cannot mark stopped from state: {self.state}",
                 )
             stopped_server = self.model_copy(update={"state": "stopped"})
-            return FlextCore.Result.ok(stopped_server)
+            return FlextResult.ok(stopped_server)
 
         def add_service(
             self, service: FlextGrpcEntities.Service
-        ) -> FlextCore.Result[FlextGrpcEntities.Server]:
+        ) -> FlextResult[FlextGrpcEntities.Server]:
             """Add a gRPC service to the server registry.
 
             Registers a new gRPC service with the server, ensuring no duplicate
@@ -547,7 +547,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 service: "FlextGrpcEntities.Service" instance to register with the server
 
             Returns:
-                FlextCore.Result['Server']: Success with updated server and service,
+                FlextResult['Server']: Success with updated server and service,
                     or failure if service already exists or validation fails
 
             Example:
@@ -559,7 +559,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     methods=["GetUser", "CreateUser"],
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = server.add_service(service)
+                >>> result: FlextResult[object] = server.add_service(service)
                 >>> if result.is_success:
                 ...     print(len(result.data.services))
                 1
@@ -572,12 +572,12 @@ class FlextGrpcEntities(FlextCore.Service):
             """
             for existing_service in self.services:
                 if existing_service.name == service.name:
-                    return FlextCore.Result.fail("Service already exists")
+                    return FlextResult.fail("Service already exists")
 
             updated_server = self.model_copy(
                 update={"services": [*self.services, service]}
             )
-            return FlextCore.Result.ok(updated_server)
+            return FlextResult.ok(updated_server)
 
     class Service(Entity):
         """gRPC service entity representing service definitions and method registry.
@@ -613,7 +613,7 @@ class FlextGrpcEntities(FlextCore.Service):
         """
 
         name: str = ""
-        methods: FlextCore.Types.StringList = Field(default_factory=list)
+        methods: FlextTypes.StringList = Field(default_factory=list)
 
         @field_validator("name")
         @classmethod
@@ -626,9 +626,7 @@ class FlextGrpcEntities(FlextCore.Service):
 
         @field_validator("methods")
         @classmethod
-        def validate_methods(
-            cls, v: FlextCore.Types.StringList
-        ) -> FlextCore.Types.StringList:
+        def validate_methods(cls, v: FlextTypes.StringList) -> FlextTypes.StringList:
             """Validate methods list is not empty and contains valid method names."""
             if not v:
                 msg = "Methods list cannot be empty"
@@ -642,14 +640,14 @@ class FlextGrpcEntities(FlextCore.Service):
 
             return v
 
-        def validate_business_rules(self: Self) -> FlextCore.Result[None]:
+        def validate_business_rules(self: Self) -> FlextResult[None]:
             """Validate service domain business rules and method definitions.
 
             Ensures service configuration meets gRPC service requirements including
             name validation, method presence, and method name validation.
 
             Returns:
-                FlextCore.Result[None]: Success with None data, or failure with error
+                FlextResult[None]: Success with None data, or failure with error
 
             Domain Rules Validated:
                 - Service name cannot be empty or whitespace-only
@@ -664,7 +662,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     methods=[],
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = service.validate_business_rules()
+                >>> result: FlextResult[object] = service.validate_business_rules()
                 >>> print(result.is_failure)
                 True
                 >>> print(result.error)
@@ -672,18 +670,16 @@ class FlextGrpcEntities(FlextCore.Service):
 
             """
             if not self.name or not self.name.strip():
-                return FlextCore.Result[None].fail("Service name cannot be empty")
+                return FlextResult[None].fail("Service name cannot be empty")
 
             if not self.methods:
-                return FlextCore.Result[None].fail(
-                    "Service must have at least one method"
-                )
+                return FlextResult[None].fail("Service must have at least one method")
 
             for method in self.methods:
                 if not method or not method.strip():
-                    return FlextCore.Result[None].fail("Method name cannot be empty")
+                    return FlextResult[None].fail("Method name cannot be empty")
 
-            return FlextCore.Result[None].ok(None)
+            return FlextResult[None].ok(None)
 
         def has_method(self, method_name: str) -> bool:
             """Check if service has the specified method registered.
@@ -711,7 +707,7 @@ class FlextGrpcEntities(FlextCore.Service):
 
         def add_method(
             self, method_name: str
-        ) -> FlextCore.Result[FlextGrpcEntities.Service]:
+        ) -> FlextResult[FlextGrpcEntities.Service]:
             """Add a new method to the service registry.
 
             Registers a new method with the service, ensuring no duplicate method
@@ -721,7 +717,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 method_name: Name of the method to add to the service
 
             Returns:
-                FlextCore.Result['Service']: Success with updated service and method,
+                FlextResult['Service']: Success with updated service and method,
                     or failure if method already exists or validation fails
 
             Example:
@@ -731,7 +727,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     methods=["GetUser"],
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = service.add_method("CreateUser")
+                >>> result: FlextResult[object] = service.add_method("CreateUser")
                 >>> if result.is_success:
                 ...     print(len(result.data.methods))
                 2
@@ -740,15 +736,15 @@ class FlextGrpcEntities(FlextCore.Service):
 
             """
             if not method_name or not method_name.strip():
-                return FlextCore.Result.fail("Method name cannot be empty")
+                return FlextResult.fail("Method name cannot be empty")
 
             if method_name in self.methods:
-                return FlextCore.Result.fail("Method already exists")
+                return FlextResult.fail("Method already exists")
 
             updated_service = self.model_copy(
                 update={"methods": [*self.methods, method_name]}
             )
-            return FlextCore.Result.ok(updated_service)
+            return FlextResult.ok(updated_service)
 
     class Client(Entity):
         """gRPC client entity implementing connection management and communication.
@@ -774,8 +770,8 @@ class FlextGrpcEntities(FlextCore.Service):
         Example:
           >>> from datetime import UTC, datetime, timezone
           >>> client = Client(id="api-client", created_at=datetime.now(timezone.utc))
-          >>> connect_result: FlextCore.Result[object] = client.connect_to(
-          ...     f"{FlextCore.Constants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
+          >>> connect_result: FlextResult[object] = client.connect_to(
+          ...     f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
           ... )
           >>> if connect_result.is_success:
           ...     connected_client = connect_result.data
@@ -785,17 +781,17 @@ class FlextGrpcEntities(FlextCore.Service):
         """
 
         channel: FlextGrpcEntities.Channel | None = None
-        options: FlextCore.Types.Dict = Field(default_factory=dict)
+        options: FlextTypes.Dict = Field(default_factory=dict)
         grpc_stub: object | None = None
 
-        def validate_business_rules(self: Self) -> FlextCore.Result[None]:
+        def validate_business_rules(self: Self) -> FlextResult[None]:
             """Validate client domain business rules and configuration.
 
             Ensures client configuration meets business requirements including
             channel validation if present and options structure validation.
 
             Returns:
-                FlextCore.Result[None]: Success with None data, or failure with error
+                FlextResult[None]: Success with None data, or failure with error
 
             Domain Rules Validated:
                 - Channel must be valid if present (passes channel domain validation)
@@ -813,7 +809,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     channel=invalid_channel,
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = client.validate_business_rules()
+                >>> result: FlextResult[object] = client.validate_business_rules()
                 >>> print(result.is_failure)
                 True
 
@@ -821,12 +817,12 @@ class FlextGrpcEntities(FlextCore.Service):
             if self.channel is not None:
                 channel_validation = self.channel.validate_business_rules()
                 if channel_validation.is_failure:
-                    return FlextCore.Result[None].fail(
+                    return FlextResult[None].fail(
                         f"Invalid channel: {channel_validation.error}",
                     )
-            return FlextCore.Result[None].ok(None)
+            return FlextResult[None].ok(None)
 
-        def connect_to(self, target: str) -> FlextCore.Result[FlextGrpcEntities.Client]:
+        def connect_to(self, target: str) -> FlextResult[FlextGrpcEntities.Client]:
             """Connect client to a target server address.
 
             Creates a new gRPC channel for the specified target and associates it
@@ -836,18 +832,18 @@ class FlextGrpcEntities(FlextCore.Service):
                 target: Target server address in "host:port" format
 
             Returns:
-                FlextCore.Result['Client']: Success with client connected to target,
+                FlextResult['Client']: Success with client connected to target,
                     or failure if channel creation fails
 
             Example:
                 >>> client = Client(id=test, created_at=datetime.now(timezone.utc))
-                >>> result: FlextCore.Result[object] = client.connect_to(
-                ...     f"{FlextCore.Constants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
+                >>> result: FlextResult[object] = client.connect_to(
+                ...     f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
                 ... )
                 >>> if result.is_success:
                 ...     connected_client = result.data
                 ...     print(connected_client.target)
-                f"{FlextCore.Constants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
+                f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
 
             Integration:
                 Used by Service for establishing server connections.
@@ -864,9 +860,9 @@ class FlextGrpcEntities(FlextCore.Service):
                 )
 
                 updated_client = self.model_copy(update={"channel": channel})
-                return FlextCore.Result.ok(updated_client)
+                return FlextResult.ok(updated_client)
             except Exception as e:
-                return FlextCore.Result.fail(f"Channel creation failed: {e}")
+                return FlextResult.fail(f"Channel creation failed: {e}")
 
     class GrpcStream(Entity):
         """gRPC stream entity representing streaming operations and flow control.
@@ -928,14 +924,14 @@ class FlextGrpcEntities(FlextCore.Service):
                 raise ValueError(msg)
             return v
 
-        def validate_business_rules(self: Self) -> FlextCore.Result[None]:
+        def validate_business_rules(self: Self) -> FlextResult[None]:
             """Validate stream domain business rules and configuration.
 
             Ensures stream configuration meets gRPC streaming requirements including
             method name validation and stream type validation.
 
             Returns:
-                FlextCore.Result[None]: Success with None data, or failure with error
+                FlextResult[None]: Success with None data, or failure with error
 
             Domain Rules Validated:
                 - Method name cannot be empty or whitespace-only
@@ -949,7 +945,7 @@ class FlextGrpcEntities(FlextCore.Service):
                 ...     stream_type="unary",
                 ...     created_at=datetime.now(timezone.utc),
                 ... )
-                >>> result: FlextCore.Result[object] = stream.validate_business_rules()
+                >>> result: FlextResult[object] = stream.validate_business_rules()
                 >>> print(result.is_failure)
                 True
                 >>> print(result.error)
@@ -957,15 +953,15 @@ class FlextGrpcEntities(FlextCore.Service):
 
             """
             if not self.method_name or not self.method_name.strip():
-                return FlextCore.Result[None].fail("Stream method name cannot be empty")
+                return FlextResult[None].fail("Stream method name cannot be empty")
 
             valid_stream_types = FlextGrpcConstants.Literals.STREAM_TYPES
             if self.stream_type not in valid_stream_types:
-                return FlextCore.Result[None].fail(
+                return FlextResult[None].fail(
                     f"Invalid stream type: {self.stream_type}"
                 )
 
-            return FlextCore.Result[None].ok(None)
+            return FlextResult[None].ok(None)
 
 
 __all__ = [

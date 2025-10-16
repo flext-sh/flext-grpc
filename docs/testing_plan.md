@@ -139,8 +139,8 @@ TOTAL                                          1798    956    380     14    39%
 ```python
 # Issue: Property setter missing
 # Location: src/flext_grpc/services.py:77
-# Current: self.logger = FlextCore.Logger(__name__)  # Fails
-# Fix: self._logger = FlextCore.Logger(__name__)
+# Current: self.logger = FlextLogger(__name__)  # Fails
+# Fix: self._logger = FlextLogger(__name__)
 ```
 
 #### 2. Correct Exception Constructors

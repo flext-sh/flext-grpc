@@ -26,7 +26,7 @@ config = FlextGrpcConfig(
 Configuration values can be set via environment variables with `GRPC_` prefix:
 
 ```bash
-export GRPC_HOST="${FlextCore.Constants.Platform.PRODUCTION_HOST}"
+export GRPC_HOST="${FlextConstants.Platform.PRODUCTION_HOST}"
 export GRPC_PORT="${FlextGrpcConstants.Network.DEFAULT_PORT}"
 export GRPC_MAX_WORKERS="20"
 export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"
@@ -46,15 +46,15 @@ config = FlextGrpcConfig()
 Server bind address. Common values:
 
 - `FlextGrpcConstants.Network.DEFAULT_HOST` - Local development
-- `FlextCore.Constants.Platform.LOCALHOST_IP` - Local IPv4 only
-- `FlextCore.Constants.Platform.PRODUCTION_HOST` - All interfaces (production)
+- `FlextConstants.Platform.LOCALHOST_IP` - Local IPv4 only
+- `FlextConstants.Platform.PRODUCTION_HOST` - All interfaces (production)
 
 ```python
 # Development
 config = FlextGrpcConfig(host=FlextGrpcConstants.Network.DEFAULT_HOST)
 
 # Production
-config = FlextGrpcConfig(host=FlextCore.Constants.Platform.PRODUCTION_HOST)
+config = FlextGrpcConfig(host=FlextConstants.Platform.PRODUCTION_HOST)
 ```
 
 #### `port: int = FlextGrpcConstants.Network.DEFAULT_PORT`
@@ -66,7 +66,7 @@ Server port number. Valid range: 1024-65535
 config = FlextGrpcConfig(port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 # Custom port
-config = FlextGrpcConfig(port=FlextCore.Constants.Platform.DEFAULT_HTTP_PORT)
+config = FlextGrpcConfig(port=FlextConstants.Platform.DEFAULT_HTTP_PORT)
 ```
 
 #### `max_workers: int = 10`
@@ -104,8 +104,8 @@ from flext_grpc import FlextGrpcConfig
 
 config = FlextGrpcConfig(
     # Connection settings
-    keepalive_time_ms=FlextCore.Constants["Network.KEEPALIVE_TIME_MS"],      # 30 seconds
-    keepalive_timeout_ms=FlextCore.Constants["Network.KEEPALIVE_TIMEOUT_MS"],    # 5 seconds
+    keepalive_time_ms=FlextConstants["Network.KEEPALIVE_TIME_MS"],      # 30 seconds
+    keepalive_timeout_ms=FlextConstants["Network.KEEPALIVE_TIMEOUT_MS"],    # 5 seconds
     keepalive_permit_without_calls=True,
 
     # Message size limits
@@ -138,7 +138,26 @@ All configuration is validated on creation:
 
 ```python
 from flext_grpc import FlextGrpcConfig
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 
 config = FlextGrpcConfig(host="", port=99999)  # Invalid
 validation = config.validate()
@@ -161,21 +180,40 @@ Configuration validation enforces these rules:
 
 ```python
 from flext_grpc import FlextGrpcConfig
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 
-def validate_production_config(config: FlextGrpcConfig) -> FlextCore.Result[None]:
+def validate_production_config(config: FlextGrpcConfig) -> FlextResult[None]:
     """Additional validation for production environments."""
 
     if config.host == FlextGrpcConstants.Network.DEFAULT_HOST:
-        return FlextCore.Result.fail("Production servers cannot use localhost")
+        return FlextResult.fail("Production servers cannot use localhost")
 
     if config.max_workers < 10:
-        return FlextCore.Result.fail("Production requires minimum 10 workers")
+        return FlextResult.fail("Production requires minimum 10 workers")
 
     if not config.use_tls:
-        return FlextCore.Result.fail("Production requires TLS encryption")
+        return FlextResult.fail("Production requires TLS encryption")
 
-    return FlextCore.Result.ok(None)
+    return FlextResult.ok(None)
 ```
 
 ## Environment-Specific Configurations
@@ -201,7 +239,7 @@ def create_dev_config() -> FlextGrpcConfig:
 ```python
 def create_prod_config() -> FlextGrpcConfig:
     return FlextGrpcConfig(
-        host=FlextCore.Constants["Platform.PRODUCTION_HOST"],
+        host=FlextConstants["Platform.PRODUCTION_HOST"],
         port=FlextGrpcConstants.Network.DEFAULT_PORT,
         max_workers=50,
         timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
@@ -212,7 +250,7 @@ def create_prod_config() -> FlextGrpcConfig:
         tls_key_file="/etc/ssl/server.key",
 
         # Performance settings
-        keepalive_time_ms=FlextCore.Constants["Network.KEEPALIVE_TIME_MS"],
+        keepalive_time_ms=FlextConstants["Network.KEEPALIVE_TIME_MS"],
         max_receive_message_length=16*1024*1024,  # 16MB
 
         # Monitoring
@@ -243,7 +281,7 @@ def create_test_config() -> FlextGrpcConfig:
 ```yaml
 # grpc_config.yaml
 grpc:
-  host: "${FlextCore.Constants.Platform.PRODUCTION_HOST}"
+  host: "${FlextConstants.Platform.PRODUCTION_HOST}"
   port: ${FlextGrpcConstants.Network.DEFAULT_PORT}
   max_workers: 20
   timeout: ${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}
@@ -254,7 +292,7 @@ grpc:
     key_file: "/etc/ssl/server.key"
 
   performance:
-    keepalive_time_ms: ${FlextCore.Constants.Network.KEEPALIVE_TIME_MS}
+    keepalive_time_ms: ${FlextConstants.Network.KEEPALIVE_TIME_MS}
     max_message_size: 4194304 # 4MB
 ```
 
@@ -381,15 +419,34 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcConfig:
 
 ## Integration with FLEXT Patterns
 
-### FlextCore.Result Usage
+### FlextResult Usage
 
-Configuration operations return `FlextCore.Result` for error handling:
+Configuration operations return `FlextResult` for error handling:
 
 ```python
 from flext_grpc import create_config
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 
-def setup_configuration() -> FlextCore.Result[FlextGrpcConfig]:
+def setup_configuration() -> FlextResult[FlextGrpcConfig]:
     return create_config(
         host=FlextGrpcConstants.Network.DEFAULT_HOST,
         port=FlextGrpcConstants.Network.DEFAULT_PORT
@@ -398,13 +455,32 @@ def setup_configuration() -> FlextCore.Result[FlextGrpcConfig]:
 
 ### Container Integration
 
-Register configuration with FlextCore.Container:
+Register configuration with FlextContainer:
 
 ```python
-from flext_core import FlextCore
+from flext_core import FlextBus
+from flext_core import FlextConfig
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import FlextDecorators
+from flext_core import FlextDispatcher
+from flext_core import FlextExceptions
+from flext_core import FlextHandlers
+from flext_core import FlextLogger
+from flext_core import FlextMixins
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import FlextProtocols
+from flext_core import FlextRegistry
+from flext_core import FlextResult
+from flext_core import FlextRuntime
+from flext_core import FlextService
+from flext_core import FlextTypes
+from flext_core import FlextUtilities
 from flext_grpc import FlextGrpcConfig
 
-container = FlextCore.Container.get_global()
+container = FlextContainer.get_global()
 config = FlextGrpcConfig(host=FlextGrpcConstants.Network.DEFAULT_HOST, port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 container.register("grpc_config", config)
@@ -442,7 +518,7 @@ config = FlextGrpcConfig(
 ```bash
 # Multiple ways to set the same value can conflict
 export GRPC_PORT=${FlextGrpcConstants.Network.DEFAULT_PORT}
-export GRPC_PORT=${FlextCore.Constants.Platform.DEFAULT_HTTP_PORT}  # Overwrites previous value
+export GRPC_PORT=${FlextConstants.Platform.DEFAULT_HTTP_PORT}  # Overwrites previous value
 ```
 
 ### Debugging Configuration
