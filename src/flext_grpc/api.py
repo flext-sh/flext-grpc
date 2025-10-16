@@ -312,12 +312,10 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
             except ValueError:
                 return FlextResult[dict[str, str | int]].fail("Port must be a number")
 
-            return FlextResult[dict[str, str | int]].ok(
-                {
-                    "host": host,
-                    "port": port,
-                }
-            )
+            return FlextResult[dict[str, str | int]].ok({
+                "host": host,
+                "port": port,
+            })
         except Exception as e:
             return FlextResult[dict[str, str | int]].fail(f"Address parsing error: {e}")
 
@@ -374,14 +372,12 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
                     f"Service creation failed: {service_result.error}"
                 )
 
-            return FlextResult[FlextTypes.Dict].ok(
-                {
-                    "server": server_result.unwrap(),
-                    "client": client_result.unwrap(),
-                    "service": service_result.unwrap(),
-                    "target": target,
-                }
-            )
+            return FlextResult[FlextTypes.Dict].ok({
+                "server": server_result.unwrap(),
+                "client": client_result.unwrap(),
+                "service": service_result.unwrap(),
+                "target": target,
+            })
         except Exception as e:
             return FlextResult[FlextTypes.Dict].fail(
                 f"Complete setup creation failed: {e}"

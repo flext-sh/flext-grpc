@@ -219,12 +219,10 @@ class FlextGrpcServices(FlextService):
     ) -> FlextResult[FlextTypes.Dict]:
         """Execute gRPC command with routing to appropriate handler."""
         if command is None:
-            return FlextResult.ok(
-                {
-                    "status": "ready",
-                    "service": "flext-grpc-service",
-                }
-            )
+            return FlextResult.ok({
+                "status": "ready",
+                "service": "flext-grpc-service",
+            })
 
         if entity is None:
             return FlextResult.fail("Entity instance required")
@@ -466,29 +464,27 @@ class FlextGrpcServices(FlextService):
         metrics = self._server_metrics.get(server_key, {})
         current_time = time.time()
 
-        return FlextResult.ok(
-            {
-                "state": server.state,
-                "host": server.host,
-                "port": server.port,
-                "max_workers": server.max_workers,
-                "address": f"{server.host}:{server.port}",
-                "is_running": server.state == "running",
-                "service_count": len(server.services),
-                "grpc_server_active": server_key in self._active_servers,
-                "server_key": server_key,
-                "metrics": {
-                    "startup_time_seconds": metrics.get("startup_time", 0.0),
-                    "uptime_seconds": current_time
-                    - metrics.get("started_at", current_time),
-                    "connection_count": metrics.get("connection_count", 0),
-                    "request_count": metrics.get("request_count", 0),
-                    "thread_pool_size": self._thread_pool_size,
-                    "active_servers": len(self._active_servers),
-                    "max_servers": self._max_servers,
-                },
-            }
-        )
+        return FlextResult.ok({
+            "state": server.state,
+            "host": server.host,
+            "port": server.port,
+            "max_workers": server.max_workers,
+            "address": f"{server.host}:{server.port}",
+            "is_running": server.state == "running",
+            "service_count": len(server.services),
+            "grpc_server_active": server_key in self._active_servers,
+            "server_key": server_key,
+            "metrics": {
+                "startup_time_seconds": metrics.get("startup_time", 0.0),
+                "uptime_seconds": current_time
+                - metrics.get("started_at", current_time),
+                "connection_count": metrics.get("connection_count", 0),
+                "request_count": metrics.get("request_count", 0),
+                "thread_pool_size": self._thread_pool_size,
+                "active_servers": len(self._active_servers),
+                "max_servers": self._max_servers,
+            },
+        })
 
     def _connect_client(
         self, client: FlextGrpcEntities.Client
@@ -589,26 +585,22 @@ class FlextGrpcServices(FlextService):
             if method == "Echo":
                 echo_request = EchoRequest(message=str(request), metadata={})
                 response = stub.Echo(echo_request)
-                return FlextResult.ok(
-                    {
-                        "method": "Echo",
-                        "status": "success",
-                        "message": response.message,
-                        "server_id": response.server_id,
-                        "timestamp": response.timestamp,
-                    }
-                )
+                return FlextResult.ok({
+                    "method": "Echo",
+                    "status": "success",
+                    "message": response.message,
+                    "server_id": response.server_id,
+                    "timestamp": response.timestamp,
+                })
             if method == "HealthCheck":
                 health_request = HealthRequest(service="FlextGrpcService")
                 health_response = stub.HealthCheck(health_request)
-                return FlextResult.ok(
-                    {
-                        "method": "HealthCheck",
-                        "status": "success",
-                        "serving_status": health_response.status,
-                        "message": health_response.message,
-                    }
-                )
+                return FlextResult.ok({
+                    "method": "HealthCheck",
+                    "status": "success",
+                    "serving_status": health_response.status,
+                    "message": health_response.message,
+                })
             return FlextResult.fail(f"Unsupported method: {method}")
 
         except grpc.RpcError as rpc_error:
@@ -632,16 +624,12 @@ class FlextGrpcServices(FlextService):
                     timeout=0.1
                 )
 
-        return FlextResult.ok(
-            {
-                "channel_state": client.channel.state
-                if client.channel
-                else "no_channel",
-                "target": client.channel.target if client.channel else "",
-                "is_connected": client.grpc_stub is not None,
-                "grpc_channel_active": grpc_channel_active,
-            }
-        )
+        return FlextResult.ok({
+            "channel_state": client.channel.state if client.channel else "no_channel",
+            "target": client.channel.target if client.channel else "",
+            "is_connected": client.grpc_stub is not None,
+            "grpc_channel_active": grpc_channel_active,
+        })
 
     def _create_stream(
         self, stream: FlextGrpcEntities.GrpcStream, target: str | None = None
@@ -729,14 +717,12 @@ class FlextGrpcServices(FlextService):
                     stream, stream_info, stream_request, data, stub
                 )
             stream_info["sequence_counter"] = int(sequence_counter) + 1
-            return FlextResult.ok(
-                {
-                    "sent": str(data),
-                    "stream_type": stream.stream_type,
-                    "stream_id": stream.id,
-                    "sequence": int(sequence_counter),
-                }
-            )
+            return FlextResult.ok({
+                "sent": str(data),
+                "stream_type": stream.stream_type,
+                "stream_id": stream.id,
+                "sequence": int(sequence_counter),
+            })
 
         except Exception as e:
             return FlextResult.fail(f"Failed to send data: {e}")
@@ -794,30 +780,26 @@ class FlextGrpcServices(FlextService):
 
             stream_info["buffer_size_bytes"] = 0
 
-            return FlextResult.ok(
-                {
-                    "sent": str(data),
-                    "stream_type": stream.stream_type,
-                    "stream_id": stream.id,
-                    "buffered_count": len(request_buffer) + 1,
-                    "response": {
-                        "data": response.data,
-                        "sequence": response.sequence,
-                        "server_id": response.server_id,
-                        "timestamp": response.timestamp,
-                    },
-                }
-            )
-        return FlextResult.ok(
-            {
+            return FlextResult.ok({
                 "sent": str(data),
                 "stream_type": stream.stream_type,
                 "stream_id": stream.id,
-                "buffer_status": "buffered",
-                "buffer_size": len(request_buffer),
-                "sequence": sequence_counter + 1,
-            }
-        )
+                "buffered_count": len(request_buffer) + 1,
+                "response": {
+                    "data": response.data,
+                    "sequence": response.sequence,
+                    "server_id": response.server_id,
+                    "timestamp": response.timestamp,
+                },
+            })
+        return FlextResult.ok({
+            "sent": str(data),
+            "stream_type": stream.stream_type,
+            "stream_id": stream.id,
+            "buffer_status": "buffered",
+            "buffer_size": len(request_buffer),
+            "sequence": sequence_counter + 1,
+        })
 
     def _handle_server_streaming(
         self,
@@ -835,14 +817,12 @@ class FlextGrpcServices(FlextService):
             response_count = 0
 
             for response in response_iterator:
-                responses.append(
-                    {
-                        "data": response.data,
-                        "sequence": response.sequence,
-                        "server_id": response.server_id,
-                        "timestamp": response.timestamp,
-                    }
-                )
+                responses.append({
+                    "data": response.data,
+                    "sequence": response.sequence,
+                    "server_id": response.server_id,
+                    "timestamp": response.timestamp,
+                })
                 response_count += 1
                 if response_count >= FlextGrpcConstants.Timeouts.MAX_RESPONSE_COUNT:
                     break
@@ -850,16 +830,14 @@ class FlextGrpcServices(FlextService):
             sequence_counter = stream_info.get("sequence_counter", 0)
             stream_info["sequence_counter"] = sequence_counter + 1
 
-            return FlextResult.ok(
-                {
-                    "sent": str(data),
-                    "stream_type": stream.stream_type,
-                    "stream_id": stream.id,
-                    "sequence": sequence_counter + 1,
-                    "responses": responses,
-                    "response_count": response_count,
-                }
-            )
+            return FlextResult.ok({
+                "sent": str(data),
+                "stream_type": stream.stream_type,
+                "stream_id": stream.id,
+                "sequence": sequence_counter + 1,
+                "responses": responses,
+                "response_count": response_count,
+            })
 
         except Exception as e:
             return FlextResult.fail(f"Server streaming failed: {e}")

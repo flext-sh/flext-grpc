@@ -58,14 +58,12 @@ class FlextGrpcUtilities:
         """Execute utility operation and return status."""
         try:
             # Simple status check
-            return FlextResult.ok(
-                {
-                    "status": "operational",
-                    "service": "flext-grpc-utilities",
-                    "command": command,
-                    "data": data,
-                }
-            )
+            return FlextResult.ok({
+                "status": "operational",
+                "service": "flext-grpc-utilities",
+                "command": command,
+                "data": data,
+            })
         except Exception as e:
             return FlextResult.fail(f"Execute failed: {e}")
 
@@ -811,12 +809,10 @@ class FlextGrpcUtilities:
                 # Channel state is not directly accessible, use a default state
                 # In a real implementation, this would check actual channel state
                 # For now, assume channel is ready unless explicitly shutdown
-                return FlextResult[FlextTypes.StringList].ok(
-                    [
-                        "grpc.reflection.v1alpha.ServerReflection",
-                        "grpc.health.v1.Health",
-                    ]
-                )
+                return FlextResult[FlextTypes.StringList].ok([
+                    "grpc.reflection.v1alpha.ServerReflection",
+                    "grpc.health.v1.Health",
+                ])
 
                 services = [
                     "grpc.reflection.v1alpha.ServerReflection",

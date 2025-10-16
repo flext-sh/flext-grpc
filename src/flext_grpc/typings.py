@@ -27,7 +27,7 @@ from flext_grpc.constants import FlextGrpcConstants
 
 
 # gRPC domain TypeVars
-class FlextGrpcTypings(FlextTypes):
+class FlextGrpcTypings(FlextTypes.Dict):
     """gRPC-specific type definitions extending FlextTypes.
 
     Domain-specific type system for gRPC microservices operations.
