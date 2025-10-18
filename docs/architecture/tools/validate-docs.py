@@ -358,9 +358,10 @@ def main() -> None:
 
     # Exit with appropriate code
     summary = results["summary"]
-    if (
-        summary["status"] == "critical"
-        or summary["quality_score"] < ArchitectureValidator.CRITICAL_QUALITY_SCORE
+    if isinstance(summary, dict) and (
+        summary.get("status") == "critical"
+        or summary.get("quality_score", 0)
+        < ArchitectureValidator.CRITICAL_QUALITY_SCORE
     ):
         sys.exit(1)
     else:

@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from typing import Final, Literal
 
-from flext_core import FlextConstants, FlextTypes
+from flext_core import FlextConstants
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -110,9 +110,15 @@ class FlextGrpcConstants(FlextConstants):
         """gRPC-specific error codes."""
 
         # gRPC-specific errors
-        GRPC_SERVICE_ERROR: Final[str] = "GRPC_SERVICE_ERROR"
-        GRPC_CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
-        GRPC_TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
+        GRPC_BASE_ERROR: Final[str] = "GRPC_BASE_ERROR"
+        CONFIG_ERROR: Final[str] = "GRPC_CONFIG_ERROR"
+        CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
+        TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
+        VALIDATION_ERROR: Final[str] = "GRPC_VALIDATION_ERROR"
+        SERVER_ERROR: Final[str] = "GRPC_SERVER_ERROR"
+        CLIENT_ERROR: Final[str] = "GRPC_CLIENT_ERROR"
+        STREAM_ERROR: Final[str] = "GRPC_STREAM_ERROR"
+        PROTOCOL_ERROR: Final[str] = "GRPC_PROTOCOL_ERROR"
 
     class GrpcPerformance:
         """gRPC performance and health check constants."""
@@ -215,6 +221,6 @@ class FlextGrpcConstants(FlextConstants):
         type CompressionType = Literal["none", "gzip", "deflate"]
 
 
-__all__: FlextTypes.StringList = [
+__all__: list[str] = [
     "FlextGrpcConstants",
 ]

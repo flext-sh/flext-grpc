@@ -34,7 +34,7 @@ logger = FlextLogger(__name__)
 def validate_user_input(
     username: str,
     email: str,
-) -> FlextResult[FlextGrpcTypings.Core.GrpcHeaders]:
+) -> FlextResult[FlextGrpcTypings.GrpcCore.GrpcHeaders]:
     """Validate user input with FlextGrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
@@ -52,13 +52,13 @@ def validate_user_input(
         if not email or "@" not in email:
             _raise_email_error()
 
-        return FlextResult[FlextGrpcTypings.Core.GrpcHeaders].ok(
+        return FlextResult[FlextGrpcTypings.GrpcCore.GrpcHeaders].ok(
             {"username": username, "email": email},
         )
 
     except FlextGrpcValidationError as e:
         logger.exception("Validation failed", field=e.field_name, error=str(e))
-        return FlextResult[FlextGrpcTypings.Core.GrpcHeaders].fail(
+        return FlextResult[FlextGrpcTypings.GrpcCore.GrpcHeaders].fail(
             f"Validation error: {e}"
         )
 

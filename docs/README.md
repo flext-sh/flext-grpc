@@ -1,4 +1,14 @@
 # FLEXT gRPC Documentation
+## Table of Contents
+
+- [FLEXT gRPC Documentation](#flext-grpc-documentation)
+  - [Documentation Structure](#documentation-structure)
+    - [gRPC-Specific Documentation](#grpc-specific-documentation)
+  - [Current Status](#current-status)
+  - [Documentation Scope](#documentation-scope)
+  - [What This Documentation Does NOT Cover](#what-this-documentation-does-not-cover)
+  - [Contributing to Documentation](#contributing-to-documentation)
+
 
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 

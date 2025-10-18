@@ -12,9 +12,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextConstants
-
 from flext_grpc import FlextGrpc
+from flext_grpc.constants import FlextGrpcConstants
 
 
 def example_1_basic_entities() -> None:
@@ -24,8 +23,8 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC server through facade
     server_result = grpc.create_server(
-        host=FlextConstants.Platform.DEFAULT_HOST,
-        port=FlextConstants.Platform.DEFAULT_HTTP_PORT,
+        host=FlextGrpcConstants.Network.DEFAULT_HOST,
+        port=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
         max_workers=10,
     )
 
@@ -38,12 +37,12 @@ def example_1_basic_entities() -> None:
 
     # Create a gRPC channel through facade
     grpc.create_channel(
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}"
+        target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
     )
 
     # Create a gRPC client through facade
     client_result = grpc.create_client(
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}"
+        target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
     )
     if client_result.is_failure:
         print(f"Client creation failed: {client_result.error}")
@@ -94,7 +93,7 @@ def example_3_operations() -> None:
 
     # Create and start server through facade
     server_result = grpc.create_server(
-        host=FlextConstants.Platform.DEFAULT_HOST, port=7070
+        host=FlextGrpcConstants.Network.DEFAULT_HOST, port=7070
     )
 
     if server_result.is_success:
@@ -117,13 +116,13 @@ def example_3_operations() -> None:
 
     # Create and connect client through facade
     client_result = grpc.create_client(
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:7070"
+        target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:7070"
     )
 
     if client_result.is_success:
         # Connect client through facade
         connect_result = grpc.connect_client(
-            f"{FlextConstants.Platform.DEFAULT_HOST}:7070"
+            f"{FlextGrpcConstants.Network.DEFAULT_HOST}:7070"
         )
         if connect_result.is_success:
             connected_client = connect_result.unwrap()
@@ -148,8 +147,8 @@ def example_4_validation() -> None:
 
     # Valid entities through facade
     valid_server_result = grpc.create_server(
-        host=FlextConstants.Platform.DEFAULT_HOST,
-        port=FlextConstants.Platform.DEFAULT_HTTP_PORT,
+        host=FlextGrpcConstants.Network.DEFAULT_HOST,
+        port=FlextGrpcConstants.Network.DEFAULT_GRPC_PORT,
         max_workers=5,
     )
 
@@ -173,7 +172,7 @@ def example_4_validation() -> None:
 
     # Channel validation through facade
     valid_channel_result = grpc.create_channel(
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}"
+        target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
     )
 
     if valid_channel_result.is_success:
@@ -198,7 +197,7 @@ def example_5_state_transitions() -> None:
 
     # Create channel through facade
     channel_result = grpc.create_channel(
-        target=f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextConstants.Platform.DEFAULT_HTTP_PORT}"
+        target=f"{FlextGrpcConstants.Network.DEFAULT_HOST}:{FlextGrpcConstants.Network.DEFAULT_GRPC_PORT}"
     )
 
     if channel_result.is_success:

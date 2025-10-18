@@ -1,4 +1,48 @@
 # ADR-003: Protocol Buffer Generation Strategy
+## Table of Contents
+
+- [ADR-003: Protocol Buffer Generation Strategy](#adr-003-protocol-buffer-generation-strategy)
+  - [Status](#status)
+  - [Context](#context)
+  - [Decision](#decision)
+    - [Version Management](#version-management)
+    - [Generation Process](#generation-process)
+    - [Code Organization](#code-organization)
+    - [Maintenance Strategy](#maintenance-strategy)
+  - [Consequences](#consequences)
+    - [Positive Consequences](#positive-consequences)
+    - [Negative Consequences](#negative-consequences)
+  - [Alternatives Considered](#alternatives-considered)
+    - [Dynamic Version Resolution](#dynamic-version-resolution)
+    - [Manual Code Generation](#manual-code-generation)
+    - [Monorepo with Shared Versions](#monorepo-with-shared-versions)
+    - [Protobuf as Separate Package](#protobuf-as-separate-package)
+  - [Implementation Plan](#implementation-plan)
+    - [Phase 1: Immediate Fix (Current)](#phase-1-immediate-fix-current)
+    - [Phase 2: Automation (Next Sprint)](#phase-2-automation-next-sprint)
+    - [Phase 3: Optimization (Future)](#phase-3-optimization-future)
+  - [Technical Details](#technical-details)
+    - [Version Pinning Strategy](#version-pinning-strategy)
+- [pyproject.toml](#pyprojecttoml)
+- [Separate dev dependencies if needed](#separate-dev-dependencies-if-needed)
+    - [Docker Generation Environment](#docker-generation-environment)
+- [Dockerfile.protobuf](#dockerfileprotobuf)
+- [Install specific versions](#install-specific-versions)
+- [Copy proto files](#copy-proto-files)
+- [Generate code](#generate-code)
+    - [CI/CD Integration](#cicd-integration)
+- [.github/workflows/generate-proto.yml](#githubworkflowsgenerate-protoyml)
+  - [Risks and Mitigations](#risks-and-mitigations)
+    - [Version Lock-in Risk](#version-lock-in-risk)
+    - [Docker Complexity Risk](#docker-complexity-risk)
+    - [Ecosystem Compatibility Risk](#ecosystem-compatibility-risk)
+  - [Success Criteria](#success-criteria)
+    - [Technical Success](#technical-success)
+    - [Quality Success](#quality-success)
+    - [Process Success](#process-success)
+  - [References](#references)
+  - [Notes](#notes)
+
 
 ## Status
 
@@ -6,7 +50,8 @@ Blocked
 
 ## Context
 
-FLEXT-gRPC needs to provide Protocol Buffer definitions for gRPC services, but we're facing version compatibility issues between the generated protobuf files and the runtime dependencies.
+FLEXT-gRPC needs to provide Protocol Buffer definitions for gRPC services,
+     but we're facing version compatibility issues between the generated protobuf files and the runtime dependencies.
 
 The current situation:
 
@@ -282,8 +327,12 @@ jobs:
 
 ## Notes
 
-This ADR is currently BLOCKED due to the immediate need to resolve import errors. The protobuf version mismatch is preventing the library from functioning, which blocks all other development work.
+This ADR is currently BLOCKED due to the immediate need to resolve import errors. The protobuf version mismatch is preventing the library from functioning,
+    
 
-Once resolved, this ADR will be marked as ACCEPTED and implementation will proceed according to the plan outlined above.
+     which blocks all other development work.
+
+Once resolved,
+     this ADR will be marked as ACCEPTED and implementation will proceed according to the plan outlined above.
 
 The Docker-based generation approach provides the most reliable solution for version compatibility while maintaining development workflow efficiency.

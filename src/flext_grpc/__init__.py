@@ -14,6 +14,14 @@ from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcEntities,
 )
+from flext_grpc.exceptions import (
+    FlextGrpcConfigurationError,
+    FlextGrpcConnectionError,
+    FlextGrpcError,
+    FlextGrpcExceptions,
+    FlextGrpcTimeoutError,
+    FlextGrpcValidationError,
+)
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
@@ -37,15 +45,21 @@ __all__ = [
     "EchoRequest",
     "FlextGrpc",
     "FlextGrpcConfig",
+    "FlextGrpcConfigurationError",
+    "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcEntities",
+    "FlextGrpcError",
+    "FlextGrpcExceptions",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcServices",
+    "FlextGrpcTimeoutError",
     "FlextGrpcTypings",
     "FlextGrpcUtilities",
+    "FlextGrpcValidationError",
     "GrpcHealthCheck",
     "GrpcRequest",
     "ServiceDefinition",

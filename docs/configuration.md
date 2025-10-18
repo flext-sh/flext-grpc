@@ -1,4 +1,57 @@
 # flext-grpc Configuration
+## Table of Contents
+
+- [flext-grpc Configuration](#flext-grpc-configuration)
+  - [Configuration Overview](#configuration-overview)
+    - [Basic Configuration](#basic-configuration)
+- [Simple configuration](#simple-configuration)
+    - [Environment Variables](#environment-variables)
+- [Automatically loads from environment](#automatically-loads-from-environment)
+  - [Configuration Parameters](#configuration-parameters)
+    - [Server Configuration](#server-configuration)
+      - [`host: str = FlextGrpcConstants.Network.DEFAULT_HOST`](#host-str--flextgrpcconstantsnetworkdefault_host)
+- [Development](#development)
+- [Production](#production)
+      - [`port: int = FlextGrpcConstants.Network.DEFAULT_PORT`](#port-int--flextgrpcconstantsnetworkdefault_port)
+- [Standard gRPC port](#standard-grpc-port)
+- [Custom port](#custom-port)
+      - [`max_workers: int = 10`](#max_workers-int--10)
+- [Development (low concurrency)](#development-low-concurrency)
+- [Production (high concurrency)](#production-high-concurrency)
+    - [Client Configuration](#client-configuration)
+      - [`timeout: float = FlextGrpcConstants.Service.DEFAULT_TIMEOUT`](#timeout-float--flextgrpcconstantsservicedefault_timeout)
+- [Quick timeout](#quick-timeout)
+- [Extended timeout](#extended-timeout)
+    - [Advanced Configuration](#advanced-configuration)
+      - [Connection Settings](#connection-settings)
+      - [TLS Configuration](#tls-configuration)
+  - [Configuration Validation](#configuration-validation)
+    - [Built-in Validation](#built-in-validation)
+    - [Business Rules](#business-rules)
+    - [Custom Validation](#custom-validation)
+  - [Environment-Specific Configurations](#environment-specific-configurations)
+    - [Development Configuration](#development-configuration)
+    - [Production Configuration](#production-configuration)
+    - [Testing Configuration](#testing-configuration)
+  - [Configuration from Files](#configuration-from-files)
+    - [YAML Configuration](#yaml-configuration)
+- [grpc_config.yaml](#grpc_configyaml)
+    - [JSON Configuration](#json-configuration)
+  - [Configuration Best Practices](#configuration-best-practices)
+    - [Security](#security)
+    - [Performance](#performance)
+    - [Monitoring](#monitoring)
+  - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
+    - [FlextResult Usage](#flextresult-usage)
+    - [Container Integration](#container-integration)
+- [Later retrieval](#later-retrieval)
+  - [Troubleshooting Configuration](#troubleshooting-configuration)
+    - [Common Issues](#common-issues)
+- [Error: Port out of range](#error-port-out-of-range)
+- [Error: File not found](#error-file-not-found)
+- [Multiple ways to set the same value can conflict](#multiple-ways-to-set-the-same-value-can-conflict)
+    - [Debugging Configuration](#debugging-configuration)
+
 
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
@@ -481,7 +534,8 @@ from flext_core import FlextUtilities
 from flext_grpc import FlextGrpcConfig
 
 container = FlextContainer.get_global()
-config = FlextGrpcConfig(host=FlextGrpcConstants.Network.DEFAULT_HOST, port=FlextGrpcConstants.Network.DEFAULT_PORT)
+config = FlextGrpcConfig(host=FlextGrpcConstants.Network.DEFAULT_HOST,
+     port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 container.register("grpc_config", config)
 

@@ -1,4 +1,59 @@
 # FLEXT-gRPC Architecture Documentation
+## Table of Contents
+
+- [FLEXT-gRPC Architecture Documentation](#flext-grpc-architecture-documentation)
+  - [📋 Documentation Framework](#-documentation-framework)
+    - [🏗️ C4 Model (Primary)](#-c4-model-primary)
+    - [📚 Arc42 Template (Structure)](#-arc42-template-structure)
+    - [📝 ADRs (Decisions)](#-adrs-decisions)
+    - [🎨 PlantUML (Diagrams)](#-plantuml-diagrams)
+  - [📁 Documentation Structure](#-documentation-structure)
+  - [🎯 Key Architectural Views](#-key-architectural-views)
+    - [1. System Context (C4 Level 1)](#1-system-context-c4-level-1)
+    - [2. Container Architecture (C4 Level 2)](#2-container-architecture-c4-level-2)
+    - [3. Component Architecture (C4 Level 3)](#3-component-architecture-c4-level-3)
+    - [4. Code Architecture (C4 Level 4)](#4-code-architecture-c4-level-4)
+  - [🔧 Architecture Quality Attributes](#-architecture-quality-attributes)
+    - [Functional Requirements](#functional-requirements)
+    - [Quality Attributes](#quality-attributes)
+    - [Cross-Cutting Concerns](#cross-cutting-concerns)
+      - [Observability](#observability)
+      - [Security](#security)
+      - [Performance](#performance)
+  - [🚀 Architecture Decision Records](#-architecture-decision-records)
+    - [ADR Process](#adr-process)
+    - [Current ADRs](#current-adrs)
+    - [ADR Template](#adr-template)
+- [ADR-[NUMBER]: [TITLE]](#adr-number-title)
+  - [Status](#status)
+  - [Context](#context)
+  - [Decision](#decision)
+  - [Consequences](#consequences)
+  - [Alternatives Considered](#alternatives-considered)
+  - [References](#references)
+  - [🎨 Diagram Generation](#-diagram-generation)
+    - [Automated Diagram Generation](#automated-diagram-generation)
+- [Generate all diagrams](#generate-all-diagrams)
+- [Generate specific diagram](#generate-specific-diagram)
+- [Validate diagrams](#validate-diagrams)
+    - [PlantUML Integration](#plantuml-integration)
+    - [Interactive Diagrams](#interactive-diagrams)
+  - [📊 Metrics and Analytics](#-metrics-and-analytics)
+    - [Architecture Health Metrics](#architecture-health-metrics)
+- [docs/architecture/tools/metrics.py](#docsarchitecturetoolsmetricspy)
+    - [Quality Gates](#quality-gates)
+  - [🔄 Maintenance and Evolution](#-maintenance-and-evolution)
+    - [Documentation Updates](#documentation-updates)
+    - [Architecture Evolution](#architecture-evolution)
+    - [Team Collaboration](#team-collaboration)
+  - [📚 Related Documentation](#-related-documentation)
+    - [Internal References](#internal-references)
+    - [External References](#external-references)
+  - [🤝 Contributing to Architecture Documentation](#-contributing-to-architecture-documentation)
+    - [Contribution Guidelines](#contribution-guidelines)
+    - [Quality Standards](#quality-standards)
+    - [Review Process](#review-process)
+
 
 **Version**: 1.0.0 | **Framework**: C4 Model + Arc42 | **Last Updated**: 2025-10-10
 
@@ -375,4 +430,9 @@ def calculate_architecture_health():
 
 ---
 
-**This architecture documentation provides a comprehensive framework for understanding, maintaining, and evolving the FLEXT-gRPC system architecture. The combination of C4 Model, Arc42, ADRs, and automated diagram generation ensures that architecture knowledge is well-documented, current, and accessible to all stakeholders.**
+**This architecture documentation provides a comprehensive framework for understanding,
+     maintaining,
+     and evolving the FLEXT-gRPC system architecture. The combination of C4 Model, Arc42,
+     ADRs,
+     and automated diagram generation ensures that architecture knowledge is well-documented,
+     current, and accessible to all stakeholders.**

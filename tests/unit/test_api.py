@@ -43,10 +43,10 @@ class TestFlextGrpc:
         assert not grpc.validate_target("invalid")
         assert not grpc.validate_target("localhost:99999")
 
-    def test_parse_target(self) -> None:
-        """Test target parsing."""
+    def test_parse_address(self) -> None:
+        """Test address parsing."""
         grpc = FlextGrpc()
-        result = grpc.parse_target("localhost:50051")
+        result = grpc.parse_address("localhost:50051")
         assert result.is_success
         host, port = result.unwrap()
         assert host == "localhost"

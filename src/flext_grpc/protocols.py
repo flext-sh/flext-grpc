@@ -2,7 +2,7 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, FlextResult, FlextTypes
+from flext_core import FlextProtocols, FlextResult
 
 
 class FlextGrpcProtocols(FlextProtocols):
@@ -50,7 +50,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC server management operations."""
 
             def start_server(
-                self, host: str, port: int, services: FlextTypes.List | None = None
+                self, host: str, port: int, services: list[object] | None = None
             ) -> FlextResult[object]:
                 """Start gRPC server."""
                 ...
@@ -63,7 +63,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Add gRPC service to server."""
                 ...
 
-            def get_server_status(self) -> FlextResult[FlextTypes.Dict]:
+            def get_server_status(self) -> FlextResult[dict[str, object]]:
                 """Get gRPC server status information."""
                 ...
 
@@ -99,7 +99,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_client_status(
                 self, channel: object
-            ) -> FlextResult[FlextTypes.Dict]:
+            ) -> FlextResult[dict[str, object]]:
                 """Get gRPC client status information."""
                 ...
 
@@ -125,20 +125,20 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def handle_client_streaming(
-                self, stream: object, data_list: FlextTypes.List
+                self, stream: object, data_list: list[object]
             ) -> FlextResult[object]:
                 """Handle client-side streaming."""
                 ...
 
             def handle_server_streaming(
                 self, stream: object, request: object
-            ) -> FlextResult[FlextTypes.List]:
+            ) -> FlextResult[list[object]]:
                 """Handle server-side streaming."""
                 ...
 
             def handle_bidirectional_streaming(
                 self, stream: object
-            ) -> FlextResult[FlextTypes.Dict]:
+            ) -> FlextResult[dict[str, object]]:
                 """Handle bidirectional streaming."""
                 ...
 
@@ -146,7 +146,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC service definition and management."""
 
             def create_service(
-                self, service_name: str, methods: FlextTypes.Dict
+                self, service_name: str, methods: dict[str, object]
             ) -> FlextResult[object]:
                 """Create gRPC service definition."""
                 ...
@@ -161,9 +161,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Validate gRPC service definition."""
                 ...
 
-            def get_service_methods(
-                self, service: object
-            ) -> FlextResult[FlextTypes.StringList]:
+            def get_service_methods(self, service: object) -> FlextResult[list[str]]:
                 """Get list of service methods."""
                 ...
 
@@ -171,7 +169,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC channel management operations."""
 
             def create_channel(
-                self, target: str, options: FlextTypes.Dict | None = None
+                self, target: str, options: dict[str, object] | None = None
             ) -> FlextResult[object]:
                 """Create gRPC channel."""
                 ...
@@ -195,19 +193,19 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def collect_server_metrics(
                 self, server: object
-            ) -> FlextResult[FlextTypes.Dict]:
+            ) -> FlextResult[dict[str, object]]:
                 """Collect gRPC server metrics."""
                 ...
 
             def collect_client_metrics(
                 self, channel: object
-            ) -> FlextResult[FlextTypes.Dict]:
+            ) -> FlextResult[dict[str, object]]:
                 """Collect gRPC client metrics."""
                 ...
 
             def collect_stream_metrics(
                 self, stream: object
-            ) -> FlextResult[FlextTypes.Dict]:
+            ) -> FlextResult[dict[str, object]]:
                 """Collect gRPC stream metrics."""
                 ...
 
@@ -221,7 +219,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Stop automatic metrics collection."""
                 ...
 
-            def get_global_metrics(self) -> FlextResult[FlextTypes.Dict]:
+            def get_global_metrics(self) -> FlextResult[dict[str, object]]:
                 """Get global gRPC metrics."""
                 ...
 
@@ -230,14 +228,14 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC configuration management."""
 
             def create_server_config(
-                self, host: str, port: int, options: FlextTypes.Dict | None = None
-            ) -> FlextResult[FlextTypes.Dict]:
+                self, host: str, port: int, options: dict[str, object] | None = None
+            ) -> FlextResult[dict[str, object]]:
                 """Create gRPC server configuration."""
                 ...
 
             def create_client_config(
-                self, target: str, options: FlextTypes.Dict | None = None
-            ) -> FlextResult[FlextTypes.Dict]:
+                self, target: str, options: dict[str, object] | None = None
+            ) -> FlextResult[dict[str, object]]:
                 """Create gRPC client configuration."""
                 ...
 

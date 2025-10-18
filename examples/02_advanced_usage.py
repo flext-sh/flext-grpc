@@ -15,9 +15,10 @@ from __future__ import annotations
 
 from typing import cast
 
-from flext_core import FlextConstants, FlextResult, FlextTypes
+from flext_core import FlextConstants, FlextResult
 
 from flext_grpc import FlextGrpc, FlextGrpcConfig
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.typings import FlextGrpcTypings
 
@@ -45,10 +46,10 @@ class GrpcServerManager:
 
             # Create config through facade
             config_result = self.grpc.create_config(
-                host=FlextConstants.Platform.DEFAULT_HOST,
+                host=FlextGrpcConstants.Network.DEFAULT_HOST,
                 port=port,
                 max_workers=10 + (i * 5),  # Vary workers
-                timeout=FlextConstants.Network.DEFAULT_TIMEOUT,
+                timeout=FlextGrpcConstants.Network.DEFAULT_TIMEOUT,
             )
 
             if config_result.is_failure:
@@ -134,7 +135,7 @@ class AdvancedGrpcOperations:
         host: str = FlextConstants.Platform.DEFAULT_HOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
-        methods: FlextTypes.StringList | None = None,
+        methods: list[str] | None = None,
     ) -> FlextResult[dict]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
@@ -322,7 +323,7 @@ def example_5_error_handling() -> None:
         )
 
     # Test invalid stream creation (bypass type checking for intentional invalid input)
-    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore
     if invalid_stream_result.is_failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"

@@ -1,4 +1,40 @@
 # flext-grpc FLEXT Ecosystem Integration
+## Table of Contents
+
+- [flext-grpc FLEXT Ecosystem Integration](#flext-grpc-flext-ecosystem-integration)
+  - [Integration Overview](#integration-overview)
+    - [FLEXT Ecosystem Position](#flext-ecosystem-position)
+  - [Core Integration Patterns](#core-integration-patterns)
+    - [flext-core Foundation](#flext-core-foundation)
+    - [Dependency Injection Integration](#dependency-injection-integration)
+  - [FLEXT Service Integration](#flext-service-integration)
+    - [flext-auth Integration](#flext-auth-integration)
+- [Planned integration (requires protobuf fix)](#planned-integration-requires-protobuf-fix)
+    - [flext-observability Integration](#flext-observability-integration)
+- [Planned integration](#planned-integration)
+    - [flext-cli Integration](#flext-cli-integration)
+- [Planned integration](#planned-integration)
+  - [Data Integration Patterns](#data-integration-patterns)
+    - [Service-to-Service Communication](#service-to-service-communication)
+    - [Data Pipeline Integration](#data-pipeline-integration)
+  - [Configuration Integration](#configuration-integration)
+    - [Environment-Specific Configuration](#environment-specific-configuration)
+    - [Service Discovery Integration](#service-discovery-integration)
+- [Planned integration](#planned-integration)
+  - [Testing Integration](#testing-integration)
+    - [Test Framework Integration](#test-framework-integration)
+    - [Mock Integration](#mock-integration)
+  - [Production Integration](#production-integration)
+    - [Deployment Patterns](#deployment-patterns)
+    - [Monitoring Integration](#monitoring-integration)
+- [Planned integration](#planned-integration)
+  - [Migration and Upgrade Patterns](#migration-and-upgrade-patterns)
+    - [Version Compatibility](#version-compatibility)
+  - [Current Integration Status](#current-integration-status)
+    - [Working Integrations](#working-integrations)
+    - [Planned Integrations](#planned-integrations)
+    - [Integration Priorities](#integration-priorities)
+
 
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
@@ -6,7 +42,8 @@ Integration patterns and guidelines for flext-grpc within the FLEXT data integra
 
 ## Integration Overview
 
-flext-grpc serves as the gRPC communication layer for FLEXT ecosystem services, providing inter-service communication.
+flext-grpc serves as the gRPC communication layer for FLEXT ecosystem services,
+     providing inter-service communication.
 
 ### FLEXT Ecosystem Position
 
