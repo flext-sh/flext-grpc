@@ -1,4 +1,5 @@
 # flext-grpc FLEXT Ecosystem Integration
+
 ## Table of Contents
 
 - [flext-grpc FLEXT Ecosystem Integration](#flext-grpc-flext-ecosystem-integration)
@@ -10,9 +11,9 @@
   - [FLEXT Service Integration](#flext-service-integration)
     - [flext-auth Integration](#flext-auth-integration)
 - [Planned integration (requires protobuf fix)](#planned-integration-requires-protobuf-fix)
-    - [flext-observability Integration](#flext-observability-integration)
+  - [flext-observability Integration](#flext-observability-integration)
 - [Planned integration](#planned-integration)
-    - [flext-cli Integration](#flext-cli-integration)
+  - [flext-cli Integration](#flext-cli-integration)
 - [Planned integration](#planned-integration)
   - [Data Integration Patterns](#data-integration-patterns)
     - [Service-to-Service Communication](#service-to-service-communication)
@@ -35,7 +36,6 @@
     - [Planned Integrations](#planned-integrations)
     - [Integration Priorities](#integration-priorities)
 
-
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
 Integration patterns and guidelines for flext-grpc within the FLEXT data integration ecosystem.
@@ -43,7 +43,7 @@ Integration patterns and guidelines for flext-grpc within the FLEXT data integra
 ## Integration Overview
 
 flext-grpc serves as the gRPC communication layer for FLEXT ecosystem services,
-     providing inter-service communication.
+providing inter-service communication.
 
 ### FLEXT Ecosystem Position
 

@@ -1,4 +1,5 @@
 # flext-grpc Architecture
+
 ## Table of Contents
 
 - [flext-grpc Architecture](#flext-grpc-architecture)
@@ -35,7 +36,6 @@
     - [Security Architecture](#security-architecture)
     - [Service Discovery](#service-discovery)
 
-
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
 Architectural design and patterns for the flext-grpc library within the FLEXT ecosystem.
@@ -46,7 +46,7 @@ Architectural design and patterns for the flext-grpc library within the FLEXT ec
 
 flext-grpc follows Clean Architecture principles with clear layer separation and dependency inversion:
 
-``` python
+```python
 ┌─────────────────────────────────────────┐
 │              flext-grpc                 │
 ├─────────────────────────────────────────┤

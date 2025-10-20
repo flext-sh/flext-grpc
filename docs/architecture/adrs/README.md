@@ -1,4 +1,5 @@
 # Architecture Decision Records (ADRs)
+
 ## Table of Contents
 
 - [Architecture Decision Records (ADRs)](#architecture-decision-records-adrs)
@@ -25,10 +26,10 @@
 - [Create new ADR file](#create-new-adr-file)
 - [Update ADR number and title](#update-adr-number-and-title)
 - [Fill in the template](#fill-in-the-template)
-    - [Step 2: Research](#step-2-research)
-    - [Step 3: Decide](#step-3-decide)
-    - [Step 4: Document](#step-4-document)
-    - [Step 5: Implement](#step-5-implement)
+  - [Step 2: Research](#step-2-research)
+  - [Step 3: Decide](#step-3-decide)
+  - [Step 4: Document](#step-4-document)
+  - [Step 5: Implement](#step-5-implement)
   - [ADR Maintenance](#adr-maintenance)
     - [Review Schedule](#review-schedule)
     - [Updating ADRs](#updating-adrs)
@@ -43,7 +44,7 @@
 - [Validate ADR format](#validate-adr-format)
 - [Generate ADR index](#generate-adr-index)
 - [Check ADR status](#check-adr-status)
-    - [Integration with Development Workflow](#integration-with-development-workflow)
+  - [Integration with Development Workflow](#integration-with-development-workflow)
   - [ADR Categories](#adr-categories)
     - [Architectural Patterns](#architectural-patterns)
     - [Technology Choices](#technology-choices)
@@ -67,17 +68,16 @@
     - [ADR Submission Process](#adr-submission-process)
     - [ADR Review Checklist](#adr-review-checklist)
 
-
 **Version**: 1.0.0 | **Status**: Active | **Last Updated**: 2025-10-10
 
 Systematic documentation of architecture decisions for FLEXT-gRPC,
-     following the ADR (Architecture Decision Record) pattern.
+following the ADR (Architecture Decision Record) pattern.
 
 ## Overview
 
 Architecture Decision Records (ADRs) document important architectural decisions,
-     their context, consequences,
-     and rationale. They provide a historical record of design decisions and help teams understand the reasoning behind current architecture choices.
+their context, consequences,
+and rationale. They provide a historical record of design decisions and help teams understand the reasoning behind current architecture choices.
 
 ## ADR Process
 
@@ -389,4 +389,4 @@ See `template.md` for the complete ADR template.
 ---
 
 **ADRs provide a living record of architectural decisions,
-     ensuring that design rationale is preserved and architectural knowledge is accumulated over time. They help teams make better decisions by learning from past choices and their outcomes.**
+ensuring that design rationale is preserved and architectural knowledge is accumulated over time. They help teams make better decisions by learning from past choices and their outcomes.**

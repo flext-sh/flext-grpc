@@ -1,4 +1,5 @@
 # C4 Model - Context View (Level 1)
+
 ## Table of Contents
 
 - [C4 Model - Context View (Level 1)](#c4-model---context-view-level-1)
@@ -59,14 +60,13 @@
     - [Short Term (Next Month)](#short-term-next-month)
     - [Long Term (Next Quarter)](#long-term-next-quarter)
 
-
 **Context**: FLEXT-gRPC System Context and Scope
 **Version**: 1.0.0 | **Last Updated**: 2025-10-10
 
 ## Overview
 
 This document describes the system context and scope of FLEXT-gRPC,
-     showing how it fits into the broader FLEXT ecosystem and interacts with external systems.
+showing how it fits into the broader FLEXT ecosystem and interacts with external systems.
 
 ## System Purpose
 
@@ -408,5 +408,5 @@ Rel_Back(flext_ldap, flext_grpc, "May use", "For directory service integration")
 ---
 
 **This context view establishes FLEXT-gRPC's position within the FLEXT ecosystem and defines its scope,
-     stakeholders,
-     and quality requirements. The system provides a critical communication foundation for the FLEXT microservices platform while maintaining enterprise-grade quality and security standards.**
+stakeholders,
+and quality requirements. The system provides a critical communication foundation for the FLEXT microservices platform while maintaining enterprise-grade quality and security standards.**

@@ -20,7 +20,7 @@ from flext_core import FlextConstants, FlextResult
 from flext_grpc import FlextGrpc, FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
-from flext_grpc.typings import FlextGrpcTypings
+from flext_grpc.typings import FlextGrpcTypes
 
 
 class GrpcServerManager:
@@ -158,7 +158,7 @@ class AdvancedGrpcOperations:
 
         for stream_type in stream_types:
             # Cast to proper literal type
-            typed_stream_type = cast("FlextGrpcTypings.GrpcStreamType", stream_type)
+            typed_stream_type = cast("FlextGrpcTypes.GrpcStreamType", stream_type)
             stream_result = self.grpc.create_stream(
                 method_name=f"{stream_type.capitalize()}Method",
                 stream_type=typed_stream_type,
@@ -264,7 +264,7 @@ def example_4_streaming() -> None:
     created_streams = []
     for method_name, stream_type in stream_configs:
         # Cast to proper literal type
-        typed_stream_type = cast("FlextGrpcTypings.GrpcStreamType", stream_type)
+        typed_stream_type = cast("FlextGrpcTypes.GrpcStreamType", stream_type)
         stream_result = grpc.create_stream(
             method_name=method_name,
             stream_type=typed_stream_type,
@@ -323,7 +323,7 @@ def example_5_error_handling() -> None:
         )
 
     # Test invalid stream creation (bypass type checking for intentional invalid input)
-    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")  # type: ignore
+    invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.is_failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"

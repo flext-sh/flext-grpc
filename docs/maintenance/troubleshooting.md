@@ -1,4 +1,5 @@
 # Documentation Maintenance Troubleshooting Guide
+
 ## Table of Contents
 
 - [Documentation Maintenance Troubleshooting Guide](#documentation-maintenance-troubleshooting-guide)
@@ -7,32 +8,32 @@
 - [Quick health assessment](#quick-health-assessment)
 - [Check for critical issues](#check-for-critical-issues)
 - [Verify system components](#verify-system-components)
-    - [Common Symptoms and Solutions](#common-symptoms-and-solutions)
+  - [Common Symptoms and Solutions](#common-symptoms-and-solutions)
   - [🔍 Audit Issues](#-audit-issues)
     - [Symptom: Audit fails with import errors](#symptom-audit-fails-with-import-errors)
 - [Install missing dependencies](#install-missing-dependencies)
 - [Or install individually](#or-install-individually)
 - [Verify installation](#verify-installation)
-    - [Symptom: Audit reports low quality scores](#symptom-audit-reports-low-quality-scores)
+  - [Symptom: Audit reports low quality scores](#symptom-audit-reports-low-quality-scores)
 - [Check current configuration](#check-current-configuration)
 - [Run detailed audit](#run-detailed-audit)
 - [Adjust quality thresholds if needed](#adjust-quality-thresholds-if-needed)
-- [Edit docs/maintenance/config.json](#edit-docsmaintenanceconfigjson)
+- [Edit docs/maintenance/config.JSON](#edit-docsmaintenanceconfigjson)
 - [Or fix content issues](#or-fix-content-issues)
-    - [Symptom: Audit finds false positives](#symptom-audit-finds-false-positives)
+  - [Symptom: Audit finds false positives](#symptom-audit-finds-false-positives)
 - [Create custom audit rules](#create-custom-audit-rules)
 - [docs/maintenance/custom_rules.py](#docsmaintenancecustom_rulespy)
   - [🔗 Validation Issues](#-validation-issues)
     - [Symptom: Link validation times out](#symptom-link-validation-times-out)
 - [Increase timeout in config](#increase-timeout-in-config)
-- [Edit docs/maintenance/config.json](#edit-docsmaintenanceconfigjson)
+- [Edit docs/maintenance/config.JSON](#edit-docsmaintenanceconfigjson)
 - [Or exclude problematic domains](#or-exclude-problematic-domains)
-    - [Symptom: False broken link reports](#symptom-false-broken-link-reports)
+  - [Symptom: False broken link reports](#symptom-false-broken-link-reports)
 - [Add to ignore patterns](#add-to-ignore-patterns)
-- [docs/maintenance/config.json](#docsmaintenanceconfigjson)
-    - [Symptom: Style validation too strict](#symptom-style-validation-too-strict)
+- [docs/maintenance/config.JSON](#docsmaintenanceconfigjson)
+  - [Symptom: Style validation too strict](#symptom-style-validation-too-strict)
 - [Adjust style rules](#adjust-style-rules)
-- [docs/maintenance/config.json](#docsmaintenanceconfigjson)
+- [docs/maintenance/config.JSON](#docsmaintenanceconfigjson)
   - [🔧 Optimization Issues](#-optimization-issues)
     - [Symptom: Optimization doesn't apply changes](#symptom-optimization-doesnt-apply-changes)
 - [Check file permissions](#check-file-permissions)
@@ -40,16 +41,16 @@
 - [Fix permissions](#fix-permissions)
 - [Run without dry-run](#run-without-dry-run)
 - [Or run with explicit file](#or-run-with-explicit-file)
-    - [Symptom: Table of contents not generating](#symptom-table-of-contents-not-generating)
+  - [Symptom: Table of contents not generating](#symptom-table-of-contents-not-generating)
 - [Check heading count](#check-heading-count)
 - [Adjust TOC settings](#adjust-toc-settings)
-- [docs/maintenance/config.json](#docsmaintenanceconfigjson)
+- [docs/maintenance/config.JSON](#docsmaintenanceconfigjson)
   - [🔄 Synchronization Issues](#-synchronization-issues)
     - [Symptom: Git operations fail](#symptom-git-operations-fail)
 - [Check git status](#check-git-status)
 - [Configure git user (if needed)](#configure-git-user-if-needed)
 - [Check repository state](#check-repository-state)
-    - [Symptom: Merge conflicts in documentation](#symptom-merge-conflicts-in-documentation)
+  - [Symptom: Merge conflicts in documentation](#symptom-merge-conflicts-in-documentation)
 - [Check for conflicts](#check-for-conflicts)
 - [Resolve manually or use automated resolution](#resolve-manually-or-use-automated-resolution)
 - [Create backup before resolving](#create-backup-before-resolving)
@@ -58,7 +59,7 @@
 - [Ensure reports directory exists](#ensure-reports-directory-exists)
 - [Run audit first](#run-audit-first)
 - [Then generate report](#then-generate-report)
-    - [Symptom: Dashboard not displaying correctly](#symptom-dashboard-not-displaying-correctly)
+  - [Symptom: Dashboard not displaying correctly](#symptom-dashboard-not-displaying-correctly)
 - [Check dashboard file](#check-dashboard-file)
 - [Regenerate dashboard](#regenerate-dashboard)
 - [Open in browser](#open-in-browser)
@@ -67,7 +68,7 @@
 - [Complete system reset](#complete-system-reset)
 - [Reinstall dependencies](#reinstall-dependencies)
 - [Verify system integrity](#verify-system-integrity)
-    - [Symptom: Data corruption in reports](#symptom-data-corruption-in-reports)
+  - [Symptom: Data corruption in reports](#symptom-data-corruption-in-reports)
 - [Clear corrupted reports](#clear-corrupted-reports)
 - [Restore from backup](#restore-from-backup)
 - [Regenerate reports](#regenerate-reports)
@@ -76,10 +77,10 @@
 - [Enable debug logging](#enable-debug-logging)
 - [Run with verbose output](#run-with-verbose-output)
 - [Check debug logs](#check-debug-logs)
-    - [Performance Issues](#performance-issues)
+  - [Performance Issues](#performance-issues)
 - [Profile execution time](#profile-execution-time)
 - [Check for bottlenecks](#check-for-bottlenecks)
-    - [Memory Issues](#memory-issues)
+  - [Memory Issues](#memory-issues)
 - [Monitor memory usage](#monitor-memory-usage)
 - [Kill if needed](#kill-if-needed)
   - [🆘 Getting Help](#-getting-help)
@@ -89,20 +90,20 @@
 - [Repository status](#repository-status)
 - [File system check](#file-system-check)
 - [Network connectivity](#network-connectivity)
-    - [Log Analysis](#log-analysis)
+  - [Log Analysis](#log-analysis)
 - [Check recent errors](#check-recent-errors)
 - [Analyze performance](#analyze-performance)
 - [Check for patterns](#check-for-patterns)
-    - [Community Support](#community-support)
+  - [Community Support](#community-support)
   - [🚀 Preventive Maintenance](#-preventive-maintenance)
     - [Regular Tasks](#regular-tasks)
 - [Weekly system health](#weekly-system-health)
 - [Monthly deep analysis](#monthly-deep-analysis)
 - [Daily backup](#daily-backup)
-    - [Configuration Validation](#configuration-validation)
+  - [Configuration Validation](#configuration-validation)
 - [Validate configuration](#validate-configuration)
 - [Check for deprecated settings](#check-for-deprecated-settings)
-    - [Dependency Updates](#dependency-updates)
+  - [Dependency Updates](#dependency-updates)
 - [Update dependencies](#update-dependencies)
 - [Check for security vulnerabilities](#check-for-security-vulnerabilities)
 - [Test after updates](#test-after-updates)
@@ -111,14 +112,13 @@
 - [From automatic backup](#from-automatic-backup)
 - [From git history](#from-git-history)
 - [From manual backup](#from-manual-backup)
-    - [Configuration Recovery](#configuration-recovery)
+  - [Configuration Recovery](#configuration-recovery)
 - [Reset to defaults](#reset-to-defaults)
 - [Merge with custom settings](#merge-with-custom-settings)
 - [Edit manually or use merge tool](#edit-manually-or-use-merge-tool)
-    - [System Recovery](#system-recovery)
+  - [System Recovery](#system-recovery)
 - [Complete rebuild](#complete-rebuild)
 - [Verify recovery](#verify-recovery)
-
 
 **Version**: 1.0.0 | **Last Updated**: 2025-10-10
 
@@ -154,7 +154,7 @@ print('✅ All components importable')
 
 **Error:**
 
-``` yaml
+```yaml
 ModuleNotFoundError: No module named 'frontmatter'
 ```
 
@@ -225,7 +225,7 @@ CUSTOM_AUDIT_RULES = {
 
 **Error:**
 
-``` yaml
+```yaml
 TimeoutError: Request timed out
 ```
 
@@ -349,7 +349,7 @@ grep -c "^#" docs/README.md
 
 **Error:**
 
-``` yaml
+```yaml
 GitCommandError: 'git commit' failed
 ```
 
@@ -390,7 +390,7 @@ make docs-backup
 
 **Error:**
 
-``` yaml
+```yaml
 FileNotFoundError: No audit report found
 ```
 
@@ -561,14 +561,14 @@ grep -c "failed\|error" docs/maintenance/logs/*.log
 
 3. **Report Template**
 
-``` yaml
-   Issue: [Brief description]
-   Steps to reproduce: [Commands executed]
-   Expected behavior: [What should happen]
-   Actual behavior: [What actually happens]
-   System info: [Python version, OS, etc.]
-   Logs: [Relevant log excerpts]
-   ```
+```yaml
+Issue: [Brief description]
+Steps to reproduce: [Commands executed]
+Expected behavior: [What should happen]
+Actual behavior: [What actually happens]
+System info: [Python version, OS, etc.]
+Logs: [Relevant log excerpts]
+```
 
 ## 🚀 Preventive Maintenance
 
@@ -653,5 +653,5 @@ make docs-health
 ---
 
 **Remember**: Most issues can be resolved by checking logs, verifying configuration,
-     and ensuring dependencies are installed. For persistent problems,
-     gather diagnostic information and create a detailed issue report.
+and ensuring dependencies are installed. For persistent problems,
+gather diagnostic information and create a detailed issue report.

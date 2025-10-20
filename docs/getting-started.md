@@ -1,4 +1,5 @@
 # Getting Started with flext-grpc
+
 ## Table of Contents
 
 - [Getting Started with flext-grpc](#getting-started-with-flext-grpc)
@@ -13,11 +14,11 @@
   - [Basic Usage](#basic-usage)
     - [Server Creation](#server-creation)
 - [Create gRPC server](#create-grpc-server)
-    - [Client Creation](#client-creation)
+  - [Client Creation](#client-creation)
 - [Create gRPC client](#create-grpc-client)
-    - [Platform Management](#platform-management)
+  - [Platform Management](#platform-management)
 - [Create platform for advanced operations](#create-platform-for-advanced-operations)
-    - [Configuration](#configuration)
+  - [Configuration](#configuration)
 - [Create configuration with validation](#create-configuration-with-validation)
   - [Development Setup](#development-setup)
     - [Development Commands](#development-commands)
@@ -25,14 +26,13 @@
 - [Check test coverage (currently 39%)](#check-test-coverage-currently-39)
 - [Type checking](#type-checking)
 - [Code linting](#code-linting)
-    - [Quality Status Check](#quality-status-check)
+  - [Quality Status Check](#quality-status-check)
 - [Verify imports work](#verify-imports-work)
 - [Test basic functionality](#test-basic-functionality)
   - [Current Limitations](#current-limitations)
     - [Test Coverage](#test-coverage)
     - [Known Issues](#known-issues)
   - [Next Steps](#next-steps)
-
 
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 

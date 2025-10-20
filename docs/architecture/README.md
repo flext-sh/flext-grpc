@@ -1,4 +1,5 @@
 # FLEXT-gRPC Architecture Documentation
+
 ## Table of Contents
 
 - [FLEXT-gRPC Architecture Documentation](#flext-grpc-architecture-documentation)
@@ -36,12 +37,12 @@
 - [Generate all diagrams](#generate-all-diagrams)
 - [Generate specific diagram](#generate-specific-diagram)
 - [Validate diagrams](#validate-diagrams)
-    - [PlantUML Integration](#plantuml-integration)
-    - [Interactive Diagrams](#interactive-diagrams)
+  - [PlantUML Integration](#plantuml-integration)
+  - [Interactive Diagrams](#interactive-diagrams)
   - [📊 Metrics and Analytics](#-metrics-and-analytics)
     - [Architecture Health Metrics](#architecture-health-metrics)
 - [docs/architecture/tools/metrics.py](#docsarchitecturetoolsmetricspy)
-    - [Quality Gates](#quality-gates)
+  - [Quality Gates](#quality-gates)
   - [🔄 Maintenance and Evolution](#-maintenance-and-evolution)
     - [Documentation Updates](#documentation-updates)
     - [Architecture Evolution](#architecture-evolution)
@@ -53,7 +54,6 @@
     - [Contribution Guidelines](#contribution-guidelines)
     - [Quality Standards](#quality-standards)
     - [Review Process](#review-process)
-
 
 **Version**: 1.0.0 | **Framework**: C4 Model + Arc42 | **Last Updated**: 2025-10-10
 
@@ -431,8 +431,8 @@ def calculate_architecture_health():
 ---
 
 **This architecture documentation provides a comprehensive framework for understanding,
-     maintaining,
-     and evolving the FLEXT-gRPC system architecture. The combination of C4 Model, Arc42,
-     ADRs,
-     and automated diagram generation ensures that architecture knowledge is well-documented,
-     current, and accessible to all stakeholders.**
+maintaining,
+and evolving the FLEXT-gRPC system architecture. The combination of C4 Model, Arc42,
+ADRs,
+and automated diagram generation ensures that architecture knowledge is well-documented,
+current, and accessible to all stakeholders.**

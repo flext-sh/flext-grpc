@@ -1,4 +1,5 @@
 # flext-grpc Troubleshooting
+
 ## Table of Contents
 
 - [flext-grpc Troubleshooting](#flext-grpc-troubleshooting)
@@ -7,8 +8,8 @@
 - [or](#or)
 - [1. Regenerate protobuf files](#1-regenerate-protobuf-files)
 - [2. Fix import paths in generated files](#2-fix-import-paths-in-generated-files)
-- [Changed: import flext_grpc_pb2 as flext__grpc__pb2](#changed-import-flext_grpc_pb2-as-flext__grpc__pb2)
-- [To: from . import flext_grpc_pb2 as flext__grpc__pb2](#to-from--import-flext_grpc_pb2-as-flext__grpc__pb2)
+- [Changed: import flext_grpc_pb2 as flext**grpc**pb2](#changed-import-flext_grpc_pb2-as-flext__grpc__pb2)
+- [To: from . import flext_grpc_pb2 as flext**grpc**pb2](#to-from--import-flext_grpc_pb2-as-flext__grpc__pb2)
   - [Current Issues](#current-issues)
     - [Test Execution Investigation Required](#test-execution-investigation-required)
 - [Check test discovery](#check-test-discovery)
@@ -17,8 +18,8 @@
   - [Common Development Issues](#common-development-issues)
     - [Import Path Problems](#import-path-problems)
 - [or use poetry run for installed package](#or-use-poetry-run-for-installed-package)
-    - [gRPC Version Conflicts](#grpc-version-conflicts)
-    - [Server Startup Issues](#server-startup-issues)
+  - [gRPC Version Conflicts](#grpc-version-conflicts)
+  - [Server Startup Issues](#server-startup-issues)
 - [Check server state](#check-server-state)
 - [Attempt startup with error handling](#attempt-startup-with-error-handling)
   - [Development Best Practices](#development-best-practices)
@@ -32,7 +33,6 @@
   - [Getting Help](#getting-help)
   - [Future Improvements](#future-improvements)
 
-
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
 Common issues and solutions for flext-grpc development and deployment.
@@ -45,7 +45,7 @@ Common issues and solutions for flext-grpc development and deployment.
 
 **Error Messages**:
 
-``` yaml
+```yaml
 ModuleNotFoundError: No module named 'flext_grpc_pb2'
 # or
 The grpc package installed is at version X.X.X, but the generated code depends on grpcio>=Y.Y.Y
@@ -233,4 +233,4 @@ Planned enhancements to reduce troubleshooting needs:
 ---
 
 For development workflow and architectural guidance,
-     see [Development](development.md) and [Architecture](architecture.md) documentation.
+see [Development](development.md) and [Architecture](architecture.md) documentation.

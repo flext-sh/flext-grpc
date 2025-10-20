@@ -11,13 +11,13 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, Generic, Self, TypeVar
+from typing import Any, Self, TypeVar
 
 from flext_core import FlextModels, FlextResult, FlextService
 from pydantic import BaseModel, Field, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants
-from flext_grpc.typings import FlextGrpcTypings
+from flext_grpc.typings import FlextGrpcTypes
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -42,7 +42,7 @@ class EntityValidator(BaseModel):
         return value
 
     @classmethod
-    def validate_list_not_empty(cls, value: list, field_name: str) -> list:
+    def validate_list_not_empty(cls, value: list[Any], field_name: str) -> list[Any]:
         """Generic list validation."""
         if not value:
             msg = f"{field_name} cannot be empty"
@@ -50,31 +50,37 @@ class EntityValidator(BaseModel):
         return value
 
 
-class StateMachine[T: BaseModel](BaseModel):
+class StateMachine(BaseModel):
     """Generic state machine with functional transitions."""
 
     def transition(
         self, current: str, target: str, allowed_transitions: dict[str, set[str]]
-    ) -> FlextResult[T]:
+    ) -> FlextResult[Self]:
         """Generic state transition with validation."""
         if (
             current not in allowed_transitions
             or target not in allowed_transitions[current]
         ):
             return FlextResult.fail(f"Invalid transition from {current} to {target}")
-        return FlextResult.ok(self.model_copy(update={"state": target}))  # type: ignore
+        updated = self.model_copy(update={"state": target})
+        return FlextResult.ok(updated)
 
 
-class FlextGrpcEntities(FlextService):
+class FlextGrpcEntities(FlextService[Any]):
     """Generic gRPC entity system with SOLID principles and minimal code."""
 
-    class Entity(FlextModels.Entity, Generic[T]):
+    class Entity(FlextModels.Entity):
         """Generic base entity with functional patterns."""
 
         created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
-        def copy_with(self, **kwargs: Any) -> FlextResult[Self]:
-            """Functional copy using FlextResult."""
+        def copy_with(self, **kwargs: str | int | bool | None) -> FlextResult[Self]:
+            """Functional copy using FlextResult.
+
+            Args:
+                **kwargs: Field updates for the entity
+
+            """
             try:
                 return FlextResult.ok(self.model_copy(update=kwargs))
             except Exception as e:
@@ -84,20 +90,20 @@ class FlextGrpcEntities(FlextService):
             """Override in subclasses for specific validation."""
             return FlextResult.ok(None)
 
-    class Channel(Entity[dict[str, Any]], StateMachine["FlextGrpcEntities.Channel"]):
+    class Channel(Entity, StateMachine):
         """Generic gRPC channel with state machine delegation."""
 
         target: str = ""
-        state: FlextGrpcTypings.GrpcChannelState = "idle"
+        state: FlextGrpcTypes.GrpcChannelState = "idle"
         options: dict[str, Any] = Field(default_factory=dict)
-        grpc_channel: Any = None
+        grpc_channel: object = None
 
         @field_validator("state")
         @classmethod
         def validate_state(cls, v: str) -> str:
             """Delegate state validation."""
             return EntityValidator.validate_enum(
-                v, FlextGrpcConstants.Literals.CHANNEL_STATES, "state"
+                v, set(FlextGrpcConstants.Literals.CHANNEL_STATES), "state"
             )
 
         def validate_business_rules(self) -> FlextResult[None]:
@@ -122,21 +128,24 @@ class FlextGrpcEntities(FlextService):
             """Transition to idle."""
             return FlextResult.ok(self.model_copy(update={"state": "idle"}))
 
-    class Server(Entity[list], StateMachine["FlextGrpcEntities.Server"]):
+    class Server(Entity, StateMachine):
         """Generic gRPC server with state machine and validation delegation."""
 
         host: str = FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST
         port: int = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
-        state: FlextGrpcTypings.GrpcServerState = "stopped"
+        state: FlextGrpcTypes.GrpcServerState = "stopped"
         max_workers: int = 10
-        services: list = Field(default_factory=list)
-        grpc_server: Any = None
+        services: list[Any] = Field(default_factory=list)
+        grpc_server: object = None
 
         def validate_business_rules(self) -> FlextResult[None]:
             """Delegate validation to generic validators."""
             if not self.host.strip():
                 return FlextResult.fail("Server host cannot be empty")
-            if not (1 <= self.port <= 65535):
+            # Port range validation using IANA standard range
+            min_port = 1
+            max_port = 65535
+            if not (min_port <= self.port <= max_port):
                 return FlextResult.fail(f"Invalid port: {self.port}")
             if self.max_workers < 1:
                 return FlextResult.fail("Max workers must be >= 1")
@@ -160,13 +169,18 @@ class FlextGrpcEntities(FlextService):
                 return FlextResult.fail(f"Cannot mark stopped from {self.state}")
             return FlextResult.ok(self.model_copy(update={"state": "stopped"}))
 
-        def add_service(self, service: Any) -> FlextResult[Self]:
-            """Add service functionally."""
+        def add_service(self, service: object) -> FlextResult[Self]:
+            """Add service functionally.
+
+            Args:
+                service: gRPC service object (dynamic type from grpc library)
+
+            """
             return FlextResult.ok(
                 self.model_copy(update={"services": [*self.services, service]})
             )
 
-    class Service(Entity[list[str]]):
+    class Service(Entity):
         """Generic gRPC service with validation delegation."""
 
         name: str = ""
@@ -199,12 +213,12 @@ class FlextGrpcEntities(FlextService):
                 self.model_copy(update={"methods": [*self.methods, method_name]})
             )
 
-    class Client(Entity[dict[str, Any]]):
+    class Client(Entity):
         """Generic gRPC client with channel delegation."""
 
-        channel: FlextGrpcEntities.Channel | None = None
+        channel: Channel | None = None  # noqa: F821
         options: dict[str, Any] = Field(default_factory=dict)
-        grpc_stub: Any = None
+        grpc_stub: object = None
 
         def validate_business_rules(self) -> FlextResult[None]:
             """Delegate validation."""
@@ -217,12 +231,12 @@ class FlextGrpcEntities(FlextService):
             channel = FlextGrpcEntities.Channel(target=target, state="idle")
             return FlextResult.ok(self.model_copy(update={"channel": channel}))
 
-    class GrpcStream(Entity[str]):
+    class GrpcStream(Entity):
         """Generic gRPC stream with validation delegation."""
 
         method_name: str = ""
-        stream_type: FlextGrpcTypings.GrpcStreamType = "unary"
-        grpc_stub: Any = None
+        stream_type: FlextGrpcTypes.GrpcStreamType = "unary"
+        grpc_stub: object = None
 
         @field_validator("method_name")
         @classmethod
@@ -235,7 +249,7 @@ class FlextGrpcEntities(FlextService):
         def validate_stream_type(cls, v: str) -> str:
             """Delegate stream type validation."""
             return EntityValidator.validate_enum(
-                v, FlextGrpcConstants.Literals.STREAM_TYPES, "stream_type"
+                v, set(FlextGrpcConstants.Literals.STREAM_TYPES), "stream_type"
             )
 
 

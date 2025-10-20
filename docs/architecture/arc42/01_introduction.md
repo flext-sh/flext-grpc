@@ -1,4 +1,5 @@
 # 1. Introduction and Goals
+
 ## Table of Contents
 
 - [1. Introduction and Goals](#1-introduction-and-goals)
@@ -36,7 +37,6 @@
     - [Technical Assumptions](#technical-assumptions)
     - [Business Assumptions](#business-assumptions)
     - [Environmental Assumptions](#environmental-assumptions)
-
 
 ## 1.1 Purpose and Scope
 
@@ -90,29 +90,33 @@
 
 ### Primary Stakeholders
 
-| Stakeholder              | Role            | Responsibilities                         | Concerns                                 |
-| ------------------------ | --------------- | ---------------------------------------- | ---------------------------------------- |
-| **FLEXT Developers**     | End Users       | Implement microservices using FLEXT-gRPC | API usability,
+| Stakeholder          | Role      | Responsibilities                         | Concerns       |
+| -------------------- | --------- | ---------------------------------------- | -------------- |
+| **FLEXT Developers** | End Users | Implement microservices using FLEXT-gRPC | API usability, |
+
      performance, reliability  |
-| **System Architects**    | Decision Makers | Design microservices architecture        | Scalability,
-     security, compliance        |
-| **DevOps Engineers**     | Infrastructure  | Deploy and operate FLEXT-gRPC services   | Monitoring,
-     troubleshooting, scalability |
-| **Platform Maintainers** | Owners          | Maintain and evolve FLEXT-gRPC           | Code quality,
-     ecosystem compatibility    |
+
+| **System Architects** | Decision Makers | Design microservices architecture | Scalability,
+security, compliance |
+| **DevOps Engineers** | Infrastructure | Deploy and operate FLEXT-gRPC services | Monitoring,
+troubleshooting, scalability |
+| **Platform Maintainers** | Owners | Maintain and evolve FLEXT-gRPC | Code quality,
+ecosystem compatibility |
 
 ### Secondary Stakeholders
 
-| Stakeholder               | Role       | Responsibilities                | Concerns                                          |
-| ------------------------- | ---------- | ------------------------------- | ------------------------------------------------- |
-| **Quality Assurance**     | Validators | Test and validate functionality | Testability,
+| Stakeholder           | Role       | Responsibilities                | Concerns     |
+| --------------------- | ---------- | ------------------------------- | ------------ |
+| **Quality Assurance** | Validators | Test and validate functionality | Testability, |
+
      reliability, performance             |
-| **Security Team**         | Guardians  | Ensure security compliance      | Vulnerabilities,
-     audit trails, compliance         |
-| **Product Managers**      | Planners   | Define feature roadmap          | User needs,
-     market requirements, timelines        |
-| **Enterprise Architects** | Overseers  | Ensure enterprise standards     | Governance,
-     standards compliance, risk management |
+
+| **Security Team** | Guardians | Ensure security compliance | Vulnerabilities,
+audit trails, compliance |
+| **Product Managers** | Planners | Define feature roadmap | User needs,
+market requirements, timelines |
+| **Enterprise Architects** | Overseers | Ensure enterprise standards | Governance,
+standards compliance, risk management |
 
 ## 1.4 Quality Goals
 
@@ -163,14 +167,16 @@
 
 ### Technical Terms
 
-| Term                     | Definition                                                                                        |
-| ------------------------ | ------------------------------------------------------------------------------------------------- |
-| **gRPC**                 | Google Remote Procedure Call - high-performance RPC framework                                     |
-| **Protocol Buffers**     | Google's language-neutral, platform-neutral,
+| Term                 | Definition                                                    |
+| -------------------- | ------------------------------------------------------------- |
+| **gRPC**             | Google Remote Procedure Call - high-performance RPC framework |
+| **Protocol Buffers** | Google's language-neutral, platform-neutral,                  |
+
      extensible mechanism for serializing structured data |
-| **Railway Pattern**      | Functional error handling pattern using Result types                                              |
-| **Clean Architecture**   | Architectural pattern separating business logic from infrastructure concerns                      |
-| **Domain-Driven Design** | Software development approach focusing on business domain modeling                                |
+
+| **Railway Pattern** | Functional error handling pattern using Result types |
+| **Clean Architecture** | Architectural pattern separating business logic from infrastructure concerns |
+| **Domain-Driven Design** | Software development approach focusing on business domain modeling |
 
 ### FLEXT Ecosystem Terms
 
@@ -263,4 +269,4 @@
 ---
 
 **This introduction establishes FLEXT-gRPC's purpose, scope, stakeholders,
-     and quality goals within the FLEXT ecosystem. The system provides a critical communication foundation for enterprise microservices while maintaining architectural integrity and operational excellence.**
+and quality goals within the FLEXT ecosystem. The system provides a critical communication foundation for enterprise microservices while maintaining architectural integrity and operational excellence.**

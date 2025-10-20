@@ -1,4 +1,5 @@
 # ADR-003: Protocol Buffer Generation Strategy
+
 ## Table of Contents
 
 - [ADR-003: Protocol Buffer Generation Strategy](#adr-003-protocol-buffer-generation-strategy)
@@ -25,12 +26,12 @@
     - [Version Pinning Strategy](#version-pinning-strategy)
 - [pyproject.toml](#pyprojecttoml)
 - [Separate dev dependencies if needed](#separate-dev-dependencies-if-needed)
-    - [Docker Generation Environment](#docker-generation-environment)
+  - [Docker Generation Environment](#docker-generation-environment)
 - [Dockerfile.protobuf](#dockerfileprotobuf)
 - [Install specific versions](#install-specific-versions)
 - [Copy proto files](#copy-proto-files)
 - [Generate code](#generate-code)
-    - [CI/CD Integration](#cicd-integration)
+  - [CI/CD Integration](#cicd-integration)
 - [.github/workflows/generate-proto.yml](#githubworkflowsgenerate-protoyml)
   - [Risks and Mitigations](#risks-and-mitigations)
     - [Version Lock-in Risk](#version-lock-in-risk)
@@ -43,7 +44,6 @@
   - [References](#references)
   - [Notes](#notes)
 
-
 ## Status
 
 Blocked
@@ -51,7 +51,7 @@ Blocked
 ## Context
 
 FLEXT-gRPC needs to provide Protocol Buffer definitions for gRPC services,
-     but we're facing version compatibility issues between the generated protobuf files and the runtime dependencies.
+but we're facing version compatibility issues between the generated protobuf files and the runtime dependencies.
 
 The current situation:
 
@@ -328,11 +328,10 @@ jobs:
 ## Notes
 
 This ADR is currently BLOCKED due to the immediate need to resolve import errors. The protobuf version mismatch is preventing the library from functioning,
-    
 
      which blocks all other development work.
 
 Once resolved,
-     this ADR will be marked as ACCEPTED and implementation will proceed according to the plan outlined above.
+this ADR will be marked as ACCEPTED and implementation will proceed according to the plan outlined above.
 
 The Docker-based generation approach provides the most reliable solution for version compatibility while maintaining development workflow efficiency.

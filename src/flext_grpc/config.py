@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Any
+import re
 
 from flext_core import FlextConstants, FlextResult
 from pydantic import BaseModel, Field, field_validator, model_validator
@@ -81,8 +81,6 @@ class GrpcNetworkConfig(BaseModel):
             msg = "Host cannot be empty"
             raise ValueError(msg)
         # Allow localhost, IP addresses, and domain names
-        import re
-
         if not re.match(r"^(localhost|[\w.-]+|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$", v):
             msg = "Invalid host format"
             raise ValueError(msg)
@@ -205,7 +203,7 @@ class FlextGrpcConfig(BaseModel):
         streaming: GrpcStreamingConfig | None = None,
         client: GrpcClientConfig | None = None,
         monitoring: GrpcMonitoringConfig | None = None,
-        **kwargs: Any,
+        **kwargs: object,
     ) -> None:
         """Initialize with backward compatibility for legacy fields."""
         # Handle legacy field overrides
@@ -286,7 +284,8 @@ class FlextGrpcConfig(BaseModel):
                 return FlextResult.fail("RPC limit too high for worker count")
 
             # Cross-validation: Network and security
-            if self.security.tls_enabled and self.network.port == 80:
+            http_port = 80  # Standard HTTP port
+            if self.security.tls_enabled and self.network.port == http_port:
                 return FlextResult.fail("TLS enabled but using HTTP port")
 
             return FlextResult.ok(None)
@@ -299,7 +298,7 @@ class FlextGrpcConfig(BaseModel):
         try:
             config = cls(
                 network=GrpcNetworkConfig(
-                    host="0.0.0.0",
+                    host="0.0.0.0",  # noqa: S104  Production: bind to all interfaces
                     port=50051,
                     max_connections=1000,
                     keepalive_time=30,

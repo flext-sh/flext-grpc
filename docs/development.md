@@ -1,4 +1,5 @@
 # flext-grpc Development Guide
+
 ## Table of Contents
 
 - [flext-grpc Development Guide](#flext-grpc-development-guide)
@@ -8,38 +9,38 @@
 - [Clone the repository](#clone-the-repository)
 - [Complete development setup](#complete-development-setup)
 - [Verify setup](#verify-setup)
-    - [Development Environment](#development-environment)
+  - [Development Environment](#development-environment)
   - [Development Workflow](#development-workflow)
     - [Essential Commands](#essential-commands)
 - [Development lifecycle](#development-lifecycle)
 - [Code quality](#code-quality)
 - [Testing](#testing)
 - [Development utilities](#development-utilities)
-    - [Quality Gates](#quality-gates)
+  - [Quality Gates](#quality-gates)
 - [MANDATORY before any commit](#mandatory-before-any-commit)
 - [Individual checks](#individual-checks)
   - [Code Standards](#code-standards)
     - [FLEXT-Core Compliance](#flext-core-compliance)
 - [✅ CORRECT - Railway-oriented programming](#-correct---railway-oriented-programming)
 - [❌ FORBIDDEN - Exception-based error handling](#-forbidden---exception-based-error-handling)
-    - [Type Annotations](#type-annotations)
+  - [Type Annotations](#type-annotations)
 - [Protocol for dependency injection](#protocol-for-dependency-injection)
 - [Generic service class](#generic-service-class)
-    - [Domain Patterns](#domain-patterns)
+  - [Domain Patterns](#domain-patterns)
   - [Testing Standards](#testing-standards)
     - [Test Structure](#test-structure)
     - [Test Writing Guidelines](#test-writing-guidelines)
     - [Test Markers](#test-markers)
 - [Run specific test categories](#run-specific-test-categories)
-- [pytest -m unit              # Unit tests only](#pytest--m-unit---------------unit-tests-only)
-- [pytest -m "not slow"        # Exclude slow tests](#pytest--m-not-slow---------exclude-slow-tests)
-- [pytest -m "integration"     # Integration tests only](#pytest--m-integration------integration-tests-only)
+- [pytest -m unit # Unit tests only](#pytest--m-unit---------------unit-tests-only)
+- [pytest -m "not slow" # Exclude slow tests](#pytest--m-not-slow---------exclude-slow-tests)
+- [pytest -m "integration" # Integration tests only](#pytest--m-integration------integration-tests-only)
   - [Architecture Guidelines](#architecture-guidelines)
     - [Layer Separation](#layer-separation)
 - [Domain Layer - No dependencies on other layers](#domain-layer---no-dependencies-on-other-layers)
 - [Service Layer - Depends only on Domain](#service-layer---depends-only-on-domain)
 - [Infrastructure Layer - Depends on Domain + Service](#infrastructure-layer---depends-on-domain--service)
-    - [Dependency Injection](#dependency-injection)
+  - [Dependency Injection](#dependency-injection)
   - [Documentation Standards](#documentation-standards)
     - [Docstring Requirements](#docstring-requirements)
     - [Code Comments](#code-comments)
@@ -67,12 +68,11 @@
 - [- Use FlextResult for all fallible operations](#--use-flextresult-for-all-fallible-operations)
 - [Run specific test file](#run-specific-test-file)
 - [Debug test with print statements](#debug-test-with-print-statements)
-    - [Development Tools](#development-tools)
+  - [Development Tools](#development-tools)
 - [Auto-format code](#auto-format-code)
 - [Check specific file](#check-specific-file)
 - [Python debugger](#python-debugger)
 - [REPL with project loaded](#repl-with-project-loaded)
-
 
 **Version**: 0.9.9 RC | **Updated**: September 17, 2025
 
@@ -307,7 +307,7 @@ class FlextGrpcServer(FlextModels.Entity):
 
 ### Test Structure
 
-``` javascript
+```javascript
 tests/
 ├── unit/                   # Unit tests (isolated components)
 │   ├── test_entities.py    # Domain entity testing

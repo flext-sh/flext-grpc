@@ -25,7 +25,7 @@ from flext_grpc import (
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
-from flext_grpc.typings import FlextGrpcTypings
+from flext_grpc.typings import FlextGrpcTypes
 
 # Setup logging
 logger = FlextLogger(__name__)
@@ -34,7 +34,7 @@ logger = FlextLogger(__name__)
 def validate_user_input(
     username: str,
     email: str,
-) -> FlextResult[FlextGrpcTypings.GrpcCore.GrpcHeaders]:
+) -> FlextResult[FlextGrpcTypes.GrpcCore.GrpcHeaders]:
     """Validate user input with FlextGrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
@@ -52,13 +52,13 @@ def validate_user_input(
         if not email or "@" not in email:
             _raise_email_error()
 
-        return FlextResult[FlextGrpcTypings.GrpcCore.GrpcHeaders].ok(
+        return FlextResult[FlextGrpcTypes.GrpcCore.GrpcHeaders].ok(
             {"username": username, "email": email},
         )
 
     except FlextGrpcValidationError as e:
         logger.exception("Validation failed", field=e.field_name, error=str(e))
-        return FlextResult[FlextGrpcTypings.GrpcCore.GrpcHeaders].fail(
+        return FlextResult[FlextGrpcTypes.GrpcCore.GrpcHeaders].fail(
             f"Validation error: {e}"
         )
 

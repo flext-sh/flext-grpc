@@ -109,33 +109,8 @@
         include = "flext_grpc"
 
 [tool.deptry]
-    exclude = [
-        ".archive",
-        ".git",
-        ".meltano",
-        ".mypy_cache",
-        ".pyrefly_cache",
-        ".pytest_cache",
-        ".ruff_cache",
-        ".venv",
-        "__pycache__",
-        "build",
-        "dist",
-        "htmlcov",
-        "node_modules",
-        "reports",
-            "tests",
-        "vendor",
-        "venv",
-    ]
     known_first_party = [
         "flext_grpc",
-    ]
-    pep621_dev_dependency_groups = [
-        "dev",
-        "security",
-        "test",
-        "typings",
     ]
 
 [tool.ruff]
@@ -180,19 +155,3 @@
             "flext_grpc",
         ]
 
-[tool.pyrefly]
-    python-version = "3.13"
-    search-path = [
-        "../flext-core/src",
-        "examples",
-        "src",
-        "tests",
-    ]
-
-
-        # SubConfig: Disable unknown-name error for models.py
-        # This handles forward references to classes defined later in the same file
-        [[tool.pyrefly.sub-config]]
-            matches = "**/models.py"
-            [tool.pyrefly.sub-config.errors]
-                unknown-name = false

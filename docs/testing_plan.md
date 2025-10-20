@@ -1,4 +1,5 @@
 # FLEXT-gRPC Testing Plan
+
 ## Table of Contents
 
 - [FLEXT-gRPC Testing Plan](#flext-grpc-testing-plan)
@@ -24,57 +25,51 @@
       - [1. Fix FlextGrpcServices Logger Property](#1-fix-flextgrpcservices-logger-property)
 - [Issue: Property setter missing](#issue-property-setter-missing)
 - [Location: src/flext_grpc/services.py:77](#location-srcflext_grpcservicespy77)
-- [Current: self.logger = FlextLogger(__name__)  # Fails](#current-selflogger--flextlogger__name__---fails)
-- [Fix: self._logger = FlextLogger(__name__)](#fix-self_logger--flextlogger__name__)
-      - [2. Correct Exception Constructors](#2-correct-exception-constructors)
+- [Current: self.logger = FlextLogger(**name**) # Fails](#current-selflogger--flextlogger__name__---fails)
+- [Fix: self.\_logger = FlextLogger(**name**)](#fix-self_logger--flextlogger__name__) - [2. Correct Exception Constructors](#2-correct-exception-constructors)
 - [Issue: Wrong parameter signatures](#issue-wrong-parameter-signatures)
 - [Location: src/flext_grpc/exceptions.py](#location-srcflext_grpcexceptionspy)
-- [Current: def __init__(self, message: str,
-     ...):  # Wrong signature](#current-def-__init__self-message-str----wrong-signature)
-- [Fix: def __init__(self, message: str,
-     field_name: str | None = None):  # Correct](#fix-def-__init__self-message-str-field_name-str--none--none---correct)
-      - [3. Add Protocol Decorators](#3-add-protocol-decorators)
+- [Current: def **init**(self, message: str,
+  ...): # Wrong signature](#current-def-__init__self-message-str----wrong-signature)
+- [Fix: def **init**(self, message: str,
+  field_name: str | None = None): # Correct](#fix-def-__init__self-message-str-field_name-str--none--none---correct) - [3. Add Protocol Decorators](#3-add-protocol-decorators)
 - [Issue: @runtime_checkable missing](#issue-runtime_checkable-missing)
 - [Location: src/flext_grpc/protocols.py](#location-srcflext_grpcprotocolspy)
 - [Fix: @runtime_checkable](#fix-runtime_checkable)
-- [class ServerProtocol(Protocol): ...](#class-serverprotocolprotocol-)
-      - [4. Update Configuration Tests](#4-update-configuration-tests)
+- [class ServerProtocol(Protocol): ...](#class-serverprotocolprotocol-) - [4. Update Configuration Tests](#4-update-configuration-tests)
 - [Issue: Default host changed](#issue-default-host-changed)
 - [Location: tests/unit/test_config.py](#location-testsunittest_configpy)
-- [Fix: assert config.host == "localhost"  # Update expectation](#fix-assert-confighost--localhost---update-expectation)
-    - [Coverage Improvement Targets](#coverage-improvement-targets)
-      - [High Priority Modules (< 50% coverage)](#high-priority-modules--50-coverage)
-        - [services.py (15% → 90%)](#servicespy-15--90)
-        - [api.py (26% → 90%)](#apipy-26--90)
-        - [entities.py (36% → 90%)](#entitiespy-36--90)
-      - [Medium Priority Modules (50-80% coverage)](#medium-priority-modules-50-80-coverage)
-        - [utilities.py (18% → 90%)](#utilitiespy-18--90)
-        - [real_servicer.py (24% → 90%)](#real_servicerpy-24--90)
-    - [Integration Testing Implementation](#integration-testing-implementation)
-      - [Real gRPC Server Testing](#real-grpc-server-testing)
-      - [Streaming Operations Testing](#streaming-operations-testing)
+- [Fix: assert config.host == "localhost" # Update expectation](#fix-assert-confighost--localhost---update-expectation)
+  - [Coverage Improvement Targets](#coverage-improvement-targets)
+    - [High Priority Modules (< 50% coverage)](#high-priority-modules--50-coverage)
+      - [services.py (15% → 90%)](#servicespy-15--90)
+      - [api.py (26% → 90%)](#apipy-26--90)
+      - [entities.py (36% → 90%)](#entitiespy-36--90)
+    - [Medium Priority Modules (50-80% coverage)](#medium-priority-modules-50-80-coverage)
+      - [utilities.py (18% → 90%)](#utilitiespy-18--90)
+      - [real_servicer.py (24% → 90%)](#real_servicerpy-24--90)
+  - [Integration Testing Implementation](#integration-testing-implementation)
+    - [Real gRPC Server Testing](#real-grpc-server-testing)
+    - [Streaming Operations Testing](#streaming-operations-testing)
   - [Testing Procedures](#testing-procedures)
     - [Daily Development Testing](#daily-development-testing)
       - [Quick Test Execution](#quick-test-execution)
 - [Run all tests](#run-all-tests)
 - [Run specific test file](#run-specific-test-file)
-- [Run with coverage](#run-with-coverage)
-      - [Test Debugging](#test-debugging)
+- [Run with coverage](#run-with-coverage) - [Test Debugging](#test-debugging)
 - [Run single failing test](#run-single-failing-test)
 - [Run with detailed output](#run-with-detailed-output)
 - [Debug mode](#debug-mode)
-    - [Continuous Integration Testing](#continuous-integration-testing)
-      - [Quality Gates](#quality-gates)
+  - [Continuous Integration Testing](#continuous-integration-testing)
+    - [Quality Gates](#quality-gates)
 - [Complete validation pipeline](#complete-validation-pipeline)
-- [Individual checks](#individual-checks)
-      - [Coverage Validation](#coverage-validation)
+- [Individual checks](#individual-checks) - [Coverage Validation](#coverage-validation)
 - [Coverage report](#coverage-report)
 - [Coverage by module](#coverage-by-module)
 - [Fail if below threshold](#fail-if-below-threshold)
-    - [Integration Testing Setup](#integration-testing-setup)
-      - [gRPC Test Server](#grpc-test-server)
-- [conftest.py](#conftestpy)
-      - [Test Client Setup](#test-client-setup)
+  - [Integration Testing Setup](#integration-testing-setup)
+    - [gRPC Test Server](#grpc-test-server)
+- [conftest.py](#conftestpy) - [Test Client Setup](#test-client-setup)
   - [Test Organization](#test-organization)
     - [Directory Structure](#directory-structure)
     - [Test Naming Conventions](#test-naming-conventions)
@@ -92,14 +87,12 @@
     - [Load Testing](#load-testing)
     - [Chaos Testing](#chaos-testing)
 
-
 **Version**: 0.9.0 | **Updated**: 2025-10-10
 **Current Coverage**: 39% | **Test Status**: 28 failed, 36 passed (64 total tests)
 
 ## Executive Summary
 
 FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with comprehensive validation of gRPC operations,
-    
 
      FLEXT ecosystem integration,
      and error handling patterns. Current testing shows 39% coverage with critical failures that must be addressed before production deployment.
@@ -525,7 +518,7 @@ async def grpc_client(grpc_server):
 
 ### Directory Structure
 
-``` javascript
+```javascript
 tests/
 ├── unit/                          # Unit tests
 │   ├── test_api.py               # API function tests
