@@ -10,6 +10,13 @@ from __future__ import annotations
 # Use FlextExceptions from flext_core instead of custom exceptions
 from flext_core import FlextExceptions as FlextGrpcExceptions
 
+# Exception type aliases for backward compatibility
+FlextGrpcError = FlextGrpcExceptions.BaseError
+FlextGrpcConfigurationError = FlextGrpcExceptions.ConfigurationError
+FlextGrpcConnectionError = FlextGrpcExceptions.ConnectionError
+FlextGrpcTimeoutError = FlextGrpcExceptions.TimeoutError
+FlextGrpcValidationError = FlextGrpcExceptions.ValidationError
+
 from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
 from flext_grpc.config import FlextGrpcConfig
@@ -40,16 +47,21 @@ __all__ = [
     "EchoRequest",
     "FlextGrpc",
     "FlextGrpcConfig",
+    "FlextGrpcConfigurationError",
+    "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcEntities",
+    "FlextGrpcError",
     "FlextGrpcExceptions",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcServices",
+    "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
+    "FlextGrpcValidationError",
     "GrpcHealthCheck",
     "GrpcRequest",
     "ServiceDefinition",

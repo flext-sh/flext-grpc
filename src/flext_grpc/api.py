@@ -1,7 +1,7 @@
-"""FLEXT gRPC - Generic Unified Facade with Advanced Patterns.
+"""FLEXT gRPC - Generic Unified Facade with Patterns.
 
 Generic facade using extensive Pydantic models, SOLID delegation,
-functional composition, and advanced Python 3.13+ patterns for minimal code.
+functional composition, and Python 3.13+ patterns for minimal code.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -29,7 +29,7 @@ T = TypeVar("T", bound=BaseModel)
 
 
 class GenericOperationSpec(BaseModel):
-    """Generic operation specification using advanced Pydantic."""
+    """Generic operation specification using Pydantic."""
 
     name: str = Field(min_length=1)
     entity_type: str = Field(pattern=r"^[a-z_]+$")
@@ -75,7 +75,7 @@ class GenericResponse[T: BaseModel](BaseModel):
 
 
 class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
-    """Generic unified gRPC facade with advanced SOLID patterns and minimal code.
+    """Generic unified gRPC facade with SOLID patterns and minimal code.
 
     Uses generic types, functional composition, Pydantic v2 models, and delegation
     to reduce bloat while maintaining full functionality with Python 3.13+ features.
@@ -254,10 +254,10 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate server start.
 
         Args:
-            server: gRPC server entity to start
+        server: gRPC server entity to start
 
         Returns:
-            Started server entity
+        Started server entity
 
         """
         return self._service.start_server(server)
@@ -268,10 +268,10 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate server stop.
 
         Args:
-            server: gRPC server entity to stop
+        server: gRPC server entity to stop
 
         Returns:
-            Stopped server entity
+        Stopped server entity
 
         """
         return self._service.stop_server(server)
@@ -280,10 +280,10 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate client connection.
 
         Args:
-            target: Target address to connect to
+        target: Target address to connect to
 
         Returns:
-            Connected client entity
+        Connected client entity
 
         """
         return self._service.connect_client(target)
@@ -294,10 +294,10 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate client disconnection.
 
         Args:
-            client: gRPC client entity to disconnect
+        client: gRPC client entity to disconnect
 
         Returns:
-            Disconnected client entity
+        Disconnected client entity
 
         """
         return self._service.disconnect_client(client)
@@ -311,12 +311,12 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate method calls.
 
         Args:
-            client: gRPC client entity
-            method: gRPC method name
-            request: Request message (gRPC protocol message - dynamic type)
+        client: gRPC client entity
+        method: gRPC method name
+        request: Request message (gRPC protocol message - dynamic type)
 
         Returns:
-            Response data dictionary
+        Response data dictionary
 
         Note: Uses ConfigValue for gRPC protocol message compatibility
 
@@ -329,11 +329,11 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate data sending.
 
         Args:
-            stream: gRPC stream entity
-            data: Message data (gRPC protocol message - dynamic type)
+        stream: gRPC stream entity
+        data: Message data (gRPC protocol message - dynamic type)
 
         Returns:
-            Response data dictionary
+        Response data dictionary
 
         Note: Uses object for gRPC message compatibility
 
@@ -346,10 +346,10 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Delegate stream closing.
 
         Args:
-            stream: gRPC stream entity to close
+        stream: gRPC stream entity to close
 
         Returns:
-            Closed stream entity
+        Closed stream entity
 
         """
         return self._service.close_stream(stream)

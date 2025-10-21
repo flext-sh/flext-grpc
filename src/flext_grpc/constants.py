@@ -26,12 +26,12 @@ class FlextGrpcConstants(FlextConstants):
     Layer N Foundation: gRPC domain-specific constants building on flext-core Layer 0.
 
     Usage:
-        ```python
-        from flext_grpc.constants import FlextGrpcConstants
+    ```python
+    from flext_grpc.constants import FlextGrpcConstants
 
-        timeout = FlextGrpcConstants.GrpcNetwork.DEFAULT_TIMEOUT
-        port = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
-        ```
+    timeout = FlextGrpcConstants.GrpcNetwork.DEFAULT_TIMEOUT
+    port = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
+    ```
     """
 
     class GrpcNetwork:

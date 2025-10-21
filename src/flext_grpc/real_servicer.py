@@ -196,10 +196,10 @@ def create_real_servicer(server_id: str | None = None) -> FlextGrpcRealServicer:
     """Factory function to create a real gRPC servicer.
 
     Args:
-        server_id: Optional server identifier
+    server_id: Optional server identifier
 
     Returns:
-        Configured real servicer instance
+    Configured real servicer instance
 
     """
     if server_id is None:

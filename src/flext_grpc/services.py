@@ -1,6 +1,6 @@
 """FLEXT gRPC Services - SOLID Service Architecture with Delegation.
 
-Generic service classes using SOLID principles, delegation, and advanced patterns.
+Generic service classes using SOLID principles, delegation, and patterns.
 Each class has single responsibility with clear separation of concerns.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -113,8 +113,8 @@ class MetricsCollector:
         """Thread-safe metric recording.
 
         Args:
-            key: Metric identifier
-            value: Metric value (supports any JSON-serializable type)
+        key: Metric identifier
+        value: Metric value (supports any JSON-serializable type)
 
         """
         with self._lock:
@@ -124,7 +124,7 @@ class MetricsCollector:
         """Thread-safe metric retrieval.
 
         Returns:
-            Metric value or None if not found
+        Metric value or None if not found
 
         """
         with self._lock:
@@ -143,7 +143,7 @@ class ConnectionPool:
         """Initialize connection pool.
 
         Args:
-            max_size: Maximum pool size
+        max_size: Maximum pool size
 
         """
         super().__init__()
@@ -332,14 +332,17 @@ class GrpcClientManager(ClientConnectionManager):
         return FlextResult.ok(client)
 
     def make_call(
-        self, client: FlextGrpcEntities.Client, method: str, request: FlextGrpcTypes.ConfigValue
+        self,
+        client: FlextGrpcEntities.Client,
+        method: str,
+        request: FlextGrpcTypes.ConfigValue,
     ) -> FlextResult[dict[str, Any]]:
         """Execute gRPC call through client.
 
         Args:
-            client: Client entity
-            method: gRPC method name
-            request: Request message (gRPC protocol message - dynamic type)
+        client: Client entity
+        method: gRPC method name
+        request: Request message (gRPC protocol message - dynamic type)
 
         """
         target = ""
@@ -425,8 +428,8 @@ class GrpcStreamManager(StreamProcessor):
         """Send data with buffering strategy.
 
         Args:
-            stream: Stream entity
-            data: Message data (gRPC protocol message - dynamic type)
+        stream: Stream entity
+        data: Message data (gRPC protocol message - dynamic type)
 
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
@@ -514,14 +517,17 @@ class FlextGrpcServices(FlextService[Any]):
         return self._client_manager.disconnect(client)
 
     def make_call(
-        self, client: FlextGrpcEntities.Client, method: str, request: FlextGrpcTypes.ConfigValue
+        self,
+        client: FlextGrpcEntities.Client,
+        method: str,
+        request: FlextGrpcTypes.ConfigValue,
     ) -> FlextResult[dict[str, Any]]:
         """Delegate method calls to specialized manager.
 
         Args:
-            client: Client entity
-            method: gRPC method name
-            request: Request message (gRPC protocol message - dynamic type)
+        client: Client entity
+        method: gRPC method name
+        request: Request message (gRPC protocol message - dynamic type)
 
         """
         return self._client_manager.make_call(client, method, request)
@@ -557,8 +563,8 @@ class FlextGrpcServices(FlextService[Any]):
         """Delegate data sending to specialized manager.
 
         Args:
-            stream: Stream entity
-            data: Message data (gRPC protocol message - dynamic type)
+        stream: Stream entity
+        data: Message data (gRPC protocol message - dynamic type)
 
         """
         return self._stream_manager.send_data(stream, data)
@@ -577,8 +583,8 @@ class FlextGrpcServices(FlextService[Any]):
         """Delegate entity creation to utilities.
 
         Args:
-            target: gRPC target address
-            options: Channel options (gRPC-specific configuration)
+        target: gRPC target address
+        options: Channel options (gRPC-specific configuration)
 
         """
         return FlextGrpcUtilities.create_client_entity(target, options)

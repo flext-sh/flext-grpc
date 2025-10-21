@@ -199,10 +199,10 @@ class FlextGrpcUtilities:
             """Validate protobuf message structure and required fields.
 
             Args:
-                message_instance: Protobuf message to validate
+            message_instance: Protobuf message to validate
 
             Returns:
-                FlextResult containing validation result
+            FlextResult containing validation result
 
             """
             try:
@@ -254,10 +254,10 @@ class FlextGrpcUtilities:
             """Validate gRPC request using Pydantic validation.
 
             Args:
-                request: gRPC request to validate
+            request: gRPC request to validate
 
             Returns:
-                FlextResult containing validated request or error
+            FlextResult containing validated request or error
 
             """
             try:
@@ -281,11 +281,11 @@ class FlextGrpcUtilities:
             """Validate sequence of streaming messages.
 
             Args:
-                messages: List of protobuf messages
-                expected_order: Optional expected message type order
+            messages: List of protobuf messages
+            expected_order: Optional expected message type order
 
             Returns:
-                FlextResult containing validation result
+            FlextResult containing validation result
 
             """
             try:
@@ -336,10 +336,10 @@ class FlextGrpcUtilities:
             """Convert protobuf message to dictionary.
 
             Args:
-                message_instance: Protobuf message to convert
+            message_instance: Protobuf message to convert
 
             Returns:
-                FlextResult containing dictionary representation
+            FlextResult containing dictionary representation
 
             """
             try:
@@ -355,7 +355,9 @@ class FlextGrpcUtilities:
 
                 # Type guard to ensure message_instance is a proper Message
                 if not isinstance(message_instance, Message):
-                    return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail("Invalid message type")
+                    return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                        "Invalid message type"
+                    )
 
                 if MessageToDict is None:
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
@@ -380,11 +382,11 @@ class FlextGrpcUtilities:
             """Convert dictionary to protobuf message.
 
             Args:
-                data: Dictionary data to convert
-                message_class: Target protobuf message class
+            data: Dictionary data to convert
+            message_class: Target protobuf message class
 
             Returns:
-                FlextResult containing protobuf message
+            FlextResult containing protobuf message
 
             """
             try:
@@ -416,10 +418,10 @@ class FlextGrpcUtilities:
             """Convert protobuf message to JSON string.
 
             Args:
-                message_instance: Protobuf message to convert
+            message_instance: Protobuf message to convert
 
             Returns:
-                FlextResult containing JSON string
+            FlextResult containing JSON string
 
             """
             try:
@@ -452,11 +454,11 @@ class FlextGrpcUtilities:
             """Convert JSON string to protobuf message.
 
             Args:
-                json_str: JSON string to convert
-                message_class: Target protobuf message class
+            json_str: JSON string to convert
+            message_class: Target protobuf message class
 
             Returns:
-                FlextResult containing protobuf message
+            FlextResult containing protobuf message
 
             """
             try:
@@ -483,10 +485,10 @@ class FlextGrpcUtilities:
             """Serialize protobuf message to bytes.
 
             Args:
-                message_instance: Protobuf message to serialize
+            message_instance: Protobuf message to serialize
 
             Returns:
-                FlextResult containing serialized bytes
+            FlextResult containing serialized bytes
 
             """
             try:
@@ -504,11 +506,11 @@ class FlextGrpcUtilities:
             """Deserialize bytes to protobuf message.
 
             Args:
-                data: Serialized message bytes
-                message_class: Target protobuf message class
+            data: Serialized message bytes
+            message_class: Target protobuf message class
 
             Returns:
-                FlextResult containing protobuf message
+            FlextResult containing protobuf message
 
             """
             try:
@@ -530,7 +532,9 @@ class FlextGrpcUtilities:
     class ChannelManagement:
         """gRPC channel management utilities."""
 
-        DEFAULT_CHANNEL_OPTIONS: ClassVar[list[tuple[str, FlextGrpcTypes.JsonValue]]] = [
+        DEFAULT_CHANNEL_OPTIONS: ClassVar[
+            list[tuple[str, FlextGrpcTypes.JsonValue]]
+        ] = [
             ("grpc.keepalive_time_ms", 30000),
             ("grpc.keepalive_timeout_ms", 5000),
             ("grpc.keepalive_permit_without_calls", True),
@@ -548,12 +552,12 @@ class FlextGrpcUtilities:
             """Create secure gRPC channel with default options.
 
             Args:
-                target: Target server address
-                credentials: Channel credentials (uses SSL if None)
-                options: Channel options (uses defaults if None)
+            target: Target server address
+            credentials: Channel credentials (uses SSL if None)
+            options: Channel options (uses defaults if None)
 
             Returns:
-                FlextResult containing gRPC channel
+            FlextResult containing gRPC channel
 
             """
             try:
@@ -574,7 +578,9 @@ class FlextGrpcUtilities:
 
                 if grpc is not None and hasattr(grpc, "secure_channel"):
                     # Create channel with cast to handle gRPC compatibility
-                    channel = grpc.secure_channel(target, actual_credentials, options=options)
+                    channel = grpc.secure_channel(
+                        target, actual_credentials, options=options
+                    )
                     return FlextResult[object].ok(channel)
                 return FlextResult[object].fail("Secure channel not available")
             except Exception as e:
@@ -582,16 +588,17 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def create_insecure_channel(
-            target: str, options: list[tuple[str, FlextGrpcTypes.JsonValue]] | None = None
+            target: str,
+            options: list[tuple[str, FlextGrpcTypes.JsonValue]] | None = None,
         ) -> FlextResult[object]:
             """Create insecure gRPC channel for development.
 
             Args:
-                target: Target server address
-                options: Channel options (uses defaults if None)
+            target: Target server address
+            options: Channel options (uses defaults if None)
 
             Returns:
-                FlextResult containing gRPC channel
+            FlextResult containing gRPC channel
 
             """
             try:
@@ -619,11 +626,11 @@ class FlextGrpcUtilities:
             """Check gRPC channel connectivity.
 
             Args:
-                channel: gRPC channel to check
-                timeout: Timeout in seconds
+            channel: gRPC channel to check
+            timeout: Timeout in seconds
 
             Returns:
-                FlextResult containing connectivity status
+            FlextResult containing connectivity status
 
             """
             try:
@@ -632,7 +639,9 @@ class FlextGrpcUtilities:
 
                 try:
                     # Use cast for gRPC compatibility
-                    grpc.channel_ready_future(cast("grpc.Channel", channel)).result(timeout=timeout)
+                    grpc.channel_ready_future(cast("grpc.Channel", channel)).result(
+                        timeout=timeout
+                    )
                     return FlextResult[bool].ok(True)
                 except grpc.FutureTimeoutError:
                     return FlextResult[bool].ok(False)
@@ -640,14 +649,16 @@ class FlextGrpcUtilities:
                 return FlextResult[bool].fail(f"Channel connectivity check failed: {e}")
 
         @staticmethod
-        def get_channel_state(channel: FlextGrpcTypes.ConfigValue | None) -> FlextResult[str]:
+        def get_channel_state(
+            channel: FlextGrpcTypes.ConfigValue | None,
+        ) -> FlextResult[str]:
             """Get gRPC channel state.
 
             Args:
-                channel: gRPC channel to check
+            channel: gRPC channel to check
 
             Returns:
-                FlextResult containing channel state
+            FlextResult containing channel state
 
             """
             try:
@@ -665,10 +676,10 @@ class FlextGrpcUtilities:
             """Close gRPC channel safely.
 
             Args:
-                channel: gRPC channel to close
+            channel: gRPC channel to close
 
             Returns:
-                FlextResult indicating success or failure
+            FlextResult indicating success or failure
 
             """
             try:
@@ -689,10 +700,10 @@ class FlextGrpcUtilities:
             """Create iterator from data list for streaming.
 
             Args:
-                data: List of data items to iterate over
+            data: List of data items to iterate over
 
             Returns:
-                FlextResult containing iterator
+            FlextResult containing iterator
 
             """
             try:
@@ -715,12 +726,12 @@ class FlextGrpcUtilities:
             """Collect responses from gRPC stream with limits.
 
             Args:
-                stream: iterator of gRPC responses
-                max_messages: Maximum number of messages to collect
-                timeout_seconds: Timeout for stream collection
+            stream: iterator of gRPC responses
+            max_messages: Maximum number of messages to collect
+            timeout_seconds: Timeout for stream collection
 
             Returns:
-                FlextResult containing list of collected responses
+            FlextResult containing list of collected responses
 
             """
             try:
@@ -751,11 +762,11 @@ class FlextGrpcUtilities:
             """Create request stream for client streaming.
 
             Args:
-                requests: List of requests to stream
-                delay_between_requests: Delay between requests in seconds
+            requests: List of requests to stream
+            delay_between_requests: Delay between requests in seconds
 
             Yields:
-                Individual requests from the list
+            Individual requests from the list
 
             """
             for request in requests:
@@ -770,10 +781,10 @@ class FlextGrpcUtilities:
             """Validate and convert gRPC metadata.
 
             Args:
-                metadata: gRPC metadata to validate
+            metadata: gRPC metadata to validate
 
             Returns:
-                FlextResult containing metadata dictionary
+            FlextResult containing metadata dictionary
 
             """
             try:
@@ -809,11 +820,11 @@ class FlextGrpcUtilities:
             """Add heartbeat capability to gRPC stream.
 
             Args:
-                stream: Original stream
-                heartbeat_interval: Heartbeat interval in seconds
+            stream: Original stream
+            heartbeat_interval: Heartbeat interval in seconds
 
             Yields:
-                Stream items with heartbeat functionality
+            Stream items with heartbeat functionality
 
             """
             last_heartbeat = time.time()
@@ -836,10 +847,10 @@ class FlextGrpcUtilities:
             """Discover available services on gRPC server.
 
             Args:
-                channel: gRPC channel to query
+            channel: gRPC channel to query
 
             Returns:
-                FlextResult containing list of service names
+            FlextResult containing list of service names
 
             """
             try:
@@ -873,11 +884,11 @@ class FlextGrpcUtilities:
             """Check service health using gRPC health checking protocol.
 
             Args:
-                channel: gRPC channel
-                service_name: Service name to check (empty for overall health)
+            channel: gRPC channel
+            service_name: Service name to check (empty for overall health)
 
             Returns:
-                FlextResult containing health check result
+            FlextResult containing health check result
 
             """
             try:
@@ -913,12 +924,12 @@ class FlextGrpcUtilities:
             """Register service endpoint for discovery.
 
             Args:
-                service_name: Name of the service
-                endpoint: Service endpoint address
-                metadata: Optional service metadata
+            service_name: Name of the service
+            endpoint: Service endpoint address
+            metadata: Optional service metadata
 
             Returns:
-                FlextResult containing service definition
+            FlextResult containing service definition
 
             """
             try:
@@ -949,10 +960,10 @@ class FlextGrpcUtilities:
             """Format error message for consistent error reporting.
 
             Args:
-                message: Error message to format
+            message: Error message to format
 
             Returns:
-                FlextResult containing formatted error message
+            FlextResult containing formatted error message
 
             """
             try:
@@ -972,15 +983,17 @@ class FlextGrpcUtilities:
             """Handle and categorize gRPC errors.
 
             Args:
-                error: gRPC RPC error
+            error: gRPC RPC error
 
             Returns:
-                FlextResult containing error details
+            FlextResult containing error details
 
             """
             try:
                 if error is None:
-                    return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail("Error is None")
+                    return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                        "Error is None"
+                    )
 
                 error_info: dict[str, FlextGrpcTypes.JsonValue] = {
                     "code": error.code().name if hasattr(error, "code") else "UNKNOWN",
@@ -997,17 +1010,19 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def create_grpc_status(
-            code: int, message: str, details: list[FlextGrpcTypes.JsonValue] | None = None
+            code: int,
+            message: str,
+            details: list[FlextGrpcTypes.JsonValue] | None = None,
         ) -> FlextResult[dict[str, FlextGrpcTypes.JsonValue]]:
             """Create gRPC status for error responses.
 
             Args:
-                code: gRPC status code
-                message: Error message
-                details: Optional error details
+            code: gRPC status code
+            message: Error message
+            details: Optional error details
 
             Returns:
-                FlextResult containing gRPC status
+            FlextResult containing gRPC status
 
             """
             try:
@@ -1030,10 +1045,10 @@ class FlextGrpcUtilities:
             """Check if gRPC error is retryable.
 
             Args:
-                error: gRPC RPC error
+            error: gRPC RPC error
 
             Returns:
-                FlextResult containing retry recommendation
+            FlextResult containing retry recommendation
 
             """
             try:
@@ -1066,15 +1081,17 @@ class FlextGrpcUtilities:
             """Collect metrics from gRPC channel.
 
             Args:
-                channel: gRPC channel to analyze
+            channel: gRPC channel to analyze
 
             Returns:
-                FlextResult containing channel metrics
+            FlextResult containing channel metrics
 
             """
             try:
                 if channel is None:
-                    return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail("Channel is None")
+                    return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                        "Channel is None"
+                    )
 
                 # Basic channel metrics (placeholder implementation)
                 metrics = cast(
@@ -1098,11 +1115,11 @@ class FlextGrpcUtilities:
             """Collect performance metrics from timing data.
 
             Args:
-                start_time: Start time in seconds
-                end_time: End time in seconds
+            start_time: Start time in seconds
+            end_time: End time in seconds
 
             Returns:
-                FlextResult containing performance metrics
+            FlextResult containing performance metrics
 
             """
             try:
@@ -1134,10 +1151,10 @@ class FlextGrpcUtilities:
             """Collect metrics from stream information.
 
             Args:
-                stream_info: Stream information to analyze
+            stream_info: Stream information to analyze
 
             Returns:
-                FlextResult containing stream metrics
+            FlextResult containing stream metrics
 
             """
             try:
@@ -1176,13 +1193,13 @@ class FlextGrpcUtilities:
             """Collect service-level metrics.
 
             Args:
-                service_name: Name of the service
-                request_count: Total request count
-                error_count: Total error count
-                avg_response_time: Average response time in seconds
+            service_name: Name of the service
+            request_count: Total request count
+            error_count: Total error count
+            avg_response_time: Average response time in seconds
 
             Returns:
-                FlextResult containing service metrics
+            FlextResult containing service metrics
 
             """
             try:

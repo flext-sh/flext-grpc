@@ -1,4 +1,4 @@
-"""FLEXT gRPC Entities - Generic Entity System with Advanced Patterns.
+"""FLEXT gRPC Entities - Generic Entity System with Patterns.
 
 Generic entity classes using extensive Pydantic v2, SOLID delegation,
 functional composition, and Python 3.13+ patterns for minimal code.
@@ -78,7 +78,7 @@ class FlextGrpcEntities(FlextService[Any]):
             """Functional copy using FlextResult.
 
             Args:
-                **kwargs: Field updates for the entity
+            **kwargs: Field updates for the entity
 
             """
             try:
@@ -173,7 +173,7 @@ class FlextGrpcEntities(FlextService[Any]):
             """Add service functionally.
 
             Args:
-                service: gRPC service object (dynamic type from grpc library)
+            service: gRPC service object (dynamic type from grpc library)
 
             """
             return FlextResult.ok(
@@ -216,7 +216,7 @@ class FlextGrpcEntities(FlextService[Any]):
     class Client(Entity):
         """Generic gRPC client with channel delegation."""
 
-        channel: Channel | None = None  # noqa: F821
+        channel: Channel | None = None
         options: dict[str, Any] = Field(default_factory=dict)
         grpc_stub: object = None
 

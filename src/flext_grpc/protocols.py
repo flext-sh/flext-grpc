@@ -12,18 +12,18 @@ class FlextGrpcProtocols(FlextProtocols):
     all foundation protocols from flext-core.
 
     Architecture:
-        - EXTENDS: FlextProtocols with all foundation protocols
-        - ADDS: gRPC-specific protocols in Grpc namespace
-        - MAINTAINS: Zero breaking changes through inheritance pattern
+    - EXTENDS: FlextProtocols with all foundation protocols
+    - ADDS: gRPC-specific protocols in Grpc namespace
+    - MAINTAINS: Zero breaking changes through inheritance pattern
 
     Usage:
-        from flext_grpc.protocols import FlextGrpcProtocols
+    from flext_grpc.protocols import FlextGrpcProtocols
 
-        # Foundation access (inherited)
-        FlextGrpcProtocols.Foundation.ResultProtocol
+    # Foundation access (inherited)
+    FlextGrpcProtocols.Foundation.ResultProtocol
 
-        # gRPC-specific access
-        FlextGrpcProtocols.Grpc.ServerProtocol
+    # gRPC-specific access
+    FlextGrpcProtocols.Grpc.ServerProtocol
     """
 
     # =========================================================================

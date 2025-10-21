@@ -1,7 +1,7 @@
-"""FLEXT gRPC Configuration - Generic Configuration System with Advanced Patterns.
+"""FLEXT gRPC Configuration - Generic Configuration System with Patterns.
 
 Extensive Pydantic models, generic patterns, and FLEXT ecosystem integration
-for comprehensive gRPC configuration management.
+for complete gRPC configuration management.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -50,7 +50,7 @@ class GrpcSecurityConfig(BaseModel):
 
 
 class GrpcNetworkConfig(BaseModel):
-    """Generic gRPC network configuration with advanced validation."""
+    """Generic gRPC network configuration with validation."""
 
     host: str = Field(
         default=FlextConstants.Platform.DEFAULT_HOST,
@@ -178,7 +178,7 @@ class FlextGrpcConfig(BaseModel):
     """Generic gRPC configuration system extending FlextConfig.
 
     Uses extensive Pydantic models, generic patterns, and FLEXT ecosystem integration
-    for comprehensive gRPC configuration management with validation and composition.
+    for complete gRPC configuration management with validation and composition.
     """
 
     # Core configuration sections with composition
@@ -298,7 +298,7 @@ class FlextGrpcConfig(BaseModel):
         try:
             config = cls(
                 network=GrpcNetworkConfig(
-                    host="0.0.0.0",  # noqa: S104  Production: bind to all interfaces
+                    host="0.0.0.0",
                     port=50051,
                     max_connections=1000,
                     keepalive_time=30,
