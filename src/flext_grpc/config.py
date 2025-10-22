@@ -10,10 +10,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import re
-
 from flext_core import FlextConstants, FlextResult
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, model_validator
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -72,19 +70,6 @@ class GrpcNetworkConfig(BaseModel):
     keepalive_timeout: int = Field(
         default=5, ge=1, description="Keepalive timeout (seconds)"
     )
-
-    @field_validator("host")
-    @classmethod
-    def validate_host(cls, v: str) -> str:
-        """Validate host format."""
-        if not v.strip():
-            msg = "Host cannot be empty"
-            raise ValueError(msg)
-        # Allow localhost, IP addresses, and domain names
-        if not re.match(r"^(localhost|[\w.-]+|\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$", v):
-            msg = "Invalid host format"
-            raise ValueError(msg)
-        return v.strip()
 
 
 class GrpcPerformanceConfig(BaseModel):
