@@ -118,10 +118,10 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
 
         # Delegate validation to entity if available
         if hasattr(entity, "validate_business_rules") and callable(
-            getattr(entity, "validate_business_rules")
+            entity.validate_business_rules
         ):
             validation_result = cast(
-                "FlextResult[object]", getattr(entity, "validate_business_rules")()
+                "FlextResult[object]", entity.validate_business_rules()
             )
             if hasattr(validation_result, "map") and not validation_result.is_success:
                 return FlextResult.fail(
