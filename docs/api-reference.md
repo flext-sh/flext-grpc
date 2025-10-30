@@ -3,31 +3,10 @@
 ## Table of Contents
 
 - [flext-grpc API Reference](#flext-grpc-api-reference)
-  - [Core API](#core-api)
-    - [Factory Functions](#factory-functions)
-      - [`create_server(host: str, port: int,
-max_workers: int) -> FlextGrpcServer`](#create_serverhost-str-port-int-max_workers-int---flextgrpcserver)
-      - [`create_client(host: str,
-port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient)
-      - [`create_config(**kwargs) -> FlextResult[FlextGrpcConfig]`](#create_configkwargs---flextresultflextgrpcconfig)
-    - [Domain Entities](#domain-entities)
-      - [FlextGrpcServer](#flextgrpcserver)
-        - [`start() -> FlextResult[FlextGrpcServer]`](#start---flextresultflextgrpcserver)
-        - [`stop() -> FlextResult[FlextGrpcServer]`](#stop---flextresultflextgrpcserver)
-        - [`validate_business_rules() -> FlextResult[None]`](#validate_business_rules---flextresultnone)
-      - [FlextGrpcClient](#flextgrpcclient)
-        - [`connect() -> FlextResult[FlextGrpcClient]`](#connect---flextresultflextgrpcclient)
-        - [`disconnect() -> FlextResult[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient)
-      - [FlextGrpcConfig](#flextgrpcconfig)
-        - [`validate() -> FlextResult[None]`](#validate---flextresultnone)
-    - [Service Classes](#service-classes)
-      - [FlextGrpcPlatform](#flextgrpcplatform)
-        - [`start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver)
-        - [`connect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient)
-        - [`call_service(client: FlextGrpcClient, method: str,
-request: dict) -> FlextResult[FlextTypes.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict)
-      - [FlextGrpcServerService](#flextgrpcserverservice)
-        - [`execute(operation: str,
+  - [Core API](#core-api) - [Factory Functions](#factory-functions) - [`create_server(host: str, port: int,
+max_workers: int) -> FlextGrpcServer`](#create_serverhost-str-port-int-max_workers-int---flextgrpcserver) - [`create_client(host: str,
+port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient) - [`create_config(**kwargs) -> FlextResult[FlextGrpcConfig]`](#create_configkwargs---flextresultflextgrpcconfig) - [Domain Entities](#domain-entities) - [FlextGrpcServer](#flextgrpcserver) - [`start() -> FlextResult[FlextGrpcServer]`](#start---flextresultflextgrpcserver) - [`stop() -> FlextResult[FlextGrpcServer]`](#stop---flextresultflextgrpcserver) - [`validate_business_rules() -> FlextResult[None]`](#validate_business_rules---flextresultnone) - [FlextGrpcClient](#flextgrpcclient) - [`connect() -> FlextResult[FlextGrpcClient]`](#connect---flextresultflextgrpcclient) - [`disconnect() -> FlextResult[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient) - [FlextGrpcConfig](#flextgrpcconfig) - [`validate() -> FlextResult[None]`](#validate---flextresultnone) - [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform) - [`start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver) - [`connect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient) - [`call_service(client: FlextGrpcClient, method: str,
+request: dict) -> FlextResult[FlextTypes.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict) - [FlextGrpcServerService](#flextgrpcserverservice) - [`execute(operation: str,
 server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#executeoperation-str-server-flextgrpcserver---flextresultflextgrpcserver)
 - [Start server](#start-server)
   - [Type Definitions](#type-definitions)
@@ -40,23 +19,12 @@ server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#executeoperation-str
     - [FlextGrpcConnectionError](#flextgrpcconnectionerror)
     - [FlextGrpcTimeoutError](#flextgrpctimeouterror)
     - [FlextGrpcValidationError](#flextgrpcvalidationerror)
-  - [Streaming API](#streaming-api)
-    - [FlextGrpcStream](#flextgrpcstream)
-      - [`send_data(data: dict) -> FlextResult[None]`](#send_datadata-dict---flextresultnone)
-      - [`receive_data() -> FlextResult[FlextTypes.Dict]`](#receive_data---flextresultflexttypesdict)
-      - [`close() -> FlextResult[None]`](#close---flextresultnone)
-    - [FlextGrpcStreamService](#flextgrpcstreamservice)
-      - [`create_server_stream(method: str,
-config: dict) -> FlextResult[FlextGrpcStream]`](#create_server_streammethod-str-config-dict---flextresultflextgrpcstream)
-      - [`create_client_stream(method: str,
-config: dict) -> FlextResult[FlextGrpcStream]`](#create_client_streammethod-str-config-dict---flextresultflextgrpcstream)
-      - [`create_bidirectional_stream(method: str,
+  - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> FlextResult[None]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> FlextResult[FlextTypes.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> FlextResult[None]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
+config: dict) -> FlextResult[FlextGrpcStream]`](#create_server_streammethod-str-config-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
+config: dict) -> FlextResult[FlextGrpcStream]`](#create_client_streammethod-str-config-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
 config: dict) -> FlextResult[FlextGrpcStream]`](#create_bidirectional_streammethod-str-config-dict---flextresultflextgrpcstream)
-  - [Utility Functions](#utility-functions)
-    - [Address Parsing](#address-parsing)
-      - [`parse_address(address: str) -> FlextResult[tuple[str,
-int]]`](#parse_addressaddress-str---flextresulttuplestr-int)
-      - [`validate_address(address: str) -> FlextResult[None]`](#validate_addressaddress-str---flextresultnone)
+  - [Utility Functions](#utility-functions) - [Address Parsing](#address-parsing) - [`parse_address(address: str) -> FlextResult[tuple[str,
+int]]`](#parse_addressaddress-str---flextresulttuplestr-int) - [`validate_address(address: str) -> FlextResult[None]`](#validate_addressaddress-str---flextresultnone)
   - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
     - [Railway-Oriented Programming](#railway-oriented-programming)
     - [Dependency Injection](#dependency-injection)
