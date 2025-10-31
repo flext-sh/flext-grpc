@@ -16,9 +16,8 @@ object]`](#optimize_all_filesfiles-optionallistpath--none-dry_run-bool--false---
 action: str = "maintenance") -> Dict[str,
 object]`](#sync_changeschanges-listdictstr-object-action-str--maintenance---dictstr-object) - [`detect_conflicts(target_branch: str = "main") -> List[Dict[str,
 object]]`](#detect_conflictstarget_branch-str--main---listdictstr-object) - [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr--none---str)
-  - [📊 Reporting API](#-reporting-api)
-    - [DocumentationReporter](#documentationreporter) - [Methods](#methods) - [`generate_comprehensive_report(audit_report, validation_report,
-      ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict,
+  - [📊 Reporting API](#-reporting-api) - [DocumentationReporter](#documentationreporter) - [Methods](#methods) - [`generate_comprehensive_report(audit_report, validation_report,
+    ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict,
 output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath--none) - [`export_csv_report(report_data: Dict,
 output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str,
 object]`](#generate_trend_reportdays-int--30---dictstr-object)
