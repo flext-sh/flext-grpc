@@ -13,6 +13,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any, Self, TypeVar
 
+import grpc
 from flext_core import FlextModels, FlextResult, FlextService
 from pydantic import BaseModel, Field, field_validator
 

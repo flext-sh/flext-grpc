@@ -7,15 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-# Use FlextExceptions from flext_core instead of custom exceptions
 from flext_core import FlextExceptions as FlextGrpcExceptions
-
-# Exception type aliases for backward compatibility
-FlextGrpcError = FlextGrpcExceptions.BaseError
-FlextGrpcConfigurationError = FlextGrpcExceptions.ConfigurationError
-FlextGrpcConnectionError = FlextGrpcExceptions.ConnectionError
-FlextGrpcTimeoutError = FlextGrpcExceptions.TimeoutError
-FlextGrpcValidationError = FlextGrpcExceptions.ValidationError
 
 from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
@@ -30,6 +22,13 @@ from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import FlextGrpcServices
 from flext_grpc.typings import FlextGrpcTypes
 from flext_grpc.utilities import FlextGrpcUtilities
+
+# Exception type aliases for backward compatibility
+FlextGrpcError = FlextGrpcExceptions.BaseError
+FlextGrpcConfigurationError = FlextGrpcExceptions.ConfigurationError
+FlextGrpcConnectionError = FlextGrpcExceptions.ConnectionError
+FlextGrpcTimeoutError = FlextGrpcExceptions.TimeoutError
+FlextGrpcValidationError = FlextGrpcExceptions.ValidationError
 
 # Model aliases for backward compatibility
 GrpcHealthCheck = FlextGrpcModels.Domain.GrpcHealthCheck

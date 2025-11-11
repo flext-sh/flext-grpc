@@ -309,6 +309,9 @@ class ArchitectureValidator:
 
     def _print_results(self, summary: dict[str, object]) -> None:
         """Print validation results."""
+        # Reserved for future summary display functionality
+        _ = summary  # Reserved for future use
+
         if self.issues:
             for _issue in self.issues[:3]:  # Show first 3
                 pass
