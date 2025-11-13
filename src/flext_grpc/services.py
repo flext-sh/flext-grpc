@@ -597,6 +597,59 @@ class FlextGrpcServices(FlextService[Any]):
 
     # === LEGACY COMPATIBILITY METHODS ===
 
+    def _execute_server_command(
+        self, command: str, server: FlextGrpcEntities.Server
+    ) -> FlextResult[dict[str, Any]]:
+        """Execute server-specific commands."""
+        if command == "start":
+            return self.start_server(server).map(lambda _: {"status": "started"})
+        if command == "stop":
+            return self.stop_server(server).map(lambda _: {"status": "stopped"})
+        if command == "status":
+            return self.get_server_status(server)
+        return FlextResult.fail(f"Unsupported server command: {command}")
+
+    def _execute_client_command(
+        self,
+        command: str,
+        client: FlextGrpcEntities.Client,
+        **kwargs: str | int | bool | None,
+    ) -> FlextResult[dict[str, Any]]:
+        """Execute client-specific commands."""
+        if command == "connect":
+            return self.connect_client(str(kwargs.get("target", ""))).map(
+                lambda _: {"status": "connected"}
+            )
+        if command == "disconnect":
+            return self.disconnect_client(client).map(
+                lambda _: {"status": "disconnected"}
+            )
+        if command == "status":
+            return self.get_client_status(client)
+        if command == "call":
+            return self.make_call(
+                client, str(kwargs.get("method", "")), kwargs.get("request")
+            )
+        return FlextResult.fail(f"Unsupported client command: {command}")
+
+    def _execute_stream_command(
+        self,
+        command: str,
+        stream: FlextGrpcEntities.GrpcStream,
+        **kwargs: str | int | bool | None,
+    ) -> FlextResult[dict[str, Any]]:
+        """Execute stream-specific commands."""
+        if command == "create":
+            method_name = str(kwargs.get("method_name", "DefaultMethod"))
+            return self.create_stream(method_name=method_name, **kwargs).map(
+                lambda _: {"status": "created"}
+            )
+        if command == "send":
+            return self.send_data(stream, kwargs.get("data"))
+        if command == "close":
+            return self.close_stream(stream).map(lambda _: {"status": "closed"})
+        return FlextResult.fail(f"Unsupported stream command: {command}")
+
     def execute_grpc(
         self,
         command: str | None = None,
@@ -620,41 +673,13 @@ class FlextGrpcServices(FlextService[Any]):
 
         # Route based on entity type and command
         if isinstance(entity, FlextGrpcEntities.Server):
-            if command == "start":
-                return self.start_server(entity).map(lambda _: {"status": "started"})
-            if command == "stop":
-                return self.stop_server(entity).map(lambda _: {"status": "stopped"})
-            if command == "status":
-                return self.get_server_status(entity)
+            return self._execute_server_command(command, entity)
+        if isinstance(entity, FlextGrpcEntities.Client):
+            return self._execute_client_command(command, entity, **kwargs)
+        if isinstance(entity, FlextGrpcEntities.GrpcStream):
+            return self._execute_stream_command(command, entity, **kwargs)
 
-        elif isinstance(entity, FlextGrpcEntities.Client):
-            if command == "connect":
-                return self.connect_client(str(kwargs.get("target", ""))).map(
-                    lambda _: {"status": "connected"}
-                )
-            if command == "disconnect":
-                return self.disconnect_client(entity).map(
-                    lambda _: {"status": "disconnected"}
-                )
-            if command == "status":
-                return self.get_client_status(entity)
-            if command == "call":
-                return self.make_call(
-                    entity, str(kwargs.get("method", "")), kwargs.get("request")
-                )
-
-        elif isinstance(entity, FlextGrpcEntities.GrpcStream):
-            if command == "create":
-                method_name = str(kwargs.get("method_name", "DefaultMethod"))
-                return self.create_stream(method_name=method_name, **kwargs).map(
-                    lambda _: {"status": "created"}
-                )
-            if command == "send":
-                return self.send_data(entity, kwargs.get("data"))
-            if command == "close":
-                return self.close_stream(entity).map(lambda _: {"status": "closed"})
-
-        return FlextResult.fail(f"Unsupported command: {command}")
+        return FlextResult.fail(f"Unsupported entity type: {type(entity)}")
 
     def execute(self) -> FlextResult[dict[str, Any]]:
         """Execute main service operation."""

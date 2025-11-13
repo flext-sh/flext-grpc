@@ -283,7 +283,7 @@ class FlextGrpcConfig(BaseModel):
         try:
             config = cls(
                 network=GrpcNetworkConfig(
-                    host="0.0.0.0",
+                    host="127.0.0.1",  # Bind to localhost for security
                     port=50051,
                     max_connections=1000,
                     keepalive_time=30,

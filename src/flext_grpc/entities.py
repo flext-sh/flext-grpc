@@ -217,7 +217,7 @@ class FlextGrpcEntities(FlextService[Any]):
     class Client(Entity):
         """Generic gRPC client with channel delegation."""
 
-        channel: Channel | None = None
+        channel: grpc.Channel | None = None
         options: dict[str, Any] = Field(default_factory=dict)
         grpc_stub: object = None
 

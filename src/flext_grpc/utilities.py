@@ -193,6 +193,71 @@ class FlextGrpcUtilities:
         """gRPC message validation utilities with Pydantic 2.11+ features."""
 
         @staticmethod
+        def validate_message_basic_checks(
+            message_instance: object | None,
+        ) -> FlextResult[Message]:
+            """Perform basic validation checks on message instance."""
+            if message_instance is None:
+                return FlextResult[Message].fail("Invalid message instance")
+
+            if not PROTOBUF_AVAILABLE:
+                return FlextResult[Message].fail("Protobuf Message not available")
+
+            # Type guard to ensure message_instance is a proper Message
+            if not isinstance(message_instance, Message):
+                return FlextResult[Message].fail("Invalid message type")
+
+            return FlextResult[Message].ok(message_instance)
+
+        @staticmethod
+        def validate_message_descriptor(
+            message_instance: Message,
+        ) -> FlextResult[Message]:
+            """Validate message descriptor availability."""
+            if not hasattr(message_instance, "DESCRIPTOR"):
+                return FlextResult[Message].fail("Message descriptor not available")
+
+            descriptor = message_instance.DESCRIPTOR
+            if descriptor is None:
+                return FlextResult[Message].fail("Message descriptor is None")
+
+            return FlextResult[Message].ok(message_instance)
+
+        @staticmethod
+        def validate_required_fields(
+            message_instance: Message,
+        ) -> FlextResult[Message]:
+            """Validate that all required fields are present."""
+            descriptor = message_instance.DESCRIPTOR
+
+            for field in descriptor.fields:
+                if (
+                    PROTOBUF_AVAILABLE
+                    and hasattr(FieldDescriptor, "LABEL_REQUIRED")
+                    and field.label == FieldDescriptor.LABEL_REQUIRED
+                    and hasattr(message_instance, "HasField")
+                    and not message_instance.HasField(field.name)
+                ):
+                    return FlextResult[Message].fail(
+                        f"Required field '{field.name}' is missing"
+                    )
+
+            return FlextResult[Message].ok(message_instance)
+
+        @staticmethod
+        def validate_message_serialization(
+            message_instance: Message,
+        ) -> FlextResult[bool]:
+            """Validate message can be serialized."""
+            try:
+                if hasattr(message_instance, "SerializeToString"):
+                    message_instance.SerializeToString()
+            except Exception as e:
+                return FlextResult[bool].fail(f"Message serialization failed: {e}")
+
+            return FlextResult[bool].ok(True)
+
+        @staticmethod
         def validate_protobuf_message(
             message_instance: object | None,
         ) -> FlextResult[bool]:
@@ -206,44 +271,21 @@ class FlextGrpcUtilities:
 
             """
             try:
-                # Check if message has all required fields
-                if message_instance is None:
-                    return FlextResult[bool].fail("Invalid message instance")
-
-                if not PROTOBUF_AVAILABLE:
-                    return FlextResult[bool].fail("Protobuf Message not available")
-
-                # Type guard to ensure message_instance is a proper Message
-                if not isinstance(message_instance, Message):
-                    return FlextResult[bool].fail("Invalid message type")
-
-                if not hasattr(message_instance, "DESCRIPTOR"):
-                    return FlextResult[bool].fail("Message descriptor not available")
-
-                descriptor = message_instance.DESCRIPTOR
-                if descriptor is None:
-                    return FlextResult[bool].fail("Message descriptor is None")
-
-                for field in descriptor.fields:
-                    if (
-                        PROTOBUF_AVAILABLE
-                        and hasattr(FieldDescriptor, "LABEL_REQUIRED")
-                        and field.label == FieldDescriptor.LABEL_REQUIRED
-                        and hasattr(message_instance, "HasField")
-                        and not message_instance.HasField(field.name)
-                    ):
-                        return FlextResult[bool].fail(
-                            f"Required field '{field.name}' is missing"
-                        )
-
-                # Validate message format
-                try:
-                    if hasattr(message_instance, "SerializeToString"):
-                        message_instance.SerializeToString()
-                except Exception as e:
-                    return FlextResult[bool].fail(f"Message serialization failed: {e}")
-
-                return FlextResult[bool].ok(True)
+                # Chain validation steps using railway pattern
+                return (
+                    FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
+                        message_instance
+                    )
+                    .flat_map(
+                        FlextGrpcUtilities.MessageValidation.validate_message_descriptor
+                    )
+                    .flat_map(
+                        FlextGrpcUtilities.MessageValidation.validate_required_fields
+                    )
+                    .flat_map(
+                        FlextGrpcUtilities.MessageValidation.validate_message_serialization
+                    )
+                )
             except Exception as e:
                 return FlextResult[bool].fail(f"Message validation failed: {e}")
 
