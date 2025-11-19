@@ -10,8 +10,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextConstants, FlextResult
+from flext_core import FlextConfig, FlextConstants, FlextResult
 from pydantic import BaseModel, Field, model_validator
+from pydantic_settings import SettingsConfigDict
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -159,12 +160,36 @@ class GrpcMonitoringConfig(BaseModel):
     log_level: str = Field(default="INFO", description="Logging level")
 
 
-class FlextGrpcConfig(BaseModel):
-    """Generic gRPC configuration system extending FlextConfig.
+@FlextConfig.auto_register("grpc")
+class FlextGrpcConfig(FlextConfig.AutoConfig):
+    """Generic gRPC configuration system using AutoConfig pattern.
+
+    **ARCHITECTURAL PATTERN**: Zero-Boilerplate Auto-Registration
+
+    This class uses FlextConfig.AutoConfig for automatic:
+    - Singleton pattern (thread-safe)
+    - Namespace registration (accessible via config.grpc)
+    - Environment variable loading from FLEXT_GRPC_* variables
+    - .env file loading (production/development)
+    - Automatic type conversion and validation via Pydantic v2
 
     Uses extensive Pydantic models, generic patterns, and FLEXT ecosystem integration
     for complete gRPC configuration management with validation and composition.
     """
+
+    model_config = SettingsConfigDict(
+        env_prefix="FLEXT_GRPC_",
+        env_file=".env",
+        env_file_encoding="utf-8",
+        case_sensitive=False,
+        extra="ignore",
+        validate_assignment=True,
+        str_strip_whitespace=True,
+        validate_default=True,
+        frozen=False,
+        arbitrary_types_allowed=True,
+        strict=False,
+    )
 
     # Core configuration sections with composition
     network: GrpcNetworkConfig = Field(default_factory=GrpcNetworkConfig)
