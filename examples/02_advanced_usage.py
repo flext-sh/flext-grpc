@@ -46,7 +46,7 @@ class GrpcServerManager:
 
             # Create config through facade
             config_result = self.grpc.create_config(
-                host=FlextGrpcConstants.Network.DEFAULT_HOST,
+                host=FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST,
                 port=port,
                 max_workers=10 + (i * 5),  # Vary workers
                 timeout=FlextGrpcConstants.Network.DEFAULT_TIMEOUT,

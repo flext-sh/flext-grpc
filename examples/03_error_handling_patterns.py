@@ -92,7 +92,7 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
 
         try:
             config = {
-                "host": FlextGrpcConstants.Network.DEFAULT_HOST,
+                "host": FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST,
                 "port": port,
                 "max_workers": workers,
             }
@@ -173,7 +173,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
 
     # Step 2: Create server configuration
     config_result = create_server_config(
-        FlextGrpcConstants.Network.DEFAULT_GRPC_PORT, 4
+        FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT, 4
     )
     if config_result.is_failure:
         return FlextResult[str].fail(

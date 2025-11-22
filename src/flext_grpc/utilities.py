@@ -52,11 +52,11 @@ class FlextGrpcUtilities:
 
     def execute(
         self, command: str | None = None, data: FlextGrpcTypes.ConfigValue = None
-    ) -> FlextResult[dict[str, FlextGrpcTypes.JsonValue]]:
+    ) -> FlextResult[dict[str, object]]:
         """Execute utility operation and return status."""
         try:
             # Simple status check
-            result: dict[str, FlextGrpcTypes.JsonValue] = {
+            result: dict[str, object] = {
                 "status": "operational",
                 "service": "flext-grpc-utilities",
                 "command": command or "",
@@ -97,11 +97,9 @@ class FlextGrpcUtilities:
         """Create a gRPC server entity directly."""
         try:
             server = FlextGrpcEntities.Server(
-                id=str(uuid4()),
                 host=host,
                 port=port,
                 max_workers=max_workers,
-                state="stopped",
             )
             return FlextResult.ok(server)
         except Exception as e:
@@ -621,7 +619,9 @@ class FlextGrpcUtilities:
                 if grpc is not None and hasattr(grpc, "secure_channel"):
                     # Create channel with cast to handle gRPC compatibility
                     channel = grpc.secure_channel(
-                        target, actual_credentials, options=options
+                        target,
+                        cast("grpc.ChannelCredentials", actual_credentials),
+                        options=options,
                     )
                     return FlextResult[object].ok(channel)
                 return FlextResult[object].fail("Secure channel not available")
@@ -836,16 +836,19 @@ class FlextGrpcUtilities:
                     return FlextResult[dict[str, str]].fail("Metadata is not iterable")
                 for key, value in metadata:
                     # Convert key to string - separate logic for type inference
-                    if isinstance(key, bytes):
-                        str_key = key.decode("utf-8")
-                    else:
-                        str_key = str(key)
+                    str_key: str
+                    str_key = (
+                        key.decode("utf-8")
+                        if isinstance(key, bytes)
+                        else cast("str", key)
+                    )
 
                     # Convert value to string - separate logic for type inference
+                    str_value: str
                     if isinstance(value, bytes):
                         str_value = value.decode("utf-8")
                     else:
-                        str_value = str(value)
+                        str_value = cast("str", value)
 
                     metadata_dict[str_key] = str_value
 
@@ -1055,7 +1058,7 @@ class FlextGrpcUtilities:
             code: int,
             message: str,
             details: list[FlextGrpcTypes.JsonValue] | None = None,
-        ) -> FlextResult[dict[str, FlextGrpcTypes.JsonValue]]:
+        ) -> FlextResult[dict[str, object]]:
             """Create gRPC status for error responses.
 
             Args:
@@ -1069,16 +1072,16 @@ class FlextGrpcUtilities:
             """
             try:
                 # Create basic status representation
-                status_info: dict[str, FlextGrpcTypes.JsonValue] = {
+                status_info: dict[str, object] = {
                     "code": code,
                     "message": message,
                     "details": details or [],
                 }
                 # In a real implementation, this would create a proper grpc.Status
                 # For now, return the status info as a dict
-                return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].ok(status_info)
+                return FlextResult[dict[str, object]].ok(status_info)
             except Exception as e:
-                return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                return FlextResult[dict[str, object]].fail(
                     f"Status creation failed: {e}"
                 )
 

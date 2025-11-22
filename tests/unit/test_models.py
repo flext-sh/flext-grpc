@@ -8,19 +8,19 @@ class TestFlextGrpcModels:
 
     def test_server_config(self) -> None:
         """Test server config model."""
-        config = FlextGrpcModels.Config.ServerConfig()
+        config = FlextGrpcModels.GrpcConfig.ServerConfig()
         assert config.host == "localhost"
         assert config.port == 50051
         assert config.max_workers == 10
 
     def test_client_config(self) -> None:
         """Test client config model."""
-        config = FlextGrpcModels.Config.ClientConfig()
+        config = FlextGrpcModels.GrpcConfig.ClientConfig()
         assert config.target == "localhost:50051"
 
     def test_channel_config(self) -> None:
         """Test channel config model."""
-        config = FlextGrpcModels.Config.ChannelConfig(address="localhost:50051")
+        config = FlextGrpcModels.GrpcConfig.ChannelConfig(address="localhost:50051")
         assert config.address == "localhost:50051"
 
     def test_stream_info(self) -> None:

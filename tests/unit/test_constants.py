@@ -8,8 +8,8 @@ class TestFlextGrpcConstants:
 
     def test_network_constants(self) -> None:
         """Test network constants."""
-        assert FlextGrpcConstants.Network.DEFAULT_HOST == "127.0.0.1"
-        assert FlextGrpcConstants.Network.DEFAULT_GRPC_PORT == 50051
+        assert FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST == "127.0.0.1"
+        assert FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT == 50051
         assert FlextGrpcConstants.Network.MIN_PORT == 1
         assert FlextGrpcConstants.Network.MAX_PORT == 65535
 
@@ -21,8 +21,8 @@ class TestFlextGrpcConstants:
 
     def test_validation_constants(self) -> None:
         """Test validation constants."""
-        assert FlextGrpcConstants.Validation.ADDRESS_PARTS_COUNT == 2
-        assert FlextGrpcConstants.Validation.MAX_PORT_NUMBER == 65535
+        assert FlextGrpcConstants.GrpcValidation.ADDRESS_PARTS_COUNT == 2
+        assert FlextGrpcConstants.GrpcValidation.MAX_PORT_NUMBER == 65535
 
     def test_streaming_constants(self) -> None:
         """Test streaming constants."""

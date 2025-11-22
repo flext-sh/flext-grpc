@@ -13,7 +13,6 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any, Self, TypeVar
 
-import grpc
 from flext_core import FlextModels, FlextResult, FlextService
 from pydantic import BaseModel, Field, field_validator
 
@@ -87,9 +86,9 @@ class FlextGrpcEntities(FlextService[Any]):
             except Exception as e:
                 return FlextResult.fail(str(e))
 
-        def validate_business_rules(self) -> FlextResult[None]:
+        def validate_business_rules(self) -> FlextResult[bool]:
             """Override in subclasses for specific validation."""
-            return FlextResult.ok(None)
+            return FlextResult.ok(True)
 
     class Channel(Entity, StateMachine):
         """Generic gRPC channel with state machine delegation."""
@@ -107,11 +106,11 @@ class FlextGrpcEntities(FlextService[Any]):
                 v, set(FlextGrpcConstants.Literals.CHANNEL_STATES), "state"
             )
 
-        def validate_business_rules(self) -> FlextResult[None]:
+        def validate_business_rules(self) -> FlextResult[bool]:
             """Functional validation composition."""
             if not self.target.strip():
                 return FlextResult.fail("Channel target cannot be empty")
-            return FlextResult.ok(None)
+            return FlextResult.ok(True)
 
         def is_ready(self) -> bool:
             """Check readiness."""
@@ -139,7 +138,7 @@ class FlextGrpcEntities(FlextService[Any]):
         services: list[Any] = Field(default_factory=list)
         grpc_server: object = None
 
-        def validate_business_rules(self) -> FlextResult[None]:
+        def validate_business_rules(self) -> FlextResult[bool]:
             """Delegate validation to generic validators."""
             if not self.host.strip():
                 return FlextResult.fail("Server host cannot be empty")
@@ -150,7 +149,7 @@ class FlextGrpcEntities(FlextService[Any]):
                 return FlextResult.fail(f"Invalid port: {self.port}")
             if self.max_workers < 1:
                 return FlextResult.fail("Max workers must be >= 1")
-            return FlextResult.ok(None)
+            return FlextResult.ok(True)
 
         def start(self) -> FlextResult[Self]:
             """Transition to starting."""
@@ -217,15 +216,15 @@ class FlextGrpcEntities(FlextService[Any]):
     class Client(Entity):
         """Generic gRPC client with channel delegation."""
 
-        channel: grpc.Channel | None = None
+        channel: FlextGrpcEntities.Channel | None = None
         options: dict[str, Any] = Field(default_factory=dict)
         grpc_stub: object = None
 
-        def validate_business_rules(self) -> FlextResult[None]:
+        def validate_business_rules(self) -> FlextResult[bool]:
             """Delegate validation."""
             if self.channel and self.channel.validate_business_rules().is_failure:
                 return FlextResult.fail("Invalid channel")
-            return FlextResult.ok(None)
+            return FlextResult.ok(True)
 
         def connect_to(self, target: str) -> FlextResult[Self]:
             """Connect functionally."""
@@ -235,6 +234,7 @@ class FlextGrpcEntities(FlextService[Any]):
     class GrpcStream(Entity):
         """Generic gRPC stream with validation delegation."""
 
+        id: str = ""
         method_name: str = ""
         stream_type: FlextGrpcTypes.GrpcStreamType = "unary"
         grpc_stub: object = None

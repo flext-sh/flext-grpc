@@ -13,7 +13,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from functools import partial
 from typing import Any, TypeVar, cast
-from uuid import uuid4
 
 from flext_core import FlextModels, FlextResult, FlextService
 from pydantic import BaseModel, Field, computed_field, field_validator
@@ -74,7 +73,7 @@ class GenericResponse[T: BaseModel](BaseModel):
         return not self.success or self.error is not None
 
 
-class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
+class FlextGrpc(FlextService[FlextGrpcConfig]):
     """Generic unified gRPC facade with SOLID patterns and minimal code.
 
     Uses generic types, functional composition, Pydantic v2 models, and delegation
@@ -85,16 +84,26 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
         """Initialize facade with FLEXT ecosystem integration."""
         super().__init__()
         self._service = FlextGrpcServices()
-        self._config = config or FlextGrpcConfig()
+        self._config = config if config is not None else FlextGrpcConfig()
 
     @property
     def grpc_config(self) -> FlextGrpcConfig:
         """Get gRPC-specific configuration."""
         return self._config
 
-    def execute(self) -> FlextResult[FlextGrpcConfig]:
+    def execute(self, **kwargs: object) -> FlextResult[FlextGrpcConfig]:
         """Execute main facade operation."""
         return FlextResult.ok(self._config)
+
+    def validate_target(self, target: str) -> bool:
+        """Validate gRPC target string."""
+        return FlextGrpcTypes.GrpcValidation.validate_target(target)
+
+    def parse_address(self, address: str) -> FlextResult[tuple[str, int]]:
+        """Parse gRPC address string."""
+        if not FlextGrpcTypes.GrpcValidation.validate_target(address):
+            return FlextResult.fail(f"Invalid address: {address}")
+        return FlextResult.ok(FlextGrpcTypes.GrpcValidation.parse_target(address))
 
     def create_entity(
         self,
@@ -110,7 +119,7 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
             return FlextResult.fail(f"Unknown entity type: {entity_type}")
 
         # Call factory and handle result
-        result = factory(id=str(uuid4()), **kwargs)
+        result = factory(**kwargs)
         if not result.is_success:
             return FlextResult.fail(f"Failed to create entity: {result.error}")
 
@@ -194,8 +203,6 @@ class FlextGrpc[T: BaseModel](FlextService[FlextGrpcConfig]):
             "host": FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST,
             "port": FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT,
             "max_workers": FlextGrpcConstants.Service.DEFAULT_MAX_WORKERS,
-            "state": "stopped",
-            "services": [],
         }
         return self.create_entity("server", **defaults | kwargs)
 

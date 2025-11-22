@@ -98,7 +98,7 @@ class FlextGrpcModels(FlextModels):
     # CONFIGURATION MODELS - Configuration-related models
     # =========================================================================
 
-    class Config:
+    class GrpcConfig:
         """Configuration models for gRPC settings."""
 
         class ServerConfig(BaseModel):

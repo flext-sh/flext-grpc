@@ -239,7 +239,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Create gRPC client configuration."""
                 ...
 
-            def validate_config(self) -> FlextResult[None]:
+            def validate_config(self) -> "FlextProtocols.ResultProtocol[bool]":
                 """Validate gRPC configuration."""
                 ...
 

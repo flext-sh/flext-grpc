@@ -76,7 +76,7 @@ class TestFlextGrpcValidationError:
         message = "Invalid field value"
         field_name = "username"
 
-        error = FlextGrpcValidationError(message, field_name)
+        error = FlextGrpcValidationError(message, field=field_name)
 
         # flext-core adds error type prefix to messages
         assert message in str(error)

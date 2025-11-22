@@ -681,7 +681,7 @@ class FlextGrpcServices(FlextService[Any]):
 
         return FlextResult.fail(f"Unsupported entity type: {type(entity)}")
 
-    def execute(self) -> FlextResult[dict[str, Any]]:
+    def execute(self, **kwargs: object) -> FlextResult[dict[str, Any]]:
         """Execute main service operation."""
         return self.execute_grpc()
 
