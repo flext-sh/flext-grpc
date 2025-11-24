@@ -91,7 +91,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         """Get gRPC-specific configuration."""
         return self._config
 
-    def execute(self, **kwargs: object) -> FlextResult[FlextGrpcConfig]:
+    def execute(self, **_kwargs: object) -> FlextResult[FlextGrpcConfig]:
         """Execute main facade operation."""
         return FlextResult.ok(self._config)
 
@@ -210,13 +210,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         self, **kwargs: str | int | bool | None
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Create client with channel composition."""
-        # Functional composition for client creation
-        return self.create_channel(**kwargs).flat_map(
-            lambda channel: cast(
-                "FlextResult[FlextGrpcEntities.Client]",
-                self.create_entity("client", channel=channel, **kwargs),
-            )
-        )
+        return self.create_entity("client", **kwargs)
 
     def create_channel(
         self, **kwargs: str | int | bool | dict[str, object] | None
@@ -224,7 +218,6 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         """Create channel entity with defaults."""
         defaults = {
             "target": f"{FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT}",
-            "state": "idle",
             "options": {},
         }
         return self.create_entity("channel", **defaults | kwargs)
@@ -233,7 +226,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         self, **kwargs: str | list[str] | None
     ) -> FlextResult[FlextGrpcEntities.Service]:
         """Create service entity with defaults."""
-        defaults = {"name": "DefaultService", "methods": []}
+        defaults = {"name": "DefaultService", "methods": ["default_method"]}
         return self.create_entity("service", **defaults | kwargs)
 
     def create_stream(

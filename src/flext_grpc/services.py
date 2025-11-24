@@ -170,9 +170,9 @@ class ConnectionPool:
                 if connection in self._active:
                     self._active.remove(connection)
                     if self._pool.full():
-                        return FlextResult.ok(None)
+                        return FlextResult.ok(True)
                     self._pool.put_nowait(connection)
-                return FlextResult.ok(None)
+                return FlextResult.ok(True)
         except Exception as e:
             return FlextResult.fail(f"Connection release failed: {e}")
 
@@ -185,7 +185,7 @@ class ConnectionPool:
                     self._pool.get_nowait()
                 except Exception:
                     break
-        return FlextResult.ok(None)
+        return FlextResult.ok(True)
 
 
 class GrpcServerManager(ServerLifecycleManager):
@@ -681,7 +681,7 @@ class FlextGrpcServices(FlextService[Any]):
 
         return FlextResult.fail(f"Unsupported entity type: {type(entity)}")
 
-    def execute(self, **kwargs: object) -> FlextResult[dict[str, Any]]:
+    def execute(self, **_kwargs: object) -> FlextResult[dict[str, Any]]:
         """Execute main service operation."""
         return self.execute_grpc()
 

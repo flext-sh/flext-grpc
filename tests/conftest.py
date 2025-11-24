@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import pytest
 from flext_core import FlextConstants, FlextContainer
+from flext_tests.docker import FlextTestDocker
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -52,3 +53,31 @@ def test_addresses() -> dict[str, list[str]]:
             "localhost:70000",
         ],
     }
+
+
+@pytest.fixture(scope="session")
+def grpc_test_container() -> FlextTestDocker:
+    """Provide gRPC test container for integration tests.
+
+    Container remains running across test session for performance.
+    Cleaned at start and end of session, not per test.
+    """
+    container = FlextTestDocker(
+        image="grpc-test:latest",  # Placeholder - replace with actual image
+        ports={"50051/tcp": ("127.0.0.1", 0)},  # Auto-assign port
+        environment={
+            "GRPC_SERVER_PORT": "50051",
+            "LOG_LEVEL": "DEBUG",
+        },
+        name="flext-grpc-test",
+    )
+
+    # Start container if not already running
+    if not container.is_running():
+        container.start()
+        container.wait_for_healthcheck(timeout=30)
+
+    return container
+
+    # Note: Container remains running for subsequent test sessions
+    # Manual cleanup can be done via container.stop() if needed

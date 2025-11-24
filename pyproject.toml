@@ -118,6 +118,7 @@
     extend = "../ruff-shared.toml"
 
 [tool.pytest.ini_options]
+    pythonpath = ["src"]
     addopts = [
         "--cov-branch",
         "--cov-fail-under=90",

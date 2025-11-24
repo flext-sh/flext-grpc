@@ -80,17 +80,17 @@ class TestFlextGrpcValidationError:
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
-        assert error.field_name == field_name
+        assert error.field == field_name
 
     def test_validation_error_without_field_name(self) -> None:
         """Test validation error with None field_name."""
         message = "General validation error"
 
-        error = FlextGrpcValidationError(message, None)
+        error = FlextGrpcValidationError(message, field=None)
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
-        assert error.field_name is None
+        assert error.field is None
 
     def test_validation_error_default_field_name(self) -> None:
         """Test validation error with default field_name parameter."""
@@ -100,7 +100,7 @@ class TestFlextGrpcValidationError:
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
-        assert error.field_name is None
+        assert error.field is None
 
     def test_validation_error_inheritance(self) -> None:
         """Test FlextGrpcValidationError inherits correctly."""
@@ -155,16 +155,12 @@ class TestFlextGrpcConfigurationError:
         """Test configuration error with all parameters."""
         message = "Invalid configuration"
         config_key = "port"
-        config_value = -1
 
-        error = FlextGrpcConfigurationError(
-            message, config_key=config_key, config_value=config_value
-        )
+        error = FlextGrpcConfigurationError(message, config_key=config_key)
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
         assert error.config_key == config_key
-        assert error.config_value == config_value
 
     def test_configuration_error_with_minimal_params(self) -> None:
         """Test configuration error with only message."""
@@ -175,7 +171,6 @@ class TestFlextGrpcConfigurationError:
         # flext-core adds error type prefix to messages
         assert message in str(error)
         assert error.config_key is None
-        assert error.config_value is None
 
     def test_configuration_error_with_key_only(self) -> None:
         """Test configuration error with config_key but no value."""
@@ -187,7 +182,6 @@ class TestFlextGrpcConfigurationError:
         # flext-core adds error type prefix to messages
         assert message in str(error)
         assert error.config_key == config_key
-        assert error.config_value is None
 
     def test_configuration_error_inheritance(self) -> None:
         """Test FlextGrpcConfigurationError inherits correctly."""
@@ -204,10 +198,10 @@ class TestErrorIntegration:
         """Test all error classes can be raised as exceptions."""
         errors = [
             FlextGrpcError("base error"),
-            FlextGrpcValidationError("validation error", "field"),
+            FlextGrpcValidationError("validation error", field="field"),
             FlextGrpcConnectionError("connection error"),
             FlextGrpcTimeoutError("timeout error"),
-            FlextGrpcConfigurationError("config error", "key", "value"),
+            FlextGrpcConfigurationError("config error", config_key="key"),
         ]
 
         for error in errors:
@@ -249,15 +243,14 @@ class TestErrorIntegration:
         # Validation error with Unicode field name
         unicode_error = FlextGrpcValidationError(
             "Invalid value for field 'データ'",
-            "データ",
+            field="データ",
         )
-        assert unicode_error.field_name == "データ"
+        assert unicode_error.field == "データ"
 
         # Configuration error with complex object
-        complex_config = {"nested": {"key": "value"}, "list": [1, 2, 3]}
+        config_key = "complex_setting"
         config_error = FlextGrpcConfigurationError(
             "Complex config failed",
-            "complex_setting",
-            complex_config,
+            config_key=config_key,
         )
-        assert config_error.config_value == complex_config
+        assert config_error.config_key == config_key

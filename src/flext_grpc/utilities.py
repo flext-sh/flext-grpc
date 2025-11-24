@@ -75,14 +75,14 @@ class FlextGrpcUtilities:
         """Create a gRPC client entity directly."""
         try:
             channel = FlextGrpcEntities.Channel(
-                id=str(uuid4()),
+                unique_id=str(uuid4()),
                 target=target,
                 state="idle",
                 options=options or {},
             )
 
             client = FlextGrpcEntities.Client(
-                id=str(uuid4()),
+                unique_id=str(uuid4()),
                 channel=channel,
                 options=options or {},
             )
@@ -112,7 +112,7 @@ class FlextGrpcUtilities:
         """Create a gRPC channel entity directly."""
         try:
             channel = FlextGrpcEntities.Channel(
-                id=str(uuid4()),
+                unique_id=str(uuid4()),
                 target=target,
                 state="idle",
                 options=options or {},
@@ -128,7 +128,7 @@ class FlextGrpcUtilities:
         """Create a gRPC service entity directly."""
         try:
             service = FlextGrpcEntities.Service(
-                id=str(uuid4()), name=name, methods=methods or []
+                unique_id=str(uuid4()), name=name, methods=methods or []
             )
             return FlextResult.ok(service)
         except Exception as e:
@@ -149,7 +149,7 @@ class FlextGrpcUtilities:
                 return FlextResult.fail("Stream method name cannot be empty")
 
             stream = FlextGrpcEntities.GrpcStream(
-                id=str(uuid4()),
+                unique_id=str(uuid4()),
                 method_name=method_name,
                 stream_type=cast("FlextGrpcTypes.GrpcStreamType", stream_type),
             )
@@ -818,7 +818,7 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def validate_stream_metadata(
-            metadata: Iterator[tuple[str, str]] | None,
+            metadata: Iterator[tuple[bytes | str, bytes | str]] | None,
         ) -> FlextResult[dict[str, str]]:
             """Validate and convert gRPC metadata.
 
@@ -836,19 +836,12 @@ class FlextGrpcUtilities:
                     return FlextResult[dict[str, str]].fail("Metadata is not iterable")
                 for key, value in metadata:
                     # Convert key to string - separate logic for type inference
-                    str_key: str
-                    str_key = (
-                        key.decode("utf-8")
-                        if isinstance(key, bytes)
-                        else cast("str", key)
-                    )
+                    str_key = key.decode("utf-8") if isinstance(key, bytes) else key
 
                     # Convert value to string - separate logic for type inference
-                    str_value: str
-                    if isinstance(value, bytes):
-                        str_value = value.decode("utf-8")
-                    else:
-                        str_value = cast("str", value)
+                    str_value = (
+                        value.decode("utf-8") if isinstance(value, bytes) else value
+                    )
 
                     metadata_dict[str_key] = str_value
 

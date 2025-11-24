@@ -5,6 +5,8 @@ SPDX-License-Identifier: MIT
 
 """
 
+from typing import Protocol
+
 from flext_grpc.protocols import FlextGrpcProtocols
 
 
@@ -49,8 +51,6 @@ class TestFlextGrpcProtocols:
 
     def test_protocols_are_protocols(self) -> None:
         """Test that protocols are proper Protocol subclasses."""
-        from typing import Protocol
-
         # Check that protocols exist and are Protocol subclasses
         assert issubclass(FlextGrpcProtocols.Grpc.ServerProtocol, Protocol)
         assert issubclass(FlextGrpcProtocols.Grpc.ClientProtocol, Protocol)

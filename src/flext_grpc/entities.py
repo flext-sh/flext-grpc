@@ -14,6 +14,7 @@ from datetime import UTC, datetime
 from typing import Any, Self, TypeVar
 
 from flext_core import FlextModels, FlextResult, FlextService
+from flext_tests.matchers import FlextTestsMatchers
 from pydantic import BaseModel, Field, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants
@@ -28,26 +29,17 @@ class EntityValidator(BaseModel):
     @classmethod
     def validate_required_string(cls, value: str, field_name: str) -> str:
         """Generic string validation."""
-        if not value or not value.strip():
-            msg = f"{field_name} cannot be empty"
-            raise ValueError(msg)
-        return value.strip()
+        return FlextTestsMatchers.validate_required_string(value, field_name)
 
     @classmethod
     def validate_enum(cls, value: str, allowed: set[str], field_name: str) -> str:
         """Generic enum validation."""
-        if value not in allowed:
-            msg = f"Invalid {field_name}: {value}"
-            raise ValueError(msg)
-        return value
+        return FlextTestsMatchers.validate_enum(value, allowed, field_name)
 
     @classmethod
     def validate_list_not_empty(cls, value: list[Any], field_name: str) -> list[Any]:
         """Generic list validation."""
-        if not value:
-            msg = f"{field_name} cannot be empty"
-            raise ValueError(msg)
-        return value
+        return FlextTestsMatchers.validate_list_not_empty(value, field_name)
 
 
 class StateMachine(BaseModel):
