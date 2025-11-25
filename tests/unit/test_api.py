@@ -1,6 +1,14 @@
 """Tests for flext_grpc.api module."""
 
-from flext_grpc.api import FlextGrpc
+import pytest
+from pydantic import BaseModel
+
+from flext_grpc.api import (
+    FlextGrpc,
+    GenericOperationSpec,
+    GenericRequest,
+    GenericResponse,
+)
 from flext_grpc.config import FlextGrpcConfig
 
 
@@ -149,8 +157,6 @@ class TestFlextGrpc:
 
     def test_validate_entity_type(self) -> None:
         """Test entity type validation."""
-        from flext_grpc.api import GenericOperationSpec
-
         # Test valid entity types
         assert GenericOperationSpec.validate_entity_type("server") == "server"
         assert GenericOperationSpec.validate_entity_type("client") == "client"
@@ -159,16 +165,11 @@ class TestFlextGrpc:
         assert GenericOperationSpec.validate_entity_type("stream") == "stream"
 
         # Test invalid entity types
-        import pytest
-
         with pytest.raises(ValueError, match="Unsupported entity type"):
             GenericOperationSpec.validate_entity_type("invalid")
 
     def test_generic_request_creation(self) -> None:
         """Test GenericRequest creation."""
-        from pydantic import BaseModel
-
-        from flext_grpc.api import GenericOperationSpec, GenericRequest
 
         class TestData(BaseModel):
             value: str
@@ -183,9 +184,6 @@ class TestFlextGrpc:
 
     def test_generic_response_creation(self) -> None:
         """Test GenericResponse creation."""
-        from pydantic import BaseModel
-
-        from flext_grpc.api import GenericResponse
 
         class TestData(BaseModel):
             result: str

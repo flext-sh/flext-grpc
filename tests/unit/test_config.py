@@ -1,5 +1,7 @@
 """Tests for flext_grpc.config module."""
 
+import pytest
+
 from flext_grpc.config import FlextGrpcConfig
 
 
@@ -81,7 +83,6 @@ class TestFlextGrpcConfig:
         # Test TLS without cert
         security_config.tls_enabled = True
         security_config.tls_cert_file = ""
-        import pytest
 
         with pytest.raises(ValueError, match="TLS certificate required"):
             security_config.validate_security_config()

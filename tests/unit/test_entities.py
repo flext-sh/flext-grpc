@@ -1,5 +1,7 @@
 """Tests for flext_grpc.entities module."""
 
+import pytest
+
 from flext_grpc.entities import FlextGrpcEntities
 
 
@@ -43,16 +45,12 @@ class TestFlextGrpcEntities:
 
     def test_service_validation_empty_methods(self) -> None:
         """Test service validation fails with empty methods."""
-        import pytest
-
-        with pytest.raises(Exception):  # Pydantic validation error
+        with pytest.raises(ValueError):  # Pydantic validation error
             FlextGrpcEntities.Service(name="TestService", methods=[])
 
     def test_service_validation_empty_name(self) -> None:
         """Test service validation fails with empty name."""
-        import pytest
-
-        with pytest.raises(Exception):  # Pydantic validation error
+        with pytest.raises(ValueError):  # Pydantic validation error
             FlextGrpcEntities.Service(name="", methods=["method1"])
 
     def test_channel_business_rules(self) -> None:

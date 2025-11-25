@@ -1,5 +1,7 @@
 """Tests for flext_grpc.utilities module."""
 
+from google.protobuf.message import Message
+
 from flext_grpc.utilities import FlextGrpcUtilities
 
 
@@ -84,21 +86,12 @@ class TestFlextGrpcUtilities:
 
     def test_validate_message_basic_checks(self) -> None:
         """Test basic message validation."""
-        # Skip this test if protobuf is not available
-        try:
-            from google.protobuf.message import Message
-
-            # Create a mock protobuf message if possible
-            mock_msg = Message()
-            result = FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
-                mock_msg
-            )
-            assert result.is_success
-        except ImportError:
-            # If protobuf is not available, just test that the method exists
-            assert hasattr(
-                FlextGrpcUtilities.MessageValidation, "validate_message_basic_checks"
-            )
+        # Create a mock protobuf message if possible
+        mock_msg = Message()
+        result = FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
+            mock_msg
+        )
+        assert result.is_success
 
     def test_validate_message_basic_checks_invalid(self) -> None:
         """Test basic message validation with invalid input."""

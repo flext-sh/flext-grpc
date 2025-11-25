@@ -1,6 +1,10 @@
 """Tests for flext_grpc.services module."""
 
-from flext_grpc.services import FlextGrpcServices
+from flext_grpc.services import (
+    ConnectionPool,
+    FlextGrpcServices,
+    MetricsCollector,
+)
 
 
 class TestFlextGrpcServices:
@@ -34,8 +38,6 @@ class TestFlextGrpcServices:
 
     def test_connection_pool_release(self) -> None:
         """Test connection pool release."""
-        from flext_grpc.services import ConnectionPool
-
         pool = ConnectionPool(max_size=5)
         # Create a mock connection
         mock_connection = "mock_connection_123"
@@ -45,16 +47,12 @@ class TestFlextGrpcServices:
 
     def test_connection_pool_cleanup(self) -> None:
         """Test connection pool cleanup."""
-        from flext_grpc.services import ConnectionPool
-
         pool = ConnectionPool(max_size=5)
         result = pool.cleanup()
         assert result.is_success
 
     def test_metrics_collector(self) -> None:
         """Test metrics collector directly."""
-        from flext_grpc.services import MetricsCollector
-
         collector = MetricsCollector()
         collector.record_metric("test_key", "test_value")
         value = collector.get_metric("test_key")
