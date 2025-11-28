@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from enum import StrEnum
 from typing import Final, Literal
 
 from flext_core import FlextConstants
@@ -181,9 +182,10 @@ class FlextGrpcConstants(FlextConstants):
             "transient_failure",
             "shutdown",
         )
-        type ChannelState = Literal[
+        type ChannelStateLiteral = Literal[
             "idle", "connecting", "ready", "transient_failure", "shutdown"
         ]
+        """Channel state literal - matches gRPC channel state values."""
 
         # Server state literals
         SERVER_STATES: Final[tuple[str, ...]] = (
@@ -192,7 +194,8 @@ class FlextGrpcConstants(FlextConstants):
             "running",
             "stopping",
         )
-        type ServerState = Literal["stopped", "starting", "running", "stopping"]
+        type ServerStateLiteral = Literal["stopped", "starting", "running", "stopping"]
+        """Server state literal - matches gRPC server state values."""
 
         # Stream type literals
         STREAM_TYPES: Final[tuple[str, ...]] = (
@@ -201,9 +204,10 @@ class FlextGrpcConstants(FlextConstants):
             "client_streaming",
             "bidirectional",
         )
-        type StreamType = Literal[
+        type StreamTypeLiteral = Literal[
             "unary", "server_streaming", "client_streaming", "bidirectional"
         ]
+        """Stream type literal - matches gRPC stream type values."""
 
         # Load balancing policy literals
         LOAD_BALANCING_POLICIES: Final[tuple[str, ...]] = (
@@ -212,13 +216,44 @@ class FlextGrpcConstants(FlextConstants):
             "grpclb",
             "xds_cluster_resolver",
         )
-        type LoadBalancingPolicy = Literal[
+        type LoadBalancingPolicyLiteral = Literal[
             "round_robin", "pick_first", "grpclb", "xds_cluster_resolver"
         ]
+        """Load balancing policy literal - matches gRPC load balancing policies."""
 
         # Compression literals
         COMPRESSION_TYPES: Final[tuple[str, ...]] = ("none", "gzip", "deflate")
-        type CompressionType = Literal["none", "gzip", "deflate"]
+        type CompressionTypeLiteral = Literal["none", "gzip", "deflate"]
+        """Compression type literal - matches gRPC compression types."""
+
+        # gRPC operation literal - matches GrpcOperations StrEnum
+        type GrpcOperationLiteral = Literal[
+            "unary", "server_streaming", "client_streaming", "bidirectional"
+        ]
+        """gRPC operation literal."""
+
+    class GrpcOperations(StrEnum):
+        """gRPC operation types."""
+
+        UNARY = "unary"
+        SERVER_STREAMING = "server_streaming"
+        CLIENT_STREAMING = "client_streaming"
+        BIDIRECTIONAL = "bidirectional"
+
+    class CompressionTypes(StrEnum):
+        """gRPC compression types."""
+
+        NONE = "none"
+        GZIP = "gzip"
+        DEFLATE = "deflate"
+
+    class LoadBalancingPolicies(StrEnum):
+        """gRPC load balancing policies."""
+
+        ROUND_ROBIN = "round_robin"
+        PICK_FIRST = "pick_first"
+        GRPCLB = "grpclb"
+        XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
 
 
 __all__: list[str] = [

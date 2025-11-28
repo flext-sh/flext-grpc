@@ -41,9 +41,10 @@ class FlextGrpcTypes(FlextTypes):
 
     # gRPC target types (moved from flext-core to domain-specific location)
     type GrpcTarget = str
-    type GrpcStreamType = FlextGrpcConstants.Literals.StreamType
-    type GrpcChannelState = FlextGrpcConstants.Literals.ChannelState
-    type GrpcServerState = FlextGrpcConstants.Literals.ServerState
+    # Type aliases for gRPC literals - using TypeAlias for better type checking
+    GrpcStreamType: type = FlextGrpcConstants.Literals.StreamTypeLiteral
+    GrpcChannelState: type = FlextGrpcConstants.Literals.ChannelStateLiteral
+    GrpcServerState: type = FlextGrpcConstants.Literals.ServerStateLiteral
 
     # =========================================================================
     # GRPC SERVER TYPES - Complex server management types

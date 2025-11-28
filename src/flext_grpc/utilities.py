@@ -107,7 +107,7 @@ class FlextGrpcUtilities:
 
     @classmethod
     def create_channel_entity(
-        cls, target: str, options: dict[str, Any] | None = None
+        cls, target: str, options: dict[str, object] | None = None
     ) -> FlextResult[FlextGrpcEntities.Channel]:
         """Create a gRPC channel entity directly."""
         try:
@@ -136,7 +136,9 @@ class FlextGrpcUtilities:
 
     @classmethod
     def create_stream_entity(
-        cls, method_name: str, stream_type: str
+        cls,
+        method_name: str,
+        stream_type: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Create a gRPC stream entity directly."""
         try:

@@ -87,7 +87,7 @@ class FlextGrpcEntities(FlextService[Any]):
 
         target: str = ""
         state: FlextGrpcTypes.GrpcChannelState = "idle"
-        options: dict[str, Any] = Field(default_factory=dict)
+        options: dict[str, object] = Field(default_factory=dict)
         grpc_channel: object = None
 
         @field_validator("state")
@@ -209,7 +209,7 @@ class FlextGrpcEntities(FlextService[Any]):
         """Generic gRPC client with channel delegation."""
 
         channel: FlextGrpcEntities.Channel | None = None
-        options: dict[str, Any] = Field(default_factory=dict)
+        options: dict[str, object] = Field(default_factory=dict)
         grpc_stub: object = None
 
         def validate_business_rules(self) -> FlextResult[bool]:

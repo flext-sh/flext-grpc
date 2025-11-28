@@ -4,6 +4,8 @@ from typing import Protocol, runtime_checkable
 
 from flext_core import FlextProtocols, FlextResult
 
+from flext_grpc.constants import FlextGrpcConstants
+
 
 class FlextGrpcProtocols(FlextProtocols):
     """Unified gRPC protocols extending FLEXT foundation protocols.
@@ -89,7 +91,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def make_call(
                 self,
                 channel: object,
-                method: str,
+                method: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
                 request: object,
                 *,
                 timeout: float = 30.0,
@@ -111,7 +113,10 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC streaming operations."""
 
             def create_stream(
-                self, stream_type: str, channel: object, method: str
+                self,
+                stream_type: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
+                channel: object,
+                method: str,  # gRPC method name (not StreamType)
             ) -> FlextResult[object]:
                 """Create gRPC stream."""
                 ...

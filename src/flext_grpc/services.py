@@ -21,9 +21,8 @@ from typing import Any, Protocol, TypeVar
 import grpc
 from flext_core import FlextResult, FlextService
 
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
-
-# Protocol buffer imports
 from flext_grpc.proto import (
     EchoRequest,
     FlextGrpcServiceStub,
@@ -87,7 +86,7 @@ class StreamProcessor(ABC):
     @abstractmethod
     def send_data(
         self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Send data through stream.
 
         Note: Uses Any for gRPC message compatibility
@@ -106,7 +105,7 @@ class MetricsCollector:
     def __init__(self) -> None:
         """Initialize metrics collector with thread-safe storage."""
         super().__init__()
-        self._metrics: dict[str, Any] = {}
+        self._metrics: dict[str, object] = {}
         self._lock = threading.RLock()
 
     def record_metric(self, key: str, value: object) -> None:
@@ -130,7 +129,7 @@ class MetricsCollector:
         with self._lock:
             return self._metrics.get(key)
 
-    def get_all_metrics(self) -> dict[str, Any]:
+    def get_all_metrics(self) -> dict[str, object]:
         """Get all metrics snapshot."""
         with self._lock:
             return self._metrics.copy()
@@ -194,7 +193,7 @@ class GrpcServerManager(ServerLifecycleManager):
     def __init__(self) -> None:
         """Initialize server manager with metrics tracking."""
         super().__init__()
-        self._active_servers: dict[str, Any] = {}
+        self._active_servers: dict[str, object] = {}
         self._metrics = MetricsCollector()
         self._thread_pool = ThreadPoolExecutor(
             max_workers=50, thread_name_prefix="flext-grpc-server"
@@ -275,7 +274,7 @@ class GrpcServerManager(ServerLifecycleManager):
 
     def get_server_metrics(
         self, server: FlextGrpcEntities.Server
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Get server metrics."""
         server_key = f"{server.host}:{server.port}"
         metrics = {
@@ -292,7 +291,7 @@ class GrpcClientManager(ClientConnectionManager):
     def __init__(self) -> None:
         """Initialize client manager with connection pooling."""
         super().__init__()
-        self._active_channels: dict[str, Any] = {}
+        self._active_channels: dict[str, object] = {}
         self._connection_pool = ConnectionPool(max_size=20)
         self._metrics = MetricsCollector()
 
@@ -336,7 +335,7 @@ class GrpcClientManager(ClientConnectionManager):
         client: FlextGrpcEntities.Client,
         method: str,
         request: FlextGrpcTypes.ConfigValue,
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Execute gRPC call through client.
 
         Args:
@@ -391,7 +390,7 @@ class GrpcStreamManager(StreamProcessor):
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: dict[str, Any] = {}
+        self._active_streams: dict[str, object] = {}
         self._metrics = MetricsCollector()
 
     def create_stream(
@@ -424,7 +423,7 @@ class GrpcStreamManager(StreamProcessor):
 
     def send_data(
         self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Send data with buffering strategy.
 
         Args:
@@ -500,7 +499,7 @@ class FlextGrpcServices(FlextService[Any]):
 
     def get_server_status(
         self, server: FlextGrpcEntities.Server
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Delegate server status to specialized manager."""
         return self._server_manager.get_server_metrics(server)
 
@@ -521,7 +520,7 @@ class FlextGrpcServices(FlextService[Any]):
         client: FlextGrpcEntities.Client,
         method: str,
         request: FlextGrpcTypes.ConfigValue,
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Delegate method calls to specialized manager.
 
         Args:
@@ -534,7 +533,7 @@ class FlextGrpcServices(FlextService[Any]):
 
     def get_client_status(
         self, client: FlextGrpcEntities.Client
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Get client status through delegation."""
         target = ""
         if client.channel is not None:
@@ -559,7 +558,7 @@ class FlextGrpcServices(FlextService[Any]):
 
     def send_data(
         self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Delegate data sending to specialized manager.
 
         Args:
@@ -578,7 +577,7 @@ class FlextGrpcServices(FlextService[Any]):
     # === FACTORY METHODS WITH DELEGATION ===
 
     def _create_client_entity(
-        self, target: str, options: dict[str, Any] | None = None
+        self, target: str, options: dict[str, object] | None = None
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Delegate entity creation to utilities.
 
@@ -590,7 +589,9 @@ class FlextGrpcServices(FlextService[Any]):
         return FlextGrpcUtilities.create_client_entity(target, options)
 
     def _create_stream_entity(
-        self, method_name: str, stream_type: str
+        self,
+        method_name: str,  # gRPC method name
+        stream_type: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)
@@ -599,7 +600,7 @@ class FlextGrpcServices(FlextService[Any]):
 
     def _execute_server_command(
         self, command: str, server: FlextGrpcEntities.Server
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Execute server-specific commands."""
         if command == "start":
             return self.start_server(server).map(lambda _: {"status": "started"})
@@ -614,7 +615,7 @@ class FlextGrpcServices(FlextService[Any]):
         command: str,
         client: FlextGrpcEntities.Client,
         **kwargs: str | int | bool | None,
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Execute client-specific commands."""
         if command == "connect":
             return self.connect_client(str(kwargs.get("target", ""))).map(
@@ -637,7 +638,7 @@ class FlextGrpcServices(FlextService[Any]):
         command: str,
         stream: FlextGrpcEntities.GrpcStream,
         **kwargs: str | int | bool | None,
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Execute stream-specific commands."""
         if command == "create":
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
@@ -656,11 +657,11 @@ class FlextGrpcServices(FlextService[Any]):
         entity: FlextGrpcEntities.Server
         | FlextGrpcEntities.Client
         | FlextGrpcEntities.GrpcStream
-        | dict[str, Any]
+        | dict[str, object]
         | None = None,
         *_args: str | int | bool | None,
         **kwargs: str | int | bool | None,
-    ) -> FlextResult[dict[str, Any]]:
+    ) -> FlextResult[dict[str, object]]:
         """Legacy compatibility method - delegates to appropriate manager."""
         if command is None:
             return FlextResult.ok({
@@ -681,7 +682,7 @@ class FlextGrpcServices(FlextService[Any]):
 
         return FlextResult.fail(f"Unsupported entity type: {type(entity)}")
 
-    def execute(self, **_kwargs: object) -> FlextResult[dict[str, Any]]:
+    def execute(self, **_kwargs: object) -> FlextResult[dict[str, object]]:
         """Execute main service operation."""
         return self.execute_grpc()
 
