@@ -2,19 +2,19 @@
 
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, FlextResult
+from flext_core import FlextResult, p
 
 from flext_grpc.constants import FlextGrpcConstants
 
 
-class FlextGrpcProtocols(FlextProtocols):
+class FlextGrpcProtocols(p):
     """Unified gRPC protocols extending FLEXT foundation protocols.
 
-    This class extends FlextProtocols with gRPC-specific protocols while maintaining
+    This class extends p with gRPC-specific protocols while maintaining
     all foundation protocols from flext-core.
 
     Architecture:
-    - EXTENDS: FlextProtocols with all foundation protocols
+    - EXTENDS: p with all foundation protocols
     - ADDS: gRPC-specific protocols in Grpc namespace
     - MAINTAINS: Zero breaking changes through inheritance pattern
 
@@ -48,7 +48,7 @@ class FlextGrpcProtocols(FlextProtocols):
         metrics collection, and configuration.
         """
 
-        class ServerProtocol(FlextProtocols.Service, Protocol):
+        class ServerProtocol(p.Service, Protocol):
             """Protocol for gRPC server management operations."""
 
             def start_server(
@@ -75,7 +75,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Configure server port binding."""
                 ...
 
-        class ClientProtocol(FlextProtocols.Service, Protocol):
+        class ClientProtocol(p.Service, Protocol):
             """Protocol for gRPC client communication operations."""
 
             def connect_client(
@@ -109,7 +109,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Validate gRPC client connection."""
                 ...
 
-        class StreamingProtocol(FlextProtocols.Service, Protocol):
+        class StreamingProtocol(p.Service, Protocol):
             """Protocol for gRPC streaming operations."""
 
             def create_stream(
@@ -147,7 +147,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Handle bidirectional streaming."""
                 ...
 
-        class ServiceProtocol(FlextProtocols.Service, Protocol):
+        class ServiceProtocol(p.Service, Protocol):
             """Protocol for gRPC service definition and management."""
 
             def create_service(
@@ -170,7 +170,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Get list of service methods."""
                 ...
 
-        class ChannelProtocol(FlextProtocols.Service, Protocol):
+        class ChannelProtocol(p.Service, Protocol):
             """Protocol for gRPC channel management operations."""
 
             def create_channel(
@@ -193,7 +193,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Wait for channel state change."""
                 ...
 
-        class MetricsProtocol(FlextProtocols.Service, Protocol):
+        class MetricsProtocol(p.Service, Protocol):
             """Protocol for gRPC metrics collection and monitoring."""
 
             def collect_server_metrics(
@@ -229,7 +229,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
         @runtime_checkable
-        class ConfigurationProtocol(FlextProtocols.Service, Protocol):
+        class ConfigurationProtocol(p.Service, Protocol):
             """Protocol for gRPC configuration management."""
 
             def create_server_config(
@@ -244,7 +244,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Create gRPC client configuration."""
                 ...
 
-            def validate_config(self) -> "FlextProtocols.ResultProtocol[bool]":
+            def validate_config(self) -> "p.ResultProtocol[bool]":
                 """Validate gRPC configuration."""
                 ...
 

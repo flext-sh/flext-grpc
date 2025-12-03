@@ -1,11 +1,11 @@
 """FLEXT gRPC Types - Domain-specific gRPC type definitions.
 
-This module provides gRPC-specific type definitions extending FlextTypes.
+This module provides gRPC-specific type definitions extending t.
 Follows FLEXT standards:
 - Domain-specific complex types only
 - No simple aliases to primitive types
 - Python 3.13+ syntax
-- Extends FlextTypes properly
+- Extends t properly
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -17,7 +17,7 @@ from __future__ import annotations
 import re
 from typing import Protocol, override, runtime_checkable
 
-from flext_core import FlextLogger, FlextTypes
+from flext_core import FlextLogger, t
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -27,8 +27,8 @@ from flext_grpc.constants import FlextGrpcConstants
 
 
 # gRPC domain TypeVars
-class FlextGrpcTypes(FlextTypes):
-    """gRPC-specific type definitions extending FlextTypes.
+class FlextGrpcTypes(t):
+    """gRPC-specific type definitions extending t.
 
     Domain-specific type system for gRPC microservices operations.
     Contains ONLY complex gRPC-specific types, no simple aliases.
@@ -37,7 +37,7 @@ class FlextGrpcTypes(FlextTypes):
 
     # Type aliases for convenience (moved inside class)
     ConfigValue = str | int | bool | list[str] | dict[str, object] | None
-    JsonValue = FlextTypes.JsonValue
+    JsonValue = t.JsonValue
 
     # gRPC target types (moved from flext-core to domain-specific location)
     type GrpcTarget = str
@@ -55,7 +55,7 @@ class FlextGrpcTypes(FlextTypes):
     # =========================================================================
 
     class GrpcCore:
-        """Core gRPC types extending FlextTypes."""
+        """Core gRPC types extending t."""
 
         # gRPC basic types
         type GrpcDict = dict[str, object]
@@ -207,14 +207,14 @@ class FlextGrpcTypes(FlextTypes):
     # Use FlextGrpcConstants.Literals.ChannelState, etc.
 
     # =========================================================================
-    # GRPC PROJECT TYPES - Domain-specific project types extending FlextTypes
+    # GRPC PROJECT TYPES - Domain-specific project types extending t
     # =========================================================================
 
-    class Project(FlextTypes):
-        """gRPC-specific project types extending FlextTypes.
+    class Project(t):
+        """gRPC-specific project types extending t.
 
         Adds gRPC/microservices-specific project types while inheriting
-        generic types from FlextTypes. Follows domain separation principle:
+        generic types from t. Follows domain separation principle:
         gRPC domain owns microservices-specific types.
         """
 
