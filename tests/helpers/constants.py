@@ -14,7 +14,7 @@ from typing import Final, TypeAlias
 from flext_grpc.constants import FlextGrpcConstants
 
 
-class TestConstants:
+class TestsConstants(FlextGrpcConstants):
     """Centralized test constants following flext-core nested class pattern."""
 
     class Paths:
@@ -84,4 +84,6 @@ class TestConstants:
         )
 
 
-__all__ = ["TestConstants"]
+# Standardized short name for use in tests
+c = TestsConstants
+__all__ = ["TestsConstants", "c"]

@@ -127,14 +127,15 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
 
         # Delegate validation to entity if available
         if hasattr(entity, "validate_business_rules") and callable(
-            entity.validate_business_rules
+            entity.validate_business_rules,
         ):
             validation_result = cast(
-                "FlextResult[object]", entity.validate_business_rules()
+                "FlextResult[object]",
+                entity.validate_business_rules(),
             )
             if hasattr(validation_result, "map") and not validation_result.is_success:
                 return FlextResult.fail(
-                    f"Entity validation failed: {validation_result.error}"
+                    f"Entity validation failed: {validation_result.error}",
                 )
 
         return FlextResult.ok(entity)
@@ -180,7 +181,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
 
         # Return config on success, fail on error
         return result.map(lambda _data: self._config).lash(
-            lambda error_msg: FlextResult.fail(error_msg or "Unknown error")
+            lambda error_msg: FlextResult.fail(error_msg or "Unknown error"),
         )
 
     def _get_operations(self) -> dict[str, Callable[..., FlextResult[Any]]]:
@@ -196,7 +197,8 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         }
 
     def create_server(
-        self, **kwargs: str | int | bool | list[str] | None
+        self,
+        **kwargs: str | int | bool | list[str] | None,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Create server entity with functional defaults."""
         defaults = {
@@ -207,13 +209,15 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self.create_entity("server", **defaults | kwargs)
 
     def create_client(
-        self, **kwargs: str | int | bool | None
+        self,
+        **kwargs: str | int | bool | None,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Create client with channel composition."""
         return self.create_entity("client", **kwargs)
 
     def create_channel(
-        self, **kwargs: str | int | bool | dict[str, object] | None
+        self,
+        **kwargs: str | int | bool | dict[str, object] | None,
     ) -> FlextResult[FlextGrpcEntities.Channel]:
         """Create channel entity with defaults."""
         defaults = {
@@ -223,7 +227,8 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self.create_entity("channel", **defaults | kwargs)
 
     def create_service(
-        self, **kwargs: str | list[str] | None
+        self,
+        **kwargs: str | list[str] | None,
     ) -> FlextResult[FlextGrpcEntities.Service]:
         """Create service entity with defaults."""
         defaults = {"name": "DefaultService", "methods": ["default_method"]}
@@ -243,13 +248,17 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
             return FlextResult.fail(f"Invalid stream type: {stream_type}")
 
         return self.create_entity(
-            "stream", method_name=method_name, stream_type=stream_type, **kwargs
+            "stream",
+            method_name=method_name,
+            stream_type=stream_type,
+            **kwargs,
         )
 
     # === DELEGATED OPERATIONS ===
 
     def start_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Delegate server start.
 
@@ -263,7 +272,8 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self._service.start_server(server)
 
     def stop_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Delegate server stop.
 
@@ -289,7 +299,8 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self._service.connect_client(target)
 
     def disconnect_client(
-        self, client: FlextGrpcEntities.Client
+        self,
+        client: FlextGrpcEntities.Client,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Delegate client disconnection.
 
@@ -324,7 +335,9 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self._service.make_call(client, method, request)
 
     def send_data(
-        self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
+        data: FlextGrpcTypes.ConfigValue,
     ) -> FlextResult[dict[str, object]]:
         """Delegate data sending.
 
@@ -341,7 +354,8 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self._service.send_data(stream, data)
 
     def close_stream(
-        self, stream: FlextGrpcEntities.GrpcStream
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Delegate stream closing.
 
@@ -355,7 +369,8 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         return self._service.close_stream(stream)
 
     def create_complete_setup(
-        self, **kwargs: str | int | list[str] | None
+        self,
+        **kwargs: str | int | list[str] | None,
     ) -> FlextResult[dict[str, object]]:
         """Complete setup using functional composition."""
         host = kwargs.get("host", FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST)
@@ -380,15 +395,16 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(
-                    name=service_name, methods=methods
+                    name=service_name,
+                    methods=methods,
                 ).map(
                     lambda svc: {
                         "server": pair[0],
                         "client": pair[1],
                         "service": svc,
                         "target": target,
-                    }
-                )
+                    },
+                ),
             )
         )
 

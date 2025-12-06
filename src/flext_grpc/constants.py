@@ -49,7 +49,7 @@ class FlextGrpcConstants(FlextConstants):
 
         # Default timeout constant for gRPC context
         DEFAULT_TIMEOUT: Final[float] = float(
-            FlextConstants.Network.DEFAULT_TIMEOUT
+            FlextConstants.Network.DEFAULT_TIMEOUT,
         )  # gRPC default timeout
 
         # Additional platform constants for gRPC
@@ -80,7 +80,7 @@ class FlextGrpcConstants(FlextConstants):
         MIN_PORT: Final[int] = 1024
         HIGH_WORKER_THRESHOLD: Final[int] = 20
         HIGH_WORKER_TIMEOUT: Final[float] = float(
-            FlextConstants.Network.DEFAULT_TIMEOUT
+            FlextConstants.Network.DEFAULT_TIMEOUT,
         )
         RETRY_ATTEMPTS: Final[int] = 3
         RETRY_TIMEOUT: Final[float] = float(FlextConstants.Network.DEFAULT_TIMEOUT)
@@ -168,7 +168,7 @@ class FlextGrpcConstants(FlextConstants):
         STREAM_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
         MAX_CONCURRENT_STREAMS: Final[int] = 100
         HEARTBEAT_INTERVAL_SECONDS: Final[float] = float(
-            FlextConstants.Network.DEFAULT_TIMEOUT
+            FlextConstants.Network.DEFAULT_TIMEOUT,
         )
 
     class Literals:
@@ -183,7 +183,11 @@ class FlextGrpcConstants(FlextConstants):
             "shutdown",
         )
         type ChannelStateLiteral = Literal[
-            "idle", "connecting", "ready", "transient_failure", "shutdown"
+            "idle",
+            "connecting",
+            "ready",
+            "transient_failure",
+            "shutdown",
         ]
         """Channel state literal - matches gRPC channel state values."""
 
@@ -205,7 +209,10 @@ class FlextGrpcConstants(FlextConstants):
             "bidirectional",
         )
         type StreamTypeLiteral = Literal[
-            "unary", "server_streaming", "client_streaming", "bidirectional"
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
         ]
         """Stream type literal - matches gRPC stream type values."""
 
@@ -217,7 +224,10 @@ class FlextGrpcConstants(FlextConstants):
             "xds_cluster_resolver",
         )
         type LoadBalancingPolicyLiteral = Literal[
-            "round_robin", "pick_first", "grpclb", "xds_cluster_resolver"
+            "round_robin",
+            "pick_first",
+            "grpclb",
+            "xds_cluster_resolver",
         ]
         """Load balancing policy literal - matches gRPC load balancing policies."""
 
@@ -228,7 +238,10 @@ class FlextGrpcConstants(FlextConstants):
 
         # gRPC operation literal - matches GrpcOperations StrEnum
         type GrpcOperationLiteral = Literal[
-            "unary", "server_streaming", "client_streaming", "bidirectional"
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
         ]
         """gRPC operation literal."""
 

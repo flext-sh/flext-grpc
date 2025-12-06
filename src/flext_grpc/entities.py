@@ -46,7 +46,10 @@ class StateMachine(BaseModel):
     """Generic state machine with functional transitions."""
 
     def transition(
-        self, current: str, target: str, allowed_transitions: dict[str, set[str]]
+        self,
+        current: str,
+        target: str,
+        allowed_transitions: dict[str, set[str]],
     ) -> FlextResult[Self]:
         """Generic state transition with validation."""
         if (
@@ -95,7 +98,9 @@ class FlextGrpcEntities(FlextService[Any]):
         def validate_state(cls, v: str) -> str:
             """Delegate state validation."""
             return EntityValidator.validate_enum(
-                v, set(FlextGrpcConstants.Literals.CHANNEL_STATES), "state"
+                v,
+                set(FlextGrpcConstants.Literals.CHANNEL_STATES),
+                "state",
             )
 
         def validate_business_rules(self) -> FlextResult[bool]:
@@ -169,7 +174,7 @@ class FlextGrpcEntities(FlextService[Any]):
 
             """
             return FlextResult.ok(
-                self.model_copy(update={"services": [*self.services, service]})
+                self.model_copy(update={"services": [*self.services, service]}),
             )
 
     class Service(Entity):
@@ -202,7 +207,7 @@ class FlextGrpcEntities(FlextService[Any]):
             if not method_name.strip() or method_name in self.methods:
                 return FlextResult.fail("Invalid method")
             return FlextResult.ok(
-                self.model_copy(update={"methods": [*self.methods, method_name]})
+                self.model_copy(update={"methods": [*self.methods, method_name]}),
             )
 
     class Client(Entity):
@@ -242,7 +247,9 @@ class FlextGrpcEntities(FlextService[Any]):
         def validate_stream_type(cls, v: str) -> str:
             """Delegate stream type validation."""
             return EntityValidator.validate_enum(
-                v, set(FlextGrpcConstants.Literals.STREAM_TYPES), "stream_type"
+                v,
+                set(FlextGrpcConstants.Literals.STREAM_TYPES),
+                "stream_type",
             )
 
 

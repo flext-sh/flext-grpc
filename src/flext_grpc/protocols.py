@@ -52,7 +52,10 @@ class FlextGrpcProtocols(p):
             """Protocol for gRPC server management operations."""
 
             def start_server(
-                self, host: str, port: int, services: list[object] | None = None
+                self,
+                host: str,
+                port: int,
+                services: list[object] | None = None,
             ) -> FlextResult[object]:
                 """Start gRPC server."""
                 ...
@@ -70,7 +73,12 @@ class FlextGrpcProtocols(p):
                 ...
 
             def configure_port(
-                self, server: object, host: str, port: int, *, secure: bool = False
+                self,
+                server: object,
+                host: str,
+                port: int,
+                *,
+                secure: bool = False,
             ) -> FlextResult[int]:
                 """Configure server port binding."""
                 ...
@@ -79,7 +87,10 @@ class FlextGrpcProtocols(p):
             """Protocol for gRPC client communication operations."""
 
             def connect_client(
-                self, target: str, *, timeout: float = 30.0
+                self,
+                target: str,
+                *,
+                timeout: float = 30.0,
             ) -> FlextResult[object]:
                 """Connect gRPC client to server."""
                 ...
@@ -100,7 +111,8 @@ class FlextGrpcProtocols(p):
                 ...
 
             def get_client_status(
-                self, channel: object
+                self,
+                channel: object,
             ) -> FlextResult[dict[str, object]]:
                 """Get gRPC client status information."""
                 ...
@@ -130,19 +142,24 @@ class FlextGrpcProtocols(p):
                 ...
 
             def handle_client_streaming(
-                self, stream: object, data_list: list[object]
+                self,
+                stream: object,
+                data_list: list[object],
             ) -> FlextResult[object]:
                 """Handle client-side streaming."""
                 ...
 
             def handle_server_streaming(
-                self, stream: object, request: object
+                self,
+                stream: object,
+                request: object,
             ) -> FlextResult[list[object]]:
                 """Handle server-side streaming."""
                 ...
 
             def handle_bidirectional_streaming(
-                self, stream: object
+                self,
+                stream: object,
             ) -> FlextResult[dict[str, object]]:
                 """Handle bidirectional streaming."""
                 ...
@@ -151,13 +168,17 @@ class FlextGrpcProtocols(p):
             """Protocol for gRPC service definition and management."""
 
             def create_service(
-                self, service_name: str, methods: dict[str, object]
+                self,
+                service_name: str,
+                methods: dict[str, object],
             ) -> FlextResult[object]:
                 """Create gRPC service definition."""
                 ...
 
             def register_service(
-                self, service: object, server: object
+                self,
+                service: object,
+                server: object,
             ) -> FlextResult[bool]:
                 """Register gRPC service with server."""
                 ...
@@ -174,7 +195,9 @@ class FlextGrpcProtocols(p):
             """Protocol for gRPC channel management operations."""
 
             def create_channel(
-                self, target: str, options: dict[str, object] | None = None
+                self,
+                target: str,
+                options: dict[str, object] | None = None,
             ) -> FlextResult[object]:
                 """Create gRPC channel."""
                 ...
@@ -188,7 +211,11 @@ class FlextGrpcProtocols(p):
                 ...
 
             def wait_for_state_change(
-                self, channel: object, last_state: str, *, timeout: float = 30.0
+                self,
+                channel: object,
+                last_state: str,
+                *,
+                timeout: float = 30.0,
             ) -> FlextResult[bool]:
                 """Wait for channel state change."""
                 ...
@@ -197,25 +224,30 @@ class FlextGrpcProtocols(p):
             """Protocol for gRPC metrics collection and monitoring."""
 
             def collect_server_metrics(
-                self, server: object
+                self,
+                server: object,
             ) -> FlextResult[dict[str, object]]:
                 """Collect gRPC server metrics."""
                 ...
 
             def collect_client_metrics(
-                self, channel: object
+                self,
+                channel: object,
             ) -> FlextResult[dict[str, object]]:
                 """Collect gRPC client metrics."""
                 ...
 
             def collect_stream_metrics(
-                self, stream: object
+                self,
+                stream: object,
             ) -> FlextResult[dict[str, object]]:
                 """Collect gRPC stream metrics."""
                 ...
 
             def start_metrics_collection(
-                self, *, interval: float = 60.0
+                self,
+                *,
+                interval: float = 60.0,
             ) -> FlextResult[bool]:
                 """Start automatic metrics collection."""
                 ...
@@ -233,13 +265,18 @@ class FlextGrpcProtocols(p):
             """Protocol for gRPC configuration management."""
 
             def create_server_config(
-                self, host: str, port: int, options: dict[str, object] | None = None
+                self,
+                host: str,
+                port: int,
+                options: dict[str, object] | None = None,
             ) -> FlextResult[dict[str, object]]:
                 """Create gRPC server configuration."""
                 ...
 
             def create_client_config(
-                self, target: str, options: dict[str, object] | None = None
+                self,
+                target: str,
+                options: dict[str, object] | None = None,
             ) -> FlextResult[dict[str, object]]:
                 """Create gRPC client configuration."""
                 ...

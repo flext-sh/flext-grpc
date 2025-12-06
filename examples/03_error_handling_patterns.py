@@ -59,7 +59,7 @@ def validate_user_input(
     except FlextGrpcValidationError as e:
         logger.exception("Validation failed", field=e.field_name, error=str(e))
         return FlextResult[FlextGrpcTypes.GrpcCore.GrpcHeaders].fail(
-            f"Validation error: {e}"
+            f"Validation error: {e}",
         )
 
 
@@ -173,7 +173,8 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
 
     # Step 2: Create server configuration
     config_result = create_server_config(
-        FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT, 4
+        FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT,
+        4,
     )
     if config_result.is_failure:
         return FlextResult[str].fail(
@@ -223,7 +224,8 @@ def error_recovery_patterns() -> FlextResult[str]:
         logger.warning("Primary config failed, trying fallback")
 
         fallback_config_result = create_server_config(
-            FlextConstants.Platform.DEFAULT_HTTP_PORT, 2
+            FlextConstants.Platform.DEFAULT_HTTP_PORT,
+            2,
         )  # Fallback
         if fallback_config_result.is_success:
             logger.info("✅ Fallback configuration successful")

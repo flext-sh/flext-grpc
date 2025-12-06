@@ -29,7 +29,9 @@ class TestFlextGrpcEntities:
     def test_grpc_stream_creation(self) -> None:
         """Test gRPC stream entity creation."""
         stream = FlextGrpcEntities.GrpcStream(
-            unique_id="test_stream", method_name="test_method", stream_type="unary"
+            unique_id="test_stream",
+            method_name="test_method",
+            stream_type="unary",
         )
         assert stream.unique_id == "test_stream"
         assert stream.method_name == "test_method"
@@ -38,7 +40,8 @@ class TestFlextGrpcEntities:
     def test_service_creation_with_validation(self) -> None:
         """Test service creation with validation."""
         service = FlextGrpcEntities.Service(
-            name="TestService", methods=["method1", "method2"]
+            name="TestService",
+            methods=["method1", "method2"],
         )
         assert service.name == "TestService"
         assert service.methods == ["method1", "method2"]

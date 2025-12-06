@@ -46,10 +46,12 @@ class FlextGrpcModels(FlextModels):
 
             method: str = Field(description="gRPC method name")
             data: dict[str, object] | None = Field(
-                default=None, description="Request data"
+                default=None,
+                description="Request data",
             )
             metadata: dict[str, object] | None = Field(
-                default=None, description="Request metadata"
+                default=None,
+                description="Request metadata",
             )
 
         class GrpcHealthCheck(BaseModel):
@@ -64,11 +66,13 @@ class FlextGrpcModels(FlextModels):
 
             service_name: str = Field(description="Service name")
             methods: list[str] = Field(
-                default_factory=list, description="Service methods"
+                default_factory=list,
+                description="Service methods",
             )
             endpoint: str | None = Field(default=None, description="Service endpoint")
             metadata: dict[str, object] | None = Field(
-                default=None, description="Service metadata"
+                default=None,
+                description="Service metadata",
             )
 
         class StreamMetrics(BaseModel):
@@ -76,7 +80,7 @@ class FlextGrpcModels(FlextModels):
 
             stream_id: str = Field(description="Stream ID")
             throughput_rps: float = Field(
-                description="Throughput in requests per second"
+                description="Throughput in requests per second",
             )
             latency_p50: float = Field(description="50th percentile latency")
             latency_p95: float = Field(description="95th percentile latency")

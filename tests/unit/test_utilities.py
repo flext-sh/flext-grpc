@@ -89,14 +89,14 @@ class TestFlextGrpcUtilities:
         # Create a mock protobuf message if possible
         mock_msg = Message()
         result = FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
-            mock_msg
+            mock_msg,
         )
         assert result.is_success
 
     def test_validate_message_basic_checks_invalid(self) -> None:
         """Test basic message validation with invalid input."""
         result = FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
-            None
+            None,
         )
         assert result.is_failure
 
@@ -105,7 +105,7 @@ class TestFlextGrpcUtilities:
         # Create a mock metadata iterable
         metadata = [("key1", b"value1"), ("key2", "value2")]
         result = FlextGrpcUtilities.StreamingHelpers.validate_stream_metadata(
-            iter(metadata)
+            iter(metadata),
         )
         assert result.is_success
         metadata_dict = result.unwrap()

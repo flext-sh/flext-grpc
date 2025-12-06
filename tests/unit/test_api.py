@@ -48,7 +48,9 @@ class TestFlextGrpc:
         """Test stream creation."""
         grpc = FlextGrpc()
         result = grpc.create_entity(
-            "stream", method_name="test_method", stream_type="unary"
+            "stream",
+            method_name="test_method",
+            stream_type="unary",
         )
         assert result.is_success
         stream = result.unwrap()
@@ -176,7 +178,8 @@ class TestFlextGrpc:
 
         operation = GenericOperationSpec(name="test_operation", entity_type="server")
         request = GenericRequest[TestData](
-            operation=operation, data=TestData(value="test")
+            operation=operation,
+            data=TestData(value="test"),
         )
         assert request.data.value == "test"
         assert request.operation.name == "test_operation"
@@ -189,7 +192,8 @@ class TestFlextGrpc:
             result: str
 
         response = GenericResponse[TestData](
-            success=True, data=TestData(result="success")
+            success=True,
+            data=TestData(result="success"),
         )
         assert response.data.result == "success"
         assert response.success is True

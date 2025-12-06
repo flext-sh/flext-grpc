@@ -20,6 +20,7 @@ from uuid import uuid4
 import grpc
 import psutil
 from flext_core import FlextLogger, FlextResult
+from flext_core.utilities import FlextUtilities
 from google.protobuf import json_format
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.json_format import MessageToDict, MessageToJson
@@ -40,7 +41,7 @@ ProtobufMessage = Message
 __all__ = ["FlextGrpcUtilities"]
 
 
-class FlextGrpcUtilities:
+class FlextGrpcUtilities(FlextUtilities):
     """Simplified gRPC utilities class with only essential methods.
 
     Contains only the methods actually used by the codebase:
@@ -51,7 +52,9 @@ class FlextGrpcUtilities:
     """
 
     def execute(
-        self, command: str | None = None, data: FlextGrpcTypes.ConfigValue = None
+        self,
+        command: str | None = None,
+        data: FlextGrpcTypes.ConfigValue = None,
     ) -> FlextResult[dict[str, object]]:
         """Execute utility operation and return status."""
         try:
@@ -70,7 +73,9 @@ class FlextGrpcUtilities:
 
     @classmethod
     def create_client_entity(
-        cls, target: str, options: dict[str, FlextGrpcTypes.JsonValue] | None = None
+        cls,
+        target: str,
+        options: dict[str, FlextGrpcTypes.JsonValue] | None = None,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Create a gRPC client entity directly."""
         try:
@@ -92,7 +97,10 @@ class FlextGrpcUtilities:
 
     @classmethod
     def create_server_entity(
-        cls, host: str, port: int, max_workers: int = 10
+        cls,
+        host: str,
+        port: int,
+        max_workers: int = 10,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Create a gRPC server entity directly."""
         try:
@@ -107,7 +115,9 @@ class FlextGrpcUtilities:
 
     @classmethod
     def create_channel_entity(
-        cls, target: str, options: dict[str, object] | None = None
+        cls,
+        target: str,
+        options: dict[str, object] | None = None,
     ) -> FlextResult[FlextGrpcEntities.Channel]:
         """Create a gRPC channel entity directly."""
         try:
@@ -123,12 +133,16 @@ class FlextGrpcUtilities:
 
     @classmethod
     def create_service_entity(
-        cls, name: str, methods: list[str] | None = None
+        cls,
+        name: str,
+        methods: list[str] | None = None,
     ) -> FlextResult[FlextGrpcEntities.Service]:
         """Create a gRPC service entity directly."""
         try:
             service = FlextGrpcEntities.Service(
-                unique_id=str(uuid4()), name=name, methods=methods or []
+                unique_id=str(uuid4()),
+                name=name,
+                methods=methods or [],
             )
             return FlextResult.ok(service)
         except Exception as e:
@@ -239,7 +253,7 @@ class FlextGrpcUtilities:
                     and not message_instance.HasField(field.name)
                 ):
                     return FlextResult[Message].fail(
-                        f"Required field '{field.name}' is missing"
+                        f"Required field '{field.name}' is missing",
                     )
 
             return FlextResult[Message].ok(message_instance)
@@ -274,16 +288,16 @@ class FlextGrpcUtilities:
                 # Chain validation steps using railway pattern
                 return (
                     FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
-                        message_instance
+                        message_instance,
                     )
                     .flat_map(
-                        FlextGrpcUtilities.MessageValidation.validate_message_descriptor
+                        FlextGrpcUtilities.MessageValidation.validate_message_descriptor,
                     )
                     .flat_map(
-                        FlextGrpcUtilities.MessageValidation.validate_required_fields
+                        FlextGrpcUtilities.MessageValidation.validate_required_fields,
                     )
                     .flat_map(
-                        FlextGrpcUtilities.MessageValidation.validate_message_serialization
+                        FlextGrpcUtilities.MessageValidation.validate_message_serialization,
                     )
                 )
             except Exception as e:
@@ -305,14 +319,14 @@ class FlextGrpcUtilities:
             try:
                 # Pydantic validation happens automatically during construction
                 validated_request = FlextGrpcModels.Domain.GrpcRequest.model_validate(
-                    request.model_dump()
+                    request.model_dump(),
                 )
                 return FlextResult[FlextGrpcModels.Domain.GrpcRequest].ok(
-                    validated_request
+                    validated_request,
                 )
             except Exception as e:
                 return FlextResult[FlextGrpcModels.Domain.GrpcRequest].fail(
-                    f"Request validation failed: {e}"
+                    f"Request validation failed: {e}",
                 )
 
         @staticmethod
@@ -338,30 +352,30 @@ class FlextGrpcUtilities:
                 for i, msg in enumerate(messages):
                     validation_result = (
                         FlextGrpcUtilities.MessageValidation.validate_protobuf_message(
-                            msg
+                            msg,
                         )
                     )
                     if validation_result.is_failure:
                         return FlextResult[bool].fail(
-                            f"Message {i} validation failed: {validation_result.error}"
+                            f"Message {i} validation failed: {validation_result.error}",
                         )
 
                 # Validate order if specified
                 if expected_order:
                     if len(messages) != len(expected_order):
                         return FlextResult[bool].fail(
-                            "Message count doesn't match expected order"
+                            "Message count doesn't match expected order",
                         )
 
                     for i, (msg, expected_type) in enumerate(
-                        zip(messages, expected_order, strict=False)
+                        zip(messages, expected_order, strict=False),
                     ):
                         if (
                             hasattr(msg, "DESCRIPTOR")
                             and getattr(msg.DESCRIPTOR, "name", None) != expected_type
                         ):
                             return FlextResult[bool].fail(
-                                f"Message {i} type mismatch: expected {expected_type}, got {getattr(msg.DESCRIPTOR, 'name', 'unknown')}"
+                                f"Message {i} type mismatch: expected {expected_type}, got {getattr(msg.DESCRIPTOR, 'name', 'unknown')}",
                             )
 
                 return FlextResult[bool].ok(True)
@@ -387,23 +401,23 @@ class FlextGrpcUtilities:
             try:
                 if json_format is None:
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "Protobuf json_format not available"
+                        "Protobuf json_format not available",
                     )
 
                 if not hasattr(message_instance, "DESCRIPTOR"):
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "Invalid protobuf message"
+                        "Invalid protobuf message",
                     )
 
                 # Type guard to ensure message_instance is a proper Message
                 if not isinstance(message_instance, Message):
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "Invalid message type"
+                        "Invalid message type",
                     )
 
                 if MessageToDict is None:
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "MessageToDict not available"
+                        "MessageToDict not available",
                     )
 
                 # At this point we know message_instance is a Message due to type guard
@@ -414,12 +428,13 @@ class FlextGrpcUtilities:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].ok(dict_data)
             except Exception as e:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                    f"Protobuf to dict[str, FlextGrpcTypes.JsonValue] conversion failed: {e}"
+                    f"Protobuf to dict[str, FlextGrpcTypes.JsonValue] conversion failed: {e}",
                 )
 
         @staticmethod
         def dict_to_protobuf(
-            data: dict[str, FlextGrpcTypes.JsonValue], message_class: type[Any]
+            data: dict[str, FlextGrpcTypes.JsonValue],
+            message_class: type[Any],
         ) -> FlextResult[Any]:
             """Convert dictionary to protobuf message.
 
@@ -434,7 +449,7 @@ class FlextGrpcUtilities:
             try:
                 if json_format is None:
                     return FlextResult[object].fail(
-                        "Protobuf json_format not available"
+                        "Protobuf json_format not available",
                     )
 
                 if not callable(message_class):
@@ -452,7 +467,7 @@ class FlextGrpcUtilities:
                 return FlextResult[object].ok(message_instance)
             except Exception as e:
                 return FlextResult[object].fail(
-                    f"Dict to protobuf conversion failed: {e}"
+                    f"Dict to protobuf conversion failed: {e}",
                 )
 
         @staticmethod
@@ -491,7 +506,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def json_to_protobuf(
-            json_str: str, message_class: type[Any]
+            json_str: str,
+            message_class: type[Any],
         ) -> FlextResult[Any]:
             """Convert JSON string to protobuf message.
 
@@ -519,7 +535,7 @@ class FlextGrpcUtilities:
                 return FlextResult[object].ok(message_instance)
             except Exception as e:
                 return FlextResult[object].fail(
-                    f"JSON to protobuf conversion failed: {e}"
+                    f"JSON to protobuf conversion failed: {e}",
                 )
 
         @staticmethod
@@ -543,7 +559,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def deserialize_message(
-            data: bytes, message_class: type[Any]
+            data: bytes,
+            message_class: type[Any],
         ) -> FlextResult[Any]:
             """Deserialize bytes to protobuf message.
 
@@ -660,12 +677,13 @@ class FlextGrpcUtilities:
                 return FlextResult[object].fail("Insecure channel not available")
             except Exception as e:
                 return FlextResult[object].fail(
-                    f"Insecure channel creation failed: {e}"
+                    f"Insecure channel creation failed: {e}",
                 )
 
         @staticmethod
         def check_channel_connectivity(
-            channel: FlextGrpcTypes.ConfigValue, timeout: float = 5.0
+            channel: FlextGrpcTypes.ConfigValue,
+            timeout: float = 5.0,
         ) -> FlextResult[bool]:
             """Check gRPC channel connectivity.
 
@@ -684,7 +702,7 @@ class FlextGrpcUtilities:
                 try:
                     # Use cast for gRPC compatibility
                     grpc.channel_ready_future(cast("grpc.Channel", channel)).result(
-                        timeout=timeout
+                        timeout=timeout,
                     )
                     return FlextResult[bool].ok(True)
                 except grpc.FutureTimeoutError:
@@ -758,7 +776,7 @@ class FlextGrpcUtilities:
                 return FlextResult[Iterator[T]].ok(data_iterator())
             except Exception as e:
                 return FlextResult[Iterator[T]].fail(
-                    f"Stream iterator creation failed: {e}"
+                    f"Stream iterator creation failed: {e}",
                 )
 
         @staticmethod
@@ -785,12 +803,12 @@ class FlextGrpcUtilities:
                 for response in stream:
                     if len(responses) >= max_messages:
                         return FlextResult[list[T]].fail(
-                            f"Stream exceeded maximum messages ({max_messages})"
+                            f"Stream exceeded maximum messages ({max_messages})",
                         )
 
                     if time.time() - start_time > timeout_seconds:
                         return FlextResult[list[T]].fail(
-                            f"Stream collection timed out after {timeout_seconds}s"
+                            f"Stream collection timed out after {timeout_seconds}s",
                         )
 
                     responses.append(response)
@@ -801,7 +819,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def create_request_stream[T](
-            requests: list[T], delay_between_requests: float = 0.1
+            requests: list[T],
+            delay_between_requests: float = 0.1,
         ) -> Iterator[T]:
             """Create request stream for client streaming.
 
@@ -850,12 +869,13 @@ class FlextGrpcUtilities:
                 return FlextResult[dict[str, str]].ok(metadata_dict)
             except Exception as e:
                 return FlextResult[dict[str, str]].fail(
-                    f"Metadata validation failed: {e}"
+                    f"Metadata validation failed: {e}",
                 )
 
         @staticmethod
         def stream_with_heartbeat[T](
-            stream: Iterator[T], heartbeat_interval: float = 30.0
+            stream: Iterator[T],
+            heartbeat_interval: float = 30.0,
         ) -> Iterator[T]:
             """Add heartbeat capability to gRPC stream.
 
@@ -919,7 +939,8 @@ class FlextGrpcUtilities:
 
         @staticmethod
         def validate_service_health(
-            channel: object, service_name: str = ""
+            channel: object,
+            service_name: str = "",
         ) -> FlextResult[FlextGrpcModels.Domain.GrpcHealthCheck]:
             """Check service health using gRPC health checking protocol.
 
@@ -936,7 +957,7 @@ class FlextGrpcUtilities:
                 # Check if channel is active
                 if not channel:
                     return FlextResult[FlextGrpcModels.Domain.GrpcHealthCheck].fail(
-                        "Invalid channel provided"
+                        "Invalid channel provided",
                     )
 
                 # Channel state is not directly accessible, use a default state
@@ -948,11 +969,11 @@ class FlextGrpcUtilities:
                     timestamp=datetime.now(UTC),
                 )
                 return FlextResult[FlextGrpcModels.Domain.GrpcHealthCheck].ok(
-                    health_check
+                    health_check,
                 )
             except Exception as e:
                 return FlextResult[FlextGrpcModels.Domain.GrpcHealthCheck].fail(
-                    f"Health check failed: {e}"
+                    f"Health check failed: {e}",
                 )
 
         @staticmethod
@@ -980,16 +1001,16 @@ class FlextGrpcUtilities:
                 # Log endpoint and metadata for future use
                 if endpoint:
                     logger = FlextLogger(__name__)
-                    logger.debug(f"Service {service_name} registered at {endpoint}")
+                    logger.debug("Service %s registered at %s", service_name, endpoint)
                 if metadata:
                     logger = FlextLogger(__name__)
-                    logger.debug(f"Service {service_name} metadata: {metadata}")
+                    logger.debug("Service %s metadata: %s", service_name, metadata)
                 return FlextResult[FlextGrpcModels.Domain.ServiceDefinition].ok(
-                    service_def
+                    service_def,
                 )
             except Exception as e:
                 return FlextResult[FlextGrpcModels.Domain.ServiceDefinition].fail(
-                    f"Service registration failed: {e}"
+                    f"Service registration failed: {e}",
                 )
 
     class ErrorHandling:
@@ -1032,7 +1053,7 @@ class FlextGrpcUtilities:
             try:
                 if error is None:
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "Error is None"
+                        "Error is None",
                     )
 
                 error_info: dict[str, FlextGrpcTypes.JsonValue] = {
@@ -1045,7 +1066,7 @@ class FlextGrpcUtilities:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].ok(error_info)
             except Exception as e:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                    f"Error handling failed: {e}"
+                    f"Error handling failed: {e}",
                 )
 
         @staticmethod
@@ -1077,7 +1098,7 @@ class FlextGrpcUtilities:
                 return FlextResult[dict[str, object]].ok(status_info)
             except Exception as e:
                 return FlextResult[dict[str, object]].fail(
-                    f"Status creation failed: {e}"
+                    f"Status creation failed: {e}",
                 )
 
         @staticmethod
@@ -1130,7 +1151,7 @@ class FlextGrpcUtilities:
             try:
                 if channel is None:
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "Channel is None"
+                        "Channel is None",
                     )
 
                 # Basic channel metrics (placeholder implementation)
@@ -1145,12 +1166,13 @@ class FlextGrpcUtilities:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].ok(metrics)
             except Exception as e:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                    f"Channel metrics collection failed: {e}"
+                    f"Channel metrics collection failed: {e}",
                 )
 
         @staticmethod
         def collect_performance_metrics(
-            start_time: float | None, end_time: float | None
+            start_time: float | None,
+            end_time: float | None,
         ) -> FlextResult[dict[str, FlextGrpcTypes.JsonValue]]:
             """Collect performance metrics from timing data.
 
@@ -1165,7 +1187,7 @@ class FlextGrpcUtilities:
             try:
                 if start_time is None or end_time is None:
                     return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                        "Invalid time parameters"
+                        "Invalid time parameters",
                     )
 
                 duration_ms = (end_time - start_time) * 1000
@@ -1181,7 +1203,7 @@ class FlextGrpcUtilities:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].ok(metrics)
             except Exception as e:
                 return FlextResult[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                    f"Performance metrics collection failed: {e}"
+                    f"Performance metrics collection failed: {e}",
                 )
 
         @staticmethod
@@ -1220,7 +1242,7 @@ class FlextGrpcUtilities:
                 return FlextResult[FlextGrpcModels.Domain.StreamMetrics].ok(metrics)
             except Exception as e:
                 return FlextResult[FlextGrpcModels.Domain.StreamMetrics].fail(
-                    f"Metrics collection failed: {e}"
+                    f"Metrics collection failed: {e}",
                 )
 
         @staticmethod
@@ -1254,5 +1276,5 @@ class FlextGrpcUtilities:
                 return FlextResult[FlextGrpcModels.Domain.ServiceMetrics].ok(metrics)
             except Exception as e:
                 return FlextResult[FlextGrpcModels.Domain.ServiceMetrics].fail(
-                    f"Service metrics collection failed: {e}"
+                    f"Service metrics collection failed: {e}",
                 )

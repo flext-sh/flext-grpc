@@ -49,13 +49,15 @@ class ServerLifecycleManager(ABC):
 
     @abstractmethod
     def start_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Start server implementation."""
 
     @abstractmethod
     def stop_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Stop server implementation."""
 
@@ -69,7 +71,8 @@ class ClientConnectionManager(ABC):
 
     @abstractmethod
     def disconnect(
-        self, client: FlextGrpcEntities.Client
+        self,
+        client: FlextGrpcEntities.Client,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Disconnect client."""
 
@@ -79,13 +82,16 @@ class StreamProcessor(ABC):
 
     @abstractmethod
     def create_stream(
-        self, **kwargs: str | int | bool | None
+        self,
+        **kwargs: str | int | bool | None,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Create stream."""
 
     @abstractmethod
     def send_data(
-        self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
+        data: FlextGrpcTypes.ConfigValue,
     ) -> FlextResult[dict[str, object]]:
         """Send data through stream.
 
@@ -94,7 +100,8 @@ class StreamProcessor(ABC):
 
     @abstractmethod
     def close_stream(
-        self, stream: FlextGrpcEntities.GrpcStream
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Close stream."""
 
@@ -196,11 +203,13 @@ class GrpcServerManager(ServerLifecycleManager):
         self._active_servers: dict[str, object] = {}
         self._metrics = MetricsCollector()
         self._thread_pool = ThreadPoolExecutor(
-            max_workers=50, thread_name_prefix="flext-grpc-server"
+            max_workers=50,
+            thread_name_prefix="flext-grpc-server",
         )
 
     def start_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Start gRPC server with proper lifecycle."""
         server_key = f"{server.host}:{server.port}"
@@ -219,7 +228,7 @@ class GrpcServerManager(ServerLifecycleManager):
             # Create actual gRPC server
             grpc_server = grpc.server(self._thread_pool)
             grpc_server.add_insecure_port(
-                f"{starting_server.host}:{starting_server.port}"
+                f"{starting_server.host}:{starting_server.port}",
             )
 
             # Add services if any
@@ -243,7 +252,8 @@ class GrpcServerManager(ServerLifecycleManager):
             return FlextResult.fail(f"Server start failed: {e}")
 
     def stop_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Stop gRPC server gracefully."""
         server_key = f"{server.host}:{server.port}"
@@ -273,7 +283,8 @@ class GrpcServerManager(ServerLifecycleManager):
             return FlextResult.fail(f"Server stop failed: {e}")
 
     def get_server_metrics(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[dict[str, object]]:
         """Get server metrics."""
         server_key = f"{server.host}:{server.port}"
@@ -316,7 +327,8 @@ class GrpcClientManager(ClientConnectionManager):
             return FlextResult.fail(f"Connection failed: {e}")
 
     def disconnect(
-        self, client: FlextGrpcEntities.Client
+        self,
+        client: FlextGrpcEntities.Client,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Disconnect client and cleanup resources."""
         target = ""
@@ -358,7 +370,7 @@ class GrpcClientManager(ClientConnectionManager):
             # Route to appropriate method
             if method == "Echo":
                 echo_response = stub.Echo(
-                    EchoRequest(message=str(request), metadata={})
+                    EchoRequest(message=str(request), metadata={}),
                 )
                 return FlextResult.ok({
                     "method": "Echo",
@@ -368,7 +380,7 @@ class GrpcClientManager(ClientConnectionManager):
                 })
             if method == "HealthCheck":
                 health_response = stub.HealthCheck(
-                    HealthRequest(service="FlextGrpcService")
+                    HealthRequest(service="FlextGrpcService"),
                 )
                 return FlextResult.ok({
                     "method": "HealthCheck",
@@ -394,7 +406,8 @@ class GrpcStreamManager(StreamProcessor):
         self._metrics = MetricsCollector()
 
     def create_stream(
-        self, **kwargs: str | int | bool | None
+        self,
+        **kwargs: str | int | bool | None,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Create stream with proper setup."""
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
@@ -402,7 +415,8 @@ class GrpcStreamManager(StreamProcessor):
 
         # Create entity first
         stream_result = FlextGrpcUtilities.create_stream_entity(
-            method_name, stream_type
+            method_name,
+            stream_type,
         )
         if stream_result.is_failure:
             return stream_result
@@ -422,7 +436,9 @@ class GrpcStreamManager(StreamProcessor):
         return FlextResult.ok(stream)
 
     def send_data(
-        self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
+        data: FlextGrpcTypes.ConfigValue,
     ) -> FlextResult[dict[str, object]]:
         """Send data with buffering strategy.
 
@@ -454,7 +470,8 @@ class GrpcStreamManager(StreamProcessor):
             return FlextResult.fail(f"Data send failed: {e}")
 
     def close_stream(
-        self, stream: FlextGrpcEntities.GrpcStream
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Close stream and cleanup."""
         stream_key = f"{stream.id}_{stream.stream_type}"
@@ -486,19 +503,22 @@ class FlextGrpcServices(FlextService[Any]):
     # === DELEGATED SERVER OPERATIONS ===
 
     def start_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Delegate server start to specialized manager."""
         return self._server_manager.start_server(server)
 
     def stop_server(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[FlextGrpcEntities.Server]:
         """Delegate server stop to specialized manager."""
         return self._server_manager.stop_server(server)
 
     def get_server_status(
-        self, server: FlextGrpcEntities.Server
+        self,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[dict[str, object]]:
         """Delegate server status to specialized manager."""
         return self._server_manager.get_server_metrics(server)
@@ -510,7 +530,8 @@ class FlextGrpcServices(FlextService[Any]):
         return self._client_manager.connect(target)
 
     def disconnect_client(
-        self, client: FlextGrpcEntities.Client
+        self,
+        client: FlextGrpcEntities.Client,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
@@ -532,7 +553,8 @@ class FlextGrpcServices(FlextService[Any]):
         return self._client_manager.make_call(client, method, request)
 
     def get_client_status(
-        self, client: FlextGrpcEntities.Client
+        self,
+        client: FlextGrpcEntities.Client,
     ) -> FlextResult[dict[str, object]]:
         """Get client status through delegation."""
         target = ""
@@ -557,7 +579,9 @@ class FlextGrpcServices(FlextService[Any]):
         return self._stream_manager.create_stream(**kwargs)
 
     def send_data(
-        self, stream: FlextGrpcEntities.GrpcStream, data: FlextGrpcTypes.ConfigValue
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
+        data: FlextGrpcTypes.ConfigValue,
     ) -> FlextResult[dict[str, object]]:
         """Delegate data sending to specialized manager.
 
@@ -569,7 +593,8 @@ class FlextGrpcServices(FlextService[Any]):
         return self._stream_manager.send_data(stream, data)
 
     def close_stream(
-        self, stream: FlextGrpcEntities.GrpcStream
+        self,
+        stream: FlextGrpcEntities.GrpcStream,
     ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
         """Delegate stream closing to specialized manager."""
         return self._stream_manager.close_stream(stream)
@@ -577,7 +602,9 @@ class FlextGrpcServices(FlextService[Any]):
     # === FACTORY METHODS WITH DELEGATION ===
 
     def _create_client_entity(
-        self, target: str, options: dict[str, object] | None = None
+        self,
+        target: str,
+        options: dict[str, object] | None = None,
     ) -> FlextResult[FlextGrpcEntities.Client]:
         """Delegate entity creation to utilities.
 
@@ -599,7 +626,9 @@ class FlextGrpcServices(FlextService[Any]):
     # === LEGACY COMPATIBILITY METHODS ===
 
     def _execute_server_command(
-        self, command: str, server: FlextGrpcEntities.Server
+        self,
+        command: str,
+        server: FlextGrpcEntities.Server,
     ) -> FlextResult[dict[str, object]]:
         """Execute server-specific commands."""
         if command == "start":
@@ -619,17 +648,19 @@ class FlextGrpcServices(FlextService[Any]):
         """Execute client-specific commands."""
         if command == "connect":
             return self.connect_client(str(kwargs.get("target", ""))).map(
-                lambda _: {"status": "connected"}
+                lambda _: {"status": "connected"},
             )
         if command == "disconnect":
             return self.disconnect_client(client).map(
-                lambda _: {"status": "disconnected"}
+                lambda _: {"status": "disconnected"},
             )
         if command == "status":
             return self.get_client_status(client)
         if command == "call":
             return self.make_call(
-                client, str(kwargs.get("method", "")), kwargs.get("request")
+                client,
+                str(kwargs.get("method", "")),
+                kwargs.get("request"),
             )
         return FlextResult.fail(f"Unsupported client command: {command}")
 
@@ -643,7 +674,7 @@ class FlextGrpcServices(FlextService[Any]):
         if command == "create":
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             return self.create_stream(method_name=method_name, **kwargs).map(
-                lambda _: {"status": "created"}
+                lambda _: {"status": "created"},
             )
         if command == "send":
             return self.send_data(stream, kwargs.get("data"))

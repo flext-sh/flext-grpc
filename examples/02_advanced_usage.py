@@ -61,7 +61,9 @@ class GrpcServerManager:
 
             # Create server through facade
             server_result = self.grpc.create_server(
-                host=config.host, port=config.port, max_workers=config.max_workers
+                host=config.host,
+                port=config.port,
+                max_workers=config.max_workers,
             )
 
             if server_result.is_success:
@@ -143,7 +145,10 @@ class AdvancedGrpcOperations:
 
         # Use the facade's complete setup method
         return self.grpc.create_complete_setup(
-            host=host, port=port, service_name=service_name, methods=methods
+            host=host,
+            port=port,
+            service_name=service_name,
+            methods=methods,
         )
 
     def demonstrate_streaming(self) -> None:
@@ -211,7 +216,7 @@ def example_2_client_pool() -> None:
     if setup_result.is_success:
         setup = setup_result.unwrap()
         print(
-            f"Created setup with server: {setup['server'].id}, client: {setup['client'].id}"
+            f"Created setup with server: {setup['server'].id}, client: {setup['client'].id}",
         )
     else:
         print(f"Setup creation failed: {setup_result.error}")
@@ -240,7 +245,7 @@ def example_3_service_creation() -> None:
             service = service_result.unwrap()
             created_services.append(service)
             print(
-                f"Created service: {service.name} with {len(service.methods)} methods"
+                f"Created service: {service.name} with {len(service.methods)} methods",
             )
         else:
             print(f"Failed to create {service_name}: {service_result.error}")
@@ -291,42 +296,42 @@ def example_5_error_handling() -> None:
     invalid_server_result = grpc.create_server(host="", port=0)
     if invalid_server_result.is_failure:
         print(
-            f"✓ Invalid server creation properly failed: {invalid_server_result.error}"
+            f"✓ Invalid server creation properly failed: {invalid_server_result.error}",
         )
 
     # Test invalid client creation
     invalid_client_result = grpc.create_client(target="")
     if invalid_client_result.is_failure:
         print(
-            f"✓ Invalid client creation properly failed: {invalid_client_result.error}"
+            f"✓ Invalid client creation properly failed: {invalid_client_result.error}",
         )
 
     # Test invalid channel creation
     invalid_channel_result = grpc.create_channel(target="")
     if invalid_channel_result.is_failure:
         print(
-            f"✓ Invalid channel creation properly failed: {invalid_channel_result.error}"
+            f"✓ Invalid channel creation properly failed: {invalid_channel_result.error}",
         )
 
     # Test invalid config creation
     invalid_config_result = grpc.create_config(host="", port=0)
     if invalid_config_result.is_failure:
         print(
-            f"✓ Invalid config creation properly failed: {invalid_config_result.error}"
+            f"✓ Invalid config creation properly failed: {invalid_config_result.error}",
         )
 
     # Test invalid service creation
     invalid_service_result = grpc.create_service(name="", methods=[])
     if invalid_service_result.is_failure:
         print(
-            f"✓ Invalid service creation properly failed: {invalid_service_result.error}"
+            f"✓ Invalid service creation properly failed: {invalid_service_result.error}",
         )
 
     # Test invalid stream creation (bypass type checking for intentional invalid input)
     invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.is_failure:
         print(
-            f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}"
+            f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}",
         )
 
     print("Error handling validation completed - all invalid inputs properly rejected")

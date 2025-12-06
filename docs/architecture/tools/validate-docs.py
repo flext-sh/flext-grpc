@@ -340,7 +340,7 @@ def save_report(results: dict[str, object], output_path: Path | None = None) -> 
 def main() -> None:
     """Main entry point for documentation validation."""
     parser = argparse.ArgumentParser(
-        description="FLEXT-gRPC Architecture Documentation Validation"
+        description="FLEXT-gRPC Architecture Documentation Validation",
     )
     parser.add_argument("--path", default=".", help="Root path to validate")
     parser.add_argument("--output", help="Output path for report")
