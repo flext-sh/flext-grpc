@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextConfig, FlextConstants, FlextResult
+from flext_core import c as c_core, r
 from pydantic import BaseModel, Field, model_validator
 from pydantic_settings import SettingsConfigDict
 
@@ -56,7 +56,7 @@ class GrpcNetworkConfig(BaseModel):
     """Generic gRPC network configuration with validation."""
 
     host: str = Field(
-        default=FlextConstants.Platform.DEFAULT_HOST,
+        default=c_core.Platform.DEFAULT_HOST,
         min_length=1,
         description="gRPC server host",
     )
@@ -151,7 +151,7 @@ class GrpcClientConfig(BaseModel):
     """Generic gRPC client configuration."""
 
     timeout: float = Field(
-        default=FlextConstants.Network.DEFAULT_TIMEOUT,
+        default=c_core.Network.DEFAULT_TIMEOUT,
         gt=0,
         le=300,
         description="RPC timeout (seconds)",
@@ -196,8 +196,7 @@ class GrpcMonitoringConfig(BaseModel):
     log_level: str = Field(default="INFO", description="Logging level")
 
 
-@FlextConfig.auto_register("grpc")
-class FlextGrpcConfig(FlextConfig.AutoConfig):
+class FlextGrpcConfig(BaseModel):
     """Generic gRPC configuration system using AutoConfig pattern.
 
     **ARCHITECTURAL PATTERN**: Zero-Boilerplate Auto-Registration
@@ -249,7 +248,7 @@ class FlextGrpcConfig(FlextConfig.AutoConfig):
         streaming: GrpcStreamingConfig | None = None,
         client: GrpcClientConfig | None = None,
         monitoring: GrpcMonitoringConfig | None = None,
-        **kwargs: object,
+        **_kwargs: object,
     ) -> None:
         """Initialize with backward compatibility for legacy fields."""
         # Handle legacy field overrides
@@ -277,7 +276,9 @@ class FlextGrpcConfig(FlextConfig.AutoConfig):
         if timeout is not None:
             client_config = client_config.model_copy(update={"timeout": timeout})
 
-        # Initialize with updated configs
+        # Initialize with updated configs using BaseModel.__init__
+        # AutoConfig only accepts config_class, env_prefix, env_file
+        # So we initialize BaseModel directly with our fields
         super().__init__(
             network=network,
             security=security,
@@ -285,7 +286,6 @@ class FlextGrpcConfig(FlextConfig.AutoConfig):
             streaming=streaming_config,
             client=client_config,
             monitoring=monitoring or GrpcMonitoringConfig(),
-            **kwargs,
         )
 
     @property
@@ -318,28 +318,28 @@ class FlextGrpcConfig(FlextConfig.AutoConfig):
         """Get streaming enabled from streaming config."""
         return self.streaming.enabled
 
-    def validate_configuration(self) -> FlextResult[bool]:
+    def validate_configuration(self) -> r[bool]:
         """Validate complete configuration with cross-section checks."""
         try:
             # Cross-validation: TLS and client cert requirements
             if self.security.client_cert_required and not self.security.tls_enabled:
-                return FlextResult.fail("Client certificates require TLS to be enabled")
+                return r.fail("Client certificates require TLS to be enabled")
 
             # Cross-validation: Performance limits
             if self.performance.max_concurrent_rpcs > self.performance.max_workers * 10:
-                return FlextResult.fail("RPC limit too high for worker count")
+                return r.fail("RPC limit too high for worker count")
 
             # Cross-validation: Network and security
             http_port = 80  # Standard HTTP port
             if self.security.tls_enabled and self.network.port == http_port:
-                return FlextResult.fail("TLS enabled but using HTTP port")
+                return r.fail("TLS enabled but using HTTP port")
 
-            return FlextResult.ok(True)
+            return r.ok(True)
         except Exception as e:
-            return FlextResult.fail(f"Configuration validation failed: {e}")
+            return r.fail(f"Configuration validation failed: {e}")
 
     @classmethod
-    def create_production_config(cls) -> FlextResult[FlextGrpcConfig]:
+    def create_production_config(cls) -> r[FlextGrpcConfig]:
         """Create production-ready configuration with enterprise defaults."""
         try:
             config = cls(
@@ -376,10 +376,10 @@ class FlextGrpcConfig(FlextConfig.AutoConfig):
             validation = config.validate_configuration()
             return validation.map(lambda _: config)
         except Exception as e:
-            return FlextResult.fail(f"Production config creation failed: {e}")
+            return r.fail(f"Production config creation failed: {e}")
 
     @classmethod
-    def create_development_config(cls) -> FlextResult[FlextGrpcConfig]:
+    def create_development_config(cls) -> r[FlextGrpcConfig]:
         """Create development configuration with relaxed settings."""
         try:
             config = cls(
@@ -396,9 +396,9 @@ class FlextGrpcConfig(FlextConfig.AutoConfig):
                 client=GrpcClientConfig(),
                 monitoring=GrpcMonitoringConfig(),
             )
-            return FlextResult.ok(config)
+            return r.ok(config)
         except Exception as e:
-            return FlextResult.fail(f"Development config creation failed: {e}")
+            return r.fail(f"Development config creation failed: {e}")
 
 
 __all__ = [

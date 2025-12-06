@@ -14,14 +14,14 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final, Literal
 
-from flext_core import FlextConstants
+from flext_core import c as c_core
 
 
-class FlextGrpcConstants(FlextConstants):
+class FlextGrpcConstants(c_core):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
-    constants redefined for gRPC context. NO direct imports from FlextConstants
+    constants redefined for gRPC context. NO direct imports from c_core
     should be used - all constants must come from this class.
 
     Layer N Foundation: gRPC domain-specific constants building on flext-core Layer 0.
@@ -49,7 +49,7 @@ class FlextGrpcConstants(FlextConstants):
 
         # Default timeout constant for gRPC context
         DEFAULT_TIMEOUT: Final[float] = float(
-            FlextConstants.Network.DEFAULT_TIMEOUT,
+            c_core.Network.DEFAULT_TIMEOUT,
         )  # gRPC default timeout
 
         # Additional platform constants for gRPC
@@ -63,7 +63,7 @@ class FlextGrpcConstants(FlextConstants):
         DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
     class Service:
-        """gRPC service constants extending FlextConstants.Service."""
+        """gRPC service constants extending c_core.Service."""
 
         # gRPC-specific service constants - OVERRIDE parent constants
         DEFAULT_MAX_WORKERS: Final[int] = 10  # gRPC default workers
@@ -80,15 +80,15 @@ class FlextGrpcConstants(FlextConstants):
         MIN_PORT: Final[int] = 1024
         HIGH_WORKER_THRESHOLD: Final[int] = 20
         HIGH_WORKER_TIMEOUT: Final[float] = float(
-            FlextConstants.Network.DEFAULT_TIMEOUT,
+            c_core.Network.DEFAULT_TIMEOUT,
         )
         RETRY_ATTEMPTS: Final[int] = 3
-        RETRY_TIMEOUT: Final[float] = float(FlextConstants.Network.DEFAULT_TIMEOUT)
+        RETRY_TIMEOUT: Final[float] = float(c_core.Network.DEFAULT_TIMEOUT)
         MAX_RETRY_ATTEMPTS: Final[int] = 5  # Maximum retry attempts for gRPC
         HIGH_RETRY_TIMEOUT: Final[float] = 10.0
 
     class GrpcValidation:
-        """gRPC validation constants extending FlextConstants.Validation."""
+        """gRPC validation constants extending c_core.Validation."""
 
         # Additional gRPC-specific constants
         ADDRESS_PARTS_COUNT: Final[int] = 2
@@ -168,7 +168,7 @@ class FlextGrpcConstants(FlextConstants):
         STREAM_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
         MAX_CONCURRENT_STREAMS: Final[int] = 100
         HEARTBEAT_INTERVAL_SECONDS: Final[float] = float(
-            FlextConstants.Network.DEFAULT_TIMEOUT,
+            c_core.Network.DEFAULT_TIMEOUT,
         )
 
     class Literals:

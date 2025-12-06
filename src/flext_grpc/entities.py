@@ -13,12 +13,14 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any, Self, TypeVar
 
-from flext_core import FlextModels, FlextResult, FlextService
-from flext_tests.matchers import FlextTestsMatchers
+from flext_core import m as m_core, r, s, u as u_core
 from pydantic import BaseModel, Field, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import FlextGrpcTypes
+
+# Type alias for convenience
+c = FlextGrpcConstants
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -29,17 +31,23 @@ class EntityValidator(BaseModel):
     @classmethod
     def validate_required_string(cls, value: str, field_name: str) -> str:
         """Generic string validation."""
-        return FlextTestsMatchers.validate_required_string(value, field_name)
+        return u_core.Validation.validate_required_string(value, field_name)
 
     @classmethod
     def validate_enum(cls, value: str, allowed: set[str], field_name: str) -> str:
         """Generic enum validation."""
-        return FlextTestsMatchers.validate_enum(value, allowed, field_name)
+        if value not in allowed:
+            msg = f"{field_name} must be one of {allowed}, got {value}"
+            raise ValueError(msg)
+        return value
 
     @classmethod
     def validate_list_not_empty(cls, value: list[Any], field_name: str) -> list[Any]:
         """Generic list validation."""
-        return FlextTestsMatchers.validate_list_not_empty(value, field_name)
+        if not value:
+            msg = f"{field_name} cannot be empty"
+            raise ValueError(msg)
+        return value
 
 
 class StateMachine(BaseModel):
@@ -50,40 +58,40 @@ class StateMachine(BaseModel):
         current: str,
         target: str,
         allowed_transitions: dict[str, set[str]],
-    ) -> FlextResult[Self]:
+    ) -> r[Self]:
         """Generic state transition with validation."""
         if (
             current not in allowed_transitions
             or target not in allowed_transitions[current]
         ):
-            return FlextResult.fail(f"Invalid transition from {current} to {target}")
+            return r.fail(f"Invalid transition from {current} to {target}")
         updated = self.model_copy(update={"state": target})
-        return FlextResult.ok(updated)
+        return r.ok(updated)
 
 
-class FlextGrpcEntities(FlextService[Any]):
+class FlextGrpcEntities(s[Any]):
     """Generic gRPC entity system with SOLID principles and minimal code."""
 
-    class Entity(FlextModels.Entity):
+    class Entity(m_core.Entity):
         """Generic base entity with functional patterns."""
 
         created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
-        def copy_with(self, **kwargs: str | int | bool | None) -> FlextResult[Self]:
-            """Functional copy using FlextResult.
+        def copy_with(self, **kwargs: str | int | bool | None) -> r[Self]:
+            """Functional copy using r.
 
             Args:
             **kwargs: Field updates for the entity
 
             """
             try:
-                return FlextResult.ok(self.model_copy(update=kwargs))
+                return r.ok(self.model_copy(update=kwargs))
             except Exception as e:
-                return FlextResult.fail(str(e))
+                return r.fail(str(e))
 
-        def validate_business_rules(self) -> FlextResult[bool]:
+        def validate_business_rules(self) -> r[bool]:
             """Override in subclasses for specific validation."""
-            return FlextResult.ok(True)
+            return r.ok(True)
 
     class Channel(Entity, StateMachine):
         """Generic gRPC channel with state machine delegation."""
@@ -103,27 +111,27 @@ class FlextGrpcEntities(FlextService[Any]):
                 "state",
             )
 
-        def validate_business_rules(self) -> FlextResult[bool]:
+        def validate_business_rules(self) -> r[bool]:
             """Functional validation composition."""
             if not self.target.strip():
-                return FlextResult.fail("Channel target cannot be empty")
-            return FlextResult.ok(True)
+                return r.fail("Channel target cannot be empty")
+            return r.ok(True)
 
         def is_ready(self) -> bool:
             """Check readiness."""
             return self.state == "ready"
 
-        def connect(self) -> FlextResult[Self]:
+        def connect(self) -> r[Self]:
             """Transition to connecting."""
             return self.transition(self.state, "connecting", {"idle": {"connecting"}})
 
-        def mark_ready(self) -> FlextResult[Self]:
+        def mark_ready(self) -> r[Self]:
             """Transition to ready."""
             return self.transition(self.state, "ready", {"connecting": {"ready"}})
 
-        def disconnect(self) -> FlextResult[Self]:
+        def disconnect(self) -> r[Self]:
             """Transition to idle."""
-            return FlextResult.ok(self.model_copy(update={"state": "idle"}))
+            return r.ok(self.model_copy(update={"state": "idle"}))
 
     class Server(Entity, StateMachine):
         """Generic gRPC server with state machine and validation delegation."""
@@ -135,45 +143,45 @@ class FlextGrpcEntities(FlextService[Any]):
         services: list[Any] = Field(default_factory=list)
         grpc_server: object = None
 
-        def validate_business_rules(self) -> FlextResult[bool]:
+        def validate_business_rules(self) -> r[bool]:
             """Delegate validation to generic validators."""
             if not self.host.strip():
-                return FlextResult.fail("Server host cannot be empty")
+                return r.fail("Server host cannot be empty")
             # Port range validation using IANA standard range
             min_port = 1
             max_port = 65535
             if not (min_port <= self.port <= max_port):
-                return FlextResult.fail(f"Invalid port: {self.port}")
+                return r.fail(f"Invalid port: {self.port}")
             if self.max_workers < 1:
-                return FlextResult.fail("Max workers must be >= 1")
-            return FlextResult.ok(True)
+                return r.fail("Max workers must be >= 1")
+            return r.ok(True)
 
-        def start(self) -> FlextResult[Self]:
+        def start(self) -> r[Self]:
             """Transition to starting."""
             return self.transition(self.state, "starting", {"stopped": {"starting"}})
 
-        def mark_running(self) -> FlextResult[Self]:
+        def mark_running(self) -> r[Self]:
             """Transition to running."""
             return self.transition(self.state, "running", {"starting": {"running"}})
 
-        def stop(self) -> FlextResult[Self]:
+        def stop(self) -> r[Self]:
             """Transition to stopping."""
             return self.transition(self.state, "stopping", {"running": {"stopping"}})
 
-        def mark_stopped(self) -> FlextResult[Self]:
+        def mark_stopped(self) -> r[Self]:
             """Transition to stopped."""
             if self.state not in {"stopping", "running"}:
-                return FlextResult.fail(f"Cannot mark stopped from {self.state}")
-            return FlextResult.ok(self.model_copy(update={"state": "stopped"}))
+                return r.fail(f"Cannot mark stopped from {self.state}")
+            return r.ok(self.model_copy(update={"state": "stopped"}))
 
-        def add_service(self, service: object) -> FlextResult[Self]:
+        def add_service(self, service: object) -> r[Self]:
             """Add service functionally.
 
             Args:
             service: gRPC service object (dynamic type from grpc library)
 
             """
-            return FlextResult.ok(
+            return r.ok(
                 self.model_copy(update={"services": [*self.services, service]}),
             )
 
@@ -202,11 +210,11 @@ class FlextGrpcEntities(FlextService[Any]):
             """Check method existence."""
             return method_name in self.methods
 
-        def add_method(self, method_name: str) -> FlextResult[Self]:
+        def add_method(self, method_name: str) -> r[Self]:
             """Add method functionally."""
             if not method_name.strip() or method_name in self.methods:
-                return FlextResult.fail("Invalid method")
-            return FlextResult.ok(
+                return r.fail("Invalid method")
+            return r.ok(
                 self.model_copy(update={"methods": [*self.methods, method_name]}),
             )
 
@@ -217,16 +225,16 @@ class FlextGrpcEntities(FlextService[Any]):
         options: dict[str, object] = Field(default_factory=dict)
         grpc_stub: object = None
 
-        def validate_business_rules(self) -> FlextResult[bool]:
+        def validate_business_rules(self) -> r[bool]:
             """Delegate validation."""
             if self.channel and self.channel.validate_business_rules().is_failure:
-                return FlextResult.fail("Invalid channel")
-            return FlextResult.ok(True)
+                return r.fail("Invalid channel")
+            return r.ok(True)
 
-        def connect_to(self, target: str) -> FlextResult[Self]:
+        def connect_to(self, target: str) -> r[Self]:
             """Connect functionally."""
             channel = FlextGrpcEntities.Channel(target=target, state="idle")
-            return FlextResult.ok(self.model_copy(update={"channel": channel}))
+            return r.ok(self.model_copy(update={"channel": channel}))
 
     class GrpcStream(Entity):
         """Generic gRPC stream with validation delegation."""

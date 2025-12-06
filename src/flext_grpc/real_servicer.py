@@ -14,7 +14,7 @@ from collections.abc import Iterator
 from typing import override
 
 import grpc
-from flext_core import FlextConstants
+from flext_core import c as c_core
 
 # Import protobuf classes - these are dynamically generated
 from grpc import ServicerContext
@@ -110,7 +110,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         """Real client streaming implementation."""
         try:
             messages: list[str] = []
-            sequence_count = FlextConstants.Performance.MIN_CURRENT_STEP
+            sequence_count = c_core.Performance.MIN_CURRENT_STEP
 
             # Process all incoming requests
             for request in request_iterator:

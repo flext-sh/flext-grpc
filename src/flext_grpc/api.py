@@ -14,7 +14,7 @@ from collections.abc import Callable
 from functools import partial
 from typing import Any, TypeVar, cast
 
-from flext_core import FlextModels, FlextResult, FlextService
+from flext_core import FlextModels, r, s
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_grpc.config import FlextGrpcConfig
@@ -23,6 +23,10 @@ from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.services import FlextGrpcServices
 from flext_grpc.typings import FlextGrpcTypes
 from flext_grpc.utilities import FlextGrpcUtilities
+
+# Type aliases for convenience
+c = FlextGrpcConstants
+m_core = FlextModels
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -73,7 +77,7 @@ class GenericResponse[T: BaseModel](BaseModel):
         return not self.success or self.error is not None
 
 
-class FlextGrpc(FlextService[FlextGrpcConfig]):
+class FlextGrpc(s[FlextGrpcConfig]):
     """Generic unified gRPC facade with SOLID patterns and minimal code.
 
     Uses generic types, functional composition, Pydantic v2 models, and delegation
@@ -84,44 +88,53 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         """Initialize facade with FLEXT ecosystem integration."""
         super().__init__()
         self._service = FlextGrpcServices()
-        self._config = config if config is not None else FlextGrpcConfig()
+        # Use object.__setattr__ to bypass type checker for dynamic attribute assignment
+        # since base class expects FlextConfig | None but we use FlextGrpcConfig
+        object.__setattr__(
+            self, "_config", config if config is not None else FlextGrpcConfig()
+        )
 
     @property
     def grpc_config(self) -> FlextGrpcConfig:
         """Get gRPC-specific configuration."""
-        return self._config
+        # Type narrowing: _config is always FlextGrpcConfig due to __init__
+        config = self._config
+        if not isinstance(config, FlextGrpcConfig):
+            error_msg = f"Expected FlextGrpcConfig, got {type(config)}"
+            raise TypeError(error_msg)
+        return config
 
-    def execute(self, **_kwargs: object) -> FlextResult[FlextGrpcConfig]:
+    def execute(self, **_kwargs: object) -> r[FlextGrpcConfig]:
         """Execute main facade operation."""
-        return FlextResult.ok(self._config)
+        return r.ok(self.grpc_config)
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
         return FlextGrpcTypes.GrpcValidation.validate_target(target)
 
-    def parse_address(self, address: str) -> FlextResult[tuple[str, int]]:
+    def parse_address(self, address: str) -> r[tuple[str, int]]:
         """Parse gRPC address string."""
         if not FlextGrpcTypes.GrpcValidation.validate_target(address):
-            return FlextResult.fail(f"Invalid address: {address}")
-        return FlextResult.ok(FlextGrpcTypes.GrpcValidation.parse_target(address))
+            return r.fail(f"Invalid address: {address}")
+        return r.ok(FlextGrpcTypes.GrpcValidation.parse_target(address))
 
     def create_entity(
         self,
         entity_type: str,
         **kwargs: object,
-    ) -> FlextResult[Any]:
+    ) -> r[Any]:
         """Generic entity creation with Pydantic validation and delegation."""
         # Use match/case for cleaner entity type handling (Python 3.10+)
         entity_factories = self._get_entity_factories()
 
         factory = entity_factories.get(entity_type)
         if not factory:
-            return FlextResult.fail(f"Unknown entity type: {entity_type}")
+            return r.fail(f"Unknown entity type: {entity_type}")
 
         # Call factory and handle result
         result = factory(**kwargs)
         if not result.is_success:
-            return FlextResult.fail(f"Failed to create entity: {result.error}")
+            return r.fail(f"Failed to create entity: {result.error}")
 
         entity = result.value
 
@@ -130,61 +143,61 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
             entity.validate_business_rules,
         ):
             validation_result = cast(
-                "FlextResult[object]",
+                "r[object]",
                 entity.validate_business_rules(),
             )
             if hasattr(validation_result, "map") and not validation_result.is_success:
-                return FlextResult.fail(
+                return r.fail(
                     f"Entity validation failed: {validation_result.error}",
                 )
 
-        return FlextResult.ok(entity)
+        return r.ok(entity)
 
-    def _get_entity_factories(self) -> dict[str, Callable[..., FlextResult[Any]]]:
+    def _get_entity_factories(self) -> dict[str, Callable[..., r[Any]]]:
         """Get entity factories using partial application for clean delegation."""
         return {
             "server": cast(
-                "Callable[..., FlextResult[Any]]",
+                "Callable[..., r[Any]]",
                 partial(FlextGrpcUtilities.create_server_entity),
             ),
             "client": cast(
-                "Callable[..., FlextResult[Any]]",
+                "Callable[..., r[Any]]",
                 partial(FlextGrpcUtilities.create_client_entity),
             ),
             "channel": cast(
-                "Callable[..., FlextResult[Any]]",
+                "Callable[..., r[Any]]",
                 partial(FlextGrpcUtilities.create_channel_entity),
             ),
             "service": cast(
-                "Callable[..., FlextResult[Any]]",
+                "Callable[..., r[Any]]",
                 partial(FlextGrpcUtilities.create_service_entity),
             ),
             "stream": cast(
-                "Callable[..., FlextResult[Any]]",
+                "Callable[..., r[Any]]",
                 partial(FlextGrpcUtilities.create_stream_entity),
             ),
         }
 
     def execute_operation(
         self,
-        request: FlextModels.OperationExecutionRequest,
-    ) -> FlextResult[FlextGrpcConfig]:
+        request: m_core.Service.OperationExecutionRequest,
+    ) -> r[FlextGrpcConfig]:
         """Execute operation with validation, timeout, retry, and monitoring (Domain.Service protocol)."""
         operations = self._get_operations()
 
         operation = operations.get(request.operation_name)
         if not operation:
-            return FlextResult.fail(f"Unknown operation: {request.operation_name}")
+            return r.fail(f"Unknown operation: {request.operation_name}")
 
         # Execute operation with delegation
         result = operation(**request.arguments, **request.keyword_arguments)
 
         # Return config on success, fail on error
-        return result.map(lambda _data: self._config).lash(
-            lambda error_msg: FlextResult.fail(error_msg or "Unknown error"),
+        return result.map(lambda _data: self.grpc_config).lash(
+            lambda error_msg: r.fail(error_msg or "Unknown error"),
         )
 
-    def _get_operations(self) -> dict[str, Callable[..., FlextResult[Any]]]:
+    def _get_operations(self) -> dict[str, Callable[..., r[Any]]]:
         """Get operations using delegation to service layer."""
         return {
             "start_server": self._service.start_server,
@@ -199,29 +212,29 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def create_server(
         self,
         **kwargs: str | int | bool | list[str] | None,
-    ) -> FlextResult[FlextGrpcEntities.Server]:
+    ) -> r[FlextGrpcEntities.Server]:
         """Create server entity with functional defaults."""
         defaults = {
-            "host": FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST,
-            "port": FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT,
-            "max_workers": FlextGrpcConstants.Service.DEFAULT_MAX_WORKERS,
+            "host": c.GrpcNetwork.DEFAULT_HOST,
+            "port": c.GrpcNetwork.DEFAULT_GRPC_PORT,
+            "max_workers": c.Service.DEFAULT_MAX_WORKERS,
         }
         return self.create_entity("server", **defaults | kwargs)
 
     def create_client(
         self,
         **kwargs: str | int | bool | None,
-    ) -> FlextResult[FlextGrpcEntities.Client]:
+    ) -> r[FlextGrpcEntities.Client]:
         """Create client with channel composition."""
         return self.create_entity("client", **kwargs)
 
     def create_channel(
         self,
         **kwargs: str | int | bool | dict[str, object] | None,
-    ) -> FlextResult[FlextGrpcEntities.Channel]:
+    ) -> r[FlextGrpcEntities.Channel]:
         """Create channel entity with defaults."""
         defaults = {
-            "target": f"{FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT}",
+            "target": f"{c.GrpcNetwork.DEFAULT_HOST}:{c.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "options": {},
         }
         return self.create_entity("channel", **defaults | kwargs)
@@ -229,7 +242,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def create_service(
         self,
         **kwargs: str | list[str] | None,
-    ) -> FlextResult[FlextGrpcEntities.Service]:
+    ) -> r[FlextGrpcEntities.Service]:
         """Create service entity with defaults."""
         defaults = {"name": "DefaultService", "methods": ["default_method"]}
         return self.create_entity("service", **defaults | kwargs)
@@ -239,13 +252,13 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         method_name: str = "DefaultMethod",
         stream_type: str = "unary",
         **kwargs: str | int | bool | None,
-    ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
+    ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create stream with validation."""
         if not method_name.strip():
-            return FlextResult.fail("Stream method name cannot be empty")
+            return r.fail("Stream method name cannot be empty")
 
-        if stream_type not in FlextGrpcConstants.Literals.STREAM_TYPES:
-            return FlextResult.fail(f"Invalid stream type: {stream_type}")
+        if stream_type not in c.Literals.STREAM_TYPES:
+            return r.fail(f"Invalid stream type: {stream_type}")
 
         return self.create_entity(
             "stream",
@@ -259,7 +272,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def start_server(
         self,
         server: FlextGrpcEntities.Server,
-    ) -> FlextResult[FlextGrpcEntities.Server]:
+    ) -> r[FlextGrpcEntities.Server]:
         """Delegate server start.
 
         Args:
@@ -274,7 +287,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def stop_server(
         self,
         server: FlextGrpcEntities.Server,
-    ) -> FlextResult[FlextGrpcEntities.Server]:
+    ) -> r[FlextGrpcEntities.Server]:
         """Delegate server stop.
 
         Args:
@@ -286,7 +299,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         """
         return self._service.stop_server(server)
 
-    def connect_client(self, target: str) -> FlextResult[FlextGrpcEntities.Client]:
+    def connect_client(self, target: str) -> r[FlextGrpcEntities.Client]:
         """Delegate client connection.
 
         Args:
@@ -301,7 +314,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def disconnect_client(
         self,
         client: FlextGrpcEntities.Client,
-    ) -> FlextResult[FlextGrpcEntities.Client]:
+    ) -> r[FlextGrpcEntities.Client]:
         """Delegate client disconnection.
 
         Args:
@@ -318,7 +331,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         client: FlextGrpcEntities.Client,
         method: str,
         request: FlextGrpcTypes.ConfigValue,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> r[dict[str, object]]:
         """Delegate method calls.
 
         Args:
@@ -338,7 +351,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
         self,
         stream: FlextGrpcEntities.GrpcStream,
         data: FlextGrpcTypes.ConfigValue,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> r[dict[str, object]]:
         """Delegate data sending.
 
         Args:
@@ -356,7 +369,7 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def close_stream(
         self,
         stream: FlextGrpcEntities.GrpcStream,
-    ) -> FlextResult[FlextGrpcEntities.GrpcStream]:
+    ) -> r[FlextGrpcEntities.GrpcStream]:
         """Delegate stream closing.
 
         Args:
@@ -371,10 +384,10 @@ class FlextGrpc(FlextService[FlextGrpcConfig]):
     def create_complete_setup(
         self,
         **kwargs: str | int | list[str] | None,
-    ) -> FlextResult[dict[str, object]]:
+    ) -> r[dict[str, object]]:
         """Complete setup using functional composition."""
-        host = kwargs.get("host", FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST)
-        port = kwargs.get("port", FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT)
+        host = kwargs.get("host", c.GrpcNetwork.DEFAULT_HOST)
+        port = kwargs.get("port", c.GrpcNetwork.DEFAULT_GRPC_PORT)
         service_name_raw = kwargs.get("service_name", "DefaultService")
         service_name = (
             str(service_name_raw) if service_name_raw is not None else "DefaultService"

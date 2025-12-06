@@ -17,9 +17,14 @@ from __future__ import annotations
 import re
 from typing import Protocol, override, runtime_checkable
 
-from flext_core import FlextLogger, t
+from flext_core import t as t_core
+from flext_core.loggings import FlextLogger
 
 from flext_grpc.constants import FlextGrpcConstants
+
+# Type aliases for convenience
+t = t_core
+c = FlextGrpcConstants
 
 # =============================================================================
 # GRPC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for gRPC operations
@@ -27,7 +32,7 @@ from flext_grpc.constants import FlextGrpcConstants
 
 
 # gRPC domain TypeVars
-class FlextGrpcTypes(t):
+class FlextGrpcTypes(t_core):
     """gRPC-specific type definitions extending t.
 
     Domain-specific type system for gRPC microservices operations.
@@ -36,15 +41,15 @@ class FlextGrpcTypes(t):
     """
 
     # Type aliases for convenience (moved inside class)
-    ConfigValue = str | int | bool | list[str] | dict[str, object] | None
-    JsonValue = t.JsonValue
+    type ConfigValue = str | int | bool | list[str] | dict[str, object] | None
+    type JsonValue = t_core.Json.JsonValue
 
     # gRPC target types (moved from flext-core to domain-specific location)
     type GrpcTarget = str
-    # Type aliases for gRPC literals - using TypeAlias for better type checking
-    GrpcStreamType: type = FlextGrpcConstants.Literals.StreamTypeLiteral
-    GrpcChannelState: type = FlextGrpcConstants.Literals.ChannelStateLiteral
-    GrpcServerState: type = FlextGrpcConstants.Literals.ServerStateLiteral
+    # Type aliases for gRPC literals - use type alias syntax
+    type GrpcStreamType = c.Literals.StreamTypeLiteral
+    type GrpcChannelState = c.Literals.ChannelStateLiteral
+    type GrpcServerState = c.Literals.ServerStateLiteral
 
     # =========================================================================
     # GRPC SERVER TYPES - Complex server management types
@@ -92,7 +97,7 @@ class FlextGrpcTypes(t):
         type ServerLifecycle = dict[str, str | bool | int | dict[str, object]]
         type ServerMetrics = dict[
             str,
-            int | float | bool | dict[str, FlextGrpcTypes.JsonValue],
+            int | float | bool | dict[str, t_core.Json.JsonValue],
         ]
         type ServerSecurity = dict[
             str,
@@ -100,7 +105,7 @@ class FlextGrpcTypes(t):
         ]
         type ServiceRegistry = dict[
             str,
-            list[str] | dict[str, FlextGrpcTypes.JsonValue],
+            list[str] | dict[str, t_core.Json.JsonValue],
         ]
         type HandlerConfiguration = list[dict[str, str | object]]
 
@@ -117,10 +122,10 @@ class FlextGrpcTypes(t):
         ]
         type ConnectionPool = dict[str, int | bool | dict[str, object]]
         type RetryConfiguration = dict[str, int | float | bool | list[str]]
-        type LoadBalancing = dict[str, str | bool | dict[str, FlextGrpcTypes.JsonValue]]
+        type LoadBalancing = dict[str, str | bool | dict[str, t_core.Json.JsonValue]]
         type ClientMetrics = dict[
             str,
-            int | float | dict[str, FlextGrpcTypes.JsonValue],
+            int | float | dict[str, t_core.Json.JsonValue],
         ]
         type ChannelOptions = dict[str, str | int | bool | dict[str, object]]
 
@@ -137,7 +142,7 @@ class FlextGrpcTypes(t):
         ]
         type StreamingContext = dict[
             str,
-            str | bool | dict[str, FlextGrpcTypes.JsonValue],
+            str | bool | dict[str, t_core.Json.JsonValue],
         ]
         type StreamMetrics = dict[str, int | float | bool | dict[str, object]]
         type FlowControl = dict[str, int | bool | dict[str, FlextGrpcTypes.ConfigValue]]
@@ -153,17 +158,17 @@ class FlextGrpcTypes(t):
 
         type ServiceDefinition = dict[
             str,
-            str | list[str] | dict[str, FlextGrpcTypes.JsonValue],
+            str | list[str] | dict[str, t_core.Json.JsonValue],
         ]
         type MethodDefinition = dict[str, str | bool | dict[str, object]]
         type ServiceMetadata = dict[
             str,
-            str | int | dict[str, FlextGrpcTypes.JsonValue],
+            str | int | dict[str, t_core.Json.JsonValue],
         ]
         type InterceptorChain = list[dict[str, str | object]]
         type ServiceDiscovery = dict[
             str,
-            str | list[str] | dict[str, FlextGrpcTypes.JsonValue],
+            str | list[str] | dict[str, t_core.Json.JsonValue],
         ]
         type HealthCheck = dict[str, bool | str | int | dict[str, object]]
 
@@ -179,7 +184,7 @@ class FlextGrpcTypes(t):
             bool | str | dict[str, FlextGrpcTypes.ConfigValue],
         ]
         type TlsConfiguration = dict[str, str | bool | dict[str, object]]
-        type AuthenticationConfig = dict[str, str | dict[str, FlextGrpcTypes.JsonValue]]
+        type AuthenticationConfig = dict[str, str | dict[str, t_core.Json.JsonValue]]
         type AuthorizationRules = list[dict[str, str | bool | list[str]]]
         type CertificateManagement = dict[
             str,
@@ -187,7 +192,7 @@ class FlextGrpcTypes(t):
         ]
         type SecurityMetrics = dict[
             str,
-            int | bool | dict[str, FlextGrpcTypes.JsonValue],
+            int | bool | dict[str, t_core.Json.JsonValue],
         ]
 
     # =========================================================================
@@ -203,7 +208,7 @@ class FlextGrpcTypes(t):
         ]
         type MetricsCollection = dict[
             str,
-            str | bool | dict[str, FlextGrpcTypes.JsonValue],
+            str | bool | dict[str, t_core.Json.JsonValue],
         ]
         type TracingConfiguration = dict[str, bool | str | dict[str, object]]
         type LoggingSetup = dict[
@@ -213,14 +218,14 @@ class FlextGrpcTypes(t):
         type AlertingRules = list[dict[str, str | int | float | bool]]
         type PerformanceMetrics = dict[
             str,
-            float | int | dict[str, FlextGrpcTypes.JsonValue],
+            float | int | dict[str, t_core.Json.JsonValue],
         ]
 
     # =========================================================================
     # GRPC LITERAL TYPES - Domain-specific literal values (moved to constants)
     # =========================================================================
-    # All literal types are now defined in FlextGrpcConstants.Literals
-    # Use FlextGrpcConstants.Literals.ChannelState, etc.
+    # All literal types are now defined in c.Literals
+    # Use c.Literals.ChannelState, etc.
 
     # =========================================================================
     # GRPC PROJECT TYPES - Domain-specific project types extending t
