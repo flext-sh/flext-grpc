@@ -14,10 +14,10 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Final, Literal
 
-from flext_core import c as c_core
+from flext_core.constants import FlextConstants
 
 
-class FlextGrpcConstants(c_core):
+class FlextGrpcConstants(FlextConstants):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
@@ -30,245 +30,336 @@ class FlextGrpcConstants(c_core):
     ```python
     from flext_grpc.constants import FlextGrpcConstants
 
-    timeout = FlextGrpcConstants.GrpcNetwork.DEFAULT_TIMEOUT
-    port = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
+    timeout = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+    port = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     ```
     """
 
-    class GrpcNetwork:
-        """gRPC-specific network constants."""
+    class Grpc:
+        """gRPC domain constants namespace.
 
-        # gRPC-specific network constants
-        DEFAULT_HOST: Final[str] = "127.0.0.1"  # gRPC default host
-        DEFAULT_GRPC_PORT: Final[int] = 50051  # Standard gRPC port
-        HOST_NAME_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
+        All gRPC-specific constants are organized here for better namespace
+        organization and to enable composition with other domain constants.
+        """
 
-        # Port validation constants for gRPC
-        MIN_PORT: Final[int] = 1  # gRPC allows port 1
-        MAX_PORT: Final[int] = 65535  # Standard port range
+        class GrpcNetwork:
+            """gRPC-specific network constants."""
 
-        # Default timeout constant for gRPC context
-        DEFAULT_TIMEOUT: Final[float] = float(
-            c_core.Network.DEFAULT_TIMEOUT,
-        )  # gRPC default timeout
+            # gRPC-specific network constants
+            DEFAULT_HOST: Final[str] = "127.0.0.1"  # gRPC default host
+            DEFAULT_GRPC_PORT: Final[int] = 50051  # Standard gRPC port
+            HOST_NAME_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
 
-        # Additional platform constants for gRPC
-        METRICS_PORT: Final[int] = 9090  # Prometheus metrics port
-        GRPC_DEFAULT_PORT: Final[int] = 50051  # Alias for DEFAULT_GRPC_PORT
-        HOST: Final[str] = "127.0.0.1"  # Localhost for production binding
-        LOCALHOST_IP: Final[str] = "127.0.0.1"  # Localhost IP address
+            # Port validation constants for gRPC
+            MIN_PORT: Final[int] = 1  # gRPC allows port 1
+            MAX_PORT: Final[int] = 65535  # Standard port range
 
-        # gRPC keepalive constants (in milliseconds)
-        DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000  # 30 seconds
-        DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
+            # Default timeout constant for gRPC context
+            DEFAULT_TIMEOUT: Final[float] = float(
+                FlextConstants.Network.DEFAULT_TIMEOUT,
+            )  # gRPC default timeout
 
-    class Service:
-        """gRPC service constants extending c_core.Service."""
+            # Additional platform constants for gRPC
+            METRICS_PORT: Final[int] = 9090  # Prometheus metrics port
+            GRPC_DEFAULT_PORT: Final[int] = 50051  # Alias for DEFAULT_GRPC_PORT
+            HOST: Final[str] = "127.0.0.1"  # Localhost for production binding
+            LOCALHOST_IP: Final[str] = "127.0.0.1"  # Localhost IP address
 
-        # gRPC-specific service constants - OVERRIDE parent constants
-        DEFAULT_MAX_WORKERS: Final[int] = 10  # gRPC default workers
-        MIN_WORKERS: Final[int] = 1  # Minimum gRPC workers
-        MAX_WORKERS: Final[int] = 100  # Maximum gRPC workers
-        DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
-        MIN_REQUIRED_ARGS: Final[int] = 2
+            # gRPC keepalive constants (in milliseconds)
+            DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000  # 30 seconds
+            DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
-    class Production:
-        """gRPC production validation constants."""
+        class Service:
+            """gRPC service constants extending c_core.Service."""
 
-        # Production validation constants
-        MIN_WORKERS: Final[int] = 5
-        MIN_PORT: Final[int] = 1024
-        HIGH_WORKER_THRESHOLD: Final[int] = 20
-        HIGH_WORKER_TIMEOUT: Final[float] = float(
-            c_core.Network.DEFAULT_TIMEOUT,
-        )
-        RETRY_ATTEMPTS: Final[int] = 3
-        RETRY_TIMEOUT: Final[float] = float(c_core.Network.DEFAULT_TIMEOUT)
-        MAX_RETRY_ATTEMPTS: Final[int] = 5  # Maximum retry attempts for gRPC
-        HIGH_RETRY_TIMEOUT: Final[float] = 10.0
+            # gRPC-specific service constants - OVERRIDE parent constants
+            DEFAULT_MAX_WORKERS: Final[int] = 10  # gRPC default workers
+            MIN_WORKERS: Final[int] = 1  # Minimum gRPC workers
+            MAX_WORKERS: Final[int] = 100  # Maximum gRPC workers
+            DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
+            MIN_REQUIRED_ARGS: Final[int] = 2
 
-    class GrpcValidation:
-        """gRPC validation constants extending c_core.Validation."""
+        class Production:
+            """gRPC production validation constants."""
 
-        # Additional gRPC-specific constants
-        ADDRESS_PARTS_COUNT: Final[int] = 2
-        MAX_PORT_NUMBER: Final[int] = 65535
+            # Production validation constants
+            MIN_WORKERS: Final[int] = 5
+            MIN_PORT: Final[int] = 1024
+            HIGH_WORKER_THRESHOLD: Final[int] = 20
+            HIGH_WORKER_TIMEOUT: Final[float] = float(
+                FlextConstants.Network.DEFAULT_TIMEOUT,
+            )
+            RETRY_ATTEMPTS: Final[int] = 3
+            RETRY_TIMEOUT: Final[float] = float(FlextConstants.Network.DEFAULT_TIMEOUT)
+            MAX_RETRY_ATTEMPTS: Final[int] = 5  # Maximum retry attempts for gRPC
+            HIGH_RETRY_TIMEOUT: Final[float] = 10.0
 
-        # gRPC-specific validation constants
-        MAX_SERVICE_NAME_LENGTH: Final[int] = 255
-        MAX_METHOD_NAME_LENGTH: Final[int] = 200
+        class GrpcValidation:
+            """gRPC validation constants extending c_core.Validation."""
 
-    class GrpcMessages:
-        """gRPC-specific error and status messages."""
+            # Additional gRPC-specific constants
+            ADDRESS_PARTS_COUNT: Final[int] = 2
+            MAX_PORT_NUMBER: Final[int] = 65535
 
-        # gRPC-specific error and status messages
-        SERVICE_START_FAILED: Final[str] = "gRPC service failed to start: {error}"
-        SERVICE_STARTED: Final[str] = "gRPC service started on {host}:{port}"
-        CONNECTION_FAILED: Final[str] = "gRPC connection failed: {error}"
-        TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
+            # gRPC-specific validation constants
+            MAX_SERVICE_NAME_LENGTH: Final[int] = 255
+            MAX_METHOD_NAME_LENGTH: Final[int] = 200
 
-    class GrpcErrors:
-        """gRPC-specific error codes."""
+        class GrpcMessages:
+            """gRPC-specific error and status messages."""
 
-        # gRPC-specific errors
-        GRPC_BASE_ERROR: Final[str] = "GRPC_BASE_ERROR"
-        CONFIG_ERROR: Final[str] = "GRPC_CONFIG_ERROR"
-        CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
-        TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
-        VALIDATION_ERROR: Final[str] = "GRPC_VALIDATION_ERROR"
-        SERVER_ERROR: Final[str] = "GRPC_SERVER_ERROR"
-        CLIENT_ERROR: Final[str] = "GRPC_CLIENT_ERROR"
-        STREAM_ERROR: Final[str] = "GRPC_STREAM_ERROR"
-        PROTOCOL_ERROR: Final[str] = "GRPC_PROTOCOL_ERROR"
+            # gRPC-specific error and status messages
+            SERVICE_START_FAILED: Final[str] = "gRPC service failed to start: {error}"
+            SERVICE_STARTED: Final[str] = "gRPC service started on {host}:{port}"
+            CONNECTION_FAILED: Final[str] = "gRPC connection failed: {error}"
+            TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
 
-    class GrpcPerformance:
-        """gRPC performance and health check constants."""
+        class GrpcErrors:
+            """gRPC-specific error codes."""
 
-        # Performance and health check constants
-        EXCELLENT_LATENCY_MS: Final[int] = 100
-        GOOD_LATENCY_MS: Final[int] = 500
-        ACCEPTABLE_LATENCY_MS: Final[int] = 1000
-        EXCELLENT_ERROR_RATE: Final[float] = 1.0
-        GOOD_ERROR_RATE: Final[float] = 5.0
-        ACCEPTABLE_ERROR_RATE: Final[float] = 10.0
-        HEALTH_CHECK_AGE_RECENT_SECONDS: Final[int] = 300  # 5 minutes
-        SUCCESS_RATE_HEALTHY_PERCENT: Final[float] = 95.0
-        RESPONSE_TIME_HEALTHY_MS: Final[int] = 1000
+            # gRPC-specific errors
+            GRPC_BASE_ERROR: Final[str] = "GRPC_BASE_ERROR"
+            CONFIG_ERROR: Final[str] = "GRPC_CONFIG_ERROR"
+            CONNECTION_ERROR: Final[str] = "GRPC_CONNECTION_ERROR"
+            TIMEOUT_ERROR: Final[str] = "GRPC_TIMEOUT_ERROR"
+            VALIDATION_ERROR: Final[str] = "GRPC_VALIDATION_ERROR"
+            SERVER_ERROR: Final[str] = "GRPC_SERVER_ERROR"
+            CLIENT_ERROR: Final[str] = "GRPC_CLIENT_ERROR"
+            STREAM_ERROR: Final[str] = "GRPC_STREAM_ERROR"
+            PROTOCOL_ERROR: Final[str] = "GRPC_PROTOCOL_ERROR"
 
-    class GrpcLimits:
-        """gRPC request and error rate limits."""
+        class GrpcPerformance:
+            """gRPC performance and health check constants."""
 
-        # Request size limits
-        MAX_REQUEST_SIZE_MB: Final[int] = 10
-        # Error rate limits
-        MAX_ERROR_RATE_PERCENT: Final[float] = 100.0
-        # Platform configuration constants
-        MIN_CONCURRENT_STREAMS: Final[int] = 50
-        MIN_KEEPALIVE_TIME_MS: Final[int] = 30000
-        MAX_CONCURRENT_STREAMS_LIMIT: Final[int] = 10000
+            # Performance and health check constants
+            EXCELLENT_LATENCY_MS: Final[int] = 100
+            GOOD_LATENCY_MS: Final[int] = 500
+            ACCEPTABLE_LATENCY_MS: Final[int] = 1000
+            EXCELLENT_ERROR_RATE: Final[float] = 1.0
+            GOOD_ERROR_RATE: Final[float] = 5.0
+            ACCEPTABLE_ERROR_RATE: Final[float] = 10.0
+            HEALTH_CHECK_AGE_RECENT_SECONDS: Final[int] = 300  # 5 minutes
+            SUCCESS_RATE_HEALTHY_PERCENT: Final[float] = 95.0
+            RESPONSE_TIME_HEALTHY_MS: Final[int] = 1000
 
-    class Timeouts:
-        """gRPC timeout validation constants."""
+        class GrpcLimits:
+            """gRPC request and error rate limits."""
 
-        # Timeout validation constants
-        MIN_TIMEOUT_SECONDS: Final[float] = 0.1
-        MAX_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
-        MAX_RESPONSE_COUNT: Final[int] = 10
+            # Request size limits
+            MAX_REQUEST_SIZE_MB: Final[int] = 10
+            # Error rate limits
+            MAX_ERROR_RATE_PERCENT: Final[float] = 100.0
+            # Platform configuration constants
+            MIN_CONCURRENT_STREAMS: Final[int] = 50
+            MIN_KEEPALIVE_TIME_MS: Final[int] = 30000
+            MAX_CONCURRENT_STREAMS_LIMIT: Final[int] = 10000
 
-    class Streaming:
-        """gRPC streaming constants."""
+        class Timeouts:
+            """gRPC timeout validation constants."""
 
-        # Streaming constants (moved from services.py)
-        CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
-        SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
-        BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
-        MAX_BUFFER_SIZE_BYTES: Final[int] = 10 * 1024 * 1024  # 10MB
-        ADAPTIVE_BUFFER_SCALING_FACTOR: Final[float] = 0.8
-        MEMORY_PRESSURE_THRESHOLD: Final[float] = 0.8
-        STREAM_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
-        MAX_CONCURRENT_STREAMS: Final[int] = 100
-        HEARTBEAT_INTERVAL_SECONDS: Final[float] = float(
-            c_core.Network.DEFAULT_TIMEOUT,
-        )
+            # Timeout validation constants
+            MIN_TIMEOUT_SECONDS: Final[float] = 0.1
+            MAX_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
+            MAX_RESPONSE_COUNT: Final[int] = 10
 
-    class GrpcLiterals:
-        """gRPC-specific literal types following FLEXT patterns."""
+        class Streaming:
+            """gRPC streaming constants."""
 
-        # Channel state literals
-        CHANNEL_STATES: Final[tuple[str, ...]] = (
-            "idle",
-            "connecting",
-            "ready",
-            "transient_failure",
-            "shutdown",
-        )
+            # Streaming constants (moved from services.py)
+            CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
+            SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
+            BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
+            MAX_BUFFER_SIZE_BYTES: Final[int] = 10 * 1024 * 1024  # 10MB
+            ADAPTIVE_BUFFER_SCALING_FACTOR: Final[float] = 0.8
+            MEMORY_PRESSURE_THRESHOLD: Final[float] = 0.8
+            STREAM_TIMEOUT_SECONDS: Final[float] = 300.0  # 5 minutes
+            MAX_CONCURRENT_STREAMS: Final[int] = 100
+            HEARTBEAT_INTERVAL_SECONDS: Final[float] = float(
+                FlextConstants.Network.DEFAULT_TIMEOUT,
+            )
+
+        # ═══════════════════════════════════════════════════════════════════
+        # STRENUM CLASSES (Single Source of Truth - Defined First)
+        # ═══════════════════════════════════════════════════════════════════
+
+        class ChannelState(StrEnum):
+            """gRPC channel state enumeration (single source of truth).
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use ChannelState.IDLE.value
+                or ChannelState.IDLE directly - no base strings needed.
+            """
+
+            IDLE = "idle"
+            CONNECTING = "connecting"
+            READY = "ready"
+            TRANSIENT_FAILURE = "transient_failure"
+            SHUTDOWN = "shutdown"
+
+        class ServerState(StrEnum):
+            """gRPC server state enumeration (single source of truth).
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use ServerState.STOPPED.value
+                or ServerState.STOPPED directly - no base strings needed.
+            """
+
+            STOPPED = "stopped"
+            STARTING = "starting"
+            RUNNING = "running"
+            STOPPING = "stopping"
+
+        class GrpcOperations(StrEnum):
+            """gRPC operation types (single source of truth).
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use GrpcOperations.UNARY.value
+                or GrpcOperations.UNARY directly - no base strings needed.
+            """
+
+            UNARY = "unary"
+            SERVER_STREAMING = "server_streaming"
+            CLIENT_STREAMING = "client_streaming"
+            BIDIRECTIONAL = "bidirectional"
+
+        class CompressionTypes(StrEnum):
+            """gRPC compression types (single source of truth).
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use CompressionTypes.NONE.value
+                or CompressionTypes.NONE directly - no base strings needed.
+            """
+
+            NONE = "none"
+            GZIP = "gzip"
+            DEFLATE = "deflate"
+
+        class LoadBalancingPolicies(StrEnum):
+            """gRPC load balancing policies (single source of truth).
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use LoadBalancingPolicies.ROUND_ROBIN.value
+                or LoadBalancingPolicies.ROUND_ROBIN directly - no base strings needed.
+            """
+
+            ROUND_ROBIN = "round_robin"
+            PICK_FIRST = "pick_first"
+            GRPCLB = "grpclb"
+            XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
+
+        # ═══════════════════════════════════════════════════════════════════
+        # LITERAL TYPES (PEP 695 - Reference StrEnum Members)
+        # ═══════════════════════════════════════════════════════════════════
+
+        # Channel state literal - references ChannelState StrEnum members
         type ChannelStateLiteral = Literal[
-            "idle",
-            "connecting",
-            "ready",
-            "transient_failure",
-            "shutdown",
+            ChannelState.IDLE,
+            ChannelState.CONNECTING,
+            ChannelState.READY,
+            ChannelState.TRANSIENT_FAILURE,
+            ChannelState.SHUTDOWN,
         ]
-        """Channel state literal - matches gRPC channel state values."""
+        """Channel state literal - references ChannelState StrEnum members."""
 
-        # Server state literals
-        SERVER_STATES: Final[tuple[str, ...]] = (
-            "stopped",
-            "starting",
-            "running",
-            "stopping",
-        )
-        type ServerStateLiteral = Literal["stopped", "starting", "running", "stopping"]
-        """Server state literal - matches gRPC server state values."""
+        # Server state literal - references ServerState StrEnum members
+        type ServerStateLiteral = Literal[
+            ServerState.STOPPED,
+            ServerState.STARTING,
+            ServerState.RUNNING,
+            ServerState.STOPPING,
+        ]
+        """Server state literal - references ServerState StrEnum members."""
 
-        # Stream type literals
-        STREAM_TYPES: Final[tuple[str, ...]] = (
-            "unary",
-            "server_streaming",
-            "client_streaming",
-            "bidirectional",
-        )
+        # Stream type literal - references GrpcOperations StrEnum members
         type StreamTypeLiteral = Literal[
-            "unary",
-            "server_streaming",
-            "client_streaming",
-            "bidirectional",
+            GrpcOperations.UNARY,
+            GrpcOperations.SERVER_STREAMING,
+            GrpcOperations.CLIENT_STREAMING,
+            GrpcOperations.BIDIRECTIONAL,
         ]
-        """Stream type literal - matches gRPC stream type values."""
+        """Stream type literal - references GrpcOperations StrEnum members."""
 
-        # Load balancing policy literals
-        LOAD_BALANCING_POLICIES: Final[tuple[str, ...]] = (
-            "round_robin",
-            "pick_first",
-            "grpclb",
-            "xds_cluster_resolver",
-        )
+        # Load balancing policy literal - references LoadBalancingPolicies StrEnum members
         type LoadBalancingPolicyLiteral = Literal[
-            "round_robin",
-            "pick_first",
-            "grpclb",
-            "xds_cluster_resolver",
+            LoadBalancingPolicies.ROUND_ROBIN,
+            LoadBalancingPolicies.PICK_FIRST,
+            LoadBalancingPolicies.GRPCLB,
+            LoadBalancingPolicies.XDS_CLUSTER_RESOLVER,
         ]
-        """Load balancing policy literal - matches gRPC load balancing policies."""
+        """Load balancing policy literal - references LoadBalancingPolicies StrEnum members."""
 
-        # Compression literals
-        COMPRESSION_TYPES: Final[tuple[str, ...]] = ("none", "gzip", "deflate")
-        type CompressionTypeLiteral = Literal["none", "gzip", "deflate"]
-        """Compression type literal - matches gRPC compression types."""
+        # Compression type literal - references CompressionTypes StrEnum members
+        type CompressionTypeLiteral = Literal[
+            CompressionTypes.NONE,
+            CompressionTypes.GZIP,
+            CompressionTypes.DEFLATE,
+        ]
+        """Compression type literal - references CompressionTypes StrEnum members."""
 
-        # gRPC operation literal - matches GrpcOperations StrEnum
+        # gRPC operation literal - references GrpcOperations StrEnum members
         type GrpcOperationLiteral = Literal[
-            "unary",
-            "server_streaming",
-            "client_streaming",
-            "bidirectional",
+            GrpcOperations.UNARY,
+            GrpcOperations.SERVER_STREAMING,
+            GrpcOperations.CLIENT_STREAMING,
+            GrpcOperations.BIDIRECTIONAL,
         ]
-        """gRPC operation literal."""
+        """gRPC operation literal - references GrpcOperations StrEnum members."""
 
-    class GrpcOperations(StrEnum):
-        """gRPC operation types."""
+        # ═══════════════════════════════════════════════════════════════════
+        # GENERATED TUPLES (From StrEnum - Single Source of Truth)
+        # ═══════════════════════════════════════════════════════════════════
 
-        UNARY = "unary"
-        SERVER_STREAMING = "server_streaming"
-        CLIENT_STREAMING = "client_streaming"
-        BIDIRECTIONAL = "bidirectional"
+        # Channel states tuple - generated from ChannelState StrEnum
+        CHANNEL_STATES: Final[tuple[str, ...]] = tuple(
+            member.value for member in ChannelState.__members__.values()
+        )
+        """Channel states tuple - generated from ChannelState StrEnum."""
 
-    class CompressionTypes(StrEnum):
-        """gRPC compression types."""
+        # Server states tuple - generated from ServerState StrEnum
+        SERVER_STATES: Final[tuple[str, ...]] = tuple(
+            member.value for member in ServerState.__members__.values()
+        )
+        """Server states tuple - generated from ServerState StrEnum."""
 
-        NONE = "none"
-        GZIP = "gzip"
-        DEFLATE = "deflate"
+        # Stream types tuple - generated from GrpcOperations StrEnum
+        STREAM_TYPES: Final[tuple[str, ...]] = tuple(
+            member.value for member in GrpcOperations.__members__.values()
+        )
+        """Stream types tuple - generated from GrpcOperations StrEnum."""
 
-    class LoadBalancingPolicies(StrEnum):
-        """gRPC load balancing policies."""
+        # Load balancing policies tuple - generated from LoadBalancingPolicies StrEnum
+        LOAD_BALANCING_POLICIES: Final[tuple[str, ...]] = tuple(
+            member.value for member in LoadBalancingPolicies.__members__.values()
+        )
+        """Load balancing policies tuple - generated from LoadBalancingPolicies StrEnum."""
 
-        ROUND_ROBIN = "round_robin"
-        PICK_FIRST = "pick_first"
-        GRPCLB = "grpclb"
-        XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
+        # Compression types tuple - generated from CompressionTypes StrEnum
+        COMPRESSION_TYPES: Final[tuple[str, ...]] = tuple(
+            member.value for member in CompressionTypes.__members__.values()
+        )
+        """Compression types tuple - generated from CompressionTypes StrEnum."""
+
+        # ═══════════════════════════════════════════════════════════════════
+        # LITERALS NAMESPACE (Deprecated - use direct access from Grpc)
+        # ═══════════════════════════════════════════════════════════════════
+        # All tuples and Literal types are defined at Grpc level above.
+        # This namespace is kept for backward compatibility but should not be used.
+        # Update code to use direct access: Grpc.ChannelStateLiteral, Grpc.CHANNEL_STATES
+
+        class GrpcLiterals:
+            """gRPC-specific literal types namespace (DEPRECATED).
+
+            DEPRECATED: All code has been updated to access directly from Grpc:
+            - Use: Grpc.ChannelStateLiteral, Grpc.CHANNEL_STATES
+            - Not: Grpc.GrpcLiterals.ChannelStateLiteral, Grpc.GrpcLiterals.CHANNEL_STATES
+
+            This namespace is kept for backward compatibility but will be removed
+            in a future version. All Literal types and tuples are now at Grpc level.
+            """
 
 
+c = FlextGrpcConstants
 __all__: list[str] = [
     "FlextGrpcConstants",
+    "c",
 ]

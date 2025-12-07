@@ -149,10 +149,7 @@ _grpc_model_attrs = {
     )
 }
 
-# Populate FlextModels.Grpc namespace
-from flext_core import FlextModels
-
-for name, attr in _grpc_model_attrs.items():
-    setattr(FlextModels.Grpc, name, attr)
+# Note: FlextModels.Grpc namespace does not exist in flext-core
+# Models should be accessed directly via FlextGrpcModels.*
 
 __all__ = ["FlextGrpcModels"]

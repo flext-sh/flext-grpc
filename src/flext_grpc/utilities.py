@@ -30,7 +30,7 @@ from google.protobuf.message import Message
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc.typings import t
 
 # Type alias for convenience
 c = FlextGrpcConstants
@@ -58,7 +58,7 @@ class FlextGrpcUtilities(u_core):
     def execute(
         self,
         command: str | None = None,
-        data: FlextGrpcTypes.ConfigValue = None,
+        data: t.ConfigValue = None,
     ) -> r[dict[str, object]]:
         """Execute utility operation and return status."""
         try:
@@ -156,12 +156,12 @@ class FlextGrpcUtilities(u_core):
     def create_stream_entity(
         cls,
         method_name: str,
-        stream_type: FlextGrpcConstants.GrpcLiterals.StreamTypeLiteral | str,
+        stream_type: FlextGrpcConstants.Grpc.StreamTypeLiteral | str,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create a gRPC stream entity directly."""
         try:
             # Validate stream type
-            valid_types = FlextGrpcConstants.GrpcLiterals.STREAM_TYPES
+            valid_types = FlextGrpcConstants.Grpc.STREAM_TYPES
             if stream_type not in valid_types:
                 return r.fail(f"Invalid stream type: {stream_type}")
 
@@ -171,7 +171,7 @@ class FlextGrpcUtilities(u_core):
             stream = FlextGrpcEntities.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=cast("FlextGrpcTypes.GrpcStreamType", stream_type),
+                stream_type=cast("t.GrpcStreamType", stream_type),
             )
             return r.ok(stream)
         except Exception as e:
@@ -392,7 +392,7 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def protobuf_to_dict(
             message_instance: Message,
-        ) -> r[dict[str, FlextGrpcTypes.JsonValue]]:
+        ) -> r[dict[str, t.JsonValue]]:
             """Convert protobuf message to dictionary.
 
             Args:
@@ -404,23 +404,23 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if json_format is None:
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "Protobuf json_format not available",
                     )
 
                 if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "Invalid protobuf message",
                     )
 
                 # Type guard to ensure message_instance is a proper Message
                 if not isinstance(message_instance, Message):
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "Invalid message type",
                     )
 
                 if MessageToDict is None:
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "MessageToDict not available",
                     )
 
@@ -429,15 +429,15 @@ class FlextGrpcUtilities(u_core):
                     message_instance,
                     preserving_proto_field_name=True,
                 )
-                return r[dict[str, FlextGrpcTypes.JsonValue]].ok(dict_data)
+                return r[dict[str, t.JsonValue]].ok(dict_data)
             except Exception as e:
-                return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
-                    f"Protobuf to dict[str, FlextGrpcTypes.JsonValue] conversion failed: {e}",
+                return r[dict[str, t.JsonValue]].fail(
+                    f"Protobuf to dict[str, t.JsonValue] conversion failed: {e}",
                 )
 
         @staticmethod
         def dict_to_protobuf(
-            data: dict[str, FlextGrpcTypes.JsonValue],
+            data: dict[str, t.JsonValue],
             message_class: type[Message],
         ) -> r[Message]:
             """Convert dictionary to protobuf message.
@@ -595,9 +595,7 @@ class FlextGrpcUtilities(u_core):
     class ChannelManagement:
         """gRPC channel management utilities."""
 
-        DEFAULT_CHANNEL_OPTIONS: ClassVar[
-            list[tuple[str, FlextGrpcTypes.JsonValue]]
-        ] = [
+        DEFAULT_CHANNEL_OPTIONS: ClassVar[list[tuple[str, t.JsonValue]]] = [
             ("grpc.keepalive_time_ms", 30000),
             ("grpc.keepalive_timeout_ms", 5000),
             ("grpc.keepalive_permit_without_calls", True),
@@ -609,8 +607,8 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def create_secure_channel(
             target: str,
-            credentials: FlextGrpcTypes.ConfigValue = None,
-            options: list[tuple[str, FlextGrpcTypes.JsonValue]] | None = None,
+            credentials: t.ConfigValue = None,
+            options: list[tuple[str, t.JsonValue]] | None = None,
         ) -> r[object]:
             """Create secure gRPC channel with default options.
 
@@ -655,7 +653,7 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def create_insecure_channel(
             target: str,
-            options: list[tuple[str, FlextGrpcTypes.JsonValue]] | None = None,
+            options: list[tuple[str, t.JsonValue]] | None = None,
         ) -> r[object]:
             """Create insecure gRPC channel for development.
 
@@ -687,7 +685,7 @@ class FlextGrpcUtilities(u_core):
 
         @staticmethod
         def check_channel_connectivity(
-            channel: FlextGrpcTypes.ConfigValue,
+            channel: t.ConfigValue,
             timeout: float = 5.0,
         ) -> r[bool]:
             """Check gRPC channel connectivity.
@@ -717,7 +715,7 @@ class FlextGrpcUtilities(u_core):
 
         @staticmethod
         def get_channel_state(
-            channel: FlextGrpcTypes.ConfigValue | None,
+            channel: t.ConfigValue | None,
         ) -> r[str]:
             """Get gRPC channel state.
 
@@ -739,7 +737,7 @@ class FlextGrpcUtilities(u_core):
                 return r[str].fail(f"Channel state check failed: {e}")
 
         @staticmethod
-        def close_channel(channel: FlextGrpcTypes.ConfigValue) -> r[None]:
+        def close_channel(channel: t.ConfigValue) -> r[None]:
             """Close gRPC channel safely.
 
             Args:
@@ -1045,7 +1043,7 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def handle_grpc_error(
             error: object,
-        ) -> r[dict[str, FlextGrpcTypes.JsonValue]]:
+        ) -> r[dict[str, t.JsonValue]]:
             """Handle and categorize gRPC errors.
 
             Args:
@@ -1057,20 +1055,20 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if error is None:
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "Error is None",
                     )
 
-                error_info: dict[str, FlextGrpcTypes.JsonValue] = {
+                error_info: dict[str, t.JsonValue] = {
                     "code": error.code().name if hasattr(error, "code") else "UNKNOWN",
                     "details": error.details()
                     if hasattr(error, "details")
                     else str(error),
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return r[dict[str, FlextGrpcTypes.JsonValue]].ok(error_info)
+                return r[dict[str, t.JsonValue]].ok(error_info)
             except Exception as e:
-                return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                return r[dict[str, t.JsonValue]].fail(
                     f"Error handling failed: {e}",
                 )
 
@@ -1078,7 +1076,7 @@ class FlextGrpcUtilities(u_core):
         def create_grpc_status(
             code: int,
             message: str,
-            details: list[FlextGrpcTypes.JsonValue] | None = None,
+            details: list[t.JsonValue] | None = None,
         ) -> r[dict[str, object]]:
             """Create gRPC status for error responses.
 
@@ -1143,7 +1141,7 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def collect_channel_metrics(
             channel: object | None,
-        ) -> r[dict[str, FlextGrpcTypes.JsonValue]]:
+        ) -> r[dict[str, t.JsonValue]]:
             """Collect metrics from gRPC channel.
 
             Args:
@@ -1155,22 +1153,22 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if channel is None:
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "Channel is None",
                     )
 
                 # Basic channel metrics (placeholder implementation)
                 metrics = cast(
-                    "dict[str, FlextGrpcTypes.JsonValue]",
+                    "dict[str, t.JsonValue]",
                     {
                         "channel_state": "READY",
                         "connection_count": 1,
                         "timestamp": datetime.now(UTC).isoformat(),
                     },
                 )
-                return r[dict[str, FlextGrpcTypes.JsonValue]].ok(metrics)
+                return r[dict[str, t.JsonValue]].ok(metrics)
             except Exception as e:
-                return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                return r[dict[str, t.JsonValue]].fail(
                     f"Channel metrics collection failed: {e}",
                 )
 
@@ -1178,7 +1176,7 @@ class FlextGrpcUtilities(u_core):
         def collect_performance_metrics(
             start_time: float | None,
             end_time: float | None,
-        ) -> r[dict[str, FlextGrpcTypes.JsonValue]]:
+        ) -> r[dict[str, t.JsonValue]]:
             """Collect performance metrics from timing data.
 
             Args:
@@ -1191,13 +1189,13 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if start_time is None or end_time is None:
-                    return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                    return r[dict[str, t.JsonValue]].fail(
                         "Invalid time parameters",
                     )
 
                 duration_ms = (end_time - start_time) * 1000
                 metrics = cast(
-                    "dict[str, FlextGrpcTypes.JsonValue]",
+                    "dict[str, t.JsonValue]",
                     {
                         "duration_ms": duration_ms,
                         "start_time": start_time,
@@ -1205,9 +1203,9 @@ class FlextGrpcUtilities(u_core):
                         "timestamp": datetime.now(UTC).isoformat(),
                     },
                 )
-                return r[dict[str, FlextGrpcTypes.JsonValue]].ok(metrics)
+                return r[dict[str, t.JsonValue]].ok(metrics)
             except Exception as e:
-                return r[dict[str, FlextGrpcTypes.JsonValue]].fail(
+                return r[dict[str, t.JsonValue]].fail(
                     f"Performance metrics collection failed: {e}",
                 )
 

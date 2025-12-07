@@ -160,10 +160,7 @@ When a significant architectural decision needs to be made:
 | ADR                                        | Title                               | Status      | Date       | Impact |
 | ------------------------------------------ | ----------------------------------- | ----------- | ---------- | ------ |
 | [ADR-001](adr-001-clean-architecture.md)   | Clean Architecture Adoption         | ✅ Accepted | 2025-09-15 | High   |
-| [ADR-002](adr-002-flextresult-pattern.md)  | FlextResult Railway Pattern         | ✅ Accepted | 2025-09-15 | High   |
 | [ADR-003](adr-003-protobuf-generation.md)  | Protocol Buffer Generation Strategy | ⚠️ Blocked  | 2025-09-20 | High   |
-| [ADR-004](adr-004-c4-documentation.md)     | C4 Model Documentation Framework    | ✅ Accepted | 2025-10-10 | Medium |
-| [ADR-005](adr-005-test-coverage-target.md) | Test Coverage Target (90%)          | ✅ Accepted | 2025-10-10 | High   |
 
 ## ADR Status Definitions
 
@@ -365,7 +362,6 @@ See `template.md` for the complete ADR template.
 
 - **[C4 Model](../c4-model/)**: Architectural views and diagrams
 - **[Arc42](../arc42/)**: Structured architecture documentation
-- **[Implementation Status](../../implementation_status.md)**: Current implementation state
 - **[Quality Assurance](../../maintenance/reporting.py)**: Architecture quality metrics
 
 ## Contributing

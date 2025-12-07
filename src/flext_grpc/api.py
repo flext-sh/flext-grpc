@@ -21,7 +21,7 @@ from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.services import FlextGrpcServices
-from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
 # Type aliases for convenience
@@ -107,13 +107,13 @@ class FlextGrpc(s[FlextGrpcConfig]):
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
-        return FlextGrpcTypes.GrpcValidation.validate_target(target)
+        return t.GrpcValidation.validate_target(target)
 
     def parse_address(self, address: str) -> r[tuple[str, int]]:
         """Parse gRPC address string."""
-        if not FlextGrpcTypes.GrpcValidation.validate_target(address):
+        if not t.GrpcValidation.validate_target(address):
             return r.fail(f"Invalid address: {address}")
-        return r.ok(FlextGrpcTypes.GrpcValidation.parse_target(address))
+        return r.ok(t.GrpcValidation.parse_target(address))
 
     def create_entity(
         self,
@@ -266,7 +266,7 @@ class FlextGrpc(s[FlextGrpcConfig]):
         if not method_name.strip():
             return r.fail("Stream method name cannot be empty")
 
-        if stream_type not in c.GrpcLiterals.STREAM_TYPES:
+        if stream_type not in c.Grpc.STREAM_TYPES:
             return r.fail(f"Invalid stream type: {stream_type}")
 
         result = self.create_entity(
@@ -340,7 +340,7 @@ class FlextGrpc(s[FlextGrpcConfig]):
         self,
         client: FlextGrpcEntities.Client,
         method: str,
-        request: FlextGrpcTypes.ConfigValue,
+        request: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Delegate method calls.
 
@@ -360,7 +360,7 @@ class FlextGrpc(s[FlextGrpcConfig]):
     def send_data(
         self,
         stream: FlextGrpcEntities.GrpcStream,
-        data: FlextGrpcTypes.ConfigValue,
+        data: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Delegate data sending.
 

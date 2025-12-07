@@ -16,11 +16,8 @@ from typing import Any, Self, TypeVar
 from flext_core import m as m_core, r, s, u as u_core
 from pydantic import BaseModel, Field, field_validator
 
-from flext_grpc.constants import FlextGrpcConstants
-from flext_grpc.typings import FlextGrpcTypes
-
-# Type alias for convenience
-c = FlextGrpcConstants
+from flext_grpc.constants import c
+from flext_grpc.typings import t
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -97,7 +94,7 @@ class FlextGrpcEntities(s[Any]):
         """Generic gRPC channel with state machine delegation."""
 
         target: str = ""
-        state: FlextGrpcTypes.GrpcChannelState = "idle"
+        state: t.GrpcChannelState = "idle"
         options: dict[str, object] = Field(default_factory=dict)
         grpc_channel: object = None
 
@@ -107,7 +104,7 @@ class FlextGrpcEntities(s[Any]):
             """Delegate state validation."""
             return EntityValidator.validate_enum(
                 v,
-                set(FlextGrpcConstants.GrpcLiterals.CHANNEL_STATES),
+                set(c.Grpc.CHANNEL_STATES),
                 "state",
             )
 
@@ -136,9 +133,9 @@ class FlextGrpcEntities(s[Any]):
     class Server(Entity, StateMachine):
         """Generic gRPC server with state machine and validation delegation."""
 
-        host: str = FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST
-        port: int = FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT
-        state: FlextGrpcTypes.GrpcServerState = "stopped"
+        host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
+        port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+        state: t.GrpcServerState = "stopped"
         max_workers: int = 10
         services: list[Any] = Field(default_factory=list)
         grpc_server: object = None
@@ -241,7 +238,7 @@ class FlextGrpcEntities(s[Any]):
 
         id: str = ""
         method_name: str = ""
-        stream_type: FlextGrpcTypes.GrpcStreamType = "unary"
+        stream_type: t.GrpcStreamType = "unary"
         grpc_stub: object = None
 
         @field_validator("method_name")
@@ -256,7 +253,7 @@ class FlextGrpcEntities(s[Any]):
             """Delegate stream type validation."""
             return EntityValidator.validate_enum(
                 v,
-                set(FlextGrpcConstants.GrpcLiterals.STREAM_TYPES),
+                set(c.Grpc.STREAM_TYPES),
                 "stream_type",
             )
 

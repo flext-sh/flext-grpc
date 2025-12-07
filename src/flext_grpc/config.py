@@ -61,7 +61,7 @@ class GrpcNetworkConfig(BaseModel):
         description="gRPC server host",
     )
     port: int = Field(
-        default=FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT,
+        default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         ge=1,
         le=65535,
         description="gRPC server port",
@@ -88,7 +88,7 @@ class GrpcPerformanceConfig(BaseModel):
     """Generic gRPC performance configuration."""
 
     max_workers: int = Field(
-        default=FlextGrpcConstants.Service.DEFAULT_MAX_WORKERS,
+        default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
         ge=1,
         le=1000,
         description="Maximum worker threads",

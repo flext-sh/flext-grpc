@@ -394,8 +394,6 @@ def calculate_architecture_health():
 
 ### Internal References
 
-- **[Implementation Status](../implementation_status.md)**: Current implementation state
-- **[Testing Plan](../testing_plan.md)**: Comprehensive testing strategy
 - **[API Reference](../api-reference.md)**: Complete API documentation
 
 ### External References

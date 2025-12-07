@@ -19,7 +19,7 @@ from queue import Queue
 from typing import Protocol, TypeVar
 
 import grpc
-from flext_core import r, s
+from flext_core import FlextTypes, r, s
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
@@ -30,11 +30,8 @@ from flext_grpc.proto import (
     add_FlextGrpcServiceServicer_to_server,
 )
 from flext_grpc.real_servicer import create_real_servicer
-from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
-
-# Type aliases for convenience
-t = FlextGrpcTypes
 
 T = TypeVar("T")
 
@@ -94,7 +91,7 @@ class StreamProcessor(ABC):
     def send_data(
         self,
         stream: FlextGrpcEntities.GrpcStream,
-        data: FlextGrpcTypes.ConfigValue,
+        data: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Send data through stream.
 
@@ -129,7 +126,7 @@ class MetricsCollector:
         with self._lock:
             self._metrics[key] = value
 
-    def get_metric(self, key: str) -> t.JsonValue:
+    def get_metric(self, key: str) -> FlextTypes.Json.JsonValue:
         """Thread-safe metric retrieval.
 
         Returns:
@@ -369,7 +366,7 @@ class GrpcClientManager(ClientConnectionManager):
         self,
         client: FlextGrpcEntities.Client,
         method: str,
-        request: FlextGrpcTypes.ConfigValue,
+        request: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Execute gRPC call through client.
 
@@ -467,7 +464,7 @@ class GrpcStreamManager(StreamProcessor):
     def send_data(
         self,
         stream: FlextGrpcEntities.GrpcStream,
-        data: FlextGrpcTypes.ConfigValue,
+        data: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Send data with buffering strategy.
 
@@ -574,7 +571,7 @@ class FlextGrpcServices(s[dict[str, object]]):
         self,
         client: FlextGrpcEntities.Client,
         method: str,
-        request: FlextGrpcTypes.ConfigValue,
+        request: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Delegate method calls to specialized manager.
 
@@ -615,7 +612,7 @@ class FlextGrpcServices(s[dict[str, object]]):
     def send_data(
         self,
         stream: FlextGrpcEntities.GrpcStream,
-        data: FlextGrpcTypes.ConfigValue,
+        data: t.ConfigValue,
     ) -> r[dict[str, object]]:
         """Delegate data sending to specialized manager.
 
@@ -652,7 +649,7 @@ class FlextGrpcServices(s[dict[str, object]]):
     def _create_stream_entity(
         self,
         method_name: str,  # gRPC method name
-        stream_type: FlextGrpcConstants.GrpcLiterals.StreamTypeLiteral | str,
+        stream_type: FlextGrpcConstants.Grpc.StreamTypeLiteral | str,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)

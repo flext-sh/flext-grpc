@@ -12,13 +12,12 @@
 
 ## 📚 Documentation
 
-**Complete documentation is available in the organized FLEXT documentation:**
+**Complete documentation is available in the project documentation:**
 
-- **[📖 Full Documentation](../docs/projects/flext-grpc/)** - Comprehensive guides, API reference, and examples
-- **[🚀 Getting Started](../docs/projects/flext-grpc/guides/getting-started.md)** - Quick start guide
-- **[🏗️ Architecture](../docs/projects/flext-grpc/architecture/architecture.md)** - System design and patterns
-- **[🔌 API Reference](../docs/projects/flext-grpc/api/api-reference.md)** - Complete API documentation
-- **[⚙️ Configuration](../docs/projects/flext-grpc/guides/configuration.md)** - Configuration patterns
+- **[Getting Started](docs/getting-started.md)** - Quick start guide
+- **[Architecture](docs/architecture.md)** - System design and patterns
+- **[API Reference](docs/api-reference.md)** - Complete API documentation
+- **[Configuration](docs/configuration.md)** - Configuration patterns
 
 ---
 
@@ -187,7 +186,7 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 - **[Architecture](docs/architecture.md)** - Clean Architecture implementation
 - **[API Reference](docs/api-reference.md)** - API documentation
 - **[Configuration](docs/configuration.md)** - Settings management
-- **[Integration](docs/integration.md)** - FLEXT ecosystem integration
+- **[Integration](docs/guides/integration.md)** - FLEXT ecosystem integration
 - **[Getting Started](docs/getting-started.md)** - Setup instructions
 - **[Development](docs/development.md)** - Development workflow
 - **[Troubleshooting](docs/troubleshooting.md)** - Common issues

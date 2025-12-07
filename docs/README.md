@@ -23,7 +23,7 @@ Technical documentation for **flext-grpc** gRPC library implementation.
 - **[API Reference](api-reference.md)** - flext-grpc API documentation
 - **[Configuration](configuration.md)** - gRPC service configuration
 - **[Development](development.md)** - gRPC service development workflow
-- **[Integration](integration.md)** - gRPC integration with FLEXT projects
+- **[Integration](guides/integration.md)** - gRPC integration with FLEXT projects
 - **[Troubleshooting](troubleshooting.md)** - gRPC-specific issues and solutions
 
 ## Current Status
