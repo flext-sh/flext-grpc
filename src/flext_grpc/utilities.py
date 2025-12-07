@@ -14,7 +14,7 @@ import gc
 import time
 from collections.abc import Iterator
 from datetime import UTC, datetime
-from typing import Any, ClassVar, cast
+from typing import ClassVar, cast
 from uuid import uuid4
 
 import grpc
@@ -156,12 +156,12 @@ class FlextGrpcUtilities(u_core):
     def create_stream_entity(
         cls,
         method_name: str,
-        stream_type: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
+        stream_type: FlextGrpcConstants.GrpcLiterals.StreamTypeLiteral | str,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create a gRPC stream entity directly."""
         try:
             # Validate stream type
-            valid_types = FlextGrpcConstants.Literals.STREAM_TYPES
+            valid_types = FlextGrpcConstants.GrpcLiterals.STREAM_TYPES
             if stream_type not in valid_types:
                 return r.fail(f"Invalid stream type: {stream_type}")
 
@@ -188,7 +188,7 @@ class FlextGrpcUtilities(u_core):
             return psutil.virtual_memory().percent
 
         @staticmethod
-        def get_buffer_size_bytes(buffer_name: str | list[Any]) -> int:
+        def get_buffer_size_bytes(buffer_name: str | list[object]) -> int:
             """Get buffer size in bytes for given buffer name or list."""
             if isinstance(buffer_name, list):
                 # Calculate size based on list length (rough estimate)
@@ -335,7 +335,7 @@ class FlextGrpcUtilities(u_core):
 
         @staticmethod
         def validate_stream_message_sequence(
-            messages: list[Any],
+            messages: list[Message],
             expected_order: list[str] | None = None,
         ) -> r[bool]:
             """Validate sequence of streaming messages.
@@ -438,8 +438,8 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def dict_to_protobuf(
             data: dict[str, FlextGrpcTypes.JsonValue],
-            message_class: type[Any],
-        ) -> r[Any]:
+            message_class: type[Message],
+        ) -> r[Message]:
             """Convert dictionary to protobuf message.
 
             Args:
@@ -511,8 +511,8 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def json_to_protobuf(
             json_str: str,
-            message_class: type[Any],
-        ) -> r[Any]:
+            message_class: type[Message],
+        ) -> r[Message]:
             """Convert JSON string to protobuf message.
 
             Args:
@@ -564,8 +564,8 @@ class FlextGrpcUtilities(u_core):
         @staticmethod
         def deserialize_message(
             data: bytes,
-            message_class: type[Any],
-        ) -> r[Any]:
+            message_class: type[Message],
+        ) -> r[Message]:
             """Deserialize bytes to protobuf message.
 
             Args:

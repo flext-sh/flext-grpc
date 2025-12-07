@@ -102,7 +102,7 @@ class FlextGrpcProtocols(p_core):
             def make_call(
                 self,
                 channel: object,
-                method: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
+                method: FlextGrpcConstants.GrpcLiterals.StreamTypeLiteral | str,
                 request: object,
                 *,
                 timeout: float = 30.0,
@@ -126,7 +126,7 @@ class FlextGrpcProtocols(p_core):
 
             def create_stream(
                 self,
-                stream_type: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
+                stream_type: FlextGrpcConstants.GrpcLiterals.StreamTypeLiteral | str,
                 channel: object,
                 method: str,  # gRPC method name (not StreamType)
             ) -> r[object]:

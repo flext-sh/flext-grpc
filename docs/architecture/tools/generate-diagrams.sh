@@ -84,7 +84,7 @@ generate_diagrams() {
 
 			log_info "  Processing: ${base_name}.puml → ${base_name}.${format}"
 
-			if plantuml ${plantuml_option} -o "${OUTPUT_DIR}/${output_subdir}" "$puml_file" 2>/dev/null; then
+			if plantuml "${plantuml_option}" -o "${OUTPUT_DIR}/${output_subdir}" "$puml_file" 2>/dev/null; then
 				log_success "    ✓ Generated: ${base_name}.${format}"
 				((success_count++))
 			else

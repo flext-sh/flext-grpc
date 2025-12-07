@@ -16,7 +16,7 @@ from abc import ABC, abstractmethod
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import Any, Protocol, TypeVar
+from typing import Protocol, TypeVar
 
 import grpc
 from flext_core import r, s
@@ -42,7 +42,7 @@ T = TypeVar("T")
 class GrpcResourceManager(Protocol):
     """Protocol for resource management."""
 
-    def acquire(self) -> r[Any]: ...
+    def acquire(self) -> r[object]: ...
     def release(self, resource: object) -> r[None]: ...
     def cleanup(self) -> r[None]: ...
 
@@ -167,11 +167,11 @@ class ConnectionPool:
 
         """
         super().__init__()
-        self._pool: Queue[Any] = Queue(maxsize=max_size)
-        self._active: set[Any] = set()
+        self._pool: Queue[object] = Queue(maxsize=max_size)
+        self._active: set[object] = set()
         self._lock = threading.RLock()
 
-    def acquire(self) -> r[Any]:
+    def acquire(self) -> r[object]:
         """Acquire connection from pool."""
         try:
             with self._lock:
@@ -516,7 +516,7 @@ class GrpcStreamManager(StreamProcessor):
         return r.ok(stream)
 
 
-class FlextGrpcServices(s[Any]):
+class FlextGrpcServices(s[dict[str, object]]):
     """Generic gRPC service facade using SOLID principles and delegation.
 
     Delegates responsibilities to specialized managers while maintaining clean API.
@@ -652,7 +652,7 @@ class FlextGrpcServices(s[Any]):
     def _create_stream_entity(
         self,
         method_name: str,  # gRPC method name
-        stream_type: FlextGrpcConstants.Literals.StreamTypeLiteral | str,
+        stream_type: FlextGrpcConstants.GrpcLiterals.StreamTypeLiteral | str,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)

@@ -107,7 +107,7 @@ class FlextGrpcEntities(s[Any]):
             """Delegate state validation."""
             return EntityValidator.validate_enum(
                 v,
-                set(FlextGrpcConstants.Literals.CHANNEL_STATES),
+                set(FlextGrpcConstants.GrpcLiterals.CHANNEL_STATES),
                 "state",
             )
 
@@ -256,7 +256,7 @@ class FlextGrpcEntities(s[Any]):
             """Delegate stream type validation."""
             return EntityValidator.validate_enum(
                 v,
-                set(FlextGrpcConstants.Literals.STREAM_TYPES),
+                set(FlextGrpcConstants.GrpcLiterals.STREAM_TYPES),
                 "stream_type",
             )
 

@@ -13,7 +13,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from flext_core import m as m_core
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 
 class FlextGrpcModels(m_core):
@@ -30,8 +30,8 @@ class FlextGrpcModels(m_core):
     class Domain:
         """Domain models for gRPC core business entities."""
 
-        class StreamInfo(BaseModel):
-            """Basic stream information."""
+        class StreamInfo(m_core.Value):
+            """Basic stream information (immutable value object)."""
 
             stream_id: str
             stream_type: str
@@ -41,8 +41,8 @@ class FlextGrpcModels(m_core):
             average_latency_ms: float = Field(default=0.0)
             error_count: int = Field(default=0)
 
-        class GrpcRequest(BaseModel):
-            """Basic gRPC request model."""
+        class GrpcRequest(m_core.Value):
+            """Basic gRPC request model (immutable value object)."""
 
             method: str = Field(description="gRPC method name")
             data: dict[str, object] | None = Field(
@@ -54,15 +54,15 @@ class FlextGrpcModels(m_core):
                 description="Request metadata",
             )
 
-        class GrpcHealthCheck(BaseModel):
-            """gRPC health check model."""
+        class GrpcHealthCheck(m_core.Value):
+            """gRPC health check model (immutable value object)."""
 
             service_name: str = Field(description="Service name")
             status: str = Field(description="Health status")
             timestamp: datetime = Field(description="Check timestamp")
 
-        class ServiceDefinition(BaseModel):
-            """gRPC service definition model."""
+        class ServiceDefinition(m_core.Value):
+            """gRPC service definition model (immutable value object)."""
 
             service_name: str = Field(description="Service name")
             methods: list[str] = Field(
@@ -75,8 +75,8 @@ class FlextGrpcModels(m_core):
                 description="Service metadata",
             )
 
-        class StreamMetrics(BaseModel):
-            """gRPC stream metrics model."""
+        class StreamMetrics(m_core.Value):
+            """gRPC stream metrics model (immutable value object)."""
 
             stream_id: str = Field(description="Stream ID")
             throughput_rps: float = Field(
@@ -88,8 +88,8 @@ class FlextGrpcModels(m_core):
             error_rate: float = Field(description="Error rate")
             memory_usage_bytes: int = Field(description="Memory usage in bytes")
 
-        class ServiceMetrics(BaseModel):
-            """gRPC service metrics model."""
+        class ServiceMetrics(m_core.Value):
+            """gRPC service metrics model (immutable value object)."""
 
             service_name: str = Field(description="Service name")
             total_requests: int = Field(description="Total requests")
@@ -105,25 +105,54 @@ class FlextGrpcModels(m_core):
     class GrpcConfig:
         """Configuration models for gRPC settings."""
 
-        class ServerConfig(BaseModel):
-            """Basic server configuration."""
+        class ServerConfig(m_core.Value):
+            """Basic server configuration (immutable value object)."""
 
             host: str = Field(default="localhost")
             port: int = Field(default=50051)
             max_workers: int = Field(default=10)
             timeout: float = Field(default=30.0)
 
-        class ClientConfig(BaseModel):
-            """Basic client configuration."""
+        class ClientConfig(m_core.Value):
+            """Basic client configuration (immutable value object)."""
 
             target: str = Field(default="localhost:50051")
             timeout: float = Field(default=30.0)
 
-        class ChannelConfig(BaseModel):
-            """Basic channel configuration."""
+        class ChannelConfig(m_core.Value):
+            """Basic channel configuration (immutable value object)."""
 
             address: str
             options: dict[str, object] | None = None
 
+
+# =============================================================================
+# POPULATE FlextModels.Grpc NAMESPACE
+# =============================================================================
+# Copy all models from FlextGrpcModels to FlextModels.Grpc namespace
+# This allows access via both:
+# - FlextGrpcModels.* (backward compatibility, deprecated)
+# - FlextModels.Grpc.* (new namespace pattern)
+# - m.Grpc.* (convenience alias)
+# =============================================================================
+
+# Get all attributes from FlextGrpcModels that are models, classes, or type aliases
+# Exclude private attributes and special methods
+_grpc_model_attrs = {
+    name: attr
+    for name, attr in vars(FlextGrpcModels).items()
+    if not name.startswith("_")
+    and (
+        isinstance(attr, type)
+        or hasattr(attr, "__origin__")  # TypeAlias
+        or (callable(attr) and not isinstance(attr, type(FlextGrpcModels.__init__)))
+    )
+}
+
+# Populate FlextModels.Grpc namespace
+from flext_core import FlextModels
+
+for name, attr in _grpc_model_attrs.items():
+    setattr(FlextModels.Grpc, name, attr)
 
 __all__ = ["FlextGrpcModels"]

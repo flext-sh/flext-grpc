@@ -42,14 +42,13 @@ class FlextGrpcTypes(t_core):
 
     # Type aliases for convenience (moved inside class)
     type ConfigValue = str | int | bool | list[str] | dict[str, object] | None
-    type JsonValue = t_core.Json.JsonValue
 
     # gRPC target types (moved from flext-core to domain-specific location)
     type GrpcTarget = str
     # Type aliases for gRPC literals - use type alias syntax
-    type GrpcStreamType = c.Literals.StreamTypeLiteral
-    type GrpcChannelState = c.Literals.ChannelStateLiteral
-    type GrpcServerState = c.Literals.ServerStateLiteral
+    type GrpcStreamType = c.GrpcLiterals.StreamTypeLiteral
+    type GrpcChannelState = c.GrpcLiterals.ChannelStateLiteral
+    type GrpcServerState = c.GrpcLiterals.ServerStateLiteral
 
     # =========================================================================
     # GRPC SERVER TYPES - Complex server management types
@@ -231,21 +230,36 @@ class FlextGrpcTypes(t_core):
     # GRPC PROJECT TYPES - Domain-specific project types extending t
     # =========================================================================
 
-    class Project(t):
-        """gRPC-specific project types extending t.
+    class Project:
+        """gRPC-specific project types.
 
-        Adds gRPC/microservices-specific project types while inheriting
-        generic types from t. Follows domain separation principle:
+        Adds gRPC/microservices-specific project types.
+        Follows domain separation principle:
         gRPC domain owns microservices-specific types.
         """
-
-        # gRPC-specific project configurations (no ProjectType override to avoid conflicts)
 
         # gRPC-specific project configurations
         type GrpcProjectConfig = dict[str, FlextGrpcTypes.ConfigValue | object]
         type MicroserviceConfig = dict[str, str | int | bool | list[str]]
         type StreamingConfig = dict[str, bool | str | dict[str, object]]
         type ServiceMeshConfig = dict[str, FlextGrpcTypes.ConfigValue | object]
+
+    class Grpc:
+        """Grpc types namespace for cross-project access.
+
+        Provides organized access to all Grpc types for other FLEXT projects.
+        Usage: Other projects can reference `t.Grpc.Server.*`, `t.Grpc.Client.*`, etc.
+        This enables consistent namespace patterns for cross-project type access.
+
+        Examples:
+            from flext_grpc.typings import t
+            config: t.Grpc.Server.ServerConfiguration = ...
+            client: t.Grpc.Client.ClientConfiguration = ...
+
+        Note: Namespace composition via inheritance - no aliases needed.
+        Access parent namespaces directly through inheritance.
+
+        """
 
     # =========================================================================
     # GRPC PROTOCOLS - Protocol definitions for gRPC interfaces
@@ -333,3 +347,16 @@ class FlextGrpcTypes(t_core):
                 raise ValueError(msg)
             host, port_str = target.split(":", 1)
             return (host, int(port_str))
+
+
+# Alias for simplified usage (already defined at top, but keeping for consistency)
+# t = t_core (already defined at line 26)
+
+# Namespace composition via class inheritance
+# Grpc namespace provides access to nested classes through inheritance
+# Access patterns:
+# - t.Grpc.* for Grpc-specific types
+# - t.Project.* for project types
+# - t.Core.* for core types (inherited from parent)
+
+__all__ = ["FlextGrpcTypes", "t"]

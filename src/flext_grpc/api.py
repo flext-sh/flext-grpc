@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from functools import partial
-from typing import Any, TypeVar, cast
+from typing import TypeVar, cast
 
 from flext_core import FlextModels, r, s
 from pydantic import BaseModel, Field, computed_field, field_validator
@@ -98,11 +98,8 @@ class FlextGrpc(s[FlextGrpcConfig]):
     def grpc_config(self) -> FlextGrpcConfig:
         """Get gRPC-specific configuration."""
         # Type narrowing: _config is always FlextGrpcConfig due to __init__
-        config = self._config
-        if not isinstance(config, FlextGrpcConfig):
-            error_msg = f"Expected FlextGrpcConfig, got {type(config)}"
-            raise TypeError(error_msg)
-        return config
+        # Using cast to satisfy type checker since we know it's always FlextGrpcConfig
+        return cast("FlextGrpcConfig", self._config)
 
     def execute(self, **_kwargs: object) -> r[FlextGrpcConfig]:
         """Execute main facade operation."""
@@ -122,7 +119,7 @@ class FlextGrpc(s[FlextGrpcConfig]):
         self,
         entity_type: str,
         **kwargs: object,
-    ) -> r[Any]:
+    ) -> r[object]:
         """Generic entity creation with Pydantic validation and delegation."""
         # Use match/case for cleaner entity type handling (Python 3.10+)
         entity_factories = self._get_entity_factories()
@@ -153,27 +150,27 @@ class FlextGrpc(s[FlextGrpcConfig]):
 
         return r.ok(entity)
 
-    def _get_entity_factories(self) -> dict[str, Callable[..., r[Any]]]:
+    def _get_entity_factories(self) -> dict[str, Callable[..., r[object]]]:
         """Get entity factories using partial application for clean delegation."""
         return {
             "server": cast(
-                "Callable[..., r[Any]]",
+                "Callable[..., r[object]]",
                 partial(FlextGrpcUtilities.create_server_entity),
             ),
             "client": cast(
-                "Callable[..., r[Any]]",
+                "Callable[..., r[object]]",
                 partial(FlextGrpcUtilities.create_client_entity),
             ),
             "channel": cast(
-                "Callable[..., r[Any]]",
+                "Callable[..., r[object]]",
                 partial(FlextGrpcUtilities.create_channel_entity),
             ),
             "service": cast(
-                "Callable[..., r[Any]]",
+                "Callable[..., r[object]]",
                 partial(FlextGrpcUtilities.create_service_entity),
             ),
             "stream": cast(
-                "Callable[..., r[Any]]",
+                "Callable[..., r[object]]",
                 partial(FlextGrpcUtilities.create_stream_entity),
             ),
         }
@@ -197,16 +194,24 @@ class FlextGrpc(s[FlextGrpcConfig]):
             lambda error_msg: r.fail(error_msg or "Unknown error"),
         )
 
-    def _get_operations(self) -> dict[str, Callable[..., r[Any]]]:
+    def _get_operations(self) -> dict[str, Callable[..., r[object]]]:
         """Get operations using delegation to service layer."""
         return {
-            "start_server": self._service.start_server,
-            "stop_server": self._service.stop_server,
-            "connect_client": self._service.connect_client,
-            "disconnect_client": self._service.disconnect_client,
-            "make_call": self._service.make_call,
-            "send_data": self._service.send_data,
-            "close_stream": self._service.close_stream,
+            "start_server": cast(
+                "Callable[..., r[object]]", self._service.start_server
+            ),
+            "stop_server": cast("Callable[..., r[object]]", self._service.stop_server),
+            "connect_client": cast(
+                "Callable[..., r[object]]", self._service.connect_client
+            ),
+            "disconnect_client": cast(
+                "Callable[..., r[object]]", self._service.disconnect_client
+            ),
+            "make_call": cast("Callable[..., r[object]]", self._service.make_call),
+            "send_data": cast("Callable[..., r[object]]", self._service.send_data),
+            "close_stream": cast(
+                "Callable[..., r[object]]", self._service.close_stream
+            ),
         }
 
     def create_server(
@@ -219,14 +224,16 @@ class FlextGrpc(s[FlextGrpcConfig]):
             "port": c.GrpcNetwork.DEFAULT_GRPC_PORT,
             "max_workers": c.Service.DEFAULT_MAX_WORKERS,
         }
-        return self.create_entity("server", **defaults | kwargs)
+        result = self.create_entity("server", **defaults | kwargs)
+        return cast("r[FlextGrpcEntities.Server]", result)
 
     def create_client(
         self,
         **kwargs: str | int | bool | None,
     ) -> r[FlextGrpcEntities.Client]:
         """Create client with channel composition."""
-        return self.create_entity("client", **kwargs)
+        result = self.create_entity("client", **kwargs)
+        return cast("r[FlextGrpcEntities.Client]", result)
 
     def create_channel(
         self,
@@ -237,7 +244,8 @@ class FlextGrpc(s[FlextGrpcConfig]):
             "target": f"{c.GrpcNetwork.DEFAULT_HOST}:{c.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "options": {},
         }
-        return self.create_entity("channel", **defaults | kwargs)
+        result = self.create_entity("channel", **defaults | kwargs)
+        return cast("r[FlextGrpcEntities.Channel]", result)
 
     def create_service(
         self,
@@ -245,7 +253,8 @@ class FlextGrpc(s[FlextGrpcConfig]):
     ) -> r[FlextGrpcEntities.Service]:
         """Create service entity with defaults."""
         defaults = {"name": "DefaultService", "methods": ["default_method"]}
-        return self.create_entity("service", **defaults | kwargs)
+        result = self.create_entity("service", **defaults | kwargs)
+        return cast("r[FlextGrpcEntities.Service]", result)
 
     def create_stream(
         self,
@@ -257,15 +266,16 @@ class FlextGrpc(s[FlextGrpcConfig]):
         if not method_name.strip():
             return r.fail("Stream method name cannot be empty")
 
-        if stream_type not in c.Literals.STREAM_TYPES:
+        if stream_type not in c.GrpcLiterals.STREAM_TYPES:
             return r.fail(f"Invalid stream type: {stream_type}")
 
-        return self.create_entity(
+        result = self.create_entity(
             "stream",
             method_name=method_name,
             stream_type=stream_type,
             **kwargs,
         )
+        return cast("r[FlextGrpcEntities.GrpcStream]", result)
 
     # === DELEGATED OPERATIONS ===
 

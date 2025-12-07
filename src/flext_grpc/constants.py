@@ -171,7 +171,7 @@ class FlextGrpcConstants(c_core):
             c_core.Network.DEFAULT_TIMEOUT,
         )
 
-    class Literals:
+    class GrpcLiterals:
         """gRPC-specific literal types following FLEXT patterns."""
 
         # Channel state literals
