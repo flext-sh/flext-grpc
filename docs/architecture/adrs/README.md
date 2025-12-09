@@ -157,10 +157,10 @@ When a significant architectural decision needs to be made:
 
 ## Current ADRs
 
-| ADR                                        | Title                               | Status      | Date       | Impact |
-| ------------------------------------------ | ----------------------------------- | ----------- | ---------- | ------ |
-| [ADR-001](adr-001-clean-architecture.md)   | Clean Architecture Adoption         | ✅ Accepted | 2025-09-15 | High   |
-| [ADR-003](adr-003-protobuf-generation.md)  | Protocol Buffer Generation Strategy | ⚠️ Blocked  | 2025-09-20 | High   |
+| ADR                                       | Title                               | Status      | Date       | Impact |
+| ----------------------------------------- | ----------------------------------- | ----------- | ---------- | ------ |
+| [ADR-001](adr-001-clean-architecture.md)  | Clean Architecture Adoption         | ✅ Accepted | 2025-09-15 | High   |
+| [ADR-003](adr-003-protobuf-generation.md) | Protocol Buffer Generation Strategy | ⚠️ Blocked  | 2025-09-20 | High   |
 
 ## ADR Status Definitions
 

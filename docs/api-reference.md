@@ -473,6 +473,7 @@ This API reference describes the complete interface of flext-grpc once the proto
 ## Related Documentation
 
 **Within Project**:
+
 - [Getting Started](getting-started.md) - Installation and basic usage
 - [Architecture](architecture.md) - Architecture and design patterns
 - [Development](development.md) - Development workflow
@@ -481,10 +482,12 @@ This API reference describes the complete interface of flext-grpc once the proto
 - [Troubleshooting](troubleshooting.md) - Common issues
 
 **Across Projects**:
+
 - [flext-core Foundation](https://github.com/organization/flext/tree/main/flext-core/docs/api-reference/foundation.md) - Core APIs and patterns
 - [flext-core Railway-Oriented Programming](https://github.com/organization/flext/tree/main/flext-core/docs/guides/railway-oriented-programming.md) - FlextResult patterns
 - [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/CLAUDE.md) - HTTP foundation patterns
 
 **External Resources**:
+
 - [PEP 257 - Docstring Conventions](https://peps.python.org/pep-0257/)
 - [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)

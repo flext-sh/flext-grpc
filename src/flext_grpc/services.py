@@ -398,21 +398,25 @@ class GrpcClientManager(ClientConnectionManager):
                 echo_response = stub.Echo(
                     EchoRequest(message=str(request), metadata={}),
                 )
-                return r.ok({
-                    "method": "Echo",
-                    "message": echo_response.message,
-                    "server_id": echo_response.server_id,
-                    "timestamp": echo_response.timestamp,
-                })
+                return r.ok(
+                    {
+                        "method": "Echo",
+                        "message": echo_response.message,
+                        "server_id": echo_response.server_id,
+                        "timestamp": echo_response.timestamp,
+                    }
+                )
             if method == "HealthCheck":
                 health_response = stub.HealthCheck(
                     HealthRequest(service="FlextGrpcService"),
                 )
-                return r.ok({
-                    "method": "HealthCheck",
-                    "status": health_response.status,
-                    "message": health_response.message,
-                })
+                return r.ok(
+                    {
+                        "method": "HealthCheck",
+                        "status": health_response.status,
+                        "message": health_response.message,
+                    }
+                )
 
             return r.fail(f"Unsupported method: {method}")
 
@@ -491,11 +495,13 @@ class GrpcStreamManager(StreamProcessor):
             buffer.append(data)
 
             # For now, just acknowledge (streaming logic would go here)
-            return r.ok({
-                "stream_id": stream.id,
-                "data_sent": str(data),
-                "buffer_size": len(buffer),
-            })
+            return r.ok(
+                {
+                    "stream_id": stream.id,
+                    "data_sent": str(data),
+                    "buffer_size": len(buffer),
+                }
+            )
 
         except Exception as e:
             return r.fail(f"Data send failed: {e}")
@@ -726,10 +732,12 @@ class FlextGrpcServices(s[dict[str, object]]):
     ) -> r[dict[str, object]]:
         """Legacy compatibility method - delegates to appropriate manager."""
         if command is None:
-            return r.ok({
-                "status": "ready",
-                "service": "flext-grpc-service",
-            })
+            return r.ok(
+                {
+                    "status": "ready",
+                    "service": "flext-grpc-service",
+                }
+            )
 
         if entity is None:
             return r.fail("Entity instance required")
