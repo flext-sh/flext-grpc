@@ -75,14 +75,12 @@ class ArchitectureValidator:
         ]
 
         if missing_files:
-            self.issues.append(
-                {
-                    "type": "c4_model_incomplete",
-                    "severity": "high",
-                    "message": f"C4 model missing required views: {', '.join(missing_files)}",
-                    "files": missing_files,
-                }
-            )
+            self.issues.append({
+                "type": "c4_model_incomplete",
+                "severity": "high",
+                "message": f"C4 model missing required views: {', '.join(missing_files)}",
+                "files": missing_files,
+            })
 
         # Check content completeness
         context_file = c4_dir / "context.md"
@@ -98,38 +96,32 @@ class ArchitectureValidator:
 
             for section in required_sections:
                 if section not in content:
-                    self.warnings.append(
-                        {
-                            "type": "c4_context_incomplete",
-                            "severity": "medium",
-                            "message": f"C4 context view missing section: {section}",
-                            "file": str(context_file),
-                        }
-                    )
+                    self.warnings.append({
+                        "type": "c4_context_incomplete",
+                        "severity": "medium",
+                        "message": f"C4 context view missing section: {section}",
+                        "file": str(context_file),
+                    })
 
     def _validate_adr_completeness(self) -> None:
         """Validate ADR documentation completeness."""
         adr_dir = self.root_path / "docs" / "architecture" / "adrs"
 
         if not adr_dir.exists():
-            self.issues.append(
-                {
-                    "type": "adr_system_missing",
-                    "severity": "high",
-                    "message": "Architecture Decision Records system not found",
-                }
-            )
+            self.issues.append({
+                "type": "adr_system_missing",
+                "severity": "high",
+                "message": "Architecture Decision Records system not found",
+            })
             return
 
         readme_file = adr_dir / "README.md"
         if not readme_file.exists():
-            self.issues.append(
-                {
-                    "type": "adr_readme_missing",
-                    "severity": "high",
-                    "message": "ADR README documentation missing",
-                }
-            )
+            self.issues.append({
+                "type": "adr_readme_missing",
+                "severity": "high",
+                "message": "ADR README documentation missing",
+            })
 
         # Check for ADR files
         adr_files = list(adr_dir.glob("adr-*.md"))
@@ -137,13 +129,11 @@ class ArchitectureValidator:
         # Check for ADR files
         adr_files = list(adr_dir.glob("adr-*.md"))
         if len(adr_files) < self.MIN_ADR_FILES:
-            self.warnings.append(
-                {
-                    "type": "few_adrs",
-                    "severity": "medium",
-                    "message": f"Only {len(adr_files)} ADRs found, recommend at least 3 for major architectural decisions",
-                }
-            )
+            self.warnings.append({
+                "type": "few_adrs",
+                "severity": "medium",
+                "message": f"Only {len(adr_files)} ADRs found, recommend at least 3 for major architectural decisions",
+            })
 
         # Validate ADR format
         for adr_file in adr_files:
@@ -161,14 +151,12 @@ class ArchitectureValidator:
             ]
 
             if missing_fields:
-                self.warnings.append(
-                    {
-                        "type": "adr_format_incomplete",
-                        "severity": "medium",
-                        "message": f"ADR {adr_file.name} missing required fields: {', '.join(missing_fields)}",
-                        "file": str(adr_file),
-                    }
-                )
+                self.warnings.append({
+                    "type": "adr_format_incomplete",
+                    "severity": "medium",
+                    "message": f"ADR {adr_file.name} missing required fields: {', '.join(missing_fields)}",
+                    "file": str(adr_file),
+                })
 
     def _validate_diagram_consistency(self) -> None:
         """Validate diagram consistency and completeness."""
@@ -188,26 +176,22 @@ class ArchitectureValidator:
         ]
 
         if missing_diagrams:
-            self.issues.append(
-                {
-                    "type": "diagrams_missing",
-                    "severity": "high",
-                    "message": f"Required architecture diagrams missing: {', '.join(missing_diagrams)}",
-                }
-            )
+            self.issues.append({
+                "type": "diagrams_missing",
+                "severity": "high",
+                "message": f"Required architecture diagrams missing: {', '.join(missing_diagrams)}",
+            })
 
         # Check if generation script exists
         gen_script = (
             self.root_path / "docs" / "architecture" / "tools" / "generate-diagrams.sh"
         )
         if not gen_script.exists():
-            self.warnings.append(
-                {
-                    "type": "generation_script_missing",
-                    "severity": "medium",
-                    "message": "Diagram generation automation script missing",
-                }
-            )
+            self.warnings.append({
+                "type": "generation_script_missing",
+                "severity": "medium",
+                "message": "Diagram generation automation script missing",
+            })
 
     def _validate_cross_references(self) -> None:
         """Validate cross-references between documentation."""
@@ -218,13 +202,11 @@ class ArchitectureValidator:
 
             # Should reference the new architecture documentation
             if "c4-model" not in content or "adrs" not in content:
-                self.warnings.append(
-                    {
-                        "type": "cross_references_missing",
-                        "severity": "low",
-                        "message": "Architecture documentation should reference C4 model and ADRs",
-                    }
-                )
+                self.warnings.append({
+                    "type": "cross_references_missing",
+                    "severity": "low",
+                    "message": "Architecture documentation should reference C4 model and ADRs",
+                })
 
     def _validate_content_freshness(self) -> None:
         """Validate documentation freshness."""
@@ -244,15 +226,13 @@ class ArchitectureValidator:
                 age_days = (datetime.now(UTC) - mtime).days
 
                 if age_days > max_age_days:
-                    self.warnings.append(
-                        {
-                            "type": "documentation_stale",
-                            "severity": "low",
-                            "message": f"Documentation file {file_path} is {age_days} days old (review recommended)",
-                            "file": file_path,
-                            "age_days": age_days,
-                        }
-                    )
+                    self.warnings.append({
+                        "type": "documentation_stale",
+                        "severity": "low",
+                        "message": f"Documentation file {file_path} is {age_days} days old (review recommended)",
+                        "file": file_path,
+                        "age_days": age_days,
+                    })
 
     def _validate_technical_accuracy(self) -> None:
         """Validate technical accuracy of documentation."""
@@ -276,13 +256,11 @@ class ArchitectureValidator:
 
         # Check if versions are consistent
         if len(set(versions.values())) > 1:
-            self.warnings.append(
-                {
-                    "type": "version_inconsistency",
-                    "severity": "medium",
-                    "message": f"Version numbers inconsistent across files: {versions}",
-                }
-            )
+            self.warnings.append({
+                "type": "version_inconsistency",
+                "severity": "medium",
+                "message": f"Version numbers inconsistent across files: {versions}",
+            })
 
         # Check for known technical inaccuracies
         architecture_md = self.root_path / "docs" / "architecture.md"
@@ -291,13 +269,11 @@ class ArchitectureValidator:
 
             # Check if current technical details are accurate
             if "Test Coverage: 35%" in content:
-                self.warnings.append(
-                    {
-                        "type": "outdated_metrics",
-                        "severity": "medium",
-                        "message": "Architecture documentation contains outdated test coverage metrics",
-                    }
-                )
+                self.warnings.append({
+                    "type": "outdated_metrics",
+                    "severity": "medium",
+                    "message": "Architecture documentation contains outdated test coverage metrics",
+                })
 
     def _generate_summary(self) -> dict[str, object]:
         """Generate validation summary."""

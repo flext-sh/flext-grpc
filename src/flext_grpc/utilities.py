@@ -927,12 +927,10 @@ class FlextGrpcUtilities(u_core):
                 # Channel state is not directly accessible, use a default state
                 # In a real implementation, this would check actual channel state
                 # For now, assume channel is ready unless explicitly shutdown
-                return r[list[str]].ok(
-                    [
-                        "grpc.reflection.v1alpha.ServerReflection",
-                        "grpc.health.v1.Health",
-                    ]
-                )
+                return r[list[str]].ok([
+                    "grpc.reflection.v1alpha.ServerReflection",
+                    "grpc.health.v1.Health",
+                ])
 
                 services = [
                     "grpc.reflection.v1alpha.ServerReflection",
