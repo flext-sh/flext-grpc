@@ -179,7 +179,7 @@ class FlextGrpc(s[FlextGrpcConfig]):
         self,
         request: m_core.Service.OperationExecutionRequest,
     ) -> r[FlextGrpcConfig]:
-        """Execute operation with validation, timeout, retry, and monitoring (Domain.Service protocol)."""
+        """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         operations = self._get_operations()
 
         operation = operations.get(request.operation_name)

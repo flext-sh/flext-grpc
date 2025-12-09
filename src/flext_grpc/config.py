@@ -14,7 +14,7 @@ from flext_core import c as c_core, r
 from pydantic import BaseModel, Field, model_validator
 from pydantic_settings import SettingsConfigDict
 
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc.constants import c
 
 
 class GrpcSecurityConfig(BaseModel):
@@ -61,7 +61,7 @@ class GrpcNetworkConfig(BaseModel):
         description="gRPC server host",
     )
     port: int = Field(
-        default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         ge=1,
         le=65535,
         description="gRPC server port",
@@ -88,7 +88,7 @@ class GrpcPerformanceConfig(BaseModel):
     """Generic gRPC performance configuration."""
 
     max_workers: int = Field(
-        default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
+        default=c.Grpc.Service.DEFAULT_MAX_WORKERS,
         ge=1,
         le=1000,
         description="Maximum worker threads",

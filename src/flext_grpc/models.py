@@ -13,6 +13,7 @@ from __future__ import annotations
 from datetime import datetime
 
 from flext_core import m as m_core
+from flext_core.utilities import u as flext_u
 from pydantic import Field
 
 
@@ -22,6 +23,14 @@ class FlextGrpcModels(m_core):
     Consolidated namespace class containing all gRPC domain models as nested classes.
     Follows FLEXT principles with clean separation of concerns and SOLID design.
     """
+
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        """Warn when FlextGrpcModels is subclassed directly."""
+        super().__init_subclass__(**kwargs)
+        flext_u.Deprecation.warn_once(
+            f"subclass:{cls.__name__}",
+            "Subclassing FlextGrpcModels is deprecated. Use FlextModels directly with composition instead.",
+        )
 
     # =========================================================================
     # DOMAIN MODELS - Core business entities
@@ -152,4 +161,7 @@ _grpc_model_attrs = {
 # Note: FlextModels.Grpc namespace does not exist in flext-core
 # Models should be accessed directly via FlextGrpcModels.*
 
-__all__ = ["FlextGrpcModels"]
+m = FlextGrpcModels
+m_grpc = FlextGrpcModels
+
+__all__ = ["FlextGrpcModels", "m", "m_grpc"]

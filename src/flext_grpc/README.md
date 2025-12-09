@@ -177,7 +177,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 - **Entities**: Rich domain objects with behavior and validation
 - **Value Objects**: Immutable types with business meaning
-- **Domain Services**: Business process orchestration
+- **Services**: Business process orchestration
 - **Repositories**: Data access patterns (through platform layer)
 - **Factories**: Consistent entity creation patterns
 
