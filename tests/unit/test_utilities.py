@@ -38,14 +38,14 @@ class TestFlextGrpcUtilities:
         """Test client entity creation."""
         result = FlextGrpcUtilities.create_client_entity("localhost:50051")
         assert result.is_success
-        client = result.unwrap()
+        client = result.value
         assert client.channel.target == "localhost:50051"
 
     def test_create_server_entity(self) -> None:
         """Test server entity creation."""
         result = FlextGrpcUtilities.create_server_entity("localhost", 50051)
         assert result.is_success
-        server = result.unwrap()
+        server = result.value
         assert server.host == "localhost"
         assert server.port == 50051
 
@@ -53,14 +53,14 @@ class TestFlextGrpcUtilities:
         """Test channel entity creation."""
         result = FlextGrpcUtilities.create_channel_entity("localhost:50051")
         assert result.is_success
-        channel = result.unwrap()
+        channel = result.value
         assert channel.target == "localhost:50051"
 
     def test_create_service_entity(self) -> None:
         """Test service entity creation."""
         result = FlextGrpcUtilities.create_service_entity("TestService", ["method1"])
         assert result.is_success
-        service = result.unwrap()
+        service = result.value
         assert service.name == "TestService"
         assert service.methods == ["method1"]
 
@@ -68,7 +68,7 @@ class TestFlextGrpcUtilities:
         """Test stream entity creation."""
         result = FlextGrpcUtilities.create_stream_entity("test_method", "unary")
         assert result.is_success
-        stream = result.unwrap()
+        stream = result.value
         assert stream.method_name == "test_method"
         assert stream.stream_type == "unary"
 
@@ -108,6 +108,6 @@ class TestFlextGrpcUtilities:
             iter(metadata),
         )
         assert result.is_success
-        metadata_dict = result.unwrap()
+        metadata_dict = result.value
         assert metadata_dict["key1"] == "value1"
         assert metadata_dict["key2"] == "value2"

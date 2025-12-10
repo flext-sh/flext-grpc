@@ -56,7 +56,7 @@ class GrpcServerManager:
                 server_results.append(config_result)
                 continue
 
-            config = config_result.unwrap()
+            config = config_result.value
             self.server_configs[server_id] = config
 
             # Create server through facade
@@ -67,7 +67,7 @@ class GrpcServerManager:
             )
 
             if server_result.is_success:
-                server = server_result.unwrap()
+                server = server_result.value
                 self.servers[server_id] = server
 
             server_results.append(server_result)
@@ -81,7 +81,7 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             start_result = self.grpc.start_server(server)
             if start_result.is_success:
-                self.servers[server_id] = start_result.unwrap()
+                self.servers[server_id] = start_result.value
                 results[server_id] = True
             else:
                 results[server_id] = False
@@ -96,7 +96,7 @@ class GrpcServerManager:
             if server.state == "running":
                 stop_result = self.grpc.stop_server(server)
                 if stop_result.is_success:
-                    self.servers[server_id] = stop_result.unwrap()
+                    self.servers[server_id] = stop_result.value
                     results[server_id] = True
                 else:
                     results[server_id] = False
@@ -169,7 +169,7 @@ class AdvancedGrpcOperations:
                 stream_type=typed_stream_type,
             )
             if stream_result.is_success:
-                stream = stream_result.unwrap()
+                stream = stream_result.value
                 print(f"Created {stream_type} stream: {stream.id}")
             else:
                 print(f"Failed to create {stream_type} stream: {stream_result.error}")
@@ -214,7 +214,7 @@ def example_2_client_pool() -> None:
     )
 
     if setup_result.is_success:
-        setup = setup_result.unwrap()
+        setup = setup_result.value
         print(
             f"Created setup with server: {setup['server'].id}, client: {setup['client'].id}",
         )
@@ -242,7 +242,7 @@ def example_3_service_creation() -> None:
         service_result = grpc.create_service(name=service_name, methods=methods)
 
         if service_result.is_success:
-            service = service_result.unwrap()
+            service = service_result.value
             created_services.append(service)
             print(
                 f"Created service: {service.name} with {len(service.methods)} methods",
@@ -276,7 +276,7 @@ def example_4_streaming() -> None:
         )
 
         if stream_result.is_success:
-            stream = stream_result.unwrap()
+            stream = stream_result.value
             created_streams.append(stream)
             print(f"Created {stream_type} stream for method: {method_name}")
         else:

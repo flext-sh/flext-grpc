@@ -29,7 +29,7 @@ def example_1_basic_entities() -> None:
     )
 
     if server_result.is_success:
-        server = server_result.unwrap()
+        server = server_result.value
         # Validate server through facade
         validation_result = server.validate_business_rules()
         if validation_result.is_failure:
@@ -65,7 +65,7 @@ def example_2_configuration() -> None:
     # Create default configuration through facade
     config_result = grpc.create_config()
     if config_result.is_success:
-        config = config_result.unwrap()
+        config = config_result.value
         print(f"Created config with host: {config.host}, port: {config.port}")
 
     # Create custom configuration through facade
@@ -77,7 +77,7 @@ def example_2_configuration() -> None:
     )
 
     if custom_config_result.is_success:
-        custom_config = custom_config_result.unwrap()
+        custom_config = custom_config_result.value
         print(f"Created custom config: {custom_config.host}:{custom_config.port}")
 
     # Configuration validation - invalid config will fail
@@ -98,17 +98,17 @@ def example_3_operations() -> None:
     )
 
     if server_result.is_success:
-        server = server_result.unwrap()
+        server = server_result.value
 
         # Start server through facade
         start_result = grpc.start_server(server)
         if start_result.is_success:
-            started_server = start_result.unwrap()
+            started_server = start_result.value
 
             # Get server status through facade
             status_result = grpc.get_server_status(started_server)
             if status_result.is_success:
-                print(f"Server status: {status_result.unwrap()}")
+                print(f"Server status: {status_result.value}")
 
             # Stop server through facade
             stop_result = grpc.stop_server(started_server)
@@ -126,7 +126,7 @@ def example_3_operations() -> None:
             f"{FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST}:7070",
         )
         if connect_result.is_success:
-            connected_client = connect_result.unwrap()
+            connected_client = connect_result.value
 
             # Make call through facade
             call_result = grpc.make_call(
@@ -135,7 +135,7 @@ def example_3_operations() -> None:
                 {"request_id": "12345"},
             )
             if call_result.is_success:
-                print(f"Call result: {call_result.unwrap()}")
+                print(f"Call result: {call_result.value}")
 
             # Disconnect client through facade
             disconnect_result = grpc.disconnect_client(connected_client)
@@ -156,7 +156,7 @@ def example_4_validation() -> None:
     )
 
     if valid_server_result.is_success:
-        valid_server = valid_server_result.unwrap()
+        valid_server = valid_server_result.value
         validation = valid_server.validate_business_rules()
         if validation.is_success:
             print("Valid server passed validation")
@@ -179,7 +179,7 @@ def example_4_validation() -> None:
     )
 
     if valid_channel_result.is_success:
-        valid_channel = valid_channel_result.unwrap()
+        valid_channel = valid_channel_result.value
         validation = valid_channel.validate_business_rules()
         if validation.is_success:
             print("Valid channel passed validation")
@@ -204,7 +204,7 @@ def example_5_state_transitions() -> None:
     )
 
     if channel_result.is_success:
-        channel = channel_result.unwrap()
+        channel = channel_result.value
 
         # Note: State transitions are handled internally by facade operations
         # Channels transition through states during connect/disconnect operations
@@ -214,18 +214,18 @@ def example_5_state_transitions() -> None:
     server_result = grpc.create_server()
 
     if server_result.is_success:
-        server = server_result.unwrap()
+        server = server_result.value
 
         # Start server - transitions to running state
         start_result = grpc.start_server(server)
         if start_result.is_success:
-            started_server = start_result.unwrap()
+            started_server = start_result.value
             print(f"Server started with state: {started_server.state}")
 
             # Stop server - transitions back to stopped state
             stop_result = grpc.stop_server(started_server)
             if stop_result.is_success:
-                stopped_server = stop_result.unwrap()
+                stopped_server = stop_result.value
                 print(f"Server stopped with state: {stopped_server.state}")
 
 

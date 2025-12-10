@@ -74,7 +74,7 @@ class TestFlextGrpcEntities:
         channel = FlextGrpcEntities.Channel(target="localhost:50051", state="idle")
         result = channel.connect()
         assert result.is_success
-        connected_channel = result.unwrap()
+        connected_channel = result.value
         assert connected_channel.state == "connecting"
 
     def test_entity_copy_with(self) -> None:
@@ -82,7 +82,7 @@ class TestFlextGrpcEntities:
         channel = FlextGrpcEntities.Channel(target="localhost:50051")
         result = channel.copy_with(target="127.0.0.1:8080")
         assert result.is_success
-        new_channel = result.unwrap()
+        new_channel = result.value
         assert new_channel.target == "127.0.0.1:8080"
 
     def test_server_creation_defaults(self) -> None:

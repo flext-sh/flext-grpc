@@ -44,14 +44,14 @@ class TestFlextGrpcConfig:
         """Test production configuration creation."""
         result = FlextGrpcConfig.create_production_config()
         assert result.is_success
-        config = result.unwrap()
+        config = result.value
         assert isinstance(config, FlextGrpcConfig)
 
     def test_create_development_config(self) -> None:
         """Test development configuration creation."""
         result = FlextGrpcConfig.create_development_config()
         assert result.is_success
-        config = result.unwrap()
+        config = result.value
         assert isinstance(config, FlextGrpcConfig)
 
     def test_properties(self) -> None:

@@ -234,7 +234,7 @@ class GrpcServerManager(ServerLifecycleManager):
             if starting_result.is_failure:
                 return starting_result
 
-            starting_server = starting_result.unwrap()
+            starting_server = starting_result.value
 
             # Create actual gRPC server
             grpc_server = grpc.server(self._thread_pool)
@@ -278,7 +278,7 @@ class GrpcServerManager(ServerLifecycleManager):
             if stopping_result.is_failure:
                 return stopping_result
 
-            stopping_server = stopping_result.unwrap()
+            stopping_server = stopping_result.value
 
             # Stop gRPC server
             grpc_server = self._active_servers[server_key]
@@ -447,7 +447,7 @@ class GrpcStreamManager(StreamProcessor):
         if stream_result.is_failure:
             return stream_result
 
-        stream = stream_result.unwrap()
+        stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
 
         # Setup stream metadata

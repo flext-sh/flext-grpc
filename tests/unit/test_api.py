@@ -32,7 +32,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_entity("server", host="localhost", port=50051)
         assert result.is_success
-        server = result.unwrap()
+        server = result.value
         assert server.host == "localhost"
         assert server.port == 50051
 
@@ -41,7 +41,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_entity("client", target="localhost:50051")
         assert result.is_success
-        client = result.unwrap()
+        client = result.value
         assert client.channel is not None
 
     def test_create_stream(self) -> None:
@@ -53,7 +53,7 @@ class TestFlextGrpc:
             stream_type="unary",
         )
         assert result.is_success
-        stream = result.unwrap()
+        stream = result.value
         assert stream.method_name == "test_method"
         assert stream.stream_type == "unary"
 
@@ -69,7 +69,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.parse_address("localhost:50051")
         assert result.is_success
-        host, port = result.unwrap()
+        host, port = result.value
         assert host == "localhost"
         assert port == 50051
 
@@ -78,7 +78,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_channel(target="localhost:50051")
         assert result.is_success
-        channel = result.unwrap()
+        channel = result.value
         assert channel.target == "localhost:50051"
         assert channel.state == "idle"
 
@@ -87,7 +87,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_service(name="TestService", methods=["method1", "method2"])
         assert result.is_success
-        service = result.unwrap()
+        service = result.value
         assert service.name == "TestService"
         assert service.methods == ["method1", "method2"]
 
@@ -96,7 +96,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.execute()
         assert result.is_success
-        config = result.unwrap()
+        config = result.value
         assert isinstance(config, FlextGrpcConfig)
 
     def test_create_server_direct(self) -> None:
@@ -104,7 +104,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_server(host="127.0.0.1", port=8080)
         assert result.is_success
-        server = result.unwrap()
+        server = result.value
         assert server.host == "127.0.0.1"
         assert server.port == 8080
 
@@ -113,7 +113,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_client(target="127.0.0.1:8080")
         assert result.is_success
-        client = result.unwrap()
+        client = result.value
         assert client.channel.target == "127.0.0.1:8080"
 
     def test_create_entity_invalid_type(self) -> None:
@@ -145,7 +145,7 @@ class TestFlextGrpc:
         options = {"timeout": 30, "compression": "gzip"}
         result = grpc.create_channel(target="localhost:50051", options=options)
         assert result.is_success
-        channel = result.unwrap()
+        channel = result.value
         assert channel.options == options
 
     def test_create_service_defaults(self) -> None:
@@ -153,7 +153,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_service()
         assert result.is_success
-        service = result.unwrap()
+        service = result.value
         assert service.name == "DefaultService"
         assert service.methods == ["default_method"]
 
