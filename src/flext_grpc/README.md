@@ -67,7 +67,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Purpose**: Type-safe configuration with validation
 **Components**:
 
-- `FlextGrpcConfig` - Main configuration class extending `FlextConfig`
+- `FlextGrpcSettings` - Main configuration class extending `FlextSettings`
 - Field validators for host, port, workers, timeout
 - Environment variable integration
 - Address formatting and validation utilities
@@ -119,7 +119,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 - `FlextGrpcValidationError` - Field validation with context
 - `FlextGrpcConnectionError` - Network communication errors
 - `FlextGrpcTimeoutError` - Operation timeout and deadline violations
-- `FlextGrpcConfigurationError` - Configuration validation with details
+- `FlextGrpcSettingsurationError` - Configuration validation with details
 
 **Error Context**:
 

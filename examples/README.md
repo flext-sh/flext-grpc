@@ -171,7 +171,7 @@ flexcore_client = FlextGrpcClient(
 
 **Key Concepts**:
 
-- FlextGrpcConfig usage patterns
+- FlextGrpcSettings usage patterns
 - Environment variable configuration
 - Development vs production settings
 - Security configuration management
@@ -179,10 +179,10 @@ flexcore_client = FlextGrpcClient(
 **Example Usage**:
 
 ```python
-from flext_grpc import FlextGrpcConfig
+from flext_grpc import FlextGrpcSettings
 
 # Production configuration
-prod_config = FlextGrpcConfig(
+prod_config = FlextGrpcSettings(
     host=FlextConstants["Platform.PRODUCTION_HOST"],
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=20,
@@ -193,7 +193,7 @@ prod_config = FlextGrpcConfig(
 )
 
 # Development configuration
-dev_config = FlextGrpcConfig(
+dev_config = FlextGrpcSettings(
     host=FlextGrpcConstants.Network.DEFAULT_HOST,
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=4,
@@ -348,7 +348,7 @@ if server_result.success:
 1. **Entity Creation**: FlextGrpcServer, FlextGrpcClient entities with validation
 2. **Domain Validation**: Entity.validate_domain_rules() with FlextResult patterns
 3. **State Management**: Entity state transitions (stopped → starting → running)
-4. **Configuration**: FlextGrpcConfig with validation and defaults
+4. **Configuration**: FlextGrpcSettings with validation and defaults
 5. **Error Handling**: FlextResult success/failure patterns
 6. **API Functions**: create_server(), create_client() factory functions
 
@@ -417,10 +417,10 @@ Version: 0.9.9
 from flext_grpc import (
     FlextGrpcPlatform,
     FlextGrpcServer,
-    FlextGrpcConfig
+    FlextGrpcSettings
 )
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext

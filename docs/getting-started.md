@@ -114,10 +114,10 @@ print(f"Platform ready: {type(platform).__name__}")
 ### Configuration
 
 ```python
-from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.settings import FlextGrpcSettings
 
 # Create configuration with validation
-config = FlextGrpcConfig(
+config = FlextGrpcSettings(
     host='localhost',
     port=50051,
     max_workers=10,
@@ -132,7 +132,7 @@ print(f"Config: {config.host}:{config.port}")
 
 ```bash
 # Run a basic test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
+poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
 
 # Check test coverage (currently 39%)
 poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
@@ -153,7 +153,7 @@ Current status verification:
 poetry run python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
-from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.settings import FlextGrpcSettings
 print('✅ All imports successful')
 "
 

@@ -126,7 +126,7 @@ class MetricsCollector:
         with self._lock:
             self._metrics[key] = value
 
-    def get_metric(self, key: str) -> FlextTypes.Json.JsonValue:
+    def get_metric(self, key: str) -> FlextTypes.JsonValue:
         """Thread-safe metric retrieval.
 
         Returns:
@@ -135,10 +135,10 @@ class MetricsCollector:
         """
         with self._lock:
             value = self._metrics.get(key)
-            # Convert to GeneralValueType for type compatibility
+            # Convert to t.GeneralValueType for type compatibility
             if value is None:
                 return None
-            # Type narrowing: ensure value is GeneralValueType
+            # Type narrowing: ensure value is t.GeneralValueType
             if isinstance(value, (str, int, float, bool, type(None))):
                 return value
             if isinstance(value, (list, tuple)):

@@ -64,7 +64,7 @@ flext-grpc follows Clean Architecture principles with clear layer separation and
 │ └── FlextGrpcPlatform (facade)         │
 ├─────────────────────────────────────────┤
 │ Infrastructure Layer                    │
-│ ├── FlextGrpcConfig (228 L)            │
+│ ├── FlextGrpcSettings (228 L)            │
 │ ├── API Functions (378 L)              │
 │ ├── Exception Hierarchy (291 L)        │
 │ └── Protocol Buffers (369 L)           │
@@ -76,7 +76,7 @@ flext-grpc follows Clean Architecture principles with clear layer separation and
 Each domain entity encapsulates business logic and maintains state consistency:
 
 - **Entities** - Have identity and lifecycle (FlextGrpcServer, FlextGrpcClient)
-- **Value Objects** - Immutable configuration objects (FlextGrpcConfig)
+- **Value Objects** - Immutable configuration objects (FlextGrpcSettings)
 - **Services** - Business logic orchestration
 - **Aggregates** - Consistency boundaries for related entities
 
@@ -175,7 +175,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 All components integrate with flext-core patterns.
 
 ```python
-def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
     return (
         validate_config(config)
         .flat_map(lambda _: create_server_entity(config))

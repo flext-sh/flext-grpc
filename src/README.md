@@ -56,7 +56,7 @@ src/flext_grpc/
 
 **Key Components**:
 
-- **FlextGrpcConfig**: Configuration management with Pydantic validation
+- **FlextGrpcSettings**: Configuration management with Pydantic validation
 - **API Functions**: Factory functions and utility operations
 - **Error Classes**: Domain-specific exception hierarchy
 - **Type Validators**: Input validation and type checking

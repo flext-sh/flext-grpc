@@ -5,7 +5,7 @@
 - [flext-grpc API Reference](#flext-grpc-api-reference)
   - [Core API](#core-api) - [Factory Functions](#factory-functions) - [`create_server(host: str, port: int,
 max_workers: int) -> FlextGrpcServer`](#create_serverhost-str-port-int-max_workers-int---flextgrpcserver) - [`create_client(host: str,
-port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient) - [`create_config(**kwargs) -> FlextResult[FlextGrpcConfig]`](#create_configkwargs---flextresultflextgrpcconfig) - [Domain Entities](#domain-entities) - [FlextGrpcServer](#flextgrpcserver) - [`start() -> FlextResult[FlextGrpcServer]`](#start---flextresultflextgrpcserver) - [`stop() -> FlextResult[FlextGrpcServer]`](#stop---flextresultflextgrpcserver) - [`validate_business_rules() -> FlextResult[None]`](#validate_business_rules---flextresultnone) - [FlextGrpcClient](#flextgrpcclient) - [`connect() -> FlextResult[FlextGrpcClient]`](#connect---flextresultflextgrpcclient) - [`disconnect() -> FlextResult[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient) - [FlextGrpcConfig](#flextgrpcconfig) - [`validate() -> FlextResult[None]`](#validate---flextresultnone) - [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform) - [`start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver) - [`connect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient) - [`call_service(client: FlextGrpcClient, method: str,
+port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient) - [`create_config(**kwargs) -> FlextResult[FlextGrpcSettings]`](#create_configkwargs---flextresultflextgrpcconfig) - [Domain Entities](#domain-entities) - [FlextGrpcServer](#flextgrpcserver) - [`start() -> FlextResult[FlextGrpcServer]`](#start---flextresultflextgrpcserver) - [`stop() -> FlextResult[FlextGrpcServer]`](#stop---flextresultflextgrpcserver) - [`validate_business_rules() -> FlextResult[None]`](#validate_business_rules---flextresultnone) - [FlextGrpcClient](#flextgrpcclient) - [`connect() -> FlextResult[FlextGrpcClient]`](#connect---flextresultflextgrpcclient) - [`disconnect() -> FlextResult[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient) - [FlextGrpcSettings](#flextgrpcconfig) - [`validate() -> FlextResult[None]`](#validate---flextresultnone) - [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform) - [`start_server(server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver) - [`connect_client(client: FlextGrpcClient) -> FlextResult[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient) - [`call_service(client: FlextGrpcClient, method: str,
 request: dict) -> FlextResult[t.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict) - [FlextGrpcServerService](#flextgrpcserverservice) - [`execute(operation: str,
 server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#executeoperation-str-server-flextgrpcserver---flextresultflextgrpcserver)
 - [Start server](#start-server)
@@ -15,7 +15,7 @@ server: FlextGrpcServer) -> FlextResult[FlextGrpcServer]`](#executeoperation-str
     - [TGrpcStreamType](#tgrpcstreamtype)
   - [Exception Hierarchy](#exception-hierarchy)
     - [FlextGrpcError](#flextgrpcerror)
-    - [FlextGrpcConfigurationError](#flextgrpcconfigurationerror)
+    - [FlextGrpcSettingsurationError](#flextgrpcconfigurationerror)
     - [FlextGrpcConnectionError](#flextgrpcconnectionerror)
     - [FlextGrpcTimeoutError](#flextgrpctimeouterror)
     - [FlextGrpcValidationError](#flextgrpcvalidationerror)
@@ -64,7 +64,7 @@ from flext_grpc import create_client
 client = create_client("localhost", 50051)
 ```
 
-#### `create_config(**kwargs) -> FlextResult[FlextGrpcConfig]`
+#### `create_config(**kwargs) -> FlextResult[FlextGrpcSettings]`
 
 Creates and validates a gRPC configuration.
 
@@ -142,7 +142,7 @@ Establishes connection to the server.
 
 Closes connection to the server.
 
-#### FlextGrpcConfig
+#### FlextGrpcSettings
 
 Configuration value object with validation.
 
@@ -160,7 +160,7 @@ Configuration value object with validation.
 Validates configuration parameters.
 
 ```python
-config = FlextGrpcConfig(host="localhost", port=99999)
+config = FlextGrpcSettings(host="localhost", port=99999)
 validation = config.validate()
 
 if validation.is_failure:
@@ -261,15 +261,15 @@ class FlextGrpcError(Exception):
         self.error_code = error_code
 ```
 
-#### FlextGrpcConfigurationError
+#### FlextGrpcSettingsurationError
 
 Configuration-related errors.
 
 ```python
 try:
-    config = FlextGrpcConfig(port=-1)  # Invalid port
+    config = FlextGrpcSettings(port=-1)  # Invalid port
     config.validate().unwrap()
-except FlextGrpcConfigurationError as e:
+except FlextGrpcSettingsurationError as e:
     print(f"Configuration error: {e}")
 ```
 
@@ -367,7 +367,7 @@ All fallible operations return `FlextResult[T]` for composable error handling:
 ```python
 from flext_grpc import create_config, create_server
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -405,7 +405,7 @@ Integration with FlextContainer:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext

@@ -9,7 +9,7 @@ from flext_grpc.api import (
     GenericRequest,
     GenericResponse,
 )
-from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.settings import FlextGrpcSettings
 
 
 class TestFlextGrpc:
@@ -22,7 +22,7 @@ class TestFlextGrpc:
 
     def test_init_with_config(self) -> None:
         """Test FlextGrpc initialization with config."""
-        config = FlextGrpcConfig()
+        config = FlextGrpcSettings()
         grpc = FlextGrpc()
         grpc._config = config  # Set config manually for test
         assert grpc.grpc_config == config
@@ -97,7 +97,7 @@ class TestFlextGrpc:
         result = grpc.execute()
         assert result.is_success
         config = result.value
-        assert isinstance(config, FlextGrpcConfig)
+        assert isinstance(config, FlextGrpcSettings)
 
     def test_create_server_direct(self) -> None:
         """Test direct server creation."""

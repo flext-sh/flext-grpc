@@ -19,7 +19,6 @@ from flext_core import (
 
 from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
-from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcEntities,
@@ -28,6 +27,7 @@ from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
 from flext_grpc.services import FlextGrpcServices
+from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import FlextGrpcTypes
 from flext_grpc.utilities import FlextGrpcUtilities
 
@@ -51,8 +51,8 @@ class FlextGrpcError(FlextGrpcExceptions.BaseError):
     """FlextGrpcError - real inheritance from BaseError."""
 
 
-class FlextGrpcConfigurationError(FlextGrpcExceptions.ConfigurationError):
-    """FlextGrpcConfigurationError - real inheritance from ConfigurationError."""
+class FlextGrpcSettingsurationError(FlextGrpcExceptions.ConfigurationError):
+    """FlextGrpcSettingsurationError - real inheritance from ConfigurationError."""
 
 
 class FlextGrpcConnectionError(FlextGrpcExceptions.ConnectionError):
@@ -98,8 +98,6 @@ FlextGrpcService = FlextGrpcServices
 __all__ = [
     "EchoRequest",
     "FlextGrpc",
-    "FlextGrpcConfig",
-    "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcEntities",
@@ -110,6 +108,8 @@ __all__ = [
     "FlextGrpcService",
     "FlextGrpcServiceStub",
     "FlextGrpcServices",
+    "FlextGrpcSettings",
+    "FlextGrpcSettingsurationError",
     "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",

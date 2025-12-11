@@ -70,7 +70,7 @@ flext-grpc components use flext-core patterns (see flext-core documentation for 
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -89,7 +89,7 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcServerService, FlextGrpcConfig
+from flext_grpc import FlextGrpcServerService, FlextGrpcSettings
 
 class GrpcServiceManager:
     """Service manager using gRPC with flext-core integration."""
@@ -106,7 +106,7 @@ flext-grpc services can be registered with FlextContainer:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -156,7 +156,7 @@ class AuthenticatedGrpcService:
 
         auth_interceptor = AuthInterceptor(self._auth_service)
 
-        return create_server(FlextGrpcConfig(
+        return create_server(FlextGrpcSettings(
             host="localhost",
             port=50051,
             interceptors=[auth_interceptor]  # Future feature
@@ -183,7 +183,7 @@ class ObservableGrpcService:
     def create_monitored_server(self) -> FlextResult[FlextGrpcServer]:
         """Create gRPC server with monitoring."""
 
-        return create_server(FlextGrpcConfig(
+        return create_server(FlextGrpcSettings(
             host="localhost",
             port=50051,
             enable_health_checking=True,
@@ -209,7 +209,7 @@ def create_grpc_cli() -> FlextCliApp:
     def start_server(host: str = "localhost", port: int = 50051):
         """Start gRPC server."""
         platform = FlextGrpcPlatform()
-        config = FlextGrpcConfig(host=host, port=port)
+        config = FlextGrpcSettings(host=host, port=port)
 
         server_result = create_server(config)
         if server_result.success:
@@ -232,9 +232,9 @@ def create_grpc_cli() -> FlextCliApp:
 gRPC communication between FLEXT services:
 
 ```python
-from flext_grpc import FlextGrpcClient, FlextGrpcConfig
+from flext_grpc import FlextGrpcClient, FlextGrpcSettings
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -259,7 +259,7 @@ class FlextServiceConnector:
 
     def __init__(self, service_name: str, target_host: str, target_port: int):
         self.service_name = service_name
-        self.config = FlextGrpcConfig(host=target_host, port=target_port)
+        self.config = FlextGrpcSettings(host=target_host, port=target_port)
 
     def call_service(self, method: str, data: dict) -> FlextResult[t.Dict]:
         """Make gRPC call to another FLEXT service."""
@@ -287,7 +287,7 @@ gRPC in data processing pipelines:
 ```python
 from flext_grpc import FlextGrpcStream
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -341,7 +341,7 @@ Integration with FLEXT configuration patterns:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -360,9 +360,9 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcConfig
+from flext_grpc import FlextGrpcSettings
 
-class FlextGrpcEnvironmentConfig(FlextConfig):
+class FlextGrpcEnvironmentSettings(FlextSettings):
     """Environment-specific gRPC configuration."""
 
     # Development settings
@@ -375,17 +375,17 @@ class FlextGrpcEnvironmentConfig(FlextConfig):
     prod_grpc_port: int = 50051
     prod_grpc_workers: int = 50
 
-    def create_grpc_config(self, environment: str) -> FlextGrpcConfig:
+    def create_grpc_config(self, environment: str) -> FlextGrpcSettings:
         """Create gRPC config for specific environment."""
 
         if environment == "development":
-            return FlextGrpcConfig(
+            return FlextGrpcSettings(
                 host=self.dev_grpc_host,
                 port=self.dev_grpc_port,
                 max_workers=self.dev_grpc_workers
             )
         elif environment == "production":
-            return FlextGrpcConfig(
+            return FlextGrpcSettings(
                 host=self.prod_grpc_host,
                 port=self.prod_grpc_port,
                 max_workers=self.prod_grpc_workers,
@@ -402,7 +402,7 @@ Integration with FLEXT service discovery:
 ```python
 # Planned integration
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -454,7 +454,7 @@ Integration with FLEXT testing patterns:
 ```python
 import pytest
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -473,7 +473,7 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcConfig, create_server
+from flext_grpc import FlextGrpcSettings, create_server
 from flext_tests import FlextTestCase
 
 class TestGrpcIntegration(FlextTestCase):
@@ -482,7 +482,7 @@ class TestGrpcIntegration(FlextTestCase):
     def test_server_creation_with_flext_patterns(self):
         """Test server creation using FlextResult pattern."""
 
-        config = FlextGrpcConfig(host="localhost", port=0)  # object port
+        config = FlextGrpcSettings(host="localhost", port=0)  # object port
         server_result = create_server(config)
 
         # Railway-oriented testing
@@ -495,7 +495,7 @@ class TestGrpcIntegration(FlextTestCase):
         """Test error handling with flext-core patterns."""
 
         # Invalid configuration
-        config = FlextGrpcConfig(host="", port=-1)
+        config = FlextGrpcSettings(host="", port=-1)
         server_result = create_server(config)
 
         # Verify FlextResult error handling
@@ -535,9 +535,9 @@ class TestGrpcMockIntegration:
 Integration with FLEXT deployment infrastructure:
 
 ```python
-from flext_grpc import FlextGrpcPlatform, FlextGrpcConfig
+from flext_grpc import FlextGrpcPlatform, FlextGrpcSettings
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -575,9 +575,9 @@ class FlextGrpcProductionService:
             .map(lambda _: None)
         )
 
-    def _load_production_config(self) -> FlextResult[FlextGrpcConfig]:
+    def _load_production_config(self) -> FlextResult[FlextGrpcSettings]:
         """Load production configuration."""
-        return FlextResult.ok(FlextGrpcConfig(
+        return FlextResult.ok(FlextGrpcSettings(
             host="0.0.0.0",
             port=50051,
             max_workers=50,
@@ -620,7 +620,7 @@ Maintaining compatibility during ecosystem upgrades:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -639,7 +639,7 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcConfig
+from flext_grpc import FlextGrpcSettings
 
 class GrpcVersionManager:
     """Manage gRPC version compatibility."""

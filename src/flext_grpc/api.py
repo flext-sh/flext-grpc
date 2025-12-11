@@ -17,10 +17,10 @@ from typing import TypeVar, cast
 from flext_core import FlextModels, r, s
 from pydantic import BaseModel, Field, computed_field, field_validator
 
-from flext_grpc.config import FlextGrpcConfig
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.services import FlextGrpcServices
+from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
@@ -77,31 +77,31 @@ class GenericResponse[T: BaseModel](BaseModel):
         return not self.success or self.error is not None
 
 
-class FlextGrpc(s[FlextGrpcConfig]):
+class FlextGrpc(s[FlextGrpcSettings]):
     """Generic unified gRPC facade with SOLID patterns and minimal code.
 
     Uses generic types, functional composition, Pydantic v2 models, and delegation
     to reduce bloat while maintaining full functionality with Python 3.13+ features.
     """
 
-    def __init__(self, config: FlextGrpcConfig | None = None) -> None:
+    def __init__(self, config: FlextGrpcSettings | None = None) -> None:
         """Initialize facade with FLEXT ecosystem integration."""
         super().__init__()
         self._service = FlextGrpcServices()
         # Use object.__setattr__ to bypass type checker for dynamic attribute assignment
-        # since base class expects FlextConfig | None but we use FlextGrpcConfig
+        # since base class expects FlextSettings | None but we use FlextGrpcSettings
         object.__setattr__(
-            self, "_config", config if config is not None else FlextGrpcConfig()
+            self, "_config", config if config is not None else FlextGrpcSettings()
         )
 
     @property
-    def grpc_config(self) -> FlextGrpcConfig:
+    def grpc_config(self) -> FlextGrpcSettings:
         """Get gRPC-specific configuration."""
-        # Type narrowing: _config is always FlextGrpcConfig due to __init__
-        # Using cast to satisfy type checker since we know it's always FlextGrpcConfig
-        return cast("FlextGrpcConfig", self._config)
+        # Type narrowing: _config is always FlextGrpcSettings due to __init__
+        # Using cast to satisfy type checker since we know it's always FlextGrpcSettings
+        return cast("FlextGrpcSettings", self._config)
 
-    def execute(self, **_kwargs: object) -> r[FlextGrpcConfig]:
+    def execute(self, **_kwargs: object) -> r[FlextGrpcSettings]:
         """Execute main facade operation."""
         return r.ok(self.grpc_config)
 
@@ -178,7 +178,7 @@ class FlextGrpc(s[FlextGrpcConfig]):
     def execute_operation(
         self,
         request: m_core.Service.OperationExecutionRequest,
-    ) -> r[FlextGrpcConfig]:
+    ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         operations = self._get_operations()
 

@@ -18,10 +18,10 @@ from typing import NoReturn
 from flext_core import FlextConstants, FlextLogger, FlextResult
 
 from flext_grpc import (
-    FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcConstants,
     FlextGrpcError,
+    FlextGrpcSettingsurationError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
@@ -68,11 +68,11 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
 
     def _raise_port_error() -> NoReturn:
         msg = "Port must be between 1 and 65535"
-        raise FlextGrpcConfigurationError(msg, config_key="port", config_value=port)
+        raise FlextGrpcSettingsurationError(msg, config_key="port", config_value=port)
 
     def _raise_workers_error() -> NoReturn:
         msg = "Workers must be positive"
-        raise FlextGrpcConfigurationError(
+        raise FlextGrpcSettingsurationError(
             msg,
             config_key="max_workers",
             config_value=workers,
@@ -80,7 +80,7 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
 
     def _raise_config_error(error_msg: str) -> NoReturn:
         msg: str = f"Failed to create config: {error_msg}"
-        raise FlextGrpcConfigurationError(msg)
+        raise FlextGrpcSettingsurationError(msg)
 
     try:
         max_port = 65535
@@ -100,7 +100,7 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
         except Exception as e:
             return FlextResult[object].fail(str(e))
 
-    except FlextGrpcConfigurationError as e:
+    except FlextGrpcSettingsurationError as e:
         logger.exception(
             "Configuration error",
             key=e.config_key,
@@ -244,7 +244,7 @@ def demonstrate_error_context() -> None:
         field_name="user_email",
     )
 
-    config_error = FlextGrpcConfigurationError(
+    config_error = FlextGrpcSettingsurationError(
         "Invalid port configuration for production environment",
         config_key="server_port",
         config_value=0,

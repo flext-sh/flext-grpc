@@ -62,7 +62,7 @@ Provides gRPC communication patterns for microservices within the FLEXT data int
 
 ```python
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
-from flext_grpc.config import FlextGrpcConfig
+from flext_grpc.settings import FlextGrpcSettings
 
 # Server creation - verified working
 server = create_server('localhost', 50051, 10)
@@ -77,7 +77,7 @@ platform = FlextGrpcPlatform()
 # Output: Platform created successfully
 
 # Configuration management - verified working
-config = FlextGrpcConfig(host='localhost', port=50051, max_workers=10)
+config = FlextGrpcSettings(host='localhost', port=50051, max_workers=10)
 # Output: Config created with validation
 ```
 
@@ -110,7 +110,7 @@ poetry install
 poetry install
 
 # Run individual test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
+poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
 
 # Check coverage (currently 39%)
 poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
@@ -145,7 +145,7 @@ poetry run ruff check src/
 
 ```bash
 # Run a working test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcConfig::test_create_valid_config_with_defaults -v
+poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
 # Result: PASSED
 
 # Check coverage

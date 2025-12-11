@@ -163,7 +163,7 @@ All code must follow flext-core architectural patterns:
 ```python
 # ✅ CORRECT - Railway-oriented programming
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -182,9 +182,9 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcConfig
+from flext_grpc import FlextGrpcSettings
 
-def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcConfig]:
+def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcSettings]:
     """Create and validate gRPC configuration."""
 
     return (
@@ -194,11 +194,11 @@ def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcConfig
     )
 
 # ❌ FORBIDDEN - Exception-based error handling
-def create_config_bad(host: str, port: int) -> FlextGrpcConfig:
+def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
     try:
         if not host:
             raise ValueError("Host required")
-        return FlextGrpcConfig(host=host, port=port)
+        return FlextGrpcSettings(host=host, port=port)
     except Exception:
         return None  # Loses error information
 ```
@@ -210,7 +210,7 @@ Complete type annotations are mandatory:
 ```python
 from typing import Protocol, TypeVar, Generic
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -254,7 +254,7 @@ Follow Domain-Driven Design patterns:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -328,7 +328,7 @@ tests/
 ```python
 import pytest
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -347,7 +347,7 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcConfig, create_server
+from flext_grpc import FlextGrpcSettings, create_server
 
 class TestGrpcServer:
     """Test gRPC server functionality."""
@@ -356,7 +356,7 @@ class TestGrpcServer:
         """Test successful server creation."""
 
         # Arrange
-        config = FlextGrpcConfig(host="localhost", port=50051)
+        config = FlextGrpcSettings(host="localhost", port=50051)
 
         # Act
         result = create_server(config)
@@ -371,7 +371,7 @@ class TestGrpcServer:
         """Test server creation with invalid configuration."""
 
         # Arrange
-        config = FlextGrpcConfig(host="", port=-1)  # Invalid
+        config = FlextGrpcSettings(host="", port=-1)  # Invalid
 
         # Act
         result = create_server(config)
@@ -388,7 +388,7 @@ class TestGrpcServer:
     def test_validation_errors(self, host, port, expected_error):
         """Test configuration validation errors."""
 
-        config = FlextGrpcConfig(host=host, port=port)
+        config = FlextGrpcSettings(host=host, port=port)
         validation = config.validate()
 
         assert validation.is_failure
@@ -449,7 +449,7 @@ class FlextGrpcServerService:
 from flext_grpc.entities import FlextGrpcServer
 from flext_grpc.services import FlextGrpcServerService
 
-def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
@@ -460,7 +460,7 @@ Use FlextContainer for all dependencies:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -515,7 +515,7 @@ All public APIs require comprehensive docstrings:
 
 ```python
 from flext_core import FlextBus
-from flext_core import FlextConfig
+from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
@@ -534,9 +534,9 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc import FlextGrpcConfig, FlextGrpcServer
+from flext_grpc import FlextGrpcSettings, FlextGrpcServer
 
-def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
     """Create a gRPC server with the specified configuration.
 
     Creates and validates a gRPC server instance using Clean Architecture
@@ -550,7 +550,7 @@ def create_server(config: FlextGrpcConfig) -> FlextResult[FlextGrpcServer]:
             failure with detailed error message
 
     Example:
-        >>> config = FlextGrpcConfig(host="localhost", port=50051)
+        >>> config = FlextGrpcSettings(host="localhost", port=50051)
         >>> result = create_server(config)
         >>> if result.success:
         ...     server = result.unwrap()
@@ -707,7 +707,7 @@ git commit -m "test: add comprehensive streaming operation tests"
 
 ```bash
 # Current blocker - protobuf version mismatch
-python -c "from flext_grpc import FlextGrpcConfig"
+python -c "from flext_grpc import FlextGrpcSettings"
 # Error: Detected mismatched Protobuf versions
 ```
 
@@ -754,8 +754,8 @@ import pdb; pdb.set_trace()
 
 # REPL with project loaded
 make shell
->>> from flext_grpc import FlextGrpcConfig
->>> config = FlextGrpcConfig()
+>>> from flext_grpc import FlextGrpcSettings
+>>> config = FlextGrpcSettings()
 ```
 
 ---

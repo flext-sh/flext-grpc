@@ -95,7 +95,7 @@ class FlextGrpcTypes(FlextTypes):
         type ServerLifecycle = dict[str, str | bool | int | dict[str, object]]
         type ServerMetrics = dict[
             str,
-            int | float | bool | dict[str, FlextTypes.Json.JsonValue],
+            int | float | bool | dict[str, FlextTypes.JsonValue],
         ]
         type ServerSecurity = dict[
             str,
@@ -103,7 +103,7 @@ class FlextGrpcTypes(FlextTypes):
         ]
         type ServiceRegistry = dict[
             str,
-            list[str] | dict[str, FlextTypes.Json.JsonValue],
+            list[str] | dict[str, FlextTypes.JsonValue],
         ]
         type HandlerConfiguration = list[dict[str, str | object]]
 
@@ -120,12 +120,10 @@ class FlextGrpcTypes(FlextTypes):
         ]
         type ConnectionPool = dict[str, int | bool | dict[str, object]]
         type RetryConfiguration = dict[str, int | float | bool | list[str]]
-        type LoadBalancing = dict[
-            str, str | bool | dict[str, FlextTypes.Json.JsonValue]
-        ]
+        type LoadBalancing = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
         type ClientMetrics = dict[
             str,
-            int | float | dict[str, FlextTypes.Json.JsonValue],
+            int | float | dict[str, FlextTypes.JsonValue],
         ]
         type ChannelOptions = dict[str, str | int | bool | dict[str, object]]
 
@@ -142,7 +140,7 @@ class FlextGrpcTypes(FlextTypes):
         ]
         type StreamingContext = dict[
             str,
-            str | bool | dict[str, FlextTypes.Json.JsonValue],
+            str | bool | dict[str, FlextTypes.JsonValue],
         ]
         type StreamMetrics = dict[str, int | float | bool | dict[str, object]]
         type FlowControl = dict[str, int | bool | dict[str, FlextGrpcTypes.ConfigValue]]
@@ -158,17 +156,17 @@ class FlextGrpcTypes(FlextTypes):
 
         type ServiceDefinition = dict[
             str,
-            str | list[str] | dict[str, FlextTypes.Json.JsonValue],
+            str | list[str] | dict[str, FlextTypes.JsonValue],
         ]
         type MethodDefinition = dict[str, str | bool | dict[str, object]]
         type ServiceMetadata = dict[
             str,
-            str | int | dict[str, FlextTypes.Json.JsonValue],
+            str | int | dict[str, FlextTypes.JsonValue],
         ]
         type InterceptorChain = list[dict[str, str | object]]
         type ServiceDiscovery = dict[
             str,
-            str | list[str] | dict[str, FlextTypes.Json.JsonValue],
+            str | list[str] | dict[str, FlextTypes.JsonValue],
         ]
         type HealthCheck = dict[str, bool | str | int | dict[str, object]]
 
@@ -184,9 +182,7 @@ class FlextGrpcTypes(FlextTypes):
             bool | str | dict[str, FlextGrpcTypes.ConfigValue],
         ]
         type TlsConfiguration = dict[str, str | bool | dict[str, object]]
-        type AuthenticationConfig = dict[
-            str, str | dict[str, FlextTypes.Json.JsonValue]
-        ]
+        type AuthenticationConfig = dict[str, str | dict[str, FlextTypes.JsonValue]]
         type AuthorizationRules = list[dict[str, str | bool | list[str]]]
         type CertificateManagement = dict[
             str,
@@ -194,7 +190,7 @@ class FlextGrpcTypes(FlextTypes):
         ]
         type SecurityMetrics = dict[
             str,
-            int | bool | dict[str, FlextTypes.Json.JsonValue],
+            int | bool | dict[str, FlextTypes.JsonValue],
         ]
 
     # =========================================================================
@@ -210,7 +206,7 @@ class FlextGrpcTypes(FlextTypes):
         ]
         type MetricsCollection = dict[
             str,
-            str | bool | dict[str, FlextTypes.Json.JsonValue],
+            str | bool | dict[str, FlextTypes.JsonValue],
         ]
         type TracingConfiguration = dict[str, bool | str | dict[str, object]]
         type LoggingSetup = dict[
@@ -220,7 +216,7 @@ class FlextGrpcTypes(FlextTypes):
         type AlertingRules = list[dict[str, str | int | float | bool]]
         type PerformanceMetrics = dict[
             str,
-            float | int | dict[str, FlextTypes.Json.JsonValue],
+            float | int | dict[str, FlextTypes.JsonValue],
         ]
 
     # =========================================================================

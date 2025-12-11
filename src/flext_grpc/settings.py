@@ -196,12 +196,12 @@ class GrpcMonitoringConfig(BaseModel):
     log_level: str = Field(default="INFO", description="Logging level")
 
 
-class FlextGrpcConfig(BaseModel):
+class FlextGrpcSettings(BaseModel):
     """Generic gRPC configuration system using AutoConfig pattern.
 
     **ARCHITECTURAL PATTERN**: Zero-Boilerplate Auto-Registration
 
-    This class uses FlextConfig.AutoConfig for automatic:
+    This class uses FlextSettings.AutoConfig for automatic:
     - Singleton pattern (thread-safe)
     - Namespace registration (accessible via config.grpc)
     - Environment variable loading from FLEXT_GRPC_* variables
@@ -339,7 +339,7 @@ class FlextGrpcConfig(BaseModel):
             return r.fail(f"Configuration validation failed: {e}")
 
     @classmethod
-    def create_production_config(cls) -> r[FlextGrpcConfig]:
+    def create_production_config(cls) -> r[FlextGrpcSettings]:
         """Create production-ready configuration with enterprise defaults."""
         try:
             config = cls(
@@ -379,7 +379,7 @@ class FlextGrpcConfig(BaseModel):
             return r.fail(f"Production config creation failed: {e}")
 
     @classmethod
-    def create_development_config(cls) -> r[FlextGrpcConfig]:
+    def create_development_config(cls) -> r[FlextGrpcSettings]:
         """Create development configuration with relaxed settings."""
         try:
             config = cls(
@@ -402,7 +402,7 @@ class FlextGrpcConfig(BaseModel):
 
 
 __all__ = [
-    "FlextGrpcConfig",
+    "FlextGrpcSettings",
     "GrpcClientConfig",
     "GrpcMonitoringConfig",
     "GrpcNetworkConfig",

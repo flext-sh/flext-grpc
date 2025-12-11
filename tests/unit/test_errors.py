@@ -40,9 +40,9 @@ from __future__ import annotations
 from flext_core import FlextExceptions
 
 from flext_grpc import (
-    FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcError,
+    FlextGrpcSettingsurationError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
@@ -148,7 +148,7 @@ class TestFlextGrpcTimeoutError:
         assert isinstance(error, FlextExceptions.BaseError)
 
 
-class TestFlextGrpcConfigurationError:
+class TestFlextGrpcSettingsurationError:
     """Test gRPC configuration error with config context."""
 
     def test_configuration_error_with_all_params(self) -> None:
@@ -156,7 +156,7 @@ class TestFlextGrpcConfigurationError:
         message = "Invalid configuration"
         config_key = "port"
 
-        error = FlextGrpcConfigurationError(message, config_key=config_key)
+        error = FlextGrpcSettingsurationError(message, config_key=config_key)
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
@@ -166,7 +166,7 @@ class TestFlextGrpcConfigurationError:
         """Test configuration error with only message."""
         message = "Configuration error"
 
-        error = FlextGrpcConfigurationError(message)
+        error = FlextGrpcSettingsurationError(message)
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
@@ -177,17 +177,17 @@ class TestFlextGrpcConfigurationError:
         message = "Missing configuration"
         config_key = "host"
 
-        error = FlextGrpcConfigurationError(message, config_key=config_key)
+        error = FlextGrpcSettingsurationError(message, config_key=config_key)
 
         # flext-core adds error type prefix to messages
         assert message in str(error)
         assert error.config_key == config_key
 
     def test_configuration_error_inheritance(self) -> None:
-        """Test FlextGrpcConfigurationError inherits correctly."""
+        """Test FlextGrpcSettingsurationError inherits correctly."""
         # All imports are at the top of the file
 
-        error = FlextGrpcConfigurationError("test")
+        error = FlextGrpcSettingsurationError("test")
         assert isinstance(error, FlextExceptions.BaseError)
 
 
@@ -201,7 +201,7 @@ class TestErrorIntegration:
             FlextGrpcValidationError("validation error", field="field"),
             FlextGrpcConnectionError("connection error"),
             FlextGrpcTimeoutError("timeout error"),
-            FlextGrpcConfigurationError("config error", config_key="key"),
+            FlextGrpcSettingsurationError("config error", config_key="key"),
         ]
 
         for error in errors:
@@ -219,7 +219,7 @@ class TestErrorIntegration:
             FlextGrpcValidationError("test"),
             FlextGrpcConnectionError("test"),
             FlextGrpcTimeoutError("test"),
-            FlextGrpcConfigurationError("test"),
+            FlextGrpcSettingsurationError("test"),
         ]
 
         # Test that FlextGrpcError inherits from FlextExceptions (base case)
@@ -230,7 +230,7 @@ class TestErrorIntegration:
         assert isinstance(FlextGrpcConnectionError("test"), FlextExceptions.BaseError)
         assert isinstance(FlextGrpcTimeoutError("test"), FlextExceptions.BaseError)
         assert isinstance(
-            FlextGrpcConfigurationError("test"),
+            FlextGrpcSettingsurationError("test"),
             FlextExceptions.BaseError,
         )
 
@@ -249,7 +249,7 @@ class TestErrorIntegration:
 
         # Configuration error with complex object
         config_key = "complex_setting"
-        config_error = FlextGrpcConfigurationError(
+        config_error = FlextGrpcSettingsurationError(
             "Complex config failed",
             config_key=config_key,
         )

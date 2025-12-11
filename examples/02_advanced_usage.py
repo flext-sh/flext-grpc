@@ -17,7 +17,7 @@ from typing import cast
 
 from flext_core import FlextConstants, FlextResult
 
-from flext_grpc import FlextGrpc, FlextGrpcConfig
+from flext_grpc import FlextGrpc, FlextGrpcSettings
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.typings import t
@@ -30,7 +30,7 @@ class GrpcServerManager:
         """Initialize the gRPC server manager with facade."""
         self.grpc = FlextGrpc()
         self.servers: dict[str, FlextGrpcEntities.Server] = {}
-        self.server_configs: dict[str, FlextGrpcConfig] = {}
+        self.server_configs: dict[str, FlextGrpcSettings] = {}
 
     def create_server_pool(
         self,
