@@ -21,7 +21,7 @@ import grpc
 import psutil
 from flext_core import r
 from flext_core.loggings import FlextLogger
-from flext_core.utilities import FlextUtilities as u_core
+from flext_core.utilities import u_core
 from google.protobuf import json_format
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.json_format import MessageToDict, MessageToJson
