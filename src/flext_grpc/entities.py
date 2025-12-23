@@ -11,13 +11,17 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from datetime import UTC, datetime
-from typing import Any, Self, TypeVar
+from typing import Self, TypeVar
 
 from flext_core import m as m_core, r, s, u as u_core
+from flext_core.models import FlextModels
 from pydantic import BaseModel, Field, field_validator
 
 from flext_grpc.constants import c
 from flext_grpc.typings import t
+
+# Rebuild parent model to resolve forward references before extending
+FlextModels.Entity.model_rebuild()
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -39,7 +43,7 @@ class EntityValidator(BaseModel):
         return value
 
     @classmethod
-    def validate_list_not_empty(cls, value: list[Any], field_name: str) -> list[Any]:
+    def validate_list_not_empty[T](cls, value: list[T], field_name: str) -> list[T]:
         """Generic list validation."""
         if not value:
             msg = f"{field_name} cannot be empty"
@@ -66,7 +70,7 @@ class StateMachine(BaseModel):
         return r.ok(updated)
 
 
-class FlextGrpcEntities(s[Any]):
+class FlextGrpcEntities(s[dict[str, object]]):
     """Generic gRPC entity system with SOLID principles and minimal code."""
 
     class Entity(m_core.Entity):
@@ -94,7 +98,7 @@ class FlextGrpcEntities(s[Any]):
         """Generic gRPC channel with state machine delegation."""
 
         target: str = ""
-        state: t.GrpcChannelState = "idle"
+        state: t.GrpcChannelState = c.Grpc.ChannelState.IDLE
         options: dict[str, object] = Field(default_factory=dict)
         grpc_channel: object = None
 
@@ -128,16 +132,16 @@ class FlextGrpcEntities(s[Any]):
 
         def disconnect(self) -> r[Self]:
             """Transition to idle."""
-            return r.ok(self.model_copy(update={"state": "idle"}))
+            return r.ok(self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}))
 
     class Server(Entity, StateMachine):
         """Generic gRPC server with state machine and validation delegation."""
 
         host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-        state: t.GrpcServerState = "stopped"
+        state: t.GrpcServerState = c.Grpc.ServerState.STOPPED
         max_workers: int = 10
-        services: list[Any] = Field(default_factory=list)
+        services: list[object] = Field(default_factory=list)
         grpc_server: object = None
 
         def validate_business_rules(self) -> r[bool]:
@@ -169,7 +173,7 @@ class FlextGrpcEntities(s[Any]):
             """Transition to stopped."""
             if self.state not in {"stopping", "running"}:
                 return r.fail(f"Cannot mark stopped from {self.state}")
-            return r.ok(self.model_copy(update={"state": "stopped"}))
+            return r.ok(self.model_copy(update={"state": c.Grpc.ServerState.STOPPED}))
 
         def add_service(self, service: object) -> r[Self]:
             """Add service functionally.
@@ -230,7 +234,9 @@ class FlextGrpcEntities(s[Any]):
 
         def connect_to(self, target: str) -> r[Self]:
             """Connect functionally."""
-            channel = FlextGrpcEntities.Channel(target=target, state="idle")
+            channel = FlextGrpcEntities.Channel(
+                target=target, state=c.Grpc.ChannelState.IDLE
+            )
             return r.ok(self.model_copy(update={"channel": channel}))
 
     class GrpcStream(Entity):
@@ -238,7 +244,7 @@ class FlextGrpcEntities(s[Any]):
 
         id: str = ""
         method_name: str = ""
-        stream_type: t.GrpcStreamType = "unary"
+        stream_type: t.GrpcStreamType = c.Grpc.GrpcOperations.UNARY
         grpc_stub: object = None
 
         @field_validator("method_name")

@@ -65,22 +65,22 @@ class TestsConstants(FlextGrpcConstants):
 
         # Reuse production Literals for consistency (Python 3.13+ best practices)
         # Channel state literal (reusing production type)
-        ChannelStateLiteral: TypeAlias = FlextGrpcConstants.Literals.ChannelStateLiteral
+        ChannelStateLiteral: TypeAlias = FlextGrpcConstants.Grpc.ChannelStateLiteral
 
         # Server state literal (reusing production type)
-        ServerStateLiteral: TypeAlias = FlextGrpcConstants.Literals.ServerStateLiteral
+        ServerStateLiteral: TypeAlias = FlextGrpcConstants.Grpc.ServerStateLiteral
 
         # Stream type literal (reusing production type)
-        StreamTypeLiteral: TypeAlias = FlextGrpcConstants.Literals.StreamTypeLiteral
+        StreamTypeLiteral: TypeAlias = FlextGrpcConstants.Grpc.StreamTypeLiteral
 
         # Load balancing policy literal (reusing production type)
         LoadBalancingPolicyLiteral: TypeAlias = (
-            FlextGrpcConstants.Literals.LoadBalancingPolicyLiteral
+            FlextGrpcConstants.Grpc.LoadBalancingPolicyLiteral
         )
 
         # Compression type literal (reusing production type)
         CompressionTypeLiteral: TypeAlias = (
-            FlextGrpcConstants.Literals.CompressionTypeLiteral
+            FlextGrpcConstants.Grpc.CompressionTypeLiteral
         )
 
 

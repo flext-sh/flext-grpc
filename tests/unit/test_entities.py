@@ -2,6 +2,7 @@
 
 import pytest
 
+from flext_grpc.constants import c
 from flext_grpc.entities import FlextGrpcEntities
 
 
@@ -31,7 +32,7 @@ class TestFlextGrpcEntities:
         stream = FlextGrpcEntities.GrpcStream(
             unique_id="test_stream",
             method_name="test_method",
-            stream_type="unary",
+            stream_type=c.Grpc.GrpcOperations.UNARY,
         )
         assert stream.unique_id == "test_stream"
         assert stream.method_name == "test_method"
@@ -71,7 +72,9 @@ class TestFlextGrpcEntities:
 
     def test_channel_state_machine(self) -> None:
         """Test channel state machine transitions."""
-        channel = FlextGrpcEntities.Channel(target="localhost:50051", state="idle")
+        channel = FlextGrpcEntities.Channel(
+            target="localhost:50051", state=c.Grpc.ChannelState.IDLE
+        )
         result = channel.connect()
         assert result.is_success
         connected_channel = result.value

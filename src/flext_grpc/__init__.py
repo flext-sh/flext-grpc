@@ -76,11 +76,11 @@ class GrpcRequest(FlextGrpcModels.Domain.GrpcRequest):
     """GrpcRequest - real inheritance from Domain.GrpcRequest."""
 
 
-class ServiceDefinition(FlextGrpcModels.ServiceDefinition):
+class ServiceDefinition(FlextGrpcModels.Domain.ServiceDefinition):
     """ServiceDefinition - real inheritance from ServiceDefinition."""
 
 
-class ServiceMetrics(FlextGrpcModels.ServiceMetrics):
+class ServiceMetrics(FlextGrpcModels.Domain.ServiceMetrics):
     """ServiceMetrics - real inheritance from ServiceMetrics."""
 
 

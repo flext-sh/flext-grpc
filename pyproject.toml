@@ -148,7 +148,7 @@
         develop = true
         path    = "../flext-core"
 
-            [tool.poetry.dependencies.flext-observability]
+    [tool.poetry.dependencies.flext-observability]
         develop = true
         path    = "../flext-observability"
 

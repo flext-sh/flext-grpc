@@ -240,6 +240,7 @@ class FlextGrpcSettings(BaseModel):
         port: int | None = None,
         max_workers: int | None = None,
         timeout: float | None = None,
+        *,
         tls_enabled: bool | None = None,
         streaming_enabled: bool | None = None,
         network: GrpcNetworkConfig | None = None,

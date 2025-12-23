@@ -14,11 +14,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import logging
 import re
 from typing import Protocol, override, runtime_checkable
-
-from flext_core import FlextTypes
-from flext_core.loggings import FlextLogger
 
 from flext_grpc.constants import FlextGrpcConstants
 
@@ -27,6 +25,21 @@ c = FlextGrpcConstants
 # =============================================================================
 # GRPC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for gRPC operations
 # =============================================================================
+
+
+# JSON value type alias - defined at module level for recursive reference
+type JsonValue = (
+    str | int | float | bool | list[JsonValue] | dict[str, JsonValue] | None
+)
+
+
+# FLEXT Foundation Types (minimal implementation for independence)
+class FlextTypes:
+    """Minimal FlextTypes implementation for independence."""
+
+    # Re-export module-level JsonValue for class access
+    type JsonValue = str | int | float | bool | list[object] | dict[str, object] | None
+    type ConfigValue = str | int | bool | list[str] | dict[str, object] | None
 
 
 # gRPC domain TypeVars
@@ -326,7 +339,7 @@ class FlextGrpcTypes(FlextTypes):
                 max_port = 65535
                 return 1 <= port <= max_port
             except (ValueError, AttributeError):
-                logger = FlextLogger(__name__)
+                logger = logging.getLogger(__name__)
                 logger.debug("Invalid gRPC target: %s", target)
                 return False
 

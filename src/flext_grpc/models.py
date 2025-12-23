@@ -12,8 +12,7 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from flext_core import m as m_core
-from flext_core.utilities import u as flext_u
+from flext_core import FlextModels as m_core, FlextUtilities as flext_u
 from pydantic import Field
 
 
