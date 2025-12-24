@@ -2,113 +2,113 @@
 
 ## Table of Contents
 
-- [FLEXT-gRPC Documentation Maintenance User Guide](#flext-grpc-documentation-maintenance-user-guide)
-  - [Quick Start](#quick-start)
-    - [Installation](#installation)
-- [Install maintenance framework dependencies](#install-maintenance-framework-dependencies)
-- [Verify installation](#verify-installation)
-  - [Basic Usage](#basic-usage)
-- [Run complete maintenance cycle](#run-complete-maintenance-cycle)
-- [Quick audit only](#quick-audit-only)
-- [Fix common issues automatically](#fix-common-issues-automatically)
-- [Generate quality reports](#generate-quality-reports)
-  - [Maintenance Workflow](#maintenance-workflow)
-    - [Daily Maintenance (5 minutes)](#daily-maintenance-5-minutes)
-- [Automated daily health check](#automated-daily-health-check)
-- [Results will be displayed:](#results-will-be-displayed)
-- [✅ Quality Score: 92%](#-quality-score-92)
-- [✅ Critical Issues: 0](#-critical-issues-0)
-- [✅ Link Health: 98%](#-link-health-98)
-  - [Weekly Maintenance (15 minutes)](#weekly-maintenance-15-minutes)
-- [Comprehensive weekly audit](#comprehensive-weekly-audit)
-- [Review results and apply fixes](#review-results-and-apply-fixes)
-- [Generate weekly summary](#generate-weekly-summary)
-  - [Monthly Maintenance (30 minutes)](#monthly-maintenance-30-minutes)
-- [Deep analysis and optimization](#deep-analysis-and-optimization)
-- [Review trend reports](#review-trend-reports)
-- [Stakeholder reporting](#stakeholder-reporting)
-  - [Command Reference](#command-reference)
-    - [Audit Commands](#audit-commands)
-- [Run comprehensive audit](#run-comprehensive-audit)
-- [Audit specific file](#audit-specific-file)
-- [Generate audit report](#generate-audit-report)
-  - [Validation Commands](#validation-commands)
-- [Full validation (links, references, style)](#full-validation-links-references-style)
-- [Link validation only](#link-validation-only)
-- [Style check only](#style-check-only)
-  - [Optimization Commands](#optimization-commands)
-- [Optimize all documentation](#optimize-all-documentation)
-- [Optimize specific file](#optimize-specific-file)
-- [Preview changes (dry run)](#preview-changes-dry-run)
-  - [Synchronization Commands](#synchronization-commands)
-- [Sync documentation changes](#sync-documentation-changes)
-- [Monitor file changes](#monitor-file-changes)
-- [Generate changelog](#generate-changelog)
-  - [Reporting Commands](#reporting-commands)
-- [Generate comprehensive report](#generate-comprehensive-report)
-- [Generate HTML dashboard](#generate-html-dashboard)
-- [Export CSV report](#export-csv-report)
-- [Generate trend analysis](#generate-trend-analysis)
-  - [Quality Metrics Understanding](#quality-metrics-understanding)
-    - [Quality Score Components](#quality-score-components)
-    - [Interpreting Results](#interpreting-results)
-      - [High Structure Score (90%+)](#high-structure-score-90)
-      - [High Accuracy Score (90%+)](#high-accuracy-score-90)
-      - [High Completeness Score (90%+)](#high-completeness-score-90)
-      - [High Freshness Score (90%+)](#high-freshness-score-90)
-  - [Troubleshooting](#troubleshooting)
-    - [Common Issues](#common-issues)
-      - [Audit Fails with Import Errors](#audit-fails-with-import-errors)
-- [Check Python path](#check-python-path)
-- [Install missing dependencies](#install-missing-dependencies) - [Validation Reports Broken Links](#validation-reports-broken-links)
-- [Check specific URL](#check-specific-url)
-- [Update link or mark as expected failure](#update-link-or-mark-as-expected-failure)
-- [Edit docs/maintenance/config.JSON to exclude known broken links](#edit-docsmaintenanceconfigjson-to-exclude-known-broken-links) - [Optimization Doesn't Apply Changes](#optimization-doesnt-apply-changes)
-- [Check file permissions](#check-file-permissions)
-- [Run with verbose output](#run-with-verbose-output)
-- [Check for syntax errors in optimization rules](#check-for-syntax-errors-in-optimization-rules) - [Synchronization Conflicts](#synchronization-conflicts)
-- [Check git status](#check-git-status)
-- [Resolve conflicts manually](#resolve-conflicts-manually)
-- [Then retry synchronization](#then-retry-synchronization)
-  - [Getting Help](#getting-help)
-    - [Log Files](#log-files)
-- [Check recent logs](#check-recent-logs) - [Debug Mode](#debug-mode)
-- [Run with debug output](#run-with-debug-output)
-- [Check configuration](#check-configuration) - [Reset System](#reset-system)
-- [Complete reset (use with caution)](#complete-reset-use-with-caution)
-- [Clear all caches and reports](#clear-all-caches-and-reports)
-  - [Configuration](#configuration)
-    - [Main Configuration File](#main-configuration-file)
-    - [Custom Rules](#custom-rules)
-- [docs/maintenance/custom_rules.py](#docsmaintenancecustom_rulespy)
-  - [Integration Examples](#integration-examples)
-    - [CI/CD Integration](#cicd-integration)
-      - [GitHub Actions](#github-actions)
-      - [GitLab CI](#gitlab-ci)
-    - [Pre-commit Hooks](#pre-commit-hooks)
-- [.pre-commit-config.YAML](#pre-commit-configyaml)
-  - [Slack Notifications](#slack-notifications)
-- [Configure notifications in config.JSON](#configure-notifications-in-configjson)
-  - [Advanced Usage](#advanced-usage)
-    - [Custom Audit Rules](#custom-audit-rules)
-    - [Automated Fixes](#automated-fixes)
-    - [Integration APIs](#integration-apis)
-- [Programmatic usage](#programmatic-usage)
-  - [Best Practices](#best-practices)
-    - [Maintenance Frequency](#maintenance-frequency)
-    - [Quality Gates](#quality-gates)
-- [Pre-commit quality gate](#pre-commit-quality-gate)
-- [Pre-merge quality gate](#pre-merge-quality-gate)
-- [Release quality gate](#release-quality-gate)
-  - [Team Collaboration](#team-collaboration)
-  - [Performance Optimization](#performance-optimization)
-- [Large documentation sets](#large-documentation-sets)
-- [Incremental audits](#incremental-audits)
-- [Cached results](#cached-results)
-  - [Support and Resources](#support-and-resources)
-    - [Documentation](#documentation)
-    - [Community Resources](#community-resources)
-    - [Professional Services](#professional-services)
+- FLEXT-gRPC Documentation Maintenance User Guide
+  - Quick Start
+    - Installation
+- Install maintenance framework dependencies
+- Verify installation
+  - Basic Usage
+- Run complete maintenance cycle
+- Quick audit only
+- Fix common issues automatically
+- Generate quality reports
+  - Maintenance Workflow
+    - Daily Maintenance (5 minutes)
+- Automated daily health check
+- Results will be displayed:
+- ✅ Quality Score: 92%
+- ✅ Critical Issues: 0
+- ✅ Link Health: 98%
+  - Weekly Maintenance (15 minutes)
+- Comprehensive weekly audit
+- Review results and apply fixes
+- Generate weekly summary
+  - Monthly Maintenance (30 minutes)
+- Deep analysis and optimization
+- Review trend reports
+- Stakeholder reporting
+  - Command Reference
+    - Audit Commands
+- Run comprehensive audit
+- Audit specific file
+- Generate audit report
+  - Validation Commands
+- Full validation (links, references, style)
+- Link validation only
+- Style check only
+  - Optimization Commands
+- Optimize all documentation
+- Optimize specific file
+- Preview changes (dry run)
+  - Synchronization Commands
+- Sync documentation changes
+- Monitor file changes
+- Generate changelog
+  - Reporting Commands
+- Generate comprehensive report
+- Generate HTML dashboard
+- Export CSV report
+- Generate trend analysis
+  - Quality Metrics Understanding
+    - Quality Score Components
+    - Interpreting Results
+      - High Structure Score (90%+)
+      - High Accuracy Score (90%+)
+      - High Completeness Score (90%+)
+      - High Freshness Score (90%+)
+  - Troubleshooting
+    - Common Issues
+      - Audit Fails with Import Errors
+- Check Python path
+- Install missing dependencies - Validation Reports Broken Links
+- Check specific URL
+- Update link or mark as expected failure
+- Edit docs/maintenance/config.JSON to exclude known broken links - Optimization Doesn't Apply Changes
+- Check file permissions
+- Run with verbose output
+- Check for syntax errors in optimization rules - Synchronization Conflicts
+- Check git status
+- Resolve conflicts manually
+- Then retry synchronization
+  - Getting Help
+    - Log Files
+- Check recent logs - Debug Mode
+- Run with debug output
+- Check configuration - Reset System
+- Complete reset (use with caution)
+- Clear all caches and reports
+  - Configuration
+    - Main Configuration File
+    - Custom Rules
+- docs/maintenance/custom_rules.py
+  - Integration Examples
+    - CI/CD Integration
+      - GitHub Actions
+      - GitLab CI
+    - Pre-commit Hooks
+- .pre-commit-config.YAML
+  - Slack Notifications
+- Configure notifications in config.JSON
+  - Advanced Usage
+    - Custom Audit Rules
+    - Automated Fixes
+    - Integration APIs
+- Programmatic usage
+  - Best Practices
+    - Maintenance Frequency
+    - Quality Gates
+- Pre-commit quality gate
+- Pre-merge quality gate
+- Release quality gate
+  - Team Collaboration
+  - Performance Optimization
+- Large documentation sets
+- Incremental audits
+- Cached results
+  - Support and Resources
+    - Documentation
+    - Community Resources
+    - Professional Services
 
 **Version**: 1.0.0 | **Last Updated**: 2025-10-10
 
