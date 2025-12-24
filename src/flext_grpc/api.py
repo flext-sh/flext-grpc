@@ -13,9 +13,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TypeVar
 
+from flext_core import FlextModels, r
 from pydantic import BaseModel
 
-from flext import FlextModels, r
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels

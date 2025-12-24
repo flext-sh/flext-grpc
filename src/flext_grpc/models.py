@@ -13,13 +13,12 @@ from __future__ import annotations
 from datetime import datetime
 from typing import TypeVar
 
-from flext_core._models.entity import FlextModelsEntity
-from pydantic import BaseModel, Field, computed_field, field_validator
-
-from flext import (
+from flext_core import (
     FlextModels as m_core,
     FlextResult as r,
 )
+from flext_core._models.entity import FlextModelsEntity
+from pydantic import BaseModel, Field, computed_field, field_validator
 
 
 class FlextGrpcModels(m_core):
@@ -159,7 +158,9 @@ class FlextGrpcModels(m_core):
         class SecurityConfig(FlextModelsEntity.Value):
             """Generic gRPC security configuration with validation."""
 
-            tls_enabled: bool = Field(default=False, description="Enable TLS encryption")
+            tls_enabled: bool = Field(
+                default=False, description="Enable TLS encryption"
+            )
             tls_cert_file: str | None = Field(
                 default=None,
                 description="TLS certificate file path",
@@ -172,8 +173,12 @@ class FlextGrpcModels(m_core):
                 default=None,
                 description="TLS CA certificate file path",
             )
-            auth_enabled: bool = Field(default=False, description="Enable authentication")
-            auth_token: str | None = Field(default=None, description="Authentication token")
+            auth_enabled: bool = Field(
+                default=False, description="Enable authentication"
+            )
+            auth_token: str | None = Field(
+                default=None, description="Authentication token"
+            )
             client_cert_required: bool = Field(
                 default=False,
                 description="Require client certificates",
@@ -247,7 +252,9 @@ class FlextGrpcModels(m_core):
         class StreamingConfig(FlextModelsEntity.Value):
             """Generic gRPC streaming configuration."""
 
-            enabled: bool = Field(default=True, description="Enable streaming operations")
+            enabled: bool = Field(
+                default=True, description="Enable streaming operations"
+            )
             max_concurrent_streams: int = Field(
                 default=10,
                 ge=1,
@@ -304,12 +311,16 @@ class FlextGrpcModels(m_core):
         class MonitoringConfig(FlextModelsEntity.Value):
             """Generic gRPC monitoring and observability configuration."""
 
-            metrics_enabled: bool = Field(default=True, description="Enable metrics collection")
+            metrics_enabled: bool = Field(
+                default=True, description="Enable metrics collection"
+            )
             tracing_enabled: bool = Field(
                 default=False,
                 description="Enable distributed tracing",
             )
-            health_check_enabled: bool = Field(default=True, description="Enable health checks")
+            health_check_enabled: bool = Field(
+                default=True, description="Enable health checks"
+            )
             health_check_interval: int = Field(
                 default=30,
                 ge=5,
@@ -341,7 +352,9 @@ class FlextGrpcModels(m_core):
                 return value
 
             @classmethod
-            def validate_enum(cls, value: str, allowed: set[str], field_name: str) -> str:
+            def validate_enum(
+                cls, value: str, allowed: set[str], field_name: str
+            ) -> str:
                 """Generic enum validation."""
                 if value not in allowed:
                     msg = f"{field_name} must be one of {allowed}, got {value}"
@@ -349,7 +362,9 @@ class FlextGrpcModels(m_core):
                 return value
 
             @classmethod
-            def validate_list_not_empty(cls, value: list[object], field_name: str) -> list[object]:
+            def validate_list_not_empty(
+                cls, value: list[object], field_name: str
+            ) -> list[object]:
                 """Generic list validation."""
                 if not value:
                     msg = f"{field_name} cannot be empty"
@@ -418,7 +433,13 @@ class FlextGrpcModels(m_core):
             @classmethod
             def validate_entity_type(cls, v: str) -> str:
                 """Validate entity type against supported types."""
-                supported = frozenset({"server", "client", "channel", "service", "stream"})
+                supported = frozenset({
+                    "server",
+                    "client",
+                    "channel",
+                    "service",
+                    "stream",
+                })
                 if v not in supported:
                     msg = f"Unsupported entity type: {v}. Supported: {supported}"
                     raise ValueError(msg)

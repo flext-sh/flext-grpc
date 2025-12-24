@@ -10,10 +10,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_core import r
 from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext import r
 from flext_grpc.models import FlextGrpcModels
 
 # Import configuration models from models.py (centralized location)

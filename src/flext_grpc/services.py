@@ -19,8 +19,8 @@ from queue import Queue
 from typing import TypeVar
 
 import grpc
+from flext_core import FlextTypes, r
 
-from flext import FlextTypes, r
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.proto import (

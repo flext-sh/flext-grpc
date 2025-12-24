@@ -7,13 +7,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext import (
+from flext_core import (
     FlextDecorators,
     FlextExceptions,
     FlextHandlers,
     FlextResult,
     FlextServiceBase,
 )
+
 from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
 from flext_grpc.constants import FlextGrpcConstants

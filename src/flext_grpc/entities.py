@@ -13,11 +13,11 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Self, TypeVar
 
+from flext_core import r
 from flext_core._models.entity import FlextModelsEntity
 from flext_core.models import FlextModels
 from pydantic import BaseModel, Field, field_validator
 
-from flext import r
 from flext_grpc.constants import c
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.typings import t
@@ -198,7 +198,8 @@ class FlextGrpcEntities:
         def connect_to(self, target: str) -> r[Self]:
             """Connect functionally."""
             channel = FlextGrpcEntities.Channel(
-                target=target, state=c.Grpc.ChannelState.IDLE,
+                target=target,
+                state=c.Grpc.ChannelState.IDLE,
             )
             return r.ok(self.model_copy(update={"channel": channel}))
 

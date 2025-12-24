@@ -19,6 +19,7 @@ from uuid import uuid4
 
 import grpc
 import psutil
+from flext_core import r
 from flext_core.loggings import FlextLogger
 from flext_core.utilities import u_core
 from google.protobuf import json_format
@@ -26,7 +27,6 @@ from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.json_format import MessageToDict, MessageToJson
 from google.protobuf.message import Message
 
-from flext import r
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
@@ -291,7 +291,8 @@ class FlextGrpcUtilities(u_core):
             try:
                 # Chain validation steps using railway pattern
                 return (
-                    FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
+                    FlextGrpcUtilities.MessageValidation
+                    .validate_message_basic_checks(
                         message_instance,
                     )
                     .flat_map(
