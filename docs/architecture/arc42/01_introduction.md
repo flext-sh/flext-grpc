@@ -92,9 +92,7 @@
 
 | Stakeholder          | Role      | Responsibilities                         | Concerns       |
 | -------------------- | --------- | ---------------------------------------- | -------------- |
-| **FLEXT Developers** | End Users | Implement microservices using FLEXT-gRPC | API usability, |
-
-     performance, reliability  |
+| **FLEXT Developers** | End Users | Implement microservices using FLEXT-gRPC | API usability, performance, reliability |
 
 | **System Architects** | Decision Makers | Design microservices architecture | Scalability,
 security, compliance |
@@ -107,9 +105,7 @@ ecosystem compatibility |
 
 | Stakeholder           | Role       | Responsibilities                | Concerns     |
 | --------------------- | ---------- | ------------------------------- | ------------ |
-| **Quality Assurance** | Validators | Test and validate functionality | Testability, |
-
-     reliability, performance             |
+| **Quality Assurance** | Validators | Test and validate functionality | Testability, reliability, performance |
 
 | **Security Team** | Guardians | Ensure security compliance | Vulnerabilities,
 audit trails, compliance |
@@ -170,9 +166,7 @@ standards compliance, risk management |
 | Term                 | Definition                                                    |
 | -------------------- | ------------------------------------------------------------- |
 | **gRPC**             | Google Remote Procedure Call - high-performance RPC framework |
-| **Protocol Buffers** | Google's language-neutral, platform-neutral,                  |
-
-     extensible mechanism for serializing structured data |
+| **Protocol Buffers** | Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data |
 
 | **Railway Pattern** | Functional error handling pattern using Result types |
 | **Clean Architecture** | Architectural pattern separating business logic from infrastructure concerns |

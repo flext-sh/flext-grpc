@@ -18,8 +18,8 @@
     - [Layer Boundaries](#layer-boundaries)
     - [Dependency Rules](#dependency-rules)
     - [Interface Design](#interface-design)
-- [Domain defines interfaces](#domain-defines-interfaces)
-- [Infrastructure implements interfaces](#infrastructure-implements-interfaces)
+      - Domain defines interfaces
+      - Infrastructure implements interfaces
   - [References](#references)
   - [Notes](#notes)
 
