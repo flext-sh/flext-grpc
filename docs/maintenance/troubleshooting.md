@@ -2,123 +2,123 @@
 
 ## Table of Contents
 
-- [Documentation Maintenance Troubleshooting Guide](#documentation-maintenance-troubleshooting-guide)
-  - [Quick Diagnosis](#quick-diagnosis)
-    - [System Health Check](#system-health-check)
-- [Quick health assessment](#quick-health-assessment)
-- [Check for critical issues](#check-for-critical-issues)
-- [Verify system components](#verify-system-components)
-  - [Common Symptoms and Solutions](#common-symptoms-and-solutions)
-  - [🔍 Audit Issues](#-audit-issues)
-    - [Symptom: Audit fails with import errors](#symptom-audit-fails-with-import-errors)
-- [Install missing dependencies](#install-missing-dependencies)
-- [Or install individually](#or-install-individually)
-- [Verify installation](#verify-installation)
-  - [Symptom: Audit reports low quality scores](#symptom-audit-reports-low-quality-scores)
-- [Check current configuration](#check-current-configuration)
-- [Run detailed audit](#run-detailed-audit)
-- [Adjust quality thresholds if needed](#adjust-quality-thresholds-if-needed)
-- [Edit docs/maintenance/config.JSON](#edit-docsmaintenanceconfigjson)
-- [Or fix content issues](#or-fix-content-issues)
-  - [Symptom: Audit finds false positives](#symptom-audit-finds-false-positives)
-- [Create custom audit rules](#create-custom-audit-rules)
-- [docs/maintenance/custom_rules.py](#docsmaintenancecustom_rulespy)
-  - [🔗 Validation Issues](#-validation-issues)
-    - [Symptom: Link validation times out](#symptom-link-validation-times-out)
-- [Increase timeout in config](#increase-timeout-in-config)
-- [Edit docs/maintenance/config.JSON](#edit-docsmaintenanceconfigjson)
-- [Or exclude problematic domains](#or-exclude-problematic-domains)
-  - [Symptom: False broken link reports](#symptom-false-broken-link-reports)
-- [Add to ignore patterns](#add-to-ignore-patterns)
-- [docs/maintenance/config.JSON](#docsmaintenanceconfigjson)
-  - [Symptom: Style validation too strict](#symptom-style-validation-too-strict)
-- [Adjust style rules](#adjust-style-rules)
-- [docs/maintenance/config.JSON](#docsmaintenanceconfigjson)
-  - [🔧 Optimization Issues](#-optimization-issues)
-    - [Symptom: Optimization doesn't apply changes](#symptom-optimization-doesnt-apply-changes)
-- [Check file permissions](#check-file-permissions)
-- [Check if dry-run is enabled](#check-if-dry-run-is-enabled)
-- [Fix permissions](#fix-permissions)
-- [Run without dry-run](#run-without-dry-run)
-- [Or run with explicit file](#or-run-with-explicit-file)
-  - [Symptom: Table of contents not generating](#symptom-table-of-contents-not-generating)
-- [Check heading count](#check-heading-count)
-- [Adjust TOC settings](#adjust-toc-settings)
-- [docs/maintenance/config.JSON](#docsmaintenanceconfigjson)
-  - [🔄 Synchronization Issues](#-synchronization-issues)
-    - [Symptom: Git operations fail](#symptom-git-operations-fail)
-- [Check git status](#check-git-status)
-- [Configure git user (if needed)](#configure-git-user-if-needed)
-- [Check repository state](#check-repository-state)
-  - [Symptom: Merge conflicts in documentation](#symptom-merge-conflicts-in-documentation)
-- [Check for conflicts](#check-for-conflicts)
-- [Resolve manually or use automated resolution](#resolve-manually-or-use-automated-resolution)
-- [Create backup before resolving](#create-backup-before-resolving)
-  - [📊 Reporting Issues](#-reporting-issues)
-    - [Symptom: Reports not generating](#symptom-reports-not-generating)
-- [Ensure reports directory exists](#ensure-reports-directory-exists)
-- [Run audit first](#run-audit-first)
-- [Then generate report](#then-generate-report)
-  - [Symptom: Dashboard not displaying correctly](#symptom-dashboard-not-displaying-correctly)
-- [Check dashboard file](#check-dashboard-file)
-- [Regenerate dashboard](#regenerate-dashboard)
-- [Open in browser](#open-in-browser)
-  - [🚨 Critical Issues](#-critical-issues)
-    - [Symptom: System completely broken](#symptom-system-completely-broken)
-- [Complete system reset](#complete-system-reset)
-- [Reinstall dependencies](#reinstall-dependencies)
-- [Verify system integrity](#verify-system-integrity)
-  - [Symptom: Data corruption in reports](#symptom-data-corruption-in-reports)
-- [Clear corrupted reports](#clear-corrupted-reports)
-- [Restore from backup](#restore-from-backup)
-- [Regenerate reports](#regenerate-reports)
-  - [🔧 Advanced Troubleshooting](#-advanced-troubleshooting)
-    - [Debug Mode](#debug-mode)
-- [Enable debug logging](#enable-debug-logging)
-- [Run with verbose output](#run-with-verbose-output)
-- [Check debug logs](#check-debug-logs)
-  - [Performance Issues](#performance-issues)
-- [Profile execution time](#profile-execution-time)
-- [Check for bottlenecks](#check-for-bottlenecks)
-  - [Memory Issues](#memory-issues)
-- [Monitor memory usage](#monitor-memory-usage)
-- [Kill if needed](#kill-if-needed)
-  - [🆘 Getting Help](#-getting-help)
-    - [Self-Diagnosis Checklist](#self-diagnosis-checklist)
-    - [Diagnostic Commands](#diagnostic-commands)
-- [System information](#system-information)
-- [Repository status](#repository-status)
-- [File system check](#file-system-check)
-- [Network connectivity](#network-connectivity)
-  - [Log Analysis](#log-analysis)
-- [Check recent errors](#check-recent-errors)
-- [Analyze performance](#analyze-performance)
-- [Check for patterns](#check-for-patterns)
-  - [Community Support](#community-support)
-  - [🚀 Preventive Maintenance](#-preventive-maintenance)
-    - [Regular Tasks](#regular-tasks)
-- [Weekly system health](#weekly-system-health)
-- [Monthly deep analysis](#monthly-deep-analysis)
-- [Daily backup](#daily-backup)
-  - [Configuration Validation](#configuration-validation)
-- [Validate configuration](#validate-configuration)
-- [Check for deprecated settings](#check-for-deprecated-settings)
-  - [Dependency Updates](#dependency-updates)
-- [Update dependencies](#update-dependencies)
-- [Check for security vulnerabilities](#check-for-security-vulnerabilities)
-- [Test after updates](#test-after-updates)
-  - [📋 Recovery Procedures](#-recovery-procedures)
-    - [Data Recovery](#data-recovery)
-- [From automatic backup](#from-automatic-backup)
-- [From git history](#from-git-history)
-- [From manual backup](#from-manual-backup)
-  - [Configuration Recovery](#configuration-recovery)
-- [Reset to defaults](#reset-to-defaults)
-- [Merge with custom settings](#merge-with-custom-settings)
-- [Edit manually or use merge tool](#edit-manually-or-use-merge-tool)
-  - [System Recovery](#system-recovery)
-- [Complete rebuild](#complete-rebuild)
-- [Verify recovery](#verify-recovery)
+- Documentation Maintenance Troubleshooting Guide
+  - Quick Diagnosis
+    - System Health Check
+- Quick Health Assessment
+- Check for Critical Issues
+- Verify System Components
+  - Common Symptoms and Solutions
+  - 🔍 Audit Issues
+    - Symptom: Audit fails with import errors
+- Install Missing Dependencies
+- Or Install Individually
+- Verify Installation
+  - Symptom: Audit reports low quality scores
+- Check Current Configuration
+- Run Detailed Audit
+- Adjust Quality Thresholds if Needed
+- Edit docs/maintenance/config.JSON
+- Or fix content issues
+  - Symptom: Audit finds false positives
+- Create custom audit rules
+- docs/maintenance/custom_rules.py
+  - 🔗 Validation Issues
+    - Symptom: Link validation times out
+- Increase timeout in config
+- Edit docs/maintenance/config.JSON
+- Or exclude problematic domains
+  - Symptom: False broken link reports
+- Add to ignore patterns
+- docs/maintenance/config.JSON
+  - Symptom: Style validation too strict
+- Adjust style rules
+- docs/maintenance/config.JSON
+  - 🔧 Optimization Issues
+    - Symptom: Optimization doesn't apply changes
+- Check file permissions
+- Check if dry-run is enabled
+- Fix permissions
+- Run without dry-run
+- Or run with explicit file
+  - Symptom: Table of contents not generating
+- Check heading count
+- Adjust TOC settings
+- docs/maintenance/config.JSON
+  - 🔄 Synchronization Issues
+    - Symptom: Git operations fail
+- Check git status
+- Configure git user (if needed)
+- Check repository state
+  - Symptom: Merge conflicts in documentation
+- Check for conflicts
+- Resolve manually or use automated resolution
+- Create backup before resolving
+  - 📊 Reporting Issues
+    - Symptom: Reports not generating
+- Ensure reports directory exists
+- Run audit first
+- Then generate report
+  - Symptom: Dashboard not displaying correctly
+- Check dashboard file
+- Regenerate dashboard
+- Open in browser
+  - 🚨 Critical Issues
+    - Symptom: System completely broken
+- Complete system reset
+- Reinstall dependencies
+- Verify system integrity
+  - Symptom: Data corruption in reports
+- Clear corrupted reports
+- Restore from backup
+- Regenerate reports
+  - 🔧 Advanced Troubleshooting
+    - Debug Mode
+- Enable debug logging
+- Run with verbose output
+- Check debug logs
+  - Performance Issues
+- Profile execution time
+- Check for bottlenecks
+  - Memory Issues
+- Monitor memory usage
+- Kill if needed
+  - 🆘 Getting Help
+    - Self-Diagnosis Checklist
+    - Diagnostic Commands
+- System information
+- Repository status
+- File system check
+- Network connectivity
+  - Log Analysis
+- Check recent errors
+- Analyze performance
+- Check for patterns
+  - Community Support
+  - 🚀 Preventive Maintenance
+    - Regular Tasks
+- Weekly system health
+- Monthly deep analysis
+- Daily backup
+  - Configuration Validation
+- Validate configuration
+- Check for deprecated settings
+  - Dependency Updates
+- Update dependencies
+- Check for security vulnerabilities
+- Test after updates
+  - 📋 Recovery Procedures
+    - Data Recovery
+- From automatic backup
+- From git history
+- From manual backup
+  - Configuration Recovery
+- Reset to defaults
+- Merge with custom settings
+- Edit manually or use merge tool
+  - System Recovery
+- Complete rebuild
+- Verify recovery
 
 **Version**: 1.0.0 | **Last Updated**: 2025-10-10
 
@@ -129,13 +129,13 @@ Comprehensive troubleshooting guide for the FLEXT-gRPC Documentation Maintenance
 ### System Health Check
 
 ```bash
-# Quick health assessment
+### Quick Health Assessment
 make docs-health
 
-# Check for critical issues
+### Check for Critical Issues
 make docs-notify-critical
 
-# Verify system components
+### Verify System Components
 python -c "
 import sys
 sys.path.insert(0, 'docs/maintenance')
@@ -161,13 +161,13 @@ ModuleNotFoundError: No module named 'frontmatter'
 **Solution:**
 
 ```bash
-# Install missing dependencies
+### Install Missing Dependencies
 pip install -r docs/maintenance/requirements.txt
 
-# Or install individually
+### Or Install Individually
 pip install python-frontmatter requests beautifulsoup4 markdown
 
-# Verify installation
+### Verify Installation
 python -c "import frontmatter, requests, markdown; print('✅ Dependencies installed')"
 ```
 
@@ -178,18 +178,18 @@ python -c "import frontmatter, requests, markdown; print('✅ Dependencies insta
 **Diagnosis:**
 
 ```bash
-# Check current configuration
-cat docs/maintenance/config.json | jq '.audit.quality_thresholds'
+### Check Current Configuration
+cat docs/maintenance/config.JSON | jq '.audit.quality_thresholds'
 
-# Run detailed audit
+### Run Detailed Audit
 PYTHONPATH=. python docs/maintenance/audit.py --verbose
 ```
 
 **Solution:**
 
 ```bash
-# Adjust quality thresholds if needed
-# Edit docs/maintenance/config.json
+### Adjust Quality Thresholds if Needed
+# Edit docs/maintenance/config.JSON
 {
   "audit": {
     "quality_thresholds": {
@@ -199,7 +199,7 @@ PYTHONPATH=. python docs/maintenance/audit.py --verbose
   }
 }
 
-# Or fix content issues
+### Or Fix Content Issues
 make docs-fix
 ```
 
@@ -233,7 +233,7 @@ TimeoutError: Request timed out
 
 ```bash
 # Increase timeout in config
-# Edit docs/maintenance/config.json
+# Edit docs/maintenance/config.JSON
 {
   "validation": {
     "link_timeout": 30,  // Increased from 10
@@ -261,7 +261,7 @@ TimeoutError: Request timed out
 
 ```bash
 # Add to ignore patterns
-# docs/maintenance/config.json
+# docs/maintenance/config.JSON
 {
   "validation": {
     "ignore_patterns": [
@@ -285,7 +285,7 @@ Line too long (120 > 88 characters)
 
 ```bash
 # Adjust style rules
-# docs/maintenance/config.json
+# docs/maintenance/config.JSON
 {
   "style": {
     "max_line_length": 120,  // Increased from 88
@@ -334,7 +334,7 @@ PYTHONPATH=. python docs/maintenance/optimization.py --file docs/README.md
 grep -c "^#" docs/README.md
 
 # Adjust TOC settings
-# docs/maintenance/config.json
+# docs/maintenance/config.JSON
 {
   "optimization": {
     "toc_min_headings": 2,  // Reduced from 4
@@ -554,7 +554,7 @@ grep -c "failed\|error" docs/maintenance/logs/*.log
    # Create diagnostic bundle
    tar -czf diagnostic_$(date +%Y%m%d).tar.gz \
      docs/maintenance/logs/ \
-     docs/maintenance/config.json \
+     docs/maintenance/config.JSON \
      docs/maintenance/reports/ \
      --exclude="*.cache"
    ```
@@ -591,12 +591,12 @@ Logs: [Relevant log excerpts]
 # Validate configuration
 python -c "
 import json
-config = json.load(open('docs/maintenance/config.json'))
+config = json.load(open('docs/maintenance/config.JSON'))
 print('✅ Configuration valid')
 "
 
 # Check for deprecated settings
-grep -r "deprecated\|obsolete" docs/maintenance/config.json
+grep -r "deprecated\|obsolete" docs/maintenance/config.JSON
 ```
 
 ### Dependency Updates
@@ -632,7 +632,7 @@ tar -xzf docs/maintenance/backups/docs_backup_*.tar.gz
 
 ```bash
 # Reset to defaults
-cp docs/maintenance/config.default.json docs/maintenance/config.json
+cp docs/maintenance/config.default.json docs/maintenance/config.JSON
 
 # Merge with custom settings
 # Edit manually or use merge tool
