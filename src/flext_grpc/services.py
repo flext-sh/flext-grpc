@@ -20,7 +20,7 @@ from typing import TypeVar
 
 import grpc
 
-from flext import FlextTypes, r, s
+from flext import FlextTypes, r
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.proto import (

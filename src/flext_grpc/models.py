@@ -19,7 +19,6 @@ from pydantic import BaseModel, Field, computed_field, field_validator
 from flext import (
     FlextModels as m_core,
     FlextResult as r,
-    FlextUtilities as flext_u,
 )
 
 

@@ -15,7 +15,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from flext import FlextModels, r, s
+from flext import FlextModels, r
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
