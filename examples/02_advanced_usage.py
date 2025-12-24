@@ -15,8 +15,7 @@ from __future__ import annotations
 
 from typing import cast
 
-from flext_core import FlextConstants, FlextResult
-
+from flext import FlextConstants, FlextResult
 from flext_grpc import FlextGrpc, FlextGrpcSettings
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities

@@ -10,190 +10,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import c as c_core, r
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext_grpc.constants import c
+from flext import r
+from flext_grpc.models import FlextGrpcModels
 
-
-class GrpcSecurityConfig(BaseModel):
-    """Generic gRPC security configuration with validation."""
-
-    tls_enabled: bool = Field(default=False, description="Enable TLS encryption")
-    tls_cert_file: str | None = Field(
-        default=None,
-        description="TLS certificate file path",
-    )
-    tls_key_file: str | None = Field(
-        default=None,
-        description="TLS private key file path",
-    )
-    tls_ca_file: str | None = Field(
-        default=None,
-        description="TLS CA certificate file path",
-    )
-    auth_enabled: bool = Field(default=False, description="Enable authentication")
-    auth_token: str | None = Field(default=None, description="Authentication token")
-    client_cert_required: bool = Field(
-        default=False,
-        description="Require client certificates",
-    )
-
-    @model_validator(mode="after")
-    def validate_security_config(self) -> GrpcSecurityConfig:
-        """Validate security configuration consistency."""
-        if self.tls_enabled and not self.tls_cert_file:
-            msg = "TLS certificate required when TLS is enabled"
-            raise ValueError(msg)
-        if self.auth_enabled and not self.auth_token:
-            msg = "Auth token required when authentication is enabled"
-            raise ValueError(msg)
-        return self
-
-
-class GrpcNetworkConfig(BaseModel):
-    """Generic gRPC network configuration with validation."""
-
-    host: str = Field(
-        default=c_core.Platform.DEFAULT_HOST,
-        min_length=1,
-        description="gRPC server host",
-    )
-    port: int = Field(
-        default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        ge=1,
-        le=65535,
-        description="gRPC server port",
-    )
-    max_connections: int = Field(
-        default=1000,
-        ge=1,
-        le=10000,
-        description="Maximum concurrent connections",
-    )
-    keepalive_time: int = Field(
-        default=30,
-        ge=1,
-        description="Keepalive ping interval (seconds)",
-    )
-    keepalive_timeout: int = Field(
-        default=5,
-        ge=1,
-        description="Keepalive timeout (seconds)",
-    )
-
-
-class GrpcPerformanceConfig(BaseModel):
-    """Generic gRPC performance configuration."""
-
-    max_workers: int = Field(
-        default=c.Grpc.Service.DEFAULT_MAX_WORKERS,
-        ge=1,
-        le=1000,
-        description="Maximum worker threads",
-    )
-    max_concurrent_rpcs: int = Field(
-        default=1000,
-        ge=1,
-        le=10000,
-        description="Maximum concurrent RPCs",
-    )
-    max_receive_message_length: int = Field(
-        default=4 * 1024 * 1024,  # 4MB
-        ge=1024,
-        le=100 * 1024 * 1024,  # 100MB
-        description="Maximum receive message length (bytes)",
-    )
-    max_send_message_length: int = Field(
-        default=4 * 1024 * 1024,  # 4MB
-        ge=1024,
-        le=100 * 1024 * 1024,  # 100MB
-        description="Maximum send message length (bytes)",
-    )
-    thread_pool_size: int = Field(
-        default=50,
-        ge=1,
-        le=200,
-        description="Thread pool size",
-    )
-
-
-class GrpcStreamingConfig(BaseModel):
-    """Generic gRPC streaming configuration."""
-
-    enabled: bool = Field(default=True, description="Enable streaming operations")
-    max_concurrent_streams: int = Field(
-        default=10,
-        ge=1,
-        le=100,
-        description="Maximum concurrent streams",
-    )
-    stream_buffer_size: int = Field(
-        default=500,
-        ge=10,
-        le=10000,
-        description="Stream buffer size",
-    )
-    max_stream_duration: int = Field(
-        default=300,  # 5 minutes
-        ge=10,
-        le=3600,  # 1 hour
-        description="Maximum stream duration (seconds)",
-    )
-    enable_compression: bool = Field(
-        default=True,
-        description="Enable message compression",
-    )
-
-
-class GrpcClientConfig(BaseModel):
-    """Generic gRPC client configuration."""
-
-    timeout: float = Field(
-        default=c_core.Network.DEFAULT_TIMEOUT,
-        gt=0,
-        le=300,
-        description="RPC timeout (seconds)",
-    )
-    retry_attempts: int = Field(
-        default=3,
-        ge=0,
-        le=10,
-        description="Maximum retry attempts",
-    )
-    retry_backoff: float = Field(
-        default=1.0,
-        gt=0,
-        le=60,
-        description="Retry backoff multiplier",
-    )
-    load_balancing_policy: str = Field(
-        default="round_robin",
-        description="Load balancing policy",
-    )
-    channel_options: dict[str, str | int] = Field(
-        default_factory=dict,
-        description="Additional channel options",
-    )
-
-
-class GrpcMonitoringConfig(BaseModel):
-    """Generic gRPC monitoring and observability configuration."""
-
-    metrics_enabled: bool = Field(default=True, description="Enable metrics collection")
-    tracing_enabled: bool = Field(
-        default=False,
-        description="Enable distributed tracing",
-    )
-    health_check_enabled: bool = Field(default=True, description="Enable health checks")
-    health_check_interval: int = Field(
-        default=30,
-        ge=5,
-        le=300,
-        description="Health check interval (seconds)",
-    )
-    log_level: str = Field(default="INFO", description="Logging level")
+# Import configuration models from models.py (centralized location)
+_m = FlextGrpcModels
+GrpcSecurityConfig = _m.Settings.SecurityConfig
+GrpcNetworkConfig = _m.Settings.NetworkConfig
+GrpcPerformanceConfig = _m.Settings.PerformanceConfig
+GrpcStreamingConfig = _m.Settings.StreamingConfig
+GrpcClientConfig = _m.Settings.ClientSettingsConfig
+GrpcMonitoringConfig = _m.Settings.MonitoringConfig
 
 
 class FlextGrpcSettings(BaseModel):

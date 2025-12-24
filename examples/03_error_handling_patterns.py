@@ -15,8 +15,7 @@ from __future__ import annotations
 import time
 from typing import NoReturn
 
-from flext_core import FlextConstants, FlextLogger, FlextResult
-
+from flext import FlextConstants, FlextLogger, FlextResult
 from flext_grpc import (
     FlextGrpcConnectionError,
     FlextGrpcConstants,

@@ -237,8 +237,6 @@ class GrpcServerAdapter(ServerInterface):
 
 This ADR established the fundamental architectural approach for FLEXT-gRPC. All subsequent development follows these Clean Architecture principles. The architecture has proven effective for maintainability and testability,
 
-     though it does add some initial complexity.
-
 The layer separation has been particularly valuable for:
 
 - Unit testing (domain logic can be tested without grpcio)

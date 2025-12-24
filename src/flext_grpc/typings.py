@@ -16,8 +16,9 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Protocol, override, runtime_checkable
 
+# Note: All protocol definitions are centralized in protocols.py
+# Use p.Grpc.* for protocols (ServerProtocol, ClientProtocol, GrpcChannel, etc.)
 from flext_grpc.constants import FlextGrpcConstants
 
 c = FlextGrpcConstants
@@ -52,7 +53,7 @@ class FlextGrpcTypes(FlextTypes):
     """
 
     # Type aliases for convenience (moved inside class)
-    type ConfigValue = str | int | bool | list[str] | dict[str, object] | None
+    # ConfigValue inherited from FlextTypes
 
     # gRPC target types (moved from flext-core to domain-specific location)
     type GrpcTarget = str
@@ -274,48 +275,10 @@ class FlextGrpcTypes(FlextTypes):
         """
 
     # =========================================================================
-    # GRPC PROTOCOLS - Protocol definitions for gRPC interfaces
+    # GRPC PROTOCOLS - Moved to protocols.py
     # =========================================================================
-
-    class Protocols:
-        """gRPC protocol types for interface definitions."""
-
-        @runtime_checkable
-        class GrpcChannel(Protocol):
-            """Protocol for gRPC channel operations."""
-
-            def close(self) -> None:
-                """Close the channel."""
-                ...
-
-            def unsubscribe(self, callback: object) -> None:
-                """Remove a subscription callback from the channel."""
-                ...
-
-        @runtime_checkable
-        class GrpcServer(Protocol):
-            """Protocol for gRPC server operations."""
-
-            def add_generic_rpc_handlers(self, handlers: list[object]) -> None:
-                """Add generic RPC handlers."""
-                ...
-
-            def start(self) -> None:
-                """Start the server."""
-                ...
-
-            def stop(self, grace: float | None) -> None:
-                """Stop the server with optional grace period."""
-                ...
-
-        @runtime_checkable
-        class GrpcStub(Protocol):
-            """Protocol for gRPC client stub."""
-
-            @override
-            def __init__(self, channel: FlextGrpcTypes.Protocols.GrpcChannel) -> None:
-                """Initialize the stub with a channel."""
-                ...
+    # All protocol definitions are centralized in protocols.py
+    # Use p.Grpc.* for protocols (GrpcChannel, GrpcServer, GrpcStub, etc.)
 
     # =========================================================================
     # GRPC VALIDATION - Helper functions for gRPC operations

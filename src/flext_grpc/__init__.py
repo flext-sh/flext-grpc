@@ -7,16 +7,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import (
+from flext import (
     FlextDecorators,
     FlextExceptions,
-    FlextExceptions as FlextGrpcExceptions,
     FlextHandlers,
-    FlextMixins,
     FlextResult,
-    FlextService,
+    FlextServiceBase,
 )
-
 from flext_grpc.__version__ import __version__, __version_info__
 from flext_grpc.api import FlextGrpc
 from flext_grpc.constants import FlextGrpcConstants
@@ -41,29 +38,29 @@ p = FlextGrpcProtocols  # Protocols (FlextGrpcProtocols extends FlextProtocols)
 r = FlextResult  # Shared from flext-core
 e = FlextExceptions  # Shared from flext-core
 d = FlextDecorators  # Shared from flext-core
-s = FlextService  # Shared from flext-core
-x = FlextMixins  # Shared from flext-core
+s = FlextServiceBase  # Shared from flext-core
+# x = FlextMixins  # Not available in flext
 h = FlextHandlers  # Shared from flext-core
 
 
 # Exception classes with real inheritance for backward compatibility
-class FlextGrpcError(FlextGrpcExceptions.BaseError):
+class FlextGrpcError(FlextExceptions.BaseError):
     """FlextGrpcError - real inheritance from BaseError."""
 
 
-class FlextGrpcSettingsurationError(FlextGrpcExceptions.ConfigurationError):
+class FlextGrpcSettingsurationError(FlextExceptions.ConfigurationError):
     """FlextGrpcSettingsurationError - real inheritance from ConfigurationError."""
 
 
-class FlextGrpcConnectionError(FlextGrpcExceptions.ConnectionError):
+class FlextGrpcConnectionError(FlextExceptions.ConnectionError):
     """FlextGrpcConnectionError - real inheritance from ConnectionError."""
 
 
-class FlextGrpcTimeoutError(FlextGrpcExceptions.TimeoutError):
+class FlextGrpcTimeoutError(FlextExceptions.TimeoutError):
     """FlextGrpcTimeoutError - real inheritance from TimeoutError."""
 
 
-class FlextGrpcValidationError(FlextGrpcExceptions.ValidationError):
+class FlextGrpcValidationError(FlextExceptions.ValidationError):
     """FlextGrpcValidationError - real inheritance from ValidationError."""
 
 
@@ -102,7 +99,7 @@ __all__ = [
     "FlextGrpcConstants",
     "FlextGrpcEntities",
     "FlextGrpcError",
-    "FlextGrpcExceptions",
+    "FlextExceptions",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcService",

@@ -14,11 +14,11 @@ from collections.abc import Iterator
 from typing import override
 
 import grpc
-from flext_core import c as c_core
 
 # Import protobuf classes - these are dynamically generated
 from grpc import ServicerContext
 
+from flext import c as c_core
 from flext_grpc.proto.flext_grpc_pb2 import (
     EchoRequest,
     EchoResponse,

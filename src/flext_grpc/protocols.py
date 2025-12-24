@@ -65,13 +65,13 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def stop_server(
-                self, *, grace_period: float = 30.0
+                self, *, grace_period: float = 30.0,
             ) -> FlextProtocols.Result[bool]:
                 """Stop gRPC server."""
                 ...
 
             def add_service(
-                self, service: object, server: object
+                self, service: object, server: object,
             ) -> FlextProtocols.Result[bool]:
                 """Add gRPC service to server."""
                 ...
@@ -127,7 +127,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def validate_connection(
-                self, channel: object
+                self, channel: object,
             ) -> FlextProtocols.Result[bool]:
                 """Validate gRPC client connection."""
                 ...
@@ -146,7 +146,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def send_data(
-                self, stream: object, data: object
+                self, stream: object, data: object,
             ) -> FlextProtocols.Result[bool]:
                 """Send data through gRPC stream."""
                 ...
@@ -203,7 +203,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def get_service_methods(
-                self, service: object
+                self, service: object,
             ) -> FlextProtocols.Result[list[str]]:
                 """Get list of service methods."""
                 ...
@@ -307,13 +307,70 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def parse_address(
-                self, address: str
+                self, address: str,
             ) -> FlextProtocols.Result[tuple[str, int]]:
                 """Parse gRPC address string."""
                 ...
 
             def validate_address(self, address: str) -> FlextProtocols.Result[bool]:
                 """Validate gRPC address format."""
+                ...
+
+        @runtime_checkable
+        class ResourceManagerProtocol(Protocol):
+            """Protocol for gRPC resource management operations."""
+
+            def acquire(self) -> r[object]:
+                """Acquire a resource."""
+                ...
+
+            def release(self, resource: object) -> r[bool]:
+                """Release a resource."""
+                ...
+
+            def cleanup(self) -> r[bool]:
+                """Cleanup all resources."""
+                ...
+
+        # =====================================================================
+        # LOW-LEVEL GRPC OBJECT PROTOCOLS
+        # =====================================================================
+        # Duck typing protocols for grpc library objects.
+
+        @runtime_checkable
+        class GrpcChannel(Protocol):
+            """Protocol for gRPC channel operations (duck typing for grpc.Channel)."""
+
+            def close(self) -> None:
+                """Close the channel."""
+                ...
+
+            def unsubscribe(self, callback: object) -> None:
+                """Remove a subscription callback from the channel."""
+                ...
+
+        @runtime_checkable
+        class GrpcServer(Protocol):
+            """Protocol for gRPC server operations (duck typing for grpc.Server)."""
+
+            def add_generic_rpc_handlers(self, handlers: list[object]) -> None:
+                """Add generic RPC handlers."""
+                ...
+
+            def start(self) -> None:
+                """Start the server."""
+                ...
+
+            def stop(self, grace: float | None) -> None:
+                """Stop the server with optional grace period."""
+                ...
+
+        @runtime_checkable
+        class GrpcStub(Protocol):
+            """Protocol for gRPC client stub (duck typing for grpc stubs)."""
+
+            def __init__(self, channel: "FlextGrpcProtocols.Grpc.GrpcChannel") -> None:
+                """Initialize the stub with a channel."""
                 ...
 
 

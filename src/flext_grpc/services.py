@@ -16,11 +16,11 @@ from abc import ABC, abstractmethod
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import Protocol, TypeVar
+from typing import TypeVar
 
 import grpc
-from flext_core import FlextTypes, r, s
 
+from flext import FlextTypes, r, s
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.proto import (
@@ -29,19 +29,15 @@ from flext_grpc.proto import (
     HealthRequest,
     add_FlextGrpcServiceServicer_to_server,
 )
+from flext_grpc.protocols import p
 from flext_grpc.real_servicer import create_real_servicer
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
 T = TypeVar("T")
 
-
-class GrpcResourceManager(Protocol):
-    """Protocol for resource management."""
-
-    def acquire(self) -> r[object]: ...
-    def release(self, resource: object) -> r[None]: ...
-    def cleanup(self) -> r[None]: ...
+# Protocol reference from centralized protocols.py for backward compatibility
+GrpcResourceManager = p.Grpc.ResourceManagerProtocol
 
 
 class ServerLifecycleManager(ABC):
@@ -180,20 +176,20 @@ class ConnectionPool:
         except Exception as e:
             return r.fail(f"Connection acquisition failed: {e}")
 
-    def release(self, connection: object) -> r[None]:
+    def release(self, connection: object) -> r[bool]:
         """Release connection back to pool."""
         try:
             with self._lock:
                 if connection in self._active:
                     self._active.remove(connection)
                     if self._pool.full():
-                        return r.ok(None)
+                        return r.ok(True)
                     self._pool.put_nowait(connection)
-                return r.ok(None)
+                return r.ok(True)
         except Exception as e:
             return r.fail(f"Connection release failed: {e}")
 
-    def cleanup(self) -> r[None]:
+    def cleanup(self) -> r[bool]:
         """Cleanup all connections."""
         with self._lock:
             self._active.clear()
@@ -202,7 +198,7 @@ class ConnectionPool:
                     self._pool.get_nowait()
                 except Exception:
                     break
-        return r.ok(None)
+        return r.ok(True)
 
 
 class GrpcServerManager(ServerLifecycleManager):
@@ -355,7 +351,7 @@ class GrpcClientManager(ClientConnectionManager):
             grpc_channel = self._active_channels[target]
             # Type narrowing: ensure grpc_channel has close method
             if hasattr(grpc_channel, "close") and callable(
-                getattr(grpc_channel, "close", None)
+                getattr(grpc_channel, "close", None),
             ):
                 grpc_channel.close()
             del self._active_channels[target]
@@ -388,7 +384,7 @@ class GrpcClientManager(ClientConnectionManager):
             # Type narrowing: ensure channel_obj is grpc.Channel
             if not isinstance(channel_obj, grpc.Channel):
                 return r[dict[str, object]].fail(
-                    f"Invalid channel type: {type(channel_obj)}"
+                    f"Invalid channel type: {type(channel_obj)}",
                 )
             grpc_channel: grpc.Channel = channel_obj
             stub = FlextGrpcServiceStub(grpc_channel)
@@ -513,7 +509,7 @@ class GrpcStreamManager(StreamProcessor):
         return r.ok(stream)
 
 
-class FlextGrpcServices(s[dict[str, object]]):
+class FlextGrpcServices:
     """Generic gRPC service facade using SOLID principles and delegation.
 
     Delegates responsibilities to specialized managers while maintaining clean API.

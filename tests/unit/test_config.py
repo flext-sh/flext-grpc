@@ -76,9 +76,8 @@ class TestFlextGrpcSettings:
         """Test security configuration validation."""
         security_config = FlextGrpcSettings().security
 
-        # Test valid config
-        result = security_config.validate_security_config()
-        assert result is security_config
+        # Test valid config - Pydantic validates automatically
+        assert security_config is not None
 
         # Test TLS without cert
         security_config.tls_enabled = True

@@ -19,7 +19,6 @@ from uuid import uuid4
 
 import grpc
 import psutil
-from flext_core import r
 from flext_core.loggings import FlextLogger
 from flext_core.utilities import u_core
 from google.protobuf import json_format
@@ -27,6 +26,7 @@ from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.json_format import MessageToDict, MessageToJson
 from google.protobuf.message import Message
 
+from flext import r
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
@@ -86,7 +86,7 @@ class FlextGrpcUtilities(u_core):
             channel = FlextGrpcEntities.Channel(
                 unique_id=str(uuid4()),
                 target=target,
-                state="idle",
+                state=c.Grpc.ChannelState.IDLE,
                 options=options or {},
             )
 
@@ -128,7 +128,7 @@ class FlextGrpcUtilities(u_core):
             channel = FlextGrpcEntities.Channel(
                 unique_id=str(uuid4()),
                 target=target,
-                state="idle",
+                state=c.Grpc.ChannelState.IDLE,
                 options=options or {},
             )
             return r.ok(channel)
@@ -984,7 +984,7 @@ class FlextGrpcUtilities(u_core):
             service_name: str,
             endpoint: str | None = None,
             metadata: dict[str, str] | None = None,
-        ) -> r[FlextGrpcModels.ServiceDefinition]:
+        ) -> r[FlextGrpcModels.Domain.ServiceDefinition]:
             """Register service endpoint for discovery.
 
             Args:
@@ -997,7 +997,7 @@ class FlextGrpcUtilities(u_core):
 
             """
             try:
-                service_def = FlextGrpcModels.ServiceDefinition(
+                service_def = FlextGrpcModels.Domain.ServiceDefinition(
                     service_name=service_name,
                     methods=[],  # Default empty methods list
                 )
@@ -1008,11 +1008,11 @@ class FlextGrpcUtilities(u_core):
                 if metadata:
                     logger = FlextLogger(__name__)
                     logger.debug("Service %s metadata: %s", service_name, metadata)
-                return r[FlextGrpcModels.ServiceDefinition].ok(
+                return r[FlextGrpcModels.Domain.ServiceDefinition].ok(
                     service_def,
                 )
             except Exception as e:
-                return r[FlextGrpcModels.ServiceDefinition].fail(
+                return r[FlextGrpcModels.Domain.ServiceDefinition].fail(
                     f"Service registration failed: {e}",
                 )
 
@@ -1254,7 +1254,7 @@ class FlextGrpcUtilities(u_core):
             request_count: int,
             error_count: int,
             avg_response_time: float,
-        ) -> r[FlextGrpcModels.ServiceMetrics]:
+        ) -> r[FlextGrpcModels.Domain.ServiceMetrics]:
             """Collect service-level metrics.
 
             Args:
@@ -1268,7 +1268,7 @@ class FlextGrpcUtilities(u_core):
 
             """
             try:
-                metrics = FlextGrpcModels.ServiceMetrics(
+                metrics = FlextGrpcModels.Domain.ServiceMetrics(
                     service_name=service_name,
                     total_requests=request_count,
                     successful_requests=request_count - error_count,
@@ -1276,8 +1276,8 @@ class FlextGrpcUtilities(u_core):
                     avg_response_time=avg_response_time,
                     active_connections=1,  # Placeholder for active connections
                 )
-                return r[FlextGrpcModels.ServiceMetrics].ok(metrics)
+                return r[FlextGrpcModels.Domain.ServiceMetrics].ok(metrics)
             except Exception as e:
-                return r[FlextGrpcModels.ServiceMetrics].fail(
+                return r[FlextGrpcModels.Domain.ServiceMetrics].fail(
                     f"Service metrics collection failed: {e}",
                 )

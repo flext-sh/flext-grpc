@@ -13,12 +13,19 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Self, TypeVar
 
-from flext_core import m as m_core, r, s, u as u_core
+from flext_core._models.entity import FlextModelsEntity
 from flext_core.models import FlextModels
 from pydantic import BaseModel, Field, field_validator
 
+from flext import r
 from flext_grpc.constants import c
+from flext_grpc.models import FlextGrpcModels
 from flext_grpc.typings import t
+
+# Import entity helpers from models.py (centralized location)
+_m = FlextGrpcModels
+EntityValidator = _m.Entities.EntityValidator
+StateMachine = _m.Entities.StateMachine
 
 # Rebuild parent model to resolve forward references before extending
 FlextModels.Entity.model_rebuild()
@@ -26,54 +33,10 @@ FlextModels.Entity.model_rebuild()
 T = TypeVar("T", bound=BaseModel)
 
 
-class EntityValidator(BaseModel):
-    """Generic entity validator using functional composition."""
-
-    @classmethod
-    def validate_required_string(cls, value: str, field_name: str) -> str:
-        """Generic string validation."""
-        return u_core.Validation.validate_required_string(value, field_name)
-
-    @classmethod
-    def validate_enum(cls, value: str, allowed: set[str], field_name: str) -> str:
-        """Generic enum validation."""
-        if value not in allowed:
-            msg = f"{field_name} must be one of {allowed}, got {value}"
-            raise ValueError(msg)
-        return value
-
-    @classmethod
-    def validate_list_not_empty[T](cls, value: list[T], field_name: str) -> list[T]:
-        """Generic list validation."""
-        if not value:
-            msg = f"{field_name} cannot be empty"
-            raise ValueError(msg)
-        return value
-
-
-class StateMachine(BaseModel):
-    """Generic state machine with functional transitions."""
-
-    def transition(
-        self,
-        current: str,
-        target: str,
-        allowed_transitions: dict[str, set[str]],
-    ) -> r[Self]:
-        """Generic state transition with validation."""
-        if (
-            current not in allowed_transitions
-            or target not in allowed_transitions[current]
-        ):
-            return r.fail(f"Invalid transition from {current} to {target}")
-        updated = self.model_copy(update={"state": target})
-        return r.ok(updated)
-
-
-class FlextGrpcEntities(s[dict[str, object]]):
+class FlextGrpcEntities:
     """Generic gRPC entity system with SOLID principles and minimal code."""
 
-    class Entity(m_core.Entity):
+    class Entity(FlextModelsEntity.Entry):
         """Generic base entity with functional patterns."""
 
         created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
@@ -235,7 +198,7 @@ class FlextGrpcEntities(s[dict[str, object]]):
         def connect_to(self, target: str) -> r[Self]:
             """Connect functionally."""
             channel = FlextGrpcEntities.Channel(
-                target=target, state=c.Grpc.ChannelState.IDLE
+                target=target, state=c.Grpc.ChannelState.IDLE,
             )
             return r.ok(self.model_copy(update={"channel": channel}))
 
