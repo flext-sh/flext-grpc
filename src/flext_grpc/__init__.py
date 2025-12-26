@@ -11,8 +11,8 @@ from flext_core import (
     FlextDecorators,
     FlextExceptions,
     FlextHandlers,
-    FlextResult,
-    FlextServiceBase,
+    FlextService,
+    r,
 )
 
 from flext_grpc.__version__ import __version__, __version_info__
@@ -36,10 +36,10 @@ c = FlextGrpcConstants  # Constants (FlextGrpcConstants extends FlextConstants)
 t = FlextGrpcTypes  # Types (FlextGrpcTypes extends FlextTypes)
 p = FlextGrpcProtocols  # Protocols (FlextGrpcProtocols extends FlextProtocols)
 
-r = FlextResult  # Shared from flext-core
+# r already imported from flext
 e = FlextExceptions  # Shared from flext-core
 d = FlextDecorators  # Shared from flext-core
-s = FlextServiceBase  # Shared from flext-core
+s = FlextService  # Shared from flext-core
 # x = FlextMixins  # Not available in flext
 h = FlextHandlers  # Shared from flext-core
 
@@ -95,12 +95,12 @@ FlextGrpcService = FlextGrpcServices
 
 __all__ = [
     "EchoRequest",
+    "FlextExceptions",
     "FlextGrpc",
     "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcEntities",
     "FlextGrpcError",
-    "FlextExceptions",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcService",

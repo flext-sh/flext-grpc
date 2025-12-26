@@ -51,7 +51,7 @@ class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
 
 # Short aliases per FLEXT convention
 tm = TestsFlextGrpcModels  # Primary test models alias
-m = TestsFlextGrpcModels   # Alternative alias for production model access
+m = TestsFlextGrpcModels  # Alternative alias for production model access
 
 __all__ = [
     "TestsFlextGrpcModels",

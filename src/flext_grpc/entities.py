@@ -13,9 +13,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Self, TypeVar
 
-from flext_core import r
-from flext_core._models.entity import FlextModelsEntity
-from flext_core.models import FlextModels
+from flext_core import FlextModels, r
 from pydantic import BaseModel, Field, field_validator
 
 from flext_grpc.constants import c
@@ -36,7 +34,7 @@ T = TypeVar("T", bound=BaseModel)
 class FlextGrpcEntities:
     """Generic gRPC entity system with SOLID principles and minimal code."""
 
-    class Entity(FlextModelsEntity.Entry):
+    class Entity(FlextModels.Entity):
         """Generic base entity with functional patterns."""
 
         created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

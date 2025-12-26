@@ -1,4 +1,10 @@
-"""gRPC protocols for FLEXT ecosystem."""
+"""gRPC protocols for FLEXT ecosystem.
+
+Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
+from __future__ import annotations
 
 from typing import Protocol, runtime_checkable
 
@@ -65,13 +71,17 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def stop_server(
-                self, *, grace_period: float = 30.0,
+                self,
+                *,
+                grace_period: float = 30.0,
             ) -> FlextProtocols.Result[bool]:
                 """Stop gRPC server."""
                 ...
 
             def add_service(
-                self, service: object, server: object,
+                self,
+                service: object,
+                server: object,
             ) -> FlextProtocols.Result[bool]:
                 """Add gRPC service to server."""
                 ...
@@ -127,7 +137,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def validate_connection(
-                self, channel: object,
+                self,
+                channel: object,
             ) -> FlextProtocols.Result[bool]:
                 """Validate gRPC client connection."""
                 ...
@@ -146,7 +157,9 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def send_data(
-                self, stream: object, data: object,
+                self,
+                stream: object,
+                data: object,
             ) -> FlextProtocols.Result[bool]:
                 """Send data through gRPC stream."""
                 ...
@@ -203,7 +216,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def get_service_methods(
-                self, service: object,
+                self,
+                service: object,
             ) -> FlextProtocols.Result[list[str]]:
                 """Get list of service methods."""
                 ...
@@ -302,12 +316,13 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Create gRPC client configuration."""
                 ...
 
-            def validate_config(self) -> "r[bool]":
+            def validate_config(self) -> r[bool]:
                 """Validate gRPC configuration."""
                 ...
 
             def parse_address(
-                self, address: str,
+                self,
+                address: str,
             ) -> FlextProtocols.Result[tuple[str, int]]:
                 """Parse gRPC address string."""
                 ...
@@ -369,7 +384,7 @@ class FlextGrpcProtocols(FlextProtocols):
         class GrpcStub(Protocol):
             """Protocol for gRPC client stub (duck typing for grpc stubs)."""
 
-            def __init__(self, channel: "FlextGrpcProtocols.Grpc.GrpcChannel") -> None:
+            def __init__(self, channel: FlextGrpcProtocols.Grpc.GrpcChannel) -> None:
                 """Initialize the stub with a channel."""
                 ...
 
