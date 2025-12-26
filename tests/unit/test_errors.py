@@ -39,8 +39,7 @@ from __future__ import annotations
 
 from flext_core import FlextExceptions
 
-
-
+from flext_grpc import (
     FlextGrpcConnectionError,
     FlextGrpcError,
     FlextGrpcSettingsurationError,

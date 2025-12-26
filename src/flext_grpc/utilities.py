@@ -14,7 +14,7 @@ import gc
 import time
 from collections.abc import Iterator
 from datetime import UTC, datetime
-from typing import ClassVar, cast
+from typing import ClassVar, TypeGuard
 from uuid import uuid4
 
 import grpc
@@ -30,6 +30,7 @@ from google.protobuf.message import Message
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
+from flext_grpc.protocols import p
 from flext_grpc.typings import t
 
 # Type alias for convenience
@@ -41,6 +42,23 @@ PROTOBUF_AVAILABLE = True
 
 # Define proper type alias
 ProtobufMessage = Message
+
+
+def _is_valid_stream_type(value: str) -> TypeGuard[t.GrpcStreamType]:
+    """TypeGuard for stream type validation."""
+    return value in c.Grpc.STREAM_TYPES
+
+
+def _is_grpc_channel(value: object) -> TypeGuard[p.Grpc.GrpcChannel]:
+    """TypeGuard for gRPC channel validation."""
+    return hasattr(value, "close") and hasattr(value, "unsubscribe")
+
+
+def _is_grpc_credentials(value: object) -> TypeGuard[p.Grpc.GrpcChannelCredentials]:
+    """TypeGuard for gRPC channel credentials validation."""
+    # grpc.ChannelCredentials is duck-typed, check type name
+    return value is not None and "ChannelCredentials" in type(value).__name__
+
 
 __all__ = ["FlextGrpcUtilities"]
 
@@ -79,7 +97,7 @@ class FlextGrpcUtilities(u_core):
     def create_client_entity(
         cls,
         target: str,
-        options: dict[str, object] | None = None,
+        options: t.GrpcOptions | None = None,
     ) -> r[FlextGrpcEntities.Client]:
         """Create a gRPC client entity directly."""
         try:
@@ -121,7 +139,7 @@ class FlextGrpcUtilities(u_core):
     def create_channel_entity(
         cls,
         target: str,
-        options: dict[str, object] | None = None,
+        options: t.GrpcOptions | None = None,
     ) -> r[FlextGrpcEntities.Channel]:
         """Create a gRPC channel entity directly."""
         try:
@@ -160,18 +178,18 @@ class FlextGrpcUtilities(u_core):
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create a gRPC stream entity directly."""
         try:
-            # Validate stream type
-            valid_types = FlextGrpcConstants.Grpc.STREAM_TYPES
-            if stream_type not in valid_types:
+            # Validate stream type using TypeGuard for type narrowing
+            if not _is_valid_stream_type(stream_type):
                 return r.fail(f"Invalid stream type: {stream_type}")
 
             if not method_name or not method_name.strip():
                 return r.fail("Stream method name cannot be empty")
 
+            # stream_type is now narrowed to t.GrpcStreamType by TypeGuard
             stream = FlextGrpcEntities.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=cast("t.GrpcStreamType", stream_type),
+                stream_type=stream_type,
             )
             return r.ok(stream)
         except Exception as e:
@@ -291,8 +309,7 @@ class FlextGrpcUtilities(u_core):
             try:
                 # Chain validation steps using railway pattern
                 return (
-                    FlextGrpcUtilities.MessageValidation
-                    .validate_message_basic_checks(
+                    FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
                         message_instance,
                     )
                     .flat_map(
@@ -640,10 +657,12 @@ class FlextGrpcUtilities(u_core):
                     )
 
                 if grpc is not None and hasattr(grpc, "secure_channel"):
-                    # Create channel with cast to handle gRPC compatibility
+                    # Validate credentials using TypeGuard
+                    if not _is_grpc_credentials(actual_credentials):
+                        return r[object].fail("Invalid credentials type")
                     channel = grpc.secure_channel(
                         target,
-                        cast("grpc.ChannelCredentials", actual_credentials),
+                        actual_credentials,
                         options=options,
                     )
                     return r[object].ok(channel)
@@ -704,8 +723,10 @@ class FlextGrpcUtilities(u_core):
                     return r[bool].fail("gRPC not available")
 
                 try:
-                    # Use cast for gRPC compatibility
-                    grpc.channel_ready_future(cast("grpc.Channel", channel)).result(
+                    # Validate channel using TypeGuard
+                    if not _is_grpc_channel(channel):
+                        return r[bool].fail("Invalid channel type")
+                    grpc.channel_ready_future(channel).result(
                         timeout=timeout,
                     )
                     return r[bool].ok(True)
@@ -752,8 +773,10 @@ class FlextGrpcUtilities(u_core):
                 if channel is None:
                     return r[None].fail("Channel is None")
 
-                # Use cast for gRPC compatibility
-                cast("grpc.Channel", channel).close()
+                # Validate channel using TypeGuard
+                if not _is_grpc_channel(channel):
+                    return r[None].fail("Invalid channel type")
+                channel.close()
                 return r[None].ok(None)
             except Exception as e:
                 return r[None].fail(f"Channel closure failed: {e}")
@@ -1159,14 +1182,11 @@ class FlextGrpcUtilities(u_core):
                     )
 
                 # Basic channel metrics (placeholder implementation)
-                metrics = cast(
-                    "dict[str, t.JsonValue]",
-                    {
-                        "channel_state": "READY",
-                        "connection_count": 1,
-                        "timestamp": datetime.now(UTC).isoformat(),
-                    },
-                )
+                metrics: dict[str, t.JsonValue] = {
+                    "channel_state": "READY",
+                    "connection_count": 1,
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
                 return r[dict[str, t.JsonValue]].ok(metrics)
             except Exception as e:
                 return r[dict[str, t.JsonValue]].fail(
@@ -1195,15 +1215,12 @@ class FlextGrpcUtilities(u_core):
                     )
 
                 duration_ms = (end_time - start_time) * 1000
-                metrics = cast(
-                    "dict[str, t.JsonValue]",
-                    {
-                        "duration_ms": duration_ms,
-                        "start_time": start_time,
-                        "end_time": end_time,
-                        "timestamp": datetime.now(UTC).isoformat(),
-                    },
-                )
+                metrics: dict[str, t.JsonValue] = {
+                    "duration_ms": duration_ms,
+                    "start_time": start_time,
+                    "end_time": end_time,
+                    "timestamp": datetime.now(UTC).isoformat(),
+                }
                 return r[dict[str, t.JsonValue]].ok(metrics)
             except Exception as e:
                 return r[dict[str, t.JsonValue]].fail(

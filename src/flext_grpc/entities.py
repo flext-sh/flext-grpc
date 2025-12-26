@@ -18,6 +18,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from flext_grpc.constants import c
 from flext_grpc.models import FlextGrpcModels
+from flext_grpc.protocols import p
 from flext_grpc.typings import t
 
 # Import entity helpers from models.py (centralized location)
@@ -59,9 +60,9 @@ class FlextGrpcEntities:
         """Generic gRPC channel with state machine delegation."""
 
         target: str = ""
-        state: t.GrpcChannelState = c.Grpc.ChannelState.IDLE
+        state: t.GrpcChannelState = "idle"
         options: dict[str, object] = Field(default_factory=dict)
-        grpc_channel: object = None
+        grpc_channel: p.Grpc.GrpcChannel | None = None
 
         @field_validator("state")
         @classmethod
@@ -85,11 +86,19 @@ class FlextGrpcEntities:
 
         def connect(self) -> r[Self]:
             """Transition to connecting."""
-            return self.transition(self.state, "connecting", {"idle": {"connecting"}})
+            return self.transition(
+                self.state,
+                "connecting",
+                {"idle": {"connecting"}},
+            ).map(lambda update: self.model_copy(update=update))
 
         def mark_ready(self) -> r[Self]:
             """Transition to ready."""
-            return self.transition(self.state, "ready", {"connecting": {"ready"}})
+            return self.transition(
+                self.state,
+                "ready",
+                {"connecting": {"ready"}},
+            ).map(lambda update: self.model_copy(update=update))
 
         def disconnect(self) -> r[Self]:
             """Transition to idle."""
@@ -100,10 +109,10 @@ class FlextGrpcEntities:
 
         host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-        state: t.GrpcServerState = c.Grpc.ServerState.STOPPED
+        state: t.GrpcServerState = "stopped"
         max_workers: int = 10
-        services: list[object] = Field(default_factory=list)
-        grpc_server: object = None
+        services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)
+        grpc_server: p.Grpc.GrpcServer | None = None
 
         def validate_business_rules(self) -> r[bool]:
             """Delegate validation to generic validators."""
@@ -120,15 +129,27 @@ class FlextGrpcEntities:
 
         def start(self) -> r[Self]:
             """Transition to starting."""
-            return self.transition(self.state, "starting", {"stopped": {"starting"}})
+            return self.transition(
+                self.state,
+                "starting",
+                {"stopped": {"starting"}},
+            ).map(lambda update: self.model_copy(update=update))
 
         def mark_running(self) -> r[Self]:
             """Transition to running."""
-            return self.transition(self.state, "running", {"starting": {"running"}})
+            return self.transition(
+                self.state,
+                "running",
+                {"starting": {"running"}},
+            ).map(lambda update: self.model_copy(update=update))
 
         def stop(self) -> r[Self]:
             """Transition to stopping."""
-            return self.transition(self.state, "stopping", {"running": {"stopping"}})
+            return self.transition(
+                self.state,
+                "stopping",
+                {"running": {"stopping"}},
+            ).map(lambda update: self.model_copy(update=update))
 
         def mark_stopped(self) -> r[Self]:
             """Transition to stopped."""
@@ -136,7 +157,7 @@ class FlextGrpcEntities:
                 return r.fail(f"Cannot mark stopped from {self.state}")
             return r.ok(self.model_copy(update={"state": c.Grpc.ServerState.STOPPED}))
 
-        def add_service(self, service: object) -> r[Self]:
+        def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
             """Add service functionally.
 
             Args:
@@ -163,6 +184,7 @@ class FlextGrpcEntities:
         @classmethod
         def validate_methods(cls, v: list[str]) -> list[str]:
             """Delegate methods validation."""
+            # list[str] is covariant with list[object] for validation
             EntityValidator.validate_list_not_empty(v, "methods")
             for method in v:
                 EntityValidator.validate_required_string(method, "method")
@@ -184,8 +206,8 @@ class FlextGrpcEntities:
         """Generic gRPC client with channel delegation."""
 
         channel: FlextGrpcEntities.Channel | None = None
-        options: dict[str, object] = Field(default_factory=dict)
-        grpc_stub: object = None
+        options: t.GrpcOptions = Field(default_factory=dict)
+        grpc_stub: p.Grpc.GrpcStub | None = None
 
         def validate_business_rules(self) -> r[bool]:
             """Delegate validation."""
@@ -206,8 +228,8 @@ class FlextGrpcEntities:
 
         id: str = ""
         method_name: str = ""
-        stream_type: t.GrpcStreamType = c.Grpc.GrpcOperations.UNARY
-        grpc_stub: object = None
+        stream_type: t.GrpcStreamType = "unary"
+        grpc_stub: p.Grpc.GrpcStub | None = None
 
         @field_validator("method_name")
         @classmethod

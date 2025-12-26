@@ -20,6 +20,8 @@ from flext_core import (
 from flext_core._models.entity import FlextModelsEntity
 from pydantic import BaseModel, Field, computed_field, field_validator
 
+from flext_grpc.typings import t
+
 
 class FlextGrpcModels(m_core):
     """gRPC domain models extending flext-core FlextModels.
@@ -55,11 +57,11 @@ class FlextGrpcModels(m_core):
             """Basic gRPC request model (immutable value object)."""
 
             method: str = Field(description="gRPC method name")
-            data: dict[str, object] | None = Field(
+            data: t.GrpcCore.GrpcRequestDict | None = Field(
                 default=None,
                 description="Request data",
             )
-            metadata: dict[str, object] | None = Field(
+            metadata: t.GrpcCore.GrpcMetadata | None = Field(
                 default=None,
                 description="Request metadata",
             )
@@ -80,7 +82,7 @@ class FlextGrpcModels(m_core):
                 description="Service methods",
             )
             endpoint: str | None = Field(default=None, description="Service endpoint")
-            metadata: dict[str, object] | None = Field(
+            metadata: t.GrpcCore.GrpcMetadata | None = Field(
                 default=None,
                 description="Service metadata",
             )
@@ -112,11 +114,11 @@ class FlextGrpcModels(m_core):
             """Operation execution request for gRPC service operations."""
 
             operation_name: str = Field(description="Operation name to execute")
-            arguments: dict[str, object] = Field(
+            arguments: dict[str, str | int | float | bool] = Field(
                 default_factory=dict,
                 description="Positional arguments as dict",
             )
-            keyword_arguments: dict[str, object] = Field(
+            keyword_arguments: dict[str, str | int | float | bool] = Field(
                 default_factory=dict,
                 description="Keyword arguments",
             )
@@ -362,10 +364,12 @@ class FlextGrpcModels(m_core):
                 return value
 
             @classmethod
-            def validate_list_not_empty(
-                cls, value: list[object], field_name: str
-            ) -> list[object]:
-                """Generic list validation."""
+            def validate_list_not_empty[T](
+                cls,
+                value: list[T],
+                field_name: str,
+            ) -> list[T]:
+                """Generic list validation with type preservation."""
                 if not value:
                     msg = f"{field_name} cannot be empty"
                     raise ValueError(msg)
@@ -383,7 +387,7 @@ class FlextGrpcModels(m_core):
                 current: str,
                 target: str,
                 allowed_transitions: dict[str, set[str]],
-            ) -> object:
+            ) -> r[dict[str, str]]:
                 """Generic state transition with validation.
 
                 Args:
@@ -392,16 +396,18 @@ class FlextGrpcModels(m_core):
                     allowed_transitions: Map of allowed transitions
 
                 Returns:
-                    FlextResult with updated entity on success
+                    FlextResult with state update dict on success
 
                 """
                 if (
                     current not in allowed_transitions
                     or target not in allowed_transitions[current]
                 ):
-                    return r.fail(f"Invalid transition from {current} to {target}")
-                # Return the updated state for delegating classes to use
-                return r.ok({"state": target})
+                    return r[dict[str, str]].fail(
+                        f"Invalid transition from {current} to {target}",
+                    )
+                # Return the state update dict for delegating classes to use
+                return r[dict[str, str]].ok({"state": target})
 
     # =========================================================================
     # API - Generic API models for gRPC operations

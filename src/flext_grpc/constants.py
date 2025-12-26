@@ -253,55 +253,55 @@ class FlextGrpcConstants(FlextConstants):
 
         # Channel state literal - references ChannelState StrEnum members
         type ChannelStateLiteral = Literal[
-            ChannelState.IDLE,
-            ChannelState.CONNECTING,
-            ChannelState.READY,
-            ChannelState.TRANSIENT_FAILURE,
-            ChannelState.SHUTDOWN,
+            "idle",
+            "connecting",
+            "ready",
+            "transient_failure",
+            "shutdown",
         ]
         """Channel state literal - references ChannelState StrEnum members."""
 
         # Server state literal - references ServerState StrEnum members
         type ServerStateLiteral = Literal[
-            ServerState.STOPPED,
-            ServerState.STARTING,
-            ServerState.RUNNING,
-            ServerState.STOPPING,
+            "stopped",
+            "starting",
+            "running",
+            "stopping",
         ]
         """Server state literal - references ServerState StrEnum members."""
 
         # Stream type literal - references GrpcOperations StrEnum members
         type StreamTypeLiteral = Literal[
-            GrpcOperations.UNARY,
-            GrpcOperations.SERVER_STREAMING,
-            GrpcOperations.CLIENT_STREAMING,
-            GrpcOperations.BIDIRECTIONAL,
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
         ]
         """Stream type literal - references GrpcOperations StrEnum members."""
 
         # Load balancing policy literal - references LoadBalancingPolicies StrEnum members
         type LoadBalancingPolicyLiteral = Literal[
-            LoadBalancingPolicies.ROUND_ROBIN,
-            LoadBalancingPolicies.PICK_FIRST,
-            LoadBalancingPolicies.GRPCLB,
-            LoadBalancingPolicies.XDS_CLUSTER_RESOLVER,
+            "round_robin",
+            "pick_first",
+            "grpclb",
+            "xds_cluster_resolver",
         ]
         """Load balancing policy literal - references LoadBalancingPolicies StrEnum members."""
 
         # Compression type literal - references CompressionTypes StrEnum members
         type CompressionTypeLiteral = Literal[
-            CompressionTypes.NONE,
-            CompressionTypes.GZIP,
-            CompressionTypes.DEFLATE,
+            "none",
+            "gzip",
+            "deflate",
         ]
         """Compression type literal - references CompressionTypes StrEnum members."""
 
         # gRPC operation literal - references GrpcOperations StrEnum members
         type GrpcOperationLiteral = Literal[
-            GrpcOperations.UNARY,
-            GrpcOperations.SERVER_STREAMING,
-            GrpcOperations.CLIENT_STREAMING,
-            GrpcOperations.BIDIRECTIONAL,
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
         ]
         """gRPC operation literal - references GrpcOperations StrEnum members."""
 

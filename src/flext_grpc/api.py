@@ -10,8 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Callable
-from typing import TypeVar, cast
+from typing import TypeVar
 
 from flext_core import FlextModels, r
 from pydantic import BaseModel
@@ -19,6 +18,7 @@ from pydantic import BaseModel
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
+from flext_grpc.protocols import p
 from flext_grpc.services import FlextGrpcServices
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
@@ -100,28 +100,29 @@ class FlextGrpc:
             validate_method = getattr(entity, "validate_business_rules")
             if callable(validate_method):
                 validation_result = validate_method()
-            # Type narrowing: check if validation_result is a FlextResult
-            if isinstance(validation_result, r) and not validation_result.is_success:
-                return r.fail(
-                    f"Entity validation failed: {validation_result.error}",
-                )
+                # Type narrowing: check if validation_result is a FlextResult
+                if (
+                    isinstance(validation_result, r)
+                    and not validation_result.is_success
+                ):
+                    return r.fail(
+                        f"Entity validation failed: {validation_result.error}",
+                    )
 
         return r.ok(entity)
 
     def _get_entity_factories(
         self,
-    ) -> dict[str, Callable[..., r[object]]]:
+    ) -> dict[str, p.Grpc.EntityFactory]:
         """Get entity factories for dynamic dispatch."""
-        # Dynamic dispatch pattern: callables return specific Result types
-        # but dict requires common base type r[object]
-        factories = {
+        factories: dict[str, p.Grpc.EntityFactory] = {
             "server": FlextGrpcUtilities.create_server_entity,
             "client": FlextGrpcUtilities.create_client_entity,
             "channel": FlextGrpcUtilities.create_channel_entity,
             "service": FlextGrpcUtilities.create_service_entity,
             "stream": FlextGrpcUtilities.create_stream_entity,
         }
-        return cast("dict[str, Callable[..., r[object]]]", factories)
+        return factories
 
     def execute_operation(
         self,
@@ -142,10 +143,9 @@ class FlextGrpc:
             lambda error_msg: r.fail(error_msg or "Unknown error"),
         )
 
-    def _get_operations(self) -> dict[str, Callable[..., r[object]]]:
+    def _get_operations(self) -> dict[str, p.Grpc.OperationHandler]:
         """Get operations for dynamic dispatch."""
-        # Dynamic dispatch pattern: methods return specific Result types
-        operations = {
+        operations: dict[str, p.Grpc.OperationHandler] = {
             "start_server": self._service.start_server,
             "stop_server": self._service.stop_server,
             "connect_client": self._service.connect_client,
@@ -154,7 +154,7 @@ class FlextGrpc:
             "send_data": self._service.send_data,
             "close_stream": self._service.close_stream,
         }
-        return cast("dict[str, Callable[..., r[object]]]", operations)
+        return operations
 
     def create_server(
         self,
@@ -383,8 +383,7 @@ class FlextGrpc:
 
         # Advanced functional composition
         return (
-            self
-            .create_server(host=host, port=port)
+            self.create_server(host=host, port=port)
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(

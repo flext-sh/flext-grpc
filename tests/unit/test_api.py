@@ -3,8 +3,7 @@
 import pytest
 from pydantic import BaseModel
 
-
-
+from flext_grpc import (
     FlextGrpc,
     GenericOperationSpec,
     GenericRequest,

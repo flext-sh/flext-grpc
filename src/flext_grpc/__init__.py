@@ -16,7 +16,12 @@ from flext_core import (
 )
 
 from flext_grpc.__version__ import __version__, __version_info__
-from flext_grpc.api import FlextGrpc
+from flext_grpc.api import (
+    FlextGrpc,
+    GenericOperationSpec,
+    GenericRequest,
+    GenericResponse,
+)
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import (
     FlextGrpcEntities,
@@ -24,7 +29,7 @@ from flext_grpc.entities import (
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto import EchoRequest, FlextGrpcServiceStub
 from flext_grpc.protocols import FlextGrpcProtocols
-from flext_grpc.services import FlextGrpcServices
+from flext_grpc.services import ConnectionPool, FlextGrpcServices
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import FlextGrpcTypes
 from flext_grpc.utilities import FlextGrpcUtilities
@@ -94,6 +99,7 @@ class StreamMetrics(FlextGrpcModels.Domain.StreamMetrics):
 FlextGrpcService = FlextGrpcServices
 
 __all__ = [
+    "ConnectionPool",
     "EchoRequest",
     "FlextExceptions",
     "FlextGrpc",
@@ -112,6 +118,9 @@ __all__ = [
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
+    "GenericOperationSpec",
+    "GenericRequest",
+    "GenericResponse",
     "GrpcHealthCheck",
     "GrpcRequest",
     "ServiceDefinition",
@@ -132,7 +141,6 @@ __all__ = [
     "s",
     "t",
     "u",
-    "x",
 ]
 
 __architecture__ = "Clean Architecture + DDD"

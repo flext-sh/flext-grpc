@@ -631,7 +631,7 @@ class FlextGrpcServices:
     def _create_client_entity(
         self,
         target: str,
-        options: dict[str, object] | None = None,
+        options: t.GrpcOptions | None = None,
     ) -> r[FlextGrpcEntities.Client]:
         """Delegate entity creation to utilities.
 
