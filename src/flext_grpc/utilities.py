@@ -77,11 +77,11 @@ class FlextGrpcUtilities(u_core):
         self,
         command: str | None = None,
         data: t.ConfigValue = None,
-    ) -> r[dict[str, object]]:
+    ) -> r[dict[str, t.GeneralValueType]]:
         """Execute utility operation and return status."""
         try:
             # Simple status check
-            result: dict[str, object] = {
+            result: dict[str, t.GeneralValueType] = {
                 "status": "operational",
                 "service": "flext-grpc-utilities",
                 "command": command or "",
@@ -206,7 +206,7 @@ class FlextGrpcUtilities(u_core):
             return psutil.virtual_memory().percent
 
         @staticmethod
-        def get_buffer_size_bytes(buffer_name: str | list[object]) -> int:
+        def get_buffer_size_bytes(buffer_name: str | list[t.GeneralValueType]) -> int:
             """Get buffer size in bytes for given buffer name or list."""
             if isinstance(buffer_name, list):
                 # Calculate size based on list length (rough estimate)
@@ -309,7 +309,8 @@ class FlextGrpcUtilities(u_core):
             try:
                 # Chain validation steps using railway pattern
                 return (
-                    FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
+                    FlextGrpcUtilities.MessageValidation
+                    .validate_message_basic_checks(
                         message_instance,
                     )
                     .flat_map(
@@ -1101,7 +1102,7 @@ class FlextGrpcUtilities(u_core):
             code: int,
             message: str,
             details: list[t.JsonValue] | None = None,
-        ) -> r[dict[str, object]]:
+        ) -> r[dict[str, t.GeneralValueType]]:
             """Create gRPC status for error responses.
 
             Args:
@@ -1115,16 +1116,16 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 # Create basic status representation
-                status_info: dict[str, object] = {
+                status_info: dict[str, t.GeneralValueType] = {
                     "code": code,
                     "message": message,
                     "details": details or [],
                 }
                 # In a real implementation, this would create a proper grpc.Status
                 # For now, return the status info as a dict
-                return r[dict[str, object]].ok(status_info)
+                return r[dict[str, t.GeneralValueType]].ok(status_info)
             except Exception as e:
-                return r[dict[str, object]].fail(
+                return r[dict[str, t.GeneralValueType]].fail(
                     f"Status creation failed: {e}",
                 )
 

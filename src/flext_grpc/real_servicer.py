@@ -11,7 +11,6 @@ from __future__ import annotations
 
 import time
 from collections.abc import Iterator
-from typing import override
 
 import grpc
 from flext_core import c as c_core
@@ -44,13 +43,11 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
     - Health checks
     """
 
-    @override
     def __init__(self, server_id: str = "flext-grpc-server") -> None:
         """Initialize the real servicer."""
         self.server_id = server_id
         self.start_time = time.time()
 
-    @override
     def Echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
         """Real unary Echo implementation."""
         try:
@@ -76,7 +73,6 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    @override
     def ServerStream(
         self,
         request: StreamRequest,
@@ -101,7 +97,6 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Server streaming error: {e}")
 
-    @override
     def ClientStream(
         self,
         request_iterator: Iterator[StreamRequest],
@@ -131,7 +126,6 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Client streaming error: {e}")
             return StreamResponse()
 
-    @override
     def BidirectionalStream(
         self,
         request_iterator: Iterator[StreamRequest],
@@ -155,7 +149,6 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Bidirectional streaming error: {e}")
 
-    @override
     def HealthCheck(
         self,
         request: HealthRequest,

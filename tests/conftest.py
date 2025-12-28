@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import pytest
-from flext_core import FlextConstants
+from flext_core import FlextConstants, FlextTypes as t
 from flext_core.container import FlextContainer
 from flext_tests.docker import FlextTestsDocker
 
@@ -24,7 +24,7 @@ def clean_container() -> object:
 
 
 @pytest.fixture
-def sample_grpc_config() -> dict[str, object]:
+def sample_grpc_config() -> dict[str, t.GeneralValueType]:
     """Sample gRPC configuration for tests."""
     return {
         "host": FlextConstants.Platform.DEFAULT_HOST,

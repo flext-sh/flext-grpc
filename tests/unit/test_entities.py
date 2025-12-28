@@ -32,7 +32,7 @@ class TestFlextGrpcEntities:
         stream = FlextGrpcEntities.GrpcStream(
             unique_id="test_stream",
             method_name="test_method",
-            stream_type=c.Grpc.GrpcOperations.UNARY,
+            stream_type="unary",
         )
         assert stream.unique_id == "test_stream"
         assert stream.method_name == "test_method"
@@ -68,12 +68,12 @@ class TestFlextGrpcEntities:
         channel = FlextGrpcEntities.Channel(target="")
         result = channel.validate_business_rules()
         assert result.is_failure
-        assert "cannot be empty" in result.error
+        assert result.error and "cannot be empty" in result.error
 
     def test_channel_state_machine(self) -> None:
         """Test channel state machine transitions."""
         channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", state=c.Grpc.ChannelState.IDLE
+            target="localhost:50051", state="idle"
         )
         result = channel.connect()
         assert result.is_success

@@ -11,6 +11,8 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
+from flext_core import FlextTypes as t
+
 
 class ArchitectureValidator:
     """Validates architecture documentation completeness and consistency."""
@@ -32,11 +34,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, object]] = []
-        self.warnings: list[dict[str, object]] = []
-        self.recommendations: list[dict[str, object]] = []
+        self.issues: list[dict[str, t.GeneralValueType]] = []
+        self.warnings: list[dict[str, t.GeneralValueType]] = []
+        self.recommendations: list[dict[str, t.GeneralValueType]] = []
 
-    def validate_all(self) -> dict[str, object]:
+    def validate_all(self) -> dict[str, t.GeneralValueType]:
         """Run all validation checks."""
         # Reset collections
         self.issues = []
@@ -275,7 +277,7 @@ class ArchitectureValidator:
                     "message": "Architecture documentation contains outdated test coverage metrics",
                 })
 
-    def _generate_summary(self) -> dict[str, object]:
+    def _generate_summary(self) -> dict[str, t.GeneralValueType]:
         """Generate validation summary."""
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
@@ -307,7 +309,7 @@ class ArchitectureValidator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-    def _print_results(self, summary: dict[str, object]) -> None:
+    def _print_results(self, summary: dict[str, t.GeneralValueType]) -> None:
         """Print validation results."""
         # Reserved for future summary display functionality
         _ = summary  # Reserved for future use
@@ -325,7 +327,7 @@ class ArchitectureValidator:
                 pass
 
 
-def save_report(results: dict[str, object], output_path: Path | None = None) -> None:
+def save_report(results: dict[str, t.GeneralValueType], output_path: Path | None = None) -> None:
     """Save validation report to file."""
     if output_path is None:
         timestamp: str = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")

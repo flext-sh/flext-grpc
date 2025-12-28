@@ -148,7 +148,7 @@ class FlextGrpcModels(m_core):
             """Basic channel configuration (immutable value object)."""
 
             address: str
-            options: dict[str, object] | None = None
+            options: dict[str, t.GeneralValueType] | None = None
 
     # =========================================================================
     # SETTINGS MODELS - FlextGrpcSettings and configuration components
@@ -430,7 +430,7 @@ class FlextGrpcModels(m_core):
                 default=None,
                 description="Method to invoke on entity",
             )
-            parameters: dict[str, object] = Field(
+            parameters: dict[str, t.GeneralValueType] = Field(
                 default_factory=dict,
                 description="Operation parameters",
             )
@@ -482,7 +482,7 @@ class FlextGrpcModels(m_core):
                 default=None,
                 description="Error message if failed",
             )
-            metadata: dict[str, object] = Field(
+            metadata: dict[str, t.GeneralValueType] = Field(
                 default_factory=dict,
                 description="Response metadata",
             )

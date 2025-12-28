@@ -13,8 +13,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import cast
-
 from flext_core import FlextConstants, FlextResult
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
@@ -153,20 +151,19 @@ class AdvancedGrpcOperations:
 
     def demonstrate_streaming(self) -> None:
         """Demonstrate streaming operations through facade."""
-        # Create different stream types
-        stream_types = [
-            "unary",
-            "server_streaming",
-            "client_streaming",
-            "bidirectional",
+        # Create different stream types - use literal type directly
+        stream_configs: list[tuple[str, t.GrpcStreamType]] = [
+            ("UnaryMethod", "unary"),
+            ("ServerStreamingMethod", "server_streaming"),
+            ("ClientStreamingMethod", "client_streaming"),
+            ("BidirectionalMethod", "bidirectional"),
         ]
 
-        for stream_type in stream_types:
-            # Cast to proper literal type
-            typed_stream_type = cast("t.GrpcStreamType", stream_type)
+        for method_name, stream_type in stream_configs:
+            # stream_type is already t.GrpcStreamType literal
             stream_result = self.grpc.create_stream(
-                method_name=f"{stream_type.capitalize()}Method",
-                stream_type=typed_stream_type,
+                method_name=method_name,
+                stream_type=stream_type,
             )
             if stream_result.is_success:
                 stream = stream_result.value
@@ -258,8 +255,8 @@ def example_4_streaming() -> None:
     # Initialize facade
     grpc = FlextGrpc()
 
-    # Create different stream types through facade
-    stream_configs = [
+    # Create different stream types through facade - use literal types directly
+    stream_configs: list[tuple[str, t.GrpcStreamType]] = [
         ("GetUser", "unary"),
         ("StreamMessages", "server_streaming"),
         ("UploadData", "client_streaming"),
@@ -268,11 +265,10 @@ def example_4_streaming() -> None:
 
     created_streams = []
     for method_name, stream_type in stream_configs:
-        # Cast to proper literal type
-        typed_stream_type = cast("t.GrpcStreamType", stream_type)
+        # stream_type is already t.GrpcStreamType literal
         stream_result = grpc.create_stream(
             method_name=method_name,
-            stream_type=typed_stream_type,
+            stream_type=stream_type,
         )
 
         if stream_result.is_success:

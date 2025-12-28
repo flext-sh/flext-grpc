@@ -39,6 +39,8 @@ class TestFlextGrpcUtilities:
         result = FlextGrpcUtilities.create_client_entity("localhost:50051")
         assert result.is_success
         client = result.value
+        assert client is not None
+        assert client.channel is not None
         assert client.channel.target == "localhost:50051"
 
     def test_create_server_entity(self) -> None:

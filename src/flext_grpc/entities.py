@@ -27,7 +27,6 @@ EntityValidator = _m.Entities.EntityValidator
 StateMachine = _m.Entities.StateMachine
 
 # Rebuild parent model to resolve forward references before extending
-FlextModels.Entity.model_rebuild()
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -61,7 +60,7 @@ class FlextGrpcEntities:
 
         target: str = ""
         state: t.GrpcChannelState = "idle"
-        options: dict[str, object] = Field(default_factory=dict)
+        options: dict[str, t.GeneralValueType] = Field(default_factory=dict)
         grpc_channel: p.Grpc.GrpcChannel | None = None
 
         @field_validator("state")
@@ -184,7 +183,7 @@ class FlextGrpcEntities:
         @classmethod
         def validate_methods(cls, v: list[str]) -> list[str]:
             """Delegate methods validation."""
-            # list[str] is covariant with list[object] for validation
+            # list[str] is covariant with list[t.GeneralValueType] for validation
             EntityValidator.validate_list_not_empty(v, "methods")
             for method in v:
                 EntityValidator.validate_required_string(method, "method")

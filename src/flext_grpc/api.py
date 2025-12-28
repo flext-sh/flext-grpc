@@ -191,7 +191,7 @@ class FlextGrpc:
 
     def create_channel(
         self,
-        **kwargs: str | int | bool | dict[str, object] | None,
+        **kwargs: str | int | bool | dict[str, t.GeneralValueType] | None,
     ) -> r[FlextGrpcEntities.Channel]:
         """Create channel entity with defaults."""
         defaults = {
@@ -310,7 +310,7 @@ class FlextGrpc:
         client: FlextGrpcEntities.Client,
         method: str,
         request: t.ConfigValue,
-    ) -> r[dict[str, object]]:
+    ) -> r[dict[str, t.GeneralValueType]]:
         """Delegate method calls.
 
         Args:
@@ -330,7 +330,7 @@ class FlextGrpc:
         self,
         stream: FlextGrpcEntities.GrpcStream,
         data: t.ConfigValue,
-    ) -> r[dict[str, object]]:
+    ) -> r[dict[str, t.GeneralValueType]]:
         """Delegate data sending.
 
         Args:
@@ -363,7 +363,7 @@ class FlextGrpc:
     def create_complete_setup(
         self,
         **kwargs: str | int | list[str] | None,
-    ) -> r[dict[str, object]]:
+    ) -> r[dict[str, t.GeneralValueType]]:
         """Complete setup using functional composition."""
         host = kwargs.get("host", c.Grpc.GrpcNetwork.DEFAULT_HOST)
         port = kwargs.get("port", c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
@@ -383,7 +383,8 @@ class FlextGrpc:
 
         # Advanced functional composition
         return (
-            self.create_server(host=host, port=port)
+            self
+            .create_server(host=host, port=port)
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(
