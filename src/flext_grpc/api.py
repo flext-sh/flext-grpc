@@ -383,8 +383,7 @@ class FlextGrpc:
 
         # Advanced functional composition
         return (
-            self
-            .create_server(host=host, port=port)
+            self.create_server(host=host, port=port)
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(

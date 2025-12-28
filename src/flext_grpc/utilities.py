@@ -309,8 +309,7 @@ class FlextGrpcUtilities(u_core):
             try:
                 # Chain validation steps using railway pattern
                 return (
-                    FlextGrpcUtilities.MessageValidation
-                    .validate_message_basic_checks(
+                    FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
                         message_instance,
                     )
                     .flat_map(
