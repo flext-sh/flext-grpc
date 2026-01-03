@@ -14,8 +14,6 @@ from collections.abc import Iterator
 
 import grpc
 from flext_core import c as c_core
-
-# Import protobuf classes - these are dynamically generated
 from grpc import ServicerContext
 
 from flext_grpc.proto.flext_grpc_pb2 import (
@@ -45,10 +43,11 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
 
     def __init__(self, server_id: str = "flext-grpc-server") -> None:
         """Initialize the real servicer."""
+        super().__init__()
         self.server_id = server_id
         self.start_time = time.time()
 
-    def Echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
+    def echo(self, request: EchoRequest, context: ServicerContext) -> EchoResponse:
         """Real unary Echo implementation."""
         try:
             # Process the actual request
@@ -73,7 +72,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
-    def ServerStream(
+    def server_stream(
         self,
         request: StreamRequest,
         context: ServicerContext,
@@ -97,7 +96,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Server streaming error: {e}")
 
-    def ClientStream(
+    def client_stream(
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
@@ -126,7 +125,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_details(f"Client streaming error: {e}")
             return StreamResponse()
 
-    def BidirectionalStream(
+    def bidirectional_stream(
         self,
         request_iterator: Iterator[StreamRequest],
         context: ServicerContext,
@@ -149,7 +148,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             context.set_code(internal.invalid)
             context.set_details(f"Bidirectional streaming error: {e}")
 
-    def HealthCheck(
+    def health_check(
         self,
         request: HealthRequest,
         context: ServicerContext,

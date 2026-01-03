@@ -14,16 +14,17 @@ from datetime import datetime
 from typing import TypeVar
 
 from flext_core import (
-    FlextModels as m_core,
+    FlextModels,
     FlextResult as r,
 )
-from flext_core._models.entity import FlextModelsEntity
+from flext_core.models import FlextModelsEntity
 from pydantic import BaseModel, Field, computed_field, field_validator
 
+from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.typings import t
 
 
-class FlextGrpcModels(m_core):
+class FlextGrpcModels(FlextModels):
     """gRPC domain models extending flext-core FlextModels.
 
     Consolidated namespace class containing all gRPC domain models as nested classes.
@@ -133,16 +134,26 @@ class FlextGrpcModels(m_core):
         class ServerConfig(FlextModelsEntity.Value):
             """Basic server configuration (immutable value object)."""
 
-            host: str = Field(default="localhost")
-            port: int = Field(default=50051)
-            max_workers: int = Field(default=10)
-            timeout: float = Field(default=30.0)
+            host: str = Field(default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST)
+            port: int = Field(
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            )
+            max_workers: int = Field(
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_MAX_WORKERS
+            )
+            timeout: float = Field(
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+            )
 
         class ClientConfig(FlextModelsEntity.Value):
             """Basic client configuration (immutable value object)."""
 
-            target: str = Field(default="localhost:50051")
-            timeout: float = Field(default=30.0)
+            target: str = Field(
+                default=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
+            )
+            timeout: float = Field(
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+            )
 
         class ChannelConfig(FlextModelsEntity.Value):
             """Basic channel configuration (immutable value object)."""
@@ -190,29 +201,31 @@ class FlextGrpcModels(m_core):
             """Generic gRPC network configuration with validation."""
 
             host: str = Field(
-                default="127.0.0.1",
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
                 min_length=1,
                 description="gRPC server host",
             )
             port: int = Field(
-                default=50051,
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
                 ge=1,
                 le=65535,
                 description="gRPC server port",
             )
             max_connections: int = Field(
-                default=1000,
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_MAX_CONCURRENT_RPCS,
                 ge=1,
                 le=10000,
                 description="Maximum concurrent connections",
             )
             keepalive_time: int = Field(
-                default=30,
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS
+                // 1000,
                 ge=1,
                 description="Keepalive ping interval (seconds)",
             )
             keepalive_timeout: int = Field(
-                default=5,
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS
+                // 1000,
                 ge=1,
                 description="Keepalive timeout (seconds)",
             )
@@ -221,13 +234,13 @@ class FlextGrpcModels(m_core):
             """Generic gRPC performance configuration."""
 
             max_workers: int = Field(
-                default=50,
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.MAX_WORKERS,
                 ge=1,
                 le=1000,
                 description="Maximum worker threads",
             )
             max_concurrent_rpcs: int = Field(
-                default=1000,
+                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_MAX_CONCURRENT_RPCS,
                 ge=1,
                 le=10000,
                 description="Maximum concurrent RPCs",
@@ -435,7 +448,7 @@ class FlextGrpcModels(m_core):
                 description="Operation parameters",
             )
 
-            @field_validator("entity_type")
+            @field_validator("entity_type", mode="before")
             @classmethod
             def validate_entity_type(cls, v: str) -> str:
                 """Validate entity type against supported types."""
@@ -459,13 +472,12 @@ class FlextGrpcModels(m_core):
                 default=None,
                 description="Associated entity",
             )
-            data: object = Field(
+            data: t.GeneralValueType = Field(
                 default=None,
                 description="Request data",
             )
 
             @computed_field
-            @property
             def is_valid(self) -> bool:
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
@@ -488,7 +500,6 @@ class FlextGrpcModels(m_core):
             )
 
             @computed_field
-            @property
             def has_error(self) -> bool:
                 """Check if response has error."""
                 return not self.success or self.error is not None

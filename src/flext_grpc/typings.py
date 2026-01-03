@@ -75,7 +75,16 @@ class FlextGrpcTypes(FlextTypes):
     type GrpcServerState = c.Grpc.ServerStateLiteral
 
     # gRPC options type - standardized options dict
-    type GrpcOptions = dict[str, str | int | bool]
+    type GrpcOptions = dict[
+        str,
+        str
+        | int
+        | float
+        | bool
+        | list[FlextTypes.JsonValue]
+        | dict[str, FlextTypes.JsonValue]
+        | None,
+    ]
 
     # =========================================================================
     # GRPC SERVER TYPES - Complex server management types

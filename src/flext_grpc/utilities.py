@@ -21,7 +21,7 @@ import grpc
 import psutil
 from flext_core import r
 from flext_core.loggings import FlextLogger
-from flext_core.utilities import u_core
+from flext_core.utilities import FlextUtilities
 from google.protobuf import json_format
 from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.json_format import MessageToDict, MessageToJson
@@ -44,26 +44,10 @@ PROTOBUF_AVAILABLE = True
 ProtobufMessage = Message
 
 
-def _is_valid_stream_type(value: str) -> TypeGuard[t.GrpcStreamType]:
-    """TypeGuard for stream type validation."""
-    return value in c.Grpc.STREAM_TYPES
-
-
-def _is_grpc_channel(value: object) -> TypeGuard[p.Grpc.GrpcChannel]:
-    """TypeGuard for gRPC channel validation."""
-    return hasattr(value, "close") and hasattr(value, "unsubscribe")
-
-
-def _is_grpc_credentials(value: object) -> TypeGuard[p.Grpc.GrpcChannelCredentials]:
-    """TypeGuard for gRPC channel credentials validation."""
-    # grpc.ChannelCredentials is duck-typed, check type name
-    return value is not None and "ChannelCredentials" in type(value).__name__
-
-
 __all__ = ["FlextGrpcUtilities"]
 
 
-class FlextGrpcUtilities(u_core):
+class FlextGrpcUtilities(FlextUtilities):
     """Simplified gRPC utilities class with only essential methods.
 
     Contains only the methods actually used by the codebase:
@@ -91,6 +75,26 @@ class FlextGrpcUtilities(u_core):
         except Exception as e:
             return r.fail(f"Execute failed: {e}")
 
+    # === TYPE GUARDS ===
+
+    @classmethod
+    def _is_valid_stream_type(cls, value: str) -> TypeGuard[t.GrpcStreamType]:
+        """TypeGuard for stream type validation."""
+        return value in c.Grpc.STREAM_TYPES
+
+    @classmethod
+    def _is_grpc_channel(cls, value: Message) -> TypeGuard[p.Grpc.GrpcChannel]:
+        """TypeGuard for gRPC channel validation."""
+        return hasattr(value, "close") and hasattr(value, "unsubscribe")
+
+    @classmethod
+    def _is_grpc_credentials(
+        cls, value: Message
+    ) -> TypeGuard[p.Grpc.GrpcChannelCredentials]:
+        """TypeGuard for gRPC channel credentials validation."""
+        # grpc.ChannelCredentials is duck-typed, check type name
+        return value is not None and "ChannelCredentials" in type(value).__name__
+
     # === FACTORY METHODS ===
 
     @classmethod
@@ -104,7 +108,7 @@ class FlextGrpcUtilities(u_core):
             channel = FlextGrpcEntities.Channel(
                 unique_id=str(uuid4()),
                 target=target,
-                state=c.Grpc.ChannelState.IDLE,
+                state=c.Grpc.ChannelState.IDLE.value,
                 options=options or {},
             )
 
@@ -146,7 +150,7 @@ class FlextGrpcUtilities(u_core):
             channel = FlextGrpcEntities.Channel(
                 unique_id=str(uuid4()),
                 target=target,
-                state=c.Grpc.ChannelState.IDLE,
+                state=c.Grpc.ChannelState.IDLE.value,
                 options=options or {},
             )
             return r.ok(channel)
@@ -179,7 +183,7 @@ class FlextGrpcUtilities(u_core):
         """Create a gRPC stream entity directly."""
         try:
             # Validate stream type using TypeGuard for type narrowing
-            if not _is_valid_stream_type(stream_type):
+            if not cls._is_valid_stream_type(stream_type):
                 return r.fail(f"Invalid stream type: {stream_type}")
 
             if not method_name or not method_name.strip():
@@ -230,7 +234,7 @@ class FlextGrpcUtilities(u_core):
 
         @staticmethod
         def validate_message_basic_checks(
-            message_instance: object | None,
+            message_instance: Message | None,
         ) -> r[Message]:
             """Perform basic validation checks on message instance."""
             if message_instance is None:
@@ -295,7 +299,7 @@ class FlextGrpcUtilities(u_core):
 
         @staticmethod
         def validate_protobuf_message(
-            message_instance: object | None,
+            message_instance: Message | None,
         ) -> r[bool]:
             """Validate protobuf message structure and required fields.
 
@@ -309,7 +313,8 @@ class FlextGrpcUtilities(u_core):
             try:
                 # Chain validation steps using railway pattern
                 return (
-                    FlextGrpcUtilities.MessageValidation.validate_message_basic_checks(
+                    FlextGrpcUtilities.MessageValidation
+                    .validate_message_basic_checks(
                         message_instance,
                     )
                     .flat_map(
@@ -394,10 +399,10 @@ class FlextGrpcUtilities(u_core):
                     ):
                         if (
                             hasattr(msg, "DESCRIPTOR")
-                            and getattr(msg.DESCRIPTOR, "name", None) != expected_type
+                            and msg.DESCRIPTOR.name != expected_type
                         ):
                             return r[bool].fail(
-                                f"Message {i} type mismatch: expected {expected_type}, got {getattr(msg.DESCRIPTOR, 'name', 'unknown')}",
+                                f"Message {i} type mismatch: expected {expected_type}, got {msg.DESCRIPTOR.name if hasattr(msg.DESCRIPTOR, 'name') else 'unknown'}",
                             )
 
                 return r[bool].ok(True)
@@ -470,30 +475,30 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if json_format is None:
-                    return r[object].fail(
+                    return r[Message].fail(
                         "Protobuf json_format not available",
                     )
 
                 if not callable(message_class):
-                    return r[object].fail("Invalid message class")
+                    return r[Message].fail("Invalid message class")
 
                 message_instance = message_class()
                 if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[object].fail("Invalid protobuf message class")
+                    return r[Message].fail("Invalid protobuf message class")
 
                 if hasattr(json_format, "ParseDict") and json_format is not None:
                     # Type ignore for protobuf compatibility
                     json_format.ParseDict(data, message_instance)
                 else:
-                    return r[object].fail("ParseDict not available")
-                return r[object].ok(message_instance)
+                    return r[Message].fail("ParseDict not available")
+                return r[Message].ok(message_instance)
             except Exception as e:
-                return r[object].fail(
+                return r[Message].fail(
                     f"Dict to protobuf conversion failed: {e}",
                 )
 
         @staticmethod
-        def protobuf_to_json(message_instance: object) -> r[str]:
+        def protobuf_to_json(message_instance: Message) -> r[str]:
             """Convert protobuf message to JSON string.
 
             Args:
@@ -543,25 +548,25 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if not callable(message_class):
-                    return r[object].fail("Invalid message class")
+                    return r[Message].fail("Invalid message class")
 
                 message_instance = message_class()
                 if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[object].fail("Invalid protobuf message class")
+                    return r[Message].fail("Invalid protobuf message class")
 
                 if hasattr(json_format, "Parse") and json_format is not None:
                     # Type ignore for protobuf compatibility
                     json_format.Parse(json_str, message_instance)
                 else:
-                    return r[object].fail("Parse not available")
-                return r[object].ok(message_instance)
+                    return r[Message].fail("Parse not available")
+                return r[Message].ok(message_instance)
             except Exception as e:
-                return r[object].fail(
+                return r[Message].fail(
                     f"JSON to protobuf conversion failed: {e}",
                 )
 
         @staticmethod
-        def serialize_message(message_instance: object) -> r[bytes]:
+        def serialize_message(message_instance: Message) -> r[bytes]:
             """Serialize protobuf message to bytes.
 
             Args:
@@ -596,19 +601,19 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if not callable(message_class):
-                    return r[object].fail("Invalid message class")
+                    return r[Message].fail("Invalid message class")
 
                 message_instance = message_class()
                 if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[object].fail("Invalid protobuf message class")
+                    return r[Message].fail("Invalid protobuf message class")
 
                 if hasattr(message_instance, "ParseFromString"):
                     message_instance.ParseFromString(data)
                 else:
-                    return r[object].fail("ParseFromString not available")
-                return r[object].ok(message_instance)
+                    return r[Message].fail("ParseFromString not available")
+                return r[Message].ok(message_instance)
             except Exception as e:
-                return r[object].fail(f"Message deserialization failed: {e}")
+                return r[Message].fail(f"Message deserialization failed: {e}")
 
     class ChannelManagement:
         """gRPC channel management utilities."""
@@ -627,7 +632,7 @@ class FlextGrpcUtilities(u_core):
             target: str,
             credentials: t.ConfigValue = None,
             options: list[tuple[str, t.JsonValue]] | None = None,
-        ) -> r[object]:
+        ) -> r[p.Grpc.GrpcChannel]:
             """Create secure gRPC channel with default options.
 
             Args:
@@ -641,7 +646,7 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if grpc is None:
-                    return r[object].fail("gRPC not available")
+                    return r[Message].fail("gRPC not available")
 
                 # Type narrowing: credentials can be ConfigValue or None, but after ssl_channel_credentials() it's ChannelCredentials
                 actual_credentials: object = credentials
@@ -649,7 +654,7 @@ class FlextGrpcUtilities(u_core):
                     if grpc is not None and hasattr(grpc, "ssl_channel_credentials"):
                         actual_credentials = grpc.ssl_channel_credentials()
                     else:
-                        return r[object].fail("SSL credentials not available")
+                        return r[Message].fail("SSL credentials not available")
 
                 if options is None:
                     options = (
@@ -658,23 +663,23 @@ class FlextGrpcUtilities(u_core):
 
                 if grpc is not None and hasattr(grpc, "secure_channel"):
                     # Validate credentials using TypeGuard
-                    if not _is_grpc_credentials(actual_credentials):
-                        return r[object].fail("Invalid credentials type")
+                    if not FlextGrpcUtilities._is_grpc_credentials(actual_credentials):
+                        return r[Message].fail("Invalid credentials type")
                     channel = grpc.secure_channel(
                         target,
                         actual_credentials,
                         options=options,
                     )
-                    return r[object].ok(channel)
-                return r[object].fail("Secure channel not available")
+                    return r[Message].ok(channel)
+                return r[Message].fail("Secure channel not available")
             except Exception as e:
-                return r[object].fail(f"Secure channel creation failed: {e}")
+                return r[Message].fail(f"Secure channel creation failed: {e}")
 
         @staticmethod
         def create_insecure_channel(
             target: str,
             options: list[tuple[str, t.JsonValue]] | None = None,
-        ) -> r[object]:
+        ) -> r[p.Grpc.GrpcChannel]:
             """Create insecure gRPC channel for development.
 
             Args:
@@ -687,7 +692,7 @@ class FlextGrpcUtilities(u_core):
             """
             try:
                 if grpc is None:
-                    return r[object].fail("gRPC not available")
+                    return r[Message].fail("gRPC not available")
 
                 if options is None:
                     options = (
@@ -696,10 +701,10 @@ class FlextGrpcUtilities(u_core):
 
                 if hasattr(grpc, "insecure_channel"):
                     channel = grpc.insecure_channel(target, options=options)
-                    return r[object].ok(channel)
-                return r[object].fail("Insecure channel not available")
+                    return r[Message].ok(channel)
+                return r[Message].fail("Insecure channel not available")
             except Exception as e:
-                return r[object].fail(
+                return r[Message].fail(
                     f"Insecure channel creation failed: {e}",
                 )
 
@@ -724,7 +729,7 @@ class FlextGrpcUtilities(u_core):
 
                 try:
                     # Validate channel using TypeGuard
-                    if not _is_grpc_channel(channel):
+                    if not FlextGrpcUtilities._is_grpc_channel(channel):
                         return r[bool].fail("Invalid channel type")
                     grpc.channel_ready_future(channel).result(
                         timeout=timeout,
@@ -774,7 +779,7 @@ class FlextGrpcUtilities(u_core):
                     return r[None].fail("Channel is None")
 
                 # Validate channel using TypeGuard
-                if not _is_grpc_channel(channel):
+                if not FlextGrpcUtilities._is_grpc_channel(channel):
                     return r[None].fail("Invalid channel type")
                 channel.close()
                 return r[None].ok(None)
