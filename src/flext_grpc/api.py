@@ -126,7 +126,7 @@ class FlextGrpc:
 
     def execute_operation(
         self,
-        request: FlextGrpcModels.Domain.OperationExecutionRequest,
+        request: FlextGrpcModels.Grpc.OperationExecutionRequest,
     ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         operations = self._get_operations()

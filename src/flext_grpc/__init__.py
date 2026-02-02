@@ -71,27 +71,27 @@ class FlextGrpcValidationError(FlextExceptions.ValidationError):
 
 
 # Model classes with real inheritance for backward compatibility
-class GrpcHealthCheck(FlextGrpcModels.Domain.GrpcHealthCheck):
+class GrpcHealthCheck(FlextGrpcModels.Grpc.GrpcHealthCheck):
     """GrpcHealthCheck - real inheritance from Domain.GrpcHealthCheck."""
 
 
-class GrpcRequest(FlextGrpcModels.Domain.GrpcRequest):
+class GrpcRequest(FlextGrpcModels.Grpc.GrpcRequest):
     """GrpcRequest - real inheritance from Domain.GrpcRequest."""
 
 
-class ServiceDefinition(FlextGrpcModels.Domain.ServiceDefinition):
+class ServiceDefinition(FlextGrpcModels.Grpc.ServiceDefinition):
     """ServiceDefinition - real inheritance from ServiceDefinition."""
 
 
-class ServiceMetrics(FlextGrpcModels.Domain.ServiceMetrics):
+class ServiceMetrics(FlextGrpcModels.Grpc.ServiceMetrics):
     """ServiceMetrics - real inheritance from ServiceMetrics."""
 
 
-class StreamInfo(FlextGrpcModels.Domain.StreamInfo):
+class StreamInfo(FlextGrpcModels.Grpc.StreamInfo):
     """StreamInfo - real inheritance from Domain.StreamInfo."""
 
 
-class StreamMetrics(FlextGrpcModels.Domain.StreamMetrics):
+class StreamMetrics(FlextGrpcModels.Grpc.StreamMetrics):
     """StreamMetrics - real inheritance from Domain.StreamMetrics."""
 
 

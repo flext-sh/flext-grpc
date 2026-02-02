@@ -40,7 +40,7 @@ class FlextGrpcModels(FlextModels):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Domain:
+    class Grpc:
         """Domain models for gRPC core business entities."""
 
         class StreamInfo(FlextModelsEntity.Value):
@@ -58,11 +58,11 @@ class FlextGrpcModels(FlextModels):
             """Basic gRPC request model (immutable value object)."""
 
             method: str = Field(description="gRPC method name")
-            data: t.GrpcCore.GrpcRequestDict | None = Field(
+            data: t.Grpc.GrpcRequestDict | None = Field(
                 default=None,
                 description="Request data",
             )
-            metadata: t.GrpcCore.GrpcMetadata | None = Field(
+            metadata: t.Grpc.GrpcMetadata | None = Field(
                 default=None,
                 description="Request metadata",
             )
@@ -83,7 +83,7 @@ class FlextGrpcModels(FlextModels):
                 description="Service methods",
             )
             endpoint: str | None = Field(default=None, description="Service endpoint")
-            metadata: t.GrpcCore.GrpcMetadata | None = Field(
+            metadata: t.Grpc.GrpcMetadata | None = Field(
                 default=None,
                 description="Service metadata",
             )
@@ -139,7 +139,7 @@ class FlextGrpcModels(FlextModels):
                 default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             )
             max_workers: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_MAX_WORKERS
+                default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS
             )
             timeout: float = Field(
                 default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
@@ -212,7 +212,7 @@ class FlextGrpcModels(FlextModels):
                 description="gRPC server port",
             )
             max_connections: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_MAX_CONCURRENT_RPCS,
+                default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
                 ge=1,
                 le=10000,
                 description="Maximum concurrent connections",
@@ -234,13 +234,13 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC performance configuration."""
 
             max_workers: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.MAX_WORKERS,
+                default=FlextGrpcConstants.Grpc.Service.MAX_WORKERS,
                 ge=1,
                 le=1000,
                 description="Maximum worker threads",
             )
             max_concurrent_rpcs: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_MAX_CONCURRENT_RPCS,
+                default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
                 ge=1,
                 le=10000,
                 description="Maximum concurrent RPCs",

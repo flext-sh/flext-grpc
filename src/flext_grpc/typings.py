@@ -94,7 +94,7 @@ class FlextGrpcTypes(FlextTypes):
     # GRPC CORE TYPES - Commonly used gRPC-specific types
     # =========================================================================
 
-    class GrpcCore:
+    class Grpc:
         """Core gRPC types extending t."""
 
         # gRPC basic types
@@ -293,23 +293,6 @@ class FlextGrpcTypes(FlextTypes):
         type ServiceMeshConfig = dict[
             str, FlextGrpcTypes.ConfigValue | FlextTypes.JsonValue
         ]
-
-    class Grpc:
-        """Grpc types namespace for cross-project access.
-
-        Provides organized access to all Grpc types for other FLEXT projects.
-        Usage: Other projects can reference `t.Grpc.Server.*`, `t.Grpc.Client.*`, etc.
-        This enables consistent namespace patterns for cross-project type access.
-
-        Examples:
-            from flext_grpc.typings import t
-            config: t.Grpc.Server.ServerConfiguration = ...
-            client: t.Grpc.Client.ClientConfiguration = ...
-
-        Note: Namespace composition via inheritance - no aliases needed.
-        Access parent namespaces directly through inheritance.
-
-        """
 
     # =========================================================================
     # GRPC PROTOCOLS - Moved to protocols.py
