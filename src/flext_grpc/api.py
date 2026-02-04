@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from typing import TypeVar
 
 from flext_core import FlextModels, r
@@ -18,11 +19,18 @@ from pydantic import BaseModel
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.protocols import p
 from flext_grpc.services import FlextGrpcServices
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
+
+
+def _result_as_object[T](result: r[T]) -> r[object]:
+    """Normalize any FlextResult to r[object] for homogeneous dict typing."""
+    if result.is_success:
+        return r.ok(result.value)
+    return r.fail(result.error or "Unknown error")
+
 
 # Import API models from models.py (centralized location)
 _m = FlextGrpcModels
@@ -78,18 +86,26 @@ class FlextGrpc:
     def create_entity(
         self,
         entity_type: str,
-        **kwargs: object,
+        **kwargs: (
+            str
+            | bool
+            | float
+            | list[str]
+            | list[t.JsonValue]
+            | dict[str, t.JsonValue]
+            | None
+        ),
     ) -> r[object]:
         """Generic entity creation with Pydantic validation and delegation."""
-        # Use match/case for cleaner entity type handling (Python 3.10+)
-        entity_factories = self._get_entity_factories()
-
+        entity_factories: dict[str, Callable[..., r[object]]] = (
+            self._get_entity_factories()
+        )
         factory = entity_factories.get(entity_type)
-        if not factory:
+        if factory is None:
             return r.fail(f"Unknown entity type: {entity_type}")
 
-        # Call factory and handle result
-        result = factory(**kwargs)
+        # Call factory and handle result (typed so Pyright knows .is_success/.error)
+        result: r[object] = factory(**kwargs)
         if not result.is_success:
             return r.fail(f"Failed to create entity: {result.error}")
 
@@ -111,17 +127,32 @@ class FlextGrpc:
 
         return r.ok(entity)
 
-    def _get_entity_factories(
-        self,
-    ) -> dict[str, p.Grpc.EntityFactory]:
-        """Get entity factories for dynamic dispatch."""
-        factories: dict[str, p.Grpc.EntityFactory] = {
-            "server": FlextGrpcUtilities.create_server_entity,
-            "client": FlextGrpcUtilities.create_client_entity,
-            "channel": FlextGrpcUtilities.create_channel_entity,
-            "service": FlextGrpcUtilities.create_service_entity,
-            "stream": FlextGrpcUtilities.create_stream_entity,
-        }
+    def _get_entity_factories(self) -> dict[str, Callable[..., r[object]]]:
+        """Get entity factories for dynamic dispatch.
+
+        Wrappers normalize return to r[object] for dict homogeneity.
+        """
+        def _wrap_factory[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
+            def _inner(
+                **kw: (
+                    str
+                    | bool
+                    | float
+                    | list[str]
+                    | list[t.JsonValue]
+                    | dict[str, t.JsonValue]
+                    | None
+                ),
+            ) -> r[object]:
+                return _result_as_object(fn(**kw))
+            return _inner
+
+        factories: dict[str, Callable[..., r[object]]] = {}
+        factories["server"] = _wrap_factory(FlextGrpcUtilities.create_server_entity)
+        factories["client"] = _wrap_factory(FlextGrpcUtilities.create_client_entity)
+        factories["channel"] = _wrap_factory(FlextGrpcUtilities.create_channel_entity)
+        factories["service"] = _wrap_factory(FlextGrpcUtilities.create_service_entity)
+        factories["stream"] = _wrap_factory(FlextGrpcUtilities.create_stream_entity)
         return factories
 
     def execute_operation(
@@ -139,21 +170,31 @@ class FlextGrpc:
         result = operation(**request.arguments, **request.keyword_arguments)
 
         # Return config on success, fail on error
-        return result.map(lambda _data: self.grpc_config).lash(
-            lambda error_msg: r.fail(error_msg or "Unknown error"),
-        )
+        def _to_config(_data: object) -> FlextGrpcSettings:
+            return self.grpc_config
 
-    def _get_operations(self) -> dict[str, p.Grpc.OperationHandler]:
-        """Get operations for dynamic dispatch."""
-        operations: dict[str, p.Grpc.OperationHandler] = {
-            "start_server": self._service.start_server,
-            "stop_server": self._service.stop_server,
-            "connect_client": self._service.connect_client,
-            "disconnect_client": self._service.disconnect_client,
-            "make_call": self._service.make_call,
-            "send_data": self._service.send_data,
-            "close_stream": self._service.close_stream,
-        }
+        def _fail_msg(error_msg: object) -> r[FlextGrpcSettings]:
+            return r.fail(str(error_msg) if error_msg else "Unknown error")
+        return result.map(_to_config).lash(_fail_msg)
+
+    def _get_operations(self) -> dict[str, Callable[..., r[object]]]:
+        """Get operations for dynamic dispatch.
+
+        Wrappers normalize return to r[object] for dict homogeneity.
+        """
+        def _wrap_op[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
+            def _inner(*args: object, **kwargs: object) -> r[object]:
+                return _result_as_object(fn(*args, **kwargs))
+            return _inner
+
+        operations: dict[str, Callable[..., r[object]]] = {}
+        operations["start_server"] = _wrap_op(self._service.start_server)
+        operations["stop_server"] = _wrap_op(self._service.stop_server)
+        operations["connect_client"] = _wrap_op(self._service.connect_client)
+        operations["disconnect_client"] = _wrap_op(self._service.disconnect_client)
+        operations["make_call"] = _wrap_op(self._service.make_call)
+        operations["send_data"] = _wrap_op(self._service.send_data)
+        operations["close_stream"] = _wrap_op(self._service.close_stream)
         return operations
 
     def create_server(
@@ -194,11 +235,12 @@ class FlextGrpc:
         **kwargs: str | int | bool | dict[str, t.GeneralValueType] | None,
     ) -> r[FlextGrpcEntities.Channel]:
         """Create channel entity with defaults."""
-        defaults = {
+        defaults: dict[str, t.GeneralValueType] = {
             "target": f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "options": {},
         }
-        result = self.create_entity("channel", **defaults | kwargs)
+        merged = defaults | dict(kwargs)
+        result = self.create_entity("channel", **merged)
         if result.is_failure:
             return r.fail(result.error or "Channel creation failed")
         entity = result.value
@@ -363,7 +405,15 @@ class FlextGrpc:
     def create_complete_setup(
         self,
         **kwargs: str | int | list[str] | None,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[
+        dict[
+            str,
+            FlextGrpcEntities.Server
+            | FlextGrpcEntities.Client
+            | FlextGrpcEntities.Service
+            | str,
+        ]
+    ]:
         """Complete setup using functional composition."""
         host = kwargs.get("host", c.Grpc.GrpcNetwork.DEFAULT_HOST)
         port = kwargs.get("port", c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)

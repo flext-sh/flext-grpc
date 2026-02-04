@@ -452,7 +452,17 @@ class FlextGrpcProtocols(FlextProtocols):
         class EntityFactory(Protocol):
             """Protocol for entity factory callables."""
 
-            def __call__(self, **kwargs: str | int | bool | None) -> r[object]:
+            def __call__(
+                self,
+                **kwargs: (
+                    str
+                    | bool
+                    | float
+                    | list[str]
+                    | dict[str, str | int | float | bool | list[str] | None]
+                    | None
+                ),
+            ) -> r[object]:
                 """Create entity with given arguments."""
                 ...
 

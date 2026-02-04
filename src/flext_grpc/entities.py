@@ -101,7 +101,9 @@ class FlextGrpcEntities:
 
         def disconnect(self) -> r[Self]:
             """Transition to idle."""
-            return r.ok(self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}))
+            return r.ok(
+                self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value})
+            )
 
     class Server(Entity, StateMachine):
         """Generic gRPC server with state machine and validation delegation."""
@@ -183,10 +185,9 @@ class FlextGrpcEntities:
         @classmethod
         def validate_methods(cls, v: list[str]) -> list[str]:
             """Delegate methods validation."""
-            # list[str] is covariant with list[t.GeneralValueType] for validation
-            EntityValidator.validate_list_not_empty(v, "methods")
+            _ = EntityValidator.validate_list_not_empty(v, "methods")
             for method in v:
-                EntityValidator.validate_required_string(method, "method")
+                _ = EntityValidator.validate_required_string(method, "method")
             return v
 
         def has_method(self, method_name: str) -> bool:
@@ -218,7 +219,7 @@ class FlextGrpcEntities:
             """Connect functionally."""
             channel = FlextGrpcEntities.Channel(
                 target=target,
-                state=c.Grpc.ChannelState.IDLE,
+                state=c.Grpc.ChannelState.IDLE.value,
             )
             return r.ok(self.model_copy(update={"channel": channel}))
 

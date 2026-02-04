@@ -17,7 +17,7 @@ from flext_core import (
     FlextModels,
     FlextResult as r,
 )
-from flext_core.models import FlextModelsEntity
+from flext_core._models.entity import FlextModelsEntity
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants

@@ -111,12 +111,12 @@ class MetricsCollector:
         self._metrics: dict[str, t.GeneralValueType] = {}
         self._lock = threading.RLock()
 
-    def record_metric(self, key: str, value: object) -> None:
+    def record_metric(self, key: str, value: t.GeneralValueType) -> None:
         """Thread-safe metric recording.
 
         Args:
         key: Metric identifier
-        value: Metric value (supports any JSON-serializable type)
+        value: Metric value (JSON-serializable: str, int, float, bool, list, dict, None)
 
         """
         with self._lock:
@@ -139,7 +139,7 @@ class MetricsCollector:
                 return value
             if isinstance(value, (list, tuple)):
                 return list(value)
-            if isinstance(value, dict):
+            if hasattr(value, "items") and callable(getattr(value, "items")):
                 return dict(value)
             return str(value)
 
@@ -195,7 +195,7 @@ class ConnectionPool:
             self._active.clear()
             while not self._pool.empty():
                 try:
-                    self._pool.get_nowait()
+                    _ = self._pool.get_nowait()
                 except Exception:
                     break
         return r.ok(True)
@@ -207,7 +207,7 @@ class GrpcServerManager(ServerLifecycleManager):
     def __init__(self) -> None:
         """Initialize server manager with metrics tracking."""
         super().__init__()
-        self._active_servers: dict[str, t.GeneralValueType] = {}
+        self._active_servers: dict[str, grpc.Server] = {}
         self._metrics = MetricsCollector()
         self._thread_pool = ThreadPoolExecutor(
             max_workers=50,
@@ -234,7 +234,7 @@ class GrpcServerManager(ServerLifecycleManager):
 
             # Create actual gRPC server
             grpc_server = grpc.server(self._thread_pool)
-            grpc_server.add_insecure_port(
+            _ = grpc_server.add_insecure_port(
                 f"{starting_server.host}:{starting_server.port}",
             )
 
@@ -278,9 +278,8 @@ class GrpcServerManager(ServerLifecycleManager):
 
             # Stop gRPC server
             grpc_server = self._active_servers[server_key]
-            # Type narrowing: ensure grpc_server has stop method
             if hasattr(grpc_server, "stop"):
-                grpc_server.stop(grace=2.0)
+                _ = grpc_server.stop(grace=2.0)
 
             # Cleanup
             del self._active_servers[server_key]
@@ -314,7 +313,7 @@ class GrpcClientManager(ClientConnectionManager):
     def __init__(self) -> None:
         """Initialize client manager with connection pooling."""
         super().__init__()
-        self._active_channels: dict[str, t.GeneralValueType] = {}
+        self._active_channels: dict[str, grpc.Channel] = {}
         self._connection_pool = ConnectionPool(max_size=20)
         self._metrics = MetricsCollector()
 
@@ -380,13 +379,7 @@ class GrpcClientManager(ClientConnectionManager):
             return r.fail("Client not connected")
 
         try:
-            channel_obj = self._active_channels[target]
-            # Type narrowing: ensure channel_obj is grpc.Channel
-            if not isinstance(channel_obj, grpc.Channel):
-                return r[dict[str, t.GeneralValueType]].fail(
-                    f"Invalid channel type: {type(channel_obj)}",
-                )
-            grpc_channel: grpc.Channel = channel_obj
+            grpc_channel = self._active_channels[target]
             stub = FlextGrpcServiceStub(grpc_channel)
 
             # Route to appropriate method
@@ -424,7 +417,7 @@ class GrpcStreamManager(StreamProcessor):
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: dict[str, t.GeneralValueType] = {}
+        self._active_streams: dict[str, object] = {}
         self._metrics = MetricsCollector()
 
     def create_stream(
@@ -477,18 +470,16 @@ class GrpcStreamManager(StreamProcessor):
         stream_info = self._active_streams[stream_key]
 
         try:
-            # Type narrowing: ensure stream_info is a dict
             if not isinstance(stream_info, dict):
                 return r[dict[str, t.GeneralValueType]].fail("Invalid stream info type")
-            # Buffer management
             buffer = stream_info.get("buffer")
-            if buffer is None:
+            if buffer is None or not isinstance(buffer, deque):
                 return r[dict[str, t.GeneralValueType]].fail(
-                    "Buffer not found in stream info"
+                    "Buffer not found or invalid in stream info"
                 )
-            buffer.append(data)
+            payload: object = data
+            buffer.append(payload)
 
-            # For now, just acknowledge (streaming logic would go here)
             return r.ok({
                 "stream_id": stream.id,
                 "data_sent": str(data),
