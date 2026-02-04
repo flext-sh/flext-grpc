@@ -82,28 +82,33 @@ class FlextGrpcSettings(BaseModel):
         **_kwargs: object,
     ) -> None:
         """Initialize with backward compatibility for legacy fields."""
-        # Handle legacy field overrides
-        network = network or GrpcNetworkConfig()
+        network_config: GrpcNetworkConfig = network or GrpcNetworkConfig()
         if host is not None:
-            network = network.model_copy(update={"host": host})
+            network_config = network_config.model_copy(update={"host": host})
         if port is not None:
-            network = network.model_copy(update={"port": port})
+            network_config = network_config.model_copy(update={"port": port})
 
-        security = security or GrpcSecurityConfig()
+        security_config: GrpcSecurityConfig = security or GrpcSecurityConfig()
         if tls_enabled is not None:
-            security = security.model_copy(update={"tls_enabled": tls_enabled})
+            security_config = security_config.model_copy(
+                update={"tls_enabled": tls_enabled}
+            )
 
-        performance = performance or GrpcPerformanceConfig()
+        performance_config: GrpcPerformanceConfig = (
+            performance or GrpcPerformanceConfig()
+        )
         if max_workers is not None:
-            performance = performance.model_copy(update={"max_workers": max_workers})
+            performance_config = performance_config.model_copy(
+                update={"max_workers": max_workers}
+            )
 
-        streaming_config = streaming or GrpcStreamingConfig()
+        streaming_config: GrpcStreamingConfig = streaming or GrpcStreamingConfig()
         if streaming_enabled is not None:
             streaming_config = streaming_config.model_copy(
                 update={"enabled": streaming_enabled},
             )
 
-        client_config = client or GrpcClientConfig()
+        client_config: GrpcClientConfig = client or GrpcClientConfig()
         if timeout is not None:
             client_config = client_config.model_copy(update={"timeout": timeout})
 
@@ -111,9 +116,9 @@ class FlextGrpcSettings(BaseModel):
         # AutoConfig only accepts config_class, env_prefix, env_file
         # So we initialize BaseModel directly with our fields
         super().__init__(
-            network=network,
-            security=security,
-            performance=performance,
+            network=network_config,
+            security=security_config,
+            performance=performance_config,
             streaming=streaming_config,
             client=client_config,
             monitoring=monitoring or GrpcMonitoringConfig(),
