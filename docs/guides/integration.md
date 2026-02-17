@@ -321,16 +321,16 @@ class DataStreamProcessor:
             .map(lambda _: results)
         )
 
-    def _validate_stream(self, stream: FlextGrpcStream) -> FlextResult[None]:
+    def _validate_stream(self, stream: FlextGrpcStream) -> FlextResult[bool]:
         """Validate stream configuration."""
         if stream.stream_type != "server_streaming":
             return FlextResult.fail("Expected server streaming")
-        return FlextResult.ok(None)
+        return FlextResult.| ok(value=True)
 
-    def _process_stream_data(self, stream: FlextGrpcStream, results: list) -> FlextResult[None]:
+    def _process_stream_data(self, stream: FlextGrpcStream, results: list) -> FlextResult[bool]:
         """Process incoming stream data."""
         # Stream processing logic
-        return FlextResult.ok(None)
+        return FlextResult.| ok(value=True)
 ```
 
 ## Configuration Integration
@@ -565,7 +565,7 @@ class FlextGrpcProductionService:
         self.logger = FlextLogger(__name__)
         self._platform = FlextGrpcPlatform()
 
-    def start_production_service(self) -> FlextResult[None]:
+    def start_production_service(self) -> FlextResult[bool]:
         """Start gRPC service with production configuration."""
 
         return (
@@ -601,7 +601,7 @@ class MonitoredGrpcService:
     def __init__(self):
         self._metrics = MetricsCollector("grpc_service")
 
-    def start_monitored_server(self, server: FlextGrpcServer) -> FlextResult[None]:
+    def start_monitored_server(self, server: FlextGrpcServer) -> FlextResult[bool]:
         """Start server with monitoring."""
 
         # Register metrics
@@ -644,7 +644,7 @@ from flext_grpc import FlextGrpcSettings
 class GrpcVersionManager:
     """Manage gRPC version compatibility."""
 
-    def migrate_to_new_version(self) -> FlextResult[None]:
+    def migrate_to_new_version(self) -> FlextResult[bool]:
         """Migrate gRPC configuration to new version."""
 
         return (
@@ -653,13 +653,13 @@ class GrpcVersionManager:
             .flat_map(lambda _: self._validate_migration())
         )
 
-    def _backup_current_config(self) -> FlextResult[None]:
+    def _backup_current_config(self) -> FlextResult[bool]:
         """Backup current configuration."""
-        return FlextResult.ok(None)
+        return FlextResult.| ok(value=True)
 
-    def _update_configuration(self) -> FlextResult[None]:
+    def _update_configuration(self) -> FlextResult[bool]:
         """Update to new configuration format."""
-        return FlextResult.ok(None)
+        return FlextResult.| ok(value=True)
 ```
 
 ## Current Integration Status

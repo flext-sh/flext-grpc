@@ -252,7 +252,7 @@ from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 
-def validate_production_config(config: FlextGrpcSettings) -> FlextResult[None]:
+def validate_production_config(config: FlextGrpcSettings) -> FlextResult[bool]:
     """Additional validation for production environments."""
 
     if config.host == FlextGrpcConstants.Network.DEFAULT_HOST:
@@ -264,7 +264,7 @@ def validate_production_config(config: FlextGrpcSettings) -> FlextResult[None]:
     if not config.use_tls:
         return FlextResult.fail("Production requires TLS encryption")
 
-    return FlextResult.ok(None)
+    return FlextResult.| ok(value=True)
 ```
 
 ## Environment-Specific Configurations

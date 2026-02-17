@@ -213,15 +213,15 @@ With the following principles:
 ```python
 # Domain defines interfaces
 class ServerInterface(Protocol):
-    def start(self) -> FlextResult[None]: ...
-    def stop(self) -> FlextResult[None]: ...
+    def start(self) -> FlextResult[bool]: ...
+    def stop(self) -> FlextResult[bool]: ...
 
 # Infrastructure implements interfaces
 class GrpcServerAdapter(ServerInterface):
     def __init__(self, grpc_server):
         self.grpc_server = grpc_server
 
-    def start(self) -> FlextResult[None]:
+    def start(self) -> FlextResult[bool]:
         # Implementation using grpcio
         pass
 ```

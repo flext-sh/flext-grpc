@@ -291,7 +291,7 @@ class FlextGrpcServer(FlextModels.Entity):
         # State transition
         return FlextResult.ok(self.copy_with(state="starting"))
 
-    def validate_business_rules(self) -> FlextResult[None]:
+    def validate_business_rules(self) -> FlextResult[bool]:
         """Domain validation rules."""
 
         if not self.host:
@@ -300,7 +300,7 @@ class FlextGrpcServer(FlextModels.Entity):
         if self.port < 1024 or self.port > 65535:
             return FlextResult.fail(f"Invalid port: {self.port}")
 
-        return FlextResult.ok(None)
+        return FlextResult.| ok(value=True)
 ```
 
 ## Testing Standards
@@ -488,14 +488,14 @@ class GrpcServiceManager:
         self._container = FlextContainer.get_global()
         self.logger = FlextLogger(__name__)
 
-    def initialize(self) -> FlextResult[None]:
+    def initialize(self) -> FlextResult[bool]:
         """Initialize with dependency injection."""
 
         # Register services
         platform = FlextGrpcPlatform()
         self._container.register("grpc_platform", platform)
 
-        return FlextResult.ok(None)
+        return FlextResult.| ok(value=True)
 
     def get_platform(self) -> FlextResult[FlextGrpcPlatform]:
         """Retrieve platform from container."""
@@ -572,7 +572,7 @@ def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
 Use comments sparingly for complex business logic:
 
 ```python
-def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None]:
+def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[bool]:
     """Validate server state transition."""
 
     # State machine validation - only specific transitions allowed
@@ -588,7 +588,7 @@ def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[None
             f"Invalid state transition: {self.state} → {new_state}"
         )
 
-    return FlextResult.ok(None)
+    return FlextResult.| ok(value=True)
 ```
 
 ## Contributing Process

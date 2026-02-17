@@ -284,7 +284,7 @@ class FlextGrpcUtilities(FlextUtilities):
             except Exception as e:
                 return r[bool].fail(f"Message serialization failed: {e}")
 
-            return r[bool].ok(True)
+            return r[bool].ok(value=True)
 
         @staticmethod
         def validate_protobuf_message(
@@ -394,7 +394,7 @@ class FlextGrpcUtilities(FlextUtilities):
                                 f"Message {i} type mismatch: expected {expected_type}, got {msg.DESCRIPTOR.name if hasattr(msg.DESCRIPTOR, 'name') else 'unknown'}",
                             )
 
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
             except Exception as e:
                 return r[bool].fail(f"Stream validation failed: {e}")
 
@@ -711,7 +711,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     grpc.channel_ready_future(channel).result(
                         timeout=timeout,
                     )
-                    return r[bool].ok(True)
+                    return r[bool].ok(value=True)
                 except grpc.FutureTimeoutError:
                     return r[bool].ok(False)
             except Exception as e:
