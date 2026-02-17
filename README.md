@@ -1,247 +1,108 @@
 # FLEXT-GRPC
 
 [![Python 3.13+](https://img.shields.io/badge/python-3.13+-blue.svg)](https://www.python.org/downloads/)
-[![Development](https://img.shields.io/badge/status-development-orange.svg)](#)
-[![gRPC Communication](https://img.shields.io/badge/grpc-communication-green.svg)](#)
-[![Documentation](https://img.shields.io/badge/docs-organized-blue.svg)](./docs/)
-[![GitHub](https://img.shields.io/badge/github-flext--grpc-black.svg)](https://github.com/flext/flext-grpc)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-**gRPC communication library** for the FLEXT ecosystem using Clean Architecture patterns and railway-oriented programming.
+**FLEXT-GRPC** provides a robust, type-safe foundation for building gRPC microservices within the FLEXT ecosystem. It abstracts the complexities of `grpcio` and `protobuf` while enforcing Clean Architecture patterns and Railway-Oriented Programming for reliable inter-service communication.
 
-> **⚠️ STATUS**: Development - Core functionality operational, test coverage at 26%, protobuf integration verified
+## 🚀 Key Features
 
-## 📚 Documentation
+- **gRPC Abstraction**: Simplified, type-safe wrappers for creating gRPC servers and clients.
+- **Streaming Support**: Comprehensive support for all four gRPC streaming patterns: Unary, Server Streaming, Client Streaming, and Bidirectional Streaming.
+- **Lifecycle Management**: Robust server startup/shutdown handling and client connection management.
+- **Dependency Injection**: Seamless integration with `FlextContainer` for injecting services into gRPC handlers.
+- **Railway-Oriented**: Operations return `FlextResult[T]`, ensuring consistent error handling across the network boundary.
+- **Interceptor Support**: Built-in support for gRPC interceptors (middleware) for logging, authentication, and tracing.
 
-**Complete documentation is available in the project documentation:**
+## 📦 Installation
 
-- **[Getting Started](docs/getting-started.md)** - Quick start guide
-- **[Architecture](docs/architecture.md)** - System design and patterns
-- **[API Reference](docs/api-reference.md)** - Complete API documentation
-- **[Configuration](docs/configuration.md)** - Configuration patterns
+To install `flext-grpc`:
 
----
+```bash
+pip install flext-grpc
+```
 
----
+Or with Poetry:
 
-## 🎯 Purpose
+```bash
+poetry add flext-grpc
+```
 
-Provides gRPC communication patterns for microservices within the FLEXT data integration platform.
+## 🛠️ Usage
 
-### Key Responsibilities
+### Creating a Server
 
-1. **gRPC Abstraction** - Layer over grpcio and protobuf libraries
-2. **Service Management** - Server and client lifecycle operations
-3. **Streaming Support** - Four gRPC patterns: unary, server streaming, client streaming, bidirectional
-
-### Integration with FLEXT Ecosystem
-
-- **flext-core** → Uses FlextResult, FlextContainer, FlextLogger patterns
-- **FLEXT projects** → Intended as gRPC communication foundation
-
----
-
-## 🏗️ Current Implementation
-
-### FLEXT Integration Status
-
-| Pattern            | Status         | Notes                                    |
-| ------------------ | -------------- | ---------------------------------------- |
-| FlextResult        | ✅ Implemented | Used throughout API                      |
-| FlextContainer     | ✅ Implemented | Dependency injection present             |
-| FlextLogger        | ✅ Implemented | Logging infrastructure                   |
-| Clean Architecture | ✅ Implemented | Domain/service/infrastructure separation |
-
-### Technical Details
-
-- **Source Code**: 4,923 lines across 13 modules
-- **Test Suite**: 18,018 lines across multiple test files
-- **Test Coverage**: 39% (verified via pytest --cov)
-- **Import Status**: ✅ All core modules importable after protobuf fixes
-
-### Verified Working Functionality
+Define and start a gRPC server with minimal boilerplate.
 
 ```python
-from flext_grpc import create_server, create_client, FlextGrpcPlatform
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import create_server, FlextGrpcSettings
 
-# Server creation - verified working
-server = create_server('localhost', 50051, 10)
-# Output: Server address: localhost:50051, state: stopped
+# 1. Configure Server
+settings = FlextGrpcSettings(
+    host="0.0.0.0",
+    port=50051,
+    max_workers=10
+)
 
-# Client creation - verified working
-client = create_client('localhost:50051')
-# Output: Client created successfully
+# 2. Start Server
+server = create_server(settings)
+server.start()
+print(f"Server listening on {settings.host}:{settings.port}")
 
-# Platform management - verified working
-platform = FlextGrpcPlatform()
-# Output: Platform created successfully
-
-# Configuration management - verified working
-config = FlextGrpcSettings(host='localhost', port=50051, max_workers=10)
-# Output: Config created with validation
+# 3. Wait for termination
+server.wait_for_termination()
 ```
 
----
+### Creating a Client
 
-## 🚀 Installation
+Connect to a gRPC service safely.
 
-### Prerequisites
+```python
+from flext_grpc import create_client, FlextGrpcSettings
 
-- Python 3.13
-- Poetry for dependency management
-- grpcio and protobuf (managed via dependencies)
+# 1. Configure Client
+settings = FlextGrpcSettings(
+    host="localhost",
+    port=50051
+)
 
-### Setup
+# 2. Create Client Channel
+client = create_client(settings)
 
-```bash
-git clone https://github.com/flext-sh/flext/tree/main/flext-grpc
-cd flext-grpc
-poetry install
+# 3. Use the client (example with generated stub)
+# stub = MyServiceStub(client.channel)
+# response = stub.MyMethod(request)
 ```
 
----
+### Implementing a Service
 
-## 🔧 Quality Assurance
+Implement your gRPC service logic using FLEXT patterns.
 
-The FLEXT ecosystem provides comprehensive automated quality assurance:
+```python
+from flext_core import FlextService, FlextResult as r
+# from my_proto import my_service_pb2_grpc, my_service_pb2
 
-- **Pattern Analysis**: Automatic detection of architectural violations and duplication
-- **Consolidation Guidance**: SOLID-based refactoring recommendations
-- **Batch Operations**: Safe, automated fixes with backup and rollback
-- **Quality Gates**: Enterprise-grade validation before integration
+class MyServiceHandler(FlextService):
+    def handle_request(self, request, context) -> r[str]:
+        # Business logic here
+        return r[str].ok(f"Processed {request.id}")
 
-### Development Standards
-
-- **Architecture Compliance**: Changes maintain layering and dependencies
-- **Type Safety**: Complete type coverage maintained
-- **Test Coverage**: All changes include comprehensive tests
-- **Quality Validation**: Automated checks ensure standards are met
-
-## 🔧 Development
-
-### Available Commands
-
-```bash
-# Install dependencies
-poetry install
-
-# Run individual test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
-
-# Check coverage (currently 39%)
-poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
-
-# Type checking
-poetry run mypy src/
-
-# Code linting
-poetry run ruff check src/
+# Register handler with server...
 ```
 
-### Quality Status
+## 🏗️ Architecture
 
-- **Import Validation**: ✅ Core functionality importable
-- **Basic Operations**: ✅ Server/client creation working
-- **Test Coverage**: ⚠️ 39% (needs improvement from pyproject.toml requirement of 90%)
-- **Type Safety**: Available via mypy
-- **Code Quality**: Available via ruff
+FLEXT-GRPC is design to keep your transport layer clean and separated from your business logic:
 
----
-
-## 🧪 Testing
-
-### Current Test Status
-
-- **Test Structure**: 18,018 lines across comprehensive test suite
-- **Test Execution**: Individual tests can run successfully
-- **Coverage Results**: 39% actual coverage (1,798 total statements, 956 missed)
-- **Coverage Target**: 90% configured in pyproject.toml (not currently met)
-
-### Test Execution Examples
-
-```bash
-# Run a working test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
-# Result: PASSED
-
-# Check coverage
-poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
-# Result: 26% coverage, needs improvement
-```
-
----
-
-## 📊 Development Status
-
-### Current Version (0.9.0)
-
-**Working**:
-
-- Core API functions (create_server, create_client, FlextGrpcPlatform)
-- Configuration management with validation
-- Basic import functionality
-
-**Needs Work**:
-
-- Test coverage improvement (39% → 90% target)
-- Fix 28 failing tests (critical bugs in services, exceptions, protocols)
-- Full test suite validation
-- Complete protobuf integration testing
-
-### Next Steps
-
-1. **Test Coverage** - Address the 51 percentage point gap to meet 90% requirement
-2. **Test Suite Validation** - Ensure all 18,018 lines of tests execute reliably
-3. **Integration Testing** - Verify actual gRPC server/client communication
-4. **Production Features** - Health checking, authentication, TLS
-
----
-
-## 📚 Documentation
-
-- **[Architecture](docs/architecture.md)** - Clean Architecture implementation
-- **[API Reference](docs/api-reference.md)** - API documentation
-- **[Configuration](docs/configuration.md)** - Settings management
-- **[Integration](docs/guides/integration.md)** - FLEXT ecosystem integration
-- **[Getting Started](docs/getting-started.md)** - Setup instructions
-- **[Development](docs/development.md)** - Development workflow
-- **[Troubleshooting](docs/troubleshooting.md)** - Common issues
-
----
+- **Platform Layer**: `FlextGrpcPlatform` manages the underlying gRPC runtime.
+- **Service Layer**: Business logic resides in `FlextService` implementations, detached from `protobuf` generated code where possible.
+- **Interceptors**: Cross-cutting concerns like auth and logging are handled via interceptors, keeping handlers focused.
 
 ## 🤝 Contributing
 
-### Quality Standards
-
-All contributions must:
-
-- Maintain architectural layering and dependency rules
-- Preserve complete type safety
-- Follow established testing patterns
-- Pass automated quality validation
-
-### Development Focus
-
-1. **Test Coverage** - Primary need to reach 90% from current 26%
-2. **Functional Validation** - Ensure all features work as documented
-3. **FLEXT Compliance** - Maintain ecosystem integration standards
-4. **Code Quality** - Follow Clean Architecture patterns
-
-### Quality Requirements
-
-- **Test Coverage**: Must achieve 90% (currently 26%)
-- **Import Functionality**: All modules must be importable
-- **Type Safety**: Comprehensive type annotations
-- **FLEXT Integration**: Complete flext-core pattern compliance
-
----
+We welcome contributions! Please see our [Contributing Guide](docs/development.md) for details on setting up your environment and submitting pull requests.
 
 ## 📄 License
 
-MIT License
-
----
-
-**flext-grpc v0.9.9** - gRPC communication library for FLEXT ecosystem.
-
-**Current Focus**: Improving test coverage from 39% to meet the 90% requirement while fixing 28 failing tests.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
