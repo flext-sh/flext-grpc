@@ -6,7 +6,9 @@
 
 **FLEXT-GRPC** provides a robust, type-safe foundation for building gRPC microservices within the FLEXT ecosystem. It abstracts the complexities of `grpcio` and `protobuf` while enforcing Clean Architecture patterns and Railway-Oriented Programming for reliable inter-service communication.
 
-Part of the [FLEXT](https://github.com/flext-sh/flext) ecosystem.
+**Reviewed**: 2026-02-17 | **Version**: 0.10.0-dev
+
+Part of the [FLEXT](https://github.com/flext/flext) ecosystem.
 
 ## 🚀 Key Features
 
