@@ -132,6 +132,7 @@ class FlextGrpc:
 
         Wrappers normalize return to r[object] for dict homogeneity.
         """
+
         def _wrap_factory[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
             def _inner(
                 **kw: (
@@ -145,6 +146,7 @@ class FlextGrpc:
                 ),
             ) -> r[object]:
                 return _result_as_object(fn(**kw))
+
             return _inner
 
         factories: dict[str, Callable[..., r[object]]] = {}
@@ -175,6 +177,7 @@ class FlextGrpc:
 
         def _fail_msg(error_msg: object) -> r[FlextGrpcSettings]:
             return r.fail(str(error_msg) if error_msg else "Unknown error")
+
         return result.map(_to_config).lash(_fail_msg)
 
     def _get_operations(self) -> dict[str, Callable[..., r[object]]]:
@@ -182,9 +185,11 @@ class FlextGrpc:
 
         Wrappers normalize return to r[object] for dict homogeneity.
         """
+
         def _wrap_op[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
             def _inner(*args: object, **kwargs: object) -> r[object]:
                 return _result_as_object(fn(*args, **kwargs))
+
             return _inner
 
         operations: dict[str, Callable[..., r[object]]] = {}

@@ -90,8 +90,8 @@
 
 ### Primary Stakeholders
 
-| Stakeholder          | Role      | Responsibilities                         | Concerns       |
-| -------------------- | --------- | ---------------------------------------- | -------------- |
+| Stakeholder          | Role      | Responsibilities                         | Concerns                                |
+| -------------------- | --------- | ---------------------------------------- | --------------------------------------- |
 | **FLEXT Developers** | End Users | Implement microservices using FLEXT-gRPC | API usability, performance, reliability |
 
 | **System Architects** | Decision Makers | Design microservices architecture | Scalability,
@@ -103,8 +103,8 @@ ecosystem compatibility |
 
 ### Secondary Stakeholders
 
-| Stakeholder           | Role       | Responsibilities                | Concerns     |
-| --------------------- | ---------- | ------------------------------- | ------------ |
+| Stakeholder           | Role       | Responsibilities                | Concerns                              |
+| --------------------- | ---------- | ------------------------------- | ------------------------------------- |
 | **Quality Assurance** | Validators | Test and validate functionality | Testability, reliability, performance |
 
 | **Security Team** | Guardians | Ensure security compliance | Vulnerabilities,
@@ -163,9 +163,9 @@ standards compliance, risk management |
 
 ### Technical Terms
 
-| Term                 | Definition                                                    |
-| -------------------- | ------------------------------------------------------------- |
-| **gRPC**             | Google Remote Procedure Call - high-performance RPC framework |
+| Term                 | Definition                                                                                        |
+| -------------------- | ------------------------------------------------------------------------------------------------- |
+| **gRPC**             | Google Remote Procedure Call - high-performance RPC framework                                     |
 | **Protocol Buffers** | Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data |
 
 | **Railway Pattern** | Functional error handling pattern using Result types |

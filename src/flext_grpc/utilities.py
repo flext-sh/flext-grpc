@@ -88,9 +88,7 @@ class FlextGrpcUtilities(FlextUtilities):
         return isinstance(value, grpc.Channel)
 
     @classmethod
-    def _is_grpc_credentials(
-        cls, value: object
-    ) -> TypeGuard[grpc.ChannelCredentials]:
+    def _is_grpc_credentials(cls, value: object) -> TypeGuard[grpc.ChannelCredentials]:
         """TypeGuard for gRPC channel credentials validation."""
         return isinstance(value, grpc.ChannelCredentials)
 
@@ -1144,9 +1142,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
                 code_attr = getattr(error, "code", None)
                 code_result = code_attr() if callable(code_attr) else None
-                is_retryable = (
-                    code_result in retryable_codes if code_result else False
-                )
+                is_retryable = code_result in retryable_codes if code_result else False
                 return r[bool].ok(is_retryable)
             except Exception as e:
                 return r[bool].fail(f"Retry check failed: {e}")
