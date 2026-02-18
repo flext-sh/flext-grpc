@@ -211,7 +211,9 @@
         ]
 
     [tool.pyrefly]
-        search-path = ["src", "tests"]
+        search-path = [
+            "../typings",
+            "../typings/generated","src", "tests"]
 
         # BoundMethod/Protocol structural subtyping: pyrefly is strict;
         # classmethods and instance methods used as factory/handler callables
