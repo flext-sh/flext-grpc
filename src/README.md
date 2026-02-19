@@ -1,5 +1,34 @@
 # FLEXT gRPC Source Code
 
+
+<!-- TOC START -->
+- [Module Structure](#module-structure)
+  - [Core Implementation](#core-implementation)
+- [Architecture Layers](#architecture-layers)
+  - [Domain Layer (Core Business Logic)](#domain-layer-core-business-logic)
+  - [Application Layer (Business Process Orchestration)](#application-layer-business-process-orchestration)
+  - [Infrastructure Layer (External System Integration)](#infrastructure-layer-external-system-integration)
+- [Code Organization Principles](#code-organization-principles)
+  - [Clean Architecture Compliance](#clean-architecture-compliance)
+  - [Domain-Driven Design Patterns](#domain-driven-design-patterns)
+  - [Enterprise Patterns](#enterprise-patterns)
+- [Implementation Standards](#implementation-standards)
+  - [Code Quality Standards](#code-quality-standards)
+  - [Testing Integration](#testing-integration)
+- [Integration Points](#integration-points)
+  - [FLEXT Ecosystem Integration](#flext-ecosystem-integration)
+  - [External Dependencies](#external-dependencies)
+- [Development Workflow](#development-workflow)
+  - [Code Modification Guidelines](#code-modification-guidelines)
+  - [Quality Gates](#quality-gates)
+  - [File Organization](#file-organization)
+- [Current Status](#current-status)
+  - [Implementation Completeness](#implementation-completeness)
+- [Contributing](#contributing)
+  - [Code Contribution Guidelines](#code-contribution-guidelines)
+  - [Review Checklist](#review-checklist)
+<!-- TOC END -->
+
 Source code implementation for the FLEXT gRPC communication platform following Clean Architecture and Domain-Driven Design principles.
 
 ## Module Structure

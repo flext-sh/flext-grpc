@@ -1,5 +1,28 @@
 # flext-grpc Troubleshooting
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Fixed Issues](#fixed-issues)
+  - [Protobuf Import Compatibility (RESOLVED)](#protobuf-import-compatibility-resolved)
+- [Current Issues](#current-issues)
+  - [Test Execution Investigation Required](#test-execution-investigation-required)
+- [Common Development Issues](#common-development-issues)
+  - [Import Path Problems](#import-path-problems)
+  - [gRPC Version Conflicts](#grpc-version-conflicts)
+  - [Server Startup Issues](#server-startup-issues)
+- [Development Best Practices](#development-best-practices)
+  - [gRPC Service Development](#grpc-service-development)
+  - [Performance Considerations](#performance-considerations)
+  - [Security Patterns](#security-patterns)
+- [Diagnostic Commands](#diagnostic-commands)
+  - [Check Installation](#check-installation)
+  - [Verify Dependencies](#verify-dependencies)
+  - [Test Core Functionality](#test-core-functionality)
+- [Getting Help](#getting-help)
+- [Future Improvements](#future-improvements)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [flext-grpc Troubleshooting](#flext-grpc-troubleshooting)

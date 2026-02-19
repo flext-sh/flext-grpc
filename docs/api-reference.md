@@ -1,5 +1,29 @@
 # flext-grpc API Reference
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Core API](#core-api)
+  - [Factory Functions](#factory-functions)
+  - [Domain Entities](#domain-entities)
+  - [Service Classes](#service-classes)
+  - [Type Definitions](#type-definitions)
+  - [Exception Hierarchy](#exception-hierarchy)
+- [Streaming API](#streaming-api)
+  - [FlextGrpcStream](#flextgrpcstream)
+  - [FlextGrpcStreamService](#flextgrpcstreamservice)
+- [Utility Functions](#utility-functions)
+  - [Address Parsing](#address-parsing)
+- [Integration with FLEXT Patterns](#integration-with-flext-patterns)
+  - [Railway-Oriented Programming](#railway-oriented-programming)
+  - [Dependency Injection](#dependency-injection)
+- [Protocol Buffer Integration](#protocol-buffer-integration)
+  - [Service Definitions](#service-definitions)
+  - [Message Types](#message-types)
+- [Current Status](#current-status)
+- [Related Documentation](#related-documentation)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [flext-grpc API Reference](#flext-grpc-api-reference)

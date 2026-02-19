@@ -1,5 +1,34 @@
 # FLEXT gRPC Testing
 
+
+<!-- TOC START -->
+- [Testing Architecture](#testing-architecture)
+  - [Test Organization](#test-organization)
+  - [Testing Standards](#testing-standards)
+- [Test Categories](#test-categories)
+  - [Unit Tests (`tests/unit/`)](#unit-tests-testsunit)
+  - [Integration Tests (`tests/integration/`)](#integration-tests-testsintegration)
+  - [End-to-End Tests (`tests/e2e/`)](#end-to-end-tests-testse2e)
+- [Test Configuration](#test-configuration)
+  - [Pytest Configuration](#pytest-configuration)
+  - [Test Markers](#test-markers)
+- [Coverage Analysis](#coverage-analysis)
+  - [Current Coverage Status](#current-coverage-status)
+  - [Recent Documentation Improvements](#recent-documentation-improvements)
+  - [Coverage Improvement](#coverage-improvement)
+- [Testing Patterns](#testing-patterns)
+  - [Entity Testing Pattern](#entity-testing-pattern)
+  - [Service Testing Pattern](#service-testing-pattern)
+  - [Error Testing Pattern](#error-testing-pattern)
+- [Quality Standards](#quality-standards)
+  - [Test Quality Requirements](#test-quality-requirements)
+  - [Performance Standards](#performance-standards)
+- [Continuous Integration](#continuous-integration)
+  - [CI Pipeline Integration](#ci-pipeline-integration)
+- [Troubleshooting](#troubleshooting)
+  - [Common Testing Issues](#common-testing-issues)
+<!-- TOC END -->
+
 Testing suite for the FLEXT gRPC communication platform with quality standards.
 
 ## Testing Architecture

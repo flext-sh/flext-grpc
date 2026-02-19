@@ -1,5 +1,42 @@
 # FLEXT-gRPC Testing Plan
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Executive Summary](#executive-summary)
+- [Current Testing Status](#current-testing-status)
+  - [Test Suite Overview](#test-suite-overview)
+  - [Test Coverage by Module](#test-coverage-by-module)
+  - [Critical Test Failures (28/64)](#critical-test-failures-2864)
+- [Testing Strategy](#testing-strategy)
+  - [Test Categories](#test-categories)
+  - [Testing Priorities](#testing-priorities)
+- [Test Implementation Plan](#test-implementation-plan)
+  - [Immediate Actions (Fix Critical Failures)](#immediate-actions-fix-critical-failures)
+  - [Coverage Improvement Targets](#coverage-improvement-targets)
+  - [Integration Testing Implementation](#integration-testing-implementation)
+- [Testing Procedures](#testing-procedures)
+  - [Daily Development Testing](#daily-development-testing)
+  - [Continuous Integration Testing](#continuous-integration-testing)
+  - [Integration Testing Setup](#integration-testing-setup)
+- [Test Organization](#test-organization)
+  - [Directory Structure](#directory-structure)
+  - [Test Naming Conventions](#test-naming-conventions)
+  - [Test Categories and Markers](#test-categories-and-markers)
+- [Success Metrics](#success-metrics)
+  - [Phase 1 Success Criteria](#phase-1-success-criteria)
+  - [Coverage Targets by Module](#coverage-targets-by-module)
+  - [Test Quality Metrics](#test-quality-metrics)
+- [Risk Assessment](#risk-assessment)
+  - [High Risk](#high-risk)
+  - [Medium Risk](#medium-risk)
+  - [Low Risk](#low-risk)
+- [Future Testing Enhancements](#future-testing-enhancements)
+  - [Performance Testing](#performance-testing)
+  - [Load Testing](#load-testing)
+  - [Chaos Testing](#chaos-testing)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [FLEXT-gRPC Testing Plan](#flext-grpc-testing-plan)
@@ -463,16 +500,18 @@ make test         # Test execution
 #### Coverage Validation
 
 ```bash
+# Run tests with coverage (thresholds configured in pyproject.toml)
+make test
+
 # Coverage report
-PYTHONPATH=src poetry run pytest --cov=src/flext_grpc --cov-report=html
+PYTHONPATH=src poetry run pytest --cov --cov-report=html
 open htmlcov/index.html
 
 # Coverage by module
-PYTHONPATH=src poetry run pytest --cov=src/flext_grpc --cov-report=term-missing
-
-# Fail if below threshold
-PYTHONPATH=src poetry run pytest --cov=src/flext_grpc --cov-fail-under=90
+PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
 ```
+
+> Coverage thresholds are configured in `pyproject.toml` under `[tool.coverage.report]`.
 
 ### Integration Testing Setup
 

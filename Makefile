@@ -1,9 +1,10 @@
 # flext-grpc - gRPC Framework
 PROJECT_NAME := flext-grpc
-COV_DIR := flext_grpc
-MIN_COVERAGE := 90
-
+ifneq ("$(wildcard ../base.mk)", "")
 include ../base.mk
+else
+include base.mk
+endif
 
 # === PROJECT-SPECIFIC TARGETS ===
 .PHONY: proto proto-clean test-unit test-integration build shell

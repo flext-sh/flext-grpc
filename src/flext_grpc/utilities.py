@@ -257,7 +257,9 @@ class FlextGrpcUtilities(FlextUtilities):
             message_instance: Message,
         ) -> r[Message]:
             """Validate that all required fields are present."""
-            descriptor = message_instance.DESCRIPTOR
+            descriptor = getattr(message_instance, "DESCRIPTOR", None)
+            if descriptor is None:
+                return r[Message].fail("Message descriptor not available")
 
             for field in descriptor.fields:
                 if (
@@ -386,12 +388,13 @@ class FlextGrpcUtilities(FlextUtilities):
                     for i, (msg, expected_type) in enumerate(
                         zip(messages, expected_order, strict=False),
                     ):
+                        desc = getattr(msg, "DESCRIPTOR", None)
                         if (
-                            hasattr(msg, "DESCRIPTOR")
-                            and msg.DESCRIPTOR.name != expected_type
+                            desc is not None
+                            and getattr(desc, "name", None) != expected_type
                         ):
                             return r[bool].fail(
-                                f"Message {i} type mismatch: expected {expected_type}, got {msg.DESCRIPTOR.name if hasattr(msg.DESCRIPTOR, 'name') else 'unknown'}",
+                                f"Message {i} type mismatch: expected {expected_type}, got {getattr(desc, 'name', 'unknown')}",
                             )
 
                 return r[bool].ok(value=True)

@@ -406,7 +406,11 @@ class GrpcClientManager(ClientConnectionManager):
             return r.fail(f"Unsupported method: {method}")
 
         except grpc.RpcError as e:
-            return r.fail(f"gRPC call failed: {e.code()} - {e.details()}")
+            code_fn = getattr(e, "code", lambda: None)
+            details_fn = getattr(e, "details", lambda: "")
+            code_val = code_fn() if callable(code_fn) else None
+            details_val = details_fn() if callable(details_fn) else str(e)
+            return r.fail(f"gRPC call failed: {code_val} - {details_val}")
         except Exception as e:
             return r.fail(f"Call execution failed: {e}")
 

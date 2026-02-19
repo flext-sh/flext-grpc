@@ -1,5 +1,42 @@
 # flext-grpc Development Guide
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Development Setup](#development-setup)
+  - [Prerequisites](#prerequisites)
+  - [Initial Setup](#initial-setup)
+  - [Development Environment](#development-environment)
+- [Development Workflow](#development-workflow)
+  - [Essential Commands](#essential-commands)
+  - [Quality Gates](#quality-gates)
+- [Code Standards](#code-standards)
+  - [FLEXT-Core Compliance](#flext-core-compliance)
+  - [Type Annotations](#type-annotations)
+  - [Domain Patterns](#domain-patterns)
+- [Testing Standards](#testing-standards)
+  - [Test Structure](#test-structure)
+  - [Test Writing Guidelines](#test-writing-guidelines)
+  - [Test Markers](#test-markers)
+- [Architecture Guidelines](#architecture-guidelines)
+  - [Layer Separation](#layer-separation)
+  - [Dependency Injection](#dependency-injection)
+- [Documentation Standards](#documentation-standards)
+  - [Docstring Requirements](#docstring-requirements)
+  - [Code Comments](#code-comments)
+- [Contributing Process](#contributing-process)
+  - [Development Workflow](#development-workflow)
+  - [Code Review Guidelines](#code-review-guidelines)
+  - [Commit Message Standards](#commit-message-standards)
+- [Current Development Priorities](#current-development-priorities)
+  - [Critical Issues](#critical-issues)
+  - [Short-term Enhancements](#short-term-enhancements)
+  - [Medium-term Features](#medium-term-features)
+- [Troubleshooting Development Issues](#troubleshooting-development-issues)
+  - [Common Issues](#common-issues)
+  - [Development Tools](#development-tools)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [flext-grpc Development Guide](#flext-grpc-development-guide)

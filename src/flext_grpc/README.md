@@ -1,5 +1,35 @@
 # FLEXT gRPC Source Code Documentation
 
+
+<!-- TOC START -->
+- [📁 Module Organization](#-module-organization)
+  - [**Core Architecture Modules**](#core-architecture-modules)
+  - [**Configuration and Validation**](#configuration-and-validation)
+  - [**Type System and Validation**](#type-system-and-validation)
+  - [**Public API and Integration**](#public-api-and-integration)
+- [🏗️ Architecture Implementation](#-architecture-implementation)
+  - [**Clean Architecture Layers**](#clean-architecture-layers)
+  - [**Domain-Driven Design Implementation**](#domain-driven-design-implementation)
+  - [**Design Patterns Applied**](#design-patterns-applied)
+- [🔧 Development Workflow](#-development-workflow)
+  - [**Entity Development**](#entity-development)
+  - [**Service Development**](#service-development)
+  - [**API Development**](#api-development)
+  - [**Configuration Development**](#configuration-development)
+- [📊 Quality Standards](#-quality-standards)
+  - [**Documentation Standards**](#documentation-standards)
+  - [**Type Safety Standards**](#type-safety-standards)
+  - [**Testing Standards**](#testing-standards)
+- [🔄 Maintenance Guidelines](#-maintenance-guidelines)
+  - [**Adding New Features**](#adding-new-features)
+  - [**Refactoring Guidelines**](#refactoring-guidelines)
+  - [**Performance Considerations**](#performance-considerations)
+- [📈 Integration Points](#-integration-points)
+  - [**FLEXT Ecosystem Integration**](#flext-ecosystem-integration)
+  - [**External Library Integration**](#external-library-integration)
+  - [**Enterprise Integration**](#enterprise-integration)
+<!-- TOC END -->
+
 **Enterprise gRPC Communication Platform - Source Code Organization**
 
 This directory contains the complete source code for the FLEXT gRPC communication platform, implementing Clean Architecture and Domain-Driven Design principles for gRPC operations.

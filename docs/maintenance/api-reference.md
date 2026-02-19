@@ -1,5 +1,56 @@
 # Documentation Maintenance Framework API Reference
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [📚 Overview](#-overview)
+- [🔍 Audit API](#-audit-api)
+  - [DocumentationAuditor](#documentationauditor)
+- [🔗 Validation API](#-validation-api)
+  - [LinkValidator](#linkvalidator)
+  - [StyleValidator](#stylevalidator)
+- [🔧 Optimization API](#-optimization-api)
+  - [DocumentationOptimizer](#documentationoptimizer)
+- [🔄 Synchronization API](#-synchronization-api)
+  - [DocumentationSynchronizer](#documentationsynchronizer)
+- [📊 Reporting API](#-reporting-api)
+  - [DocumentationReporter](#documentationreporter)
+- [🚀 Automation API](#-automation-api)
+  - [AutomatedMaintenance](#automatedmaintenance)
+- [📋 Data Structures](#-data-structures)
+  - [AuditResult](#auditresult)
+  - [AuditReport](#auditreport)
+  - [LinkValidationResult](#linkvalidationresult)
+  - [ReferenceValidationResult](#referencevalidationresult)
+  - [StyleCheckResult](#stylecheckresult)
+- [⚙️ Configuration API](#-configuration-api)
+  - [Configuration Management](#configuration-management)
+  - [Custom Rules](#custom-rules)
+- [🔧 Utility Functions](#-utility-functions)
+  - [File Discovery](#file-discovery)
+  - [Quality Score Calculation](#quality-score-calculation)
+  - [Report Generation](#report-generation)
+- [🚨 Error Handling](#-error-handling)
+  - [Exception Types](#exception-types)
+  - [Error Handling Patterns](#error-handling-patterns)
+- [📊 Metrics and Analytics](#-metrics-and-analytics)
+  - [Quality Metrics](#quality-metrics)
+  - [Trend Analysis](#trend-analysis)
+- [🔌 Integration Examples](#-integration-examples)
+  - [CI/CD Pipeline Integration](#cicd-pipeline-integration)
+  - [Pre-commit Hook Integration](#pre-commit-hook-integration)
+  - [Custom Integration](#custom-integration)
+- [🔄 Version Compatibility](#-version-compatibility)
+  - [API Versioning](#api-versioning)
+  - [Configuration Migration](#configuration-migration)
+- [📈 Performance Considerations](#-performance-considerations)
+  - [Optimization Tips](#optimization-tips)
+  - [Memory Management](#memory-management)
+- [🔐 Security Considerations](#-security-considerations)
+  - [Safe Operations](#safe-operations)
+  - [Best Practices](#best-practices)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [Documentation Maintenance Framework API Reference](#documentation-maintenance-framework-api-reference)
@@ -723,7 +774,7 @@ jobs:
       - name: Install Dependencies
         run: pip install -r docs/maintenance/requirements.txt
       - name: Run Maintenance
-        run: make docs-maintenance
+        run: make docs
       - name: Upload Reports
         uses: actions/upload-artifact@v3
         with:

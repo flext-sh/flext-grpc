@@ -1,5 +1,60 @@
 # Documentation Maintenance Troubleshooting Guide
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Quick Diagnosis](#quick-diagnosis)
+  - [System Health Check](#system-health-check)
+  - [Quick Health Assessment](#quick-health-assessment)
+  - [Check for Critical Issues](#check-for-critical-issues)
+  - [Verify System Components](#verify-system-components)
+  - [Common Symptoms and Solutions](#common-symptoms-and-solutions)
+- [🔍 Audit Issues](#-audit-issues)
+  - [Symptom: Audit fails with import errors](#symptom-audit-fails-with-import-errors)
+  - [Install Missing Dependencies](#install-missing-dependencies)
+  - [Or Install Individually](#or-install-individually)
+  - [Verify Installation](#verify-installation)
+  - [Symptom: Audit reports low quality scores](#symptom-audit-reports-low-quality-scores)
+  - [Check Current Configuration](#check-current-configuration)
+  - [Run Detailed Audit](#run-detailed-audit)
+  - [Adjust Quality Thresholds if Needed](#adjust-quality-thresholds-if-needed)
+  - [Or Fix Content Issues](#or-fix-content-issues)
+  - [Symptom: Audit finds false positives](#symptom-audit-finds-false-positives)
+- [🔗 Validation Issues](#-validation-issues)
+  - [Symptom: Link validation times out](#symptom-link-validation-times-out)
+  - [Symptom: False broken link reports](#symptom-false-broken-link-reports)
+  - [Symptom: Style validation too strict](#symptom-style-validation-too-strict)
+- [🔧 Optimization Issues](#-optimization-issues)
+  - [Symptom: Optimization doesn't apply changes](#symptom-optimization-doesnt-apply-changes)
+  - [Symptom: Table of contents not generating](#symptom-table-of-contents-not-generating)
+- [🔄 Synchronization Issues](#-synchronization-issues)
+  - [Symptom: Git operations fail](#symptom-git-operations-fail)
+  - [Symptom: Merge conflicts in documentation](#symptom-merge-conflicts-in-documentation)
+- [📊 Reporting Issues](#-reporting-issues)
+  - [Symptom: Reports not generating](#symptom-reports-not-generating)
+  - [Symptom: Dashboard not displaying correctly](#symptom-dashboard-not-displaying-correctly)
+- [🚨 Critical Issues](#-critical-issues)
+  - [Symptom: System completely broken](#symptom-system-completely-broken)
+  - [Symptom: Data corruption in reports](#symptom-data-corruption-in-reports)
+- [🔧 Advanced Troubleshooting](#-advanced-troubleshooting)
+  - [Debug Mode](#debug-mode)
+  - [Performance Issues](#performance-issues)
+  - [Memory Issues](#memory-issues)
+- [🆘 Getting Help](#-getting-help)
+  - [Self-Diagnosis Checklist](#self-diagnosis-checklist)
+  - [Diagnostic Commands](#diagnostic-commands)
+  - [Log Analysis](#log-analysis)
+  - [Community Support](#community-support)
+- [🚀 Preventive Maintenance](#-preventive-maintenance)
+  - [Regular Tasks](#regular-tasks)
+  - [Configuration Validation](#configuration-validation)
+  - [Dependency Updates](#dependency-updates)
+- [📋 Recovery Procedures](#-recovery-procedures)
+  - [Data Recovery](#data-recovery)
+  - [Configuration Recovery](#configuration-recovery)
+  - [System Recovery](#system-recovery)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - Documentation Maintenance Troubleshooting Guide
@@ -130,7 +185,7 @@ Comprehensive troubleshooting guide for the FLEXT-gRPC Documentation Maintenance
 
 ```bash
 ### Quick Health Assessment
-make docs-health
+make docs DOCS_PHASE=audit
 
 ### Check for Critical Issues
 make docs-notify-critical
@@ -401,7 +456,7 @@ FileNotFoundError: No audit report found
 mkdir -p docs/maintenance/reports
 
 # Run audit first
-make docs-audit
+make docs DOCS_PHASE=audit
 
 # Then generate report
 make docs-report
@@ -453,7 +508,7 @@ rm -rf docs/maintenance/reports/*.json
 make docs-restore
 
 # Regenerate reports
-make docs-maintenance
+make docs
 ```
 
 ## 🔧 Advanced Troubleshooting
@@ -476,7 +531,7 @@ tail -f docs/maintenance/logs/debug.log
 
 ```bash
 # Profile execution time
-time make docs-maintenance
+time make docs
 
 # Check for bottlenecks
 PYTHONPATH=. python -c "
@@ -609,7 +664,7 @@ pip install --upgrade -r docs/maintenance/requirements.txt
 pip audit
 
 # Test after updates
-make docs-health
+make docs DOCS_PHASE=audit
 ```
 
 ## 📋 Recovery Procedures
@@ -644,10 +699,10 @@ cp docs/maintenance/config.default.json docs/maintenance/config.JSON
 # Complete rebuild
 make docs-emergency-reset
 make docs-dev-setup
-make docs-maintenance
+make docs
 
 # Verify recovery
-make docs-health
+make docs DOCS_PHASE=audit
 ```
 
 ---

@@ -1,5 +1,27 @@
 # ADR-001: Clean Architecture Adoption
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Status](#status)
+- [Context](#context)
+- [Decision](#decision)
+- [Consequences](#consequences)
+  - [Positive Consequences](#positive-consequences)
+  - [Negative Consequences](#negative-consequences)
+- [Alternatives Considered](#alternatives-considered)
+  - [Traditional Layered Architecture](#traditional-layered-architecture)
+  - [Hexagonal Architecture](#hexagonal-architecture)
+  - [Onion Architecture](#onion-architecture)
+  - [Microservices Architecture](#microservices-architecture)
+- [Implementation Details](#implementation-details)
+  - [Layer Boundaries](#layer-boundaries)
+  - [Dependency Rules](#dependency-rules)
+  - [Interface Design](#interface-design)
+- [References](#references)
+- [Notes](#notes)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [ADR-001: Clean Architecture Adoption](#adr-001-clean-architecture-adoption)

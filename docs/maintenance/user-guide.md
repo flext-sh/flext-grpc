@@ -1,5 +1,49 @@
 # FLEXT-gRPC Documentation Maintenance User Guide
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Quick Start](#quick-start)
+  - [Installation](#installation)
+  - [Basic Usage](#basic-usage)
+- [Maintenance Workflow](#maintenance-workflow)
+  - [Daily Maintenance (5 minutes)](#daily-maintenance-5-minutes)
+  - [Weekly Maintenance (15 minutes)](#weekly-maintenance-15-minutes)
+  - [Monthly Maintenance (30 minutes)](#monthly-maintenance-30-minutes)
+- [Command Reference](#command-reference)
+  - [Audit Commands](#audit-commands)
+  - [Validation Commands](#validation-commands)
+  - [Optimization Commands](#optimization-commands)
+  - [Synchronization Commands](#synchronization-commands)
+  - [Reporting Commands](#reporting-commands)
+- [Quality Metrics Understanding](#quality-metrics-understanding)
+  - [Quality Score Components](#quality-score-components)
+  - [Interpreting Results](#interpreting-results)
+- [Troubleshooting](#troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Getting Help](#getting-help)
+- [Configuration](#configuration)
+  - [Main Configuration File](#main-configuration-file)
+  - [Custom Rules](#custom-rules)
+- [Integration Examples](#integration-examples)
+  - [CI/CD Integration](#cicd-integration)
+  - [Pre-commit Hooks](#pre-commit-hooks)
+  - [Slack Notifications](#slack-notifications)
+- [Advanced Usage](#advanced-usage)
+  - [Custom Audit Rules](#custom-audit-rules)
+  - [Automated Fixes](#automated-fixes)
+  - [Integration APIs](#integration-apis)
+- [Best Practices](#best-practices)
+  - [Maintenance Frequency](#maintenance-frequency)
+  - [Quality Gates](#quality-gates)
+  - [Team Collaboration](#team-collaboration)
+  - [Performance Optimization](#performance-optimization)
+- [Support and Resources](#support-and-resources)
+  - [Documentation](#documentation)
+  - [Community Resources](#community-resources)
+  - [Professional Services](#professional-services)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - FLEXT-gRPC Documentation Maintenance User Guide
@@ -131,10 +175,10 @@ python -c "from docs.maintenance import audit, validation, optimization, sync,
 
 ```bash
 # Run complete maintenance cycle
-make docs-maintenance
+make docs
 
 # Quick audit only
-make docs-audit
+make docs DOCS_PHASE=audit
 
 # Fix common issues automatically
 make docs-fix
@@ -149,7 +193,7 @@ make docs-report
 
 ```bash
 # Automated daily health check
-make docs-health
+make docs DOCS_PHASE=audit
 
 # Results will be displayed:
 # ✅ Quality Score: 92%
@@ -445,7 +489,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run Documentation Maintenance
-        run: make docs-maintenance
+        run: make docs
       - name: Upload Reports
         uses: actions/upload-artifact@v3
         with:
@@ -458,7 +502,7 @@ jobs:
 ```yaml
 documentation_maintenance:
   script:
-    - make docs-maintenance
+    - make docs
   artifacts:
     paths:
       - docs/maintenance/reports/

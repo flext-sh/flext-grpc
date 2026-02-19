@@ -1,5 +1,38 @@
 # flext-grpc Configuration
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Configuration Overview](#configuration-overview)
+  - [Basic Configuration](#basic-configuration)
+  - [Environment Variables](#environment-variables)
+- [Configuration Parameters](#configuration-parameters)
+  - [Server Configuration](#server-configuration)
+  - [Client Configuration](#client-configuration)
+  - [Advanced Configuration](#advanced-configuration)
+- [Configuration Validation](#configuration-validation)
+  - [Built-in Validation](#built-in-validation)
+  - [Business Rules](#business-rules)
+  - [Custom Validation](#custom-validation)
+- [Environment-Specific Configurations](#environment-specific-configurations)
+  - [Development Configuration](#development-configuration)
+  - [Production Configuration](#production-configuration)
+  - [Testing Configuration](#testing-configuration)
+- [Configuration from Files](#configuration-from-files)
+  - [YAML Configuration](#yaml-configuration)
+  - [JSON Configuration](#json-configuration)
+- [Configuration Best Practices](#configuration-best-practices)
+  - [Security](#security)
+  - [Performance](#performance)
+  - [Monitoring](#monitoring)
+- [Integration with FLEXT Patterns](#integration-with-flext-patterns)
+  - [FlextResult Usage](#flextresult-usage)
+  - [Container Integration](#container-integration)
+- [Troubleshooting Configuration](#troubleshooting-configuration)
+  - [Common Issues](#common-issues)
+  - [Debugging Configuration](#debugging-configuration)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [flext-grpc Configuration](#flext-grpc-configuration)

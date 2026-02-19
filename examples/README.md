@@ -1,5 +1,39 @@
 # FLEXT gRPC Examples
 
+
+<!-- TOC START -->
+- [Example Structure](#example-structure)
+  - [Available Examples](#available-examples)
+  - [Example Categories](#example-categories)
+- [Basic Usage Examples](#basic-usage-examples)
+  - [Server Lifecycle Management](#server-lifecycle-management)
+  - [Client Connection Management](#client-connection-management)
+- [Advanced Usage Examples](#advanced-usage-examples)
+  - [Streaming Operations](#streaming-operations)
+  - [Platform Integration](#platform-integration)
+- [Error Handling Examples](#error-handling-examples)
+  - [Comprehensive Error Patterns](#comprehensive-error-patterns)
+  - [Recovery Strategies](#recovery-strategies)
+- [Integration Examples](#integration-examples)
+  - [FLEXT Ecosystem Integration](#flext-ecosystem-integration)
+  - [Configuration Management](#configuration-management)
+- [Running Examples](#running-examples)
+  - [Development Environment](#development-environment)
+  - [Execution Commands](#execution-commands)
+- [Example Patterns](#example-patterns)
+  - [Entity Creation Pattern](#entity-creation-pattern)
+  - [Service Operation Pattern](#service-operation-pattern)
+  - [Platform Usage Pattern](#platform-usage-pattern)
+- [Current Status and Limitations](#current-status-and-limitations)
+  - [Development Status (Honest Assessment)](#development-status-honest-assessment)
+  - [What Examples Actually Demonstrate](#what-examples-actually-demonstrate)
+  - [Planned Enhancements (Realistic Timeline)](#planned-enhancements-realistic-timeline)
+- [Contributing Examples](#contributing-examples)
+  - [Adding New Examples](#adding-new-examples)
+  - [Example Quality Standards](#example-quality-standards)
+  - [Example Template](#example-template)
+<!-- TOC END -->
+
 Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
 
 ## Example Structure

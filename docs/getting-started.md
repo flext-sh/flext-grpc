@@ -1,5 +1,29 @@
 # Getting Started with flext-grpc
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [Prerequisites](#prerequisites)
+  - [System Requirements](#system-requirements)
+  - [Dependencies](#dependencies)
+- [Installation](#installation)
+  - [1. Clone and Setup](#1-clone-and-setup)
+  - [2. Verify Installation](#2-verify-installation)
+- [Basic Usage](#basic-usage)
+  - [Server Creation](#server-creation)
+  - [Client Creation](#client-creation)
+  - [Platform Management](#platform-management)
+  - [Configuration](#configuration)
+- [Development Setup](#development-setup)
+  - [Development Commands](#development-commands)
+  - [Quality Status Check](#quality-status-check)
+- [Current Limitations](#current-limitations)
+  - [Test Coverage](#test-coverage)
+  - [Known Issues](#known-issues)
+- [Next Steps](#next-steps)
+- [Related Documentation](#related-documentation)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - [Getting Started with flext-grpc](#getting-started-with-flext-grpc)

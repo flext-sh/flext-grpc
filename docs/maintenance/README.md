@@ -1,5 +1,55 @@
 # FLEXT-gRPC Documentation Maintenance Framework
 
+
+<!-- TOC START -->
+- [Table of Contents](#table-of-contents)
+- [🏗️ Architecture Overview](#-architecture-overview)
+- [📊 Current Documentation Health](#-current-documentation-health)
+  - [Documentation Inventory](#documentation-inventory)
+  - [Content Metrics](#content-metrics)
+  - [Quality Indicators](#quality-indicators)
+- [🔧 Maintenance System Components](#-maintenance-system-components)
+  - [1. Content Quality Audit System](#1-content-quality-audit-system)
+  - [2. Link and Reference Validation](#2-link-and-reference-validation)
+  - [3. Style and Consistency Checking](#3-style-and-consistency-checking)
+  - [4. Content Optimization Pipeline](#4-content-optimization-pipeline)
+  - [5. Automated Synchronization System](#5-automated-synchronization-system)
+  - [6. Quality Assurance Reporting](#6-quality-assurance-reporting)
+- [🚀 Quick Start](#-quick-start)
+  - [Installation & Setup](#installation-setup)
+  - [Basic Usage](#basic-usage)
+- [📋 Maintenance Workflows](#-maintenance-workflows)
+  - [Daily Maintenance (Automated)](#daily-maintenance-automated)
+  - [Weekly Maintenance (Manual Review)](#weekly-maintenance-manual-review)
+  - [Monthly Maintenance (Deep Analysis)](#monthly-maintenance-deep-analysis)
+- [🔍 Quality Assurance Metrics](#-quality-assurance-metrics)
+  - [Content Quality Score](#content-quality-score)
+  - [Current Quality Scores](#current-quality-scores)
+  - [Quality Thresholds](#quality-thresholds)
+- [⚙️ Configuration](#-configuration)
+  - [Maintenance Configuration](#maintenance-configuration)
+  - [Custom Rules](#custom-rules)
+- [📊 Reporting & Analytics](#-reporting-analytics)
+  - [Report Types](#report-types)
+  - [Report Generation](#report-generation)
+  - [Dashboard Integration](#dashboard-integration)
+- [🔧 Troubleshooting](#-troubleshooting)
+  - [Common Issues](#common-issues)
+  - [Emergency Procedures](#emergency-procedures)
+- [🤝 Team Integration](#-team-integration)
+  - [Workflow Integration](#workflow-integration)
+  - [CI/CD Integration](#cicd-integration)
+  - [Notification Integration](#notification-integration)
+- [📈 Success Metrics](#-success-metrics)
+  - [Key Performance Indicators](#key-performance-indicators)
+  - [Continuous Improvement](#continuous-improvement)
+- [🔄 Version History](#-version-history)
+- [📞 Support & Resources](#-support-resources)
+  - [Documentation](#documentation)
+  - [Development](#development)
+  - [Community](#community)
+<!-- TOC END -->
+
 ## Table of Contents
 
 - FLEXT-gRPC Documentation Maintenance Framework
@@ -243,10 +293,10 @@ python docs/maintenance/reporting.py --generate-dashboard
 
 ```bash
 # Run full maintenance cycle
-make docs-maintenance
+make docs
 
 # Quick audit only
-make docs-audit
+make docs DOCS_PHASE=audit
 
 # Fix common issues automatically
 make docs-fix
@@ -261,10 +311,10 @@ make docs-report
 
 ```bash
 # Scheduled maintenance (cron recommended)
-0 2 * * * make docs-maintenance  # Daily at 2 AM
+0 2 * * * make docs  # Daily at 2 AM
 
 # Quick health check
-make docs-health
+make docs DOCS_PHASE=audit
 
 # Emergency fixes
 make docs-emergency-fix
@@ -280,7 +330,7 @@ make docs-weekly-audit
 make docs-link-check
 
 # Content optimization
-make docs-optimize
+make docs DOCS_PHASE=fix FIX=1
 
 # Generate weekly report
 make docs-weekly-report
@@ -388,8 +438,8 @@ CUSTOM_RULES = {
 make docs-all-reports
 
 # Specific report types
-make docs-health-report
-make docs-audit-report
+make docs
+make docs DOCS_PHASE=audit
 make docs-trend-report
 make docs-improvement-report
 ```
@@ -502,7 +552,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run Documentation Maintenance
-        run: make docs-maintenance
+        run: make docs
 ```
 
 ### Notification Integration
