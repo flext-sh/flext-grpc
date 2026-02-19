@@ -188,7 +188,7 @@ Comprehensive troubleshooting guide for the FLEXT-gRPC Documentation Maintenance
 make docs DOCS_PHASE=audit
 
 ### Check for Critical Issues
-make docs-notify-critical
+make docs
 
 ### Verify System Components
 python -c "
@@ -255,7 +255,7 @@ PYTHONPATH=. python docs/maintenance/audit.py --verbose
 }
 
 ### Or Fix Content Issues
-make docs-fix
+make docs
 ```
 
 ### Symptom: Audit finds false positives
@@ -436,7 +436,7 @@ git status | grep "both modified"
 PYTHONPATH=. python docs/maintenance/sync.py --action resolve-conflicts
 
 # Create backup before resolving
-make docs-backup
+make docs
 ```
 
 ## 📊 Reporting Issues
@@ -459,7 +459,7 @@ mkdir -p docs/maintenance/reports
 make docs DOCS_PHASE=audit
 
 # Then generate report
-make docs-report
+make docs
 ```
 
 ### Symptom: Dashboard not displaying correctly
@@ -473,7 +473,7 @@ make docs-report
 cat docs/maintenance/dashboard.html | head -20
 
 # Regenerate dashboard
-make docs-dashboard
+make docs
 
 # Open in browser
 firefox docs/maintenance/dashboard.html
@@ -487,7 +487,7 @@ firefox docs/maintenance/dashboard.html
 
 ```bash
 # Complete system reset
-make docs-emergency-reset
+make docs
 
 # Reinstall dependencies
 pip install -r docs/maintenance/requirements.txt
@@ -505,7 +505,7 @@ python docs/maintenance/audit.py --test-system
 rm -rf docs/maintenance/reports/*.json
 
 # Restore from backup
-make docs-restore
+make docs
 
 # Regenerate reports
 make docs
@@ -631,13 +631,13 @@ Logs: [Relevant log excerpts]
 
 ```bash
 # Weekly system health
-0 9 * * 1 make docs-weekly-audit
+0 9 * * 1 make docs
 
 # Monthly deep analysis
-0 10 1 * * make docs-monthly-analysis
+0 10 1 * * make docs
 
 # Daily backup
-0 2 * * * make docs-backup
+0 2 * * * make docs
 ```
 
 ### Configuration Validation
@@ -673,7 +673,7 @@ make docs DOCS_PHASE=audit
 
 ```bash
 # From automatic backup
-make docs-restore
+make docs
 
 # From git history
 git checkout HEAD~1 -- docs/
@@ -697,8 +697,8 @@ cp docs/maintenance/config.default.json docs/maintenance/config.JSON
 
 ```bash
 # Complete rebuild
-make docs-emergency-reset
-make docs-dev-setup
+make docs
+make docs
 make docs
 
 # Verify recovery

@@ -181,10 +181,10 @@ make docs
 make docs DOCS_PHASE=audit
 
 # Fix common issues automatically
-make docs-fix
+make docs
 
 # Generate quality reports
-make docs-report
+make docs
 ```
 
 ## Maintenance Workflow
@@ -205,26 +205,26 @@ make docs DOCS_PHASE=audit
 
 ```bash
 # Comprehensive weekly audit
-make docs-weekly-audit
+make docs
 
 # Review results and apply fixes
-make docs-fix
+make docs
 
 # Generate weekly summary
-make docs-weekly-report
+make docs
 ```
 
 ### Monthly Maintenance (30 minutes)
 
 ```bash
 # Deep analysis and optimization
-make docs-monthly-analysis
+make docs
 
 # Review trend reports
-make docs-trend-report
+make docs
 
 # Stakeholder reporting
-make docs-monthly-report
+make docs
 ```
 
 ## Command Reference
@@ -417,10 +417,10 @@ cat docs/maintenance/config.json
 
 ```bash
 # Complete reset (use with caution)
-make docs-emergency-reset
+make docs
 
 # Clear all caches and reports
-make docs-clear-cache
+make docs
 ```
 
 ## Configuration
@@ -521,7 +521,7 @@ repos:
     hooks:
       - id: docs-maintenance
         name: Documentation Maintenance
-        entry: make docs-pre-commit
+        entry: make docs
         language: system
         files: \.(md|mdx)$
         pass_filenames: false
@@ -613,13 +613,13 @@ comprehensive_report = reporter.generate_comprehensive_report(
 
 ```bash
 # Pre-commit quality gate
-make docs-pre-commit  # Must pass before commit
+make docs  # Must pass before commit
 
 # Pre-merge quality gate
-make docs-pre-merge  # Must pass before merge
+make docs  # Must pass before merge
 
 # Release quality gate
-make docs-release-check  # Must pass before release
+make docs  # Must pass before release
 ```
 
 ### Team Collaboration

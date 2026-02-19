@@ -320,16 +320,16 @@ Proposed → Accepted → Implemented → Reviewed → [Superseded|Deprecated]
 
 ```bash
 # Generate ADR from template
-make docs-adr-new TITLE="New Architecture Decision"
+make docs TITLE="New Architecture Decision"
 
 # Validate ADR format
-make docs-adr-validate
+make docs
 
 # Generate ADR index
-make docs-adr-index
+make docs
 
 # Check ADR status
-make docs-adr-status
+make docs
 ```
 
 ### Integration with Development Workflow

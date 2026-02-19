@@ -339,15 +339,15 @@ docs/architecture/
 
 ```bash
 # Generate all diagrams
-make docs-diagrams
+make docs
 
 # Generate specific diagram
-make docs-diagram-context
-make docs-diagram-containers
-make docs-diagram-components
+make docs
+make docs
+make docs
 
 # Validate diagrams
-make docs-diagrams-validate
+make docs
 ```
 
 ### PlantUML Integration

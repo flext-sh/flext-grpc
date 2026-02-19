@@ -299,10 +299,10 @@ make docs
 make docs DOCS_PHASE=audit
 
 # Fix common issues automatically
-make docs-fix
+make docs
 
 # Generate reports
-make docs-report
+make docs
 ```
 
 ## 📋 Maintenance Workflows
@@ -317,39 +317,39 @@ make docs-report
 make docs DOCS_PHASE=audit
 
 # Emergency fixes
-make docs-emergency-fix
+make docs
 ```
 
 ### Weekly Maintenance (Manual Review)
 
 ```bash
 # Comprehensive audit
-make docs-weekly-audit
+make docs
 
 # Link validation
-make docs-link-check
+make docs
 
 # Content optimization
 make docs DOCS_PHASE=fix FIX=1
 
 # Generate weekly report
-make docs-weekly-report
+make docs
 ```
 
 ### Monthly Maintenance (Deep Analysis)
 
 ```bash
 # Full content analysis
-make docs-monthly-analysis
+make docs
 
 # Trend analysis
-make docs-trend-report
+make docs
 
 # Quality improvement planning
-make docs-improvement-plan
+make docs
 
 # Stakeholder reporting
-make docs-monthly-report
+make docs
 ```
 
 ## 🔍 Quality Assurance Metrics
@@ -435,26 +435,26 @@ CUSTOM_RULES = {
 
 ```bash
 # Generate all reports
-make docs-all-reports
+make docs
 
 # Specific report types
 make docs
 make docs DOCS_PHASE=audit
-make docs-trend-report
-make docs-improvement-report
+make docs
+make docs
 ```
 
 ### Dashboard Integration
 
 ```bash
 # Generate interactive dashboard
-make docs-dashboard
+make docs
 
 # Export metrics for external tools
-make docs-export-metrics
+make docs
 
 # Integration with monitoring systems
-make docs-monitoring-integration
+make docs
 ```
 
 ## 🔧 Troubleshooting
@@ -484,7 +484,7 @@ tail -f docs/maintenance/logs/optimization.log
 python docs/maintenance/optimization.py --file docs/README.md
 
 # Reset optimization rules
-make docs-reset-optimization
+make docs
 ```
 
 #### Reports Not Generating
@@ -497,23 +497,23 @@ tail -f docs/maintenance/logs/reporting.log
 python docs/maintenance/reporting.py --type health
 
 # Clear report cache
-make docs-clear-cache
+make docs
 ```
 
 ### Emergency Procedures
 
 ```bash
 # Complete system reset
-make docs-emergency-reset
+make docs
 
 # Force maintenance run
-make docs-force-maintenance
+make docs
 
 # Backup current state
-make docs-backup
+make docs
 
 # Restore from backup
-make docs-restore
+make docs
 ```
 
 ## 🤝 Team Integration
@@ -528,7 +528,7 @@ repos:
     hooks:
       - id: docs-maintenance
         name: Documentation Maintenance
-        entry: make docs-pre-commit
+        entry: make docs
         language: system
         files: \.(md|mdx)$
 ```
@@ -559,13 +559,13 @@ jobs:
 
 ```bash
 # Slack notifications for critical issues
-make docs-notify-critical
+make docs
 
 # Email reports to stakeholders
-make docs-email-report
+make docs
 
 # Integration with project management tools
-make docs-jira-integration
+make docs
 ```
 
 ## 📈 Success Metrics
