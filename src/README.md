@@ -1,7 +1,7 @@
 # FLEXT gRPC Source Code
 
-
 <!-- TOC START -->
+
 - [Module Structure](#module-structure)
   - [Core Implementation](#core-implementation)
 - [Architecture Layers](#architecture-layers)
@@ -27,6 +27,7 @@
 - [Contributing](#contributing)
   - [Code Contribution Guidelines](#code-contribution-guidelines)
   - [Review Checklist](#review-checklist)
+
 <!-- TOC END -->
 
 Source code implementation for the FLEXT gRPC communication platform following Clean Architecture and Domain-Driven Design principles.
@@ -52,8 +53,8 @@ src/flext_grpc/
 
 ### Domain Layer (Core Business Logic)
 
-**Files**: `entities.py`, `types.py`, `constants.py`  
-**Purpose**: Core business entities and domain logic  
+**Files**: `entities.py`, `types.py`, `constants.py`\
+**Purpose**: Core business entities and domain logic\
 **Dependencies**: None (pure domain logic)
 
 **Key Components**:
@@ -66,8 +67,8 @@ src/flext_grpc/
 
 ### Application Layer (Business Process Orchestration)
 
-**Files**: `services.py`, `platform.py`  
-**Purpose**: Business process orchestration and use case implementation  
+**Files**: `services.py`, `platform.py`\
+**Purpose**: Business process orchestration and use case implementation\
 **Dependencies**: Domain layer only
 
 **Key Components**:
@@ -79,8 +80,8 @@ src/flext_grpc/
 
 ### Infrastructure Layer (External System Integration)
 
-**Files**: `api.py`, `config.py`, `errors.py`  
-**Purpose**: External system integration and technical concerns  
+**Files**: `api.py`, `config.py`, `errors.py`\
+**Purpose**: External system integration and technical concerns\
 **Dependencies**: Application and domain layers
 
 **Key Components**:
@@ -211,10 +212,10 @@ src/flext_grpc/
 ### Code Modification Guidelines
 
 1. **Domain Changes**: Start with domain entities and validation
-2. **Service Implementation**: Add business logic in service classes
-3. **Platform Integration**: Expose operations through platform facade
-4. **API Updates**: Update public API functions as needed
-5. **Documentation**: Update docstrings and examples
+1. **Service Implementation**: Add business logic in service classes
+1. **Platform Integration**: Expose operations through platform facade
+1. **API Updates**: Update public API functions as needed
+1. **Documentation**: Update docstrings and examples
 
 ### Quality Gates
 
@@ -238,18 +239,18 @@ make test        # Run tests with coverage
 **Import Order**: Consistent import organization
 
 1. Standard library imports
-2. Third-party imports
-3. flext-core imports
-4. Local module imports
+1. Third-party imports
+1. flext-core imports
+1. Local module imports
 
 **Code Structure**: Consistent within-file organization
 
 1. Module docstring
-2. Imports
-3. Type definitions
-4. Constants
-5. Classes and functions
-6. Module-level code
+1. Imports
+1. Type definitions
+1. Constants
+1. Classes and functions
+1. Module-level code
 
 ## Current Status
 
@@ -283,10 +284,10 @@ For detailed status and development priorities, see [../docs/TODO.md](../docs/TO
 ### Code Contribution Guidelines
 
 1. **Follow Architecture**: Respect Clean Architecture and DDD principles
-2. **Maintain Quality**: All quality gates must pass
-3. **Write Tests**: Minimum 90% coverage for new code
-4. **Document Thoroughly**: Enterprise-grade documentation required
-5. **Use Patterns**: Follow established FLEXT patterns
+1. **Maintain Quality**: All quality gates must pass
+1. **Write Tests**: Minimum 90% coverage for new code
+1. **Document Thoroughly**: Enterprise-grade documentation required
+1. **Use Patterns**: Follow established FLEXT patterns
 
 ### Review Checklist
 

@@ -1,7 +1,7 @@
 # Getting Started with flext-grpc
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [System Requirements](#system-requirements)
@@ -22,6 +22,7 @@
   - [Known Issues](#known-issues)
 - [Next Steps](#next-steps)
 - [Related Documentation](#related-documentation)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -205,11 +206,11 @@ print(f'✅ Server creation: {server.address}')
 ## Next Steps
 
 1. **Explore API Reference** - See [API Reference](api-reference.md) for complete function documentation
-2. **Development Workflow** - See [Development](development.md) for contribution guidelines
-3. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
-4. **Configuration** - See [Configuration](configuration.md) for advanced settings
+1. **Development Workflow** - See [Development](development.md) for contribution guidelines
+1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
+1. **Configuration** - See [Configuration](configuration.md) for advanced settings
 
----
+______________________________________________________________________
 
 For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 

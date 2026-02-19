@@ -1,7 +1,7 @@
 # FLEXT gRPC Documentation
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Documentation Structure](#documentation-structure)
   - [gRPC-Specific Documentation](#grpc-specific-documentation)
@@ -9,6 +9,7 @@
 - [Documentation Scope](#documentation-scope)
 - [What This Documentation Does NOT Cover](#what-this-documentation-does-not-cover)
 - [Contributing to Documentation](#contributing-to-documentation)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -49,9 +50,9 @@ Technical documentation for **flext-grpc** gRPC library implementation.
 This documentation covers **only** flext-grpc specific functionality:
 
 1. **gRPC Service Implementation** - How to use flext-grpc APIs
-2. **gRPC Configuration** - Service-specific settings
-3. **gRPC Integration Patterns** - How flext-grpc connects to FLEXT ecosystem
-4. **gRPC Development Workflow** - Development procedures specific to gRPC services
+1. **gRPC Configuration** - Service-specific settings
+1. **gRPC Integration Patterns** - How flext-grpc connects to FLEXT ecosystem
+1. **gRPC Development Workflow** - Development procedures specific to gRPC services
 
 ## What This Documentation Does NOT Cover
 
@@ -65,10 +66,10 @@ For general FLEXT concepts, refer to workspace documentation:
 ## Contributing to Documentation
 
 1. **Focus**: Only document flext-grpc specific functionality
-2. **Accuracy**: Base all content on verified, tested capabilities
-3. **Standards**: Follow [FLEXT documentation standards](../../docs/standards/documentation.md)
-4. **No Duplication**: Reference workspace docs instead of duplicating general concepts
+1. **Accuracy**: Base all content on verified, tested capabilities
+1. **Standards**: Follow [FLEXT documentation standards](../../docs/standards/documentation.md)
+1. **No Duplication**: Reference workspace docs instead of duplicating general concepts
 
----
+______________________________________________________________________
 
 For current development status, see the main [README.md](../README.md).

@@ -1,7 +1,7 @@
 # Architecture Decision Records (ADRs)
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [ADR Process](#adr-process)
@@ -58,6 +58,7 @@
 - [Contributing](#contributing)
   - [ADR Submission Process](#adr-submission-process)
   - [ADR Review Checklist](#adr-review-checklist)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -72,7 +73,7 @@
     - [5. Implementation](#5-implementation)
     - [6. Review and Evolution](#6-review-and-evolution)
   - [ADR Template](#adr-template)
-- [ADR-[NUMBER]: [TITLE]](#adr-number-title)
+- [ADR-\[NUMBER\]: [TITLE]](#adr-number-title)
   - [Status](#status)
   - [Context](#context)
   - [Decision](#decision)
@@ -280,9 +281,9 @@ cp docs/architecture/adrs/template.md docs/architecture/adrs/adr-XXX-title.md
 When updating an ADR:
 
 1. Create a new section documenting the change
-2. Explain the reason for the update
-3. Update the status if needed
-4. Reference the new ADR if superseded
+1. Explain the reason for the update
+1. Update the status if needed
+1. Reference the new ADR if superseded
 
 ### ADR Lifecycle
 
@@ -429,9 +430,9 @@ See `template.md` for the complete ADR template.
 ### ADR Submission Process
 
 1. **Draft**: Create ADR in Proposed status
-2. **Review**: Technical and business stakeholder review
-3. **Approval**: Architecture team approval
-4. **Implementation**: Apply decision and update status
+1. **Review**: Technical and business stakeholder review
+1. **Approval**: Architecture team approval
+1. **Implementation**: Apply decision and update status
 
 ### ADR Review Checklist
 
@@ -442,7 +443,7 @@ See `template.md` for the complete ADR template.
 - [ ] Implementation approach is feasible
 - [ ] Stakeholders are identified and consulted
 
----
+______________________________________________________________________
 
 **ADRs provide a living record of architectural decisions,
 ensuring that design rationale is preserved and architectural knowledge is accumulated over time. They help teams make better decisions by learning from past choices and their outcomes.**

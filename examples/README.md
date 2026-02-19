@@ -1,7 +1,7 @@
 # FLEXT gRPC Examples
 
-
 <!-- TOC START -->
+
 - [Example Structure](#example-structure)
   - [Available Examples](#available-examples)
   - [Example Categories](#example-categories)
@@ -32,6 +32,7 @@
   - [Adding New Examples](#adding-new-examples)
   - [Example Quality Standards](#example-quality-standards)
   - [Example Template](#example-template)
+
 <!-- TOC END -->
 
 Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
@@ -59,7 +60,7 @@ examples/
 
 ### Server Lifecycle Management
 
-**File**: `basic_usage.py`  
+**File**: `basic_usage.py`\
 **Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
 
 **Key Concepts**:
@@ -81,7 +82,7 @@ FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
 
 ### Client Connection Management
 
-**File**: `basic_usage.py`  
+**File**: `basic_usage.py`\
 **Purpose**: Shows client entity creation, channel management, and connection patterns
 
 **Key Concepts**:
@@ -95,7 +96,7 @@ FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
 
 ### Streaming Operations
 
-**File**: `advanced_usage.py`  
+**File**: `advanced_usage.py`\
 **Purpose**: Demonstrates gRPC streaming patterns and advanced communication scenarios
 
 **Key Concepts**:
@@ -117,7 +118,7 @@ FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 
 ### Platform Integration
 
-**File**: `advanced_usage.py`  
+**File**: `advanced_usage.py`\
 **Purpose**: Shows integration with FlextGrpcPlatform for unified operations
 
 **Key Concepts**:
@@ -131,7 +132,7 @@ FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 
 ### Comprehensive Error Patterns
 
-**File**: `03_error_handling_patterns.py`  
+**File**: `03_error_handling_patterns.py`\
 **Purpose**: Demonstrates enterprise-grade error handling using FlextResult patterns
 
 **Key Concepts**:
@@ -153,7 +154,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 ### Recovery Strategies
 
-**File**: `03_error_handling_patterns.py`  
+**File**: `03_error_handling_patterns.py`\
 **Purpose**: Shows error recovery and resilience patterns
 
 **Key Concepts**:
@@ -380,19 +381,19 @@ if server_result.success:
 **Current Working Functionality** (Real, not aspirational):
 
 1. **Entity Creation**: FlextGrpcServer, FlextGrpcClient entities with validation
-2. **Domain Validation**: Entity.validate_domain_rules() with FlextResult patterns
-3. **State Management**: Entity state transitions (stopped → starting → running)
-4. **Configuration**: FlextGrpcSettings with validation and defaults
-5. **Error Handling**: FlextResult success/failure patterns
-6. **API Functions**: create_server(), create_client() factory functions
+1. **Domain Validation**: Entity.validate_domain_rules() with FlextResult patterns
+1. **State Management**: Entity state transitions (stopped → starting → running)
+1. **Configuration**: FlextGrpcSettings with validation and defaults
+1. **Error Handling**: FlextResult success/failure patterns
+1. **API Functions**: create_server(), create_client() factory functions
 
 **What Examples DON'T Demonstrate** (Missing functionality):
 
 1. **Network Communication**: No actual socket connections or gRPC calls
-2. **Protocol Buffers**: No .proto files, no generated stubs
-3. **Streaming**: Stream entities exist but no actual data streaming
-4. **Client-Server Communication**: No request/response examples
-5. **Service Methods**: No actual gRPC service method implementations
+1. **Protocol Buffers**: No .proto files, no generated stubs
+1. **Streaming**: Stream entities exist but no actual data streaming
+1. **Client-Server Communication**: No request/response examples
+1. **Service Methods**: No actual gRPC service method implementations
 
 ### Planned Enhancements (Realistic Timeline)
 
@@ -416,9 +417,9 @@ For current development gaps and realistic timelines, see [../docs/TODO.md](../d
 ### Adding New Examples
 
 1. **Follow Naming Convention**: Use descriptive names with numbered prefixes
-2. **Include Documentation**: Add comprehensive docstrings and comments
-3. **Test Examples**: Ensure examples run without errors
-4. **Update README**: Add new examples to this documentation
+1. **Include Documentation**: Add comprehensive docstrings and comments
+1. **Test Examples**: Ensure examples run without errors
+1. **Update README**: Add new examples to this documentation
 
 ### Example Quality Standards
 

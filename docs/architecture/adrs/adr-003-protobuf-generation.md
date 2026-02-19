@@ -1,7 +1,7 @@
 # ADR-003: Protocol Buffer Generation Strategy
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Status](#status)
 - [Context](#context)
@@ -36,6 +36,7 @@
   - [Process Success](#process-success)
 - [References](#references)
 - [Notes](#notes)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -101,14 +102,14 @@ The current situation:
 This creates import failures because:
 
 1. Generated code expects protobuf 6.31.1 features
-2. Runtime has protobuf 6.30.2
-3. Version mismatch causes ImportError on module loading
+1. Runtime has protobuf 6.30.2
+1. Version mismatch causes ImportError on module loading
 
 The protobuf generation process involves:
 
 1. Writing .proto files with service definitions
-2. Running grpcio-tools to generate Python code
-3. Generated code includes version-specific imports and behaviors
+1. Running grpcio-tools to generate Python code
+1. Generated code includes version-specific imports and behaviors
 
 We need a strategy that:
 
@@ -226,23 +227,23 @@ Implement a **version-pinned protobuf generation strategy** with the following a
 ### Phase 1: Immediate Fix (Current)
 
 1. Pin compatible versions in pyproject.toml
-2. Create Docker-based generation environment
-3. Implement version validation checks
-4. Fix current import errors
+1. Create Docker-based generation environment
+1. Implement version validation checks
+1. Fix current import errors
 
 ### Phase 2: Automation (Next Sprint)
 
 1. CI/CD pipeline for automated generation
-2. Version compatibility testing
-3. Docker image maintenance automation
-4. Local development workflow updates
+1. Version compatibility testing
+1. Docker image maintenance automation
+1. Local development workflow updates
 
 ### Phase 3: Optimization (Future)
 
 1. Generation performance optimization
-2. Advanced validation and error reporting
-3. Integration with protobuf ecosystem updates
-4. Alternative generation strategies evaluation
+1. Advanced validation and error reporting
+1. Integration with protobuf ecosystem updates
+1. Alternative generation strategies evaluation
 
 ## Technical Details
 
@@ -367,7 +368,9 @@ jobs:
 
 This ADR is currently BLOCKED due to the immediate need to resolve import errors. The protobuf version mismatch is preventing the library from functioning,
 
-     which blocks all other development work.
+```
+ which blocks all other development work.
+```
 
 Once resolved,
 this ADR will be marked as ACCEPTED and implementation will proceed according to the plan outlined above.

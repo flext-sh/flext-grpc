@@ -1,24 +1,24 @@
 # FLEXT-gRPC Architecture Documentation
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
-- [📋 Documentation Framework](#-documentation-framework)
-  - [🏗️ C4 Model (Primary)](#-c4-model-primary)
-  - [📚 Arc42 Template (Structure)](#-arc42-template-structure)
-  - [📝 ADRs (Decisions)](#-adrs-decisions)
-  - [🎨 PlantUML (Diagrams)](#-plantuml-diagrams)
-- [📁 Documentation Structure](#-documentation-structure)
-- [🎯 Key Architectural Views](#-key-architectural-views)
+- [📋 Documentation Framework](#documentation-framework)
+  - [🏗️ C4 Model (Primary)](#c4-model-primary)
+  - [📚 Arc42 Template (Structure)](#arc42-template-structure)
+  - [📝 ADRs (Decisions)](#adrs-decisions)
+  - [🎨 PlantUML (Diagrams)](#plantuml-diagrams)
+- [📁 Documentation Structure](#documentation-structure)
+- [🎯 Key Architectural Views](#key-architectural-views)
   - [1. System Context (C4 Level 1)](#1-system-context-c4-level-1)
   - [2. Container Architecture (C4 Level 2)](#2-container-architecture-c4-level-2)
   - [3. Component Architecture (C4 Level 3)](#3-component-architecture-c4-level-3)
   - [4. Code Architecture (C4 Level 4)](#4-code-architecture-c4-level-4)
-- [🔧 Architecture Quality Attributes](#-architecture-quality-attributes)
+- [🔧 Architecture Quality Attributes](#architecture-quality-attributes)
   - [Functional Requirements](#functional-requirements)
   - [Quality Attributes](#quality-attributes)
   - [Cross-Cutting Concerns](#cross-cutting-concerns)
-- [🚀 Architecture Decision Records](#-architecture-decision-records)
+- [🚀 Architecture Decision Records](#architecture-decision-records)
   - [ADR Process](#adr-process)
   - [Current ADRs](#current-adrs)
   - [ADR Template](#adr-template)
@@ -28,24 +28,25 @@
 - [Consequences](#consequences)
 - [Alternatives Considered](#alternatives-considered)
 - [References](#references)
-- [🎨 Diagram Generation](#-diagram-generation)
+- [🎨 Diagram Generation](#diagram-generation)
   - [Automated Diagram Generation](#automated-diagram-generation)
   - [PlantUML Integration](#plantuml-integration)
   - [Interactive Diagrams](#interactive-diagrams)
-- [📊 Metrics and Analytics](#-metrics-and-analytics)
+- [📊 Metrics and Analytics](#metrics-and-analytics)
   - [Architecture Health Metrics](#architecture-health-metrics)
   - [Quality Gates](#quality-gates)
-- [🔄 Maintenance and Evolution](#-maintenance-and-evolution)
+- [🔄 Maintenance and Evolution](#maintenance-and-evolution)
   - [Documentation Updates](#documentation-updates)
   - [Architecture Evolution](#architecture-evolution)
   - [Team Collaboration](#team-collaboration)
-- [📚 Related Documentation](#-related-documentation)
+- [📚 Related Documentation](#related-documentation)
   - [Internal References](#internal-references)
   - [External References](#external-references)
-- [🤝 Contributing to Architecture Documentation](#-contributing-to-architecture-documentation)
+- [🤝 Contributing to Architecture Documentation](#contributing-to-architecture-documentation)
   - [Contribution Guidelines](#contribution-guidelines)
   - [Quality Standards](#quality-standards)
   - [Review Process](#review-process)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -73,7 +74,7 @@
     - [ADR Process](#adr-process)
     - [Current ADRs](#current-adrs)
     - [ADR Template](#adr-template)
-- [ADR-[NUMBER]: [TITLE]](#adr-number-title)
+- [ADR-\[NUMBER\]: [TITLE]](#adr-number-title)
   - [Status](#status)
   - [Context](#context)
   - [Decision](#decision)
@@ -251,14 +252,14 @@ docs/architecture/
 
 ### Quality Attributes
 
-| Attribute           | Target               | Current Status  | Measurement              |
-| ------------------- | -------------------- | --------------- | ------------------------ |
-| **Performance**     | <10ms latency        | ⚠️ Not measured | Response time benchmarks |
-| **Reliability**     | 99.9% uptime         | ✅ High         | Error handling coverage  |
-| **Security**        | Zero critical vulns  | ✅ Clean        | Security audit results   |
-| **Maintainability** | <2h mean time to fix | ✅ Good         | Code complexity metrics  |
-| **Testability**     | 90%+ coverage        | ⚠️ 39% current  | Test coverage reports    |
-| **Scalability**     | 1000+ concurrent     | ✅ Designed     | Architecture patterns    |
+| Attribute           | Target                | Current Status  | Measurement              |
+| ------------------- | --------------------- | --------------- | ------------------------ |
+| **Performance**     | \<10ms latency        | ⚠️ Not measured | Response time benchmarks |
+| **Reliability**     | 99.9% uptime          | ✅ High         | Error handling coverage  |
+| **Security**        | Zero critical vulns   | ✅ Clean        | Security audit results   |
+| **Maintainability** | \<2h mean time to fix | ✅ Good         | Code complexity metrics  |
+| **Testability**     | 90%+ coverage         | ⚠️ 39% current  | Test coverage reports    |
+| **Scalability**     | 1000+ concurrent      | ✅ Designed     | Architecture patterns    |
 
 ### Cross-Cutting Concerns
 
@@ -288,11 +289,11 @@ docs/architecture/
 ### ADR Process
 
 1. **Identify**: Architecture decision needed
-2. **Research**: Evaluate alternatives and trade-offs
-3. **Decide**: Choose solution with clear rationale
-4. **Document**: Create ADR with decision details
-5. **Implement**: Apply decision in codebase
-6. **Review**: Periodic review and potential evolution
+1. **Research**: Evaluate alternatives and trade-offs
+1. **Decide**: Choose solution with clear rationale
+1. **Document**: Create ADR with decision details
+1. **Implement**: Apply decision in codebase
+1. **Review**: Periodic review and potential evolution
 
 ### Current ADRs
 
@@ -456,9 +457,9 @@ def calculate_architecture_health():
 ### Contribution Guidelines
 
 1. **Follow Frameworks**: Use C4 Model, Arc42, and ADR standards
-2. **Document Decisions**: Create ADRs for significant changes
-3. **Update Diagrams**: Keep diagrams synchronized with code changes
-4. **Review Process**: Architecture changes require review
+1. **Document Decisions**: Create ADRs for significant changes
+1. **Update Diagrams**: Keep diagrams synchronized with code changes
+1. **Review Process**: Architecture changes require review
 
 ### Quality Standards
 
@@ -470,11 +471,11 @@ def calculate_architecture_health():
 ### Review Process
 
 1. **Self-Review**: Author reviews for completeness and accuracy
-2. **Peer Review**: Architecture team reviews technical content
-3. **Stakeholder Review**: Business stakeholders review context and scope
-4. **Approval**: Architecture owner approves significant changes
+1. **Peer Review**: Architecture team reviews technical content
+1. **Stakeholder Review**: Business stakeholders review context and scope
+1. **Approval**: Architecture owner approves significant changes
 
----
+______________________________________________________________________
 
 **This architecture documentation provides a comprehensive framework for understanding,
 maintaining,

@@ -1,7 +1,7 @@
 # ADR-001: Clean Architecture Adoption
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Status](#status)
 - [Context](#context)
@@ -20,6 +20,7 @@
   - [Interface Design](#interface-design)
 - [References](#references)
 - [Notes](#notes)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -227,8 +228,8 @@ With the following principles:
 ### Dependency Rules
 
 1. **Domain Layer**: No dependencies on other layers
-2. **Application Layer**: Can depend on Domain, not Infrastructure
-3. **Infrastructure Layer**: Can depend on all layers (implements interfaces)
+1. **Application Layer**: Can depend on Domain, not Infrastructure
+1. **Infrastructure Layer**: Can depend on all layers (implements interfaces)
 
 ### Interface Design
 
