@@ -1,8 +1,5 @@
 # flext-grpc - gRPC Framework
 PROJECT_NAME := flext-grpc
-COV_DIR := flext_grpc
-MIN_COVERAGE := 90
-
 include ../base.mk
 
 # === PROJECT-SPECIFIC TARGETS ===
