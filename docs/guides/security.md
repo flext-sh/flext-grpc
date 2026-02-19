@@ -6,9 +6,9 @@
 > Project profile: `flext-grpc`
 
 
-
-
-
+<!-- TOC START -->
+- No sections found
+<!-- TOC END -->
 
 Security practices are governed by project-specific policies and central architecture ADRs.
 
