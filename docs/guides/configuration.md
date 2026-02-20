@@ -1,13 +1,13 @@
 <!-- Generated from docs/guides/configuration.md for flext-grpc. -->
+
 <!-- Source of truth: workspace docs/guides/. -->
 
 # flext-grpc - FLEXT Configuration Guide
 
 > Project profile: `flext-grpc`
 
-
-
 <!-- TOC START -->
+
 - [Overview](#overview)
 - [Configuration Sources](#configuration-sources)
 - [Basic Configuration](#basic-configuration)
@@ -34,6 +34,7 @@
 - [Examples](#examples)
   - [Complete Configuration Example](#complete-configuration-example)
 - [Reference](#reference)
+
 <!-- TOC END -->
 
 This guide covers how to configure FLEXT for your specific environment and requirements.
@@ -48,9 +49,9 @@ and programmatic configuration. All configuration is validated using Pydantic v2
 FLEXT loads configuration in the following order (later sources override earlier ones):
 
 1. **Default values** in Pydantic models
-2. **Environment variables** (prefixed with `FLEXT_`)
-3. **Configuration files** (YAML, JSON, or TOML)
-4. **Programmatic configuration** in code
+1. **Environment variables** (prefixed with `FLEXT_`)
+1. **Configuration files** (YAML, JSON, or TOML)
+1. **Programmatic configuration** in code
 
 ## Basic Configuration
 
@@ -412,16 +413,19 @@ class FlextLdifSettings(BaseModel):
 ### Common Configuration Issues
 
 1. **Environment Variables Not Loading**
+
    - Ensure variables are prefixed with `FLEXT_`
    - Check for typos in variable names
    - Verify environment is set before running application
 
-2. **Configuration File Not Found**
+1. **Configuration File Not Found**
+
    - Check file path is correct
    - Ensure file has proper permissions
    - Verify file format (YAML, JSON, or TOML)
 
-3. **Validation Errors**
+1. **Validation Errors**
+
    - Check Pydantic model field types
    - Verify required fields are provided
    - Review field validators for constraints
