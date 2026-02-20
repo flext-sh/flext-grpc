@@ -12,7 +12,6 @@ from __future__ import annotations
 import time
 from collections.abc import Iterator
 
-import grpc
 from flext_core import c as c_core
 from grpc import ServicerContext
 
