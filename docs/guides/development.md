@@ -1,13 +1,13 @@
 <!-- Generated from docs/guides/development.md for flext-grpc. -->
+
 <!-- Source of truth: workspace docs/guides/. -->
 
 # flext-grpc - FLEXT Development Guide
 
 > Project profile: `flext-grpc`
 
-
-
 <!-- TOC START -->
+
 - [Prerequisites](#prerequisites)
 - [Development Environment Setup](#development-environment-setup)
   - [1. Clone the Repository](#1-clone-the-repository)
@@ -47,6 +47,7 @@
   - [Common Issues](#common-issues)
 - [Resources](#resources)
 - [Support](#support)
+
 <!-- TOC END -->
 
 This guide covers setting up a development environment for FLEXT contributions and understanding the development workflow.
@@ -440,12 +441,12 @@ config = FlextNewlibSettings(new_setting="value")
 ### Pull Request Process
 
 1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Run quality gates**
-5. **Write tests**
-6. **Update documentation**
-7. **Submit pull request**
+1. **Create a feature branch**
+1. **Make your changes**
+1. **Run quality gates**
+1. **Write tests**
+1. **Update documentation**
+1. **Submit pull request**
 
 ### Code Review Guidelines
 
@@ -466,7 +467,9 @@ config = FlextNewlibSettings(new_setting="value")
 
    # Reinstall dependencies
    make clean && make setup
-```
+   ```
+
+````
 
 2. **Test Failures**
 
@@ -476,7 +479,7 @@ config = FlextNewlibSettings(new_setting="value")
 
    # Check specific test
    pytest tests/unit/test_specific.py::test_function -v
-   ```
+````
 
 3. **Build Issues**
 

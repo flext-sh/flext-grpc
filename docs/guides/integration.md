@@ -1,7 +1,7 @@
 # flext-grpc FLEXT Ecosystem Integration
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Integration Overview](#integration-overview)
   - [FLEXT Ecosystem Position](#flext-ecosystem-position)
@@ -30,6 +30,7 @@
   - [Working Integrations](#working-integrations)
   - [Planned Integrations](#planned-integrations)
   - [Integration Priorities](#integration-priorities)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -712,11 +713,11 @@ class GrpcVersionManager:
 ### Integration Priorities
 
 1. **Fix Protobuf Compatibility** - Enables all other integrations
-2. **Health Checking** - Standard gRPC health monitoring
-3. **Authentication** - Security integration with flext-auth
-4. **Monitoring** - Observability integration
-5. **CLI Management** - Operational tools integration
+1. **Health Checking** - Standard gRPC health monitoring
+1. **Authentication** - Security integration with flext-auth
+1. **Monitoring** - Observability integration
+1. **CLI Management** - Operational tools integration
 
----
+______________________________________________________________________
 
 This integration guide provides comprehensive patterns for using flext-grpc within the FLEXT ecosystem once the protobuf compatibility issue is resolved.

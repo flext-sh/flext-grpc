@@ -1,13 +1,13 @@
 <!-- Generated from docs/guides/README.md for flext-grpc. -->
+
 <!-- Source of truth: workspace docs/guides/. -->
 
 # flext-grpc - User Guides
 
 > Project profile: `flext-grpc`
 
-
-
 <!-- TOC START -->
+
 - [Getting Started](#getting-started)
   - [Installation Guide ✅](#installation-guide)
   - [Quick Start Tutorial (Coming Soon)](#quick-start-tutorial-coming-soon)
@@ -32,6 +32,7 @@
   - [Performance Optimization (Coming Soon)](#performance-optimization-coming-soon)
   - [Security Best Practices (Coming Soon)](#security-best-practices-coming-soon)
   - [Error Handling (Coming Soon)](#error-handling-coming-soon)
+
 <!-- TOC END -->
 
 ## Getting Started
@@ -118,7 +119,7 @@ Security considerations when using FLEXT.
 
 Effective error handling strategies in FLEXT applications.
 
----
+______________________________________________________________________
 
 **Note**: This guide structure is being updated. Currently,
 only the Getting Started guide is available. Additional guides are being created as part of the documentation maintenance process.

@@ -1,14 +1,15 @@
 <!-- Generated from docs/guides/security.md for flext-grpc. -->
+
 <!-- Source of truth: workspace docs/guides/. -->
 
 # flext-grpc - Security Guide
 
 > Project profile: `flext-grpc`
 
-
-
 <!-- TOC START -->
+
 - No sections found
+
 <!-- TOC END -->
 
 Security practices are governed by project-specific policies and central architecture ADRs.

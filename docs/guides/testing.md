@@ -1,13 +1,13 @@
 <!-- Generated from docs/guides/testing.md for flext-grpc. -->
+
 <!-- Source of truth: workspace docs/guides/. -->
 
 # flext-grpc - FLEXT Testing Guide
 
 > Project profile: `flext-grpc`
 
-
-
 <!-- TOC START -->
+
 - [Overview](#overview)
 - [Test Structure](#test-structure)
 - [Test Categories](#test-categories)
@@ -41,6 +41,7 @@
 - [Troubleshooting](#troubleshooting)
   - [Common Test Issues](#common-test-issues)
 - [Resources](#resources)
+
 <!-- TOC END -->
 
 This guide covers testing strategies, best practices, and procedures for FLEXT applications and libraries.
@@ -681,7 +682,7 @@ def test_parse_invalid_ldif():
    pytest
    ```
 
-2. **Fixture Not Found**
+1. **Fixture Not Found**
 
    ```python
    # Check fixture scope and dependencies
@@ -690,14 +691,14 @@ def test_parse_invalid_ldif():
        return "value"
    ```
 
-3. **Test Timeout**
+1. **Test Timeout**
 
    ```bash
    # Increase timeout
    pytest --timeout=300
    ```
 
-4. **Coverage Issues**
+1. **Coverage Issues**
 
    ```bash
    # Check coverage configuration
