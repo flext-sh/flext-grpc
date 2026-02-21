@@ -31,11 +31,6 @@ class FlextGrpcModels(FlextModels):
     Follows FLEXT principles with clean separation of concerns and SOLID design.
     """
 
-    def __init_subclass__(cls, **kwargs: object) -> None:
-        """Warn when FlextGrpcModels is subclassed directly."""
-        super().__init_subclass__(**kwargs)
-        # Note: Subclassing warning removed to avoid import issues
-
     # =========================================================================
     # DOMAIN MODELS - Core business entities
     # =========================================================================
