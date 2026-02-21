@@ -9,11 +9,11 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import pytest
-from flext_grpc import t
 from flext_core import FlextConstants
 from flext_core.container import FlextContainer
 from flext_tests.docker import FlextTestsDocker
 
+from flext_grpc import t
 from flext_grpc.constants import FlextGrpcConstants
 
 
