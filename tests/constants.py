@@ -28,11 +28,11 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
     2. FlextGrpcConstants - for domain constants (.Grpc.*)
 
     Access patterns:
-    - tc.Tests.Docker.* (container testing)
-    - tc.Tests.Matcher.* (assertion messages)
-    - tc.Tests.Factory.* (test data generation)
-    - tc.Grpc.* (domain constants from production)
-    - tc.TestGrpc.* (project-specific test data)
+    - c.Tests.Docker.* (container testing)
+    - c.Tests.Matcher.* (assertion messages)
+    - c.Tests.Factory.* (test data generation)
+    - c.Grpc.* (domain constants from production)
+    - c.TestGrpc.* (project-specific test data)
 
     Rules:
     - NEVER duplicate constants from FlextTestsConstants or FlextGrpcConstants

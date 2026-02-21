@@ -532,6 +532,5 @@ _grpc_model_attrs = {
 # Models should be accessed directly via FlextGrpcModels.*
 
 m = FlextGrpcModels
-m_grpc = FlextGrpcModels
 
-__all__ = ["FlextGrpcModels", "m", "m_grpc"]
+__all__ = ["FlextGrpcModels", "m"]
