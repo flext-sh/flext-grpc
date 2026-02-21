@@ -21,7 +21,7 @@ class FlextGrpcConstants(FlextConstants):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
-    constants redefined for gRPC context. NO direct imports from c_core
+    constants redefined for gRPC context. NO direct imports from c
     should be used - all constants must come from this class.
 
     Layer N Foundation: gRPC domain-specific constants building on flext-core Layer 0.
@@ -70,7 +70,7 @@ class FlextGrpcConstants(FlextConstants):
             DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
         class Service:
-            """gRPC service constants extending c_core.Service."""
+            """gRPC service constants extending c.Service."""
 
             # gRPC-specific service constants - OVERRIDE parent constants
             DEFAULT_MAX_WORKERS: Final[int] = 10  # gRPC default workers
@@ -95,7 +95,7 @@ class FlextGrpcConstants(FlextConstants):
             HIGH_RETRY_TIMEOUT: Final[float] = 10.0
 
         class GrpcValidation:
-            """gRPC validation constants extending c_core.Validation."""
+            """gRPC validation constants extending c.Validation."""
 
             # Additional gRPC-specific constants
             ADDRESS_PARTS_COUNT: Final[int] = 2

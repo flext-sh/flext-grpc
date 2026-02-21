@@ -15,7 +15,7 @@ from typing import TypeVar
 
 from flext_core import (
     FlextModels,
-    FlextResult as r,
+    r,
 )
 from flext_core._models.entity import FlextModelsEntity
 from pydantic import BaseModel, Field, computed_field, field_validator

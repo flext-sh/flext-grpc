@@ -13,7 +13,7 @@ import time
 from collections.abc import Iterator
 
 import grpc
-from flext_core import c as c_core
+from flext_core import c
 from grpc import ServicerContext
 
 from flext_grpc.proto import (
@@ -101,7 +101,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
         """Real client streaming implementation."""
         try:
             messages: list[str] = []
-            sequence_count = c_core.Performance.MIN_CURRENT_STEP
+            sequence_count = c.Performance.MIN_CURRENT_STEP
 
             # Process all incoming requests
             for request in request_iterator:

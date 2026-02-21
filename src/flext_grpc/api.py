@@ -40,7 +40,7 @@ GenericResponse = _m.API.Response
 
 # Type aliases for convenience
 c = FlextGrpcConstants
-m_core = FlextModels
+m = FlextModels
 
 T = TypeVar("T", bound=BaseModel)
 U = TypeVar("U")  # Generic return type for factory methods

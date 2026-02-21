@@ -11,7 +11,7 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from flext_core import FlextTypes as t
+from flext_grpc import t
 
 
 class ArchitectureValidator:
@@ -327,7 +327,9 @@ class ArchitectureValidator:
                 pass
 
 
-def save_report(results: dict[str, t.GeneralValueType], output_path: Path | None = None) -> None:
+def save_report(
+    results: dict[str, t.GeneralValueType], output_path: Path | None = None
+) -> None:
     """Save validation report to file."""
     if output_path is None:
         timestamp: str = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
