@@ -46,6 +46,17 @@ T = TypeVar("T", bound=BaseModel)
 U = TypeVar("U")  # Generic return type for factory methods
 E = TypeVar("E", bound=FlextGrpcEntities.Entity)  # Generic entity type
 
+type EntityKwargValue = (
+    str
+    | int
+    | bool
+    | float
+    | list[str]
+    | list[t.JsonValue]
+    | dict[str, t.JsonValue]
+    | None
+)
+
 
 class FlextGrpc:
     """Generic unified gRPC facade with SOLID patterns and minimal code.
@@ -86,15 +97,7 @@ class FlextGrpc:
     def create_entity(
         self,
         entity_type: str,
-        **kwargs: (
-            str
-            | bool
-            | float
-            | list[str]
-            | list[t.JsonValue]
-            | dict[str, t.JsonValue]
-            | None
-        ),
+        **kwargs: EntityKwargValue,
     ) -> r[object]:
         """Generic entity creation with Pydantic validation and delegation."""
         entity_factories: dict[str, Callable[..., r[object]]] = (
@@ -116,14 +119,15 @@ class FlextGrpc:
             validate_method = getattr(entity, "validate_business_rules")
             if callable(validate_method):
                 validation_result = validate_method()
-                # Type narrowing: check if validation_result is a FlextResult
-                if (
-                    isinstance(validation_result, r)
-                    and not validation_result.is_success
-                ):
-                    return r.fail(
-                        f"Entity validation failed: {validation_result.error}",
+                is_success = getattr(validation_result, "is_success", None)
+                error_message = getattr(validation_result, "error", None)
+                if isinstance(is_success, bool) and not is_success:
+                    message = (
+                        error_message
+                        if isinstance(error_message, str) and error_message
+                        else "Unknown error"
                     )
+                    return r.fail(f"Entity validation failed: {message}")
 
         return r.ok(entity)
 
@@ -135,15 +139,7 @@ class FlextGrpc:
 
         def _wrap_factory[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
             def _inner(
-                **kw: (
-                    str
-                    | bool
-                    | float
-                    | list[str]
-                    | list[t.JsonValue]
-                    | dict[str, t.JsonValue]
-                    | None
-                ),
+                **kw: EntityKwargValue,
             ) -> r[object]:
                 return _result_as_object(fn(**kw))
 
@@ -207,12 +203,25 @@ class FlextGrpc:
         **kwargs: str | int | bool | list[str] | None,
     ) -> r[FlextGrpcEntities.Server]:
         """Create server entity with functional defaults."""
-        defaults = {
-            "host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
-            "port": c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-            "max_workers": c.Grpc.Service.DEFAULT_MAX_WORKERS,
-        }
-        result = self.create_entity("server", **defaults | kwargs)
+        host = str(kwargs.get("host", c.Grpc.GrpcNetwork.DEFAULT_HOST))
+        port_raw = kwargs.get("port", c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
+        workers_raw = kwargs.get("max_workers", c.Grpc.Service.DEFAULT_MAX_WORKERS)
+        port = (
+            int(port_raw)
+            if isinstance(port_raw, str | int)
+            else c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+        )
+        max_workers = (
+            int(workers_raw)
+            if isinstance(workers_raw, str | int)
+            else c.Grpc.Service.DEFAULT_MAX_WORKERS
+        )
+        result = self.create_entity(
+            "server",
+            host=host,
+            port=port,
+            max_workers=max_workers,
+        )
         # Result is guaranteed to be Server type by factory implementation
         if result.is_failure:
             return r.fail(result.error or "Server creation failed")
@@ -258,8 +267,24 @@ class FlextGrpc:
         **kwargs: str | list[str] | None,
     ) -> r[FlextGrpcEntities.Service]:
         """Create service entity with defaults."""
-        defaults = {"name": "DefaultService", "methods": ["default_method"]}
-        result = self.create_entity("service", **defaults | kwargs)
+        name = kwargs.get("name")
+        methods = kwargs.get("methods")
+        service_name = (
+            name if isinstance(name, str) and name.strip() else "DefaultService"
+        )
+        if isinstance(methods, str):
+            service_methods: list[str] = [methods]
+        elif isinstance(methods, list):
+            service_methods = [method for method in methods if isinstance(method, str)]
+            if not service_methods:
+                service_methods = ["default_method"]
+        else:
+            service_methods = ["default_method"]
+        result = self.create_entity(
+            "service",
+            name=service_name,
+            methods=service_methods,
+        )
         if result.is_failure:
             return r.fail(result.error or "Service creation failed")
         entity = result.value

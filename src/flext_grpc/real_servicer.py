@@ -12,20 +12,18 @@ from __future__ import annotations
 import time
 from collections.abc import Iterator
 
+import grpc
 from flext_core import c as c_core
 from grpc import ServicerContext
 
-from flext_grpc.proto.flext_grpc_pb2 import (
+from flext_grpc.proto import (
     EchoRequest,
     EchoResponse,
+    FlextGrpcServiceServicer,
     HealthRequest,
     HealthResponse,
     StreamRequest,
     StreamResponse,
-)
-
-from .proto.flext_grpc_pb2_grpc import (
-    FlextGrpcServiceServicer,
 )
 
 
@@ -67,7 +65,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             )
 
         except Exception as e:
-            context.set_code(internal.invalid)
+            context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(f"Echo service error: {e}")
             return EchoResponse()
 
@@ -92,7 +90,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
                     break
 
         except Exception as e:
-            context.set_code(internal.invalid)
+            context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(f"Server streaming error: {e}")
 
     def client_stream(
@@ -120,7 +118,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             )
 
         except Exception as e:
-            context.set_code(internal.invalid)
+            context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(f"Client streaming error: {e}")
             return StreamResponse()
 
@@ -144,7 +142,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
                     break
 
         except Exception as e:
-            context.set_code(internal.invalid)
+            context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(f"Bidirectional streaming error: {e}")
 
     def health_check(
@@ -175,7 +173,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             )
 
         except Exception as e:
-            context.set_code(internal.invalid)
+            context.set_code(grpc.StatusCode.INTERNAL)
             context.set_details(f"Health check error: {e}")
             return HealthResponse(
                 status=HealthResponse.ServingStatus.UNKNOWN,

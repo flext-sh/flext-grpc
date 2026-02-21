@@ -1140,7 +1140,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     grpc.StatusCode.DEADLINE_EXCEEDED,
                     grpc.StatusCode.RESOURCE_EXHAUSTED,
                     grpc.StatusCode.ABORTED,
-                    internal.invalid,
+                    grpc.StatusCode.INTERNAL,
                 }
 
                 code_attr = getattr(error, "code", None)
