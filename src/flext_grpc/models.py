@@ -14,7 +14,7 @@ from collections.abc import Mapping
 from datetime import datetime
 from typing import Self
 
-from flext_core import FlextModels, r, m,
+from flext_core import FlextModels, m, r
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_grpc.constants import c
@@ -45,19 +45,6 @@ class FlextGrpcModels(FlextModels):
             total_requests_sent: int = Field(default=0)
             average_latency_ms: float = Field(default=0.0)
             error_count: int = Field(default=0)
-
-        class Request(m.Value):
-            """Basic gRPC request model (immutable value model)."""
-
-            method: str = Field(description="gRPC method name")
-            data: t.Grpc.GrpcRequestDict | None = Field(
-                default=None,
-                description="Request data",
-            )
-            metadata: t.Grpc.GrpcMetadata | None = Field(
-                default=None,
-                description="Request metadata",
-            )
 
         class HealthCheck(m.Value):
             """gRPC health check model (immutable value model)."""
