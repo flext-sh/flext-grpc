@@ -12,9 +12,9 @@ from __future__ import annotations
 
 import gc
 import time
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import ClassVar, TypeGuard
+from typing import ClassVar, cast
 from uuid import uuid4
 
 import grpc
@@ -61,7 +61,7 @@ class FlextGrpcUtilities(FlextUtilities):
         self,
         command: str | None = None,
         data: t.ConfigValue = None,
-    ) -> r[dict[str, str | t.ConfigValue]]:
+    ) -> r[Mapping[str, str | t.ConfigValue]]:
         """Execute utility operation and return status."""
         try:
             # Simple status check
@@ -74,23 +74,6 @@ class FlextGrpcUtilities(FlextUtilities):
             return r.ok(result)
         except Exception as e:
             return r.fail(f"Execute failed: {e}")
-
-    # === TYPE GUARDS ===
-
-    @classmethod
-    def _is_valid_stream_type(cls, value: str) -> TypeGuard[t.GrpcStreamType]:
-        """TypeGuard for stream type validation."""
-        return value in c.Grpc.STREAM_TYPES
-
-    @classmethod
-    def _is_grpc_channel(cls, value: object) -> TypeGuard[grpc.Channel]:
-        """TypeGuard for gRPC channel validation."""
-        return isinstance(value, grpc.Channel)
-
-    @classmethod
-    def _is_grpc_credentials(cls, value: object) -> TypeGuard[grpc.ChannelCredentials]:
-        """TypeGuard for gRPC channel credentials validation."""
-        return isinstance(value, grpc.ChannelCredentials)
 
     # === FACTORY METHODS ===
 
@@ -179,18 +162,19 @@ class FlextGrpcUtilities(FlextUtilities):
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create a gRPC stream entity directly."""
         try:
-            # Validate stream type using TypeGuard for type narrowing
-            if not cls._is_valid_stream_type(stream_type):
+            # Validate stream type against allowed values
+            if stream_type not in c.Grpc.STREAM_TYPES:
                 return r.fail(f"Invalid stream type: {stream_type}")
 
             if not method_name or not method_name.strip():
                 return r.fail("Stream method name cannot be empty")
 
-            # stream_type is now narrowed to t.GrpcStreamType by TypeGuard
+            validated_stream_type = cast("c.Grpc.StreamTypeLiteral", stream_type)
+
             stream = FlextGrpcEntities.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=stream_type,
+                stream_type=validated_stream_type,
             )
             return r.ok(stream)
         except Exception as e:
@@ -209,17 +193,20 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def get_buffer_size_bytes(buffer_name: str | list[t.GeneralValueType]) -> int:
             """Get buffer size in bytes for given buffer name or list."""
-            if isinstance(buffer_name, list):
-                # Calculate size based on list length (rough estimate)
-                return len(buffer_name) * 1024  # 1KB per item
-
-            # Placeholder implementation for string names
-            buffer_sizes = {
-                "default": 1024 * 1024,  # 1MB
-                "large": 10 * 1024 * 1024,  # 10MB
-                "small": 64 * 1024,  # 64KB
-            }
-            return buffer_sizes.get(buffer_name, 1024 * 1024)
+            match buffer_name:
+                case list():
+                    # Calculate size based on list length (rough estimate)
+                    return len(buffer_name) * 1024  # 1KB per item
+                case str():
+                    # Placeholder implementation for string names
+                    buffer_sizes = {
+                        "default": 1024 * 1024,  # 1MB
+                        "large": 10 * 1024 * 1024,  # 10MB
+                        "small": 64 * 1024,  # 64KB
+                    }
+                    return buffer_sizes.get(buffer_name, 1024 * 1024)
+                case _:
+                    return 1024 * 1024
 
         @staticmethod
         def trigger_memory_cleanup() -> None:
@@ -247,9 +234,6 @@ class FlextGrpcUtilities(FlextUtilities):
             message_instance: Message,
         ) -> r[Message]:
             """Validate message descriptor availability."""
-            if not hasattr(message_instance, "DESCRIPTOR"):
-                return r[Message].fail("Message descriptor not available")
-
             return r[Message].ok(message_instance)
 
         @staticmethod
@@ -257,16 +241,12 @@ class FlextGrpcUtilities(FlextUtilities):
             message_instance: Message,
         ) -> r[Message]:
             """Validate that all required fields are present."""
-            descriptor = getattr(message_instance, "DESCRIPTOR", None)
-            if descriptor is None:
-                return r[Message].fail("Message descriptor not available")
+            descriptor = message_instance.DESCRIPTOR
 
             for field in descriptor.fields:
                 if (
                     PROTOBUF_AVAILABLE
-                    and hasattr(FieldDescriptor, "LABEL_REQUIRED")
                     and field.label == FieldDescriptor.LABEL_REQUIRED
-                    and hasattr(message_instance, "HasField")
                     and not message_instance.HasField(field.name)
                 ):
                     return r[Message].fail(
@@ -281,8 +261,7 @@ class FlextGrpcUtilities(FlextUtilities):
         ) -> r[bool]:
             """Validate message can be serialized."""
             try:
-                if hasattr(message_instance, "SerializeToString"):
-                    _ = message_instance.SerializeToString()
+                _ = message_instance.SerializeToString()
             except Exception as e:
                 return r[bool].fail(f"Message serialization failed: {e}")
 
@@ -407,7 +386,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def protobuf_to_dict(
             message_instance: Message,
-        ) -> r[dict[str, t.JsonValue]]:
+        ) -> r[Mapping[str, t.JsonValue]]:
             """Convert protobuf message to dictionary.
 
             Args:
@@ -419,17 +398,12 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if json_format is None:
-                    return r[dict[str, t.JsonValue]].fail(
+                    return r[Mapping[str, t.JsonValue]].fail(
                         "Protobuf json_format not available",
                     )
 
-                if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[dict[str, t.JsonValue]].fail(
-                        "Invalid protobuf message",
-                    )
-
                 if MessageToDict is None:
-                    return r[dict[str, t.JsonValue]].fail(
+                    return r[Mapping[str, t.JsonValue]].fail(
                         "MessageToDict not available",
                     )
 
@@ -438,15 +412,15 @@ class FlextGrpcUtilities(FlextUtilities):
                     message_instance,
                     preserving_proto_field_name=True,
                 )
-                return r[dict[str, t.JsonValue]].ok(dict_data)
+                return r[Mapping[str, t.JsonValue]].ok(dict_data)
             except Exception as e:
-                return r[dict[str, t.JsonValue]].fail(
+                return r[Mapping[str, t.JsonValue]].fail(
                     f"Protobuf to dict[str, t.JsonValue] conversion failed: {e}",
                 )
 
         @staticmethod
         def dict_to_protobuf(
-            data: dict[str, t.JsonValue],
+            data: Mapping[str, t.JsonValue],
             message_class: type[Message],
         ) -> r[Message]:
             """Convert dictionary to protobuf message.
@@ -469,13 +443,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     return r[Message].fail("Invalid message class")
 
                 message_instance = message_class()
-                if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[Message].fail("Invalid protobuf message class")
-
-                if hasattr(json_format, "ParseDict") and json_format is not None:
-                    _ = json_format.ParseDict(data, message_instance)
-                else:
-                    return r[Message].fail("ParseDict not available")
+                _ = json_format.ParseDict(data, message_instance)
                 return r[Message].ok(message_instance)
             except Exception as e:
                 return r[Message].fail(
@@ -496,9 +464,6 @@ class FlextGrpcUtilities(FlextUtilities):
             try:
                 if json_format is None:
                     return r[str].fail("Protobuf json_format not available")
-
-                if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[str].fail("Invalid protobuf message")
 
                 if MessageToJson is None:
                     return r[str].fail("MessageToJson not available")
@@ -532,13 +497,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     return r[Message].fail("Invalid message class")
 
                 message_instance = message_class()
-                if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[Message].fail("Invalid protobuf message class")
-
-                if hasattr(json_format, "Parse") and json_format is not None:
-                    _ = json_format.Parse(json_str, message_instance)
-                else:
-                    return r[Message].fail("Parse not available")
+                _ = json_format.Parse(json_str, message_instance)
                 return r[Message].ok(message_instance)
             except Exception as e:
                 return r[Message].fail(
@@ -557,10 +516,8 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
-                if hasattr(message_instance, "SerializeToString"):
-                    serialized_data = message_instance.SerializeToString()
-                    return r[bytes].ok(serialized_data)
-                return r[bytes].fail("SerializeToString not available")
+                serialized_data = message_instance.SerializeToString()
+                return r[bytes].ok(serialized_data)
             except Exception as e:
                 return r[bytes].fail(f"Message serialization failed: {e}")
 
@@ -584,13 +541,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     return r[Message].fail("Invalid message class")
 
                 message_instance = message_class()
-                if not hasattr(message_instance, "DESCRIPTOR"):
-                    return r[Message].fail("Invalid protobuf message class")
-
-                if hasattr(message_instance, "ParseFromString"):
-                    _ = message_instance.ParseFromString(data)
-                else:
-                    return r[Message].fail("ParseFromString not available")
+                _ = message_instance.ParseFromString(data)
                 return r[Message].ok(message_instance)
             except Exception as e:
                 return r[Message].fail(f"Message deserialization failed: {e}")
@@ -631,27 +582,23 @@ class FlextGrpcUtilities(FlextUtilities):
                 # Type narrowing: credentials can be ConfigValue or None, but after ssl_channel_credentials() it's ChannelCredentials
                 actual_credentials: object = credentials
                 if actual_credentials is None:
-                    if grpc is not None and hasattr(grpc, "ssl_channel_credentials"):
-                        actual_credentials = grpc.ssl_channel_credentials()
-                    else:
-                        return r[GrpcChannelType].fail("SSL credentials not available")
+                    actual_credentials = grpc.ssl_channel_credentials()
 
                 if options is None:
                     options = (
                         FlextGrpcUtilities.ChannelManagement.DEFAULT_CHANNEL_OPTIONS
                     )
 
-                if grpc is not None and hasattr(grpc, "secure_channel"):
-                    # Validate credentials using TypeGuard (narrows to grpc.ChannelCredentials)
-                    if not FlextGrpcUtilities._is_grpc_credentials(actual_credentials):
+                match actual_credentials:
+                    case grpc.ChannelCredentials():
+                        channel = grpc.secure_channel(
+                            target,
+                            actual_credentials,
+                            options=options,
+                        )
+                        return r[GrpcChannelType].ok(channel)
+                    case _:
                         return r[GrpcChannelType].fail("Invalid credentials type")
-                    channel = grpc.secure_channel(
-                        target,
-                        actual_credentials,
-                        options=options,
-                    )
-                    return r[GrpcChannelType].ok(channel)
-                return r[GrpcChannelType].fail("Secure channel not available")
             except Exception as e:
                 return r[GrpcChannelType].fail(f"Secure channel creation failed: {e}")
 
@@ -679,10 +626,8 @@ class FlextGrpcUtilities(FlextUtilities):
                         FlextGrpcUtilities.ChannelManagement.DEFAULT_CHANNEL_OPTIONS
                     )
 
-                if hasattr(grpc, "insecure_channel"):
-                    channel = grpc.insecure_channel(target, options=options)
-                    return r[GrpcChannelType].ok(channel)
-                return r[GrpcChannelType].fail("Insecure channel not available")
+                channel = grpc.insecure_channel(target, options=options)
+                return r[GrpcChannelType].ok(channel)
             except Exception as e:
                 return r[GrpcChannelType].fail(
                     f"Insecure channel creation failed: {e}",
@@ -708,13 +653,14 @@ class FlextGrpcUtilities(FlextUtilities):
                     return r[bool].fail("gRPC not available")
 
                 try:
-                    # Validate channel using TypeGuard
-                    if not FlextGrpcUtilities._is_grpc_channel(channel):
-                        return r[bool].fail("Invalid channel type")
-                    grpc.channel_ready_future(channel).result(
-                        timeout=timeout,
-                    )
-                    return r[bool].ok(value=True)
+                    match channel:
+                        case grpc.Channel():
+                            grpc.channel_ready_future(channel).result(
+                                timeout=timeout,
+                            )
+                            return r[bool].ok(value=True)
+                        case _:
+                            return r[bool].fail("Invalid channel type")
                 except grpc.FutureTimeoutError:
                     return r[bool].ok(False)
             except Exception as e:
@@ -758,11 +704,12 @@ class FlextGrpcUtilities(FlextUtilities):
                 if channel is None:
                     return r[None].fail("Channel is None")
 
-                # Validate channel using TypeGuard (narrows to grpc.Channel)
-                if not FlextGrpcUtilities._is_grpc_channel(channel):
-                    return r[None].fail("Invalid channel type")
-                channel.close()
-                return r[None].ok(None)
+                match channel:
+                    case grpc.Channel():
+                        channel.close()
+                        return r[None].ok(None)
+                    case _:
+                        return r[None].fail("Invalid channel type")
             except Exception as e:
                 return r[None].fail(f"Channel closure failed: {e}")
 
@@ -852,7 +799,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def validate_stream_metadata(
             metadata: Iterator[tuple[bytes | str, bytes | str]] | None,
-        ) -> r[dict[str, str]]:
+        ) -> r[Mapping[str, str]]:
             """Validate and convert gRPC metadata.
 
             Args:
@@ -865,22 +812,26 @@ class FlextGrpcUtilities(FlextUtilities):
             try:
                 metadata_dict: dict[str, str] = {}
                 # Convert gRPC metadata to dictionary
-                if metadata is None or not hasattr(metadata, "__iter__"):
-                    return r[dict[str, str]].fail("Metadata is not iterable")
+                if metadata is None:
+                    return r[Mapping[str, str]].fail("Metadata is not iterable")
                 for key, value in metadata:
-                    # Convert key to string - separate logic for type inference
-                    str_key = key.decode("utf-8") if isinstance(key, bytes) else key
+                    match key:
+                        case bytes():
+                            str_key = key.decode("utf-8")
+                        case _:
+                            str_key = key
 
-                    # Convert value to string - separate logic for type inference
-                    str_value = (
-                        value.decode("utf-8") if isinstance(value, bytes) else value
-                    )
+                    match value:
+                        case bytes():
+                            str_value = value.decode("utf-8")
+                        case _:
+                            str_value = value
 
                     metadata_dict[str_key] = str_value
 
-                return r[dict[str, str]].ok(metadata_dict)
+                return r[Mapping[str, str]].ok(metadata_dict)
             except Exception as e:
-                return r[dict[str, str]].fail(
+                return r[Mapping[str, str]].fail(
                     f"Metadata validation failed: {e}",
                 )
 
@@ -987,7 +938,7 @@ class FlextGrpcUtilities(FlextUtilities):
         def register_service_endpoint(
             service_name: str,
             endpoint: str | None = None,
-            metadata: dict[str, str] | None = None,
+            metadata: Mapping[str, str] | None = None,
         ) -> r[FlextGrpcModels.Grpc.ServiceDefinition]:
             """Register service endpoint for discovery.
 
@@ -1047,7 +998,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def handle_grpc_error(
             error: object,
-        ) -> r[dict[str, t.JsonValue]]:
+        ) -> r[Mapping[str, t.JsonValue]]:
             """Handle and categorize gRPC errors.
 
             Args:
@@ -1059,7 +1010,7 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if error is None:
-                    return r[dict[str, t.JsonValue]].fail(
+                    return r[Mapping[str, t.JsonValue]].fail(
                         "Error is None",
                     )
 
@@ -1079,9 +1030,9 @@ class FlextGrpcUtilities(FlextUtilities):
                     "details": details_str,
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return r[dict[str, t.JsonValue]].ok(error_info)
+                return r[Mapping[str, t.JsonValue]].ok(error_info)
             except Exception as e:
-                return r[dict[str, t.JsonValue]].fail(
+                return r[Mapping[str, t.JsonValue]].fail(
                     f"Error handling failed: {e}",
                 )
 
@@ -1090,7 +1041,7 @@ class FlextGrpcUtilities(FlextUtilities):
             code: int,
             message: str,
             details: list[t.JsonValue] | None = None,
-        ) -> r[dict[str, t.GeneralValueType]]:
+        ) -> r[Mapping[str, t.GeneralValueType]]:
             """Create gRPC status for error responses.
 
             Args:
@@ -1111,9 +1062,9 @@ class FlextGrpcUtilities(FlextUtilities):
                 }
                 # In a real implementation, this would create a proper grpc.Status
                 # For now, return the status info as a dict
-                return r[dict[str, t.GeneralValueType]].ok(status_info)
+                return r[Mapping[str, t.GeneralValueType]].ok(status_info)
             except Exception as e:
-                return r[dict[str, t.GeneralValueType]].fail(
+                return r[Mapping[str, t.GeneralValueType]].fail(
                     f"Status creation failed: {e}",
                 )
 
@@ -1129,10 +1080,8 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
-                if not hasattr(error, "code"):
-                    return r[bool].ok(False)
-
-                if grpc is None:
+                code_attr = getattr(error, "code", None)
+                if code_attr is None:
                     return r[bool].ok(False)
 
                 retryable_codes = {
@@ -1143,7 +1092,6 @@ class FlextGrpcUtilities(FlextUtilities):
                     grpc.StatusCode.INTERNAL,
                 }
 
-                code_attr = getattr(error, "code", None)
                 code_result = code_attr() if callable(code_attr) else None
                 is_retryable = code_result in retryable_codes if code_result else False
                 return r[bool].ok(is_retryable)
@@ -1156,7 +1104,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def collect_channel_metrics(
             channel: object | None,
-        ) -> r[dict[str, t.JsonValue]]:
+        ) -> r[Mapping[str, t.JsonValue]]:
             """Collect metrics from gRPC channel.
 
             Args:
@@ -1168,7 +1116,7 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if channel is None:
-                    return r[dict[str, t.JsonValue]].fail(
+                    return r[Mapping[str, t.JsonValue]].fail(
                         "Channel is None",
                     )
 
@@ -1178,9 +1126,9 @@ class FlextGrpcUtilities(FlextUtilities):
                     "connection_count": 1,
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return r[dict[str, t.JsonValue]].ok(metrics)
+                return r[Mapping[str, t.JsonValue]].ok(metrics)
             except Exception as e:
-                return r[dict[str, t.JsonValue]].fail(
+                return r[Mapping[str, t.JsonValue]].fail(
                     f"Channel metrics collection failed: {e}",
                 )
 
@@ -1188,7 +1136,7 @@ class FlextGrpcUtilities(FlextUtilities):
         def collect_performance_metrics(
             start_time: float | None,
             end_time: float | None,
-        ) -> r[dict[str, t.JsonValue]]:
+        ) -> r[Mapping[str, t.JsonValue]]:
             """Collect performance metrics from timing data.
 
             Args:
@@ -1201,7 +1149,7 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 if start_time is None or end_time is None:
-                    return r[dict[str, t.JsonValue]].fail(
+                    return r[Mapping[str, t.JsonValue]].fail(
                         "Invalid time parameters",
                     )
 
@@ -1212,9 +1160,9 @@ class FlextGrpcUtilities(FlextUtilities):
                     "end_time": end_time,
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
-                return r[dict[str, t.JsonValue]].ok(metrics)
+                return r[Mapping[str, t.JsonValue]].ok(metrics)
             except Exception as e:
-                return r[dict[str, t.JsonValue]].fail(
+                return r[Mapping[str, t.JsonValue]].fail(
                     f"Performance metrics collection failed: {e}",
                 )
 

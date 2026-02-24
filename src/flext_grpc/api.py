@@ -19,7 +19,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.services import FlextGrpcServices, ServicePayload
+from flext_grpc.services import FlextGrpcServices
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
@@ -245,20 +245,18 @@ class FlextGrpc:
 
         entity = result.value
 
-        # Delegate validation to entity if available
-        if hasattr(entity, "validate_business_rules"):
-            validate_method = getattr(entity, "validate_business_rules")
-            if callable(validate_method):
-                validation_result = validate_method()
-                try:
-                    validation_snapshot = _EntityValidationSnapshot.model_validate(
-                        validation_result,
-                    )
-                except ValidationError:
-                    validation_snapshot = _EntityValidationSnapshot()
-                if not validation_snapshot.is_success:
-                    message = validation_snapshot.error or "Unknown error"
-                    return r.fail(f"Entity validation failed: {message}")
+        validate_method = getattr(entity, "validate_business_rules", None)
+        if validate_method is not None and callable(validate_method):
+            validation_result = validate_method()
+            try:
+                validation_snapshot = _EntityValidationSnapshot.model_validate(
+                    validation_result,
+                )
+            except ValidationError:
+                validation_snapshot = _EntityValidationSnapshot()
+            if not validation_snapshot.is_success:
+                message = validation_snapshot.error or "Unknown error"
+                return r.fail(f"Entity validation failed: {message}")
 
         return r.ok(entity)
 

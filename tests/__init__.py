@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from tests.constants import TestsFlextGrpcConstants, c, tc
+from tests.constants import TestsFlextGrpcConstants, c, c
 from tests.models import TestsFlextGrpcModels, m, tm
 from tests.utilities import TestsFlextGrpcUtilities, u
 
@@ -18,7 +18,7 @@ __all__ = [
     "TestsFlextGrpcUtilities",
     "c",
     "m",
-    "tc",
+    "c",
     "tm",
     "u",
 ]

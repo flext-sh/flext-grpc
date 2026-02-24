@@ -51,7 +51,7 @@ class FlextGrpcRealServicer(FlextGrpcServiceServicer):
             response_message = f"Echo: {request.message}"
 
             # Add metadata from request if present
-            if hasattr(request, "metadata") and request.metadata:
+            if request.metadata:
                 metadata_str = ", ".join(
                     f"{k}={v}" for k, v in request.metadata.items()
                 )

@@ -18,9 +18,9 @@ class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
     """Test protocols combining FlextTestsProtocols and FlextGrpcProtocols.
 
     Provides access to:
-    - tp.Tests.Docker.* (from FlextTestsProtocols)
-    - tp.Tests.Factory.* (from FlextTestsProtocols)
-    - tp.Grpc.* (from FlextGrpcProtocols)
+    - p.Tests.Docker.* (from FlextTestsProtocols)
+    - p.Tests.Factory.* (from FlextTestsProtocols)
+    - p.Grpc.* (from FlextGrpcProtocols)
     """
 
     class Tests:
@@ -35,6 +35,6 @@ class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
 
 # Runtime aliases
 p = TestsFlextGrpcProtocols
-tp = TestsFlextGrpcProtocols
+p = TestsFlextGrpcProtocols
 
-__all__ = ["TestsFlextGrpcProtocols", "p", "tp"]
+__all__ = ["TestsFlextGrpcProtocols", "p", "p"]

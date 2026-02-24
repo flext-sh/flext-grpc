@@ -29,13 +29,9 @@ from flext_grpc.proto import (
     HealthRequest,
     add_FlextGrpcServiceServicer_to_server,
 )
-from flext_grpc.protocols import p
 from flext_grpc.real_servicer import create_real_servicer
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
-
-# Protocol reference from centralized protocols.py for backward compatibility
-GrpcResourceManager = p.Grpc.ResourceManagerProtocol
 
 
 class ServicePayload(BaseModel):
@@ -160,7 +156,7 @@ class StreamProcessor(ABC):
     ) -> r[ServicePayload]:
         """Send data through stream.
 
-        Note: Uses Any for gRPC message compatibility
+        Note: Uses t.ConfigValue for gRPC message compatibility
         """
 
     @abstractmethod
@@ -337,8 +333,7 @@ class GrpcServerManager(ServerLifecycleManager):
 
             # Stop gRPC server
             grpc_server = self._active_servers[server_key]
-            if hasattr(grpc_server, "stop"):
-                _ = grpc_server.stop(grace=2.0)
+            _ = grpc_server.stop(grace=2.0)
 
             # Cleanup
             del self._active_servers[server_key]
@@ -407,11 +402,7 @@ class GrpcClientManager(ClientConnectionManager):
 
         if target and target in self._active_channels:
             grpc_channel = self._active_channels[target]
-            # Type narrowing: ensure grpc_channel has close method
-            if hasattr(grpc_channel, "close") and callable(
-                getattr(grpc_channel, "close", None),
-            ):
-                grpc_channel.close()
+            grpc_channel.close()
             del self._active_channels[target]
 
         return r.ok(client)

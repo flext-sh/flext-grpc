@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
 from flext_core.protocols import FlextProtocols
@@ -92,7 +93,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_server_status(
                 self,
-            ) -> FlextProtocols.Result[dict[str, str | int | bool]]:
+            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Get gRPC server status information."""
                 ...
 
@@ -144,7 +145,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def get_client_status(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-            ) -> FlextProtocols.Result[dict[str, str | int | bool]]:
+            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Get gRPC client status information."""
                 ...
 
@@ -205,7 +206,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def handle_bidirectional_streaming(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-            ) -> FlextProtocols.Result[dict[str, str | int | bool]]:
+            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Handle bidirectional streaming."""
                 ...
 
@@ -220,7 +221,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def create_service(
                 self,
                 service_name: str,
-                methods: dict[str, FlextGrpcProtocols.Grpc.GrpcMethodHandler],
+                methods: Mapping[str, FlextGrpcProtocols.Grpc.GrpcMethodHandler],
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcServicer]:
                 """Create gRPC service definition."""
                 ...
@@ -253,7 +254,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def create_channel(
                 self,
                 target: str,
-                options: dict[str, str | int | bool] | None = None,
+                options: Mapping[str, str | int | bool] | None = None,
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcChannel]:
                 """Create gRPC channel."""
                 ...
@@ -287,21 +288,21 @@ class FlextGrpcProtocols(FlextProtocols):
             def collect_server_metrics(
                 self,
                 server: FlextGrpcProtocols.Grpc.GrpcServer,
-            ) -> FlextProtocols.Result[dict[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Collect gRPC server metrics."""
                 ...
 
             def collect_client_metrics(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-            ) -> FlextProtocols.Result[dict[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Collect gRPC client metrics."""
                 ...
 
             def collect_stream_metrics(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-            ) -> FlextProtocols.Result[dict[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Collect gRPC stream metrics."""
                 ...
 
@@ -319,7 +320,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_global_metrics(
                 self,
-            ) -> FlextProtocols.Result[dict[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Get global gRPC metrics."""
                 ...
 
@@ -331,16 +332,16 @@ class FlextGrpcProtocols(FlextProtocols):
                 self,
                 host: str,
                 port: int,
-                options: dict[str, str | int | bool] | None = None,
-            ) -> FlextProtocols.Result[dict[str, str | int | bool]]:
+                options: Mapping[str, str | int | bool] | None = None,
+            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Create gRPC server configuration."""
                 ...
 
             def create_client_config(
                 self,
                 target: str,
-                options: dict[str, str | int | bool] | None = None,
-            ) -> FlextProtocols.Result[dict[str, str | int | bool]]:
+                options: Mapping[str, str | int | bool] | None = None,
+            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Create gRPC client configuration."""
                 ...
 
@@ -459,7 +460,7 @@ class FlextGrpcProtocols(FlextProtocols):
                     | bool
                     | float
                     | list[str]
-                    | dict[str, str | int | float | bool | list[str] | None]
+                    | Mapping[str, str | int | float | bool | list[str] | None]
                     | None
                 ),
             ) -> r[object]:

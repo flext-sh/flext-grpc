@@ -50,7 +50,7 @@ class FlextGrpcModels(FlextModels):
             average_latency_ms: float = Field(default=0.0)
             error_count: int = Field(default=0)
 
-        class GrpcRequest(FlextModelsEntity.Value):
+        class Request(FlextModelsEntity.Value):
             """Basic gRPC request model (immutable value model)."""
 
             method: str = Field(description="gRPC method name")
@@ -63,7 +63,7 @@ class FlextGrpcModels(FlextModels):
                 description="Request metadata",
             )
 
-        class GrpcHealthCheck(FlextModelsEntity.Value):
+        class HealthCheck(FlextModelsEntity.Value):
             """gRPC health check model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
@@ -340,13 +340,6 @@ class FlextGrpcModels(FlextModels):
             )
             log_level: str = Field(default="INFO", description="Logging level")
 
-    # =========================================================================
-    # ENTITIES - Functional entity models and helpers
-    # =========================================================================
-
-    class Entities:
-        """Entity models and validation helpers for gRPC operations."""
-
         class StateTransition(FlextModelsEntity.Value):
             """State transition result model."""
 
@@ -429,15 +422,6 @@ class FlextGrpcModels(FlextModels):
                     FlextGrpcModels.Entities.StateTransition(state=target)
                 )
 
-    # =========================================================================
-    # API - Generic API models for gRPC operations
-    # =========================================================================
-
-    class API:
-        """API models for gRPC request/response handling."""
-
-        T = TypeVar("T", bound=BaseModel)
-
         class OperationSpec(FlextModelsEntity.Value):
             """Generic operation specification using Pydantic."""
 
@@ -510,6 +494,17 @@ class FlextGrpcModels(FlextModels):
             def has_error(self) -> bool:
                 """Check if response has error."""
                 return not self.success or self.error is not None
+
+
+        class Payload(BaseModel):
+            """Structured payload model replacing ad-hoc dict responses."""
+
+            values: t.Grpc.GrpcDict = Field(default_factory=dict)
+
+            @classmethod
+            def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
+                """Build payload from keyword values."""
+                return cls(values=values)
 
 
 m = FlextGrpcModels
