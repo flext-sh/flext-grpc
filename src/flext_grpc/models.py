@@ -12,16 +12,16 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import datetime
-from typing import TypeVar
+from typing import Self
 
 from flext_core import (
     FlextModels,
     r,
 )
-from flext_core._models.entity import FlextModelsEntity
+from flext_core._models.entity import m
 from pydantic import BaseModel, Field, computed_field, field_validator
 
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc.constants import c
 from flext_grpc.typings import t
 
 
@@ -39,7 +39,7 @@ class FlextGrpcModels(FlextModels):
     class Grpc:
         """Domain models for gRPC core business entities."""
 
-        class StreamInfo(FlextModelsEntity.Value):
+        class StreamInfo(m.Value):
             """Basic stream information (immutable value model)."""
 
             stream_id: str
@@ -50,7 +50,7 @@ class FlextGrpcModels(FlextModels):
             average_latency_ms: float = Field(default=0.0)
             error_count: int = Field(default=0)
 
-        class Request(FlextModelsEntity.Value):
+        class Request(m.Value):
             """Basic gRPC request model (immutable value model)."""
 
             method: str = Field(description="gRPC method name")
@@ -63,14 +63,14 @@ class FlextGrpcModels(FlextModels):
                 description="Request metadata",
             )
 
-        class HealthCheck(FlextModelsEntity.Value):
+        class HealthCheck(m.Value):
             """gRPC health check model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
             status: str = Field(description="Health status")
             timestamp: datetime = Field(description="Check timestamp")
 
-        class ServiceDefinition(FlextModelsEntity.Value):
+        class ServiceDefinition(m.Value):
             """gRPC service definition model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
@@ -84,7 +84,7 @@ class FlextGrpcModels(FlextModels):
                 description="Service metadata",
             )
 
-        class StreamMetrics(FlextModelsEntity.Value):
+        class StreamMetrics(m.Value):
             """gRPC stream metrics model (immutable value model)."""
 
             stream_id: str = Field(description="Stream ID")
@@ -97,7 +97,7 @@ class FlextGrpcModels(FlextModels):
             error_rate: float = Field(description="Error rate")
             memory_usage_bytes: int = Field(description="Memory usage in bytes")
 
-        class ServiceMetrics(FlextModelsEntity.Value):
+        class ServiceMetrics(m.Value):
             """gRPC service metrics model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
@@ -107,7 +107,7 @@ class FlextGrpcModels(FlextModels):
             avg_response_time: float = Field(description="Average response time")
             active_connections: int = Field(description="Active connections")
 
-        class OperationExecutionRequest(FlextModelsEntity.Value):
+        class OperationExecutionRequest(m.Value):
             """Operation execution request for gRPC service operations."""
 
             operation_name: str = Field(description="Operation name to execute")
@@ -120,51 +120,37 @@ class FlextGrpcModels(FlextModels):
                 description="Keyword arguments",
             )
 
-    # =========================================================================
-    # CONFIGURATION MODELS - Configuration-related models
-    # =========================================================================
-
-    class GrpcConfig:
-        """Configuration models for gRPC settings."""
-
-        class ServerConfig(FlextModelsEntity.Value):
+        class ServerConfig(m.Value):
             """Basic server configuration (immutable value model)."""
 
-            host: str = Field(default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST)
+            host: str = Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)
             port: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             )
             max_workers: int = Field(
-                default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS
+                default=c.Grpc.Service.DEFAULT_MAX_WORKERS
             )
             timeout: float = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
             )
 
-        class ClientConfig(FlextModelsEntity.Value):
+        class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
 
             target: str = Field(
-                default=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
+                default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
             )
             timeout: float = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
             )
 
-        class ChannelConfig(FlextModelsEntity.Value):
+        class ChannelConfig(m.Value):
             """Basic channel configuration (immutable value model)."""
 
             address: str
             options: Mapping[str, t.JsonValue] | None = None
 
-    # =========================================================================
-    # SETTINGS MODELS - FlextGrpcSettings and configuration components
-    # =========================================================================
-
-    class Settings:
-        """Settings models for gRPC configuration (from settings.py)."""
-
-        class SecurityConfig(FlextModelsEntity.Value):
+        class SecurityConfig(m.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: bool = Field(
@@ -193,50 +179,50 @@ class FlextGrpcModels(FlextModels):
                 description="Require client certificates",
             )
 
-        class NetworkConfig(FlextModelsEntity.Value):
+        class NetworkConfig(m.Value):
             """Generic gRPC network configuration with validation."""
 
             host: str = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
+                default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
                 min_length=1,
                 description="gRPC server host",
             )
             port: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
                 ge=1,
                 le=65535,
                 description="gRPC server port",
             )
             max_connections: int = Field(
-                default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
+                default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
                 ge=1,
                 le=10000,
                 description="Maximum concurrent connections",
             )
             keepalive_time: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS
+                default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS
                 // 1000,
                 ge=1,
                 description="Keepalive ping interval (seconds)",
             )
             keepalive_timeout: int = Field(
-                default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS
+                default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS
                 // 1000,
                 ge=1,
                 description="Keepalive timeout (seconds)",
             )
 
-        class PerformanceConfig(FlextModelsEntity.Value):
+        class PerformanceConfig(m.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: int = Field(
-                default=FlextGrpcConstants.Grpc.Service.MAX_WORKERS,
+                default=c.Grpc.Service.MAX_WORKERS,
                 ge=1,
                 le=1000,
                 description="Maximum worker threads",
             )
             max_concurrent_rpcs: int = Field(
-                default=FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
+                default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
                 ge=1,
                 le=10000,
                 description="Maximum concurrent RPCs",
@@ -260,7 +246,7 @@ class FlextGrpcModels(FlextModels):
                 description="Thread pool size",
             )
 
-        class StreamingConfig(FlextModelsEntity.Value):
+        class StreamingConfig(m.Value):
             """Generic gRPC streaming configuration."""
 
             enabled: bool = Field(
@@ -289,7 +275,7 @@ class FlextGrpcModels(FlextModels):
                 description="Enable message compression",
             )
 
-        class ClientSettingsConfig(FlextModelsEntity.Value):
+        class ClientSettingsConfig(m.Value):
             """Generic gRPC client configuration."""
 
             timeout: float = Field(
@@ -319,7 +305,7 @@ class FlextGrpcModels(FlextModels):
                 description="Additional channel options",
             )
 
-        class MonitoringConfig(FlextModelsEntity.Value):
+        class MonitoringConfig(m.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: bool = Field(
@@ -340,12 +326,12 @@ class FlextGrpcModels(FlextModels):
             )
             log_level: str = Field(default="INFO", description="Logging level")
 
-        class StateTransition(FlextModelsEntity.Value):
+        class StateTransition(m.Value):
             """State transition result model."""
 
             state: str
 
-        class EntityValidator(FlextModelsEntity.Value):
+        class EntityValidator(m.Value):
             """Generic entity validator using functional composition.
 
             Provides validation methods that can be composed and delegated
@@ -422,7 +408,7 @@ class FlextGrpcModels(FlextModels):
                     FlextGrpcModels.Entities.StateTransition(state=target)
                 )
 
-        class OperationSpec(FlextModelsEntity.Value):
+        class OperationSpec(m.Value):
             """Generic operation specification using Pydantic."""
 
             name: str = Field(min_length=1, description="Operation name")
@@ -455,7 +441,7 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return v
 
-        class Request(FlextModelsEntity.Value):
+        class Request(m.Value):
             """Generic request model with validation."""
 
             operation: FlextGrpcModels.API.OperationSpec
@@ -473,7 +459,7 @@ class FlextGrpcModels(FlextModels):
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
 
-        class Response(FlextModelsEntity.Value):
+        class Response(m.Value):
             """Generic response model with metadata."""
 
             success: bool = Field(description="Operation success status")
@@ -502,7 +488,7 @@ class FlextGrpcModels(FlextModels):
             values: t.Grpc.GrpcDict = Field(default_factory=dict)
 
             @classmethod
-            def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
+            def from_values(cls, **values: t.GeneralValueType) -> Self:
                 """Build payload from keyword values."""
                 return cls(values=values)
 
