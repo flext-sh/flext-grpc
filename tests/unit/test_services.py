@@ -57,6 +57,6 @@ class TestFlextGrpcServices:
         collector.record_metric("test_key", "test_value")
         value = collector.get_metric("test_key")
         assert value == "test_value"
-        metrics = collector.get_all_metrics()
-        assert "test_key" in metrics
-        assert metrics["test_key"] == "test_value"
+        metrics_payload = collector.get_all_metrics()
+        assert "test_key" in metrics_payload.values
+        assert metrics_payload.values["test_key"] == "test_value"

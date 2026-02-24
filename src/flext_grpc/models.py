@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import datetime
 from typing import TypeVar
 
@@ -39,7 +40,7 @@ class FlextGrpcModels(FlextModels):
         """Domain models for gRPC core business entities."""
 
         class StreamInfo(FlextModelsEntity.Value):
-            """Basic stream information (immutable value object)."""
+            """Basic stream information (immutable value model)."""
 
             stream_id: str
             stream_type: str
@@ -50,7 +51,7 @@ class FlextGrpcModels(FlextModels):
             error_count: int = Field(default=0)
 
         class GrpcRequest(FlextModelsEntity.Value):
-            """Basic gRPC request model (immutable value object)."""
+            """Basic gRPC request model (immutable value model)."""
 
             method: str = Field(description="gRPC method name")
             data: t.Grpc.GrpcRequestDict | None = Field(
@@ -63,14 +64,14 @@ class FlextGrpcModels(FlextModels):
             )
 
         class GrpcHealthCheck(FlextModelsEntity.Value):
-            """gRPC health check model (immutable value object)."""
+            """gRPC health check model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
             status: str = Field(description="Health status")
             timestamp: datetime = Field(description="Check timestamp")
 
         class ServiceDefinition(FlextModelsEntity.Value):
-            """gRPC service definition model (immutable value object)."""
+            """gRPC service definition model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
             methods: list[str] = Field(
@@ -84,7 +85,7 @@ class FlextGrpcModels(FlextModels):
             )
 
         class StreamMetrics(FlextModelsEntity.Value):
-            """gRPC stream metrics model (immutable value object)."""
+            """gRPC stream metrics model (immutable value model)."""
 
             stream_id: str = Field(description="Stream ID")
             throughput_rps: float = Field(
@@ -97,7 +98,7 @@ class FlextGrpcModels(FlextModels):
             memory_usage_bytes: int = Field(description="Memory usage in bytes")
 
         class ServiceMetrics(FlextModelsEntity.Value):
-            """gRPC service metrics model (immutable value object)."""
+            """gRPC service metrics model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
             total_requests: int = Field(description="Total requests")
@@ -110,11 +111,11 @@ class FlextGrpcModels(FlextModels):
             """Operation execution request for gRPC service operations."""
 
             operation_name: str = Field(description="Operation name to execute")
-            arguments: dict[str, str | int | float | bool] = Field(
+            arguments: Mapping[str, str | int | float | bool] = Field(
                 default_factory=dict,
                 description="Positional arguments as dict",
             )
-            keyword_arguments: dict[str, str | int | float | bool] = Field(
+            keyword_arguments: Mapping[str, str | int | float | bool] = Field(
                 default_factory=dict,
                 description="Keyword arguments",
             )
@@ -127,7 +128,7 @@ class FlextGrpcModels(FlextModels):
         """Configuration models for gRPC settings."""
 
         class ServerConfig(FlextModelsEntity.Value):
-            """Basic server configuration (immutable value object)."""
+            """Basic server configuration (immutable value model)."""
 
             host: str = Field(default=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST)
             port: int = Field(
@@ -141,7 +142,7 @@ class FlextGrpcModels(FlextModels):
             )
 
         class ClientConfig(FlextModelsEntity.Value):
-            """Basic client configuration (immutable value object)."""
+            """Basic client configuration (immutable value model)."""
 
             target: str = Field(
                 default=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
@@ -151,10 +152,10 @@ class FlextGrpcModels(FlextModels):
             )
 
         class ChannelConfig(FlextModelsEntity.Value):
-            """Basic channel configuration (immutable value object)."""
+            """Basic channel configuration (immutable value model)."""
 
             address: str
-            options: dict[str, t.GeneralValueType] | None = None
+            options: Mapping[str, t.JsonValue] | None = None
 
     # =========================================================================
     # SETTINGS MODELS - FlextGrpcSettings and configuration components
@@ -313,7 +314,7 @@ class FlextGrpcModels(FlextModels):
                 default="round_robin",
                 description="Load balancing policy",
             )
-            channel_options: dict[str, str | int] = Field(
+            channel_options: Mapping[str, str | int] = Field(
                 default_factory=dict,
                 description="Additional channel options",
             )
@@ -345,6 +346,11 @@ class FlextGrpcModels(FlextModels):
 
     class Entities:
         """Entity models and validation helpers for gRPC operations."""
+
+        class StateTransition(FlextModelsEntity.Value):
+            """State transition result model."""
+
+            state: str
 
         class EntityValidator(FlextModelsEntity.Value):
             """Generic entity validator using functional composition.
@@ -383,19 +389,24 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return value
 
-        class StateMachine(FlextModelsEntity.Value):
+        class StateMachine(BaseModel):
             """Generic state machine with functional transitions.
 
             Provides state transition logic that can be composed into
             entity classes for state management.
+
+            Note: Uses BaseModel (not Value/FrozenStrictModel) because
+            StateMachine is composed with Entity via multiple inheritance.
+            Entity's model_post_init sets updated_at which requires
+            the model to NOT be frozen.
             """
 
             def transition(
                 self,
                 current: str,
                 target: str,
-                allowed_transitions: dict[str, set[str]],
-            ) -> r[dict[str, str]]:
+                allowed_transitions: Mapping[str, set[str]],
+            ) -> r[FlextGrpcModels.Entities.StateTransition]:
                 """Generic state transition with validation.
 
                 Args:
@@ -411,11 +422,12 @@ class FlextGrpcModels(FlextModels):
                     current not in allowed_transitions
                     or target not in allowed_transitions[current]
                 ):
-                    return r[dict[str, str]].fail(
+                    return r[FlextGrpcModels.Entities.StateTransition].fail(
                         f"Invalid transition from {current} to {target}",
                     )
-                # Return the state update dict for delegating classes to use
-                return r[dict[str, str]].ok({"state": target})
+                return r[FlextGrpcModels.Entities.StateTransition].ok(
+                    FlextGrpcModels.Entities.StateTransition(state=target)
+                )
 
     # =========================================================================
     # API - Generic API models for gRPC operations
@@ -438,7 +450,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Method to invoke on entity",
             )
-            parameters: dict[str, t.GeneralValueType] = Field(
+            parameters: Mapping[str, t.JsonValue] = Field(
                 default_factory=dict,
                 description="Operation parameters",
             )
@@ -467,7 +479,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Associated entity",
             )
-            data: t.GeneralValueType = Field(
+            data: t.JsonValue = Field(
                 default=None,
                 description="Request data",
             )
@@ -489,7 +501,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Error message if failed",
             )
-            metadata: dict[str, t.GeneralValueType] = Field(
+            metadata: Mapping[str, t.JsonValue] = Field(
                 default_factory=dict,
                 description="Response metadata",
             )
@@ -499,32 +511,6 @@ class FlextGrpcModels(FlextModels):
                 """Check if response has error."""
                 return not self.success or self.error is not None
 
-
-# =============================================================================
-# POPULATE FlextModels.Grpc NAMESPACE
-# =============================================================================
-# Copy all models from FlextGrpcModels to FlextModels.Grpc namespace
-# This allows access via both:
-# - FlextGrpcModels.* (backward compatibility, deprecated)
-# - FlextModels.Grpc.* (new namespace pattern)
-# - m.Grpc.* (convenience alias)
-# =============================================================================
-
-# Get all attributes from FlextGrpcModels that are models, classes, or type aliases
-# Exclude private attributes and special methods
-_grpc_model_attrs = {
-    name: attr
-    for name, attr in vars(FlextGrpcModels).items()
-    if not name.startswith("_")
-    and (
-        isinstance(attr, type)
-        or hasattr(attr, "__origin__")  # TypeAlias
-        or (callable(attr) and not isinstance(attr, type(FlextGrpcModels.__init__)))
-    )
-}
-
-# Note: FlextModels.Grpc namespace does not exist in flext-core
-# Models should be accessed directly via FlextGrpcModels.*
 
 m = FlextGrpcModels
 

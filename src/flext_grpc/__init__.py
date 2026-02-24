@@ -7,29 +7,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import (
-    FlextDecorators as d,
-    FlextExceptions,
-    FlextExceptions as e,
-    FlextHandlers as h,
-    FlextService as s,
-    r,
-)
+import flext_core
+
+d = flext_core.FlextDecorators
+FlextExceptions = flext_core.FlextExceptions
+e = flext_core.FlextExceptions
+h = flext_core.FlextHandlers
+r = flext_core.r
+s = flext_core.FlextService
 
 from flext_grpc.__version__ import __version__, __version_info__
-from flext_grpc._backward_compat import (
-    FlextGrpcConnectionError,
-    FlextGrpcError,
-    FlextGrpcSettingsurationError,
-    FlextGrpcTimeoutError,
-    FlextGrpcValidationError,
-    GrpcHealthCheck,
-    GrpcRequest,
-    ServiceDefinition,
-    ServiceMetrics,
-    StreamInfo,
-    StreamMetrics,
-)
 from flext_grpc.api import (
     FlextGrpc,
     GenericOperationSpec,
@@ -45,10 +32,24 @@ from flext_grpc.services import (
     ConnectionPool,
     FlextGrpcServices,
     FlextGrpcServices as FlextGrpcService,
+    MetricsCollector,
 )
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
 from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
+
+FlextGrpcError = FlextExceptions.BaseError
+FlextGrpcSettingsurationError = FlextExceptions.ConfigurationError
+FlextGrpcConnectionError = FlextExceptions.ConnectionError
+FlextGrpcTimeoutError = FlextExceptions.TimeoutError
+FlextGrpcValidationError = FlextExceptions.ValidationError
+
+GrpcHealthCheck = FlextGrpcModels.Grpc.GrpcHealthCheck
+GrpcRequest = FlextGrpcModels.Grpc.GrpcRequest
+ServiceDefinition = FlextGrpcModels.Grpc.ServiceDefinition
+ServiceMetrics = FlextGrpcModels.Grpc.ServiceMetrics
+StreamInfo = FlextGrpcModels.Grpc.StreamInfo
+StreamMetrics = FlextGrpcModels.Grpc.StreamMetrics
 
 __all__ = [
     "ConnectionPool",
@@ -75,6 +76,7 @@ __all__ = [
     "GenericResponse",
     "GrpcHealthCheck",
     "GrpcRequest",
+    "MetricsCollector",
     "ServiceDefinition",
     "ServiceMetrics",
     "StreamInfo",

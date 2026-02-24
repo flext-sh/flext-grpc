@@ -14,12 +14,12 @@ from collections.abc import Callable
 from typing import TypeVar
 
 from flext_core import FlextModels, r
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.services import FlextGrpcServices
+from flext_grpc.services import FlextGrpcServices, ServicePayload
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
@@ -43,19 +43,153 @@ c = FlextGrpcConstants
 m = FlextModels
 
 T = TypeVar("T", bound=BaseModel)
-U = TypeVar("U")  # Generic return type for factory methods
-E = TypeVar("E", bound=FlextGrpcEntities.Entity)  # Generic entity type
 
-type EntityKwargValue = (
-    str
-    | int
-    | bool
-    | float
-    | list[str]
-    | list[t.JsonValue]
-    | dict[str, t.JsonValue]
-    | None
-)
+type EntityKwargValue = object
+
+
+class _EntityValidationSnapshot(BaseModel):
+    """Pydantic view of validation result objects."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    is_success: bool = True
+    error: str | None = None
+
+
+class _ServerCreateInput(BaseModel):
+    """Validated server creation payload."""
+
+    host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
+    port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+    max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS
+
+
+class _ChannelCreateInput(BaseModel):
+    """Validated channel creation payload."""
+
+    target: str = (
+        f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
+    )
+    options: t.GrpcOptions = Field(default_factory=dict)
+
+
+class _ServiceCreateInput(BaseModel):
+    """Validated service creation payload."""
+
+    name: str = "DefaultService"
+    methods: list[str] = Field(default_factory=lambda: ["default_method"])
+
+    @field_validator("name", mode="before")
+    @classmethod
+    def normalize_name(cls, value: object) -> str:
+        """Normalize service name input."""
+        if value is None:
+            return "DefaultService"
+        normalized = str(value).strip()
+        return normalized or "DefaultService"
+
+    @field_validator("methods", mode="before")
+    @classmethod
+    def normalize_methods(cls, value: object) -> list[str]:
+        """Normalize methods input into non-empty list."""
+        match value:
+            case str() as method_name:
+                normalized = method_name.strip()
+                if normalized:
+                    return [normalized]
+                return ["default_method"]
+            case list() as methods:
+                normalized_methods = [
+                    method
+                    for method in (str(item).strip() for item in methods)
+                    if method
+                ]
+                if normalized_methods:
+                    return normalized_methods
+                return ["default_method"]
+            case _:
+                return ["default_method"]
+
+
+class _CompleteSetupInput(BaseModel):
+    """Validated complete setup payload."""
+
+    host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
+    port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+    service_name: str = "DefaultService"
+    methods: list[str] = Field(default_factory=lambda: ["DefaultMethod"])
+
+    @field_validator("service_name", mode="before")
+    @classmethod
+    def normalize_service_name(cls, value: object) -> str:
+        """Normalize service name."""
+        if value is None:
+            return "DefaultService"
+        normalized = str(value).strip()
+        return normalized or "DefaultService"
+
+    @field_validator("methods", mode="before")
+    @classmethod
+    def normalize_methods(cls, value: object) -> list[str]:
+        """Normalize setup methods input."""
+        match value:
+            case int() as method_number:
+                return [str(method_number)]
+            case str() as method_name:
+                normalized = method_name.strip()
+                if normalized:
+                    return [normalized]
+                return ["DefaultMethod"]
+            case list() as methods:
+                normalized_methods = [
+                    method
+                    for method in (str(item).strip() for item in methods)
+                    if method
+                ]
+                if normalized_methods:
+                    return normalized_methods
+                return ["DefaultMethod"]
+            case _:
+                return ["DefaultMethod"]
+
+
+class _ServerEntityEnvelope(BaseModel):
+    """Type-safe server entity envelope."""
+
+    entity: FlextGrpcEntities.Server
+
+
+class _ClientEntityEnvelope(BaseModel):
+    """Type-safe client entity envelope."""
+
+    entity: FlextGrpcEntities.Client
+
+
+class _ChannelEntityEnvelope(BaseModel):
+    """Type-safe channel entity envelope."""
+
+    entity: FlextGrpcEntities.Channel
+
+
+class _ServiceEntityEnvelope(BaseModel):
+    """Type-safe service entity envelope."""
+
+    entity: FlextGrpcEntities.Service
+
+
+class _StreamEntityEnvelope(BaseModel):
+    """Type-safe stream entity envelope."""
+
+    entity: FlextGrpcEntities.GrpcStream
+
+
+class _CompleteSetupResult(BaseModel):
+    """Structured complete setup result."""
+
+    server: FlextGrpcEntities.Server
+    client: FlextGrpcEntities.Client
+    service: FlextGrpcEntities.Service
+    target: str
 
 
 class FlextGrpc:
@@ -100,10 +234,7 @@ class FlextGrpc:
         **kwargs: EntityKwargValue,
     ) -> r[object]:
         """Generic entity creation with Pydantic validation and delegation."""
-        entity_factories: dict[str, Callable[..., r[object]]] = (
-            self._get_entity_factories()
-        )
-        factory = entity_factories.get(entity_type)
+        factory = self._get_entity_factory(entity_type)
         if factory is None:
             return r.fail(f"Unknown entity type: {entity_type}")
 
@@ -119,22 +250,22 @@ class FlextGrpc:
             validate_method = getattr(entity, "validate_business_rules")
             if callable(validate_method):
                 validation_result = validate_method()
-                is_success = getattr(validation_result, "is_success", None)
-                error_message = getattr(validation_result, "error", None)
-                if isinstance(is_success, bool) and not is_success:
-                    message = (
-                        error_message
-                        if isinstance(error_message, str) and error_message
-                        else "Unknown error"
+                try:
+                    validation_snapshot = _EntityValidationSnapshot.model_validate(
+                        validation_result,
                     )
+                except ValidationError:
+                    validation_snapshot = _EntityValidationSnapshot()
+                if not validation_snapshot.is_success:
+                    message = validation_snapshot.error or "Unknown error"
                     return r.fail(f"Entity validation failed: {message}")
 
         return r.ok(entity)
 
-    def _get_entity_factories(self) -> dict[str, Callable[..., r[object]]]:
-        """Get entity factories for dynamic dispatch.
+    def _get_entity_factory(self, entity_type: str) -> Callable[..., r[object]] | None:
+        """Get entity factory for dynamic dispatch.
 
-        Wrappers normalize return to r[object] for dict homogeneity.
+        Wrappers normalize return to r[object] for homogeneous dispatch.
         """
 
         def _wrap_factory[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
@@ -145,41 +276,39 @@ class FlextGrpc:
 
             return _inner
 
-        factories: dict[str, Callable[..., r[object]]] = {}
-        factories["server"] = _wrap_factory(FlextGrpcUtilities.create_server_entity)
-        factories["client"] = _wrap_factory(FlextGrpcUtilities.create_client_entity)
-        factories["channel"] = _wrap_factory(FlextGrpcUtilities.create_channel_entity)
-        factories["service"] = _wrap_factory(FlextGrpcUtilities.create_service_entity)
-        factories["stream"] = _wrap_factory(FlextGrpcUtilities.create_stream_entity)
-        return factories
+        match entity_type:
+            case "server":
+                return _wrap_factory(FlextGrpcUtilities.create_server_entity)
+            case "client":
+                return _wrap_factory(FlextGrpcUtilities.create_client_entity)
+            case "channel":
+                return _wrap_factory(FlextGrpcUtilities.create_channel_entity)
+            case "service":
+                return _wrap_factory(FlextGrpcUtilities.create_service_entity)
+            case "stream":
+                return _wrap_factory(FlextGrpcUtilities.create_stream_entity)
+            case _:
+                return None
 
     def execute_operation(
         self,
         request: FlextGrpcModels.Grpc.OperationExecutionRequest,
     ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
-        operations = self._get_operations()
-
-        operation = operations.get(request.operation_name)
-        if not operation:
+        operation = self._get_operation(request.operation_name)
+        if operation is None:
             return r.fail(f"Unknown operation: {request.operation_name}")
 
         # Execute operation with delegation
         result = operation(**request.arguments, **request.keyword_arguments)
+        if result.is_failure:
+            return r.fail(result.error or "Unknown error")
+        return r.ok(self.grpc_config)
 
-        # Return config on success, fail on error
-        def _to_config(_data: object) -> FlextGrpcSettings:
-            return self.grpc_config
+    def _get_operation(self, operation_name: str) -> Callable[..., r[object]] | None:
+        """Get operation handler for dynamic dispatch.
 
-        def _fail_msg(error_msg: object) -> r[FlextGrpcSettings]:
-            return r.fail(str(error_msg) if error_msg else "Unknown error")
-
-        return result.map(_to_config).lash(_fail_msg)
-
-    def _get_operations(self) -> dict[str, Callable[..., r[object]]]:
-        """Get operations for dynamic dispatch.
-
-        Wrappers normalize return to r[object] for dict homogeneity.
+        Wrappers normalize return to r[object] for homogeneous dispatch.
         """
 
         def _wrap_op[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
@@ -188,48 +317,51 @@ class FlextGrpc:
 
             return _inner
 
-        operations: dict[str, Callable[..., r[object]]] = {}
-        operations["start_server"] = _wrap_op(self._service.start_server)
-        operations["stop_server"] = _wrap_op(self._service.stop_server)
-        operations["connect_client"] = _wrap_op(self._service.connect_client)
-        operations["disconnect_client"] = _wrap_op(self._service.disconnect_client)
-        operations["make_call"] = _wrap_op(self._service.make_call)
-        operations["send_data"] = _wrap_op(self._service.send_data)
-        operations["close_stream"] = _wrap_op(self._service.close_stream)
-        return operations
+        match operation_name:
+            case "start_server":
+                return _wrap_op(self._service.start_server)
+            case "stop_server":
+                return _wrap_op(self._service.stop_server)
+            case "connect_client":
+                return _wrap_op(self._service.connect_client)
+            case "disconnect_client":
+                return _wrap_op(self._service.disconnect_client)
+            case "make_call":
+                return _wrap_op(self._service.make_call)
+            case "send_data":
+                return _wrap_op(self._service.send_data)
+            case "close_stream":
+                return _wrap_op(self._service.close_stream)
+            case _:
+                return None
 
     def create_server(
         self,
         **kwargs: str | int | bool | list[str] | None,
     ) -> r[FlextGrpcEntities.Server]:
         """Create server entity with functional defaults."""
-        host = str(kwargs.get("host", c.Grpc.GrpcNetwork.DEFAULT_HOST))
-        port_raw = kwargs.get("port", c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
-        workers_raw = kwargs.get("max_workers", c.Grpc.Service.DEFAULT_MAX_WORKERS)
-        port = (
-            int(port_raw)
-            if isinstance(port_raw, str | int)
-            else c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-        )
-        max_workers = (
-            int(workers_raw)
-            if isinstance(workers_raw, str | int)
-            else c.Grpc.Service.DEFAULT_MAX_WORKERS
-        )
+        try:
+            server_input = _ServerCreateInput.model_validate(kwargs)
+        except ValidationError as e:
+            return r.fail(f"Server input validation failed: {e}")
+
         result = self.create_entity(
             "server",
-            host=host,
-            port=port,
-            max_workers=max_workers,
+            host=server_input.host,
+            port=server_input.port,
+            max_workers=server_input.max_workers,
         )
-        # Result is guaranteed to be Server type by factory implementation
         if result.is_failure:
             return r.fail(result.error or "Server creation failed")
-        # Type assertion based on entity_type="server" guarantee
-        entity = result.value
-        if not isinstance(entity, FlextGrpcEntities.Server):
-            return r.fail(f"Invalid server entity type: {type(entity)}")
-        return r.ok(entity)
+
+        try:
+            validated_server = _ServerEntityEnvelope.model_validate(
+                {"entity": result.value},
+            )
+        except ValidationError:
+            return r.fail(f"Invalid server entity type: {type(result.value)}")
+
+        return r.ok(validated_server.entity)
 
     def create_client(
         self,
@@ -239,58 +371,69 @@ class FlextGrpc:
         result = self.create_entity("client", **kwargs)
         if result.is_failure:
             return r.fail(result.error or "Client creation failed")
-        entity = result.value
-        if not isinstance(entity, FlextGrpcEntities.Client):
-            return r.fail(f"Invalid client entity type: {type(entity)}")
-        return r.ok(entity)
+
+        try:
+            validated_client = _ClientEntityEnvelope.model_validate(
+                {"entity": result.value},
+            )
+        except ValidationError:
+            return r.fail(f"Invalid client entity type: {type(result.value)}")
+
+        return r.ok(validated_client.entity)
 
     def create_channel(
         self,
-        **kwargs: str | int | bool | dict[str, t.GeneralValueType] | None,
+        **kwargs: EntityKwargValue,
     ) -> r[FlextGrpcEntities.Channel]:
         """Create channel entity with defaults."""
-        defaults: dict[str, t.GeneralValueType] = {
-            "target": f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
-            "options": {},
-        }
-        merged = defaults | dict(kwargs)
-        result = self.create_entity("channel", **merged)
+        try:
+            channel_input = _ChannelCreateInput.model_validate(kwargs)
+        except ValidationError as e:
+            return r.fail(f"Channel input validation failed: {e}")
+
+        result = self.create_entity(
+            "channel",
+            target=channel_input.target,
+            options=channel_input.options,
+        )
         if result.is_failure:
             return r.fail(result.error or "Channel creation failed")
-        entity = result.value
-        if not isinstance(entity, FlextGrpcEntities.Channel):
-            return r.fail(f"Invalid channel entity type: {type(entity)}")
-        return r.ok(entity)
+
+        try:
+            validated_channel = _ChannelEntityEnvelope.model_validate(
+                {"entity": result.value},
+            )
+        except ValidationError:
+            return r.fail(f"Invalid channel entity type: {type(result.value)}")
+
+        return r.ok(validated_channel.entity)
 
     def create_service(
         self,
         **kwargs: str | list[str] | None,
     ) -> r[FlextGrpcEntities.Service]:
         """Create service entity with defaults."""
-        name = kwargs.get("name")
-        methods = kwargs.get("methods")
-        service_name = (
-            name if isinstance(name, str) and name.strip() else "DefaultService"
-        )
-        if isinstance(methods, str):
-            service_methods: list[str] = [methods]
-        elif isinstance(methods, list):
-            service_methods = [method for method in methods if isinstance(method, str)]
-            if not service_methods:
-                service_methods = ["default_method"]
-        else:
-            service_methods = ["default_method"]
+        try:
+            service_input = _ServiceCreateInput.model_validate(kwargs)
+        except ValidationError as e:
+            return r.fail(f"Service input validation failed: {e}")
+
         result = self.create_entity(
             "service",
-            name=service_name,
-            methods=service_methods,
+            name=service_input.name,
+            methods=service_input.methods,
         )
         if result.is_failure:
             return r.fail(result.error or "Service creation failed")
-        entity = result.value
-        if not isinstance(entity, FlextGrpcEntities.Service):
-            return r.fail(f"Invalid service entity type: {type(entity)}")
-        return r.ok(entity)
+
+        try:
+            validated_service = _ServiceEntityEnvelope.model_validate(
+                {"entity": result.value},
+            )
+        except ValidationError:
+            return r.fail(f"Invalid service entity type: {type(result.value)}")
+
+        return r.ok(validated_service.entity)
 
     def create_stream(
         self,
@@ -313,10 +456,15 @@ class FlextGrpc:
         )
         if result.is_failure:
             return r.fail(result.error or "Stream creation failed")
-        entity = result.value
-        if not isinstance(entity, FlextGrpcEntities.GrpcStream):
-            return r.fail(f"Invalid stream entity type: {type(entity)}")
-        return r.ok(entity)
+
+        try:
+            validated_stream = _StreamEntityEnvelope.model_validate(
+                {"entity": result.value},
+            )
+        except ValidationError:
+            return r.fail(f"Invalid stream entity type: {type(result.value)}")
+
+        return r.ok(validated_stream.entity)
 
     # === DELEGATED OPERATIONS ===
 
@@ -382,7 +530,7 @@ class FlextGrpc:
         client: FlextGrpcEntities.Client,
         method: str,
         request: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Delegate method calls.
 
         Args:
@@ -402,7 +550,7 @@ class FlextGrpc:
         self,
         stream: FlextGrpcEntities.GrpcStream,
         data: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Delegate data sending.
 
         Args:
@@ -435,48 +583,31 @@ class FlextGrpc:
     def create_complete_setup(
         self,
         **kwargs: str | int | list[str] | None,
-    ) -> r[
-        dict[
-            str,
-            FlextGrpcEntities.Server
-            | FlextGrpcEntities.Client
-            | FlextGrpcEntities.Service
-            | str,
-        ]
-    ]:
+    ) -> r[_CompleteSetupResult]:
         """Complete setup using functional composition."""
-        host = kwargs.get("host", c.Grpc.GrpcNetwork.DEFAULT_HOST)
-        port = kwargs.get("port", c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
-        service_name_raw = kwargs.get("service_name", "DefaultService")
-        service_name = (
-            str(service_name_raw) if service_name_raw is not None else "DefaultService"
-        )
-        methods_raw = kwargs.get("methods", ["DefaultMethod"])
-        # Ensure methods is the correct type for create_service
-        if isinstance(methods_raw, int):
-            methods: str | list[str] | None = str(methods_raw)
-        elif isinstance(methods_raw, (str, list)):
-            methods = methods_raw
-        else:
-            methods = ["DefaultMethod"]
-        target = f"{host}:{port}"
+        try:
+            setup_input = _CompleteSetupInput.model_validate(kwargs)
+        except ValidationError as e:
+            return r.fail(f"Complete setup validation failed: {e}")
+
+        target = f"{setup_input.host}:{setup_input.port}"
 
         # Advanced functional composition
         return (
             self
-            .create_server(host=host, port=port)
+            .create_server(host=setup_input.host, port=setup_input.port)
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(
-                    name=service_name,
-                    methods=methods,
+                    name=setup_input.service_name,
+                    methods=setup_input.methods,
                 ).map(
-                    lambda svc: {
-                        "server": pair[0],
-                        "client": pair[1],
-                        "service": svc,
-                        "target": target,
-                    },
+                    lambda svc: _CompleteSetupResult(
+                        server=pair[0],
+                        client=pair[1],
+                        service=svc,
+                        target=target,
+                    ),
                 ),
             )
         )

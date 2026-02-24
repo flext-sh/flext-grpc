@@ -2,7 +2,6 @@
 
 import pytest
 
-from flext_grpc.models import FlextGrpcModels
 from flext_grpc.settings import FlextGrpcSettings
 
 
@@ -13,9 +12,9 @@ class TestFlextGrpcSettings:
         """Test default configuration initialization."""
         config = FlextGrpcSettings()
         assert config is not None
-        assert config.host == "localhost"
+        assert config.host == "127.0.0.1"
         assert config.port == 50051
-        assert config.max_workers == 10
+        assert config.max_workers == 100
 
     def test_init_custom(self) -> None:
         """Test custom configuration initialization."""
@@ -34,10 +33,7 @@ class TestFlextGrpcSettings:
 
     def test_validate_configuration(self) -> None:
         """Test configuration validation method."""
-        # Create a config with valid performance settings
         config = FlextGrpcSettings()
-        # Adjust max_concurrent_rpcs to be within limits
-        config.performance.max_concurrent_rpcs = 50  # Less than max_workers (10) * 10
         result = config.validate_configuration()
         assert result.is_success
 
@@ -67,11 +63,9 @@ class TestFlextGrpcSettings:
 
     def test_config_with_custom_network(self) -> None:
         """Test configuration with custom network settings."""
-        config = FlextGrpcSettings()
-        config.network.host = "192.168.1.100"
-        config.network.port = 9090
-        assert config.network.host == "192.168.1.100"
-        assert config.network.port == 9090
+        config = FlextGrpcSettings(host="192.168.1.100", port=9090)
+        assert config.host == "192.168.1.100"
+        assert config.port == 9090
 
     @pytest.mark.skip(reason="Test needs to be rewritten for immutable Value objects")
     def test_security_config_validation(self) -> None:
@@ -82,7 +76,7 @@ class TestFlextGrpcSettings:
     def test_performance_config_defaults(self) -> None:
         """Test performance configuration defaults."""
         perf_config = FlextGrpcSettings().performance
-        assert perf_config.max_workers == 10
+        assert perf_config.max_workers == 100
         assert perf_config.max_concurrent_rpcs == 1000
         assert perf_config.max_receive_message_length == 4 * 1024 * 1024
 

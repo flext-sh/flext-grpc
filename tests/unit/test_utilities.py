@@ -16,7 +16,7 @@ class TestFlextGrpcUtilities:
     def test_system_utilities(self) -> None:
         """Test system utilities."""
         utilities = FlextGrpcUtilities()
-        assert hasattr(utilities, "SystemUtilities")
+        assert hasattr(utilities, "Grpc")
 
     def test_execute_method(self) -> None:
         """Test execute method."""
@@ -76,13 +76,13 @@ class TestFlextGrpcUtilities:
 
     def test_system_memory_usage(self) -> None:
         """Test system memory usage retrieval."""
-        usage = FlextGrpcUtilities.SystemUtilities.get_system_memory_usage()
+        usage = FlextGrpcUtilities.Grpc.get_system_memory_usage()
         assert isinstance(usage, float)
-        assert 0 <= usage <= 100  # Percentage should be between 0 and 100
+        assert 0 <= usage <= 100
 
     def test_buffer_size_bytes(self) -> None:
         """Test buffer size calculation."""
-        size = FlextGrpcUtilities.SystemUtilities.get_buffer_size_bytes("test")
+        size = FlextGrpcUtilities.Grpc.get_buffer_size_bytes("test")
         assert isinstance(size, int)
         assert size >= 0
 

@@ -172,16 +172,12 @@ class TestFlextGrpc:
 
     def test_generic_request_creation(self) -> None:
         """Test GenericRequest creation."""
-
-        class TestData(BaseModel):
-            value: str
-
         operation = GenericOperationSpec(name="test_operation", entity_type="server")
-        request = GenericRequest[TestData](
+        request = GenericRequest(
             operation=operation,
-            data=TestData(value="test"),
+            data={"value": "test"},
         )
-        assert request.data.value == "test"
+        assert request.data == {"value": "test"}
         assert request.operation.name == "test_operation"
         assert request.is_valid
 
@@ -191,7 +187,7 @@ class TestFlextGrpc:
         class TestData(BaseModel):
             result: str
 
-        response = GenericResponse[TestData](
+        response = GenericResponse(
             success=True,
             data=TestData(result="success"),
         )

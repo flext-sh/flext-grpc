@@ -16,10 +16,10 @@ from abc import ABC, abstractmethod
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import TypeVar
 
 import grpc
-from flext_core import r
+from flext_core.result import r
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
@@ -34,10 +34,79 @@ from flext_grpc.real_servicer import create_real_servicer
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
-T = TypeVar("T")
-
 # Protocol reference from centralized protocols.py for backward compatibility
 GrpcResourceManager = p.Grpc.ResourceManagerProtocol
+
+
+class ServicePayload(BaseModel):
+    """Structured payload model replacing ad-hoc dict responses."""
+
+    values: t.Grpc.GrpcDict = Field(default_factory=dict)
+
+    @classmethod
+    def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
+        """Build payload from keyword values."""
+        return cls(values=values)
+
+
+class _MetricValueModel(BaseModel):
+    """Normalize metric values to JSON-compatible types."""
+
+    value: t.JsonValue = None
+
+    @field_validator("value", mode="before")
+    @classmethod
+    def normalize_value(cls, value: object) -> t.JsonValue:
+        """Normalize runtime values to stable JSON-compatible output."""
+        match value:
+            case None | str() | int() | float() | bool():
+                return value
+            case list() as values:
+                return [
+                    _MetricValueModel.model_validate({"value": item}).value
+                    for item in values
+                ]
+            case tuple() as values:
+                return [
+                    _MetricValueModel.model_validate({"value": item}).value
+                    for item in values
+                ]
+            case _:
+                return str(value)
+
+
+def _new_stream_buffer() -> deque[t.ConfigValue]:
+    """Create bounded stream buffer with explicit typing."""
+    return deque(maxlen=500)
+
+
+class _StreamRuntimeState(BaseModel):
+    """Typed runtime state for stream buffers."""
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
+
+    stream: FlextGrpcEntities.GrpcStream
+    created_at: float
+    buffer: deque[t.ConfigValue] = Field(default_factory=_new_stream_buffer)
+    active: bool = True
+
+
+class _ServerEntityEnvelope(BaseModel):
+    """Pydantic envelope for server entities."""
+
+    entity: FlextGrpcEntities.Server
+
+
+class _ClientEntityEnvelope(BaseModel):
+    """Pydantic envelope for client entities."""
+
+    entity: FlextGrpcEntities.Client
+
+
+class _StreamEntityEnvelope(BaseModel):
+    """Pydantic envelope for stream entities."""
+
+    entity: FlextGrpcEntities.GrpcStream
 
 
 class ServerLifecycleManager(ABC):
@@ -79,7 +148,7 @@ class StreamProcessor(ABC):
     @abstractmethod
     def create_stream(
         self,
-        **kwargs: str | int | bool | None,
+        **kwargs: t.ConfigValue,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create stream."""
 
@@ -88,7 +157,7 @@ class StreamProcessor(ABC):
         self,
         stream: FlextGrpcEntities.GrpcStream,
         data: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Send data through stream.
 
         Note: Uses Any for gRPC message compatibility
@@ -108,7 +177,7 @@ class MetricsCollector:
     def __init__(self) -> None:
         """Initialize metrics collector with thread-safe storage."""
         super().__init__()
-        self._metrics: dict[str, t.GeneralValueType] = {}
+        self._metrics = ServicePayload()
         self._lock = threading.RLock()
 
     def record_metric(self, key: str, value: t.GeneralValueType) -> None:
@@ -120,7 +189,8 @@ class MetricsCollector:
 
         """
         with self._lock:
-            self._metrics[key] = value
+            normalized = _MetricValueModel.model_validate({"value": value})
+            self._metrics.values[key] = normalized.value
 
     def get_metric(self, key: str) -> t.JsonValue:
         """Thread-safe metric retrieval.
@@ -130,23 +200,12 @@ class MetricsCollector:
 
         """
         with self._lock:
-            value = self._metrics.get(key)
-            # Convert to t.GeneralValueType for type compatibility
-            if value is None:
-                return None
-            # Type narrowing: ensure value is t.GeneralValueType
-            if isinstance(value, (str, int, float, bool, type(None))):
-                return value
-            if isinstance(value, (list, tuple)):
-                return list(value)
-            if hasattr(value, "items") and callable(getattr(value, "items")):
-                return dict(value)
-            return str(value)
+            return self._metrics.values.get(key)
 
-    def get_all_metrics(self) -> dict[str, t.GeneralValueType]:
+    def get_all_metrics(self) -> ServicePayload:
         """Get all metrics snapshot."""
         with self._lock:
-            return self._metrics.copy()
+            return ServicePayload(values=self._metrics.values.copy())
 
 
 class ConnectionPool:
@@ -207,7 +266,7 @@ class GrpcServerManager(ServerLifecycleManager):
     def __init__(self) -> None:
         """Initialize server manager with metrics tracking."""
         super().__init__()
-        self._active_servers: dict[str, grpc.Server] = {}
+        self._active_servers = {}
         self._metrics = MetricsCollector()
         self._thread_pool = ThreadPoolExecutor(
             max_workers=50,
@@ -293,18 +352,18 @@ class GrpcServerManager(ServerLifecycleManager):
     def get_server_metrics(
         self,
         server: FlextGrpcEntities.Server,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Get server metrics."""
         server_key = f"{server.host}:{server.port}"
         started_at = self._metrics.get_metric(f"{server_key}_started_at")
         stopped_at = self._metrics.get_metric(f"{server_key}_stopped_at")
-        # Ensure metrics are object compatible
-        metrics: dict[str, t.GeneralValueType] = {
-            "is_active": server_key in self._active_servers,
-            "started_at": started_at if started_at is not None else None,
-            "stopped_at": stopped_at if stopped_at is not None else None,
-        }
-        return r[dict[str, t.GeneralValueType]].ok(metrics)
+        return r.ok(
+            ServicePayload.from_values(
+                is_active=server_key in self._active_servers,
+                started_at=started_at,
+                stopped_at=stopped_at,
+            ),
+        )
 
 
 class GrpcClientManager(ClientConnectionManager):
@@ -313,7 +372,7 @@ class GrpcClientManager(ClientConnectionManager):
     def __init__(self) -> None:
         """Initialize client manager with connection pooling."""
         super().__init__()
-        self._active_channels: dict[str, grpc.Channel] = {}
+        self._active_channels = {}
         self._connection_pool = ConnectionPool(max_size=20)
         self._metrics = MetricsCollector()
 
@@ -362,7 +421,7 @@ class GrpcClientManager(ClientConnectionManager):
         client: FlextGrpcEntities.Client,
         method: str,
         request: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Execute gRPC call through client.
 
         Args:
@@ -387,21 +446,25 @@ class GrpcClientManager(ClientConnectionManager):
                 echo_response = stub.Echo(
                     EchoRequest(message=str(request), metadata={}),
                 )
-                return r.ok({
-                    "method": "Echo",
-                    "message": echo_response.message,
-                    "server_id": echo_response.server_id,
-                    "timestamp": echo_response.timestamp,
-                })
+                return r.ok(
+                    ServicePayload.from_values(
+                        method="Echo",
+                        message=echo_response.message,
+                        server_id=echo_response.server_id,
+                        timestamp=echo_response.timestamp,
+                    ),
+                )
             if method == "HealthCheck":
                 health_response = stub.HealthCheck(
                     HealthRequest(service="FlextGrpcService"),
                 )
-                return r.ok({
-                    "method": "HealthCheck",
-                    "status": health_response.status,
-                    "message": health_response.message,
-                })
+                return r.ok(
+                    ServicePayload.from_values(
+                        method="HealthCheck",
+                        status=health_response.status,
+                        message=health_response.message,
+                    ),
+                )
 
             return r.fail(f"Unsupported method: {method}")
 
@@ -421,12 +484,12 @@ class GrpcStreamManager(StreamProcessor):
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: dict[str, object] = {}
+        self._active_streams = {}
         self._metrics = MetricsCollector()
 
     def create_stream(
         self,
-        **kwargs: str | int | bool | None,
+        **kwargs: t.ConfigValue,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Create stream with proper setup."""
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
@@ -444,12 +507,10 @@ class GrpcStreamManager(StreamProcessor):
         stream_key = f"{stream.id}_{stream.stream_type}"
 
         # Setup stream metadata
-        self._active_streams[stream_key] = {
-            "stream": stream,
-            "created_at": time.time(),
-            "buffer": deque(maxlen=500),
-            "active": True,
-        }
+        self._active_streams[stream_key] = _StreamRuntimeState(
+            stream=stream,
+            created_at=time.time(),
+        )
 
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r.ok(stream)
@@ -458,7 +519,7 @@ class GrpcStreamManager(StreamProcessor):
         self,
         stream: FlextGrpcEntities.GrpcStream,
         data: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Send data with buffering strategy.
 
         Args:
@@ -474,21 +535,20 @@ class GrpcStreamManager(StreamProcessor):
         stream_info = self._active_streams[stream_key]
 
         try:
-            if not isinstance(stream_info, dict):
-                return r[dict[str, t.GeneralValueType]].fail("Invalid stream info type")
-            buffer = stream_info.get("buffer")
-            if buffer is None or not isinstance(buffer, deque):
-                return r[dict[str, t.GeneralValueType]].fail(
-                    "Buffer not found or invalid in stream info"
-                )
-            payload: object = data
-            buffer.append(payload)
+            stream_state = _StreamRuntimeState.model_validate(stream_info)
+            stream_state.buffer.append(data)
+            self._active_streams[stream_key] = stream_state
 
-            return r.ok({
-                "stream_id": stream.id,
-                "data_sent": str(data),
-                "buffer_size": len(buffer),
-            })
+            return r.ok(
+                ServicePayload.from_values(
+                    stream_id=stream.id,
+                    data_sent=str(data),
+                    buffer_size=len(stream_state.buffer),
+                ),
+            )
+
+        except ValidationError as e:
+            return r.fail(f"Invalid stream state: {e}")
 
         except Exception as e:
             return r.fail(f"Data send failed: {e}")
@@ -543,7 +603,7 @@ class FlextGrpcServices:
     def get_server_status(
         self,
         server: FlextGrpcEntities.Server,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Delegate server status to specialized manager."""
         return self._server_manager.get_server_metrics(server)
 
@@ -565,7 +625,7 @@ class FlextGrpcServices:
         client: FlextGrpcEntities.Client,
         method: str,
         request: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Delegate method calls to specialized manager.
 
         Args:
@@ -579,20 +639,20 @@ class FlextGrpcServices:
     def get_client_status(
         self,
         client: FlextGrpcEntities.Client,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Get client status through delegation."""
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
-        is_connected = target and target in self._client_manager._active_channels
-        return r.ok({"connected": is_connected, "target": target})
+        is_connected = bool(target and target in self._client_manager._active_channels)
+        return r.ok(ServicePayload.from_values(connected=is_connected, target=target))
 
     # === DELEGATED STREAM OPERATIONS ===
 
     def create_stream(
         self,
         method_name: str | int | None = "DefaultMethod",
-        **kwargs: str | int | bool | None,
+        **kwargs: t.ConfigValue,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Delegate stream creation to specialized manager."""
         # Ensure method_name is a string
@@ -606,7 +666,7 @@ class FlextGrpcServices:
         self,
         stream: FlextGrpcEntities.GrpcStream,
         data: t.ConfigValue,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Delegate data sending to specialized manager.
 
         Args:
@@ -653,12 +713,18 @@ class FlextGrpcServices:
         self,
         command: str,
         server: FlextGrpcEntities.Server,
-    ) -> r[dict[str, t.GeneralValueType]]:
+    ) -> r[ServicePayload]:
         """Execute server-specific commands."""
         if command == "start":
-            return self.start_server(server).map(lambda _: {"status": "started"})
+            start_result = self.start_server(server)
+            if start_result.is_failure:
+                return r.fail(start_result.error or "Server start command failed")
+            return r.ok(ServicePayload.from_values(status="started"))
         if command == "stop":
-            return self.stop_server(server).map(lambda _: {"status": "stopped"})
+            stop_result = self.stop_server(server)
+            if stop_result.is_failure:
+                return r.fail(stop_result.error or "Server stop command failed")
+            return r.ok(ServicePayload.from_values(status="stopped"))
         if command == "status":
             return self.get_server_status(server)
         return r.fail(f"Unsupported server command: {command}")
@@ -667,17 +733,21 @@ class FlextGrpcServices:
         self,
         command: str,
         client: FlextGrpcEntities.Client,
-        **kwargs: str | int | bool | None,
-    ) -> r[dict[str, t.GeneralValueType]]:
+        **kwargs: t.ConfigValue,
+    ) -> r[ServicePayload]:
         """Execute client-specific commands."""
         if command == "connect":
-            return self.connect_client(str(kwargs.get("target", ""))).map(
-                lambda _: {"status": "connected"},
-            )
+            connect_result = self.connect_client(str(kwargs.get("target", "")))
+            if connect_result.is_failure:
+                return r.fail(connect_result.error or "Client connect command failed")
+            return r.ok(ServicePayload.from_values(status="connected"))
         if command == "disconnect":
-            return self.disconnect_client(client).map(
-                lambda _: {"status": "disconnected"},
-            )
+            disconnect_result = self.disconnect_client(client)
+            if disconnect_result.is_failure:
+                return r.fail(
+                    disconnect_result.error or "Client disconnect command failed"
+                )
+            return r.ok(ServicePayload.from_values(status="disconnected"))
         if command == "status":
             return self.get_client_status(client)
         if command == "call":
@@ -692,18 +762,22 @@ class FlextGrpcServices:
         self,
         command: str,
         stream: FlextGrpcEntities.GrpcStream,
-        **kwargs: str | int | bool | None,
-    ) -> r[dict[str, t.GeneralValueType]]:
+        **kwargs: t.ConfigValue,
+    ) -> r[ServicePayload]:
         """Execute stream-specific commands."""
         if command == "create":
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
-            return self.create_stream(method_name=method_name, **kwargs).map(
-                lambda _: {"status": "created"},
-            )
+            create_result = self.create_stream(method_name=method_name, **kwargs)
+            if create_result.is_failure:
+                return r.fail(create_result.error or "Stream create command failed")
+            return r.ok(ServicePayload.from_values(status="created"))
         if command == "send":
             return self.send_data(stream, kwargs.get("data"))
         if command == "close":
-            return self.close_stream(stream).map(lambda _: {"status": "closed"})
+            close_result = self.close_stream(stream)
+            if close_result.is_failure:
+                return r.fail(close_result.error or "Stream close command failed")
+            return r.ok(ServicePayload.from_values(status="closed"))
         return r.fail(f"Unsupported stream command: {command}")
 
     def execute_grpc(
@@ -712,32 +786,49 @@ class FlextGrpcServices:
         entity: FlextGrpcEntities.Server
         | FlextGrpcEntities.Client
         | FlextGrpcEntities.GrpcStream
-        | dict[str, t.GeneralValueType]
         | None = None,
-        *_args: str | int | bool | None,
-        **kwargs: str | int | bool | None,
-    ) -> r[dict[str, t.GeneralValueType]]:
+        *_args: t.ConfigValue,
+        **kwargs: t.ConfigValue,
+    ) -> r[ServicePayload]:
         """Legacy compatibility method - delegates to appropriate manager."""
         if command is None:
-            return r.ok({
-                "status": "ready",
-                "service": "flext-grpc-service",
-            })
+            return r.ok(
+                ServicePayload.from_values(
+                    status="ready",
+                    service="flext-grpc-service",
+                ),
+            )
 
         if entity is None:
             return r.fail("Entity instance required")
 
-        # Route based on entity type and command
-        if isinstance(entity, FlextGrpcEntities.Server):
-            return self._execute_server_command(command, entity)
-        if isinstance(entity, FlextGrpcEntities.Client):
-            return self._execute_client_command(command, entity, **kwargs)
-        if isinstance(entity, FlextGrpcEntities.GrpcStream):
-            return self._execute_stream_command(command, entity, **kwargs)
+        try:
+            server_entity = _ServerEntityEnvelope.model_validate({
+                "entity": entity
+            }).entity
+            return self._execute_server_command(command, server_entity)
+        except ValidationError:
+            pass
+
+        try:
+            client_entity = _ClientEntityEnvelope.model_validate({
+                "entity": entity
+            }).entity
+            return self._execute_client_command(command, client_entity, **kwargs)
+        except ValidationError:
+            pass
+
+        try:
+            stream_entity = _StreamEntityEnvelope.model_validate({
+                "entity": entity
+            }).entity
+            return self._execute_stream_command(command, stream_entity, **kwargs)
+        except ValidationError:
+            pass
 
         return r.fail(f"Unsupported entity type: {type(entity)}")
 
-    def execute(self, **_kwargs: object) -> r[dict[str, t.GeneralValueType]]:
+    def execute(self, **_kwargs: object) -> r[ServicePayload]:
         """Execute main service operation."""
         return self.execute_grpc()
 
@@ -749,4 +840,5 @@ __all__ = [
     "GrpcServerManager",
     "GrpcStreamManager",
     "MetricsCollector",
+    "ServicePayload",
 ]
