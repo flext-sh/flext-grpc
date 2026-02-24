@@ -14,11 +14,7 @@ from collections.abc import Mapping
 from datetime import datetime
 from typing import Self
 
-from flext_core import (
-    FlextModels,
-    r,
-)
-from flext_core._models.entity import m
+from flext_core import FlextModels, r, m,
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_grpc.constants import c
@@ -385,7 +381,7 @@ class FlextGrpcModels(FlextModels):
                 current: str,
                 target: str,
                 allowed_transitions: Mapping[str, set[str]],
-            ) -> r[FlextGrpcModels.Entities.StateTransition]:
+            ) -> r[FlextGrpcModels.Grpc.StateTransition]:
                 """Generic state transition with validation.
 
                 Args:
@@ -401,11 +397,11 @@ class FlextGrpcModels(FlextModels):
                     current not in allowed_transitions
                     or target not in allowed_transitions[current]
                 ):
-                    return r[FlextGrpcModels.Entities.StateTransition].fail(
+                    return r[FlextGrpcModels.Grpc.StateTransition].fail(
                         f"Invalid transition from {current} to {target}",
                     )
-                return r[FlextGrpcModels.Entities.StateTransition].ok(
-                    FlextGrpcModels.Entities.StateTransition(state=target)
+                return r[FlextGrpcModels.Grpc.StateTransition].ok(
+                    FlextGrpcModels.Grpc.StateTransition(state=target)
                 )
 
         class OperationSpec(m.Value):
@@ -444,7 +440,7 @@ class FlextGrpcModels(FlextModels):
         class Request(m.Value):
             """Generic request model with validation."""
 
-            operation: FlextGrpcModels.API.OperationSpec
+            operation: FlextGrpcModels.Grpc.OperationSpec
             entity: BaseModel | None = Field(
                 default=None,
                 description="Associated entity",
