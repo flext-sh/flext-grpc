@@ -37,4 +37,4 @@ class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
 p = TestsFlextGrpcProtocols
 p = TestsFlextGrpcProtocols
 
-__all__ = ["TestsFlextGrpcProtocols", "p", "p"]
+__all__ = ["TestsFlextGrpcProtocols", "p"]

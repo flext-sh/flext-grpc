@@ -14,16 +14,14 @@ from flext_core import r
 from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext_grpc.models import FlextGrpcModels
+from flext_grpc.models import m
 
-# Import configuration models from models.py (centralized location)
-_m = FlextGrpcModels
-GrpcSecurityConfig = _m.Settings.SecurityConfig
-GrpcNetworkConfig = _m.Settings.NetworkConfig
-GrpcPerformanceConfig = _m.Settings.PerformanceConfig
-GrpcStreamingConfig = _m.Settings.StreamingConfig
-GrpcClientConfig = _m.Settings.ClientSettingsConfig
-GrpcMonitoringConfig = _m.Settings.MonitoringConfig
+GrpcNetworkConfig = m.NetworkConfig
+GrpcSecurityConfig = m.SecurityConfig
+GrpcPerformanceConfig = m.PerformanceConfig
+GrpcStreamingConfig = m.StreamingConfig
+GrpcClientConfig = m.ClientSettingsConfig
+GrpcMonitoringConfig = m.MonitoringConfig
 
 
 class FlextGrpcSettings(BaseModel):

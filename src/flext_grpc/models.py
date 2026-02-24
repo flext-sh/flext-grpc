@@ -107,15 +107,9 @@ class FlextGrpcModels(FlextModels):
             """Basic server configuration (immutable value model)."""
 
             host: str = Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)
-            port: int = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-            )
-            max_workers: int = Field(
-                default=c.Grpc.Service.DEFAULT_MAX_WORKERS
-            )
-            timeout: float = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
-            )
+            port: int = Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
+            max_workers: int = Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
+            timeout: float = Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
 
         class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
@@ -123,9 +117,7 @@ class FlextGrpcModels(FlextModels):
             target: str = Field(
                 default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
             )
-            timeout: float = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
-            )
+            timeout: float = Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
 
         class ChannelConfig(m.Value):
             """Basic channel configuration (immutable value model)."""
@@ -183,14 +175,12 @@ class FlextGrpcModels(FlextModels):
                 description="Maximum concurrent connections",
             )
             keepalive_time: int = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS
-                // 1000,
+                default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS // 1000,
                 ge=1,
                 description="Keepalive ping interval (seconds)",
             )
             keepalive_timeout: int = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS
-                // 1000,
+                default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000,
                 ge=1,
                 description="Keepalive timeout (seconds)",
             )
@@ -464,7 +454,6 @@ class FlextGrpcModels(FlextModels):
                 """Check if response has error."""
                 return not self.success or self.error is not None
 
-
         class Payload(BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
@@ -474,6 +463,250 @@ class FlextGrpcModels(FlextModels):
             def from_values(cls, **values: t.GeneralValueType) -> Self:
                 """Build payload from keyword values."""
                 return cls(values=values)
+
+        class Entity(FlextModels.Entity):
+            """Generic base entity with functional patterns."""
+
+            created_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
+
+            def copy_with(self, **kwargs: str | int | bool | None) -> r[Self]:
+                """Functional copy using r.
+
+                Args:
+                **kwargs: Field updates for the entity
+
+                """
+                try:
+                    return r.ok(self.model_copy(update=kwargs))
+                except Exception as e:
+                    return r.fail(str(e))
+
+            def validate_business_rules(self) -> r[bool]:
+                """Override in subclasses for specific validation."""
+                return r.ok(True)
+
+        class Channel(Entity, StateMachine):
+            """Generic gRPC channel with state machine delegation."""
+
+            target: str = ""
+            state: t.GrpcChannelState = "idle"
+            options: dict[str, t.GeneralValueType] = Field(default_factory=dict)
+            grpc_channel: p.Grpc.GrpcChannel | None = None
+
+            @field_validator("state")
+            @classmethod
+            def validate_state(cls, v: str) -> str:
+                """Delegate state validation."""
+                return EntityValidator.validate_enum(
+                    v,
+                    set(c.Grpc.CHANNEL_STATES),
+                    "state",
+                )
+
+            def validate_business_rules(self) -> r[bool]:
+                """Functional validation composition."""
+                if not self.target.strip():
+                    return r.fail("Channel target cannot be empty")
+                return r.ok(True)
+
+            def is_ready(self) -> bool:
+                """Check readiness."""
+                return self.state == "ready"
+
+            def connect(self) -> r[Self]:
+                """Transition to connecting."""
+                return self.transition(
+                    self.state,
+                    "connecting",
+                    {"idle": {"connecting"}},
+                ).map(lambda update: self.model_copy(update=update))
+
+            def mark_ready(self) -> r[Self]:
+                """Transition to ready."""
+                return self.transition(
+                    self.state,
+                    "ready",
+                    {"connecting": {"ready"}},
+                ).map(lambda update: self.model_copy(update=update))
+
+            def disconnect(self) -> r[Self]:
+                """Transition to idle."""
+                return r.ok(
+                    self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value})
+                )
+
+        class Server(Entity, StateMachine):
+            """Generic gRPC server with state machine and validation delegation."""
+
+            host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
+            port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            state: t.GrpcServerState = "stopped"
+            max_workers: int = 10
+            services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)
+            grpc_server: p.Grpc.GrpcServer | None = None
+
+            def validate_business_rules(self) -> r[bool]:
+                """Delegate validation to generic validators."""
+                if not self.host.strip():
+                    return r.fail("Server host cannot be empty")
+                # Port range validation using IANA standard range
+                min_port = 1
+                max_port = 65535
+                if not (min_port <= self.port <= max_port):
+                    return r.fail(f"Invalid port: {self.port}")
+                if self.max_workers < 1:
+                    return r.fail("Max workers must be >= 1")
+                return r.ok(True)
+
+            def start(self) -> r[Self]:
+                """Transition to starting."""
+                return self.transition(
+                    self.state,
+                    "starting",
+                    {"stopped": {"starting"}},
+                ).map(lambda update: self.model_copy(update=update))
+
+            def mark_running(self) -> r[Self]:
+                """Transition to running."""
+                return self.transition(
+                    self.state,
+                    "running",
+                    {"starting": {"running"}},
+                ).map(lambda update: self.model_copy(update=update))
+
+            def stop(self) -> r[Self]:
+                """Transition to stopping."""
+                return self.transition(
+                    self.state,
+                    "stopping",
+                    {"running": {"stopping"}},
+                ).map(lambda update: self.model_copy(update=update))
+
+            def mark_stopped(self) -> r[Self]:
+                """Transition to stopped."""
+                if self.state not in {"stopping", "running"}:
+                    return r.fail(f"Cannot mark stopped from {self.state}")
+                return r.ok(
+                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED})
+                )
+
+            def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
+                """Add service functionally.
+
+                Args:
+                service: gRPC service object (dynamic type from grpc library)
+
+                """
+                return r.ok(
+                    self.model_copy(update={"services": [*self.services, service]}),
+                )
+
+        class Service(Entity):
+            """Generic gRPC service with validation delegation."""
+
+            name: str = ""
+            methods: list[str] = Field(default_factory=list)
+
+            @field_validator("name")
+            @classmethod
+            def validate_name(cls, v: str) -> str:
+                """Delegate name validation."""
+                return EntityValidator.validate_required_string(v, "name")
+
+            @field_validator("methods")
+            @classmethod
+            def validate_methods(cls, v: list[str]) -> list[str]:
+                """Delegate methods validation."""
+                _ = EntityValidator.validate_list_not_empty(v, "methods")
+                for method in v:
+                    _ = EntityValidator.validate_required_string(method, "method")
+                return v
+
+            def has_method(self, method_name: str) -> bool:
+                """Check method existence."""
+                return method_name in self.methods
+
+            def add_method(self, method_name: str) -> r[Self]:
+                """Add method functionally."""
+                if not method_name.strip() or method_name in self.methods:
+                    return r.fail("Invalid method")
+                return r.ok(
+                    self.model_copy(update={"methods": [*self.methods, method_name]}),
+                )
+
+        class Client(Entity):
+            """Generic gRPC client with channel delegation."""
+
+            channel: FlextGrpcModels.Grpc.Channel | None = None
+            options: t.GrpcOptions = Field(default_factory=dict)
+            grpc_stub: p.Grpc.GrpcStub | None = None
+
+            def validate_business_rules(self) -> r[bool]:
+                """Delegate validation."""
+                if self.channel and self.channel.validate_business_rules().is_failure:
+                    return r.fail("Invalid channel")
+                return r.ok(True)
+
+            def connect_to(self, target: str) -> r[Self]:
+                """Connect functionally."""
+                channel = FlextGrpcModels.Grpc.Channel(
+                    target=target,
+                    state=c.Grpc.ChannelState.IDLE.value,
+                )
+                return r.ok(self.model_copy(update={"channel": channel}))
+
+        class GrpcStream(Entity):
+            """Generic gRPC stream with validation delegation."""
+
+            id: str = ""
+            method_name: str = ""
+            stream_type: t.GrpcStreamType = "unary"
+            grpc_stub: p.Grpc.GrpcStub | None = None
+
+            @field_validator("method_name")
+            @classmethod
+            def validate_method_name(cls, v: str) -> str:
+                """Delegate method name validation."""
+                return EntityValidator.validate_required_string(v, "method_name")
+
+            @field_validator("stream_type")
+            @classmethod
+            def validate_stream_type(cls, v: str) -> str:
+                """Delegate stream type validation."""
+                return EntityValidator.validate_enum(
+                    v,
+                    set(c.Grpc.STREAM_TYPES),
+                    "stream_type",
+                )
+
+    # Class-level aliases at facade root (flat namespace: m.StreamInfo, m.Request, etc.)
+    StreamInfo = Grpc.StreamInfo
+    HealthCheck = Grpc.HealthCheck
+    ServiceDefinition = Grpc.ServiceDefinition
+    StreamMetrics = Grpc.StreamMetrics
+    ServiceMetrics = Grpc.ServiceMetrics
+    OperationExecutionRequest = Grpc.OperationExecutionRequest
+    ServerConfig = Grpc.ServerConfig
+    ClientConfig = Grpc.ClientConfig
+    ChannelConfig = Grpc.ChannelConfig
+    SecurityConfig = Grpc.SecurityConfig
+    NetworkConfig = Grpc.NetworkConfig
+    PerformanceConfig = Grpc.PerformanceConfig
+    StreamingConfig = Grpc.StreamingConfig
+    ClientSettingsConfig = Grpc.ClientSettingsConfig
+    MonitoringConfig = Grpc.MonitoringConfig
+    StateTransition = Grpc.StateTransition
+    EntityValidator = Grpc.EntityValidator
+    OperationSpec = Grpc.OperationSpec
+    Request = Grpc.Request
+    Response = Grpc.Response
+    Payload = Grpc.Payload
+    Entity = Grpc.Entity
+    Channel = Grpc.Channel
+    Server = Grpc.Server
+    Client = Grpc.Client
+    GrpcStream = Grpc.GrpcStream
+    StateMachine = Grpc.StateMachine
 
 
 m = FlextGrpcModels

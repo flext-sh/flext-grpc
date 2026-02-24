@@ -101,5 +101,4 @@ c = TestsFlextGrpcConstants  # Alternative alias for compatibility
 __all__ = [
     "TestsFlextGrpcConstants",
     "c",
-    "c",
 ]

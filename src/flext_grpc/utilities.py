@@ -14,7 +14,7 @@ import gc
 import time
 from collections.abc import Iterator, Mapping
 from datetime import UTC, datetime
-from typing import ClassVar, cast
+from typing import ClassVar
 from uuid import uuid4
 
 import grpc
@@ -27,9 +27,9 @@ from google.protobuf.descriptor import FieldDescriptor
 from google.protobuf.json_format import MessageToDict, MessageToJson
 from google.protobuf.message import Message
 
+from flext_grpc import m
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.entities import FlextGrpcEntities
-from flext_grpc.models import FlextGrpcModels
 from flext_grpc.typings import t
 
 # Type alias for convenience
@@ -169,12 +169,10 @@ class FlextGrpcUtilities(FlextUtilities):
             if not method_name or not method_name.strip():
                 return r.fail("Stream method name cannot be empty")
 
-            validated_stream_type = cast("c.Grpc.StreamTypeLiteral", stream_type)
-
             stream = FlextGrpcEntities.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=validated_stream_type,
+                stream_type=stream_type,  # validated above against c.Grpc.STREAM_TYPES
             )
             return r.ok(stream)
         except Exception as e:
@@ -302,8 +300,8 @@ class FlextGrpcUtilities(FlextUtilities):
 
         @staticmethod
         def validate_grpc_request(
-            request: FlextGrpcModels.Grpc.GrpcRequest,
-        ) -> r[FlextGrpcModels.Grpc.GrpcRequest]:
+            request: m.Request,
+        ) -> r[m.Request]:
             """Validate gRPC request using Pydantic validation.
 
             Args:
@@ -315,14 +313,14 @@ class FlextGrpcUtilities(FlextUtilities):
             """
             try:
                 # Pydantic validation happens automatically during construction
-                validated_request = FlextGrpcModels.Grpc.GrpcRequest.model_validate(
+                validated_request = m.Request.model_validate(
                     request.model_dump(),
                 )
-                return r[FlextGrpcModels.Grpc.GrpcRequest].ok(
+                return r[m.Request].ok(
                     validated_request,
                 )
             except Exception as e:
-                return r[FlextGrpcModels.Grpc.GrpcRequest].fail(
+                return r[m.Request].fail(
                     f"Request validation failed: {e}",
                 )
 
@@ -899,7 +897,7 @@ class FlextGrpcUtilities(FlextUtilities):
         def validate_service_health(
             channel: object,
             service_name: str = "",
-        ) -> r[FlextGrpcModels.Grpc.GrpcHealthCheck]:
+        ) -> r[m.HealthCheck]:
             """Check service health using gRPC health checking protocol.
 
             Args:
@@ -914,23 +912,23 @@ class FlextGrpcUtilities(FlextUtilities):
                 # Use gRPC health checking protocol
                 # Check if channel is active
                 if not channel:
-                    return r[FlextGrpcModels.Grpc.GrpcHealthCheck].fail(
+                    return r[m.HealthCheck].fail(
                         "Invalid channel provided",
                     )
 
                 # Channel state is not directly accessible, use a default state
                 # In a real implementation, this would check actual channel state
                 # For now, assume channel is ready unless explicitly shutdown
-                health_check = FlextGrpcModels.Grpc.GrpcHealthCheck(
+                health_check = m.HealthCheck(
                     service_name=service_name,
                     status="serving",
                     timestamp=datetime.now(UTC),
                 )
-                return r[FlextGrpcModels.Grpc.GrpcHealthCheck].ok(
+                return r[m.HealthCheck].ok(
                     health_check,
                 )
             except Exception as e:
-                return r[FlextGrpcModels.Grpc.GrpcHealthCheck].fail(
+                return r[m.HealthCheck].fail(
                     f"Health check failed: {e}",
                 )
 
@@ -939,7 +937,7 @@ class FlextGrpcUtilities(FlextUtilities):
             service_name: str,
             endpoint: str | None = None,
             metadata: Mapping[str, str] | None = None,
-        ) -> r[FlextGrpcModels.Grpc.ServiceDefinition]:
+        ) -> r[m.ServiceDefinition]:
             """Register service endpoint for discovery.
 
             Args:
@@ -952,7 +950,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
-                service_def = FlextGrpcModels.Grpc.ServiceDefinition(
+                service_def = m.ServiceDefinition(
                     service_name=service_name,
                     methods=[],  # Default empty methods list
                 )
@@ -963,11 +961,11 @@ class FlextGrpcUtilities(FlextUtilities):
                 if metadata:
                     logger = FlextLogger(__name__)
                     logger.debug("Service %s metadata: %s", service_name, metadata)
-                return r[FlextGrpcModels.Grpc.ServiceDefinition].ok(
+                return r[m.ServiceDefinition].ok(
                     service_def,
                 )
             except Exception as e:
-                return r[FlextGrpcModels.Grpc.ServiceDefinition].fail(
+                return r[m.ServiceDefinition].fail(
                     f"Service registration failed: {e}",
                 )
 
@@ -1168,8 +1166,8 @@ class FlextGrpcUtilities(FlextUtilities):
 
         @staticmethod
         def collect_stream_metrics(
-            stream_info: FlextGrpcModels.Grpc.StreamInfo,
-        ) -> r[FlextGrpcModels.Grpc.StreamMetrics]:
+            stream_info: m.StreamInfo,
+        ) -> r[m.StreamMetrics]:
             """Collect metrics from stream information.
 
             Args:
@@ -1185,7 +1183,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     datetime.now(UTC) - stream_info.created_at
                 ).total_seconds()
 
-                metrics = FlextGrpcModels.Grpc.StreamMetrics(
+                metrics = m.StreamMetrics(
                     stream_id=stream_info.stream_id,
                     throughput_rps=stream_info.total_requests_sent
                     / max(duration_seconds, 1),
@@ -1199,9 +1197,9 @@ class FlextGrpcUtilities(FlextUtilities):
                     * 100,
                     memory_usage_bytes=0,  # Placeholder for memory usage
                 )
-                return r[FlextGrpcModels.Grpc.StreamMetrics].ok(metrics)
+                return r[m.StreamMetrics].ok(metrics)
             except Exception as e:
-                return r[FlextGrpcModels.Grpc.StreamMetrics].fail(
+                return r[m.StreamMetrics].fail(
                     f"Metrics collection failed: {e}",
                 )
 
@@ -1211,7 +1209,7 @@ class FlextGrpcUtilities(FlextUtilities):
             request_count: int,
             error_count: int,
             avg_response_time: float,
-        ) -> r[FlextGrpcModels.Grpc.ServiceMetrics]:
+        ) -> r[m.ServiceMetrics]:
             """Collect service-level metrics.
 
             Args:
@@ -1225,7 +1223,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
-                metrics = FlextGrpcModels.Grpc.ServiceMetrics(
+                metrics = m.ServiceMetrics(
                     service_name=service_name,
                     total_requests=request_count,
                     successful_requests=request_count - error_count,
@@ -1233,8 +1231,8 @@ class FlextGrpcUtilities(FlextUtilities):
                     avg_response_time=avg_response_time,
                     active_connections=1,  # Placeholder for active connections
                 )
-                return r[FlextGrpcModels.Grpc.ServiceMetrics].ok(metrics)
+                return r[m.ServiceMetrics].ok(metrics)
             except Exception as e:
-                return r[FlextGrpcModels.Grpc.ServiceMetrics].fail(
+                return r[m.ServiceMetrics].fail(
                     f"Service metrics collection failed: {e}",
                 )

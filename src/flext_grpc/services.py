@@ -21,17 +21,22 @@ import grpc
 from flext_core.result import r
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
-from flext_grpc.constants import FlextGrpcConstants
-from flext_grpc.entities import FlextGrpcEntities
+from flext_grpc.constants import c
+from flext_grpc.models import FlextGrpcModels as FlextGrpcEntities
 from flext_grpc.proto import (
     EchoRequest,
+    FlextGrpcServiceServicer,
     FlextGrpcServiceStub,
     HealthRequest,
     add_FlextGrpcServiceServicer_to_server,
 )
-from flext_grpc.real_servicer import create_real_servicer
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
+
+
+def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
+    """Create runtime gRPC servicer instance for server registration."""
+    return FlextGrpcServiceServicer()
 
 
 class ServicePayload(BaseModel):
@@ -693,7 +698,7 @@ class FlextGrpcServices:
     def _create_stream_entity(
         self,
         method_name: str,  # gRPC method name
-        stream_type: FlextGrpcConstants.Grpc.StreamTypeLiteral | str,
+        stream_type: c.Grpc.StreamTypeLiteral | str,
     ) -> r[FlextGrpcEntities.GrpcStream]:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)

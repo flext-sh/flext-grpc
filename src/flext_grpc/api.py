@@ -13,42 +13,23 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import TypeVar
 
-from flext_core import FlextModels, r
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from flext_core import r
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from flext_grpc.constants import FlextGrpcConstants
-from flext_grpc.entities import FlextGrpcEntities
-from flext_grpc.models import FlextGrpcModels
-from flext_grpc.services import FlextGrpcServices
+from flext_grpc import m
+from flext_grpc.constants import c
+from flext_grpc.models import FlextGrpcModels as FlextGrpcEntities
+from flext_grpc.services import FlextGrpcServices, ServicePayload
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
-
-def _result_as_object[T](result: r[T]) -> r[object]:
-    """Normalize any FlextResult to r[object] for homogeneous dict typing."""
-    if result.is_success:
-        return r.ok(result.value)
-    return r.fail(result.error or "Unknown error")
-
-
-# Import API models from models.py (centralized location)
-_m = FlextGrpcModels
-GenericOperationSpec = _m.API.OperationSpec
-GenericRequest = _m.API.Request
-GenericResponse = _m.API.Response
-
-# Type aliases for convenience
-c = FlextGrpcConstants
-m = FlextModels
-
 T = TypeVar("T", bound=BaseModel)
-
 type EntityKwargValue = object
 
 
 class _EntityValidationSnapshot(BaseModel):
-    """Pydantic view of validation result objects."""
+    """Normalized validation snapshot for entity rule checks."""
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -57,7 +38,7 @@ class _EntityValidationSnapshot(BaseModel):
 
 
 class _ServerCreateInput(BaseModel):
-    """Validated server creation payload."""
+    """Validated input payload for server creation."""
 
     host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
     port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
@@ -65,131 +46,77 @@ class _ServerCreateInput(BaseModel):
 
 
 class _ChannelCreateInput(BaseModel):
-    """Validated channel creation payload."""
+    """Validated input payload for channel creation."""
 
-    target: str = (
-        f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
-    )
+    target: str
     options: t.GrpcOptions = Field(default_factory=dict)
 
 
 class _ServiceCreateInput(BaseModel):
-    """Validated service creation payload."""
+    """Validated input payload for service creation."""
 
-    name: str = "DefaultService"
-    methods: list[str] = Field(default_factory=lambda: ["default_method"])
-
-    @field_validator("name", mode="before")
-    @classmethod
-    def normalize_name(cls, value: object) -> str:
-        """Normalize service name input."""
-        if value is None:
-            return "DefaultService"
-        normalized = str(value).strip()
-        return normalized or "DefaultService"
-
-    @field_validator("methods", mode="before")
-    @classmethod
-    def normalize_methods(cls, value: object) -> list[str]:
-        """Normalize methods input into non-empty list."""
-        match value:
-            case str() as method_name:
-                normalized = method_name.strip()
-                if normalized:
-                    return [normalized]
-                return ["default_method"]
-            case list() as methods:
-                normalized_methods = [
-                    method
-                    for method in (str(item).strip() for item in methods)
-                    if method
-                ]
-                if normalized_methods:
-                    return normalized_methods
-                return ["default_method"]
-            case _:
-                return ["default_method"]
+    name: str
+    methods: list[str] = Field(default_factory=list)
 
 
 class _CompleteSetupInput(BaseModel):
-    """Validated complete setup payload."""
+    """Validated input payload for complete setup creation."""
 
     host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
     port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     service_name: str = "DefaultService"
-    methods: list[str] = Field(default_factory=lambda: ["DefaultMethod"])
-
-    @field_validator("service_name", mode="before")
-    @classmethod
-    def normalize_service_name(cls, value: object) -> str:
-        """Normalize service name."""
-        if value is None:
-            return "DefaultService"
-        normalized = str(value).strip()
-        return normalized or "DefaultService"
-
-    @field_validator("methods", mode="before")
-    @classmethod
-    def normalize_methods(cls, value: object) -> list[str]:
-        """Normalize setup methods input."""
-        match value:
-            case int() as method_number:
-                return [str(method_number)]
-            case str() as method_name:
-                normalized = method_name.strip()
-                if normalized:
-                    return [normalized]
-                return ["DefaultMethod"]
-            case list() as methods:
-                normalized_methods = [
-                    method
-                    for method in (str(item).strip() for item in methods)
-                    if method
-                ]
-                if normalized_methods:
-                    return normalized_methods
-                return ["DefaultMethod"]
-            case _:
-                return ["DefaultMethod"]
-
-
-class _ServerEntityEnvelope(BaseModel):
-    """Type-safe server entity envelope."""
-
-    entity: FlextGrpcEntities.Server
-
-
-class _ClientEntityEnvelope(BaseModel):
-    """Type-safe client entity envelope."""
-
-    entity: FlextGrpcEntities.Client
-
-
-class _ChannelEntityEnvelope(BaseModel):
-    """Type-safe channel entity envelope."""
-
-    entity: FlextGrpcEntities.Channel
-
-
-class _ServiceEntityEnvelope(BaseModel):
-    """Type-safe service entity envelope."""
-
-    entity: FlextGrpcEntities.Service
-
-
-class _StreamEntityEnvelope(BaseModel):
-    """Type-safe stream entity envelope."""
-
-    entity: FlextGrpcEntities.GrpcStream
+    methods: list[str] = Field(default_factory=lambda: ["HealthCheck"])
 
 
 class _CompleteSetupResult(BaseModel):
-    """Structured complete setup result."""
+    """Typed payload for complete setup creation."""
 
     server: FlextGrpcEntities.Server
     client: FlextGrpcEntities.Client
     service: FlextGrpcEntities.Service
     target: str
+
+
+class _ServerEntityEnvelope(BaseModel):
+    """Typed envelope validating server entity results."""
+
+    entity: FlextGrpcEntities.Server
+
+
+class _ClientEntityEnvelope(BaseModel):
+    """Typed envelope validating client entity results."""
+
+    entity: FlextGrpcEntities.Client
+
+
+class _ChannelEntityEnvelope(BaseModel):
+    """Typed envelope validating channel entity results."""
+
+    entity: FlextGrpcEntities.Channel
+
+
+class _ServiceEntityEnvelope(BaseModel):
+    """Typed envelope validating service entity results."""
+
+    entity: FlextGrpcEntities.Service
+
+
+class _StreamEntityEnvelope(BaseModel):
+    """Typed envelope validating stream entity results."""
+
+    entity: FlextGrpcEntities.GrpcStream
+
+
+def _result_as_object[T](result: r[T]) -> r[object]:
+    """Normalize typed FlextResult values into object-typed results."""
+    if result.is_failure:
+        return r.fail(result.error or "Operation failed")
+    return r.ok(result.value)
+
+
+GenericOperationSpec = m.OperationSpec
+GenericRequest = m.Request
+GenericResponse = m.Response
 
 
 class FlextGrpc:
@@ -220,13 +147,13 @@ class FlextGrpc:
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
-        return t.GrpcValidation.validate_target(target)
+        return t.Grpc.GrpcValidation.validate_target(target)
 
     def parse_address(self, address: str) -> r[tuple[str, int]]:
         """Parse gRPC address string."""
-        if not t.GrpcValidation.validate_target(address):
+        if not t.Grpc.GrpcValidation.validate_target(address):
             return r.fail(f"Invalid address: {address}")
-        return r.ok(t.GrpcValidation.parse_target(address))
+        return r.ok(t.Grpc.GrpcValidation.parse_target(address))
 
     def create_entity(
         self,
@@ -290,7 +217,7 @@ class FlextGrpc:
 
     def execute_operation(
         self,
-        request: FlextGrpcModels.Grpc.OperationExecutionRequest,
+        request: m.OperationExecutionRequest,
     ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         operation = self._get_operation(request.operation_name)
