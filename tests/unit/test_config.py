@@ -1,7 +1,6 @@
 """Tests for flext_grpc.config module."""
 
-import pytest
-
+from flext_grpc.models import m
 from flext_grpc.settings import FlextGrpcSettings
 
 
@@ -67,11 +66,27 @@ class TestFlextGrpcSettings:
         assert config.host == "192.168.1.100"
         assert config.port == 9090
 
-    @pytest.mark.skip(reason="Test needs to be rewritten for immutable Value objects")
     def test_security_config_validation(self) -> None:
         """Test security configuration validation."""
-        # TODO: Rewrite this test for immutable Value objects
-        pass
+        insecure_config = FlextGrpcSettings(
+            security=m.SecurityConfig(
+                tls_enabled=False,
+                client_cert_required=True,
+            )
+        )
+
+        insecure_result = insecure_config.validate_configuration()
+        assert insecure_result.is_failure
+        assert insecure_result.error == "Client certificates require TLS to be enabled"
+
+        secure_config = FlextGrpcSettings(
+            security=m.SecurityConfig(
+                tls_enabled=True,
+                client_cert_required=True,
+            )
+        )
+        secure_result = secure_config.validate_configuration()
+        assert secure_result.is_success
 
     def test_performance_config_defaults(self) -> None:
         """Test performance configuration defaults."""
