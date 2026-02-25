@@ -72,7 +72,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 "data": data if data is not None else {},
             }
             return r.ok(result)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Execute failed: {e}")
 
     # === FACTORY METHODS ===
@@ -98,7 +98,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 options=options or {},
             )
             return r.ok(client)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Failed to create client entity: {e}")
 
     @classmethod
@@ -116,7 +116,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 max_workers=max_workers,
             )
             return r.ok(server)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Failed to create server entity: {e}")
 
     @classmethod
@@ -134,7 +134,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 options=options or {},
             )
             return r.ok(channel)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Failed to create channel entity: {e}")
 
     @classmethod
@@ -151,7 +151,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 methods=methods or [],
             )
             return r.ok(service)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Failed to create service entity: {e}")
 
     @classmethod
@@ -175,7 +175,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 stream_type=stream_type,  # validated above against c.Grpc.STREAM_TYPES
             )
             return r.ok(stream)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Failed to create stream entity: {e}")
 
     class Grpc:
@@ -260,7 +260,7 @@ class FlextGrpcUtilities(FlextUtilities):
             """Validate message can be serialized."""
             try:
                 _ = message_instance.SerializeToString()
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[bool].fail(f"Message serialization failed: {e}")
 
             return r[bool].ok(value=True)
@@ -295,7 +295,7 @@ class FlextGrpcUtilities(FlextUtilities):
                         FlextGrpcUtilities.MessageValidation.validate_message_serialization,
                     )
                 )
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[bool].fail(f"Message validation failed: {e}")
 
         @staticmethod
@@ -319,7 +319,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 return r[m.Request].ok(
                     validated_request,
                 )
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[m.Request].fail(
                     f"Request validation failed: {e}",
                 )
@@ -375,7 +375,7 @@ class FlextGrpcUtilities(FlextUtilities):
                             )
 
                 return r[bool].ok(value=True)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[bool].fail(f"Stream validation failed: {e}")
 
     class ProtobufConversion:
@@ -411,7 +411,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     preserving_proto_field_name=True,
                 )
                 return r[Mapping[str, t.JsonValue]].ok(dict_data)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Mapping[str, t.JsonValue]].fail(
                     f"Protobuf to dict[str, t.JsonValue] conversion failed: {e}",
                 )
@@ -443,7 +443,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 message_instance = message_class()
                 _ = json_format.ParseDict(data, message_instance)
                 return r[Message].ok(message_instance)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Message].fail(
                     f"Dict to protobuf conversion failed: {e}",
                 )
@@ -472,7 +472,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     preserving_proto_field_name=True,
                 )
                 return r[str].ok(json_str)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[str].fail(f"Protobuf to JSON conversion failed: {e}")
 
         @staticmethod
@@ -497,7 +497,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 message_instance = message_class()
                 _ = json_format.Parse(json_str, message_instance)
                 return r[Message].ok(message_instance)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Message].fail(
                     f"JSON to protobuf conversion failed: {e}",
                 )
@@ -516,7 +516,7 @@ class FlextGrpcUtilities(FlextUtilities):
             try:
                 serialized_data = message_instance.SerializeToString()
                 return r[bytes].ok(serialized_data)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[bytes].fail(f"Message serialization failed: {e}")
 
         @staticmethod
@@ -541,7 +541,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 message_instance = message_class()
                 _ = message_instance.ParseFromString(data)
                 return r[Message].ok(message_instance)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Message].fail(f"Message deserialization failed: {e}")
 
     class ChannelManagement:
@@ -597,7 +597,7 @@ class FlextGrpcUtilities(FlextUtilities):
                         return r[GrpcChannelType].ok(channel)
                     case _:
                         return r[GrpcChannelType].fail("Invalid credentials type")
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[GrpcChannelType].fail(f"Secure channel creation failed: {e}")
 
         @staticmethod
@@ -626,7 +626,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
                 channel = grpc.insecure_channel(target, options=options)
                 return r[GrpcChannelType].ok(channel)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[GrpcChannelType].fail(
                     f"Insecure channel creation failed: {e}",
                 )
@@ -661,7 +661,7 @@ class FlextGrpcUtilities(FlextUtilities):
                             return r[bool].fail("Invalid channel type")
                 except grpc.FutureTimeoutError:
                     return r[bool].ok(False)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[bool].fail(f"Channel connectivity check failed: {e}")
 
         @staticmethod
@@ -684,7 +684,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 # Channel state is not directly accessible in gRPC Python
                 # Return a default state for testing purposes
                 return r[str].ok("READY")
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[str].fail(f"Channel state check failed: {e}")
 
         @staticmethod
@@ -708,7 +708,7 @@ class FlextGrpcUtilities(FlextUtilities):
                         return r[None].ok(None)
                     case _:
                         return r[None].fail("Invalid channel type")
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[None].fail(f"Channel closure failed: {e}")
 
     class StreamingHelpers:
@@ -731,7 +731,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     yield from data
 
                 return r[Iterator[T]].ok(data_iterator())
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Iterator[T]].fail(
                     f"Stream iterator creation failed: {e}",
                 )
@@ -771,7 +771,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     responses.append(response)
 
                 return r[list[T]].ok(responses)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[list[T]].fail(f"Stream collection failed: {e}")
 
         @staticmethod
@@ -828,7 +828,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     metadata_dict[str_key] = str_value
 
                 return r[Mapping[str, str]].ok(metadata_dict)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Mapping[str, str]].fail(
                     f"Metadata validation failed: {e}",
                 )
@@ -890,7 +890,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     "grpc.health.v1.Health",
                 ]
                 return r[list[str]].ok(services)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[list[str]].fail(f"Service discovery failed: {e}")
 
         @staticmethod
@@ -927,7 +927,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 return r[m.HealthCheck].ok(
                     health_check,
                 )
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[m.HealthCheck].fail(
                     f"Health check failed: {e}",
                 )
@@ -964,7 +964,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 return r[m.ServiceDefinition].ok(
                     service_def,
                 )
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[m.ServiceDefinition].fail(
                     f"Service registration failed: {e}",
                 )
@@ -990,7 +990,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     formatted_message = f"Error: {message}"
 
                 return r[str].ok(formatted_message)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[str].fail(f"Error message formatting failed: {e}")
 
         @staticmethod
@@ -1029,7 +1029,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
                 return r[Mapping[str, t.JsonValue]].ok(error_info)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Mapping[str, t.JsonValue]].fail(
                     f"Error handling failed: {e}",
                 )
@@ -1061,7 +1061,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 # In a real implementation, this would create a proper grpc.Status
                 # For now, return the status info as a dict
                 return r[Mapping[str, t.GeneralValueType]].ok(status_info)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Mapping[str, t.GeneralValueType]].fail(
                     f"Status creation failed: {e}",
                 )
@@ -1093,7 +1093,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 code_result = code_attr() if callable(code_attr) else None
                 is_retryable = code_result in retryable_codes if code_result else False
                 return r[bool].ok(is_retryable)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[bool].fail(f"Retry check failed: {e}")
 
     class MetricsCollection:
@@ -1125,7 +1125,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
                 return r[Mapping[str, t.JsonValue]].ok(metrics)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Mapping[str, t.JsonValue]].fail(
                     f"Channel metrics collection failed: {e}",
                 )
@@ -1159,7 +1159,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     "timestamp": datetime.now(UTC).isoformat(),
                 }
                 return r[Mapping[str, t.JsonValue]].ok(metrics)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[Mapping[str, t.JsonValue]].fail(
                     f"Performance metrics collection failed: {e}",
                 )
@@ -1198,7 +1198,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     memory_usage_bytes=0,  # Placeholder for memory usage
                 )
                 return r[m.StreamMetrics].ok(metrics)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[m.StreamMetrics].fail(
                     f"Metrics collection failed: {e}",
                 )
@@ -1232,7 +1232,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     active_connections=1,  # Placeholder for active connections
                 )
                 return r[m.ServiceMetrics].ok(metrics)
-            except Exception as e:
+            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[m.ServiceMetrics].fail(
                     f"Service metrics collection failed: {e}",
                 )

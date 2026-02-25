@@ -14,6 +14,7 @@ from collections.abc import Mapping
 from datetime import UTC, datetime
 from typing import Literal, Self
 
+import grpc
 from flext_core import FlextModels, m, r
 from pydantic import BaseModel, Field, computed_field, field_validator
 
@@ -385,8 +386,10 @@ class FlextGrpcModels(FlextModels):
             """Generic operation specification using Pydantic."""
 
             name: str = Field(min_length=1, description="Operation name")
-            entity_type: Literal["server", "client", "channel", "service", "stream"] = Field(
-                description="Type of entity to operate on",
+            entity_type: Literal["server", "client", "channel", "service", "stream"] = (
+                Field(
+                    description="Type of entity to operate on",
+                )
             )
             method_name: str | None = Field(
                 default=None,
@@ -461,7 +464,7 @@ class FlextGrpcModels(FlextModels):
                 """
                 try:
                     return r.ok(self.model_copy(update=kwargs))
-                except Exception as e:
+                except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                     return r.fail(str(e))
 
             def validate_business_rules(self) -> r[bool]:

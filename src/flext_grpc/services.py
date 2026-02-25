@@ -233,7 +233,7 @@ class ConnectionPool:
                     self._active.add(conn)
                     return r.ok(conn)
                 return r.fail("No available connections")
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection acquisition failed: {e}")
 
     def release(self, connection: object) -> r[bool]:
@@ -246,7 +246,7 @@ class ConnectionPool:
                         return r.ok(True)
                     self._pool.put_nowait(connection)
                 return r.ok(True)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection release failed: {e}")
 
     def cleanup(self) -> r[bool]:
@@ -256,7 +256,7 @@ class ConnectionPool:
             while not self._pool.empty():
                 try:
                     _ = self._pool.get_nowait()
-                except Exception:
+                except (grpc.RpcError, ConnectionError, TimeoutError):
                     break
         return r.ok(True)
 
@@ -315,7 +315,7 @@ class GrpcServerManager(ServerLifecycleManager):
             # Mark as running
             return starting_server.mark_running()
 
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Server start failed: {e}")
 
     def stop_server(
@@ -346,7 +346,7 @@ class GrpcServerManager(ServerLifecycleManager):
 
             return stopping_server.mark_stopped()
 
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Server stop failed: {e}")
 
     def get_server_metrics(
@@ -393,7 +393,7 @@ class GrpcClientManager(ClientConnectionManager):
             # Create client entity
             return FlextGrpcUtilities.create_client_entity(target=target)
 
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection failed: {e}")
 
     def disconnect(
@@ -470,7 +470,7 @@ class GrpcClientManager(ClientConnectionManager):
             code_val = code_fn() if callable(code_fn) else None
             details_val = details_fn() if callable(details_fn) else str(e)
             return r.fail(f"gRPC call failed: {code_val} - {details_val}")
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Call execution failed: {e}")
 
 
@@ -546,7 +546,7 @@ class GrpcStreamManager(StreamProcessor):
         except ValidationError as e:
             return r.fail(f"Invalid stream state: {e}")
 
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Data send failed: {e}")
 
     def close_stream(

@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import grpc
 from flext_core import r
 from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
@@ -169,7 +170,7 @@ class FlextGrpcSettings(BaseModel):
                 return r.fail("TLS enabled but using HTTP port")
 
             return r.ok(True)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Configuration validation failed: {e}")
 
     @classmethod
@@ -209,7 +210,7 @@ class FlextGrpcSettings(BaseModel):
             )
             validation = config.validate_configuration()
             return validation.map(lambda _: config)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Production config creation failed: {e}")
 
     @classmethod
@@ -231,7 +232,7 @@ class FlextGrpcSettings(BaseModel):
                 monitoring=GrpcMonitoringConfig(),
             )
             return r.ok(config)
-        except Exception as e:
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Development config creation failed: {e}")
 
 
