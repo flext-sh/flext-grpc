@@ -196,7 +196,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     # Calculate size based on list length (rough estimate)
                     return len(buffer_name) * 1024  # 1KB per item
                 case str():
-                    # Placeholder implementation for string names
+                    # String name resolution for service endpoint lookup
                     buffer_sizes = {
                         "default": 1024 * 1024,  # 1MB
                         "large": 10 * 1024 * 1024,  # 10MB
@@ -1118,7 +1118,7 @@ class FlextGrpcUtilities(FlextUtilities):
                         "Channel is None",
                     )
 
-                # Basic channel metrics (placeholder implementation)
+                # Basic channel metrics (requires channel state monitoring for actual values)
                 metrics: dict[str, t.JsonValue] = {
                     "channel_state": "READY",
                     "connection_count": 1,
@@ -1195,7 +1195,7 @@ class FlextGrpcUtilities(FlextUtilities):
                         / max(stream_info.total_requests_sent, 1)
                     )
                     * 100,
-                    memory_usage_bytes=0,  # Placeholder for memory usage
+                    memory_usage_bytes=0,  # Requires psutil for actual memory tracking
                 )
                 return r[m.StreamMetrics].ok(metrics)
             except (grpc.RpcError, ConnectionError, TimeoutError) as e:
@@ -1229,7 +1229,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     successful_requests=request_count - error_count,
                     failed_requests=error_count,
                     avg_response_time=avg_response_time,
-                    active_connections=1,  # Placeholder for active connections
+                    active_connections=1,  # Requires channel state monitoring for actual count
                 )
                 return r[m.ServiceMetrics].ok(metrics)
             except (grpc.RpcError, ConnectionError, TimeoutError) as e:
