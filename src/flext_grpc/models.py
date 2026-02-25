@@ -11,8 +11,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from datetime import datetime
-from typing import Self
+from datetime import UTC, datetime
+from typing import Literal, Self
 
 from flext_core import FlextModels, m, r
 from pydantic import BaseModel, Field, computed_field, field_validator
@@ -62,7 +62,7 @@ class FlextGrpcModels(FlextModels):
                 description="Service methods",
             )
             endpoint: str | None = Field(default=None, description="Service endpoint")
-            metadata: t.Grpc.GrpcMetadata | None = Field(
+            metadata: t.Grpc.Metadata | None = Field(
                 default=None,
                 description="Service metadata",
             )
@@ -385,8 +385,7 @@ class FlextGrpcModels(FlextModels):
             """Generic operation specification using Pydantic."""
 
             name: str = Field(min_length=1, description="Operation name")
-            entity_type: str = Field(
-                pattern=r"^[a-z_]+$",
+            entity_type: Literal["server", "client", "channel", "service", "stream"] = Field(
                 description="Type of entity to operate on",
             )
             method_name: str | None = Field(
@@ -397,22 +396,6 @@ class FlextGrpcModels(FlextModels):
                 default_factory=dict,
                 description="Operation parameters",
             )
-
-            @field_validator("entity_type", mode="before")
-            @classmethod
-            def validate_entity_type(cls, v: str) -> str:
-                """Validate entity type against supported types."""
-                supported = frozenset({
-                    "server",
-                    "client",
-                    "channel",
-                    "service",
-                    "stream",
-                })
-                if v not in supported:
-                    msg = f"Unsupported entity type: {v}. Supported: {supported}"
-                    raise ValueError(msg)
-                return v
 
         class Request(m.Value):
             """Generic request model with validation."""
@@ -489,19 +472,9 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC channel with state machine delegation."""
 
             target: str = ""
-            state: t.GrpcChannelState = "idle"
+            state: c.Grpc.ChannelStateLiteral = "idle"
             options: dict[str, t.GeneralValueType] = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
-
-            @field_validator("state")
-            @classmethod
-            def validate_state(cls, v: str) -> str:
-                """Delegate state validation."""
-                return EntityValidator.validate_enum(
-                    v,
-                    set(c.Grpc.CHANNEL_STATES),
-                    "state",
-                )
 
             def validate_business_rules(self) -> r[bool]:
                 """Functional validation composition."""
@@ -540,7 +513,7 @@ class FlextGrpcModels(FlextModels):
 
             host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
             port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-            state: t.GrpcServerState = "stopped"
+            state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
             services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)
             grpc_server: p.Grpc.GrpcServer | None = None
@@ -610,16 +583,23 @@ class FlextGrpcModels(FlextModels):
             @field_validator("name")
             @classmethod
             def validate_name(cls, v: str) -> str:
-                """Delegate name validation."""
-                return EntityValidator.validate_required_string(v, "name")
+                """Validate name is not empty or whitespace."""
+                if not v or not v.strip():
+                    msg = "name cannot be empty"
+                    raise ValueError(msg)
+                return v
 
             @field_validator("methods")
             @classmethod
             def validate_methods(cls, v: list[str]) -> list[str]:
-                """Delegate methods validation."""
-                _ = EntityValidator.validate_list_not_empty(v, "methods")
+                """Validate methods list is not empty with valid items."""
+                if not v:
+                    msg = "methods cannot be empty"
+                    raise ValueError(msg)
                 for method in v:
-                    _ = EntityValidator.validate_required_string(method, "method")
+                    if not method or not method.strip():
+                        msg = "method cannot be empty"
+                        raise ValueError(msg)
                 return v
 
             def has_method(self, method_name: str) -> bool:
@@ -660,24 +640,17 @@ class FlextGrpcModels(FlextModels):
 
             id: str = ""
             method_name: str = ""
-            stream_type: t.GrpcStreamType = "unary"
+            stream_type: c.Grpc.StreamTypeLiteral = "unary"
             grpc_stub: p.Grpc.GrpcStub | None = None
 
             @field_validator("method_name")
             @classmethod
             def validate_method_name(cls, v: str) -> str:
-                """Delegate method name validation."""
-                return EntityValidator.validate_required_string(v, "method_name")
-
-            @field_validator("stream_type")
-            @classmethod
-            def validate_stream_type(cls, v: str) -> str:
-                """Delegate stream type validation."""
-                return EntityValidator.validate_enum(
-                    v,
-                    set(c.Grpc.STREAM_TYPES),
-                    "stream_type",
-                )
+                """Validate method_name is not empty or whitespace."""
+                if not v or not v.strip():
+                    msg = "method_name cannot be empty"
+                    raise ValueError(msg)
+                return v
 
     # Class-level aliases at facade root (flat namespace: m.StreamInfo, m.Request, etc.)
     StreamInfo = Grpc.StreamInfo
