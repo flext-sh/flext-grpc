@@ -1,5 +1,7 @@
 """Tests for flext_grpc.config module."""
 
+import pytest
+
 from flext_grpc.models import m
 from flext_grpc.settings import FlextGrpcSettings
 
@@ -56,7 +58,7 @@ class TestFlextGrpcSettings:
         assert config.host == "127.0.0.1"
         assert config.port == 8080
         assert config.max_workers == 20
-        assert config.timeout == 30.0  # default
+        assert config.timeout == pytest.approx(30.0)  # default
         assert config.tls_enabled is False
         assert config.streaming_enabled is True
 
@@ -106,9 +108,9 @@ class TestFlextGrpcSettings:
     def test_client_config_defaults(self) -> None:
         """Test client configuration defaults."""
         client_config = FlextGrpcSettings().client
-        assert client_config.timeout == 30.0
+        assert client_config.timeout == pytest.approx(30.0)
         assert client_config.retry_attempts == 3
-        assert client_config.retry_backoff == 1.0
+        assert client_config.retry_backoff == pytest.approx(1.0)
 
     def test_monitoring_config_defaults(self) -> None:
         """Test monitoring configuration defaults."""

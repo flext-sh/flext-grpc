@@ -1,7 +1,5 @@
 """Tests for flext_grpc.utilities module."""
 
-from google.protobuf.message import Message
-
 from flext_grpc.utilities import FlextGrpcUtilities
 
 

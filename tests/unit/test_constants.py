@@ -28,4 +28,6 @@ class TestFlextGrpcConstants:
         """Test streaming constants."""
         assert FlextGrpcConstants.Grpc.Streaming.CLIENT_STREAMING_BUFFER_THRESHOLD == 10
         assert FlextGrpcConstants.Grpc.Streaming.SERVER_STREAMING_BATCH_SIZE == 100
-        assert FlextGrpcConstants.Grpc.Streaming.BIDIRECTIONAL_STREAMING_QUEUE_SIZE == 1000
+        assert (
+            FlextGrpcConstants.Grpc.Streaming.BIDIRECTIONAL_STREAMING_QUEUE_SIZE == 1000
+        )
