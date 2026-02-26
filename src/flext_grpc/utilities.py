@@ -365,13 +365,14 @@ class FlextGrpcUtilities(FlextUtilities):
                     for i, (msg, expected_type) in enumerate(
                         zip(messages, expected_order, strict=False),
                     ):
-                        desc = getattr(msg, "DESCRIPTOR", None)
+                        desc = msg.DESCRIPTOR if hasattr(msg, "DESCRIPTOR") else None
                         if (
                             desc is not None
-                            and getattr(desc, "name", None) != expected_type
+                            and (desc.name if hasattr(desc, "name") else None)
+                            != expected_type
                         ):
                             return r[bool].fail(
-                                f"Message {i} type mismatch: expected {expected_type}, got {getattr(desc, 'name', 'unknown')}",
+                                f"Message {i} type mismatch: expected {expected_type}, got {desc.name if hasattr(desc, 'name') else 'unknown'}",
                             )
 
                 return r[bool].ok(value=True)
@@ -1012,11 +1013,11 @@ class FlextGrpcUtilities(FlextUtilities):
                         "Error is None",
                     )
 
-                code_attr = getattr(error, "code", None)
-                details_attr = getattr(error, "details", None)
+                code_attr = error.code if hasattr(error, "code") else None
+                details_attr = error.details if hasattr(error, "details") else None
                 code_val = code_attr() if callable(code_attr) else None
                 code_str: str = (
-                    str(getattr(code_val, "name", "UNKNOWN"))
+                    str(code_val.name if hasattr(code_val, "name") else "UNKNOWN")
                     if code_val is not None
                     else "UNKNOWN"
                 )
@@ -1078,7 +1079,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
             """
             try:
-                code_attr = getattr(error, "code", None)
+                code_attr = error.code if hasattr(error, "code") else None
                 if code_attr is None:
                     return r[bool].ok(False)
 
