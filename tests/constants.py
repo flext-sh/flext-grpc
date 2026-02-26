@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Final, TypeAlias
+from typing import Final
 
 from flext_tests.constants import FlextTestsConstants
 
@@ -79,7 +79,6 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
         TEST_REQUEST_MESSAGE: Final[str] = "test_request"
         TEST_RESPONSE_MESSAGE: Final[str] = "test_response"
         TEST_ERROR_MESSAGE: Final[str] = "test_error"
-
 
 
 # Short aliases per FLEXT convention

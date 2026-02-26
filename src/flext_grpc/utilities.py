@@ -10,24 +10,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import gc
-import time
-from collections.abc import Iterator, Mapping
-from datetime import UTC, datetime
-from typing import ClassVar, cast
+from collections.abc import Mapping
+from typing import cast
 from uuid import uuid4
 
 import grpc
 import psutil
 from flext_core import r
-from flext_core.loggings import FlextLogger
 from flext_core.utilities import FlextUtilities
-from google.protobuf import json_format
-from google.protobuf.descriptor import FieldDescriptor
-from google.protobuf.json_format import MessageToDict, MessageToJson
 from google.protobuf.message import Message
 
-from flext_grpc import m
 from flext_grpc.constants import FlextGrpcConstants
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.typings import t
@@ -160,7 +152,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 unique_id=str(uuid4()),
                 method_name=method_name,
                 stream_type=cast(
-                    FlextGrpcConstants.Grpc.StreamTypeLiteral, stream_type
+                    "FlextGrpcConstants.Grpc.StreamTypeLiteral", stream_type
                 ),
             )
             return r.ok(stream)
