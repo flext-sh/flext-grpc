@@ -38,16 +38,6 @@ class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
     - All production models come from FlextGrpcModels
     """
 
-    class Tests:
-        """Project-specific test fixtures namespace.
-
-        Provides test fixtures for flext-grpc testing.
-        Extends the base FlextTestsModels.Tests namespace.
-        """
-
-        class Grpc:
-            """gRPC-specific test fixtures."""
-
 
 # Short aliases per FLEXT convention
 tm = TestsFlextGrpcModels  # Primary test models alias

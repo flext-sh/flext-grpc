@@ -15,7 +15,13 @@ from datetime import UTC, datetime
 from typing import Literal, Self
 
 import grpc
+import grpc
 from flext_core import FlextModels, m, r
+from pydantic import BaseModel, Field, computed_field, field_validator
+
+from flext_grpc.constants import c
+from flext_grpc.protocols import FlextGrpcProtocols as p
+from flext_grpc.typings import t
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_grpc.constants import c
@@ -495,7 +501,7 @@ class FlextGrpcModels(FlextModels):
                     self.state,
                     "connecting",
                     {"idle": {"connecting"}},
-                ).map(lambda update: self.model_copy(update=update))
+                ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             def mark_ready(self) -> r[Self]:
                 """Transition to ready."""
@@ -503,7 +509,7 @@ class FlextGrpcModels(FlextModels):
                     self.state,
                     "ready",
                     {"connecting": {"ready"}},
-                ).map(lambda update: self.model_copy(update=update))
+                ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             def disconnect(self) -> r[Self]:
                 """Transition to idle."""
@@ -540,7 +546,7 @@ class FlextGrpcModels(FlextModels):
                     self.state,
                     "starting",
                     {"stopped": {"starting"}},
-                ).map(lambda update: self.model_copy(update=update))
+                ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             def mark_running(self) -> r[Self]:
                 """Transition to running."""
@@ -548,7 +554,7 @@ class FlextGrpcModels(FlextModels):
                     self.state,
                     "running",
                     {"starting": {"running"}},
-                ).map(lambda update: self.model_copy(update=update))
+                ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             def stop(self) -> r[Self]:
                 """Transition to stopping."""
@@ -556,14 +562,14 @@ class FlextGrpcModels(FlextModels):
                     self.state,
                     "stopping",
                     {"running": {"stopping"}},
-                ).map(lambda update: self.model_copy(update=update))
+                ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             def mark_stopped(self) -> r[Self]:
                 """Transition to stopped."""
                 if self.state not in {"stopping", "running"}:
                     return r.fail(f"Cannot mark stopped from {self.state}")
                 return r.ok(
-                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED})
+                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value})
                 )
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:

@@ -367,7 +367,7 @@ def main() -> None:
     summary = results["summary"]
     if isinstance(summary, dict) and (
         summary.get("status") == "critical"
-        or summary.get("quality_score", 0)
+        or int(summary.get("quality_score", 0))
         < ArchitectureValidator.CRITICAL_QUALITY_SCORE
     ):
         sys.exit(1)

@@ -80,18 +80,6 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
         TEST_RESPONSE_MESSAGE: Final[str] = "test_response"
         TEST_ERROR_MESSAGE: Final[str] = "test_error"
 
-    class Literals:
-        """Literal type aliases for test constants (Python 3.13 pattern)."""
-
-        ChannelStateLiteral: TypeAlias = FlextGrpcConstants.Grpc.ChannelStateLiteral
-        ServerStateLiteral: TypeAlias = FlextGrpcConstants.Grpc.ServerStateLiteral
-        StreamTypeLiteral: TypeAlias = FlextGrpcConstants.Grpc.StreamTypeLiteral
-        LoadBalancingPolicyLiteral: TypeAlias = (
-            FlextGrpcConstants.Grpc.LoadBalancingPolicyLiteral
-        )
-        CompressionTypeLiteral: TypeAlias = (
-            FlextGrpcConstants.Grpc.CompressionTypeLiteral
-        )
 
 
 # Short aliases per FLEXT convention

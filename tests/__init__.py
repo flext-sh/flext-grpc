@@ -8,7 +8,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from tests.constants import TestsFlextGrpcConstants, c
+from .constants import TestsFlextGrpcConstants, c
+from .models import TestsFlextGrpcModels, m, tm
+from .utilities import TestsFlextGrpcUtilities, u
 from tests.models import TestsFlextGrpcModels, m, tm
 from tests.utilities import TestsFlextGrpcUtilities, u
 

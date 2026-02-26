@@ -23,15 +23,6 @@ class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
     - p.Grpc.* (from FlextGrpcProtocols)
     """
 
-    class Tests:
-        """Project-specific test protocols.
-
-        Extends FlextTestsProtocols.Tests with Grpc-specific protocols.
-        """
-
-        class Grpc:
-            """Grpc-specific test protocols."""
-
 
 # Runtime aliases
 p = TestsFlextGrpcProtocols

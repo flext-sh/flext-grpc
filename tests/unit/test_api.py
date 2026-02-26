@@ -121,7 +121,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_entity("invalid_type")
         assert result.is_failure
-        assert "Unknown entity type" in result.error
+        assert result.error and "Unknown entity type" in result.error
 
     def test_validate_target_invalid(self) -> None:
         """Test target validation with invalid targets."""
@@ -137,7 +137,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.parse_address("invalid_address")
         assert result.is_failure
-        assert "Invalid address" in result.error
+        assert result.error and "Invalid address" in result.error
 
     def test_create_channel_with_options(self) -> None:
         """Test channel creation with custom options."""
