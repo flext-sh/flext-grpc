@@ -475,7 +475,7 @@ def calculate_architecture_health():
 1. **Stakeholder Review**: Business stakeholders review context and scope
 1. **Approval**: Architecture owner approves significant changes
 
----
+______________________________________________________________________
 
 **This architecture documentation provides a comprehensive framework for understanding,
 maintaining,

@@ -718,6 +718,6 @@ class GrpcVersionManager:
 1. **Monitoring** - Observability integration
 1. **CLI Management** - Operational tools integration
 
----
+______________________________________________________________________
 
 This integration guide provides comprehensive patterns for using flext-grpc within the FLEXT ecosystem once the protobuf compatibility issue is resolved.

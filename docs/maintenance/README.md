@@ -614,7 +614,7 @@ make docs
 - **Discussions**: GitHub Discussions for questions
 - **Wiki**: Project wiki for advanced topics
 
----
+______________________________________________________________________
 
 **Documentation Maintenance Framework** - Ensuring high-quality, consistent,
 and accurate documentation through automated processes and systematic quality assurance.
