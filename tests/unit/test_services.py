@@ -1,10 +1,7 @@
 """Tests for flext_grpc.services module."""
 
-from flext_grpc import (
-    ConnectionPool,
-    FlextGrpcServices,
-    MetricsCollector,
-)
+from flext_grpc import FlextGrpcServices
+from flext_grpc.services import ConnectionPool, MetricsCollector
 
 
 class TestFlextGrpcServices:

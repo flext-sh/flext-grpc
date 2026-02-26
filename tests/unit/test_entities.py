@@ -3,7 +3,7 @@
 import pytest
 
 from flext_grpc.constants import c
-from flext_grpc.entities import FlextGrpcEntities
+from flext_grpc.models import FlextGrpcModels as FlextGrpcEntities
 
 
 class TestFlextGrpcEntities:
@@ -72,9 +72,7 @@ class TestFlextGrpcEntities:
 
     def test_channel_state_machine(self) -> None:
         """Test channel state machine transitions."""
-        channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", state="idle"
-        )
+        channel = FlextGrpcEntities.Channel(target="localhost:50051", state="idle")
         result = channel.connect()
         assert result.is_success
         connected_channel = result.value

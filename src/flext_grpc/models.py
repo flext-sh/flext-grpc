@@ -635,7 +635,7 @@ class FlextGrpcModels(FlextModels):
                 """Connect functionally."""
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
-                    state=c.Grpc.ChannelState.IDLE.value,
+                    state="idle",
                 )
                 return r.ok(self.model_copy(update={"channel": channel}))
 

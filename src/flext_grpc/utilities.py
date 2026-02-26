@@ -61,8 +61,8 @@ class FlextGrpcUtilities(FlextUtilities):
             channel = FlextGrpcModels.Grpc.Channel(
                 unique_id=str(uuid4()),
                 target=target,
-                state=c.Grpc.ChannelState.IDLE,
-                options=options or {},
+                state="idle",
+                options=dict(options) if options else {},
             )
 
             client = FlextGrpcModels.Grpc.Client(
@@ -107,8 +107,8 @@ class FlextGrpcUtilities(FlextUtilities):
             channel = FlextGrpcModels.Grpc.Channel(
                 unique_id=str(uuid4()),
                 target=target,
-                state=c.Grpc.ChannelState.IDLE,
-                options=options or {},
+                state="idle",
+                options=dict(options) if options else {},
             )
             return r.ok(channel)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:

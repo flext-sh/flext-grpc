@@ -3,12 +3,9 @@
 import pytest
 from pydantic import BaseModel
 
-from flext_grpc import (
-    FlextGrpc,
-    GenericOperationSpec,
-    GenericRequest,
-    GenericResponse,
-)
+from flext_grpc import FlextGrpc
+from flext_grpc.api import GenericOperationSpec, GenericRequest, GenericResponse
+from flext_grpc.models import FlextGrpcModels
 from flext_grpc.settings import FlextGrpcSettings
 
 
@@ -23,14 +20,13 @@ class TestFlextGrpc:
     def test_init_with_config(self) -> None:
         """Test FlextGrpc initialization with config."""
         config = FlextGrpcSettings()
-        grpc = FlextGrpc()
-        grpc._config = config  # Set config manually for test
+        grpc = FlextGrpc(config=config)
         assert grpc.grpc_config == config
 
     def test_create_server(self) -> None:
         """Test server creation."""
         grpc = FlextGrpc()
-        result = grpc.create_entity("server", host="localhost", port=50051)
+        result = grpc.create_server(host="localhost", port=50051)
         assert result.is_success
         server = result.value
         assert server.host == "localhost"
@@ -39,7 +35,7 @@ class TestFlextGrpc:
     def test_create_client(self) -> None:
         """Test client creation."""
         grpc = FlextGrpc()
-        result = grpc.create_entity("client", target="localhost:50051")
+        result = grpc.create_client(target="localhost:50051")
         assert result.is_success
         client = result.value
         assert client.channel is not None
@@ -47,8 +43,7 @@ class TestFlextGrpc:
     def test_create_stream(self) -> None:
         """Test stream creation."""
         grpc = FlextGrpc()
-        result = grpc.create_entity(
-            "stream",
+        result = grpc.create_stream(
             method_name="test_method",
             stream_type="unary",
         )
@@ -87,7 +82,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_service(name="TestService", methods=["method1", "method2"])
         assert result.is_success
-        service = result.value
+        service: FlextGrpcModels.Grpc.Service = result.value
         assert service.name == "TestService"
         assert service.methods == ["method1", "method2"]
 
@@ -114,7 +109,7 @@ class TestFlextGrpc:
         result = grpc.create_client(target="127.0.0.1:8080")
         assert result.is_success
         client = result.value
-        assert client.channel.target == "127.0.0.1:8080"
+        assert client.channel is not None and client.channel.target == "127.0.0.1:8080"
 
     def test_create_entity_invalid_type(self) -> None:
         """Test create_entity with invalid entity type."""
@@ -151,9 +146,9 @@ class TestFlextGrpc:
     def test_create_service_defaults(self) -> None:
         """Test service creation with defaults."""
         grpc = FlextGrpc()
-        result = grpc.create_service()
+        result = grpc.create_service(name="DefaultService", methods=["default_method"])
         assert result.is_success
-        service = result.value
+        service: FlextGrpcModels.Grpc.Service = result.value
         assert service.name == "DefaultService"
         assert service.methods == ["default_method"]
 
