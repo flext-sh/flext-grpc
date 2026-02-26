@@ -70,6 +70,6 @@ For general FLEXT concepts, refer to workspace documentation:
 1. **Standards**: Follow [FLEXT documentation standards](../../docs/standards/documentation.md)
 1. **No Duplication**: Reference workspace docs instead of duplicating general concepts
 
-______________________________________________________________________
+---
 
 For current development status, see the main [README.md](../README.md).

@@ -325,7 +325,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 - **Monitoring**: Comprehensive observability integration
 - **Configuration Management**: Environment variable support
 
-______________________________________________________________________
+---
 
 **Last Updated**: 2025-08-02\
 **Documentation Standard**: Enterprise Grade\

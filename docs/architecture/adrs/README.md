@@ -443,7 +443,7 @@ See `template.md` for the complete ADR template.
 - [ ] Implementation approach is feasible
 - [ ] Stakeholders are identified and consulted
 
-______________________________________________________________________
+---
 
 **ADRs provide a living record of architectural decisions,
 ensuring that design rationale is preserved and architectural knowledge is accumulated over time. They help teams make better decisions by learning from past choices and their outcomes.**

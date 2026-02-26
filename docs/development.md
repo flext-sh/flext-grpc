@@ -1,7 +1,7 @@
 # flext-grpc Development Guide
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Development Setup](#development-setup)
   - [Prerequisites](#prerequisites)
@@ -35,7 +35,7 @@
 - [Troubleshooting Development Issues](#troubleshooting-development-issues)
   - [Common Issues](#common-issues)
   - [Development Tools](#development-tools)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 ## Table of Contents
 

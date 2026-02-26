@@ -210,7 +210,7 @@ print(f'✅ Server creation: {server.address}')
 1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
 1. **Configuration** - See [Configuration](configuration.md) for advanced settings
 
-______________________________________________________________________
+---
 
 For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 

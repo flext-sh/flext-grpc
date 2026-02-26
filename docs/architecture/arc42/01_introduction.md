@@ -292,7 +292,7 @@ standards compliance, risk management |
 1. **Identity Management**: OAuth/OIDC identity providers will be available
 1. **Network Security**: mTLS and service mesh infrastructure will be available
 
-______________________________________________________________________
+---
 
 **This introduction establishes FLEXT-gRPC's purpose, scope, stakeholders,
 and quality goals within the FLEXT ecosystem. The system provides a critical communication foundation for enterprise microservices while maintaining architectural integrity and operational excellence.**

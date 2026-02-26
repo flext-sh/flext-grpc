@@ -1,7 +1,7 @@
 # Documentation Maintenance Troubleshooting Guide
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Quick Diagnosis](#quick-diagnosis)
   - [System Health Check](#system-health-check)
@@ -53,7 +53,7 @@
   - [Data Recovery](#data-recovery)
   - [Configuration Recovery](#configuration-recovery)
   - [System Recovery](#system-recovery)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 ## Table of Contents
 

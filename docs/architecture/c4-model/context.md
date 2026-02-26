@@ -450,7 +450,7 @@ Rel_Back(flext_ldap, flext_grpc, "May use", "For directory service integration")
 1. Establish architecture review board
 1. Plan v2.0 architecture evolution
 
-______________________________________________________________________
+---
 
 **This context view establishes FLEXT-gRPC's position within the FLEXT ecosystem and defines its scope,
 stakeholders,

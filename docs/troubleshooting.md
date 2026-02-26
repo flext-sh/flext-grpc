@@ -1,7 +1,7 @@
 # flext-grpc Troubleshooting
 
-
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Fixed Issues](#fixed-issues)
   - [Protobuf Import Compatibility (RESOLVED)](#protobuf-import-compatibility-resolved)
