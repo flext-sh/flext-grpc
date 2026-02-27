@@ -234,6 +234,7 @@ markers = [
   "stress: stress tests",
   "resilience: resilience tests",
 ]
+enable_assertion_pass_hook = true
 [tool.coverage]
 html.directory = "htmlcov"
 report.exclude_lines = [
