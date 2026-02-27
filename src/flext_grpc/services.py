@@ -16,6 +16,7 @@ from abc import ABC, abstractmethod
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
+from typing import cast
 
 import grpc
 from flext_core.result import r
@@ -47,7 +48,7 @@ class ServicePayload(BaseModel):
     @classmethod
     def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
         """Build payload from keyword values."""
-        return cls(values=values)
+        return cls(values=cast(t.Grpc.GrpcDict, values))
 
 
 class _MetricValueModel(BaseModel):

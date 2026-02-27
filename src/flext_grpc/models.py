@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import Literal, Self
+from typing import Literal, Self, cast
 
 import grpc
 from flext_core import FlextModels, m, r
@@ -449,7 +449,7 @@ class FlextGrpcModels(FlextModels):
             @classmethod
             def from_values(cls, **values: t.GeneralValueType) -> Self:
                 """Build payload from keyword values."""
-                return cls(values=values)
+                return cls(values=cast(t.Grpc.GrpcDict, values))
 
         class Entity(FlextModels.Entity):
             """Generic base entity with functional patterns."""

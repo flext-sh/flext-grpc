@@ -172,8 +172,8 @@ class FlextGrpc:
         entity = result.value
 
         validate_method = (
-            entity.validate_business_rules
-            if hasattr(entity, "validate_business_rules")
+            getattr(entity, "validate_business_rules", None)
+            if isinstance(entity, BaseModel)
             else None
         )
         if validate_method is not None and callable(validate_method):
