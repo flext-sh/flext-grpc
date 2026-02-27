@@ -171,7 +171,9 @@ class FlextGrpcUtilities(FlextUtilities):
                 parts = address.rsplit(":", 1)
                 host = parts[0]
                 port = int(parts[1])
-                if not (c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT):
+                if not (
+                    c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
+                ):
                     return None
                 return (host, port)
             except (ValueError, IndexError):
