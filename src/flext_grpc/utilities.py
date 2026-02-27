@@ -171,7 +171,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 parts = address.rsplit(":", 1)
                 host = parts[0]
                 port = int(parts[1])
-                if not (1 <= port <= 65535):
+                if not (c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT):
                     return None
                 return (host, port)
             except (ValueError, IndexError):
@@ -219,7 +219,7 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def validate_port(port: int) -> bool:
             """Validate gRPC port number."""
-            return 1 <= port <= 65535
+            return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
 
         @staticmethod
         def validate_host(host: str) -> bool:
