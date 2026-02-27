@@ -449,7 +449,7 @@ class FlextGrpcModels(FlextModels):
             @classmethod
             def from_values(cls, **values: t.GeneralValueType) -> Self:
                 """Build payload from keyword values."""
-                return cls(values=cast(t.Grpc.GrpcDict, values))
+                return cls(values=cast("t.Grpc.GrpcDict", values))
 
         class Entity(FlextModels.Entity):
             """Generic base entity with functional patterns."""

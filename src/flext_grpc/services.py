@@ -48,7 +48,7 @@ class ServicePayload(BaseModel):
     @classmethod
     def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
         """Build payload from keyword values."""
-        return cls(values=cast(t.Grpc.GrpcDict, values))
+        return cls(values=cast("t.Grpc.GrpcDict", values))
 
 
 class _MetricValueModel(BaseModel):

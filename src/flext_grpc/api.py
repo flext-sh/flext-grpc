@@ -17,7 +17,7 @@ from flext_core import r
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 from flext_grpc.constants import c
-from flext_grpc.models import FlextGrpcModels as m
+from flext_grpc.models import m
 from flext_grpc.services import FlextGrpcServices, ServicePayload
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
