@@ -16,9 +16,8 @@ from typing import TypeVar
 from flext_core import r
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from flext_grpc import m
+from flext_grpc.models import FlextGrpcModels as m
 from flext_grpc.constants import c
-from flext_grpc.models import FlextGrpcModels as FlextGrpcEntities
 from flext_grpc.services import FlextGrpcServices, ServicePayload
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
@@ -71,40 +70,40 @@ class _CompleteSetupInput(BaseModel):
 class _CompleteSetupResult(BaseModel):
     """Typed payload for complete setup creation."""
 
-    server: FlextGrpcEntities.Server
-    client: FlextGrpcEntities.Client
-    service: FlextGrpcEntities.Service
+    server: m.Server
+    client: m.Client
+    service: m.Service
     target: str
 
 
 class _ServerEntityEnvelope(BaseModel):
     """Typed envelope validating server entity results."""
 
-    entity: FlextGrpcEntities.Server
+    entity: m.Server
 
 
 class _ClientEntityEnvelope(BaseModel):
     """Typed envelope validating client entity results."""
 
-    entity: FlextGrpcEntities.Client
+    entity: m.Client
 
 
 class _ChannelEntityEnvelope(BaseModel):
     """Typed envelope validating channel entity results."""
 
-    entity: FlextGrpcEntities.Channel
+    entity: m.Channel
 
 
 class _ServiceEntityEnvelope(BaseModel):
     """Typed envelope validating service entity results."""
 
-    entity: FlextGrpcEntities.Service
+    entity: m.Service
 
 
 class _StreamEntityEnvelope(BaseModel):
     """Typed envelope validating stream entity results."""
 
-    entity: FlextGrpcEntities.GrpcStream
+    entity: m.GrpcStream
 
 
 def _result_as_object[T](result: r[T]) -> r[object]:
@@ -267,7 +266,7 @@ class FlextGrpc:
     def create_server(
         self,
         **kwargs: str | int | bool | list[str] | None,
-    ) -> r[FlextGrpcEntities.Server]:
+    ) -> r[m.Server]:
         """Create server entity with functional defaults."""
         try:
             server_input = _ServerCreateInput.model_validate(kwargs)
@@ -295,7 +294,7 @@ class FlextGrpc:
     def create_client(
         self,
         **kwargs: str | int | bool | None,
-    ) -> r[FlextGrpcEntities.Client]:
+    ) -> r[m.Client]:
         """Create client with channel composition."""
         result = self.create_entity("client", **kwargs)
         if result.is_failure:
@@ -313,7 +312,7 @@ class FlextGrpc:
     def create_channel(
         self,
         **kwargs: EntityKwargValue,
-    ) -> r[FlextGrpcEntities.Channel]:
+    ) -> r[m.Channel]:
         """Create channel entity with defaults."""
         try:
             channel_input = _ChannelCreateInput.model_validate(kwargs)
@@ -340,7 +339,7 @@ class FlextGrpc:
     def create_service(
         self,
         **kwargs: str | list[str] | None,
-    ) -> r[FlextGrpcEntities.Service]:
+    ) -> r[m.Service]:
         """Create service entity with defaults."""
         try:
             service_input = _ServiceCreateInput.model_validate(kwargs)
@@ -369,7 +368,7 @@ class FlextGrpc:
         method_name: str = "DefaultMethod",
         stream_type: str = "unary",
         **kwargs: str | int | bool | None,
-    ) -> r[FlextGrpcEntities.GrpcStream]:
+    ) -> r[m.GrpcStream]:
         """Create stream with validation."""
         if not method_name.strip():
             return r.fail("Stream method name cannot be empty")
@@ -399,8 +398,8 @@ class FlextGrpc:
 
     def start_server(
         self,
-        server: FlextGrpcEntities.Server,
-    ) -> r[FlextGrpcEntities.Server]:
+        server: m.Server,
+    ) -> r[m.Server]:
         """Delegate server start.
 
         Args:
@@ -414,8 +413,8 @@ class FlextGrpc:
 
     def stop_server(
         self,
-        server: FlextGrpcEntities.Server,
-    ) -> r[FlextGrpcEntities.Server]:
+        server: m.Server,
+    ) -> r[m.Server]:
         """Delegate server stop.
 
         Args:
@@ -427,7 +426,7 @@ class FlextGrpc:
         """
         return self._service.stop_server(server)
 
-    def connect_client(self, target: str) -> r[FlextGrpcEntities.Client]:
+    def connect_client(self, target: str) -> r[m.Client]:
         """Delegate client connection.
 
         Args:
@@ -441,8 +440,8 @@ class FlextGrpc:
 
     def disconnect_client(
         self,
-        client: FlextGrpcEntities.Client,
-    ) -> r[FlextGrpcEntities.Client]:
+        client: m.Client,
+    ) -> r[m.Client]:
         """Delegate client disconnection.
 
         Args:
@@ -456,7 +455,7 @@ class FlextGrpc:
 
     def make_call(
         self,
-        client: FlextGrpcEntities.Client,
+        client: m.Client,
         method: str,
         request: t.ConfigValue,
     ) -> r[ServicePayload]:
@@ -477,7 +476,7 @@ class FlextGrpc:
 
     def send_data(
         self,
-        stream: FlextGrpcEntities.GrpcStream,
+        stream: m.GrpcStream,
         data: t.ConfigValue,
     ) -> r[ServicePayload]:
         """Delegate data sending.
@@ -496,8 +495,8 @@ class FlextGrpc:
 
     def close_stream(
         self,
-        stream: FlextGrpcEntities.GrpcStream,
-    ) -> r[FlextGrpcEntities.GrpcStream]:
+        stream: m.GrpcStream,
+    ) -> r[m.GrpcStream]:
         """Delegate stream closing.
 
         Args:
