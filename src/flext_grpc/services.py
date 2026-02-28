@@ -23,15 +23,17 @@ from flext_core import r
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from flext_grpc import (
-    EchoRequest,
     FlextGrpcModels as FlextGrpcEntities,
-    FlextGrpcServiceServicer,
-    FlextGrpcServiceStub,
     FlextGrpcUtilities,
-    HealthRequest,
-    add_FlextGrpcServiceServicer_to_server,
     c,
     t,
+)
+from flext_grpc.proto.stubs import (
+    EchoRequest,
+    FlextGrpcServiceServicer,
+    FlextGrpcServiceStub,
+    HealthRequest,
+    add_FlextGrpcServiceServicer_to_server,
 )
 
 
