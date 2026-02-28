@@ -19,7 +19,7 @@ from queue import Queue
 from typing import cast
 
 import grpc
-from flext_core.result import r
+from flext_core import r
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
 
 from flext_grpc.constants import c

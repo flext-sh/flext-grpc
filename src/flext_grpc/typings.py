@@ -17,7 +17,7 @@ from __future__ import annotations
 import logging
 import re
 
-from flext_core.typings import FlextTypes
+from flext_core import FlextTypes
 
 from flext_grpc.constants import c
 

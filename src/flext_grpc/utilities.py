@@ -16,8 +16,7 @@ from uuid import uuid4
 
 import grpc
 import psutil
-from flext_core import r
-from flext_core.utilities import FlextUtilities
+from flext_core import FlextUtilities, r
 from google.protobuf.message import Message
 
 from flext_grpc.constants import FlextGrpcConstants
