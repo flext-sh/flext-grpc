@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core import r
+from flext_core.result import FlextResult
 from flext_core.protocols import FlextProtocols
 
 from flext_grpc.constants import c
@@ -345,7 +345,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Create gRPC client configuration."""
                 ...
 
-            def validate_config(self) -> r[bool]:
+            def validate_config(self) -> FlextResult[bool]:
                 """Validate gRPC configuration."""
                 ...
 
@@ -368,17 +368,17 @@ class FlextGrpcProtocols(FlextProtocols):
         class ResourceManagerProtocol(Protocol):
             """Protocol for gRPC resource management operations."""
 
-            def acquire(self) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
+            def acquire(self) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Acquire a resource."""
                 ...
 
             def release(
                 self, resource: FlextGrpcProtocols.Grpc.GrpcResource
-            ) -> r[bool]:
+            ) -> FlextResult[bool]:
                 """Release a resource."""
                 ...
 
-            def cleanup(self) -> r[bool]:
+            def cleanup(self) -> FlextResult[bool]:
                 """Cleanup all resources."""
                 ...
 
@@ -463,7 +463,7 @@ class FlextGrpcProtocols(FlextProtocols):
                     | Mapping[str, str | int | float | bool | list[str] | None]
                     | None
                 ),
-            ) -> r[object]:
+            ) -> FlextResult[object]:
                 """Create entity with given arguments."""
                 ...
 
@@ -474,7 +474,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def __call__(
                 self,
                 **kwargs: str | float | bool,
-            ) -> r[object]:
+            ) -> FlextResult[object]:
                 """Execute operation with given arguments."""
                 ...
 
