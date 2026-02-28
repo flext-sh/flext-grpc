@@ -520,7 +520,7 @@ class FlextGrpcModels(FlextModels):
             port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
-            services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)
+            services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
             grpc_server: p.Grpc.GrpcServer | None = None
 
             @override

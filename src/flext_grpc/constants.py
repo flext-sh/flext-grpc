@@ -356,24 +356,6 @@ class FlextGrpcConstants(FlextConstants):
         )
         """Compression types tuple - generated from CompressionTypes StrEnum."""
 
-        # ═══════════════════════════════════════════════════════════════════
-        # LITERALS NAMESPACE (Deprecated - use direct access from Grpc)
-        # ═══════════════════════════════════════════════════════════════════
-        # All tuples and Literal types are defined at Grpc level above.
-        # This namespace is kept for backward compatibility but should not be used.
-        # Update code to use direct access: Grpc.ChannelStateLiteral, Grpc.CHANNEL_STATES
-
-        class GrpcLiterals:
-            """gRPC-specific literal types namespace (DEPRECATED).
-
-            DEPRECATED: All code has been updated to access directly from Grpc:
-            - Use: Grpc.ChannelStateLiteral, Grpc.CHANNEL_STATES
-            - Not: Grpc.GrpcLiterals.ChannelStateLiteral, Grpc.GrpcLiterals.CHANNEL_STATES
-
-            This namespace is kept for backward compatibility but will be removed
-            in a future version. All Literal types and tuples are now at Grpc level.
-            """
-
 
 c = FlextGrpcConstants
 
