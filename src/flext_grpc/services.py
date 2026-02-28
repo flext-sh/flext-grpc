@@ -747,7 +747,7 @@ class FlextGrpcServices:
             disconnect_result = self.disconnect_client(client)
             if disconnect_result.is_failure:
                 return r.fail(
-                    disconnect_result.error or "Client disconnect command failed"
+                    disconnect_result.error or "Client disconnect command failed",
                 )
             return r.ok(ServicePayload.from_values(status="disconnected"))
         if command == "status":
@@ -785,7 +785,7 @@ class FlextGrpcServices:
     def execute(self, **_kwargs: t.GeneralValueType) -> r[ServicePayload]:
         """Execute main service operation."""
         return r.ok(
-            ServicePayload.from_values(status="ready", service="flext-grpc-service")
+            ServicePayload.from_values(status="ready", service="flext-grpc-service"),
         )
 
 

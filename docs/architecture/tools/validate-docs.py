@@ -328,7 +328,8 @@ class ArchitectureValidator:
 
 
 def save_report(
-    results: dict[str, t.GeneralValueType], output_path: Path | None = None
+    results: dict[str, t.GeneralValueType],
+    output_path: Path | None = None,
 ) -> None:
     """Save validation report to file."""
     if output_path is None:

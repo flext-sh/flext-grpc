@@ -125,7 +125,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def disconnect_client(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[bool]:
                 """Disconnect gRPC client."""
                 ...
@@ -181,7 +182,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def close_stream(
-                self, stream: FlextGrpcProtocols.Grpc.GrpcStream
+                self,
+                stream: FlextGrpcProtocols.Grpc.GrpcStream,
             ) -> FlextProtocols.Result[bool]:
                 """Close gRPC stream."""
                 ...
@@ -234,7 +236,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def validate_service(
-                self, service: FlextGrpcProtocols.Grpc.GrpcServicer
+                self,
+                service: FlextGrpcProtocols.Grpc.GrpcServicer,
             ) -> FlextProtocols.Result[bool]:
                 """Validate gRPC service definition."""
                 ...
@@ -259,13 +262,15 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def close_channel(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[bool]:
                 """Close gRPC channel."""
                 ...
 
             def get_channel_state(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[str]:
                 """Get gRPC channel connection state."""
                 ...
@@ -372,7 +377,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def release(
-                self, resource: FlextGrpcProtocols.Grpc.GrpcResource
+                self,
+                resource: FlextGrpcProtocols.Grpc.GrpcResource,
             ) -> FlextResult[bool]:
                 """Release a resource."""
                 ...
@@ -403,7 +409,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def unsubscribe(
-                self, callback: FlextGrpcProtocols.Grpc.GrpcCallbackFunction
+                self,
+                callback: FlextGrpcProtocols.Grpc.GrpcCallbackFunction,
             ) -> None:
                 """Remove a subscription callback from the channel."""
                 ...
@@ -417,7 +424,8 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC server operations (duck typing for grpc.Server)."""
 
             def add_generic_rpc_handlers(
-                self, handlers: list[FlextGrpcProtocols.Grpc.GrpcRpcHandler]
+                self,
+                handlers: list[FlextGrpcProtocols.Grpc.GrpcRpcHandler],
             ) -> None:
                 """Add generic RPC handlers."""
                 ...

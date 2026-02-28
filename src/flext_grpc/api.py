@@ -244,7 +244,8 @@ class FlextGrpc:
 
         def _wrap_op[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
             def _inner(
-                *args: t.GeneralValueType, **kwargs: t.GeneralValueType
+                *args: t.GeneralValueType,
+                **kwargs: t.GeneralValueType,
             ) -> r[object]:
                 return _result_as_object(fn(*args, **kwargs))
 

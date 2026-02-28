@@ -90,7 +90,7 @@ class FlextGrpcSettings(BaseModel):
         security_config: GrpcSecurityConfig = security or GrpcSecurityConfig()
         if tls_enabled is not None:
             security_config = security_config.model_copy(
-                update={"tls_enabled": tls_enabled}
+                update={"tls_enabled": tls_enabled},
             )
 
         performance_config: GrpcPerformanceConfig = (
@@ -98,7 +98,7 @@ class FlextGrpcSettings(BaseModel):
         )
         if max_workers is not None:
             performance_config = performance_config.model_copy(
-                update={"max_workers": max_workers}
+                update={"max_workers": max_workers},
             )
 
         streaming_config: GrpcStreamingConfig = streaming or GrpcStreamingConfig()

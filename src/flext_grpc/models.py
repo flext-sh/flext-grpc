@@ -115,7 +115,7 @@ class FlextGrpcModels(FlextModels):
             """Basic client configuration (immutable value model)."""
 
             target: str = Field(
-                default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
+                default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
             )
             timeout: float = Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
 
@@ -129,7 +129,8 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: bool = Field(
-                default=False, description="Enable TLS encryption"
+                default=False,
+                description="Enable TLS encryption",
             )
             tls_cert_file: str | None = Field(
                 default=None,
@@ -144,10 +145,12 @@ class FlextGrpcModels(FlextModels):
                 description="TLS CA certificate file path",
             )
             auth_enabled: bool = Field(
-                default=False, description="Enable authentication"
+                default=False,
+                description="Enable authentication",
             )
             auth_token: str | None = Field(
-                default=None, description="Authentication token"
+                default=None,
+                description="Authentication token",
             )
             client_cert_required: bool = Field(
                 default=False,
@@ -223,7 +226,8 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC streaming configuration."""
 
             enabled: bool = Field(
-                default=True, description="Enable streaming operations"
+                default=True,
+                description="Enable streaming operations",
             )
             max_concurrent_streams: int = Field(
                 default=10,
@@ -282,14 +286,16 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: bool = Field(
-                default=True, description="Enable metrics collection"
+                default=True,
+                description="Enable metrics collection",
             )
             tracing_enabled: bool = Field(
                 default=False,
                 description="Enable distributed tracing",
             )
             health_check_enabled: bool = Field(
-                default=True, description="Enable health checks"
+                default=True,
+                description="Enable health checks",
             )
             health_check_interval: int = Field(
                 default=30,
@@ -321,7 +327,10 @@ class FlextGrpcModels(FlextModels):
 
             @classmethod
             def validate_enum(
-                cls, value: str, allowed: set[str], field_name: str
+                cls,
+                value: str,
+                allowed: set[str],
+                field_name: str,
             ) -> str:
                 """Generic enum validation."""
                 if value not in allowed:
@@ -378,7 +387,7 @@ class FlextGrpcModels(FlextModels):
                         f"Invalid transition from {current} to {target}",
                     )
                 return r[FlextGrpcModels.Grpc.StateTransition].ok(
-                    FlextGrpcModels.Grpc.StateTransition(state=target)
+                    FlextGrpcModels.Grpc.StateTransition(state=target),
                 )
 
         class OperationSpec(FlextModels.Value):
@@ -508,7 +517,7 @@ class FlextGrpcModels(FlextModels):
             def disconnect(self) -> r[Self]:
                 """Transition to idle."""
                 return r.ok(
-                    self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value})
+                    self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value}),
                 )
 
         class Server(Entity, StateMachine):
@@ -564,7 +573,7 @@ class FlextGrpcModels(FlextModels):
                 if self.state not in {"stopping", "running"}:
                     return r.fail(f"Cannot mark stopped from {self.state}")
                 return r.ok(
-                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value})
+                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
                 )
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:

@@ -73,7 +73,7 @@ class TestFlextGrpcSettings:
             security=m.SecurityConfig(
                 tls_enabled=False,
                 client_cert_required=True,
-            )
+            ),
         )
 
         insecure_result = insecure_config.validate_configuration()
@@ -84,7 +84,7 @@ class TestFlextGrpcSettings:
             security=m.SecurityConfig(
                 tls_enabled=True,
                 client_cert_required=True,
-            )
+            ),
         )
         secure_result = secure_config.validate_configuration()
         assert secure_result.is_success

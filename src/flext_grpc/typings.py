@@ -94,7 +94,8 @@ class FlextGrpcTypes(FlextTypes):
                 str | int | bool | dict[str, FlextTypes.JsonValue],
             ]
             ServerLifecycle = dict[
-                str, str | bool | int | dict[str, FlextTypes.JsonValue]
+                str,
+                str | bool | int | dict[str, FlextTypes.JsonValue],
             ]
             ServerMetrics = dict[
                 str,
@@ -126,14 +127,16 @@ class FlextGrpcTypes(FlextTypes):
             ConnectionPool = dict[str, int | bool | dict[str, FlextTypes.JsonValue]]
             RetryConfiguration: TypeAlias = dict[str, int | float | bool | list[str]]
             LoadBalancing: TypeAlias = dict[
-                str, str | bool | dict[str, FlextTypes.JsonValue]
+                str,
+                str | bool | dict[str, FlextTypes.JsonValue],
             ]
             ClientMetrics = dict[
                 str,
                 int | float | dict[str, FlextTypes.JsonValue],
             ]
             ChannelOptions = dict[
-                str, str | int | bool | dict[str, FlextTypes.JsonValue]
+                str,
+                str | int | bool | dict[str, FlextTypes.JsonValue],
             ]
 
         # =========================================================================
@@ -152,11 +155,13 @@ class FlextGrpcTypes(FlextTypes):
                 str | bool | dict[str, FlextTypes.JsonValue],
             ]
             StreamMetrics = dict[
-                str, int | float | bool | dict[str, FlextTypes.JsonValue]
+                str,
+                int | float | bool | dict[str, FlextTypes.JsonValue],
             ]
             FlowControl = dict[str, int | bool | dict[str, FlextTypes.JsonValue]]
             BackpressureHandling = dict[
-                str, str | int | bool | dict[str, FlextTypes.JsonValue]
+                str,
+                str | int | bool | dict[str, FlextTypes.JsonValue],
             ]
             StreamingPipeline: TypeAlias = list[dict[str, str | FlextTypes.JsonValue]]
 
@@ -196,7 +201,8 @@ class FlextGrpcTypes(FlextTypes):
             ]
             TlsConfiguration = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
             AuthenticationConfig: TypeAlias = dict[
-                str, str | dict[str, FlextTypes.JsonValue]
+                str,
+                str | dict[str, FlextTypes.JsonValue],
             ]
             AuthorizationRules: TypeAlias = list[dict[str, str | bool | list[str]]]
             CertificateManagement = dict[
@@ -224,7 +230,8 @@ class FlextGrpcTypes(FlextTypes):
                 str | bool | dict[str, FlextTypes.JsonValue],
             ]
             TracingConfiguration = dict[
-                str, bool | str | dict[str, FlextTypes.JsonValue]
+                str,
+                bool | str | dict[str, FlextTypes.JsonValue],
             ]
             LoggingSetup = dict[
                 str,
