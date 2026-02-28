@@ -13,6 +13,7 @@ from __future__ import annotations
 import threading
 import time
 from abc import ABC, abstractmethod
+from typing import override
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
@@ -274,6 +275,7 @@ class GrpcServerManager(ServerLifecycleManager):
             thread_name_prefix="flext-grpc-server",
         )
 
+    @override
     def start_server(
         self,
         server: FlextGrpcEntities.Server,
@@ -318,6 +320,7 @@ class GrpcServerManager(ServerLifecycleManager):
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Server start failed: {e}")
 
+    @override
     def stop_server(
         self,
         server: FlextGrpcEntities.Server,
@@ -376,6 +379,7 @@ class GrpcClientManager(ClientConnectionManager):
         self._connection_pool = ConnectionPool(max_size=20)
         self._metrics = MetricsCollector()
 
+    @override
     def connect(self, target: str) -> r[FlextGrpcEntities.Client]:
         """Establish client connection with pooling."""
         if target in self._active_channels:
@@ -396,6 +400,7 @@ class GrpcClientManager(ClientConnectionManager):
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection failed: {e}")
 
+    @override
     def disconnect(
         self,
         client: FlextGrpcEntities.Client,
@@ -483,6 +488,7 @@ class GrpcStreamManager(StreamProcessor):
         self._active_streams = {}
         self._metrics = MetricsCollector()
 
+    @override
     def create_stream(
         self,
         **kwargs: t.ConfigValue,
@@ -511,6 +517,7 @@ class GrpcStreamManager(StreamProcessor):
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r.ok(stream)
 
+    @override
     def send_data(
         self,
         stream: FlextGrpcEntities.GrpcStream,
@@ -549,6 +556,7 @@ class GrpcStreamManager(StreamProcessor):
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Data send failed: {e}")
 
+    @override
     def close_stream(
         self,
         stream: FlextGrpcEntities.GrpcStream,

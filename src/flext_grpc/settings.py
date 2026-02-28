@@ -167,7 +167,7 @@ class FlextGrpcSettings(BaseModel):
                 return r.fail("RPC limit too high for worker count")
 
             # Cross-validation: Network and security
-            http_port = c.Grpc.Network.HTTP_PORT  # Standard HTTP port
+            http_port = c.Grpc.GrpcNetwork.HTTP_PORT  # Standard HTTP port
             if self.security.tls_enabled and self.network.port == http_port:
                 return r.fail("TLS enabled but using HTTP port")
 
@@ -182,10 +182,10 @@ class FlextGrpcSettings(BaseModel):
             config = cls(
                 network=GrpcNetworkConfig(
                     host="127.0.0.1",  # Bind to localhost for security
-                    port=c.Grpc.Network.GRPC_PORT,
+                    port=c.Grpc.GrpcNetwork.GRPC_PORT,
                     max_connections=c.Grpc.Connection.MAX_CONNECTIONS,
-                    keepalive_time=c.Grpc.Network.KEEPALIVE_TIME_SECONDS,
-                    keepalive_timeout=c.Grpc.Network.KEEPALIVE_TIMEOUT_SECONDS,
+                    keepalive_time=c.Grpc.GrpcNetwork.KEEPALIVE_TIME_SECONDS,
+                    keepalive_timeout=c.Grpc.GrpcNetwork.KEEPALIVE_TIMEOUT_SECONDS,
                 ),
                 security=GrpcSecurityConfig(
                     tls_enabled=False,  # Disable TLS for testing/production without certs
@@ -222,7 +222,7 @@ class FlextGrpcSettings(BaseModel):
             config = cls(
                 network=GrpcNetworkConfig(
                     host="localhost",
-                    port=c.Grpc.Network.GRPC_PORT,
+                    port=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
                 ),
                 security=GrpcSecurityConfig(),
                 performance=GrpcPerformanceConfig(

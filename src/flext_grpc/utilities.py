@@ -11,6 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
+from typing import TypeGuard
 from uuid import uuid4
 
 import grpc
@@ -33,6 +34,11 @@ ProtobufMessage = Message
 
 
 __all__ = ["FlextGrpcUtilities", "u"]
+
+
+def _is_valid_stream_type(value: str) -> TypeGuard[c.Grpc.StreamTypeLiteral]:
+    """Check if value is a valid stream type literal."""
+    return value in c.Grpc.STREAM_TYPES
 
 
 class FlextGrpcUtilities(FlextUtilities):
@@ -138,7 +144,7 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC stream entity directly."""
         try:
             # Validate stream type against allowed values
-            if stream_type not in c.Grpc.STREAM_TYPES:
+            if not _is_valid_stream_type(stream_type):
                 return r.fail(f"Invalid stream type: {stream_type}")
 
             if not method_name or not method_name.strip():
@@ -147,7 +153,7 @@ class FlextGrpcUtilities(FlextUtilities):
             stream = FlextGrpcModels.Grpc.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=stream_type  # Already validated against c.Grpc.STREAM_TYPES
+                stream_type=stream_type  # Type narrowed by TypeGuard
             )
             return r.ok(stream)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
