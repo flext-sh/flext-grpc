@@ -18,9 +18,7 @@ import grpc
 from flext_core import FlextModels, r
 from pydantic import BaseModel, Field, computed_field, field_validator
 
-from flext_grpc.constants import c
-from flext_grpc.protocols import FlextGrpcProtocols as p
-from flext_grpc.typings import t
+from flext_grpc import FlextGrpcProtocols as p, c, t
 
 
 class FlextGrpcModels(FlextModels):

@@ -24,8 +24,8 @@ from flext_grpc import (
     FlextGrpcSettingsurationError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
+    t,
 )
-from flext_grpc.typings import t
 
 # Setup logging
 logger = FlextLogger(__name__)

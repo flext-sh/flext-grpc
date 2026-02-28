@@ -3,10 +3,14 @@
 import pytest
 from pydantic import BaseModel
 
-from flext_grpc import FlextGrpc
-from flext_grpc.api import GenericOperationSpec, GenericRequest, GenericResponse
-from flext_grpc.models import FlextGrpcModels
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import (
+    FlextGrpc,
+    FlextGrpcModels,
+    FlextGrpcSettings,
+    GenericOperationSpec,
+    GenericRequest,
+    GenericResponse,
+)
 
 
 class TestFlextGrpc:

@@ -1,6 +1,6 @@
 """Tests for flext_grpc.constants module."""
 
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc import FlextGrpcConstants
 
 
 class TestFlextGrpcConstants:

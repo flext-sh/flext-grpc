@@ -11,8 +11,7 @@ from __future__ import annotations
 import pytest
 from flext_core import FlextConstants, FlextContainer
 
-from flext_grpc import t
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc import FlextGrpcConstants, t
 
 
 @pytest.fixture(autouse=True)

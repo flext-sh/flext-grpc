@@ -310,7 +310,7 @@ from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
-from flext_grpc.typings import TGrpcServerState
+from flext_grpc import TGrpcServerState
 
 class FlextGrpcServer(FlextModels.Entity):
     """Domain entity with business logic."""
@@ -483,8 +483,8 @@ class FlextGrpcServerService:
         self._server = server  # Domain dependency only
 
 # Infrastructure Layer - Depends on Domain + Service
-from flext_grpc.entities import FlextGrpcServer
-from flext_grpc.services import FlextGrpcServerService
+from flext_grpc import FlextGrpcServer
+from flext_grpc import FlextGrpcServerService
 
 def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
     # Infrastructure function using domain and service layers

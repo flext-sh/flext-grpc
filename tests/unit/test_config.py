@@ -2,8 +2,7 @@
 
 import pytest
 
-from flext_grpc.models import m
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import FlextGrpcSettings, m
 
 
 class TestFlextGrpcSettings:

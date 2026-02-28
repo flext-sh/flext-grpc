@@ -16,12 +16,15 @@ from typing import TypeVar
 from flext_core import r
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from flext_grpc.constants import c
-from flext_grpc.models import m
-from flext_grpc.services import FlextGrpcServices, ServicePayload
-from flext_grpc.settings import FlextGrpcSettings
-from flext_grpc.typings import t
-from flext_grpc.utilities import FlextGrpcUtilities
+from flext_grpc import (
+    FlextGrpcServices,
+    FlextGrpcSettings,
+    FlextGrpcUtilities,
+    ServicePayload,
+    c,
+    m,
+    t,
+)
 
 T = TypeVar("T", bound=BaseModel)
 type EntityKwargValue = object
@@ -240,7 +243,9 @@ class FlextGrpc:
         """
 
         def _wrap_op[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
-            def _inner(*args: t.GeneralValueType, **kwargs: t.GeneralValueType) -> r[object]:
+            def _inner(
+                *args: t.GeneralValueType, **kwargs: t.GeneralValueType
+            ) -> r[object]:
                 return _result_as_object(fn(*args, **kwargs))
 
             return _inner

@@ -9,11 +9,9 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core.protocols import FlextProtocols
-from flext_core.result import FlextResult
-from flext_core.typings import t
+from flext_core import FlextProtocols, FlextResult, t
 
-from flext_grpc.constants import c
+from flext_grpc import c
 
 
 class FlextGrpcProtocols(FlextProtocols):
@@ -28,7 +26,7 @@ class FlextGrpcProtocols(FlextProtocols):
     - PROVIDES: Root-level alias `p` for convenient access
 
     Usage:
-    from flext_grpc.protocols import p
+    from flext_grpc import p
 
     # Foundation protocols (inherited)
     result: p.Result[str]
@@ -392,9 +390,7 @@ class FlextGrpcProtocols(FlextProtocols):
         class GrpcCallbackFunction(Protocol):
             """Protocol for gRPC callback functions."""
 
-            def __call__(
-                self, *args: t.ScalarValue, **kwargs: t.ScalarValue
-            ) -> None:
+            def __call__(self, *args: t.ScalarValue, **kwargs: t.ScalarValue) -> None:
                 """Call the callback."""
                 ...
 

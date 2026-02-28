@@ -26,7 +26,7 @@ Testing Patterns: All error tests follow enterprise testing standards:
 Coverage Goals: Tests all error classes and their specific attributes to achieve 100% coverage with comprehensive validation of error creation, context, and usage patterns.
 
 Integration:
-- Tests error classes from flext_grpc.errors module
+- Tests error classes from flext_grpc module
 - Validates error hierarchy extending flext-core error foundation
 - Uses enterprise error handling patterns for validation
 - Integrates with pytest framework for execution and coverage

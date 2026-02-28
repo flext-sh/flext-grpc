@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 
 from typing import Protocol
 
-from flext_grpc.protocols import FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols
 
 
 class TestFlextGrpcProtocols:

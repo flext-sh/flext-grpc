@@ -19,9 +19,7 @@ import psutil
 from flext_core import FlextUtilities, r
 from google.protobuf.message import Message
 
-from flext_grpc.constants import FlextGrpcConstants, c
-from flext_grpc.models import FlextGrpcModels
-from flext_grpc.typings import t
+from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
 
 GrpcChannelType = grpc.Channel
 
@@ -153,7 +151,7 @@ class FlextGrpcUtilities(FlextUtilities):
             stream = FlextGrpcModels.Grpc.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=stream_type  # Type narrowed by TypeGuard
+                stream_type=stream_type,  # Type narrowed by TypeGuard
             )
             return r.ok(stream)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:

@@ -1,6 +1,6 @@
 """Tests for flext_grpc.utilities module."""
 
-from flext_grpc.utilities import FlextGrpcUtilities
+from flext_grpc import FlextGrpcUtilities
 
 
 class TestFlextGrpcUtilities:

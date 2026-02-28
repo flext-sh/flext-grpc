@@ -175,7 +175,7 @@ Authentication and authorization for gRPC services:
 # Planned integration (requires protobuf fix)
 from flext_auth import FlextAuthService
 from flext_grpc import FlextGrpcServer
-from flext_grpc.interceptors import AuthInterceptor  # Future
+from flext_grpc import AuthInterceptor  # Future
 
 class AuthenticatedGrpcService:
     """gRPC service with flext-auth integration."""

@@ -177,7 +177,7 @@ if start_result.is_failure:
 2. **Validate inputs using Pydantic models**:
 
    ```python
-   from flext_grpc.settings import FlextGrpcSettings
+   from flext_grpc import FlextGrpcSettings
    config = FlextGrpcSettings(host='localhost', port=50051, max_workers=10)
    ```
 

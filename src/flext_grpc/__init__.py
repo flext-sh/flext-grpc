@@ -9,21 +9,25 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
 
-from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
+from flext_core import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
     from flext_core import FlextExceptions as e, d, h, r, s, x
 
-    from flext_grpc.__version__ import __version__, __version_info__
-    from flext_grpc.api import FlextGrpc
-    from flext_grpc.constants import c
-    from flext_grpc.models import m
-    from flext_grpc.proto import FlextGrpcServiceStub
-    from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
-    from flext_grpc.services import FlextGrpcServices
-    from flext_grpc.settings import FlextGrpcSettings
-    from flext_grpc.typings import t
-    from flext_grpc.utilities import u
+    from flext_grpc import (
+        FlextGrpc,
+        FlextGrpcProtocols,
+        FlextGrpcProtocols as p,
+        FlextGrpcServices,
+        FlextGrpcServiceStub,
+        FlextGrpcSettings,
+        __version__,
+        __version_info__,
+        c,
+        m,
+        t,
+        u,
+    )
 
 # Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {

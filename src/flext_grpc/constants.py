@@ -28,7 +28,7 @@ class FlextGrpcConstants(FlextConstants):
 
     Usage:
     ```python
-    from flext_grpc.constants import FlextGrpcConstants
+    from flext_grpc import FlextGrpcConstants
 
     timeout = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
     port = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT

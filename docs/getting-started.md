@@ -139,7 +139,7 @@ print(f"Platform ready: {type(platform).__name__}")
 ### Configuration
 
 ```python
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
 config = FlextGrpcSettings(
@@ -178,7 +178,7 @@ Current status verification:
 poetry run python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import FlextGrpcSettings
 print('✅ All imports successful')
 "
 

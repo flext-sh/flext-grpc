@@ -12,8 +12,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import FlextGrpc
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc import FlextGrpc, FlextGrpcConstants
 
 
 def example_1_basic_entities() -> None:

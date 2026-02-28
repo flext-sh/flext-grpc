@@ -2,7 +2,7 @@
 
 import pytest
 
-from flext_grpc.typings import t
+from flext_grpc import t
 
 
 class TestFlextGrpcTypes:

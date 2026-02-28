@@ -20,7 +20,7 @@ from typing import TypeAlias
 
 from flext_core import FlextTypes
 
-from flext_grpc.constants import c
+from flext_grpc import c
 
 
 # gRPC domain TypeVars
@@ -108,7 +108,9 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 list[str] | dict[str, FlextTypes.JsonValue],
             ]
-            HandlerConfiguration: TypeAlias = list[dict[str, str | FlextTypes.JsonValue]]
+            HandlerConfiguration: TypeAlias = list[
+                dict[str, str | FlextTypes.JsonValue]
+            ]
 
         # =========================================================================
         # GRPC CLIENT TYPES - Complex client management types
@@ -121,11 +123,11 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | int | bool | dict[str, FlextTypes.JsonValue],
             ]
-            ConnectionPool = dict[
-                str, int | bool | dict[str, FlextTypes.JsonValue]
-            ]
+            ConnectionPool = dict[str, int | bool | dict[str, FlextTypes.JsonValue]]
             RetryConfiguration: TypeAlias = dict[str, int | float | bool | list[str]]
-            LoadBalancing: TypeAlias = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
+            LoadBalancing: TypeAlias = dict[
+                str, str | bool | dict[str, FlextTypes.JsonValue]
+            ]
             ClientMetrics = dict[
                 str,
                 int | float | dict[str, FlextTypes.JsonValue],
@@ -152,9 +154,7 @@ class FlextGrpcTypes(FlextTypes):
             StreamMetrics = dict[
                 str, int | float | bool | dict[str, FlextTypes.JsonValue]
             ]
-            FlowControl = dict[
-                str, int | bool | dict[str, FlextTypes.JsonValue]
-            ]
+            FlowControl = dict[str, int | bool | dict[str, FlextTypes.JsonValue]]
             BackpressureHandling = dict[
                 str, str | int | bool | dict[str, FlextTypes.JsonValue]
             ]
@@ -171,9 +171,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | list[str] | dict[str, FlextTypes.JsonValue],
             ]
-            MethodDefinition = dict[
-                str, str | bool | dict[str, FlextTypes.JsonValue]
-            ]
+            MethodDefinition = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
             ServiceMetadata = dict[
                 str,
                 str | int | dict[str, FlextTypes.JsonValue],
@@ -183,9 +181,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | list[str] | dict[str, FlextTypes.JsonValue],
             ]
-            HealthCheck = dict[
-                str, bool | str | int | dict[str, FlextTypes.JsonValue]
-            ]
+            HealthCheck = dict[str, bool | str | int | dict[str, FlextTypes.JsonValue]]
 
         # =========================================================================
         # GRPC SECURITY TYPES - Complex security configuration types
@@ -198,10 +194,10 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 bool | str | dict[str, FlextTypes.JsonValue],
             ]
-            TlsConfiguration = dict[
-                str, str | bool | dict[str, FlextTypes.JsonValue]
+            TlsConfiguration = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
+            AuthenticationConfig: TypeAlias = dict[
+                str, str | dict[str, FlextTypes.JsonValue]
             ]
-            AuthenticationConfig: TypeAlias = dict[str, str | dict[str, FlextTypes.JsonValue]]
             AuthorizationRules: TypeAlias = list[dict[str, str | bool | list[str]]]
             CertificateManagement = dict[
                 str,
@@ -259,16 +255,10 @@ class FlextGrpcTypes(FlextTypes):
             """
 
             # gRPC-specific project configurations
-            ProjectConfig = dict[
-                str, FlextTypes.JsonValue
-            ]
+            ProjectConfig = dict[str, FlextTypes.JsonValue]
             MicroserviceConfig: TypeAlias = dict[str, str | int | bool | list[str]]
-            StreamingConfig = dict[
-                str, bool | str | dict[str, FlextTypes.JsonValue]
-            ]
-            ServiceMeshConfig = dict[
-                str, FlextTypes.JsonValue
-            ]
+            StreamingConfig = dict[str, bool | str | dict[str, FlextTypes.JsonValue]]
+            ServiceMeshConfig = dict[str, FlextTypes.JsonValue]
 
         # =========================================================================
         # GRPC PROTOCOLS - Moved to protocols.py

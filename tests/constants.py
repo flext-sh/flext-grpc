@@ -15,9 +15,9 @@ from __future__ import annotations
 
 from typing import Final
 
-from flext_tests.constants import FlextTestsConstants
+from flext_tests import FlextTestsConstants
 
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc import FlextGrpcConstants
 
 
 class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):

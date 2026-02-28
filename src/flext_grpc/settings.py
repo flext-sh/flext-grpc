@@ -15,9 +15,7 @@ from flext_core import r
 from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext_grpc.constants import c
-from flext_grpc.models import m
-from flext_grpc.typings import t
+from flext_grpc import c, m, t
 
 GrpcNetworkConfig = m.NetworkConfig
 GrpcSecurityConfig = m.SecurityConfig
