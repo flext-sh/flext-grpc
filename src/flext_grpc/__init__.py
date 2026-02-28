@@ -42,7 +42,7 @@ if TYPE_CHECKING:
         ServicePayload,
     )
     from flext_grpc.settings import FlextGrpcSettings
-    from flext_grpc.typings import t
+    from flext_grpc.typings import FlextGrpcTypes, t
     from flext_grpc.utilities import FlextGrpcUtilities, u
 
 # Lazy import mapping: export_name -> (module_path, attr_name)
@@ -59,6 +59,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcSettings": ("flext_grpc.settings", "FlextGrpcSettings"),
     "FlextGrpcSettingsurationError": ("flext_grpc.errors", "FlextGrpcSettingsurationError"),
     "FlextGrpcTimeoutError": ("flext_grpc.errors", "FlextGrpcTimeoutError"),
+    "FlextGrpcTypes": ("flext_grpc.typings", "FlextGrpcTypes"),
     "FlextGrpcUtilities": ("flext_grpc.utilities", "FlextGrpcUtilities"),
     "FlextGrpcValidationError": ("flext_grpc.errors", "FlextGrpcValidationError"),
     "GenericOperationSpec": ("flext_grpc.api", "GenericOperationSpec"),
@@ -97,6 +98,7 @@ __all__ = [
     "FlextGrpcSettings",
     "FlextGrpcSettingsurationError",
     "FlextGrpcTimeoutError",
+    "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
     "GenericOperationSpec",
