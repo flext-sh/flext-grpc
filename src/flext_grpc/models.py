@@ -12,10 +12,10 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 from datetime import UTC, datetime
-from typing import Literal, Self, cast
+from typing import Literal, Self, cast, override
 
 import grpc
-from flext_core import FlextModels, m, r
+from flext_core import FlextModels, r
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_grpc.constants import c
@@ -37,7 +37,7 @@ class FlextGrpcModels(FlextModels):
     class Grpc:
         """Domain models for gRPC core business entities."""
 
-        class StreamInfo(m.Value):
+        class StreamInfo(FlextModels.Value):
             """Basic stream information (immutable value model)."""
 
             stream_id: str
@@ -48,14 +48,14 @@ class FlextGrpcModels(FlextModels):
             average_latency_ms: float = Field(default=0.0)
             error_count: int = Field(default=0)
 
-        class HealthCheck(m.Value):
+        class HealthCheck(FlextModels.Value):
             """gRPC health check model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
             status: str = Field(description="Health status")
             timestamp: datetime = Field(description="Check timestamp")
 
-        class ServiceDefinition(m.Value):
+        class ServiceDefinition(FlextModels.Value):
             """gRPC service definition model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
@@ -69,7 +69,7 @@ class FlextGrpcModels(FlextModels):
                 description="Service metadata",
             )
 
-        class StreamMetrics(m.Value):
+        class StreamMetrics(FlextModels.Value):
             """gRPC stream metrics model (immutable value model)."""
 
             stream_id: str = Field(description="Stream ID")
@@ -82,7 +82,7 @@ class FlextGrpcModels(FlextModels):
             error_rate: float = Field(description="Error rate")
             memory_usage_bytes: int = Field(description="Memory usage in bytes")
 
-        class ServiceMetrics(m.Value):
+        class ServiceMetrics(FlextModels.Value):
             """gRPC service metrics model (immutable value model)."""
 
             service_name: str = Field(description="Service name")
@@ -92,7 +92,7 @@ class FlextGrpcModels(FlextModels):
             avg_response_time: float = Field(description="Average response time")
             active_connections: int = Field(description="Active connections")
 
-        class OperationExecutionRequest(m.Value):
+        class OperationExecutionRequest(FlextModels.Value):
             """Operation execution request for gRPC service operations."""
 
             operation_name: str = Field(description="Operation name to execute")
@@ -105,7 +105,7 @@ class FlextGrpcModels(FlextModels):
                 description="Keyword arguments",
             )
 
-        class ServerConfig(m.Value):
+        class ServerConfig(FlextModels.Value):
             """Basic server configuration (immutable value model)."""
 
             host: str = Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)
@@ -113,7 +113,7 @@ class FlextGrpcModels(FlextModels):
             max_workers: int = Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
             timeout: float = Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
 
-        class ClientConfig(m.Value):
+        class ClientConfig(FlextModels.Value):
             """Basic client configuration (immutable value model)."""
 
             target: str = Field(
@@ -121,13 +121,13 @@ class FlextGrpcModels(FlextModels):
             )
             timeout: float = Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
 
-        class ChannelConfig(m.Value):
+        class ChannelConfig(FlextModels.Value):
             """Basic channel configuration (immutable value model)."""
 
             address: str
             options: Mapping[str, t.JsonValue] | None = None
 
-        class SecurityConfig(m.Value):
+        class SecurityConfig(FlextModels.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: bool = Field(
@@ -156,7 +156,7 @@ class FlextGrpcModels(FlextModels):
                 description="Require client certificates",
             )
 
-        class NetworkConfig(m.Value):
+        class NetworkConfig(FlextModels.Value):
             """Generic gRPC network configuration with validation."""
 
             host: str = Field(
@@ -187,7 +187,7 @@ class FlextGrpcModels(FlextModels):
                 description="Keepalive timeout (seconds)",
             )
 
-        class PerformanceConfig(m.Value):
+        class PerformanceConfig(FlextModels.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: int = Field(
@@ -221,7 +221,7 @@ class FlextGrpcModels(FlextModels):
                 description="Thread pool size",
             )
 
-        class StreamingConfig(m.Value):
+        class StreamingConfig(FlextModels.Value):
             """Generic gRPC streaming configuration."""
 
             enabled: bool = Field(
@@ -250,7 +250,7 @@ class FlextGrpcModels(FlextModels):
                 description="Enable message compression",
             )
 
-        class ClientSettingsConfig(m.Value):
+        class ClientSettingsConfig(FlextModels.Value):
             """Generic gRPC client configuration."""
 
             timeout: float = Field(
@@ -280,7 +280,7 @@ class FlextGrpcModels(FlextModels):
                 description="Additional channel options",
             )
 
-        class MonitoringConfig(m.Value):
+        class MonitoringConfig(FlextModels.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: bool = Field(
@@ -301,12 +301,12 @@ class FlextGrpcModels(FlextModels):
             )
             log_level: str = Field(default="INFO", description="Logging level")
 
-        class StateTransition(m.Value):
+        class StateTransition(FlextModels.Value):
             """State transition result model."""
 
             state: str
 
-        class EntityValidator(m.Value):
+        class EntityValidator(FlextModels.Value):
             """Generic entity validator using functional composition.
 
             Provides validation methods that can be composed and delegated
@@ -383,7 +383,7 @@ class FlextGrpcModels(FlextModels):
                     FlextGrpcModels.Grpc.StateTransition(state=target)
                 )
 
-        class OperationSpec(m.Value):
+        class OperationSpec(FlextModels.Value):
             """Generic operation specification using Pydantic."""
 
             name: str = Field(min_length=1, description="Operation name")
@@ -401,7 +401,7 @@ class FlextGrpcModels(FlextModels):
                 description="Operation parameters",
             )
 
-        class Request(m.Value):
+        class Request(FlextModels.Value):
             """Generic request model with validation."""
 
             operation: FlextGrpcModels.Grpc.OperationSpec
@@ -419,7 +419,7 @@ class FlextGrpcModels(FlextModels):
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
 
-        class Response(m.Value):
+        class Response(FlextModels.Value):
             """Generic response model with metadata."""
 
             success: bool = Field(description="Operation success status")
@@ -480,6 +480,7 @@ class FlextGrpcModels(FlextModels):
             options: dict[str, t.GeneralValueType] = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
+            @override
             def validate_business_rules(self) -> r[bool]:
                 """Functional validation composition."""
                 if not self.target.strip():
@@ -522,6 +523,7 @@ class FlextGrpcModels(FlextModels):
             services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)
             grpc_server: p.Grpc.GrpcServer | None = None
 
+            @override
             def validate_business_rules(self) -> r[bool]:
                 """Delegate validation to generic validators."""
                 if not self.host.strip():
@@ -625,6 +627,7 @@ class FlextGrpcModels(FlextModels):
             options: t.GrpcOptions = Field(default_factory=dict)
             grpc_stub: p.Grpc.GrpcStub | None = None
 
+            @override
             def validate_business_rules(self) -> r[bool]:
                 """Delegate validation."""
                 if self.channel and self.channel.validate_business_rules().is_failure:
@@ -657,35 +660,37 @@ class FlextGrpcModels(FlextModels):
                 return v
 
     # Class-level aliases at facade root (flat namespace: m.StreamInfo, m.Request, etc.)
-    StreamInfo = Grpc.StreamInfo
-    HealthCheck = Grpc.HealthCheck
-    ServiceDefinition = Grpc.ServiceDefinition
-    StreamMetrics = Grpc.StreamMetrics
-    ServiceMetrics = Grpc.ServiceMetrics
-    OperationExecutionRequest = Grpc.OperationExecutionRequest
-    ServerConfig = Grpc.ServerConfig
-    ClientConfig = Grpc.ClientConfig
-    ChannelConfig = Grpc.ChannelConfig
-    SecurityConfig = Grpc.SecurityConfig
-    NetworkConfig = Grpc.NetworkConfig
-    PerformanceConfig = Grpc.PerformanceConfig
-    StreamingConfig = Grpc.StreamingConfig
-    ClientSettingsConfig = Grpc.ClientSettingsConfig
-    MonitoringConfig = Grpc.MonitoringConfig
-    StateTransition = Grpc.StateTransition
-    EntityValidator = Grpc.EntityValidator
-    OperationSpec = Grpc.OperationSpec
-    Request = Grpc.Request
-    Response = Grpc.Response
-    Payload = Grpc.Payload
-    Entity = Grpc.Entity
-    Channel = Grpc.Channel
-    Server = Grpc.Server
-    Client = Grpc.Client
-    GrpcStream = Grpc.GrpcStream
-    StateMachine = Grpc.StateMachine
+    StreamInfo: type[Grpc.StreamInfo] = Grpc.StreamInfo
+    HealthCheck: type[Grpc.HealthCheck] = Grpc.HealthCheck
+    ServiceDefinition: type[Grpc.ServiceDefinition] = Grpc.ServiceDefinition
+    StreamMetrics: type[Grpc.StreamMetrics] = Grpc.StreamMetrics
+    ServiceMetrics: type[Grpc.ServiceMetrics] = Grpc.ServiceMetrics
+    OperationExecutionRequest: type[Grpc.OperationExecutionRequest] = (
+        Grpc.OperationExecutionRequest
+    )
+    ServerConfig: type[Grpc.ServerConfig] = Grpc.ServerConfig
+    ClientConfig: type[Grpc.ClientConfig] = Grpc.ClientConfig
+    ChannelConfig: type[Grpc.ChannelConfig] = Grpc.ChannelConfig
+    SecurityConfig: type[Grpc.SecurityConfig] = Grpc.SecurityConfig
+    NetworkConfig: type[Grpc.NetworkConfig] = Grpc.NetworkConfig
+    PerformanceConfig: type[Grpc.PerformanceConfig] = Grpc.PerformanceConfig
+    StreamingConfig: type[Grpc.StreamingConfig] = Grpc.StreamingConfig
+    ClientSettingsConfig: type[Grpc.ClientSettingsConfig] = Grpc.ClientSettingsConfig
+    MonitoringConfig: type[Grpc.MonitoringConfig] = Grpc.MonitoringConfig
+    StateTransition: type[Grpc.StateTransition] = Grpc.StateTransition
+    EntityValidator: type[Grpc.EntityValidator] = Grpc.EntityValidator
+    OperationSpec: type[Grpc.OperationSpec] = Grpc.OperationSpec
+    Request: type[Grpc.Request] = Grpc.Request
+    Response: type[Grpc.Response] = Grpc.Response
+    Payload: type[Grpc.Payload] = Grpc.Payload
+    GrpcEntity: type[Grpc.Entity] = Grpc.Entity
+    Channel: type[Grpc.Channel] = Grpc.Channel
+    Server: type[Grpc.Server] = Grpc.Server
+    Client: type[Grpc.Client] = Grpc.Client
+    GrpcStream: type[Grpc.GrpcStream] = Grpc.GrpcStream
+    StateMachine: type[Grpc.StateMachine] = Grpc.StateMachine
 
 
-m = FlextGrpcModels
+m: type[FlextGrpcModels] = FlextGrpcModels
 
 __all__ = ["FlextGrpcModels", "m"]
