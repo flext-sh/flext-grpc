@@ -35,7 +35,7 @@ PROTOBUF_AVAILABLE = True
 ProtobufMessage = Message
 
 
-__all__ = ["FlextGrpcUtilities"]
+__all__ = ["FlextGrpcUtilities", "u"]
 
 
 class FlextGrpcUtilities(FlextUtilities):
@@ -239,3 +239,6 @@ class FlextGrpcUtilities(FlextUtilities):
                 }
             except Exception:
                 return {}
+
+
+u = FlextGrpcUtilities
