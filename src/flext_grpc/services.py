@@ -711,8 +711,7 @@ class FlextGrpcServices:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)
 
-    # === LEGACY COMPATIBILITY METHODS ===
-
+    
     def _execute_server_command(
         self,
         command: str,

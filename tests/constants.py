@@ -83,7 +83,6 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
 
 # Short aliases per FLEXT convention
 c = TestsFlextGrpcConstants  # Primary test constants alias
-c = TestsFlextGrpcConstants  # Alternative alias for compatibility
 
 __all__ = [
     "TestsFlextGrpcConstants",
