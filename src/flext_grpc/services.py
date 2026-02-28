@@ -13,10 +13,10 @@ from __future__ import annotations
 import threading
 import time
 from abc import ABC, abstractmethod
-from typing import override
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
+from typing import override
 
 import grpc
 from flext_core import r
