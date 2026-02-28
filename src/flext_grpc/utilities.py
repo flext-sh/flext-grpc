@@ -228,15 +228,33 @@ class FlextGrpcUtilities(FlextUtilities):
         @staticmethod
         def get_system_info() -> dict[str, t.GeneralValueType]:
             """Get system information for gRPC diagnostics."""
+            cpu: int = 0
+            mem_total: int = 0
+            mem_avail: int = 0
             try:
-                return {
-                    "cpu_count": psutil.cpu_count(),
-                    "memory_total_mb": psutil.virtual_memory().total // (1024 * 1024),
-                    "memory_available_mb": psutil.virtual_memory().available
-                    // (1024 * 1024),
-                }
+                try:
+                    cpu_val = psutil.cpu_count()
+                    if isinstance(cpu_val, int):
+                        cpu = cpu_val
+                    elif cpu_val is not None:
+                        cpu = int(cpu_val)
+                except (TypeError, ValueError, AttributeError):
+                    pass
+                try:
+                    mem_val = psutil.virtual_memory()
+                    if hasattr(mem_val, "total"):
+                        mem_total = int(mem_val.total)
+                    if hasattr(mem_val, "available"):
+                        mem_avail = int(mem_val.available)
+                except (TypeError, ValueError, AttributeError):
+                    pass
             except Exception:
-                return {}
+                pass
+            return {
+                "cpu_count": cpu,
+                "memory_total_mb": mem_total // (1024 * 1024),
+                "memory_available_mb": mem_avail // (1024 * 1024),
+            }
 
 
 u = FlextGrpcUtilities
