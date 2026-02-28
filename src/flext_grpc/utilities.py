@@ -232,23 +232,19 @@ class FlextGrpcUtilities(FlextUtilities):
             mem_total: int = 0
             mem_avail: int = 0
             try:
-                try:
-                    cpu_val = psutil.cpu_count()
-                    if isinstance(cpu_val, int):
-                        cpu = cpu_val
-                    elif cpu_val is not None:
-                        cpu = int(cpu_val)
-                except (TypeError, ValueError, AttributeError):
-                    pass
-                try:
-                    mem_val = psutil.virtual_memory()
-                    if hasattr(mem_val, "total"):
-                        mem_total = int(mem_val.total)
-                    if hasattr(mem_val, "available"):
-                        mem_avail = int(mem_val.available)
-                except (TypeError, ValueError, AttributeError):
-                    pass
-            except Exception:
+                cpu_val = psutil.cpu_count()  # pyright: ignore[reportUnknownMemberType,reportUnknownVariableType]
+                if cpu_val is not None:
+                    cpu_str: str = str(cpu_val)  # pyright: ignore[reportUnknownArgumentType]
+                    cpu = int(cpu_str) if cpu_str.isdigit() else 0
+            except Exception:  # noqa: S110
+                pass
+            try:
+                mem_val = psutil.virtual_memory()  # pyright: ignore[reportUnknownMemberType,reportUnknownVariableType]
+                total_val: object = getattr(mem_val, "total", 0)  # pyright: ignore[reportUnknownArgumentType]
+                avail_val: object = getattr(mem_val, "available", 0)  # pyright: ignore[reportUnknownArgumentType]
+                mem_total = int(str(total_val)) if total_val else 0
+                mem_avail = int(str(avail_val)) if avail_val else 0
+            except Exception:  # noqa: S110
                 pass
             return {
                 "cpu_count": cpu,
