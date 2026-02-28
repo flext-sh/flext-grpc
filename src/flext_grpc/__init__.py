@@ -7,39 +7,45 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextExceptions, d, e, h, r, s, x
+from typing import TYPE_CHECKING, Any
 
-from flext_grpc.__version__ import __version__, __version_info__
-from flext_grpc.api import FlextGrpc
-from flext_grpc.constants import c
-from flext_grpc.models import m
-from flext_grpc.proto import FlextGrpcServiceStub
-from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
-from flext_grpc.services import FlextGrpcServices
-from flext_grpc.settings import FlextGrpcSettings
-from flext_grpc.typings import t
-from flext_grpc.utilities import u
+from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
+if TYPE_CHECKING:
+    from flext_core import FlextExceptions as e, d, h, r, s, x
 
-class FlextGrpcError(FlextExceptions.BaseError):
-    """Base gRPC error."""
+    from flext_grpc.__version__ import __version__, __version_info__
+    from flext_grpc.api import FlextGrpc
+    from flext_grpc.constants import c
+    from flext_grpc.models import m
+    from flext_grpc.proto import FlextGrpcServiceStub
+    from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
+    from flext_grpc.services import FlextGrpcServices
+    from flext_grpc.settings import FlextGrpcSettings
+    from flext_grpc.typings import t
+    from flext_grpc.utilities import u
 
-
-class FlextGrpcValidationError(FlextExceptions.ValidationError):
-    """gRPC validation error."""
-
-
-class FlextGrpcConnectionError(FlextExceptions.ConnectionError):
-    """gRPC connection error."""
-
-
-class FlextGrpcTimeoutError(FlextExceptions.TimeoutError):
-    """gRPC timeout error."""
-
-
-class FlextGrpcSettingsurationError(FlextExceptions.ConfigurationError):
-    """gRPC configuration/settings error."""
-
+# Lazy import mapping: export_name -> (module_path, attr_name)
+_LAZY_IMPORTS: dict[str, tuple[str, str]] = {
+    "FlextGrpc": ("flext_grpc.api", "FlextGrpc"),
+    "FlextGrpcProtocols": ("flext_grpc.protocols", "FlextGrpcProtocols"),
+    "FlextGrpcServiceStub": ("flext_grpc.proto", "FlextGrpcServiceStub"),
+    "FlextGrpcServices": ("flext_grpc.services", "FlextGrpcServices"),
+    "FlextGrpcSettings": ("flext_grpc.settings", "FlextGrpcSettings"),
+    "__version__": ("flext_grpc.__version__", "__version__"),
+    "__version_info__": ("flext_grpc.__version__", "__version_info__"),
+    "c": ("flext_grpc.constants", "c"),
+    "d": ("flext_core", "d"),
+    "e": ("flext_core", "FlextExceptions"),
+    "h": ("flext_core", "h"),
+    "m": ("flext_grpc.models", "m"),
+    "p": ("flext_grpc.protocols", "FlextGrpcProtocols"),
+    "r": ("flext_core", "r"),
+    "s": ("flext_core", "s"),
+    "t": ("flext_grpc.typings", "t"),
+    "u": ("flext_grpc.utilities", "u"),
+    "x": ("flext_core", "x"),
+}
 
 __all__ = [
     "FlextGrpc",
@@ -70,3 +76,16 @@ __all__ = [
     "u",
     "x",
 ]
+
+
+def __getattr__(name: str) -> Any:  # noqa: ANN401
+    """Lazy-load module attributes on first access (PEP 562)."""
+    return lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
+
+
+def __dir__() -> list[str]:
+    """Return list of available attributes for dir() and autocomplete."""
+    return sorted(__all__)
+
+
+cleanup_submodule_namespace(__name__, _LAZY_IMPORTS)

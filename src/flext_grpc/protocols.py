@@ -9,7 +9,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, r
+from flext_core import r
+from flext_core.protocols import FlextProtocols
 
 from flext_grpc.constants import c
 
