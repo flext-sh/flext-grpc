@@ -15,6 +15,7 @@ from flext_core import r
 from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
+from flext_grpc.constants import c
 from flext_grpc.models import m
 
 GrpcNetworkConfig = m.NetworkConfig
@@ -165,7 +166,7 @@ class FlextGrpcSettings(BaseModel):
                 return r.fail("RPC limit too high for worker count")
 
             # Cross-validation: Network and security
-            http_port = 80  # Standard HTTP port
+            http_port = c.Grpc.Network.HTTP_PORT  # Standard HTTP port
             if self.security.tls_enabled and self.network.port == http_port:
                 return r.fail("TLS enabled but using HTTP port")
 
@@ -180,26 +181,26 @@ class FlextGrpcSettings(BaseModel):
             config = cls(
                 network=GrpcNetworkConfig(
                     host="127.0.0.1",  # Bind to localhost for security
-                    port=50051,
-                    max_connections=1000,
-                    keepalive_time=30,
-                    keepalive_timeout=5,
+                    port=c.Grpc.Network.GRPC_PORT,
+                    max_connections=c.Grpc.Connection.MAX_CONNECTIONS,
+                    keepalive_time=c.Grpc.Network.KEEPALIVE_TIME_SECONDS,
+                    keepalive_timeout=c.Grpc.Network.KEEPALIVE_TIMEOUT_SECONDS,
                 ),
                 security=GrpcSecurityConfig(
                     tls_enabled=False,  # Disable TLS for testing/production without certs
                     auth_enabled=False,  # Disable auth for testing/production without tokens
                 ),
                 performance=GrpcPerformanceConfig(
-                    max_workers=20,
-                    max_concurrent_rpcs=200,  # Within limit: 20 * 10 = 200
-                    thread_pool_size=100,
+                    max_workers=c.Grpc.Connection.MAX_WORKERS,
+                    max_concurrent_rpcs=c.Grpc.Connection.MAX_CONCURRENT_RPCS,  # Within limit: 20 * 10 = 200
+                    thread_pool_size=c.Grpc.Connection.THREAD_POOL_SIZE,
                 ),
                 streaming=GrpcStreamingConfig(
-                    max_concurrent_streams=50,
+                    max_concurrent_streams=c.Grpc.Connection.MAX_CONCURRENT_STREAMS,
                     stream_buffer_size=1000,
                 ),
                 client=GrpcClientConfig(
-                    timeout=30.0,
+                    timeout=c.Grpc.Connection.DEFAULT_TIMEOUT,
                     retry_attempts=5,
                 ),
                 monitoring=GrpcMonitoringConfig(
@@ -220,7 +221,7 @@ class FlextGrpcSettings(BaseModel):
             config = cls(
                 network=GrpcNetworkConfig(
                     host="localhost",
-                    port=50051,
+                    port=c.Grpc.Network.GRPC_PORT,
                 ),
                 security=GrpcSecurityConfig(),
                 performance=GrpcPerformanceConfig(

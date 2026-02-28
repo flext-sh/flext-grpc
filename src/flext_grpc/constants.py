@@ -69,6 +69,12 @@ class FlextGrpcConstants(FlextConstants):
             DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000  # 30 seconds
             DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000  # 5 seconds
 
+            # Extracted magic values from settings.py
+            HTTP_PORT: Final[int] = 80  # Standard HTTP port
+            GRPC_PORT: Final[int] = 50051  # Standard gRPC port
+            KEEPALIVE_TIME_SECONDS: Final[int] = 30  # Keepalive time in seconds
+            KEEPALIVE_TIMEOUT_SECONDS: Final[int] = 5  # Keepalive timeout in seconds
+
         class Service:
             """gRPC service constants extending c.Service."""
 
@@ -78,6 +84,17 @@ class FlextGrpcConstants(FlextConstants):
             MAX_WORKERS: Final[int] = 100  # Maximum gRPC workers
             DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
             MIN_REQUIRED_ARGS: Final[int] = 2
+
+        class Connection:
+            """gRPC connection and performance constants."""
+
+            # Extracted magic values from settings.py
+            MAX_CONNECTIONS: Final[int] = 1000  # Maximum concurrent connections
+            MAX_WORKERS: Final[int] = 20  # Maximum worker threads
+            MAX_CONCURRENT_RPCS: Final[int] = 200  # Maximum concurrent RPC calls
+            MAX_CONCURRENT_STREAMS: Final[int] = 50  # Maximum concurrent streams
+            DEFAULT_TIMEOUT: Final[float] = 30.0  # Default operation timeout in seconds
+            THREAD_POOL_SIZE: Final[int] = 100  # Thread pool size for operations
 
         class Production:
             """gRPC production validation constants."""
