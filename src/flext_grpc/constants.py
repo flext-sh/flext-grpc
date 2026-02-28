@@ -61,7 +61,6 @@ class FlextGrpcConstants(FlextConstants):
 
             # Additional platform constants for gRPC
             METRICS_PORT: Final[int] = 9090  # Prometheus metrics port
-            GRPC_DEFAULT_PORT: Final[int] = 50051  # Alias for DEFAULT_GRPC_PORT
             HOST: Final[str] = "127.0.0.1"  # Localhost for production binding
             LOCALHOST_IP: Final[str] = "127.0.0.1"  # Localhost IP address
 

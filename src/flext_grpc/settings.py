@@ -17,6 +17,7 @@ from pydantic_settings import SettingsConfigDict
 
 from flext_grpc.constants import c
 from flext_grpc.models import m
+from flext_grpc.typings import t
 
 GrpcNetworkConfig = m.NetworkConfig
 GrpcSecurityConfig = m.SecurityConfig
@@ -79,7 +80,7 @@ class FlextGrpcSettings(BaseModel):
         streaming: GrpcStreamingConfig | None = None,
         client: GrpcClientConfig | None = None,
         monitoring: GrpcMonitoringConfig | None = None,
-        **_kwargs: object,
+        **_kwargs: t.GeneralValueType,
     ) -> None:
         """Initialize with backward compatibility for legacy fields."""
         network_config: GrpcNetworkConfig = network or GrpcNetworkConfig()

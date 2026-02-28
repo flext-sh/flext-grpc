@@ -87,10 +87,6 @@ class FlextGrpcTypes(FlextTypes):
         # GRPC SERVER TYPES - Complex server management types
         # =========================================================================
 
-        # Alias for backward compatibility - avoid inheritance to prevent override issues
-        # class Core:
-        #     """Alias for GrpcCore for backward compatibility."""
-
         class Server:
             """gRPC server complex types."""
 

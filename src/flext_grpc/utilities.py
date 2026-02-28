@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import cast
 from uuid import uuid4
 
 import grpc
@@ -148,9 +147,7 @@ class FlextGrpcUtilities(FlextUtilities):
             stream = FlextGrpcModels.Grpc.GrpcStream(
                 unique_id=str(uuid4()),
                 method_name=method_name,
-                stream_type=cast(
-                    "FlextGrpcConstants.Grpc.StreamTypeLiteral", stream_type
-                ),
+                stream_type=stream_type  # Already validated against c.Grpc.STREAM_TYPES
             )
             return r.ok(stream)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
@@ -240,8 +237,8 @@ class FlextGrpcUtilities(FlextUtilities):
                 pass
             try:
                 mem_val = psutil.virtual_memory()  # pyright: ignore[reportUnknownMemberType,reportUnknownVariableType]
-                total_val: object = getattr(mem_val, "total", 0)  # pyright: ignore[reportUnknownArgumentType]
-                avail_val: object = getattr(mem_val, "available", 0)  # pyright: ignore[reportUnknownArgumentType]
+                total_val: t.GeneralValueType = getattr(mem_val, "total", 0)  # pyright: ignore[reportUnknownArgumentType]
+                avail_val: t.GeneralValueType = getattr(mem_val, "available", 0)  # pyright: ignore[reportUnknownArgumentType]
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
             except Exception:  # noqa: S110

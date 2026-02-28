@@ -140,7 +140,7 @@ class FlextGrpc:
         # Type narrowing: _grpc_config is always FlextGrpcSettings by design
         return self._grpc_config
 
-    def execute(self, **_kwargs: object) -> r[FlextGrpcSettings]:
+    def execute(self, **_kwargs: t.GeneralValueType) -> r[FlextGrpcSettings]:
         """Execute main facade operation."""
         return r.ok(self.grpc_config)
 
@@ -240,7 +240,7 @@ class FlextGrpc:
         """
 
         def _wrap_op[T](fn: Callable[..., r[T]]) -> Callable[..., r[object]]:
-            def _inner(*args: object, **kwargs: object) -> r[object]:
+            def _inner(*args: t.GeneralValueType, **kwargs: t.GeneralValueType) -> r[object]:
                 return _result_as_object(fn(*args, **kwargs))
 
             return _inner

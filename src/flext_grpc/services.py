@@ -16,7 +16,6 @@ from abc import ABC, abstractmethod
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import cast
 
 import grpc
 from flext_core import r
@@ -48,7 +47,7 @@ class ServicePayload(BaseModel):
     @classmethod
     def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
         """Build payload from keyword values."""
-        return cls(values=cast("t.Grpc.GrpcDict", values))
+        return cls(values=dict(values))  # type: dict[str, t.GeneralValueType]
 
 
 class _MetricValueModel(BaseModel):
@@ -58,7 +57,7 @@ class _MetricValueModel(BaseModel):
 
     @field_validator("value", mode="before")
     @classmethod
-    def normalize_value(cls, value: object) -> t.JsonValue:
+    def normalize_value(cls, value: t.GeneralValueType) -> t.JsonValue:
         """Normalize runtime values to stable JSON-compatible output."""
         match value:
             case None | str() | int() | float() | bool():
@@ -237,7 +236,7 @@ class ConnectionPool:
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection acquisition failed: {e}")
 
-    def release(self, connection: object) -> r[bool]:
+    def release(self, connection: t.GeneralValueType) -> r[bool]:
         """Release connection back to pool."""
         try:
             with self._lock:
@@ -777,57 +776,9 @@ class FlextGrpcServices:
             return r.ok(ServicePayload.from_values(status="closed"))
         return r.fail(f"Unsupported stream command: {command}")
 
-    def execute_grpc(
-        self,
-        command: str | None = None,
-        entity: FlextGrpcEntities.Server
-        | FlextGrpcEntities.Client
-        | FlextGrpcEntities.GrpcStream
-        | None = None,
-        *_args: t.ConfigValue,
-        **kwargs: t.ConfigValue,
-    ) -> r[ServicePayload]:
-        """Legacy compatibility method - delegates to appropriate manager."""
-        if command is None:
-            return r.ok(
-                ServicePayload.from_values(
-                    status="ready",
-                    service="flext-grpc-service",
-                ),
-            )
-
-        if entity is None:
-            return r.fail("Entity instance required")
-
-        try:
-            server_entity = _ServerEntityEnvelope.model_validate({
-                "entity": entity
-            }).entity
-            return self._execute_server_command(command, server_entity)
-        except ValidationError:
-            pass
-
-        try:
-            client_entity = _ClientEntityEnvelope.model_validate({
-                "entity": entity
-            }).entity
-            return self._execute_client_command(command, client_entity, **kwargs)
-        except ValidationError:
-            pass
-
-        try:
-            stream_entity = _StreamEntityEnvelope.model_validate({
-                "entity": entity
-            }).entity
-            return self._execute_stream_command(command, stream_entity, **kwargs)
-        except ValidationError:
-            pass
-
-        return r.fail(f"Unsupported entity type: {type(entity)}")
-
-    def execute(self, **_kwargs: object) -> r[ServicePayload]:
+    def execute(self, **_kwargs: t.GeneralValueType) -> r[ServicePayload]:
         """Execute main service operation."""
-        return self.execute_grpc()
+        return r.ok(ServicePayload.from_values(status="ready", service="flext-grpc-service"))
 
 
 __all__ = [
