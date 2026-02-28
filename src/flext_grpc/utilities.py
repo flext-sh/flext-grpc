@@ -19,12 +19,10 @@ import psutil
 from flext_core import FlextUtilities, r
 from google.protobuf.message import Message
 
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc.constants import FlextGrpcConstants, c
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.typings import t
 
-# Type alias for convenience
-c = FlextGrpcConstants
 GrpcChannelType = grpc.Channel
 
 # Availability flags for optional dependencies
