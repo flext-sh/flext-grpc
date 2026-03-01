@@ -15,12 +15,7 @@ if TYPE_CHECKING:
     from flext_core import FlextExceptions as e, d, h, r, s, x
 
     from flext_grpc.__version__ import __version__, __version_info__
-    from flext_grpc.api import (
-        FlextGrpc,
-        GenericOperationSpec,
-        GenericRequest,
-        GenericResponse,
-    )
+    from flext_grpc.api import FlextGrpc
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import (
         FlextGrpcConnectionError,
@@ -62,9 +57,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcTypes": ("flext_grpc.typings", "FlextGrpcTypes"),
     "FlextGrpcUtilities": ("flext_grpc.utilities", "FlextGrpcUtilities"),
     "FlextGrpcValidationError": ("flext_grpc.errors", "FlextGrpcValidationError"),
-    "GenericOperationSpec": ("flext_grpc.api", "GenericOperationSpec"),
-    "GenericRequest": ("flext_grpc.api", "GenericRequest"),
-    "GenericResponse": ("flext_grpc.api", "GenericResponse"),
     "GrpcClientManager": ("flext_grpc.services", "GrpcClientManager"),
     "GrpcServerManager": ("flext_grpc.services", "GrpcServerManager"),
     "GrpcStreamManager": ("flext_grpc.services", "GrpcStreamManager"),
@@ -101,9 +93,6 @@ __all__ = [
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
-    "GenericOperationSpec",
-    "GenericRequest",
-    "GenericResponse",
     "GrpcClientManager",
     "GrpcServerManager",
     "GrpcStreamManager",

@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import FlextGrpc, FlextGrpcConstants
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
 
 
 def example_1_basic_entities() -> None:
@@ -61,28 +61,24 @@ def example_2_configuration() -> None:
     # Initialize facade
     grpc = FlextGrpc()
 
-    # Create default configuration through facade
-    config_result = grpc.create_config()
-    if config_result.is_success:
-        config = config_result.value
-        print(f"Created config with host: {config.host}, port: {config.port}")
-
-    # Create custom configuration through facade
-    custom_config_result = grpc.create_config(
-        host="example.com",
-        port=9090,  # Use numeric port
-        max_workers=20,
-        timeout=60.0,
+    default_config = FlextGrpcSettings()
+    print(
+        f"Created config with host: {default_config.network.host}, "
+        f"port: {default_config.network.port}",
     )
 
-    if custom_config_result.is_success:
-        custom_config = custom_config_result.value
-        print(f"Created custom config: {custom_config.host}:{custom_config.port}")
+    custom_config = FlextGrpcSettings(
+        network=FlextGrpcModels.NetworkConfig(host="example.com", port=9090),
+        performance=FlextGrpcModels.PerformanceConfig(max_workers=20),
+    )
+    print(
+        f"Created custom config: "
+        f"{custom_config.network.host}:{custom_config.network.port}",
+    )
 
-    # Configuration validation - invalid config will fail
-    invalid_config_result = grpc.create_config(host="", port=0)
-    if invalid_config_result.is_failure:
-        print(f"Expected config validation failure: {invalid_config_result.error}")
+    invalid_server_result = grpc.create_server(host="", port=0)
+    if invalid_server_result.is_failure:
+        print(f"Expected validation failure: {invalid_server_result.error}")
 
 
 def example_3_operations() -> None:
@@ -104,10 +100,9 @@ def example_3_operations() -> None:
         if start_result.is_success:
             started_server = start_result.value
 
-            # Get server status through facade
-            status_result = grpc.get_server_status(started_server)
-            if status_result.is_success:
-                print(f"Server status: {status_result.value}")
+            validation_result = started_server.validate_business_rules()
+            if validation_result.is_success:
+                print(f"Server status: {started_server.state}")
 
             # Stop server through facade
             stop_result = grpc.stop_server(started_server)

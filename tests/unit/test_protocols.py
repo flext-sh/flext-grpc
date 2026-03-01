@@ -5,7 +5,7 @@ SPDX-License-Identifier: MIT
 
 """
 
-from typing import Protocol
+from typing import is_protocol
 
 from flext_grpc import FlextGrpcProtocols
 
@@ -51,11 +51,10 @@ class TestFlextGrpcProtocols:
 
     def test_protocols_are_protocols(self) -> None:
         """Test that protocols are proper Protocol subclasses."""
-        # Check that protocols exist and are Protocol subclasses
-        assert issubclass(FlextGrpcProtocols.Grpc.ServerProtocol, Protocol)
-        assert issubclass(FlextGrpcProtocols.Grpc.ClientProtocol, Protocol)
-        assert issubclass(FlextGrpcProtocols.Grpc.StreamingProtocol, Protocol)
-        assert issubclass(FlextGrpcProtocols.Grpc.ServiceProtocol, Protocol)
+        assert is_protocol(FlextGrpcProtocols.Grpc.ServerProtocol)
+        assert is_protocol(FlextGrpcProtocols.Grpc.ClientProtocol)
+        assert is_protocol(FlextGrpcProtocols.Grpc.StreamingProtocol)
+        assert is_protocol(FlextGrpcProtocols.Grpc.ServiceProtocol)
 
         # Note: These protocols inherit from concrete classes (p.Service),
         # so they cannot be @runtime_checkable. This is expected behavior for protocols

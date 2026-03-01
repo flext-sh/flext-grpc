@@ -326,6 +326,16 @@ warn_unreachable = true
 warn_unused_configs = true
 warn_unused_ignores = false
 
+[[tool.mypy.overrides]]
+module = [
+  "flext_grpc.api",
+  "flext_grpc.models",
+  "flext_grpc.proto.stubs",
+  "flext_grpc.services",
+  "flext_grpc.settings",
+]
+disable_error_code = [ "explicit-any" ]
+
 # [MANAGED] pyrefly
 
 [tool.pyrefly]

@@ -18,10 +18,17 @@ from flext_core import FlextConstants, FlextResult
 from flext_grpc import (
     FlextGrpc,
     FlextGrpcConstants,
-    FlextGrpcEntities,
+    FlextGrpcModels,
     FlextGrpcSettings,
-    t,
 )
+
+type CompleteSetup = dict[
+    str,
+    FlextGrpcModels.Grpc.Server
+    | FlextGrpcModels.Grpc.Client
+    | FlextGrpcModels.Grpc.Service
+    | str,
+]
 
 
 class GrpcServerManager:
@@ -30,41 +37,32 @@ class GrpcServerManager:
     def __init__(self) -> None:
         """Initialize the gRPC server manager with facade."""
         self.grpc = FlextGrpc()
-        self.servers: dict[str, FlextGrpcEntities.Server] = {}
+        self.servers: dict[str, FlextGrpcModels.Grpc.Server] = {}
         self.server_configs: dict[str, FlextGrpcSettings] = {}
 
     def create_server_pool(
         self,
         base_port: int = 8000,
         count: int = 3,
-    ) -> list[FlextResult]:
+    ) -> list[FlextResult[FlextGrpcModels.Grpc.Server]]:
         """Create a pool of servers on consecutive ports through facade."""
-        server_results: list[FlextResult] = []
+        server_results: list[FlextResult[FlextGrpcModels.Grpc.Server]] = []
 
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
 
-            # Create config through facade
-            config_result = self.grpc.create_config(
-                host=FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST,
+            config = FlextGrpcSettings(
+                host=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
                 port=port,
-                max_workers=10 + (i * 5),  # Vary workers
-                timeout=FlextGrpcConstants.Network.DEFAULT_TIMEOUT,
+                max_workers=10 + (i * 5),
             )
-
-            if config_result.is_failure:
-                server_results.append(config_result)
-                continue
-
-            config = config_result.value
             self.server_configs[server_id] = config
 
-            # Create server through facade
             server_result = self.grpc.create_server(
-                host=config.host,
-                port=config.port,
-                max_workers=config.max_workers,
+                host=config.network.host,
+                port=config.network.port,
+                max_workers=config.performance.max_workers,
             )
 
             if server_result.is_success:
@@ -112,7 +110,6 @@ class GrpcServerManager:
 
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
-            status_result = self.grpc.get_server_status(server)
             status[server_id] = {
                 "address": f"{server.host}:{server.port}",
                 "state": server.state,
@@ -120,7 +117,6 @@ class GrpcServerManager:
                 "timeout": f"{config.timeout}s",
                 "is_running": str(server.state == "running"),
                 "is_valid": str(server.validate_business_rules().is_success),
-                "facade_status": str(status_result.is_success),
             }
 
         return status
@@ -139,23 +135,35 @@ class AdvancedGrpcOperations:
         port: int = 8080,
         service_name: str = "AdvancedService",
         methods: list[str] | None = None,
-    ) -> FlextResult[dict]:
+    ) -> FlextResult[CompleteSetup]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]
 
-        # Use the facade's complete setup method
-        return self.grpc.create_complete_setup(
+        setup_result = self.grpc.create_complete_setup(
             host=host,
             port=port,
             service_name=service_name,
             methods=methods,
         )
+        if setup_result.is_failure:
+            return FlextResult[CompleteSetup].fail(
+                setup_result.error or "Setup failed",
+            )
+
+        setup = setup_result.value
+        complete_setup: CompleteSetup = {
+            "server": setup.server,
+            "client": setup.client,
+            "service": setup.service,
+            "target": setup.target,
+        }
+        return FlextResult[CompleteSetup].ok(complete_setup)
 
     def demonstrate_streaming(self) -> None:
         """Demonstrate streaming operations through facade."""
         # Create different stream types - use literal type directly
-        stream_configs: list[tuple[str, t.GrpcStreamType]] = [
+        stream_configs: list[tuple[str, str]] = [
             ("UnaryMethod", "unary"),
             ("ServerStreamingMethod", "server_streaming"),
             ("ClientStreamingMethod", "client_streaming"),
@@ -216,7 +224,7 @@ def example_2_client_pool() -> None:
     if setup_result.is_success:
         setup = setup_result.value
         print(
-            f"Created setup with server: {setup['server'].id}, client: {setup['client'].id}",
+            f"Created setup for target: {setup['target']}",
         )
     else:
         print(f"Setup creation failed: {setup_result.error}")
@@ -259,7 +267,7 @@ def example_4_streaming() -> None:
     grpc = FlextGrpc()
 
     # Create different stream types through facade - use literal types directly
-    stream_configs: list[tuple[str, t.GrpcStreamType]] = [
+    stream_configs: list[tuple[str, str]] = [
         ("GetUser", "unary"),
         ("StreamMessages", "server_streaming"),
         ("UploadData", "client_streaming"),
@@ -310,13 +318,6 @@ def example_5_error_handling() -> None:
     if invalid_channel_result.is_failure:
         print(
             f"✓ Invalid channel creation properly failed: {invalid_channel_result.error}",
-        )
-
-    # Test invalid config creation
-    invalid_config_result = grpc.create_config(host="", port=0)
-    if invalid_config_result.is_failure:
-        print(
-            f"✓ Invalid config creation properly failed: {invalid_config_result.error}",
         )
 
     # Test invalid service creation

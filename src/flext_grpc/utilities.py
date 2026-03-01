@@ -118,6 +118,7 @@ class FlextGrpcUtilities(FlextUtilities):
     def create_service_entity(
         cls,
         name: str,
+        methods: list[str] | None = None,
     ) -> r[FlextGrpcModels.Grpc.Service]:
         """Create a gRPC service entity directly."""
         try:
@@ -128,6 +129,7 @@ class FlextGrpcUtilities(FlextUtilities):
             service = FlextGrpcModels.Grpc.Service(
                 unique_id=str(uuid4()),
                 name=name,
+                methods=["HealthCheck"] if methods is None else methods,
             )
             return r.ok(service)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:

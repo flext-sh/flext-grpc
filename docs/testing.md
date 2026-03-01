@@ -192,13 +192,13 @@ TOTAL                                          1798    956    380     14    39%
 
 #### Medium Priority Failures
 
-5. **Protobuf Utilities** (1 failure)
+1. **Protobuf Utilities** (1 failure)
    - **Issue**: Protobuf utility functions not properly tested
    - **Error**: Test implementation issues
    - **Impact**: Protocol buffer operations untested
    - **Tests**: `test_protobuf_utilities`
 
-6. **Entity Creation** (3 failures)
+2. **Entity Creation** (3 failures)
    - **Issue**: Entity creation and lifecycle management failures
    - **Error**: Various entity initialization issues
    - **Impact**: Core domain entities not tested
@@ -206,7 +206,7 @@ TOTAL                                          1798    956    380     14    39%
 
 #### Low Priority Failures
 
-7. **API Operations** (12 failures)
+1. **API Operations** (12 failures)
    - **Issue**: Various API validation and operation failures
    - **Error**: API method implementation issues
    - **Impact**: gRPC API operations not fully tested

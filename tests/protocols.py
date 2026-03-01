@@ -26,6 +26,5 @@ class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
 
 # Runtime aliases
 p = TestsFlextGrpcProtocols
-p = TestsFlextGrpcProtocols
 
 __all__ = ["TestsFlextGrpcProtocols", "p"]

@@ -34,16 +34,16 @@ logger = FlextLogger(__name__)
 def validate_user_input(
     username: str,
     email: str,
-) -> FlextResult[t.GrpcCore.GrpcHeaders]:
+) -> FlextResult[t.Grpc.Headers]:
     """Validate user input with FlextGrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
         msg = "Username cannot be empty"
-        raise FlextGrpcValidationError(msg, field_name="username")
+        raise FlextGrpcValidationError(msg, field="username")
 
     def _raise_email_error() -> NoReturn:
         msg = "Invalid email format"
-        raise FlextGrpcValidationError(msg, field_name="email")
+        raise FlextGrpcValidationError(msg, field="email")
 
     try:
         if not username:
@@ -52,30 +52,29 @@ def validate_user_input(
         if not email or "@" not in email:
             _raise_email_error()
 
-        return FlextResult[t.GrpcCore.GrpcHeaders].ok(
+        return FlextResult[t.Grpc.Headers].ok(
             {"username": username, "email": email},
         )
 
     except FlextGrpcValidationError as e:
-        logger.exception("Validation failed", field=e.field_name, error=str(e))
-        return FlextResult[t.GrpcCore.GrpcHeaders].fail(
+        logger.exception("Validation failed", field=e.field, error=str(e))
+        return FlextResult[t.Grpc.Headers].fail(
             f"Validation error: {e}",
         )
 
 
-def create_server_config(port: int, workers: int) -> FlextResult[object]:
+def create_server_config(port: int, workers: int) -> FlextResult[t.Grpc.ConfigDict]:
     """Create server configuration with proper error handling."""
 
     def _raise_port_error() -> NoReturn:
         msg = "Port must be between 1 and 65535"
-        raise FlextGrpcSettingsurationError(msg, config_key="port", config_value=port)
+        raise FlextGrpcSettingsurationError(msg, config_key="port")
 
     def _raise_workers_error() -> NoReturn:
         msg = "Workers must be positive"
         raise FlextGrpcSettingsurationError(
             msg,
             config_key="max_workers",
-            config_value=workers,
         )
 
     def _raise_config_error(error_msg: str) -> NoReturn:
@@ -91,23 +90,22 @@ def create_server_config(port: int, workers: int) -> FlextResult[object]:
             _raise_workers_error()
 
         try:
-            config = {
-                "host": FlextGrpcConstants.GrpcNetwork.DEFAULT_HOST,
+            config: t.Grpc.ConfigDict = {
+                "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
                 "port": port,
                 "max_workers": workers,
             }
-            return FlextResult[object].ok(config)
+            return FlextResult[t.Grpc.ConfigDict].ok(config)
         except Exception as e:
-            return FlextResult[object].fail(str(e))
+            return FlextResult[t.Grpc.ConfigDict].fail(str(e))
 
     except FlextGrpcSettingsurationError as e:
         logger.exception(
             "Configuration error",
             key=e.config_key,
-            value=e.config_value,
             error=str(e),
         )
-        return FlextResult[object].fail(f"Configuration error: {e}")
+        return FlextResult[t.Grpc.ConfigDict].fail(f"Configuration error: {e}")
 
 
 def simulate_connection_error() -> FlextResult[str]:
@@ -173,7 +171,7 @@ def comprehensive_error_handling_pipeline() -> FlextResult[str]:
 
     # Step 2: Create server configuration
     config_result = create_server_config(
-        FlextGrpcConstants.GrpcNetwork.DEFAULT_GRPC_PORT,
+        FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         4,
     )
     if config_result.is_failure:
@@ -241,13 +239,12 @@ def demonstrate_error_context() -> None:
     # Create errors with rich context
     validation_error = FlextGrpcValidationError(
         "Email format is invalid - missing @ symbol",
-        field_name="user_email",
+        field="user_email",
     )
 
     config_error = FlextGrpcSettingsurationError(
         "Invalid port configuration for production environment",
         config_key="server_port",
-        config_value=0,
     )
 
     # Log errors with context
@@ -255,7 +252,7 @@ def demonstrate_error_context() -> None:
         "Validation error with field context",
         error_type=type(validation_error).__name__,
         error_message=str(validation_error),
-        field_name=validation_error.field_name,
+        field_name=validation_error.field,
         error_category="validation",
     )
 
@@ -264,7 +261,6 @@ def demonstrate_error_context() -> None:
         error_type=type(config_error).__name__,
         error_message=str(config_error),
         config_key=config_error.config_key,
-        config_value=config_error.config_value,
         error_category="configuration",
     )
 
@@ -309,7 +305,7 @@ def main() -> None:
     logger.info("\n🔄 2. Comprehensive Error Handling Pipeline")
     pipeline_result = comprehensive_error_handling_pipeline()
     if pipeline_result.is_success:
-        logger.info(f"✅ Pipeline result: {pipeline_result.data}")
+        logger.info(f"✅ Pipeline result: {pipeline_result.value}")
     else:
         logger.error(f"❌ Pipeline failed: {pipeline_result.error}")
 
@@ -317,7 +313,7 @@ def main() -> None:
     logger.info("\n🔧 3. Error Recovery Patterns")
     recovery_result = error_recovery_patterns()
     if recovery_result.is_success:
-        logger.info(f"✅ Recovery result: {recovery_result.data}")
+        logger.info(f"✅ Recovery result: {recovery_result.value}")
     else:
         logger.error(f"❌ Recovery failed: {recovery_result.error}")
 
@@ -326,7 +322,7 @@ def main() -> None:
     try:
         result = error_handling()
         if result.is_success:
-            logger.info(f"✅ result: {result.data}")
+            logger.info(f"✅ result: {result.value}")
         else:
             logger.error(f"❌ failed: {result.error}")
     except Exception:

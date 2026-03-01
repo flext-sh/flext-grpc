@@ -18,7 +18,9 @@ class TestFlextGrpcUtilities:
 
     def test_grpc_parse_address(self) -> None:
         """Test gRPC address parsing utility."""
-        host, port = FlextGrpcUtilities.Grpc.parse_address("localhost:50051")
+        parsed = FlextGrpcUtilities.Grpc.parse_address("localhost:50051")
+        assert parsed is not None
+        host, port = parsed
         assert host == "localhost"
         assert port == 50051
 

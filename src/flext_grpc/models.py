@@ -456,7 +456,28 @@ class FlextGrpcModels(FlextModels):
             @classmethod
             def from_values(cls, **values: t.GeneralValueType) -> Self:
                 """Build payload from keyword values."""
-                return cls(values=dict(values))  # type: dict[str, t.GeneralValueType]
+
+                def normalize_payload_value(value: t.GeneralValueType) -> t.JsonValue:
+                    match value:
+                        case None | str() | int() | float():
+                            return value
+                        case list() as items:
+                            return [normalize_payload_value(item) for item in items]
+                        case tuple() as items:
+                            return [normalize_payload_value(item) for item in items]
+                        case Mapping() as items:
+                            return {
+                                str(item_key): normalize_payload_value(item_value)
+                                for item_key, item_value in items.items()
+                            }
+                        case _:
+                            return str(value)
+
+                normalized_values = {
+                    metric_key: normalize_payload_value(metric_value)
+                    for metric_key, metric_value in values.items()
+                }
+                return cls(values=normalized_values)
 
         class Entity(FlextModels.Entity):
             """Generic base entity with functional patterns."""

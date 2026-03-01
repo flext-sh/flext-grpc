@@ -10,19 +10,22 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import TypeAlias
+
 import grpc
 from flext_core import r
 from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext_grpc import c, m, t
+from flext_grpc.constants import c
+from flext_grpc.models import FlextGrpcModels
 
-GrpcNetworkConfig = m.NetworkConfig
-GrpcSecurityConfig = m.SecurityConfig
-GrpcPerformanceConfig = m.PerformanceConfig
-GrpcStreamingConfig = m.StreamingConfig
-GrpcClientConfig = m.ClientSettingsConfig
-GrpcMonitoringConfig = m.MonitoringConfig
+GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
+GrpcSecurityConfig: TypeAlias = FlextGrpcModels.Grpc.SecurityConfig
+GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
+GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
+GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
+GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
 
 
 class FlextGrpcSettings(BaseModel):
@@ -56,12 +59,24 @@ class FlextGrpcSettings(BaseModel):
     )
 
     # Core configuration sections with composition
-    network: GrpcNetworkConfig = Field(default_factory=GrpcNetworkConfig)
-    security: GrpcSecurityConfig = Field(default_factory=GrpcSecurityConfig)
-    performance: GrpcPerformanceConfig = Field(default_factory=GrpcPerformanceConfig)
-    streaming: GrpcStreamingConfig = Field(default_factory=GrpcStreamingConfig)
-    client: GrpcClientConfig = Field(default_factory=GrpcClientConfig)
-    monitoring: GrpcMonitoringConfig = Field(default_factory=GrpcMonitoringConfig)
+    network: GrpcNetworkConfig = Field(
+        default_factory=FlextGrpcModels.Grpc.NetworkConfig,
+    )
+    security: GrpcSecurityConfig = Field(
+        default_factory=FlextGrpcModels.Grpc.SecurityConfig,
+    )
+    performance: GrpcPerformanceConfig = Field(
+        default_factory=FlextGrpcModels.Grpc.PerformanceConfig,
+    )
+    streaming: GrpcStreamingConfig = Field(
+        default_factory=FlextGrpcModels.Grpc.StreamingConfig,
+    )
+    client: GrpcClientConfig = Field(
+        default_factory=FlextGrpcModels.Grpc.ClientSettingsConfig,
+    )
+    monitoring: GrpcMonitoringConfig = Field(
+        default_factory=FlextGrpcModels.Grpc.MonitoringConfig,
+    )
 
     def __init__(
         self,
@@ -78,36 +93,43 @@ class FlextGrpcSettings(BaseModel):
         streaming: GrpcStreamingConfig | None = None,
         client: GrpcClientConfig | None = None,
         monitoring: GrpcMonitoringConfig | None = None,
-        **_kwargs: t.GeneralValueType,
     ) -> None:
         """Initialize with backward compatibility for legacy fields."""
-        network_config: GrpcNetworkConfig = network or GrpcNetworkConfig()
+        network_config: GrpcNetworkConfig = (
+            network or FlextGrpcModels.Grpc.NetworkConfig()
+        )
         if host is not None:
             network_config = network_config.model_copy(update={"host": host})
         if port is not None:
             network_config = network_config.model_copy(update={"port": port})
 
-        security_config: GrpcSecurityConfig = security or GrpcSecurityConfig()
+        security_config: GrpcSecurityConfig = (
+            security or FlextGrpcModels.Grpc.SecurityConfig()
+        )
         if tls_enabled is not None:
             security_config = security_config.model_copy(
                 update={"tls_enabled": tls_enabled},
             )
 
         performance_config: GrpcPerformanceConfig = (
-            performance or GrpcPerformanceConfig()
+            performance or FlextGrpcModels.Grpc.PerformanceConfig()
         )
         if max_workers is not None:
             performance_config = performance_config.model_copy(
                 update={"max_workers": max_workers},
             )
 
-        streaming_config: GrpcStreamingConfig = streaming or GrpcStreamingConfig()
+        streaming_config: GrpcStreamingConfig = (
+            streaming or FlextGrpcModels.Grpc.StreamingConfig()
+        )
         if streaming_enabled is not None:
             streaming_config = streaming_config.model_copy(
                 update={"enabled": streaming_enabled},
             )
 
-        client_config: GrpcClientConfig = client or GrpcClientConfig()
+        client_config: GrpcClientConfig = (
+            client or FlextGrpcModels.Grpc.ClientSettingsConfig()
+        )
         if timeout is not None:
             client_config = client_config.model_copy(update={"timeout": timeout})
 
@@ -120,7 +142,7 @@ class FlextGrpcSettings(BaseModel):
             performance=performance_config,
             streaming=streaming_config,
             client=client_config,
-            monitoring=monitoring or GrpcMonitoringConfig(),
+            monitoring=monitoring or FlextGrpcModels.Grpc.MonitoringConfig(),
         )
 
     @property
@@ -178,31 +200,31 @@ class FlextGrpcSettings(BaseModel):
         """Create production-ready configuration with enterprise defaults."""
         try:
             config = cls(
-                network=GrpcNetworkConfig(
+                network=FlextGrpcModels.Grpc.NetworkConfig(
                     host="127.0.0.1",  # Bind to localhost for security
                     port=c.Grpc.GrpcNetwork.GRPC_PORT,
                     max_connections=c.Grpc.Connection.MAX_CONNECTIONS,
                     keepalive_time=c.Grpc.GrpcNetwork.KEEPALIVE_TIME_SECONDS,
                     keepalive_timeout=c.Grpc.GrpcNetwork.KEEPALIVE_TIMEOUT_SECONDS,
                 ),
-                security=GrpcSecurityConfig(
+                security=FlextGrpcModels.Grpc.SecurityConfig(
                     tls_enabled=False,  # Disable TLS for testing/production without certs
                     auth_enabled=False,  # Disable auth for testing/production without tokens
                 ),
-                performance=GrpcPerformanceConfig(
+                performance=FlextGrpcModels.Grpc.PerformanceConfig(
                     max_workers=c.Grpc.Connection.MAX_WORKERS,
                     max_concurrent_rpcs=c.Grpc.Connection.MAX_CONCURRENT_RPCS,  # Within limit: 20 * 10 = 200
                     thread_pool_size=c.Grpc.Connection.THREAD_POOL_SIZE,
                 ),
-                streaming=GrpcStreamingConfig(
+                streaming=FlextGrpcModels.Grpc.StreamingConfig(
                     max_concurrent_streams=c.Grpc.Connection.MAX_CONCURRENT_STREAMS,
                     stream_buffer_size=1000,
                 ),
-                client=GrpcClientConfig(
+                client=FlextGrpcModels.Grpc.ClientSettingsConfig(
                     timeout=c.Grpc.Connection.DEFAULT_TIMEOUT,
                     retry_attempts=5,
                 ),
-                monitoring=GrpcMonitoringConfig(
+                monitoring=FlextGrpcModels.Grpc.MonitoringConfig(
                     metrics_enabled=True,
                     tracing_enabled=True,
                     health_check_enabled=True,
@@ -218,18 +240,18 @@ class FlextGrpcSettings(BaseModel):
         """Create development configuration with relaxed settings."""
         try:
             config = cls(
-                network=GrpcNetworkConfig(
+                network=FlextGrpcModels.Grpc.NetworkConfig(
                     host="localhost",
                     port=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
                 ),
-                security=GrpcSecurityConfig(),
-                performance=GrpcPerformanceConfig(
+                security=FlextGrpcModels.Grpc.SecurityConfig(),
+                performance=FlextGrpcModels.Grpc.PerformanceConfig(
                     max_workers=5,
                     max_concurrent_rpcs=100,
                 ),
-                streaming=GrpcStreamingConfig(),
-                client=GrpcClientConfig(),
-                monitoring=GrpcMonitoringConfig(),
+                streaming=FlextGrpcModels.Grpc.StreamingConfig(),
+                client=FlextGrpcModels.Grpc.ClientSettingsConfig(),
+                monitoring=FlextGrpcModels.Grpc.MonitoringConfig(),
             )
             return r.ok(config)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
@@ -237,11 +259,6 @@ class FlextGrpcSettings(BaseModel):
 
 
 __all__ = [
+    "FlextGrpcModels",
     "FlextGrpcSettings",
-    "GrpcClientConfig",
-    "GrpcMonitoringConfig",
-    "GrpcNetworkConfig",
-    "GrpcPerformanceConfig",
-    "GrpcSecurityConfig",
-    "GrpcStreamingConfig",
 ]

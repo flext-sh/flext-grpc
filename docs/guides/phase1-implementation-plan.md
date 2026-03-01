@@ -166,7 +166,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 #### Medium Priority Fixes
 
-5. **Protobuf Utilities** (1 failure)
+1. **Protobuf Utilities** (1 failure)
 
    - Issue: `test_protobuf_utilities` failing
    - Impact: Protocol buffer operations not tested
@@ -180,7 +180,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 #### Low Priority Fixes
 
-7. **API Validation Tests** (12 failures)
+1. **API Validation Tests** (12 failures)
    - Issue: Various API validation methods failing
    - Impact: API functionality not fully tested
    - Solution: Implement comprehensive API tests
