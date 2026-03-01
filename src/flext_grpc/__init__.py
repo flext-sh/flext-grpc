@@ -52,7 +52,10 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcServiceStub": ("flext_grpc.proto", "FlextGrpcServiceStub"),
     "FlextGrpcServices": ("flext_grpc.services", "FlextGrpcServices"),
     "FlextGrpcSettings": ("flext_grpc.settings", "FlextGrpcSettings"),
-    "FlextGrpcSettingsurationError": ("flext_grpc.errors", "FlextGrpcSettingsurationError"),
+    "FlextGrpcSettingsurationError": (
+        "flext_grpc.errors",
+        "FlextGrpcSettingsurationError",
+    ),
     "FlextGrpcTimeoutError": ("flext_grpc.errors", "FlextGrpcTimeoutError"),
     "FlextGrpcTypes": ("flext_grpc.typings", "FlextGrpcTypes"),
     "FlextGrpcUtilities": ("flext_grpc.utilities", "FlextGrpcUtilities"),
