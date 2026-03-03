@@ -396,7 +396,7 @@ class FlextGrpcProtocols(FlextProtocols):
         class GrpcCallbackFunction(Protocol):
             """Protocol for gRPC callback functions."""
 
-            def __call__(self, *args: t.ScalarValue, **kwargs: t.ScalarValue) -> None:
+            def __call__(self, *args: t.Scalar, **kwargs: t.Scalar) -> None:
                 """Call the callback."""
                 ...
 
@@ -471,7 +471,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def __call__(
                 self,
-                **kwargs: t.ScalarValue,
+                **kwargs: t.Scalar,
             ) -> FlextResult[object]:
                 """Execute operation with given arguments."""
                 ...
