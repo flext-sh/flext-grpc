@@ -32,7 +32,7 @@ class FlextGrpcTypes(FlextTypes):
     Uses Python 3.13+ type syntax and patterns.
     """
 
-    # Inherit GeneralValueType from FlextTypes
+    # Inherit ContainerValue from FlextTypes
     ConfigValue: TypeAlias = FlextTypes.JsonValue
     GrpcOptions = dict[str, FlextTypes.JsonValue]
 
@@ -73,10 +73,7 @@ class FlextGrpcTypes(FlextTypes):
         # gRPC options type - standardized options dict
         Options: TypeAlias = dict[
             str,
-            str
-            | int
-            | float
-            | bool
+            t.JsonPrimitive
             | list[FlextTypes.JsonValue]
             | dict[str, FlextTypes.JsonValue]
             | None,
@@ -237,7 +234,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | bool | int | dict[str, FlextTypes.JsonValue],
             ]
-            AlertingRules: TypeAlias = list[dict[str, str | int | float | bool]]
+            AlertingRules: TypeAlias = list[dict[str, t.JsonPrimitive]]
             PerformanceMetrics = dict[
                 str,
                 float | int | dict[str, FlextTypes.JsonValue],

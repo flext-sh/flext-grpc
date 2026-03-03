@@ -34,11 +34,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, t.GeneralValueType]] = []
-        self.warnings: list[dict[str, t.GeneralValueType]] = []
-        self.recommendations: list[dict[str, t.GeneralValueType]] = []
+        self.issues: list[dict[str, t.ContainerValue]] = []
+        self.warnings: list[dict[str, t.ContainerValue]] = []
+        self.recommendations: list[dict[str, t.ContainerValue]] = []
 
-    def validate_all(self) -> dict[str, t.GeneralValueType]:
+    def validate_all(self) -> dict[str, t.ContainerValue]:
         """Run all validation checks."""
         # Reset collections
         self.issues = []
@@ -277,7 +277,7 @@ class ArchitectureValidator:
                     "message": "Architecture documentation contains outdated test coverage metrics",
                 })
 
-    def _generate_summary(self) -> dict[str, t.GeneralValueType]:
+    def _generate_summary(self) -> dict[str, t.ContainerValue]:
         """Generate validation summary."""
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
@@ -309,7 +309,7 @@ class ArchitectureValidator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-    def _print_results(self, summary: dict[str, t.GeneralValueType]) -> None:
+    def _print_results(self, summary: dict[str, t.ContainerValue]) -> None:
         """Print validation results."""
         # Reserved for future summary display functionality
         _ = summary  # Reserved for future use
@@ -328,7 +328,7 @@ class ArchitectureValidator:
 
 
 def save_report(
-    results: dict[str, t.GeneralValueType],
+    results: dict[str, t.ContainerValue],
     output_path: Path | None = None,
 ) -> None:
     """Save validation report to file."""

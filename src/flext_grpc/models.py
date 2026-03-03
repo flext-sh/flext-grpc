@@ -94,11 +94,11 @@ class FlextGrpcModels(FlextModels):
             """Operation execution request for gRPC service operations."""
 
             operation_name: str = Field(description="Operation name to execute")
-            arguments: Mapping[str, str | int | float | bool] = Field(
+            arguments: Mapping[str, t.JsonPrimitive] = Field(
                 default_factory=dict,
                 description="Positional arguments as dict",
             )
-            keyword_arguments: Mapping[str, str | int | float | bool] = Field(
+            keyword_arguments: Mapping[str, t.JsonPrimitive] = Field(
                 default_factory=dict,
                 description="Keyword arguments",
             )
@@ -454,10 +454,10 @@ class FlextGrpcModels(FlextModels):
             values: t.Grpc.GrpcDict = Field(default_factory=dict)
 
             @classmethod
-            def from_values(cls, **values: t.GeneralValueType) -> Self:
+            def from_values(cls, **values: t.ContainerValue) -> Self:
                 """Build payload from keyword values."""
 
-                def normalize_payload_value(value: t.GeneralValueType) -> t.JsonValue:
+                def normalize_payload_value(value: t.ContainerValue) -> t.JsonValue:
                     match value:
                         case None | str() | int() | float():
                             return value
@@ -505,7 +505,7 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelStateLiteral = "idle"
-            options: dict[str, t.GeneralValueType] = Field(default_factory=dict)
+            options: dict[str, t.ContainerValue] = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             @override

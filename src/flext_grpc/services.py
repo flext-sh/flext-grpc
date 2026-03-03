@@ -46,7 +46,7 @@ class ServicePayload(BaseModel):
     values: t.Grpc.GrpcDict = Field(default_factory=dict)
 
     @classmethod
-    def from_values(cls, **values: t.GeneralValueType) -> ServicePayload:
+    def from_values(cls, **values: t.ContainerValue) -> ServicePayload:
         """Build payload from keyword values."""
         normalized_values = {
             metric_key: _MetricValueModel.model_validate({"value": metric_value}).value
@@ -62,7 +62,7 @@ class _MetricValueModel(BaseModel):
 
     @field_validator("value", mode="before")
     @classmethod
-    def normalize_value(cls, value: t.GeneralValueType) -> t.JsonValue:
+    def normalize_value(cls, value: t.ContainerValue) -> t.JsonValue:
         """Normalize runtime values to stable JSON-compatible output."""
         match value:
             case None | str() | int() | float():
@@ -186,7 +186,7 @@ class MetricsCollector:
         self._metrics = ServicePayload()
         self._lock = threading.RLock()
 
-    def record_metric(self, key: str, value: t.GeneralValueType) -> None:
+    def record_metric(self, key: str, value: t.ContainerValue) -> None:
         """Thread-safe metric recording.
 
         Args:
@@ -241,7 +241,7 @@ class ConnectionPool:
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection acquisition failed: {e}")
 
-    def release(self, connection: t.GeneralValueType) -> r[bool]:
+    def release(self, connection: t.ContainerValue) -> r[bool]:
         """Release connection back to pool."""
         try:
             with self._lock:
@@ -789,7 +789,7 @@ class FlextGrpcServices:
             return r.ok(ServicePayload.from_values(status="closed"))
         return r.fail(f"Unsupported stream command: {command}")
 
-    def execute(self, **_kwargs: t.GeneralValueType) -> r[ServicePayload]:
+    def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
         """Execute main service operation."""
         return r.ok(
             ServicePayload.from_values(status="ready", service="flext-grpc-service"),

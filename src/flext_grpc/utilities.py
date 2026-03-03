@@ -50,7 +50,7 @@ class FlextGrpcUtilities(FlextUtilities):
     def create_client_entity(
         cls,
         target: str,
-        options: Mapping[str, t.GeneralValueType] | None = None,
+        options: Mapping[str, t.ContainerValue] | None = None,
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Create a gRPC client entity directly."""
         try:
@@ -96,7 +96,7 @@ class FlextGrpcUtilities(FlextUtilities):
     def create_channel_entity(
         cls,
         target: str,
-        options: Mapping[str, t.GeneralValueType] | None = None,
+        options: Mapping[str, t.ContainerValue] | None = None,
     ) -> r[FlextGrpcModels.Grpc.Channel]:
         """Create a gRPC channel entity directly."""
         try:
@@ -229,7 +229,7 @@ class FlextGrpcUtilities(FlextUtilities):
             return bool(host and host.strip())
 
         @staticmethod
-        def get_system_info() -> dict[str, t.GeneralValueType]:
+        def get_system_info() -> dict[str, t.ContainerValue]:
             """Get system information for gRPC diagnostics."""
             cpu: int = 0
             mem_total: int = 0
@@ -243,8 +243,8 @@ class FlextGrpcUtilities(FlextUtilities):
                 pass
             try:
                 mem_val = psutil.virtual_memory()  # pyright: ignore[reportUnknownMemberType,reportUnknownVariableType]
-                total_val: t.GeneralValueType = getattr(mem_val, "total", 0)  # pyright: ignore[reportUnknownArgumentType]
-                avail_val: t.GeneralValueType = getattr(mem_val, "available", 0)  # pyright: ignore[reportUnknownArgumentType]
+                total_val: t.ContainerValue = getattr(mem_val, "total", 0)  # pyright: ignore[reportUnknownArgumentType]
+                avail_val: t.ContainerValue = getattr(mem_val, "available", 0)  # pyright: ignore[reportUnknownArgumentType]
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
             except Exception:  # noqa: S110
