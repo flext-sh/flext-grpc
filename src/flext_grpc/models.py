@@ -94,11 +94,11 @@ class FlextGrpcModels(FlextModels):
             """Operation execution request for gRPC service operations."""
 
             operation_name: str = Field(description="Operation name to execute")
-            arguments: Mapping[str, t.JsonPrimitive] = Field(
+            arguments: Mapping[str, t.Scalar] = Field(
                 default_factory=dict,
                 description="Positional arguments as dict",
             )
-            keyword_arguments: Mapping[str, t.JsonPrimitive] = Field(
+            keyword_arguments: Mapping[str, t.Scalar] = Field(
                 default_factory=dict,
                 description="Keyword arguments",
             )

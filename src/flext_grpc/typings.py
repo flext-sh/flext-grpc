@@ -73,7 +73,7 @@ class FlextGrpcTypes(FlextTypes):
         # gRPC options type - standardized options dict
         Options: TypeAlias = dict[
             str,
-            t.JsonPrimitive
+            t.Scalar
             | list[FlextTypes.JsonValue]
             | dict[str, FlextTypes.JsonValue]
             | None,
@@ -234,7 +234,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | bool | int | dict[str, FlextTypes.JsonValue],
             ]
-            AlertingRules: TypeAlias = list[dict[str, t.JsonPrimitive]]
+            AlertingRules: TypeAlias = list[dict[str, t.Scalar]]
             PerformanceMetrics = dict[
                 str,
                 float | int | dict[str, FlextTypes.JsonValue],
