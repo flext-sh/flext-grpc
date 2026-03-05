@@ -47,6 +47,28 @@ class FlextGrpcUtilities(FlextUtilities):
     """
 
     @classmethod
+    def create_channel_entity(
+        cls,
+        target: str,
+        options: Mapping[str, t.ContainerValue] | None = None,
+    ) -> r[FlextGrpcModels.Grpc.Channel]:
+        """Create a gRPC channel entity directly."""
+        try:
+            # Validate target format
+            if not target or not target.strip():
+                return r.fail("Channel target cannot be empty")
+
+            channel = FlextGrpcModels.Grpc.Channel(
+                unique_id=str(uuid4()),
+                target=target,
+                state="idle",
+                options=dict(options) if options else {},
+            )
+            return r.ok(channel)
+        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
+            return r.fail(f"Failed to create channel entity: {e}")
+
+    @classmethod
     def create_client_entity(
         cls,
         target: str,
@@ -91,28 +113,6 @@ class FlextGrpcUtilities(FlextUtilities):
             return r.ok(server)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Failed to create server entity: {e}")
-
-    @classmethod
-    def create_channel_entity(
-        cls,
-        target: str,
-        options: Mapping[str, t.ContainerValue] | None = None,
-    ) -> r[FlextGrpcModels.Grpc.Channel]:
-        """Create a gRPC channel entity directly."""
-        try:
-            # Validate target format
-            if not target or not target.strip():
-                return r.fail("Channel target cannot be empty")
-
-            channel = FlextGrpcModels.Grpc.Channel(
-                unique_id=str(uuid4()),
-                target=target,
-                state="idle",
-                options=dict(options) if options else {},
-            )
-            return r.ok(channel)
-        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Failed to create channel entity: {e}")
 
     @classmethod
     def create_service_entity(
@@ -163,23 +163,6 @@ class FlextGrpcUtilities(FlextUtilities):
         """gRPC-specific utility methods."""
 
         @staticmethod
-        def parse_address(address: str) -> tuple[str, int] | None:
-            """Parse gRPC address into host and port."""
-            if not address or ":" not in address:
-                return None
-            try:
-                parts = address.rsplit(":", 1)
-                host = parts[0]
-                port = int(parts[1])
-                if not (
-                    c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
-                ):
-                    return None
-                return (host, port)
-            except (ValueError, IndexError):
-                return None
-
-        @staticmethod
         def format_address(host: str, port: int) -> str:
             """Format host and port into gRPC address."""
             return f"{host}:{port}"
@@ -219,16 +202,6 @@ class FlextGrpcUtilities(FlextUtilities):
             return type_names.get(stream_type, "Unknown")
 
         @staticmethod
-        def validate_port(port: int) -> bool:
-            """Validate gRPC port number."""
-            return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
-
-        @staticmethod
-        def validate_host(host: str) -> bool:
-            """Validate gRPC host."""
-            return bool(host and host.strip())
-
-        @staticmethod
         def get_system_info() -> dict[str, t.ContainerValue]:
             """Get system information for gRPC diagnostics."""
             cpu: int = 0
@@ -254,6 +227,33 @@ class FlextGrpcUtilities(FlextUtilities):
                 "memory_total_mb": mem_total // (1024 * 1024),
                 "memory_available_mb": mem_avail // (1024 * 1024),
             }
+
+        @staticmethod
+        def parse_address(address: str) -> tuple[str, int] | None:
+            """Parse gRPC address into host and port."""
+            if not address or ":" not in address:
+                return None
+            try:
+                parts = address.rsplit(":", 1)
+                host = parts[0]
+                port = int(parts[1])
+                if not (
+                    c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
+                ):
+                    return None
+                return (host, port)
+            except (ValueError, IndexError):
+                return None
+
+        @staticmethod
+        def validate_host(host: str) -> bool:
+            """Validate gRPC host."""
+            return bool(host and host.strip())
+
+        @staticmethod
+        def validate_port(port: int) -> bool:
+            """Validate gRPC port number."""
+            return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
 
 
 u = FlextGrpcUtilities

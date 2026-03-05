@@ -152,6 +152,13 @@ class StreamProcessor(ABC):
     """Abstract base for stream processing."""
 
     @abstractmethod
+    def close_stream(
+        self,
+        stream: FlextGrpcModels.Grpc.GrpcStream,
+    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        """Close stream."""
+
+    @abstractmethod
     def create_stream(
         self,
         **kwargs: t.ConfigValue,
@@ -169,13 +176,6 @@ class StreamProcessor(ABC):
         Note: Uses t.ConfigValue for gRPC message compatibility
         """
 
-    @abstractmethod
-    def close_stream(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
-        """Close stream."""
-
 
 class MetricsCollector:
     """Dedicated metrics collection with thread safety."""
@@ -185,6 +185,21 @@ class MetricsCollector:
         super().__init__()
         self._metrics = ServicePayload()
         self._lock = threading.RLock()
+
+    def get_all_metrics(self) -> ServicePayload:
+        """Get all metrics snapshot."""
+        with self._lock:
+            return ServicePayload(values=self._metrics.values.copy())
+
+    def get_metric(self, key: str) -> t.JsonValue:
+        """Thread-safe metric retrieval.
+
+        Returns:
+        Metric value or None if not found
+
+        """
+        with self._lock:
+            return self._metrics.values.get(key)
 
     def record_metric(self, key: str, value: t.ContainerValue) -> None:
         """Thread-safe metric recording.
@@ -197,21 +212,6 @@ class MetricsCollector:
         with self._lock:
             normalized = _MetricValueModel.model_validate({"value": value})
             self._metrics.values[key] = normalized.value
-
-    def get_metric(self, key: str) -> t.JsonValue:
-        """Thread-safe metric retrieval.
-
-        Returns:
-        Metric value or None if not found
-
-        """
-        with self._lock:
-            return self._metrics.values.get(key)
-
-    def get_all_metrics(self) -> ServicePayload:
-        """Get all metrics snapshot."""
-        with self._lock:
-            return ServicePayload(values=self._metrics.values.copy())
 
 
 class ConnectionPool:
@@ -241,6 +241,17 @@ class ConnectionPool:
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection acquisition failed: {e}")
 
+    def cleanup(self) -> r[bool]:
+        """Cleanup all connections."""
+        with self._lock:
+            self._active.clear()
+            while not self._pool.empty():
+                try:
+                    _ = self._pool.get_nowait()
+                except (grpc.RpcError, ConnectionError, TimeoutError):
+                    break
+        return r.ok(True)
+
     def release(self, connection: t.ContainerValue) -> r[bool]:
         """Release connection back to pool."""
         try:
@@ -254,17 +265,6 @@ class ConnectionPool:
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Connection release failed: {e}")
 
-    def cleanup(self) -> r[bool]:
-        """Cleanup all connections."""
-        with self._lock:
-            self._active.clear()
-            while not self._pool.empty():
-                try:
-                    _ = self._pool.get_nowait()
-                except (grpc.RpcError, ConnectionError, TimeoutError):
-                    break
-        return r.ok(True)
-
 
 class GrpcServerManager(ServerLifecycleManager):
     """Dedicated server lifecycle management."""
@@ -277,6 +277,22 @@ class GrpcServerManager(ServerLifecycleManager):
         self._thread_pool = ThreadPoolExecutor(
             max_workers=50,
             thread_name_prefix="flext-grpc-server",
+        )
+
+    def get_server_metrics(
+        self,
+        server: FlextGrpcModels.Grpc.Server,
+    ) -> r[ServicePayload]:
+        """Get server metrics."""
+        server_key = f"{server.host}:{server.port}"
+        started_at = self._metrics.get_metric(f"{server_key}_started_at")
+        stopped_at = self._metrics.get_metric(f"{server_key}_stopped_at")
+        return r.ok(
+            ServicePayload.from_values(
+                is_active=server_key in self._active_servers,
+                started_at=started_at,
+                stopped_at=stopped_at,
+            ),
         )
 
     @override
@@ -355,22 +371,6 @@ class GrpcServerManager(ServerLifecycleManager):
 
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Server stop failed: {e}")
-
-    def get_server_metrics(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> r[ServicePayload]:
-        """Get server metrics."""
-        server_key = f"{server.host}:{server.port}"
-        started_at = self._metrics.get_metric(f"{server_key}_started_at")
-        stopped_at = self._metrics.get_metric(f"{server_key}_stopped_at")
-        return r.ok(
-            ServicePayload.from_values(
-                is_active=server_key in self._active_servers,
-                started_at=started_at,
-                stopped_at=stopped_at,
-            ),
-        )
 
 
 class GrpcClientManager(ClientConnectionManager):
@@ -496,6 +496,19 @@ class GrpcStreamManager(StreamProcessor):
         self._metrics = MetricsCollector()
 
     @override
+    def close_stream(
+        self,
+        stream: FlextGrpcModels.Grpc.GrpcStream,
+    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        """Close stream and cleanup."""
+        stream_key = f"{stream.id}_{stream.stream_type}"
+
+        if stream_key in self._active_streams:
+            del self._active_streams[stream_key]
+
+        return r.ok(stream)
+
+    @override
     def create_stream(
         self,
         **kwargs: t.ConfigValue,
@@ -563,19 +576,6 @@ class GrpcStreamManager(StreamProcessor):
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Data send failed: {e}")
 
-    @override
-    def close_stream(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
-        """Close stream and cleanup."""
-        stream_key = f"{stream.id}_{stream.stream_type}"
-
-        if stream_key in self._active_streams:
-            del self._active_streams[stream_key]
-
-        return r.ok(stream)
-
 
 class FlextGrpcServices:
     """Generic gRPC service facade using SOLID principles and delegation.
@@ -595,28 +595,12 @@ class FlextGrpcServices:
         self._metrics_collector = MetricsCollector()
         self._resource_manager = ConnectionPool(max_size=20)
 
-    # === DELEGATED SERVER OPERATIONS ===
-
-    def start_server(
+    def close_stream(
         self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> r[FlextGrpcModels.Grpc.Server]:
-        """Delegate server start to specialized manager."""
-        return self._server_manager.start_server(server)
-
-    def stop_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> r[FlextGrpcModels.Grpc.Server]:
-        """Delegate server stop to specialized manager."""
-        return self._server_manager.stop_server(server)
-
-    def get_server_status(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> r[ServicePayload]:
-        """Delegate server status to specialized manager."""
-        return self._server_manager.get_server_metrics(server)
+        stream: FlextGrpcModels.Grpc.GrpcStream,
+    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        """Delegate stream closing to specialized manager."""
+        return self._stream_manager.close_stream(stream)
 
     # === DELEGATED CLIENT OPERATIONS ===
 
@@ -624,12 +608,51 @@ class FlextGrpcServices:
         """Delegate client connection to specialized manager."""
         return self._client_manager.connect(target)
 
+    # === DELEGATED STREAM OPERATIONS ===
+
+    def create_stream(
+        self,
+        method_name: str | int | None = "DefaultMethod",
+        **kwargs: t.ConfigValue,
+    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        """Delegate stream creation to specialized manager."""
+        # Ensure method_name is a string
+        method_name_str = (
+            str(method_name) if method_name is not None else "DefaultMethod"
+        )
+        kwargs["method_name"] = method_name_str
+        return self._stream_manager.create_stream(**kwargs)
+
     def disconnect_client(
         self,
         client: FlextGrpcModels.Grpc.Client,
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
+
+    def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
+        """Execute main service operation."""
+        return r.ok(
+            ServicePayload.from_values(status="ready", service="flext-grpc-service"),
+        )
+
+    def get_client_status(
+        self,
+        client: FlextGrpcModels.Grpc.Client,
+    ) -> r[ServicePayload]:
+        """Get client status through delegation."""
+        target = ""
+        if client.channel is not None:
+            target = client.channel.target or ""
+        is_connected = bool(target and target in self._client_manager._active_channels)
+        return r.ok(ServicePayload.from_values(connected=is_connected, target=target))
+
+    def get_server_status(
+        self,
+        server: FlextGrpcModels.Grpc.Server,
+    ) -> r[ServicePayload]:
+        """Delegate server status to specialized manager."""
+        return self._server_manager.get_server_metrics(server)
 
     def make_call(
         self,
@@ -647,32 +670,6 @@ class FlextGrpcServices:
         """
         return self._client_manager.make_call(client, method, request)
 
-    def get_client_status(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
-    ) -> r[ServicePayload]:
-        """Get client status through delegation."""
-        target = ""
-        if client.channel is not None:
-            target = client.channel.target or ""
-        is_connected = bool(target and target in self._client_manager._active_channels)
-        return r.ok(ServicePayload.from_values(connected=is_connected, target=target))
-
-    # === DELEGATED STREAM OPERATIONS ===
-
-    def create_stream(
-        self,
-        method_name: str | int | None = "DefaultMethod",
-        **kwargs: t.ConfigValue,
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
-        """Delegate stream creation to specialized manager."""
-        # Ensure method_name is a string
-        method_name_str = (
-            str(method_name) if method_name is not None else "DefaultMethod"
-        )
-        kwargs["method_name"] = method_name_str
-        return self._stream_manager.create_stream(**kwargs)
-
     def send_data(
         self,
         stream: FlextGrpcModels.Grpc.GrpcStream,
@@ -687,12 +684,21 @@ class FlextGrpcServices:
         """
         return self._stream_manager.send_data(stream, data)
 
-    def close_stream(
+    # === DELEGATED SERVER OPERATIONS ===
+
+    def start_server(
         self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
-        """Delegate stream closing to specialized manager."""
-        return self._stream_manager.close_stream(stream)
+        server: FlextGrpcModels.Grpc.Server,
+    ) -> r[FlextGrpcModels.Grpc.Server]:
+        """Delegate server start to specialized manager."""
+        return self._server_manager.start_server(server)
+
+    def stop_server(
+        self,
+        server: FlextGrpcModels.Grpc.Server,
+    ) -> r[FlextGrpcModels.Grpc.Server]:
+        """Delegate server stop to specialized manager."""
+        return self._server_manager.stop_server(server)
 
     # === FACTORY METHODS WITH DELEGATION ===
 
@@ -717,26 +723,6 @@ class FlextGrpcServices:
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)
-
-    def _execute_server_command(
-        self,
-        command: str,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> r[ServicePayload]:
-        """Execute server-specific commands."""
-        if command == "start":
-            start_result = self.start_server(server)
-            if start_result.is_failure:
-                return r.fail(start_result.error or "Server start command failed")
-            return r.ok(ServicePayload.from_values(status="started"))
-        if command == "stop":
-            stop_result = self.stop_server(server)
-            if stop_result.is_failure:
-                return r.fail(stop_result.error or "Server stop command failed")
-            return r.ok(ServicePayload.from_values(status="stopped"))
-        if command == "status":
-            return self.get_server_status(server)
-        return r.fail(f"Unsupported server command: {command}")
 
     def _execute_client_command(
         self,
@@ -767,6 +753,26 @@ class FlextGrpcServices:
             )
         return r.fail(f"Unsupported client command: {command}")
 
+    def _execute_server_command(
+        self,
+        command: str,
+        server: FlextGrpcModels.Grpc.Server,
+    ) -> r[ServicePayload]:
+        """Execute server-specific commands."""
+        if command == "start":
+            start_result = self.start_server(server)
+            if start_result.is_failure:
+                return r.fail(start_result.error or "Server start command failed")
+            return r.ok(ServicePayload.from_values(status="started"))
+        if command == "stop":
+            stop_result = self.stop_server(server)
+            if stop_result.is_failure:
+                return r.fail(stop_result.error or "Server stop command failed")
+            return r.ok(ServicePayload.from_values(status="stopped"))
+        if command == "status":
+            return self.get_server_status(server)
+        return r.fail(f"Unsupported server command: {command}")
+
     def _execute_stream_command(
         self,
         command: str,
@@ -788,12 +794,6 @@ class FlextGrpcServices:
                 return r.fail(close_result.error or "Stream close command failed")
             return r.ok(ServicePayload.from_values(status="closed"))
         return r.fail(f"Unsupported stream command: {command}")
-
-    def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
-        """Execute main service operation."""
-        return r.ok(
-            ServicePayload.from_values(status="ready", service="flext-grpc-service"),
-        )
 
 
 __all__ = [

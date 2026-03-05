@@ -151,14 +151,19 @@ class FlextGrpcSettings(BaseModel):
         return self.network.host
 
     @property
+    def max_workers(self) -> int:
+        """Get max workers from performance config."""
+        return self.performance.max_workers
+
+    @property
     def port(self) -> int:
         """Get port from network config."""
         return self.network.port
 
     @property
-    def max_workers(self) -> int:
-        """Get max workers from performance config."""
-        return self.performance.max_workers
+    def streaming_enabled(self) -> bool:
+        """Get streaming enabled from streaming config."""
+        return self.streaming.enabled
 
     @property
     def timeout(self) -> float:
@@ -170,30 +175,27 @@ class FlextGrpcSettings(BaseModel):
         """Get TLS enabled from security config."""
         return self.security.tls_enabled
 
-    @property
-    def streaming_enabled(self) -> bool:
-        """Get streaming enabled from streaming config."""
-        return self.streaming.enabled
-
-    def validate_configuration(self) -> r[bool]:
-        """Validate complete configuration with cross-section checks."""
+    @classmethod
+    def create_development_config(cls) -> r[FlextGrpcSettings]:
+        """Create development configuration with relaxed settings."""
         try:
-            # Cross-validation: TLS and client cert requirements
-            if self.security.client_cert_required and not self.security.tls_enabled:
-                return r.fail("Client certificates require TLS to be enabled")
-
-            # Cross-validation: Performance limits
-            if self.performance.max_concurrent_rpcs > self.performance.max_workers * 10:
-                return r.fail("RPC limit too high for worker count")
-
-            # Cross-validation: Network and security
-            http_port = c.Grpc.GrpcNetwork.HTTP_PORT  # Standard HTTP port
-            if self.security.tls_enabled and self.network.port == http_port:
-                return r.fail("TLS enabled but using HTTP port")
-
-            return r.ok(True)
+            config = cls(
+                network=FlextGrpcModels.Grpc.NetworkConfig(
+                    host="localhost",
+                    port=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+                ),
+                security=FlextGrpcModels.Grpc.SecurityConfig(),
+                performance=FlextGrpcModels.Grpc.PerformanceConfig(
+                    max_workers=5,
+                    max_concurrent_rpcs=100,
+                ),
+                streaming=FlextGrpcModels.Grpc.StreamingConfig(),
+                client=FlextGrpcModels.Grpc.ClientSettingsConfig(),
+                monitoring=FlextGrpcModels.Grpc.MonitoringConfig(),
+            )
+            return r.ok(config)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Configuration validation failed: {e}")
+            return r.fail(f"Development config creation failed: {e}")
 
     @classmethod
     def create_production_config(cls) -> r[FlextGrpcSettings]:
@@ -235,27 +237,25 @@ class FlextGrpcSettings(BaseModel):
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Production config creation failed: {e}")
 
-    @classmethod
-    def create_development_config(cls) -> r[FlextGrpcSettings]:
-        """Create development configuration with relaxed settings."""
+    def validate_configuration(self) -> r[bool]:
+        """Validate complete configuration with cross-section checks."""
         try:
-            config = cls(
-                network=FlextGrpcModels.Grpc.NetworkConfig(
-                    host="localhost",
-                    port=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-                ),
-                security=FlextGrpcModels.Grpc.SecurityConfig(),
-                performance=FlextGrpcModels.Grpc.PerformanceConfig(
-                    max_workers=5,
-                    max_concurrent_rpcs=100,
-                ),
-                streaming=FlextGrpcModels.Grpc.StreamingConfig(),
-                client=FlextGrpcModels.Grpc.ClientSettingsConfig(),
-                monitoring=FlextGrpcModels.Grpc.MonitoringConfig(),
-            )
-            return r.ok(config)
+            # Cross-validation: TLS and client cert requirements
+            if self.security.client_cert_required and not self.security.tls_enabled:
+                return r.fail("Client certificates require TLS to be enabled")
+
+            # Cross-validation: Performance limits
+            if self.performance.max_concurrent_rpcs > self.performance.max_workers * 10:
+                return r.fail("RPC limit too high for worker count")
+
+            # Cross-validation: Network and security
+            http_port = c.Grpc.GrpcNetwork.HTTP_PORT  # Standard HTTP port
+            if self.security.tls_enabled and self.network.port == http_port:
+                return r.fail("TLS enabled but using HTTP port")
+
+            return r.ok(True)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Development config creation failed: {e}")
+            return r.fail(f"Configuration validation failed: {e}")
 
 
 __all__ = [

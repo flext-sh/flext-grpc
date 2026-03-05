@@ -278,6 +278,23 @@ class FlextGrpcTypes(FlextTypes):
             """gRPC validation utilities."""
 
             @staticmethod
+            def parse_target(target: str) -> tuple[str, int]:
+                """Parse a validated gRPC target into (host, port).
+
+                Raises ValueError if the target is invalid. Prefer checking with
+                validate_target() beforehand when you need a boolean.
+
+                Returns:
+                    tuple["str", "int"]: Host and port components.
+
+                """
+                if not FlextGrpcTypes.Grpc.GrpcValidation.validate_target(target):
+                    msg = f"Invalid gRPC target: {target}"
+                    raise ValueError(msg)
+                host, port_str = target.split(":", 1)
+                return (host, int(port_str))
+
+            @staticmethod
             def validate_target(target: str) -> bool:
                 """Validate a gRPC target string in the form host:port."""
                 if not target or ":" not in target:
@@ -295,23 +312,6 @@ class FlextGrpcTypes(FlextTypes):
                     logger = logging.getLogger(__name__)
                     logger.debug("Invalid gRPC target: %s", target)
                     return False
-
-            @staticmethod
-            def parse_target(target: str) -> tuple[str, int]:
-                """Parse a validated gRPC target into (host, port).
-
-                Raises ValueError if the target is invalid. Prefer checking with
-                validate_target() beforehand when you need a boolean.
-
-                Returns:
-                    tuple["str", "int"]: Host and port components.
-
-                """
-                if not FlextGrpcTypes.Grpc.GrpcValidation.validate_target(target):
-                    msg = f"Invalid gRPC target: {target}"
-                    raise ValueError(msg)
-                host, port_str = target.split(":", 1)
-                return (host, int(port_str))
 
 
 t = FlextGrpcTypes

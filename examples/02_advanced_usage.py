@@ -73,6 +73,23 @@ class GrpcServerManager:
 
         return server_results
 
+    def get_server_status(self) -> dict[str, dict[str, str]]:
+        """Get status of all servers through facade."""
+        status = {}
+
+        for server_id, server in self.servers.items():
+            config = self.server_configs[server_id]
+            status[server_id] = {
+                "address": f"{server.host}:{server.port}",
+                "state": server.state,
+                "max_workers": str(server.max_workers),
+                "timeout": f"{config.timeout}s",
+                "is_running": str(server.state == "running"),
+                "is_valid": str(server.validate_business_rules().is_success),
+            }
+
+        return status
+
     def start_all_servers(self) -> dict[str, bool]:
         """Start all servers in the pool through facade."""
         results = {}
@@ -103,23 +120,6 @@ class GrpcServerManager:
                 results[server_id] = True
 
         return results
-
-    def get_server_status(self) -> dict[str, dict[str, str]]:
-        """Get status of all servers through facade."""
-        status = {}
-
-        for server_id, server in self.servers.items():
-            config = self.server_configs[server_id]
-            status[server_id] = {
-                "address": f"{server.host}:{server.port}",
-                "state": server.state,
-                "max_workers": str(server.max_workers),
-                "timeout": f"{config.timeout}s",
-                "is_running": str(server.state == "running"),
-                "is_valid": str(server.validate_business_rules().is_success),
-            }
-
-        return status
 
 
 class AdvancedGrpcOperations:
