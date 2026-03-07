@@ -1,7 +1,6 @@
 # flext-grpc Configuration
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Configuration Overview](#configuration-overview)
   - [Basic Configuration](#basic-configuration)
@@ -31,7 +30,7 @@
 - [Troubleshooting Configuration](#troubleshooting-configuration)
   - [Common Issues](#common-issues)
   - [Debugging Configuration](#debugging-configuration)
-  <!-- TOC END -->
+<!-- TOC END -->
 
 ## Table of Contents
 

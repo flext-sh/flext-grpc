@@ -1,7 +1,6 @@
 # FLEXT gRPC Documentation
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Documentation Structure](#documentation-structure)
   - [gRPC-Specific Documentation](#grpc-specific-documentation)
@@ -9,7 +8,6 @@
 - [Documentation Scope](#documentation-scope)
 - [What This Documentation Does NOT Cover](#what-this-documentation-does-not-cover)
 - [Contributing to Documentation](#contributing-to-documentation)
-
 <!-- TOC END -->
 
 ## Table of Contents

@@ -1,7 +1,7 @@
 # Changelog
 
-<!-- TOC START -->
 
+<!-- TOC START -->
 - No sections found
 <!-- TOC END -->
 

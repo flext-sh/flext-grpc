@@ -1,7 +1,6 @@
 # flext-grpc Architecture
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Architectural Principles](#architectural-principles)
   - [Clean Architecture Implementation](#clean-architecture-implementation)

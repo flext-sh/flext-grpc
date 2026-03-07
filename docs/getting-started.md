@@ -1,7 +1,6 @@
 # Getting Started with flext-grpc
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [System Requirements](#system-requirements)
@@ -22,7 +21,6 @@
   - [Known Issues](#known-issues)
 - [Next Steps](#next-steps)
 - [Related Documentation](#related-documentation)
-
 <!-- TOC END -->
 
 ## Table of Contents

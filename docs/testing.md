@@ -1,7 +1,6 @@
 # FLEXT-gRPC Testing Plan
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Executive Summary](#executive-summary)
 - [Current Testing Status](#current-testing-status)
@@ -35,7 +34,7 @@
   - [Performance Testing](#performance-testing)
   - [Load Testing](#load-testing)
   - [Chaos Testing](#chaos-testing)
-  <!-- TOC END -->
+<!-- TOC END -->
 
 ## Table of Contents
 

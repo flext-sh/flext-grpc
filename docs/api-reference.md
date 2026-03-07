@@ -1,7 +1,6 @@
 # flext-grpc API Reference
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Core API](#core-api)
   - [Factory Functions](#factory-functions)

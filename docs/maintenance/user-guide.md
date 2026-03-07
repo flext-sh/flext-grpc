@@ -1,7 +1,6 @@
 # FLEXT-gRPC Documentation Maintenance User Guide
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Quick Start](#quick-start)
   - [Installation](#installation)
@@ -42,7 +41,7 @@
   - [Documentation](#documentation)
   - [Community Resources](#community-resources)
   - [Professional Services](#professional-services)
-  <!-- TOC END -->
+<!-- TOC END -->
 
 ## Table of Contents
 

@@ -1,7 +1,6 @@
 # Documentation Maintenance Framework API Reference
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [📚 Overview](#overview)
 - [🔍 Audit API](#audit-api)
@@ -49,7 +48,7 @@
 - [🔐 Security Considerations](#security-considerations)
   - [Safe Operations](#safe-operations)
   - [Best Practices](#best-practices)
-  <!-- TOC END -->
+<!-- TOC END -->
 
 ## Table of Contents
 
