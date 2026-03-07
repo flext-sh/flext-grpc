@@ -396,7 +396,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 #### 6.1 Update Coverage Numbers
 
-- **Files to Update**: CLAUDE.md, README.md, docs/README.md
+- **Files to Update**: AGENTS.md, README.md, docs/README.md
 - **Changes Required**:
   - Update test coverage from 35%/26% to 39%
   - Update version consistency (0.9.0 vs 0.9.9)

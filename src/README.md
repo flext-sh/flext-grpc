@@ -300,4 +300,4 @@ For detailed status and development priorities, see [../docs/TODO.md](../docs/TO
 - [ ] Integration with existing patterns
 - [ ] No circular dependencies introduced
 
-For detailed development guidance, see [../CLAUDE.md](../CLAUDE.md).
+For detailed development guidance, see [../AGENTS.md](../AGENTS.md).

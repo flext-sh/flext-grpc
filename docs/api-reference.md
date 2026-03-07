@@ -509,7 +509,7 @@ This API reference describes the complete interface of flext-grpc once the proto
 
 - [flext-core Foundation](https://github.com/organization/flext/tree/main/flext-core/docs/api-reference/foundation.md) - Core APIs and patterns
 - [flext-core Railway-Oriented Programming](https://github.com/organization/flext/tree/main/flext-core/docs/guides/railway-oriented-programming.md) - FlextResult patterns
-- [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/CLAUDE.md) - HTTP foundation patterns
+- [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/AGENTS.md) - HTTP foundation patterns
 
 **External Resources**:
 
