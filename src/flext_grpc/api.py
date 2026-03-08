@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import r
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import ValidationError
 
 from flext_grpc.constants import c
 from flext_grpc.models import FlextGrpcModels
@@ -19,44 +19,6 @@ from flext_grpc.services import FlextGrpcServices, ServicePayload
 from flext_grpc.settings import FlextGrpcSettings
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
-
-
-class _ServerCreateInput(BaseModel):
-    """Validated input payload for server creation."""
-
-    host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
-    port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-    max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS
-
-
-class _ChannelCreateInput(BaseModel):
-    """Validated input payload for channel creation."""
-
-    target: str
-    options: t.GrpcOptions = Field(default_factory=dict)
-
-
-class _ServiceCreateInput(BaseModel):
-    """Validated input payload for service creation."""
-
-    name: str
-    methods: list[str] = Field(default_factory=list)
-
-
-class _CompleteSetupInput(BaseModel):
-    """Validated input payload for complete setup creation."""
-
-    host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
-    port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-    service_name: str = "DefaultService"
-    methods: list[str] = Field(default_factory=lambda: ["HealthCheck"])
-
-
-class _CompleteSetupResult(BaseModel):
-    server: FlextGrpcModels.Grpc.Server
-    client: FlextGrpcModels.Grpc.Client
-    service: FlextGrpcModels.Grpc.Service
-    target: str
 
 
 class FlextGrpc:

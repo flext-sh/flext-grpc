@@ -20,7 +20,7 @@ from typing import override
 
 import grpc
 from flext_core import r
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator
+from pydantic import ValidationError
 
 from flext_grpc.constants import c
 from flext_grpc.models import FlextGrpcModels
@@ -40,79 +40,9 @@ def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
     return FlextGrpcServiceServicer()
 
 
-class ServicePayload(BaseModel):
-    """Structured payload model replacing ad-hoc dict responses."""
-
-    values: t.Grpc.GrpcDict = Field(default_factory=dict)
-
-    @classmethod
-    def from_values(cls, **values: t.ContainerValue) -> ServicePayload:
-        """Build payload from keyword values."""
-        normalized_values = {
-            metric_key: _MetricValueModel.model_validate({"value": metric_value}).value
-            for metric_key, metric_value in values.items()
-        }
-        return cls(values=normalized_values)
-
-
-class _MetricValueModel(BaseModel):
-    """Normalize metric values to JSON-compatible types."""
-
-    value: t.JsonValue = None
-
-    @field_validator("value", mode="before")
-    @classmethod
-    def normalize_value(cls, value: t.ContainerValue) -> t.JsonValue:
-        """Normalize runtime values to stable JSON-compatible output."""
-        match value:
-            case None | str() | int() | float():
-                return value
-            case list() as values:
-                return [
-                    _MetricValueModel.model_validate({"value": item}).value
-                    for item in values
-                ]
-            case tuple() as values:
-                return [
-                    _MetricValueModel.model_validate({"value": item}).value
-                    for item in values
-                ]
-            case _:
-                return str(value)
-
-
 def _new_stream_buffer() -> deque[t.ConfigValue]:
     """Create bounded stream buffer with explicit typing."""
     return deque(maxlen=500)
-
-
-class _StreamRuntimeState(BaseModel):
-    """Typed runtime state for stream buffers."""
-
-    model_config = ConfigDict(arbitrary_types_allowed=True)
-
-    stream: FlextGrpcModels.Grpc.GrpcStream
-    created_at: float
-    buffer: deque[t.ConfigValue] = Field(default_factory=_new_stream_buffer)
-    active: bool = True
-
-
-class _ServerEntityEnvelope(BaseModel):
-    """Pydantic envelope for server entities."""
-
-    entity: FlextGrpcModels.Grpc.Server
-
-
-class _ClientEntityEnvelope(BaseModel):
-    """Pydantic envelope for client entities."""
-
-    entity: FlextGrpcModels.Grpc.Client
-
-
-class _StreamEntityEnvelope(BaseModel):
-    """Pydantic envelope for stream entities."""
-
-    entity: FlextGrpcModels.Grpc.GrpcStream
 
 
 class ServerLifecycleManager(ABC):
