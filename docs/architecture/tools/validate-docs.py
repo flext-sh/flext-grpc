@@ -349,7 +349,9 @@ def main() -> None:
     )
     _ = parser.add_argument("--path", default=".", help="Root path to validate")
     _ = parser.add_argument("--output", help="Output path for report")
-    _ = parser.add_argument("--quiet", action="store_true", help="Suppress detailed output")
+    _ = parser.add_argument(
+        "--quiet", action="store_true", help="Suppress detailed output"
+    )
 
     args = parser.parse_args()
 
