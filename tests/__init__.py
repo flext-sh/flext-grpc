@@ -16,8 +16,6 @@ if TYPE_CHECKING:
     from constants import TestsFlextGrpcConstants, TestsFlextGrpcConstants as c
     from models import TestsFlextGrpcModels, TestsFlextGrpcModels as m, tm
     from utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
-
-# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "TestsFlextGrpcConstants": ("constants", "TestsFlextGrpcConstants"),
     "TestsFlextGrpcModels": ("models", "TestsFlextGrpcModels"),
@@ -27,7 +25,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "tm": ("models", "tm"),
     "u": ("utilities", "TestsFlextGrpcUtilities"),
 }
-
 __all__ = [
     "TestsFlextGrpcConstants",
     "TestsFlextGrpcModels",
@@ -39,7 +36,7 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str) -> Any:  # noqa: ANN401
+def __getattr__(name: str) -> Any:
     """Lazy-load module attributes on first access (PEP 562)."""
     return lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
 

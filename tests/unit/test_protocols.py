@@ -55,7 +55,3 @@ class TestFlextGrpcProtocols:
         assert is_protocol(FlextGrpcProtocols.Grpc.ClientProtocol)
         assert is_protocol(FlextGrpcProtocols.Grpc.StreamingProtocol)
         assert is_protocol(FlextGrpcProtocols.Grpc.ServiceProtocol)
-
-        # Note: These protocols inherit from concrete classes (p.Service),
-        # so they cannot be @runtime_checkable. This is expected behavior for protocols
-        # that extend domain services while maintaining Protocol typing benefits.

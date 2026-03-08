@@ -57,7 +57,7 @@ class TestFlextGrpcSettings:
         assert config.host == "127.0.0.1"
         assert config.port == 8080
         assert config.max_workers == 20
-        assert config.timeout == pytest.approx(30.0)  # default
+        assert config.timeout == pytest.approx(30.0)
         assert config.tls_enabled is False
         assert config.streaming_enabled is True
 
@@ -70,21 +70,13 @@ class TestFlextGrpcSettings:
     def test_security_config_validation(self) -> None:
         """Test security configuration validation."""
         insecure_config = FlextGrpcSettings(
-            security=m.SecurityConfig(
-                tls_enabled=False,
-                client_cert_required=True,
-            ),
+            security=m.SecurityConfig(tls_enabled=False, client_cert_required=True)
         )
-
         insecure_result = insecure_config.validate_configuration()
         assert insecure_result.is_failure
         assert insecure_result.error == "Client certificates require TLS to be enabled"
-
         secure_config = FlextGrpcSettings(
-            security=m.SecurityConfig(
-                tls_enabled=True,
-                client_cert_required=True,
-            ),
+            security=m.SecurityConfig(tls_enabled=True, client_cert_required=True)
         )
         secure_result = secure_config.validate_configuration()
         assert secure_result.is_success

@@ -3,12 +3,7 @@
 import pytest
 from pydantic import ValidationError
 
-from flext_grpc import (
-    FlextGrpc,
-    FlextGrpcModels,
-    FlextGrpcSettings,
-    t,
-)
+from flext_grpc import FlextGrpc, FlextGrpcModels, FlextGrpcSettings, t
 
 
 class TestFlextGrpc:
@@ -45,10 +40,7 @@ class TestFlextGrpc:
     def test_create_stream(self) -> None:
         """Test stream creation."""
         grpc = FlextGrpc()
-        result = grpc.create_stream(
-            method_name="test_method",
-            stream_type="unary",
-        )
+        result = grpc.create_stream(method_name="test_method", stream_type="unary")
         assert result.is_success
         stream = result.value
         assert stream.method_name == "test_method"
@@ -118,9 +110,9 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         assert not grpc.validate_target("")
         assert not grpc.validate_target("no_port")
-        assert not grpc.validate_target("localhost")  # Missing port
-        assert not grpc.validate_target(":50051")  # Missing host
-        assert not grpc.validate_target("localhost:99999")  # Invalid port
+        assert not grpc.validate_target("localhost")
+        assert not grpc.validate_target(":50051")
+        assert not grpc.validate_target("localhost:99999")
 
     def test_parse_address_invalid(self) -> None:
         """Test address parsing with invalid addresses."""
@@ -164,13 +156,11 @@ class TestFlextGrpc:
         stream_spec = FlextGrpcModels.Grpc.OperationSpec(
             name="op", entity_type="stream"
         )
-
         assert server_spec.entity_type == "server"
         assert client_spec.entity_type == "client"
         assert channel_spec.entity_type == "channel"
         assert service_spec.entity_type == "service"
         assert stream_spec.entity_type == "stream"
-
         with pytest.raises(ValidationError):
             FlextGrpcModels.Grpc.OperationSpec.model_validate({
                 "name": "op",
@@ -179,12 +169,10 @@ class TestFlextGrpc:
 
     def test_request_creation(self) -> None:
         operation = FlextGrpcModels.Grpc.OperationSpec(
-            name="test_operation",
-            entity_type="server",
+            name="test_operation", entity_type="server"
         )
         request = FlextGrpcModels.Grpc.Request(
-            operation=operation,
-            data={"value": "test"},
+            operation=operation, data={"value": "test"}
         )
         assert request.data == {"value": "test"}
         assert request.operation.name == "test_operation"
@@ -192,15 +180,9 @@ class TestFlextGrpc:
 
     def test_response_creation(self) -> None:
         data = FlextGrpcModels.Grpc.StreamInfo(
-            stream_id="stream-1",
-            stream_type="unary",
-            target="localhost:50051",
+            stream_id="stream-1", stream_type="unary", target="localhost:50051"
         )
-
-        response = FlextGrpcModels.Grpc.Response(
-            success=True,
-            data=data,
-        )
+        response = FlextGrpcModels.Grpc.Response(success=True, data=data)
         assert response.data == data
         assert response.success is True
         assert response.model_dump().get("has_error") is False

@@ -81,10 +81,5 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
         TEST_ERROR_MESSAGE: Final[str] = "test_error"
 
 
-# Short aliases per FLEXT convention
-c = TestsFlextGrpcConstants  # Primary test constants alias
-
-__all__ = [
-    "TestsFlextGrpcConstants",
-    "c",
-]
+c = TestsFlextGrpcConstants
+__all__ = ["TestsFlextGrpcConstants", "c"]

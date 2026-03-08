@@ -50,15 +50,13 @@ class ServerLifecycleManager(ABC):
 
     @abstractmethod
     def start_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Start server implementation."""
 
     @abstractmethod
     def stop_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Stop server implementation."""
 
@@ -72,8 +70,7 @@ class ClientConnectionManager(ABC):
 
     @abstractmethod
     def disconnect(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
+        self, client: FlextGrpcModels.Grpc.Client
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Disconnect client."""
 
@@ -83,23 +80,19 @@ class StreamProcessor(ABC):
 
     @abstractmethod
     def close_stream(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Close stream."""
 
     @abstractmethod
     def create_stream(
-        self,
-        **kwargs: t.ConfigValue,
+        self, **kwargs: t.ConfigValue
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create stream."""
 
     @abstractmethod
     def send_data(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-        data: t.ConfigValue,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:
         """Send data through stream.
 
@@ -205,13 +198,11 @@ class GrpcServerManager(ServerLifecycleManager):
         self._active_servers: dict[str, grpc.Server] = {}
         self._metrics = MetricsCollector()
         self._thread_pool = ThreadPoolExecutor(
-            max_workers=50,
-            thread_name_prefix="flext-grpc-server",
+            max_workers=50, thread_name_prefix="flext-grpc-server"
         )
 
     def get_server_metrics(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[ServicePayload]:
         """Get server metrics."""
         server_key = f"{server.host}:{server.port}"
@@ -222,83 +213,54 @@ class GrpcServerManager(ServerLifecycleManager):
                 is_active=server_key in self._active_servers,
                 started_at=started_at,
                 stopped_at=stopped_at,
-            ),
+            )
         )
 
     @override
     def start_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Start gRPC server with proper lifecycle."""
         server_key = f"{server.host}:{server.port}"
-
         if server_key in self._active_servers:
             return r.fail(f"Server already running: {server_key}")
-
         try:
-            # Transition to starting state
             starting_result = server.start()
             if starting_result.is_failure:
                 return starting_result
-
             starting_server = starting_result.value
-
-            # Create actual gRPC server
             grpc_server = grpc.server(self._thread_pool)
             _ = grpc_server.add_insecure_port(
-                f"{starting_server.host}:{starting_server.port}",
+                f"{starting_server.host}:{starting_server.port}"
             )
-
-            # Add services if any
             for _service in starting_server.services:
                 real_servicer = create_real_servicer(server_key)
                 add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)
-
-            # Start server
             grpc_server.start()
-
-            # Store server reference
             self._active_servers[server_key] = grpc_server
-
-            # Record metrics
             self._metrics.record_metric(f"{server_key}_started_at", time.time())
-
-            # Mark as running
             return starting_server.mark_running()
-
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Server start failed: {e}")
 
     @override
     def stop_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Stop gRPC server gracefully."""
         server_key = f"{server.host}:{server.port}"
-
         if server_key not in self._active_servers:
             return r.fail(f"No active server: {server_key}")
-
         try:
-            # Transition to stopping
             stopping_result = server.stop()
             if stopping_result.is_failure:
                 return stopping_result
-
             stopping_server = stopping_result.value
-
-            # Stop gRPC server
             grpc_server = self._active_servers[server_key]
             _ = grpc_server.stop(grace=2.0)
-
-            # Cleanup
             del self._active_servers[server_key]
             self._metrics.record_metric(f"{server_key}_stopped_at", time.time())
-
             return stopping_server.mark_stopped()
-
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Server stop failed: {e}")
 
@@ -318,19 +280,12 @@ class GrpcClientManager(ClientConnectionManager):
         """Establish client connection with pooling."""
         if target in self._active_channels:
             return FlextGrpcUtilities.create_client_entity(target=target)
-
         try:
-            # Create channel
             grpc_channel: grpc.Channel = grpc.insecure_channel(target)
             grpc.channel_ready_future(grpc_channel).result(timeout=5.0)
-
-            # Store channel
             self._active_channels[target] = grpc_channel
             self._metrics.record_metric(f"{target}_connected_at", time.time())
-
-            # Create client entity
             return FlextGrpcUtilities.create_client_entity(target=target)
-
         except (
             grpc.RpcError,
             grpc.FutureTimeoutError,
@@ -341,26 +296,20 @@ class GrpcClientManager(ClientConnectionManager):
 
     @override
     def disconnect(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
+        self, client: FlextGrpcModels.Grpc.Client
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Disconnect client and cleanup resources."""
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
-
         if target and target in self._active_channels:
             grpc_channel = self._active_channels[target]
             grpc_channel.close()
             del self._active_channels[target]
-
         return r.ok(client)
 
     def make_call(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
-        method: str,
-        request: t.ConfigValue,
+        self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
     ) -> r[ServicePayload]:
         """Execute gRPC call through client.
 
@@ -373,18 +322,14 @@ class GrpcClientManager(ClientConnectionManager):
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
-
         if not target or target not in self._active_channels:
             return r.fail("Client not connected")
-
         try:
             grpc_channel = self._active_channels[target]
             stub = FlextGrpcServiceStub(grpc_channel)
-
-            # Route to appropriate method
             if method == "Echo":
                 echo_response = stub.Echo(
-                    EchoRequest(message=str(request), metadata={}),
+                    EchoRequest(message=str(request), metadata={})
                 )
                 return r.ok(
                     ServicePayload.from_values(
@@ -392,22 +337,20 @@ class GrpcClientManager(ClientConnectionManager):
                         message=echo_response.message,
                         server_id=echo_response.server_id,
                         timestamp=echo_response.timestamp,
-                    ),
+                    )
                 )
             if method == "HealthCheck":
                 health_response = stub.HealthCheck(
-                    HealthRequest(service="FlextGrpcService"),
+                    HealthRequest(service="FlextGrpcService")
                 )
                 return r.ok(
                     ServicePayload.from_values(
                         method="HealthCheck",
                         status=health_response.status,
                         message=health_response.message,
-                    ),
+                    )
                 )
-
             return r.fail(f"Unsupported method: {method}")
-
         except grpc.RpcError as e:
             code_val = e.code() if hasattr(e, "code") else None
             details_val = e.details() if hasattr(e, "details") else str(e)
@@ -427,51 +370,37 @@ class GrpcStreamManager(StreamProcessor):
 
     @override
     def close_stream(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Close stream and cleanup."""
         stream_key = f"{stream.id}_{stream.stream_type}"
-
         if stream_key in self._active_streams:
             del self._active_streams[stream_key]
-
         return r.ok(stream)
 
     @override
     def create_stream(
-        self,
-        **kwargs: t.ConfigValue,
+        self, **kwargs: t.ConfigValue
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create stream with proper setup."""
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
         stream_type = str(kwargs.get("stream_type", "unary"))
-
-        # Create entity first
         stream_result = FlextGrpcUtilities.create_stream_entity(
-            method_name,
-            stream_type,
+            method_name, stream_type
         )
         if stream_result.is_failure:
             return stream_result
-
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
-
-        # Setup stream metadata
         self._active_streams[stream_key] = _StreamRuntimeState(
-            stream=stream,
-            created_at=time.time(),
+            stream=stream, created_at=time.time()
         )
-
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r.ok(stream)
 
     @override
     def send_data(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-        data: t.ConfigValue,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:
         """Send data with buffering strategy.
 
@@ -481,28 +410,22 @@ class GrpcStreamManager(StreamProcessor):
 
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
-
         if stream_key not in self._active_streams:
             return r.fail("Stream not found")
-
         stream_info = self._active_streams[stream_key]
-
         try:
             stream_state = _StreamRuntimeState.model_validate(stream_info)
             stream_state.buffer.append(data)
             self._active_streams[stream_key] = stream_state
-
             return r.ok(
                 ServicePayload.from_values(
                     stream_id=stream.id,
                     data_sent=str(data),
                     buffer_size=len(stream_state.buffer),
-                ),
+                )
             )
-
         except ValidationError as e:
             return r.fail(f"Invalid stream state: {e}")
-
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r.fail(f"Data send failed: {e}")
 
@@ -517,8 +440,6 @@ class FlextGrpcServices:
     def __init__(self) -> None:
         """Initialize service with dependency injection and delegation."""
         super().__init__()
-
-        # Dependency injection - each manager has single responsibility
         self._server_manager = GrpcServerManager()
         self._client_manager = GrpcClientManager()
         self._stream_manager = GrpcStreamManager()
@@ -526,27 +447,19 @@ class FlextGrpcServices:
         self._resource_manager = ConnectionPool(max_size=20)
 
     def close_stream(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Delegate stream closing to specialized manager."""
         return self._stream_manager.close_stream(stream)
-
-    # === DELEGATED CLIENT OPERATIONS ===
 
     def connect_client(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
         """Delegate client connection to specialized manager."""
         return self._client_manager.connect(target)
 
-    # === DELEGATED STREAM OPERATIONS ===
-
     def create_stream(
-        self,
-        method_name: str | int | None = "DefaultMethod",
-        **kwargs: t.ConfigValue,
+        self, method_name: str | int | None = "DefaultMethod", **kwargs: t.ConfigValue
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Delegate stream creation to specialized manager."""
-        # Ensure method_name is a string
         method_name_str = (
             str(method_name) if method_name is not None else "DefaultMethod"
         )
@@ -554,8 +467,7 @@ class FlextGrpcServices:
         return self._stream_manager.create_stream(**kwargs)
 
     def disconnect_client(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
+        self, client: FlextGrpcModels.Grpc.Client
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
@@ -563,12 +475,11 @@ class FlextGrpcServices:
     def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
         """Execute main service operation."""
         return r.ok(
-            ServicePayload.from_values(status="ready", service="flext-grpc-service"),
+            ServicePayload.from_values(status="ready", service="flext-grpc-service")
         )
 
     def get_client_status(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
+        self, client: FlextGrpcModels.Grpc.Client
     ) -> r[ServicePayload]:
         """Get client status through delegation."""
         target = ""
@@ -578,17 +489,13 @@ class FlextGrpcServices:
         return r.ok(ServicePayload.from_values(connected=is_connected, target=target))
 
     def get_server_status(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[ServicePayload]:
         """Delegate server status to specialized manager."""
         return self._server_manager.get_server_metrics(server)
 
     def make_call(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
-        method: str,
-        request: t.ConfigValue,
+        self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
     ) -> r[ServicePayload]:
         """Delegate method calls to specialized manager.
 
@@ -601,9 +508,7 @@ class FlextGrpcServices:
         return self._client_manager.make_call(client, method, request)
 
     def send_data(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-        data: t.ConfigValue,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:
         """Delegate data sending to specialized manager.
 
@@ -614,28 +519,20 @@ class FlextGrpcServices:
         """
         return self._stream_manager.send_data(stream, data)
 
-    # === DELEGATED SERVER OPERATIONS ===
-
     def start_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Delegate server start to specialized manager."""
         return self._server_manager.start_server(server)
 
     def stop_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Delegate server stop to specialized manager."""
         return self._server_manager.stop_server(server)
 
-    # === FACTORY METHODS WITH DELEGATION ===
-
     def _create_client_entity(
-        self,
-        target: str,
-        options: t.GrpcOptions | None = None,
+        self, target: str, options: t.GrpcOptions | None = None
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Delegate entity creation to utilities.
 
@@ -647,18 +544,13 @@ class FlextGrpcServices:
         return FlextGrpcUtilities.create_client_entity(target, options)
 
     def _create_stream_entity(
-        self,
-        method_name: str,  # gRPC method name
-        stream_type: c.Grpc.StreamTypeLiteral | str,
+        self, method_name: str, stream_type: c.Grpc.StreamTypeLiteral | str
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Delegate entity creation to utilities."""
         return FlextGrpcUtilities.create_stream_entity(method_name, stream_type)
 
     def _execute_client_command(
-        self,
-        command: str,
-        client: FlextGrpcModels.Grpc.Client,
-        **kwargs: t.ConfigValue,
+        self, command: str, client: FlextGrpcModels.Grpc.Client, **kwargs: t.ConfigValue
     ) -> r[ServicePayload]:
         """Execute client-specific commands."""
         if command == "connect":
@@ -670,23 +562,19 @@ class FlextGrpcServices:
             disconnect_result = self.disconnect_client(client)
             if disconnect_result.is_failure:
                 return r.fail(
-                    disconnect_result.error or "Client disconnect command failed",
+                    disconnect_result.error or "Client disconnect command failed"
                 )
             return r.ok(ServicePayload.from_values(status="disconnected"))
         if command == "status":
             return self.get_client_status(client)
         if command == "call":
             return self.make_call(
-                client,
-                str(kwargs.get("method", "")),
-                kwargs.get("request"),
+                client, str(kwargs.get("method", "")), kwargs.get("request")
             )
         return r.fail(f"Unsupported client command: {command}")
 
     def _execute_server_command(
-        self,
-        command: str,
-        server: FlextGrpcModels.Grpc.Server,
+        self, command: str, server: FlextGrpcModels.Grpc.Server
     ) -> r[ServicePayload]:
         """Execute server-specific commands."""
         if command == "start":

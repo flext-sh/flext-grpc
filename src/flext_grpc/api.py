@@ -33,19 +33,15 @@ class FlextGrpc:
         super().__init__()
         self._service = FlextGrpcServices()
         self._grpc_config = config if config is not None else FlextGrpcSettings()
-        # Use object.__setattr__ to bypass type checker for dynamic attribute assignment
-        # since base class expects FlextSettings | None but we use FlextGrpcSettings
         object.__setattr__(self, "_config", self._grpc_config)
 
     @property
     def grpc_config(self) -> FlextGrpcSettings:
         """Get gRPC-specific configuration."""
-        # Type narrowing: _grpc_config is always FlextGrpcSettings by design
         return self._grpc_config
 
     def close_stream(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Delegate stream closing.
 
@@ -71,29 +67,22 @@ class FlextGrpc:
         return self._service.connect_client(target)
 
     def create_channel(
-        self,
-        target: str,
-        options: t.GrpcOptions | None = None,
+        self, target: str, options: t.GrpcOptions | None = None
     ) -> r[FlextGrpcModels.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         try:
-            channel_input = _ChannelCreateInput.model_validate(
-                {
-                    "target": target,
-                    "options": {} if options is None else options,
-                },
-            )
+            channel_input = _ChannelCreateInput.model_validate({
+                "target": target,
+                "options": {} if options is None else options,
+            })
         except ValidationError as e:
             return r.fail(f"Channel input validation failed: {e}")
         return FlextGrpcUtilities.create_channel_entity(
-            target=channel_input.target,
-            options=channel_input.options,
+            target=channel_input.target, options=channel_input.options
         )
 
     def create_client(
-        self,
-        target: str,
-        options: t.GrpcOptions | None = None,
+        self, target: str, options: t.GrpcOptions | None = None
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return FlextGrpcUtilities.create_client_entity(target=target, options=options)
@@ -107,36 +96,27 @@ class FlextGrpc:
     ) -> r[_CompleteSetupResult]:
         """Complete setup using functional composition."""
         try:
-            setup_input = _CompleteSetupInput.model_validate(
-                {
-                    "host": host,
-                    "port": port,
-                    "service_name": service_name,
-                    "methods": ["HealthCheck"] if methods is None else methods,
-                },
-            )
+            setup_input = _CompleteSetupInput.model_validate({
+                "host": host,
+                "port": port,
+                "service_name": service_name,
+                "methods": ["HealthCheck"] if methods is None else methods,
+            })
         except ValidationError as e:
             return r.fail(f"Complete setup validation failed: {e}")
-
         target = f"{setup_input.host}:{setup_input.port}"
-
-        # Advanced functional composition
         return (
             self
             .create_server(host=setup_input.host, port=setup_input.port)
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(
-                    name=setup_input.service_name,
-                    methods=setup_input.methods,
+                    name=setup_input.service_name, methods=setup_input.methods
                 ).map(
                     lambda svc: _CompleteSetupResult(
-                        server=pair[0],
-                        client=pair[1],
-                        service=svc,
-                        target=target,
-                    ),
-                ),
+                        server=pair[0], client=pair[1], service=svc, target=target
+                    )
+                )
             )
         )
 
@@ -148,13 +128,11 @@ class FlextGrpc:
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Create typed server entity from validated inputs."""
         try:
-            server_input = _ServerCreateInput.model_validate(
-                {
-                    "host": host,
-                    "port": port,
-                    "max_workers": max_workers,
-                },
-            )
+            server_input = _ServerCreateInput.model_validate({
+                "host": host,
+                "port": port,
+                "max_workers": max_workers,
+            })
         except ValidationError as e:
             return r.fail(f"Server input validation failed: {e}")
         return FlextGrpcUtilities.create_server_entity(
@@ -164,45 +142,34 @@ class FlextGrpc:
         )
 
     def create_service(
-        self,
-        name: str,
-        methods: list[str] | None = None,
+        self, name: str, methods: list[str] | None = None
     ) -> r[FlextGrpcModels.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         try:
-            service_input = _ServiceCreateInput.model_validate(
-                {
-                    "name": name,
-                    "methods": [] if methods is None else methods,
-                },
-            )
+            service_input = _ServiceCreateInput.model_validate({
+                "name": name,
+                "methods": [] if methods is None else methods,
+            })
         except ValidationError as e:
             return r.fail(f"Service input validation failed: {e}")
         return FlextGrpcUtilities.create_service_entity(
-            name=service_input.name,
-            methods=service_input.methods,
+            name=service_input.name, methods=service_input.methods
         )
 
     def create_stream(
-        self,
-        method_name: str = "DefaultMethod",
-        stream_type: str = "unary",
+        self, method_name: str = "DefaultMethod", stream_type: str = "unary"
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create typed stream entity from validated inputs."""
         if not method_name.strip():
             return r.fail("Stream method name cannot be empty")
-
         if stream_type not in c.Grpc.STREAM_TYPES:
             return r.fail(f"Invalid stream type: {stream_type}")
-
         return FlextGrpcUtilities.create_stream_entity(
-            method_name=method_name,
-            stream_type=stream_type,
+            method_name=method_name, stream_type=stream_type
         )
 
     def disconnect_client(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
+        self, client: FlextGrpcModels.Grpc.Client
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Delegate client disconnection.
 
@@ -220,12 +187,10 @@ class FlextGrpc:
         return r.ok(self.grpc_config)
 
     def execute_operation(
-        self,
-        request: FlextGrpcModels.Grpc.OperationExecutionRequest,
+        self, request: FlextGrpcModels.Grpc.OperationExecutionRequest
     ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         kwargs = request.keyword_arguments
-
         match request.operation_name:
             case "connect_client":
                 target = kwargs.get("target")
@@ -234,16 +199,12 @@ class FlextGrpc:
                 result = self._service.connect_client(target)
             case _:
                 return r.fail(f"Unknown operation: {request.operation_name}")
-
         if result.is_failure:
             return r.fail(result.error or "Unknown error")
         return r.ok(self.grpc_config)
 
     def make_call(
-        self,
-        client: FlextGrpcModels.Grpc.Client,
-        method: str,
-        request: t.ConfigValue,
+        self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
     ) -> r[ServicePayload]:
         """Delegate method calls.
 
@@ -267,9 +228,7 @@ class FlextGrpc:
         return r.ok(t.Grpc.GrpcValidation.parse_target(address))
 
     def send_data(
-        self,
-        stream: FlextGrpcModels.Grpc.GrpcStream,
-        data: t.ConfigValue,
+        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:
         """Delegate data sending.
 
@@ -285,11 +244,8 @@ class FlextGrpc:
         """
         return self._service.send_data(stream, data)
 
-    # === DELEGATED OPERATIONS ===
-
     def start_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Delegate server start.
 
@@ -303,8 +259,7 @@ class FlextGrpc:
         return self._service.start_server(server)
 
     def stop_server(
-        self,
-        server: FlextGrpcModels.Grpc.Server,
+        self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Delegate server stop.
 

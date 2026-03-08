@@ -15,10 +15,7 @@ class TestFlextGrpcServices:
         """Test client connection."""
         services = FlextGrpcServices()
         result = services.connect_client("localhost:50051")
-        # Connection may fail in test environment, but method should exist
-        assert (
-            result.is_success or not result.is_success
-        )  # Just check it returns a result
+        assert result.is_success or not result.is_success
 
     def test_create_stream(self) -> None:
         """Test stream creation."""
@@ -35,9 +32,7 @@ class TestFlextGrpcServices:
     def test_connection_pool_release(self) -> None:
         """Test connection pool release."""
         pool = ConnectionPool(max_size=5)
-        # Create a mock connection
         mock_connection = "mock_connection_123"
-        # Test releasing a connection (should succeed even if not in active set)
         release_result = pool.release(mock_connection)
         assert release_result.is_success
 

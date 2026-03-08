@@ -26,9 +26,7 @@ class TestFlextGrpcModels:
     def test_stream_info(self) -> None:
         """Test stream info model."""
         stream_info = FlextGrpcModels.Grpc.StreamInfo(
-            stream_id="test",
-            stream_type="unary",
-            target="localhost:50051",
+            stream_id="test", stream_type="unary", target="localhost:50051"
         )
         assert stream_info.stream_id == "test"
         assert stream_info.stream_type == "unary"

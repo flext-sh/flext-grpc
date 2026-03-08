@@ -18,7 +18,6 @@ from flext_grpc import FlextGrpcConstants, t
 def clean_container() -> object:
     """Clean global container before each test."""
     return FlextContainer.get_global()
-    # Container isolation is handled by flext-core
 
 
 @pytest.fixture

@@ -33,10 +33,5 @@ class TestsFlextGrpcUtilities(FlextTestsUtilities, FlextGrpcUtilities):
     """
 
 
-# Short alias for test utilities
 u = TestsFlextGrpcUtilities
-
-__all__ = [
-    "TestsFlextGrpcUtilities",
-    "u",
-]
+__all__ = ["TestsFlextGrpcUtilities", "u"]

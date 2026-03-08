@@ -22,15 +22,9 @@ from google.protobuf.message import Message
 from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
 
 GrpcChannelType = grpc.Channel
-
-# Availability flags for optional dependencies
 PSUTIL_AVAILABLE = True
 PROTOBUF_AVAILABLE = True
-
-# Define proper type alias
 ProtobufMessage = Message
-
-
 __all__ = ["FlextGrpcUtilities", "u"]
 
 
@@ -48,16 +42,12 @@ class FlextGrpcUtilities(FlextUtilities):
 
     @classmethod
     def create_channel_entity(
-        cls,
-        target: str,
-        options: Mapping[str, t.ContainerValue] | None = None,
+        cls, target: str, options: Mapping[str, t.ContainerValue] | None = None
     ) -> r[FlextGrpcModels.Grpc.Channel]:
         """Create a gRPC channel entity directly."""
         try:
-            # Validate target format
             if not target or not target.strip():
                 return r.fail("Channel target cannot be empty")
-
             channel = FlextGrpcModels.Grpc.Channel(
                 unique_id=str(uuid4()),
                 target=target,
@@ -70,26 +60,20 @@ class FlextGrpcUtilities(FlextUtilities):
 
     @classmethod
     def create_client_entity(
-        cls,
-        target: str,
-        options: Mapping[str, t.ContainerValue] | None = None,
+        cls, target: str, options: Mapping[str, t.ContainerValue] | None = None
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Create a gRPC client entity directly."""
         try:
-            # Validate target format
             if not target or not target.strip():
                 return r.fail("Client target cannot be empty")
-
             channel = FlextGrpcModels.Grpc.Channel(
                 unique_id=str(uuid4()),
                 target=target,
                 state="idle",
                 options=dict(options) if options else {},
             )
-
             client = FlextGrpcModels.Grpc.Client(
-                unique_id=str(uuid4()),
-                channel=channel,
+                unique_id=str(uuid4()), channel=channel
             )
             return r.ok(client)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
@@ -105,10 +89,7 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC server entity directly."""
         try:
             server = FlextGrpcModels.Grpc.Server(
-                unique_id=str(uuid4()),
-                host=host,
-                port=port,
-                max_workers=max_workers,
+                unique_id=str(uuid4()), host=host, port=port, max_workers=max_workers
             )
             return r.ok(server)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
@@ -116,16 +97,12 @@ class FlextGrpcUtilities(FlextUtilities):
 
     @classmethod
     def create_service_entity(
-        cls,
-        name: str,
-        methods: list[str] | None = None,
+        cls, name: str, methods: list[str] | None = None
     ) -> r[FlextGrpcModels.Grpc.Service]:
         """Create a gRPC service entity directly."""
         try:
-            # Validate service name
             if not name or not name.strip():
                 return r.fail("Service name cannot be empty")
-
             service = FlextGrpcModels.Grpc.Service(
                 unique_id=str(uuid4()),
                 name=name,
@@ -143,17 +120,12 @@ class FlextGrpcUtilities(FlextUtilities):
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create a gRPC stream entity directly."""
         try:
-            # Validate stream type against allowed values
             if not _is_valid_stream_type(stream_type):
                 return r.fail(f"Invalid stream type: {stream_type}")
-
             if not method_name or not method_name.strip():
                 return r.fail("Stream method name cannot be empty")
-
             stream = FlextGrpcModels.Grpc.GrpcStream(
-                unique_id=str(uuid4()),
-                method_name=method_name,
-                stream_type=stream_type,  # Type narrowed by TypeGuard
+                unique_id=str(uuid4()), method_name=method_name, stream_type=stream_type
             )
             return r.ok(stream)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
@@ -208,19 +180,19 @@ class FlextGrpcUtilities(FlextUtilities):
             mem_total: int = 0
             mem_avail: int = 0
             try:
-                cpu_val = psutil.cpu_count()  # pyright: ignore[reportUnknownMemberType,reportUnknownVariableType]
+                cpu_val = psutil.cpu_count()
                 if cpu_val is not None:
-                    cpu_str: str = str(cpu_val)  # pyright: ignore[reportUnknownArgumentType]
+                    cpu_str: str = str(cpu_val)
                     cpu = int(cpu_str) if cpu_str.isdigit() else 0
-            except Exception:  # noqa: S110
+            except Exception:
                 pass
             try:
-                mem_val = psutil.virtual_memory()  # pyright: ignore[reportUnknownMemberType,reportUnknownVariableType]
-                total_val: t.ContainerValue = getattr(mem_val, "total", 0)  # pyright: ignore[reportUnknownArgumentType]
-                avail_val: t.ContainerValue = getattr(mem_val, "available", 0)  # pyright: ignore[reportUnknownArgumentType]
+                mem_val = psutil.virtual_memory()
+                total_val: t.ContainerValue = getattr(mem_val, "total", 0)
+                avail_val: t.ContainerValue = getattr(mem_val, "available", 0)
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
-            except Exception:  # noqa: S110
+            except Exception:
                 pass
             return {
                 "cpu_count": cpu,
@@ -237,8 +209,10 @@ class FlextGrpcUtilities(FlextUtilities):
                 parts = address.rsplit(":", 1)
                 host = parts[0]
                 port = int(parts[1])
-                if not (
-                    c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
+                if (
+                    not c.Grpc.GrpcNetwork.MIN_PORT
+                    <= port
+                    <= c.Grpc.GrpcNetwork.MAX_PORT
                 ):
                     return None
                 return (host, port)

@@ -20,9 +20,4 @@ GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
 GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
 GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
 GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
-
-
-__all__ = [
-    "FlextGrpcModels",
-    "FlextGrpcSettings",
-]
+__all__ = ["FlextGrpcModels", "FlextGrpcSettings"]
