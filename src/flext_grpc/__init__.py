@@ -39,6 +39,8 @@ if TYPE_CHECKING:
     from flext_grpc.settings import FlextGrpcSettings
     from flext_grpc.typings import FlextGrpcTypes, t
     from flext_grpc.utilities import FlextGrpcUtilities, u
+
+# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "ConnectionPool": ("flext_grpc.services", "ConnectionPool"),
     "FlextGrpc": ("flext_grpc.api", "FlextGrpc"),
@@ -77,6 +79,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "u": ("flext_grpc.utilities", "u"),
     "x": ("flext_core", "x"),
 }
+
 __all__ = [
     "ConnectionPool",
     "FlextGrpc",
@@ -114,7 +117,7 @@ __all__ = [
 ]
 
 
-def __getattr__(name: str) -> Any:
+def __getattr__(name: str) -> Any:  # noqa: ANN401  # JUSTIFIED: Ruff (any-type) with PEP 562 dynamic module exports — https://docs.astral.sh/ruff/rules/any-type/
     """Lazy-load module attributes on first access (PEP 562)."""
     return lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
 
