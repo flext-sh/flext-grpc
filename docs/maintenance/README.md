@@ -389,25 +389,21 @@ Metric: **Overall** - Score: **93%** - Target: **90%** - Status: ✅ Excellent
 ```python
 # docs/maintenance/config.py
 MAINTENANCE_CONFIG = {
-    'audit': {
-        'enabled': True,
-        'frequency': 'daily',
-        'thresholds': {
-            'quality_score': 90,
-            'freshness_days': 30,
-            'link_timeout': 10
-        }
+    "audit": {
+        "enabled": True,
+        "frequency": "daily",
+        "thresholds": {"quality_score": 90, "freshness_days": 30, "link_timeout": 10},
     },
-    'validation': {
-        'check_external_links': True,
-        'check_images': True,
-        'retry_failed_links': 3
+    "validation": {
+        "check_external_links": True,
+        "check_images": True,
+        "retry_failed_links": 3,
     },
-    'optimization': {
-        'auto_fix_formatting': True,
-        'generate_toc': True,
-        'update_metadata': True
-    }
+    "optimization": {
+        "auto_fix_formatting": True,
+        "generate_toc": True,
+        "update_metadata": True,
+    },
 }
 ```
 
@@ -416,10 +412,10 @@ MAINTENANCE_CONFIG = {
 ```python
 # Custom quality rules
 CUSTOM_RULES = {
-    'required_sections': ['Overview', 'Installation', 'Usage', 'API'],
-    'max_line_length': 88,
-    'heading_hierarchy': True,
-    'code_block_languages': ['python', 'bash', 'json']
+    "required_sections": ["Overview", "Installation", "Usage", "API"],
+    "max_line_length": 88,
+    "heading_hierarchy": True,
+    "code_block_languages": ["python", "bash", "json"],
 }
 ```
 

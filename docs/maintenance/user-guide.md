@@ -457,13 +457,13 @@ make docs
 CUSTOM_AUDIT_RULES = {
     "required_frontmatter": ["title", "last_updated"],
     "max_file_size_kb": 500,
-    "required_sections": ["Overview", "Installation", "Usage"]
+    "required_sections": ["Overview", "Installation", "Usage"],
 }
 
 CUSTOM_STYLE_RULES = {
     "heading_style": "atx",  # # or ===
-    "list_marker": "-",      # -, *, +
-    "emphasis_style": "*"    # * or _
+    "list_marker": "-",  # -, *, +
+    "emphasis_style": "*",  # * or _
 }
 ```
 
@@ -547,6 +547,7 @@ repos:
 ```python
 from docs.maintenance.audit import DocumentationAuditor
 
+
 class CustomAuditor(DocumentationAuditor):
     def custom_quality_check(self, content: str) -> float:
         """Implement custom quality checks."""
@@ -566,6 +567,7 @@ class CustomAuditor(DocumentationAuditor):
 
 ```python
 from docs.maintenance.optimization import DocumentationOptimizer
+
 
 class CustomOptimizer(DocumentationOptimizer):
     def apply_custom_fixes(self, content: str) -> str:

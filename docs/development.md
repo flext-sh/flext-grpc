@@ -220,6 +220,7 @@ from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcSettings
 
+
 def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcSettings]:
     """Create and validate gRPC configuration."""
 
@@ -228,6 +229,7 @@ def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcSettin
         .flat_map(lambda _: validate_port(port))
         .flat_map(lambda _: create_config(host, port))
     )
+
 
 # ❌ FORBIDDEN - Exception-based error handling
 def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
@@ -267,12 +269,14 @@ from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcServer
 
-T = TypeVar('T')
+T = TypeVar("T")
+
 
 # Protocol for dependency injection
 class GrpcServerProtocol(Protocol):
     def start(self) -> FlextResult[FlextGrpcServer]: ...
     def stop(self) -> FlextResult[FlextGrpcServer]: ...
+
 
 # Generic service class
 class GrpcService(Generic[T]):
@@ -385,6 +389,7 @@ from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcSettings, create_server
 
+
 class TestGrpcServer:
     """Test gRPC server functionality."""
 
@@ -416,11 +421,14 @@ class TestGrpcServer:
         assert result.is_failure
         assert "Invalid configuration" in result.error
 
-    @pytest.mark.parametrize("host,port,expected_error", [
-        ("", 50051, "Host cannot be empty"),
-        ("localhost", -1, "Invalid port"),
-        ("localhost", 99999, "Invalid port"),
-    ])
+    @pytest.mark.parametrize(
+        "host,port,expected_error",
+        [
+            ("", 50051, "Host cannot be empty"),
+            ("localhost", -1, "Invalid port"),
+            ("localhost", 99999, "Invalid port"),
+        ],
+    )
     def test_validation_errors(self, host, port, expected_error):
         """Test configuration validation errors."""
 
@@ -438,25 +446,30 @@ Use pytest markers for test categorization:
 ```python
 import pytest
 
+
 @pytest.mark.unit
 def test_entity_creation():
     """Unit test for entity creation."""
     pass
+
 
 @pytest.mark.integration
 def test_service_integration():
     """Integration test for services."""
     pass
 
+
 @pytest.mark.e2e
 def test_complete_workflow():
     """End-to-end workflow test."""
     pass
 
+
 @pytest.mark.slow
 def test_performance_benchmark():
     """Slow performance test."""
     pass
+
 
 # Run specific test categories
 # pytest -m unit              # Unit tests only
@@ -476,14 +489,17 @@ class FlextGrpcServer(FlextModels.Entity):
     # Pure business logic, no infrastructure concerns
     pass
 
+
 # Service Layer - Depends only on Domain
 class FlextGrpcServerService:
     def __init__(self, server: FlextGrpcServer):
         self._server = server  # Domain dependency only
 
+
 # Infrastructure Layer - Depends on Domain + Service
 from flext_grpc import FlextGrpcServer
 from flext_grpc import FlextGrpcServerService
+
 
 def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
@@ -571,6 +587,7 @@ from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcSettings, FlextGrpcServer
+
 
 def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
     """Create a gRPC server with the specified configuration.

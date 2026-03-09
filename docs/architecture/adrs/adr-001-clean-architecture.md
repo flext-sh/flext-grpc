@@ -239,6 +239,7 @@ class ServerInterface(Protocol):
     def start(self) -> FlextResult[bool]: ...
     def stop(self) -> FlextResult[bool]: ...
 
+
 # Infrastructure implements interfaces
 class GrpcServerAdapter(ServerInterface):
     def __init__(self, grpc_server):

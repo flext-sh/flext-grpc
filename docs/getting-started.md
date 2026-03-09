@@ -109,7 +109,7 @@ print(f'Server: {server.address}, state: {server.state}')
 from flext_grpc import create_server
 
 # Create gRPC server
-server = create_server('localhost', 50051, 10)
+server = create_server("localhost", 50051, 10)
 print(f"Server address: {server.address}")
 print(f"Server state: {server.state}")
 ```
@@ -120,7 +120,7 @@ print(f"Server state: {server.state}")
 from flext_grpc import create_client
 
 # Create gRPC client
-client = create_client('localhost:50051')
+client = create_client("localhost:50051")
 print(f"Client created: {type(client).__name__}")
 ```
 
@@ -140,12 +140,7 @@ print(f"Platform ready: {type(platform).__name__}")
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
-config = FlextGrpcSettings(
-    host='localhost',
-    port=50051,
-    max_workers=10,
-    timeout=30.0
-)
+config = FlextGrpcSettings(host="localhost", port=50051, max_workers=10, timeout=30.0)
 print(f"Config: {config.host}:{config.port}")
 ```
 

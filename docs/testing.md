@@ -316,7 +316,8 @@ def test_service_initialization():
     """Test FlextGrpcServices proper initialization."""
     service = FlextGrpcServices()
     assert service._logger is not None
-    assert hasattr(service, 'create_server')
+    assert hasattr(service, "create_server")
+
 
 def test_service_lifecycle():
     """Test complete service lifecycle."""
@@ -350,6 +351,7 @@ def test_create_server_valid_config():
     assert server.port == 50051
     assert server.max_workers == 10
 
+
 def test_create_client_target_validation():
     """Test client creation with target validation."""
     client = create_client("localhost:50051")
@@ -373,10 +375,7 @@ def test_create_client_target_validation():
 def test_server_entity_lifecycle():
     """Test server entity state management."""
     server = FlextGrpcEntities.Server(
-        id="test-server",
-        host="localhost",
-        port=50051,
-        state="stopped"
+        id="test-server", host="localhost", port=50051, state="stopped"
     )
 
     assert server.id == "test-server"
@@ -417,6 +416,7 @@ import grpc
 from flext_grpc import create_server
 from tests.fixtures import grpc_server
 
+
 @pytest.mark.asyncio
 async def test_real_grpc_server_operations(grpc_server):
     """Test real gRPC server operations."""
@@ -424,7 +424,7 @@ async def test_real_grpc_server_operations(grpc_server):
     assert grpc_server is not None
 
     # Test actual gRPC calls
-    async with grpc.insecure_channel('localhost:50051') as channel:
+    async with grpc.insecure_channel("localhost:50051") as channel:
         stub = GreeterStub(channel)
         response = await stub.SayHello(HelloRequest(name="test"))
         assert response.message == "Hello test"
@@ -597,13 +597,16 @@ def test_{operation}_with_{configuration}():
 def test_unit_functionality():
     """Fast unit tests."""
 
+
 @pytest.mark.integration
 def test_integration_operations():
     """Integration tests with real gRPC."""
 
+
 @pytest.mark.slow
 def test_performance_operations():
     """Slow performance tests."""
+
 
 @pytest.mark.skip(reason="Bug: #123")
 def test_known_issue():

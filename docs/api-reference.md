@@ -94,11 +94,7 @@ Creates and validates a gRPC configuration.
 ```python
 from flext_grpc import create_config
 
-config_result = create_config(
-    host="localhost",
-    port=50051,
-    max_workers=10
-)
+config_result = create_config(host="localhost", port=50051, max_workers=10)
 ```
 
 ### Domain Entities
@@ -266,7 +262,9 @@ TGrpcClientState = Literal["disconnected", "connecting", "connected", "disconnec
 Streaming pattern types.
 
 ```python
-TGrpcStreamType = Literal["unary", "server_streaming", "client_streaming", "bidirectional"]
+TGrpcStreamType = Literal[
+    "unary", "server_streaming", "client_streaming", "bidirectional"
+]
 ```
 
 ### Exception Hierarchy
@@ -410,12 +408,14 @@ from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 
+
 def setup_grpc_server(host: str, port: int) -> FlextResult[str]:
     return (
         create_config(host=host, port=port)
         .flat_map(lambda config: create_server(config))
         .map(lambda server: f"Server ready: {server.host}:{server.port}")
     )
+
 
 result = setup_grpc_server("localhost", 50051)
 if result.success:

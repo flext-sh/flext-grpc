@@ -193,7 +193,7 @@ flexcore_client = FlextGrpcClient(
     id="flexcore-client",
     host=FlextConstants["Platform.DEFAULT_HOST"],
     port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
-    created_at=datetime.now(timezone.utc)
+    created_at=datetime.now(timezone.utc),
 )
 
 # Service operations (when Protocol Buffers are implemented)
@@ -224,7 +224,7 @@ prod_config = FlextGrpcSettings(
     timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
     use_ssl=True,
     cert_file="/etc/ssl/certs/server.pem",
-    key_file="/etc/ssl/private/server.key"
+    key_file="/etc/ssl/private/server.key",
 )
 
 # Development configuration
@@ -233,7 +233,7 @@ dev_config = FlextGrpcSettings(
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=4,
     timeout=10.0,
-    dev_mode=True
+    dev_mode=True,
 )
 ```
 
@@ -308,7 +308,7 @@ server = FlextGrpcServer(
     host=FlextGrpcConstants.Network.DEFAULT_HOST,
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=10,
-    created_at=datetime.now(timezone.utc)
+    created_at=datetime.now(timezone.utc),
 )
 
 # Always validate before use
@@ -449,11 +449,7 @@ Author: FLEXT Development Team
 Version: 0.9.9
 """
 
-from flext_grpc import (
-    FlextGrpcPlatform,
-    FlextGrpcServer,
-    FlextGrpcSettings
-)
+from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -476,6 +472,7 @@ from flext_core import t
 from flext_core import u
 from datetime import datetime, timezone
 
+
 def main() -> None:
     """Main example execution function."""
     print("Starting FLEXT gRPC example...")
@@ -483,6 +480,7 @@ def main() -> None:
     # Example implementation here
 
     print("Example completed successfully")
+
 
 if __name__ == "__main__":
     main()

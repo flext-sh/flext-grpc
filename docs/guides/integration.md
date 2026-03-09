@@ -124,6 +124,7 @@ from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcServerService, FlextGrpcSettings
 
+
 class GrpcServiceManager:
     """Service manager using gRPC with flext-core integration."""
 
@@ -177,6 +178,7 @@ from flext_auth import FlextAuthService
 from flext_grpc import FlextGrpcServer
 from flext_grpc import AuthInterceptor  # Future
 
+
 class AuthenticatedGrpcService:
     """gRPC service with flext-auth integration."""
 
@@ -189,11 +191,13 @@ class AuthenticatedGrpcService:
 
         auth_interceptor = AuthInterceptor(self._auth_service)
 
-        return create_server(FlextGrpcSettings(
-            host="localhost",
-            port=50051,
-            interceptors=[auth_interceptor]  # Future feature
-        ))
+        return create_server(
+            FlextGrpcSettings(
+                host="localhost",
+                port=50051,
+                interceptors=[auth_interceptor],  # Future feature
+            )
+        )
 ```
 
 ### flext-observability Integration
@@ -204,6 +208,7 @@ Monitoring and metrics for gRPC services:
 # Planned integration
 from flext_observability import MetricsCollector, HealthChecker
 from flext_grpc import FlextGrpcPlatform
+
 
 class ObservableGrpcService:
     """gRPC service with monitoring integration."""
@@ -216,12 +221,14 @@ class ObservableGrpcService:
     def create_monitored_server(self) -> FlextResult[FlextGrpcServer]:
         """Create gRPC server with monitoring."""
 
-        return create_server(FlextGrpcSettings(
-            host="localhost",
-            port=50051,
-            enable_health_checking=True,
-            enable_metrics=True
-        ))
+        return create_server(
+            FlextGrpcSettings(
+                host="localhost",
+                port=50051,
+                enable_health_checking=True,
+                enable_metrics=True,
+            )
+        )
 ```
 
 ### flext-cli Integration
@@ -232,6 +239,7 @@ Command-line management for gRPC services:
 # Planned integration
 from flext_cli import FlextCliApp
 from flext_grpc import FlextGrpcPlatform
+
 
 def create_grpc_cli() -> FlextCliApp:
     """Create CLI app for gRPC management."""
@@ -287,6 +295,7 @@ from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 
+
 class FlextServiceConnector:
     """Connector for inter-service gRPC communication."""
 
@@ -307,7 +316,9 @@ class FlextServiceConnector:
         """Connect to target service."""
         return client.connect()
 
-    def _make_call(self, client: FlextGrpcClient, method: str, data: dict) -> FlextResult[t.Dict]:
+    def _make_call(
+        self, client: FlextGrpcClient, method: str, data: dict
+    ) -> FlextResult[t.Dict]:
         """Make the actual service call."""
         # gRPC call implementation
         return FlextResult.ok({"response": "data"})
@@ -395,6 +406,7 @@ from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcSettings
 
+
 class FlextGrpcEnvironmentSettings(FlextSettings):
     """Environment-specific gRPC configuration."""
 
@@ -415,14 +427,14 @@ class FlextGrpcEnvironmentSettings(FlextSettings):
             return FlextGrpcSettings(
                 host=self.dev_grpc_host,
                 port=self.dev_grpc_port,
-                max_workers=self.dev_grpc_workers
+                max_workers=self.dev_grpc_workers,
             )
         elif environment == "production":
             return FlextGrpcSettings(
                 host=self.prod_grpc_host,
                 port=self.prod_grpc_port,
                 max_workers=self.prod_grpc_workers,
-                use_tls=True
+                use_tls=True,
             )
         else:
             raise ValueError(f"Unknown environment: {environment}")
@@ -456,6 +468,7 @@ from flext_core import t
 from flext_core import u
 from flext_grpc import FlextGrpcClient
 
+
 class FlextServiceDiscovery:
     """Service discovery for gRPC services."""
 
@@ -467,7 +480,8 @@ class FlextServiceDiscovery:
         """Discover and connect to a gRPC service."""
 
         return (
-            self._lookup_service(service_name)
+            self
+            ._lookup_service(service_name)
             .flat_map(lambda address: self._create_client(address))
             .flat_map(lambda client: self._connect_client(client))
         )
@@ -509,6 +523,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings, create_server
 from flext_tests import FlextTestCase
 
+
 class TestGrpcIntegration(FlextTestCase):
     """Test gRPC integration with FLEXT patterns."""
 
@@ -544,6 +559,7 @@ Testing with FLEXT mock patterns:
 from unittest.mock import Mock
 from flext_grpc import FlextGrpcPlatform
 from flext_tests import FlextMockFactory
+
 
 class TestGrpcMockIntegration:
     """Test gRPC with FLEXT mock patterns."""
@@ -590,6 +606,7 @@ from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 
+
 class FlextGrpcProductionService:
     """Production-ready gRPC service."""
 
@@ -602,7 +619,8 @@ class FlextGrpcProductionService:
         """Start gRPC service with production configuration."""
 
         return (
-            self._load_production_config()
+            self
+            ._load_production_config()
             .flat_map(lambda config: self._create_production_server(config))
             .flat_map(lambda server: self._start_with_monitoring(server))
             .map(lambda _: None)
@@ -610,13 +628,15 @@ class FlextGrpcProductionService:
 
     def _load_production_config(self) -> FlextResult[FlextGrpcSettings]:
         """Load production configuration."""
-        return FlextResult.ok(FlextGrpcSettings(
-            host="0.0.0.0",
-            port=50051,
-            max_workers=50,
-            use_tls=True,
-            enable_health_checking=True
-        ))
+        return FlextResult.ok(
+            FlextGrpcSettings(
+                host="0.0.0.0",
+                port=50051,
+                max_workers=50,
+                use_tls=True,
+                enable_health_checking=True,
+            )
+        )
 ```
 
 ### Monitoring Integration
@@ -627,6 +647,7 @@ Integration with FLEXT monitoring systems:
 # Planned integration
 from flext_observability import MetricsCollector
 from flext_grpc import FlextGrpcServer
+
 
 class MonitoredGrpcService:
     """gRPC service with comprehensive monitoring."""

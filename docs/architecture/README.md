@@ -391,7 +391,7 @@ def calculate_architecture_health():
         "documentation_completeness": 85,
         "security_audit_score": 95,
         "performance_benchmarks": 88,
-        "maintainability_index": 78
+        "maintainability_index": 78,
     }
 
     # Weighted average calculation
@@ -400,7 +400,7 @@ def calculate_architecture_health():
         "documentation_completeness": 0.20,
         "security_audit_score": 0.20,
         "performance_benchmarks": 0.20,
-        "maintainability_index": 0.15
+        "maintainability_index": 0.15,
     }
 
     health_score = sum(metrics[k] * weights[k] for k in metrics)
