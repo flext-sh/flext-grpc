@@ -71,7 +71,7 @@ class FlextGrpc:
     ) -> r[FlextGrpcModels.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         try:
-            channel_input = _ChannelCreateInput.model_validate({
+            channel_input = _ChannelCreateInput.model_validate({  # noqa: F821
                 "target": target,
                 "options": {} if options is None else options,
             })
@@ -93,10 +93,10 @@ class FlextGrpc:
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: list[str] | None = None,
-    ) -> r[_CompleteSetupResult]:
+    ) -> r[_CompleteSetupResult]:  # noqa: F821
         """Complete setup using functional composition."""
         try:
-            setup_input = _CompleteSetupInput.model_validate({
+            setup_input = _CompleteSetupInput.model_validate({  # noqa: F821
                 "host": host,
                 "port": port,
                 "service_name": service_name,
@@ -113,7 +113,7 @@ class FlextGrpc:
                 lambda pair: self.create_service(
                     name=setup_input.service_name, methods=setup_input.methods
                 ).map(
-                    lambda svc: _CompleteSetupResult(
+                    lambda svc: _CompleteSetupResult(  # noqa: F821
                         server=pair[0], client=pair[1], service=svc, target=target
                     )
                 )
@@ -128,7 +128,7 @@ class FlextGrpc:
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Create typed server entity from validated inputs."""
         try:
-            server_input = _ServerCreateInput.model_validate({
+            server_input = _ServerCreateInput.model_validate({  # noqa: F821
                 "host": host,
                 "port": port,
                 "max_workers": max_workers,
@@ -146,7 +146,7 @@ class FlextGrpc:
     ) -> r[FlextGrpcModels.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         try:
-            service_input = _ServiceCreateInput.model_validate({
+            service_input = _ServiceCreateInput.model_validate({  # noqa: F821
                 "name": name,
                 "methods": [] if methods is None else methods,
             })

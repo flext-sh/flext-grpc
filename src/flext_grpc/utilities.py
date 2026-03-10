@@ -184,7 +184,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 if cpu_val is not None:
                     cpu_str: str = str(cpu_val)
                     cpu = int(cpu_str) if cpu_str.isdigit() else 0
-            except Exception:
+            except Exception:  # noqa: S110
                 pass
             try:
                 mem_val = psutil.virtual_memory()
@@ -192,7 +192,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 avail_val: t.ContainerValue = getattr(mem_val, "available", 0)
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
-            except Exception:
+            except Exception:  # noqa: S110
                 pass
             return {
                 "cpu_count": cpu,

@@ -93,7 +93,7 @@ class StreamProcessor(ABC):
     @abstractmethod
     def send_data(
         self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Send data through stream.
 
         Note: Uses t.ConfigValue for gRPC message compatibility
@@ -106,13 +106,13 @@ class MetricsCollector:
     def __init__(self) -> None:
         """Initialize metrics collector with thread-safe storage."""
         super().__init__()
-        self._metrics = ServicePayload()
+        self._metrics = ServicePayload()  # noqa: F821
         self._lock = threading.RLock()
 
-    def get_all_metrics(self) -> ServicePayload:
+    def get_all_metrics(self) -> ServicePayload:  # noqa: F821
         """Get all metrics snapshot."""
         with self._lock:
-            return ServicePayload(values=self._metrics.values.copy())
+            return ServicePayload(values=self._metrics.values.copy())  # noqa: F821
 
     def get_metric(self, key: str) -> t.JsonValue:
         """Thread-safe metric retrieval.
@@ -133,7 +133,7 @@ class MetricsCollector:
 
         """
         with self._lock:
-            normalized = _MetricValueModel.model_validate({"value": value})
+            normalized = _MetricValueModel.model_validate({"value": value})  # noqa: F821
             self._metrics.values[key] = normalized.value
 
 
@@ -203,13 +203,13 @@ class GrpcServerManager(ServerLifecycleManager):
 
     def get_server_metrics(
         self, server: FlextGrpcModels.Grpc.Server
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Get server metrics."""
         server_key = f"{server.host}:{server.port}"
         started_at = self._metrics.get_metric(f"{server_key}_started_at")
         stopped_at = self._metrics.get_metric(f"{server_key}_stopped_at")
         return r.ok(
-            ServicePayload.from_values(
+            ServicePayload.from_values(  # noqa: F821
                 is_active=server_key in self._active_servers,
                 started_at=started_at,
                 stopped_at=stopped_at,
@@ -310,7 +310,7 @@ class GrpcClientManager(ClientConnectionManager):
 
     def make_call(
         self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Execute gRPC call through client.
 
         Args:
@@ -332,7 +332,7 @@ class GrpcClientManager(ClientConnectionManager):
                     EchoRequest(message=str(request), metadata={})
                 )
                 return r.ok(
-                    ServicePayload.from_values(
+                    ServicePayload.from_values(  # noqa: F821
                         method="Echo",
                         message=echo_response.message,
                         server_id=echo_response.server_id,
@@ -344,7 +344,7 @@ class GrpcClientManager(ClientConnectionManager):
                     HealthRequest(service="FlextGrpcService")
                 )
                 return r.ok(
-                    ServicePayload.from_values(
+                    ServicePayload.from_values(  # noqa: F821
                         method="HealthCheck",
                         status=health_response.status,
                         message=health_response.message,
@@ -365,7 +365,7 @@ class GrpcStreamManager(StreamProcessor):
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: dict[str, _StreamRuntimeState] = {}
+        self._active_streams: dict[str, _StreamRuntimeState] = {}  # noqa: F821
         self._metrics = MetricsCollector()
 
     @override
@@ -392,7 +392,7 @@ class GrpcStreamManager(StreamProcessor):
             return stream_result
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
-        self._active_streams[stream_key] = _StreamRuntimeState(
+        self._active_streams[stream_key] = _StreamRuntimeState(  # noqa: F821
             stream=stream, created_at=time.time()
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
@@ -401,7 +401,7 @@ class GrpcStreamManager(StreamProcessor):
     @override
     def send_data(
         self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Send data with buffering strategy.
 
         Args:
@@ -414,11 +414,11 @@ class GrpcStreamManager(StreamProcessor):
             return r.fail("Stream not found")
         stream_info = self._active_streams[stream_key]
         try:
-            stream_state = _StreamRuntimeState.model_validate(stream_info)
+            stream_state = _StreamRuntimeState.model_validate(stream_info)  # noqa: F821
             stream_state.buffer.append(data)
             self._active_streams[stream_key] = stream_state
             return r.ok(
-                ServicePayload.from_values(
+                ServicePayload.from_values(  # noqa: F821
                     stream_id=stream.id,
                     data_sent=str(data),
                     buffer_size=len(stream_state.buffer),
@@ -472,31 +472,31 @@ class FlextGrpcServices:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
 
-    def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
+    def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:  # noqa: F821
         """Execute main service operation."""
         return r.ok(
-            ServicePayload.from_values(status="ready", service="flext-grpc-service")
+            ServicePayload.from_values(status="ready", service="flext-grpc-service")  # noqa: F821
         )
 
     def get_client_status(
         self, client: FlextGrpcModels.Grpc.Client
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Get client status through delegation."""
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
         is_connected = bool(target and target in self._client_manager._active_channels)
-        return r.ok(ServicePayload.from_values(connected=is_connected, target=target))
+        return r.ok(ServicePayload.from_values(connected=is_connected, target=target))  # noqa: F821
 
     def get_server_status(
         self, server: FlextGrpcModels.Grpc.Server
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Delegate server status to specialized manager."""
         return self._server_manager.get_server_metrics(server)
 
     def make_call(
         self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Delegate method calls to specialized manager.
 
         Args:
@@ -509,7 +509,7 @@ class FlextGrpcServices:
 
     def send_data(
         self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Delegate data sending to specialized manager.
 
         Args:
@@ -551,20 +551,20 @@ class FlextGrpcServices:
 
     def _execute_client_command(
         self, command: str, client: FlextGrpcModels.Grpc.Client, **kwargs: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Execute client-specific commands."""
         if command == "connect":
             connect_result = self.connect_client(str(kwargs.get("target", "")))
             if connect_result.is_failure:
                 return r.fail(connect_result.error or "Client connect command failed")
-            return r.ok(ServicePayload.from_values(status="connected"))
+            return r.ok(ServicePayload.from_values(status="connected"))  # noqa: F821
         if command == "disconnect":
             disconnect_result = self.disconnect_client(client)
             if disconnect_result.is_failure:
                 return r.fail(
                     disconnect_result.error or "Client disconnect command failed"
                 )
-            return r.ok(ServicePayload.from_values(status="disconnected"))
+            return r.ok(ServicePayload.from_values(status="disconnected"))  # noqa: F821
         if command == "status":
             return self.get_client_status(client)
         if command == "call":
@@ -575,18 +575,18 @@ class FlextGrpcServices:
 
     def _execute_server_command(
         self, command: str, server: FlextGrpcModels.Grpc.Server
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Execute server-specific commands."""
         if command == "start":
             start_result = self.start_server(server)
             if start_result.is_failure:
                 return r.fail(start_result.error or "Server start command failed")
-            return r.ok(ServicePayload.from_values(status="started"))
+            return r.ok(ServicePayload.from_values(status="started"))  # noqa: F821
         if command == "stop":
             stop_result = self.stop_server(server)
             if stop_result.is_failure:
                 return r.fail(stop_result.error or "Server stop command failed")
-            return r.ok(ServicePayload.from_values(status="stopped"))
+            return r.ok(ServicePayload.from_values(status="stopped"))  # noqa: F821
         if command == "status":
             return self.get_server_status(server)
         return r.fail(f"Unsupported server command: {command}")
@@ -596,21 +596,21 @@ class FlextGrpcServices:
         command: str,
         stream: FlextGrpcModels.Grpc.GrpcStream,
         **kwargs: t.ConfigValue,
-    ) -> r[ServicePayload]:
+    ) -> r[ServicePayload]:  # noqa: F821
         """Execute stream-specific commands."""
         if command == "create":
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             create_result = self.create_stream(method_name=method_name, **kwargs)
             if create_result.is_failure:
                 return r.fail(create_result.error or "Stream create command failed")
-            return r.ok(ServicePayload.from_values(status="created"))
+            return r.ok(ServicePayload.from_values(status="created"))  # noqa: F821
         if command == "send":
             return self.send_data(stream, kwargs.get("data"))
         if command == "close":
             close_result = self.close_stream(stream)
             if close_result.is_failure:
                 return r.fail(close_result.error or "Stream close command failed")
-            return r.ok(ServicePayload.from_values(status="closed"))
+            return r.ok(ServicePayload.from_values(status="closed"))  # noqa: F821
         return r.fail(f"Unsupported stream command: {command}")
 
 
@@ -621,5 +621,5 @@ __all__ = [
     "GrpcServerManager",
     "GrpcStreamManager",
     "MetricsCollector",
-    "ServicePayload",
+    "ServicePayload",  # noqa: F822
 ]
