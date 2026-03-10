@@ -11,7 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import r
-from pydantic import ValidationError
 
 from flext_grpc.constants import c
 from flext_grpc.models import FlextGrpcModels
@@ -70,15 +69,9 @@ class FlextGrpc:
         self, target: str, options: t.GrpcOptions | None = None
     ) -> r[FlextGrpcModels.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
-        try:
-            channel_input = _ChannelCreateInput.model_validate({  # noqa: F821
-                "target": target,
-                "options": {} if options is None else options,
-            })
-        except ValidationError as e:
-            return r.fail(f"Channel input validation failed: {e}")
         return FlextGrpcUtilities.create_channel_entity(
-            target=channel_input.target, options=channel_input.options
+            target=target,
+            options={} if options is None else options,
         )
 
     def create_client(
@@ -93,29 +86,25 @@ class FlextGrpc:
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: list[str] | None = None,
-    ) -> r[_CompleteSetupResult]:  # noqa: F821
+    ) -> r[t.ContainerValue]:
         """Complete setup using functional composition."""
-        try:
-            setup_input = _CompleteSetupInput.model_validate({  # noqa: F821
-                "host": host,
-                "port": port,
-                "service_name": service_name,
-                "methods": ["HealthCheck"] if methods is None else methods,
-            })
-        except ValidationError as e:
-            return r.fail(f"Complete setup validation failed: {e}")
-        target = f"{setup_input.host}:{setup_input.port}"
+        resolved_methods = ["HealthCheck"] if methods is None else methods
+        target = f"{host}:{port}"
         return (
             self
-            .create_server(host=setup_input.host, port=setup_input.port)
+            .create_server(host=host, port=port)
             .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
             .flat_map(
                 lambda pair: self.create_service(
-                    name=setup_input.service_name, methods=setup_input.methods
+                    name=service_name,
+                    methods=resolved_methods,
                 ).map(
-                    lambda svc: _CompleteSetupResult(  # noqa: F821
-                        server=pair[0], client=pair[1], service=svc, target=target
-                    )
+                    lambda svc: {
+                        "server": pair[0],
+                        "client": pair[1],
+                        "service": svc,
+                        "target": target,
+                    }
                 )
             )
         )
@@ -127,33 +116,19 @@ class FlextGrpc:
         max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Create typed server entity from validated inputs."""
-        try:
-            server_input = _ServerCreateInput.model_validate({  # noqa: F821
-                "host": host,
-                "port": port,
-                "max_workers": max_workers,
-            })
-        except ValidationError as e:
-            return r.fail(f"Server input validation failed: {e}")
         return FlextGrpcUtilities.create_server_entity(
-            host=server_input.host,
-            port=server_input.port,
-            max_workers=server_input.max_workers,
+            host=host,
+            port=port,
+            max_workers=max_workers,
         )
 
     def create_service(
         self, name: str, methods: list[str] | None = None
     ) -> r[FlextGrpcModels.Grpc.Service]:
         """Create typed service entity from validated inputs."""
-        try:
-            service_input = _ServiceCreateInput.model_validate({  # noqa: F821
-                "name": name,
-                "methods": [] if methods is None else methods,
-            })
-        except ValidationError as e:
-            return r.fail(f"Service input validation failed: {e}")
         return FlextGrpcUtilities.create_service_entity(
-            name=service_input.name, methods=service_input.methods
+            name=name,
+            methods=[] if methods is None else methods,
         )
 
     def create_stream(
@@ -161,9 +136,13 @@ class FlextGrpc:
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create typed stream entity from validated inputs."""
         if not method_name.strip():
-            return r.fail("Stream method name cannot be empty")
+            return r[FlextGrpcModels.Grpc.GrpcStream].fail(
+                "Stream method name cannot be empty"
+            )
         if stream_type not in c.Grpc.STREAM_TYPES:
-            return r.fail(f"Invalid stream type: {stream_type}")
+            return r[FlextGrpcModels.Grpc.GrpcStream].fail(
+                f"Invalid stream type: {stream_type}"
+            )
         return FlextGrpcUtilities.create_stream_entity(
             method_name=method_name, stream_type=stream_type
         )
@@ -195,12 +174,16 @@ class FlextGrpc:
             case "connect_client":
                 target = kwargs.get("target")
                 if not isinstance(target, str):
-                    return r.fail("connect_client requires string target")
+                    return r[FlextGrpcSettings].fail(
+                        "connect_client requires string target"
+                    )
                 result = self._service.connect_client(target)
             case _:
-                return r.fail(f"Unknown operation: {request.operation_name}")
+                return r[FlextGrpcSettings].fail(
+                    f"Unknown operation: {request.operation_name}"
+                )
         if result.is_failure:
-            return r.fail(result.error or "Unknown error")
+            return r[FlextGrpcSettings].fail(result.error or "Unknown error")
         return r.ok(self.grpc_config)
 
     def make_call(
@@ -224,7 +207,7 @@ class FlextGrpc:
     def parse_address(self, address: str) -> r[tuple[str, int]]:
         """Parse gRPC address string."""
         if not t.Grpc.GrpcValidation.validate_target(address):
-            return r.fail(f"Invalid address: {address}")
+            return r[tuple[str, int]].fail(f"Invalid address: {address}")
         return r.ok(t.Grpc.GrpcValidation.parse_target(address))
 
     def send_data(

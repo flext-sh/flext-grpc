@@ -17,14 +17,10 @@ from uuid import uuid4
 import grpc
 import psutil
 from flext_core import FlextUtilities, r
-from google.protobuf.message import Message
 
 from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
 
 GrpcChannelType = grpc.Channel
-PSUTIL_AVAILABLE = True
-PROTOBUF_AVAILABLE = True
-ProtobufMessage = Message
 __all__ = ["FlextGrpcUtilities", "u"]
 
 
@@ -47,16 +43,20 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC channel entity directly."""
         try:
             if not target or not target.strip():
-                return r.fail("Channel target cannot be empty")
+                return r[FlextGrpcModels.Grpc.Channel].fail(
+                    "Channel target cannot be empty"
+                )
             channel = FlextGrpcModels.Grpc.Channel(
                 unique_id=str(uuid4()),
                 target=target,
                 state="idle",
                 options=dict(options) if options else {},
             )
-            return r.ok(channel)
+            return r[FlextGrpcModels.Grpc.Channel].ok(channel)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Failed to create channel entity: {e}")
+            return r[FlextGrpcModels.Grpc.Channel].fail(
+                f"Failed to create channel entity: {e}"
+            )
 
     @classmethod
     def create_client_entity(
@@ -65,7 +65,9 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC client entity directly."""
         try:
             if not target or not target.strip():
-                return r.fail("Client target cannot be empty")
+                return r[FlextGrpcModels.Grpc.Client].fail(
+                    "Client target cannot be empty"
+                )
             channel = FlextGrpcModels.Grpc.Channel(
                 unique_id=str(uuid4()),
                 target=target,
@@ -75,9 +77,11 @@ class FlextGrpcUtilities(FlextUtilities):
             client = FlextGrpcModels.Grpc.Client(
                 unique_id=str(uuid4()), channel=channel
             )
-            return r.ok(client)
+            return r[FlextGrpcModels.Grpc.Client].ok(client)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Failed to create client entity: {e}")
+            return r[FlextGrpcModels.Grpc.Client].fail(
+                f"Failed to create client entity: {e}"
+            )
 
     @classmethod
     def create_server_entity(
@@ -91,9 +95,11 @@ class FlextGrpcUtilities(FlextUtilities):
             server = FlextGrpcModels.Grpc.Server(
                 unique_id=str(uuid4()), host=host, port=port, max_workers=max_workers
             )
-            return r.ok(server)
+            return r[FlextGrpcModels.Grpc.Server].ok(server)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Failed to create server entity: {e}")
+            return r[FlextGrpcModels.Grpc.Server].fail(
+                f"Failed to create server entity: {e}"
+            )
 
     @classmethod
     def create_service_entity(
@@ -102,15 +108,19 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC service entity directly."""
         try:
             if not name or not name.strip():
-                return r.fail("Service name cannot be empty")
+                return r[FlextGrpcModels.Grpc.Service].fail(
+                    "Service name cannot be empty"
+                )
             service = FlextGrpcModels.Grpc.Service(
                 unique_id=str(uuid4()),
                 name=name,
                 methods=["HealthCheck"] if methods is None else methods,
             )
-            return r.ok(service)
+            return r[FlextGrpcModels.Grpc.Service].ok(service)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Failed to create service entity: {e}")
+            return r[FlextGrpcModels.Grpc.Service].fail(
+                f"Failed to create service entity: {e}"
+            )
 
     @classmethod
     def create_stream_entity(
@@ -121,15 +131,21 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC stream entity directly."""
         try:
             if not _is_valid_stream_type(stream_type):
-                return r.fail(f"Invalid stream type: {stream_type}")
+                return r[FlextGrpcModels.Grpc.GrpcStream].fail(
+                    f"Invalid stream type: {stream_type}"
+                )
             if not method_name or not method_name.strip():
-                return r.fail("Stream method name cannot be empty")
+                return r[FlextGrpcModels.Grpc.GrpcStream].fail(
+                    "Stream method name cannot be empty"
+                )
             stream = FlextGrpcModels.Grpc.GrpcStream(
                 unique_id=str(uuid4()), method_name=method_name, stream_type=stream_type
             )
-            return r.ok(stream)
+            return r[FlextGrpcModels.Grpc.GrpcStream].ok(stream)
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r.fail(f"Failed to create stream entity: {e}")
+            return r[FlextGrpcModels.Grpc.GrpcStream].fail(
+                f"Failed to create stream entity: {e}"
+            )
 
     class Grpc:
         """gRPC-specific utility methods."""

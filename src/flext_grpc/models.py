@@ -416,7 +416,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Associated entity",
             )
-            data: t.JsonValue = Field(
+            data: t.JsonValue | None = Field(
                 default=None,
                 description="Request data",
             )
@@ -459,7 +459,9 @@ class FlextGrpcModels(FlextModels):
 
                 def normalize_payload_value(value: t.ContainerValue) -> t.JsonValue:
                     match value:
-                        case None | str() | int() | float():
+                        case None:
+                            return ""
+                        case str() | int() | float():
                             return value
                         case list() as items:
                             return [normalize_payload_value(item) for item in items]
@@ -494,7 +496,7 @@ class FlextGrpcModels(FlextModels):
                 try:
                     return r.ok(self.model_copy(update=kwargs))
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r.fail(str(e))
+                    return r[Self].fail(str(e))
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
@@ -538,7 +540,7 @@ class FlextGrpcModels(FlextModels):
             def validate_business_rules(self) -> r[bool]:
                 """Functional validation composition."""
                 if not self.target.strip():
-                    return r.fail("Channel target cannot be empty")
+                    return r[bool].fail("Channel target cannot be empty")
                 return r.ok(True)
 
         class Server(Entity, StateMachine):
@@ -573,7 +575,7 @@ class FlextGrpcModels(FlextModels):
             def mark_stopped(self) -> r[Self]:
                 """Transition to stopped."""
                 if self.state not in {"stopping", "running"}:
-                    return r.fail(f"Cannot mark stopped from {self.state}")
+                    return r[Self].fail(f"Cannot mark stopped from {self.state}")
                 return r.ok(
                     self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
                 )
@@ -598,14 +600,14 @@ class FlextGrpcModels(FlextModels):
             def validate_business_rules(self) -> r[bool]:
                 """Delegate validation to generic validators."""
                 if not self.host.strip():
-                    return r.fail("Server host cannot be empty")
+                    return r[bool].fail("Server host cannot be empty")
                 # Port range validation using IANA standard range
                 min_port = 1
                 max_port = 65535
                 if not (min_port <= self.port <= max_port):
-                    return r.fail(f"Invalid port: {self.port}")
+                    return r[bool].fail(f"Invalid port: {self.port}")
                 if self.max_workers < 1:
-                    return r.fail("Max workers must be >= 1")
+                    return r[bool].fail("Max workers must be >= 1")
                 return r.ok(True)
 
         class Service(Entity):
@@ -639,7 +641,7 @@ class FlextGrpcModels(FlextModels):
             def add_method(self, method_name: str) -> r[Self]:
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
-                    return r.fail("Invalid method")
+                    return r[Self].fail("Invalid method")
                 return r.ok(
                     self.model_copy(update={"methods": [*self.methods, method_name]}),
                 )
@@ -667,7 +669,7 @@ class FlextGrpcModels(FlextModels):
             def validate_business_rules(self) -> r[bool]:
                 """Delegate validation."""
                 if self.channel and self.channel.validate_business_rules().is_failure:
-                    return r.fail("Invalid channel")
+                    return r[bool].fail("Invalid channel")
                 return r.ok(True)
 
         class GrpcStream(Entity):

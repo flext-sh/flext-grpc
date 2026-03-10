@@ -12,6 +12,8 @@ from __future__ import annotations
 
 from typing import TypeAlias
 
+from flext_core import FlextSettings
+
 from flext_grpc.models import FlextGrpcModels
 
 GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
@@ -20,4 +22,17 @@ GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
 GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
 GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
 GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
-__all__ = ["FlextGrpcModels", "FlextGrpcSettings"]  # noqa: F822
+
+
+class FlextGrpcSettings(FlextSettings):
+    """gRPC runtime settings."""
+
+    network: GrpcNetworkConfig = GrpcNetworkConfig()
+    security: GrpcSecurityConfig = GrpcSecurityConfig()
+    performance: GrpcPerformanceConfig = GrpcPerformanceConfig()
+    streaming: GrpcStreamingConfig = GrpcStreamingConfig()
+    client: GrpcClientConfig = GrpcClientConfig()
+    monitoring: GrpcMonitoringConfig = GrpcMonitoringConfig()
+
+
+__all__ = ["FlextGrpcModels", "FlextGrpcSettings"]
