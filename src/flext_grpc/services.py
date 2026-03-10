@@ -197,16 +197,20 @@ class ConnectionPool:
 
     def release(self, connection: t.ContainerValue) -> r[bool]:
         """Release connection back to pool."""
-        try:
+
+        def _release() -> bool:
             with self._lock:
                 if connection in self._active:
                     self._active.remove(connection)
                     if self._pool.full():
-                        return r.ok(True)
+                        return True
                     self._pool.put_nowait(connection)
-                return r.ok(True)
-        except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r[bool].fail(f"Connection release failed: {e}")
+                return True
+
+        return FlextGrpcUtilities.try_(
+            _release,
+            catch=(grpc.RpcError, ConnectionError, TimeoutError),
+        ).map_error(lambda e: f"Connection release failed: {e}")
 
 
 class GrpcServerManager(ServerLifecycleManager):
@@ -304,19 +308,27 @@ class GrpcClientManager(ClientConnectionManager):
         """Establish client connection with pooling."""
         if target in self._active_channels:
             return FlextGrpcUtilities.create_client_entity(target=target)
-        try:
+
+        def _connect() -> FlextGrpcModels.Grpc.Client:
             grpc_channel: grpc.Channel = grpc.insecure_channel(target)
             grpc.channel_ready_future(grpc_channel).result(timeout=5.0)
             self._active_channels[target] = grpc_channel
             self._metrics.record_metric(f"{target}_connected_at", time.time())
-            return FlextGrpcUtilities.create_client_entity(target=target)
-        except (
-            grpc.RpcError,
-            grpc.FutureTimeoutError,
-            ConnectionError,
-            TimeoutError,
-        ) as e:
-            return r[FlextGrpcModels.Grpc.Client].fail(f"Connection failed: {e}")
+            client_result = FlextGrpcUtilities.create_client_entity(target=target)
+            if client_result.is_failure:
+                raise RuntimeError(client_result.error or "Connection failed")
+            return client_result.value
+
+        return FlextGrpcUtilities.try_(
+            _connect,
+            catch=(
+                grpc.RpcError,
+                grpc.FutureTimeoutError,
+                ConnectionError,
+                TimeoutError,
+                RuntimeError,
+            ),
+        ).map_error(lambda e: f"Connection failed: {e}")
 
     @override
     def disconnect(
