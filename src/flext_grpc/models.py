@@ -496,7 +496,7 @@ class FlextGrpcModels(FlextModels):
                 try:
                     return r.ok(self.model_copy(update=kwargs))
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r[Self].fail(str(e))
+                    return r.fail(str(e)).map(lambda _unused: self)
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
@@ -550,7 +550,9 @@ class FlextGrpcModels(FlextModels):
             port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
-            services: list[p.Grpc.GrpcServicer] = Field(default_factory=list)  # pyright: ignore[reportUnknownVariableType]
+            services: list[p.Grpc.GrpcServicer] = Field(  # pyright: ignore[reportUnknownVariableType]  # Pyright cannot resolve types through FLEXT namespace class variables (circular MRO resolution); type is correct at runtime. See https://github.com/microsoft/pyright/issues/5765. Business: GrpcServicer protocol is the sole contract for gRPC service registration.
+                default_factory=list, description="gRPC services"
+            )
             grpc_server: p.Grpc.GrpcServer | None = None
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
@@ -575,7 +577,9 @@ class FlextGrpcModels(FlextModels):
             def mark_stopped(self) -> r[Self]:
                 """Transition to stopped."""
                 if self.state not in {"stopping", "running"}:
-                    return r[Self].fail(f"Cannot mark stopped from {self.state}")
+                    return r.fail(f"Cannot mark stopped from {self.state}").map(
+                        lambda _unused: self
+                    )
                 return r.ok(
                     self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
                 )
@@ -641,7 +645,7 @@ class FlextGrpcModels(FlextModels):
             def add_method(self, method_name: str) -> r[Self]:
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
-                    return r[Self].fail("Invalid method")
+                    return r.fail("Invalid method").map(lambda _unused: self)
                 return r.ok(
                     self.model_copy(update={"methods": [*self.methods, method_name]}),
                 )

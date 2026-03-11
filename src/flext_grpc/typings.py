@@ -16,11 +16,16 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import TypeAlias
+from typing import Protocol, TypeAlias, runtime_checkable
 
 from flext_core import FlextTypes
 
 from flext_grpc import c
+
+
+@runtime_checkable
+class _GrpcServicerProtocol(Protocol):
+    """Protocol for gRPC service implementations (duck typing)."""
 
 
 class FlextGrpcTypes(FlextTypes):
@@ -36,6 +41,8 @@ class FlextGrpcTypes(FlextTypes):
 
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
+
+        GrpcServicer: TypeAlias = _GrpcServicerProtocol
 
         Dict: TypeAlias = dict[str, FlextTypes.JsonValue]
         GrpcDict: TypeAlias = dict[str, FlextTypes.JsonValue]
