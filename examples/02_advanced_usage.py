@@ -62,7 +62,7 @@ class GrpcServerManager:
 
     def get_server_status(self) -> dict[str, dict[str, str]]:
         """Get status of all servers through facade."""
-        status = {}
+        status: dict[str, dict[str, str]] = {}
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
             status[server_id] = {
@@ -77,7 +77,7 @@ class GrpcServerManager:
 
     def start_all_servers(self) -> dict[str, bool]:
         """Start all servers in the pool through facade."""
-        results = {}
+        results: dict[str, bool] = {}
         for server_id, server in self.servers.items():
             start_result = self.grpc.start_server(server)
             if start_result.is_success:
@@ -89,7 +89,7 @@ class GrpcServerManager:
 
     def stop_all_servers(self) -> dict[str, bool]:
         """Stop all servers in the pool through facade."""
-        results = {}
+        results: dict[str, bool] = {}
         for server_id, server in self.servers.items():
             if server.state == "running":
                 stop_result = self.grpc.stop_server(server)
@@ -195,7 +195,7 @@ def example_3_service_creation() -> None:
         ("OrderService", ["GetOrder", "CreateOrder", "UpdateOrder"]),
         ("NotificationService", ["SendNotification", "GetNotifications"]),
     ]
-    created_services = []
+    created_services: list[FlextGrpcModels.Grpc.Service] = []
     for service_name, methods in services:
         service_result = grpc.create_service(name=service_name, methods=methods)
         if service_result.is_success:
@@ -218,7 +218,7 @@ def example_4_streaming() -> None:
         ("UploadData", "client_streaming"),
         ("Chat", "bidirectional"),
     ]
-    created_streams = []
+    created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
             method_name=method_name, stream_type=stream_type
