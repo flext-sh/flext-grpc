@@ -183,7 +183,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 if cpu_val is not None:
                     cpu_str: str = str(cpu_val)
                     cpu = int(cpu_str) if cpu_str.isdigit() else 0
-            except Exception:
+            except (OSError, RuntimeError, AttributeError):
                 logger.debug(
                     "Failed to retrieve CPU count for diagnostics", exc_info=True
                 )
@@ -193,7 +193,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 avail_val: t.ContainerValue = getattr(mem_val, "available", 0)
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
-            except Exception:
+            except (OSError, RuntimeError, AttributeError):
                 logger.debug(
                     "Failed to retrieve memory info for diagnostics", exc_info=True
                 )
