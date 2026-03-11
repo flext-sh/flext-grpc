@@ -16,9 +16,11 @@ from uuid import uuid4
 
 import grpc
 import psutil
-from flext_core import FlextUtilities, r
+from flext_core import FlextLogger, FlextUtilities, r
 
 from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
+
+logger = FlextLogger.create_module_logger(__name__)
 
 GrpcChannelType = grpc.Channel
 __all__ = ["FlextGrpcUtilities", "u"]
@@ -181,16 +183,20 @@ class FlextGrpcUtilities(FlextUtilities):
                 if cpu_val is not None:
                     cpu_str: str = str(cpu_val)
                     cpu = int(cpu_str) if cpu_str.isdigit() else 0
-            except Exception:  # noqa: S110
-                pass
+            except Exception:
+                logger.debug(
+                    "Failed to retrieve CPU count for diagnostics", exc_info=True
+                )
             try:
                 mem_val = psutil.virtual_memory()
                 total_val: t.ContainerValue = getattr(mem_val, "total", 0)
                 avail_val: t.ContainerValue = getattr(mem_val, "available", 0)
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
-            except Exception:  # noqa: S110
-                pass
+            except Exception:
+                logger.debug(
+                    "Failed to retrieve memory info for diagnostics", exc_info=True
+                )
             return {
                 "cpu_count": cpu,
                 "memory_total_mb": mem_total // (1024 * 1024),

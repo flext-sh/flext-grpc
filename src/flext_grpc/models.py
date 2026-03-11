@@ -550,7 +550,7 @@ class FlextGrpcModels(FlextModels):
             port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
-            services: list[p.Grpc.GrpcServicer] = Field(  # pyright: ignore[reportUnknownVariableType]  # Pyright cannot resolve types through FLEXT namespace class variables (circular MRO resolution); type is correct at runtime. See https://github.com/microsoft/pyright/issues/5765. Business: GrpcServicer protocol is the sole contract for gRPC service registration.
+            services: list[t.ContainerValue] = Field(
                 default_factory=list, description="gRPC services"
             )
             grpc_server: p.Grpc.GrpcServer | None = None
