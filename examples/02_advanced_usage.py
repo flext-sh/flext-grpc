@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import FlextConstants, FlextResult
+from flext_core import FlextConstants, r
 
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
 
@@ -37,9 +37,9 @@ class GrpcServerManager:
 
     def create_server_pool(
         self, base_port: int = 8000, count: int = 3
-    ) -> list[FlextResult[FlextGrpcModels.Grpc.Server]]:
+    ) -> list[r[FlextGrpcModels.Grpc.Server]]:
         """Create a pool of servers on consecutive ports through facade."""
-        server_results: list[FlextResult[FlextGrpcModels.Grpc.Server]] = []
+        server_results: list[r[FlextGrpcModels.Grpc.Server]] = []
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
@@ -116,7 +116,7 @@ class AdvancedGrpcOperations:
         port: int = 8080,
         service_name: str = "AdvancedService",
         methods: list[str] | None = None,
-    ) -> FlextResult[CompleteSetup]:
+    ) -> r[CompleteSetup]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]
@@ -124,7 +124,7 @@ class AdvancedGrpcOperations:
             host=host, port=port, service_name=service_name, methods=methods
         )
         if setup_result.is_failure:
-            return FlextResult[CompleteSetup].fail(setup_result.error or "Setup failed")
+            return r[CompleteSetup].fail(setup_result.error or "Setup failed")
         setup = setup_result.value
         complete_setup: CompleteSetup = {
             "server": setup.server,
@@ -132,7 +132,7 @@ class AdvancedGrpcOperations:
             "service": setup.service,
             "target": setup.target,
         }
-        return FlextResult[CompleteSetup].ok(complete_setup)
+        return r[CompleteSetup].ok(complete_setup)
 
     def demonstrate_streaming(self) -> None:
         """Demonstrate streaming operations through facade."""

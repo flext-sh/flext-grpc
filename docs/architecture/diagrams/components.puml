@@ -14,7 +14,7 @@ Container_Boundary(flext_grpc_lib, "FLEXT-gRPC Library") {
 }
 
 Container_Boundary(flext_core, "FLEXT-Core") {
-    Component(flext_result, "FlextResult[T]", "Railway Pattern", "Functional error handling")
+    Component(flext_result, "r[T]", "Railway Pattern", "Functional error handling")
     Component(flext_container, "FlextContainer", "Dependency Injection", "Service registration and resolution")
     Component(flext_service, "FlextService", "Service Pattern", "Base service class with lifecycle")
     Component(flext_logger, "FlextLogger", "Structured Logging", "Consistent logging interface")

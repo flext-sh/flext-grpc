@@ -197,7 +197,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 - Comprehensive error handling system
 - Specific exceptions for different failure modes
-- Integration with FlextResult error handling
+- Integration with r error handling
 
 **Protocol Buffers (proto/ - 369 lines)**
 
@@ -212,7 +212,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 All components integrate with flext-core patterns.
 
 ```python
-def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
     return (
         validate_config(config)
         .flat_map(lambda _: create_server_entity(config))

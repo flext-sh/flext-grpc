@@ -192,6 +192,21 @@ extraPaths = [
 pythonPlatform = "Linux"
 pythonVersion = "3.13"
 typeCheckingMode = "strict"
+reportMissingImports = "error"
+reportMissingModuleSource = "error"
+reportMissingTypeStubs = "warning"
+reportUnusedImport = "error"
+reportUnusedVariable = "error"
+reportUnusedClass = "error"
+reportUnusedFunction = "error"
+reportConstantRedefinition = "error"
+reportIncompatibleMethodOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportInconsistentConstructor = "error"
+reportUnnecessaryIsInstance = "warning"
+reportUnnecessaryCast = "error"
+reportUnnecessaryComparison = "warning"
+reportPrivateUsage = "warning"
 
 [[tool.pyright.executionEnvironments]]
 reportPrivateUsage = "error"
@@ -566,6 +581,8 @@ split-on-trailing-comma = true
   "RUF036",
 ]
 
+
+
 [tool.pytest.ini_options]
 addopts = [
   "--strict-markers",
@@ -592,3 +609,10 @@ python_files = [
 ]
 
 # [MANAGED] pyrefly
+
+
+[tool.coverage.report]
+fail_under = 15
+show_missing = true
+skip_covered = false
+precision = 2

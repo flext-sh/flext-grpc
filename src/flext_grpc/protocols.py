@@ -9,7 +9,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, FlextResult, t
+from flext_core import FlextProtocols, r, t
 
 from flext_grpc import c
 
@@ -324,7 +324,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Validate gRPC address format."""
                 ...
 
-            def validate_config(self) -> FlextResult[bool]:
+            def validate_config(self) -> r[bool]:
                 """Validate gRPC configuration."""
                 ...
 
@@ -336,17 +336,17 @@ class FlextGrpcProtocols(FlextProtocols):
         class ResourceManagerProtocol(Protocol):
             """Protocol for gRPC resource management operations."""
 
-            def acquire(self) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
+            def acquire(self) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Acquire a resource."""
                 ...
 
-            def cleanup(self) -> FlextResult[bool]:
+            def cleanup(self) -> r[bool]:
                 """Cleanup all resources."""
                 ...
 
             def release(
                 self, resource: FlextGrpcProtocols.Grpc.GrpcResource
-            ) -> FlextResult[bool]:
+            ) -> r[bool]:
                 """Release a resource."""
                 ...
 
@@ -410,7 +410,7 @@ class FlextGrpcProtocols(FlextProtocols):
         class EntityFactory(Protocol):
             """Protocol for entity factory callables."""
 
-            def __call__(self, **kwargs: t.ContainerValue) -> FlextResult[object]:
+            def __call__(self, **kwargs: t.ContainerValue) -> r[object]:
                 """Create entity with given arguments."""
                 ...
 
@@ -418,7 +418,7 @@ class FlextGrpcProtocols(FlextProtocols):
         class OperationHandler(Protocol):
             """Protocol for operation handler callables."""
 
-            def __call__(self, **kwargs: t.Scalar) -> FlextResult[object]:
+            def __call__(self, **kwargs: t.Scalar) -> r[object]:
                 """Execute operation with given arguments."""
                 ...
 

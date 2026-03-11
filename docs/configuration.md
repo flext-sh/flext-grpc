@@ -25,7 +25,7 @@
   - [Performance](#performance)
   - [Monitoring](#monitoring)
 - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
-  - [FlextResult Usage](#flextresult-usage)
+  - [r Usage](#flextresult-usage)
   - [Container Integration](#container-integration)
 - [Troubleshooting Configuration](#troubleshooting-configuration)
   - [Common Issues](#common-issues)
@@ -73,7 +73,7 @@
     - [Performance](#performance)
     - [Monitoring](#monitoring)
   - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
-    - [FlextResult Usage](#flextresult-usage)
+    - [r Usage](#flextresult-usage)
     - [Container Integration](#container-integration)
 - [Later retrieval](#later-retrieval)
   - [Troubleshooting Configuration](#troubleshooting-configuration)
@@ -234,7 +234,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -276,25 +276,25 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 
-def validate_production_config(config: FlextGrpcSettings) -> FlextResult[bool]:
+def validate_production_config(config: FlextGrpcSettings) -> r[bool]:
     """Additional validation for production environments."""
 
     if config.host == FlextGrpcConstants.Network.DEFAULT_HOST:
-        return FlextResult.fail("Production servers cannot use localhost")
+        return r.fail("Production servers cannot use localhost")
 
     if config.max_workers < 10:
-        return FlextResult.fail("Production requires minimum 10 workers")
+        return r.fail("Production requires minimum 10 workers")
 
     if not config.use_tls:
-        return FlextResult.fail("Production requires TLS encryption")
+        return r.fail("Production requires TLS encryption")
 
-    return FlextResult.| ok(value=True)
+    return r.| ok(value=True)
 ```
 
 ## Environment-Specific Configurations
@@ -498,9 +498,9 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 
 ## Integration with FLEXT Patterns
 
-### FlextResult Usage
+### r Usage
 
-Configuration operations return `FlextResult` for error handling:
+Configuration operations return `r` for error handling:
 
 ```python
 from flext_grpc import create_config
@@ -519,14 +519,14 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 
 
-def setup_configuration() -> FlextResult[FlextGrpcSettings]:
+def setup_configuration() -> r[FlextGrpcSettings]:
     return create_config(
         host=FlextGrpcConstants.Network.DEFAULT_HOST,
         port=FlextGrpcConstants.Network.DEFAULT_PORT,
@@ -553,7 +553,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t

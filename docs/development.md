@@ -101,7 +101,7 @@
 - [Common fixes:](#common-fixes)
 - [- Add missing return type annotations](#--add-missing-return-type-annotations)
 - [- Import proper types from typing module](#--import-proper-types-from-typing-module)
-- [- Use FlextResult for all fallible operations](#--use-flextresult-for-all-fallible-operations)
+- [- Use r for all fallible operations](#--use-flextresult-for-all-fallible-operations)
 - [Run specific test file](#run-specific-test-file)
 - [Debug test with print statements](#debug-test-with-print-statements)
   - [Development Tools](#development-tools)
@@ -213,7 +213,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -221,7 +221,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings
 
 
-def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcSettings]:
+def create_validated_config(host: str, port: int) -> r[FlextGrpcSettings]:
     """Create and validate gRPC configuration."""
 
     return (
@@ -262,7 +262,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -274,8 +274,8 @@ T = TypeVar("T")
 
 # Protocol for dependency injection
 class GrpcServerProtocol(Protocol):
-    def start(self) -> FlextResult[FlextGrpcServer]: ...
-    def stop(self) -> FlextResult[FlextGrpcServer]: ...
+    def start(self) -> r[FlextGrpcServer]: ...
+    def stop(self) -> r[FlextGrpcServer]: ...
 
 
 # Generic service class
@@ -283,9 +283,9 @@ class GrpcService(Generic[T]):
     def __init__(self, config: T) -> None:
         self._config = config
 
-    def process(self, data: dict) -> FlextResult[t.Dict]:
+    def process(self, data: dict) -> r[t.Dict]:
         # Implementation with proper typing
-        return FlextResult.ok({"processed": data})
+        return r.ok({"processed": data})
 ```
 
 ### Domain Patterns
@@ -308,7 +308,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -322,25 +322,25 @@ class FlextGrpcServer(FlextModels.Entity):
     port: int
     state: TGrpcServerState = "stopped"
 
-    def start(self) -> FlextResult[FlextGrpcServer]:
+    def start(self) -> r[FlextGrpcServer]:
         """State transition with business rules validation."""
 
         if self.state != "stopped":
-            return FlextResult.fail(f"Cannot start from state: {self.state}")
+            return r.fail(f"Cannot start from state: {self.state}")
 
         # State transition
-        return FlextResult.ok(self.copy_with(state="starting"))
+        return r.ok(self.copy_with(state="starting"))
 
-    def validate_business_rules(self) -> FlextResult[bool]:
+    def validate_business_rules(self) -> r[bool]:
         """Domain validation rules."""
 
         if not self.host:
-            return FlextResult.fail("Host cannot be empty")
+            return r.fail("Host cannot be empty")
 
         if self.port < 1024 or self.port > 65535:
-            return FlextResult.fail(f"Invalid port: {self.port}")
+            return r.fail(f"Invalid port: {self.port}")
 
-        return FlextResult.| ok(value=True)
+        return r.| ok(value=True)
 ```
 
 ## Testing Standards
@@ -382,7 +382,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -501,7 +501,7 @@ from flext_grpc import FlextGrpcServer
 from flext_grpc import FlextGrpcServerService
 
 
-def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
@@ -526,7 +526,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -540,23 +540,23 @@ class GrpcServiceManager:
         self._container = FlextContainer.get_global()
         self.logger = FlextLogger(__name__)
 
-    def initialize(self) -> FlextResult[bool]:
+    def initialize(self) -> r[bool]:
         """Initialize with dependency injection."""
 
         # Register services
         platform = FlextGrpcPlatform()
         self._container.register("grpc_platform", platform)
 
-        return FlextResult.| ok(value=True)
+        return r.| ok(value=True)
 
-    def get_platform(self) -> FlextResult[FlextGrpcPlatform]:
+    def get_platform(self) -> r[FlextGrpcPlatform]:
         """Retrieve platform from container."""
 
         platform_result = self._container.get("grpc_platform")
         if platform_result.success:
-            return FlextResult.ok(platform_result.unwrap())
+            return r.ok(platform_result.unwrap())
 
-        return FlextResult.fail("Platform not initialized")
+        return r.fail("Platform not initialized")
 ```
 
 ## Documentation Standards
@@ -581,7 +581,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
@@ -589,17 +589,17 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings, FlextGrpcServer
 
 
-def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
     """Create a gRPC server with the specified configuration.
 
     Creates and validates a gRPC server instance using Clean Architecture
-    patterns with comprehensive error handling through FlextResult.
+    patterns with comprehensive error handling through r.
 
     Args:
         config: gRPC server configuration with validation rules
 
     Returns:
-        FlextResult[FlextGrpcServer]: Success with server instance, or
+        r[FlextGrpcServer]: Success with server instance, or
             failure with detailed error message
 
     Example:
@@ -614,7 +614,7 @@ def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
         follows FLEXT ecosystem patterns for consistency.
 
     Raises:
-        No exceptions - all errors returned via FlextResult pattern.
+        No exceptions - all errors returned via r pattern.
     """
     # Implementation
     pass
@@ -625,7 +625,7 @@ def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
 Use comments sparingly for complex business logic:
 
 ```python
-def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[bool]:
+def validate_server_state(self, new_state: TGrpcServerState) -> r[bool]:
     """Validate server state transition."""
 
     # State machine validation - only specific transitions allowed
@@ -637,11 +637,11 @@ def validate_server_state(self, new_state: TGrpcServerState) -> FlextResult[bool
     }
 
     if new_state not in valid_transitions.get(self.state, []):
-        return FlextResult.fail(
+        return r.fail(
             f"Invalid state transition: {self.state} → {new_state}"
         )
 
-    return FlextResult.| ok(value=True)
+    return r.| ok(value=True)
 ```
 
 ## Contributing Process
@@ -773,7 +773,7 @@ make type-check
 # Common fixes:
 # - Add missing return type annotations
 # - Import proper types from typing module
-# - Use FlextResult for all fallible operations
+# - Use r for all fallible operations
 ```
 
 **Test Failures**

@@ -376,7 +376,7 @@ class FlextGrpcModels(FlextModels):
                     allowed_transitions: Map of allowed transitions
 
                 Returns:
-                    FlextResult with state update dict on success
+                    r with state update dict on success
 
                 """
                 if (

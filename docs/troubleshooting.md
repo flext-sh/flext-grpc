@@ -167,10 +167,10 @@ if start_result.is_failure:
 
 ### gRPC Service Development
 
-1. **Always use FlextResult patterns**:
+1. **Always use r patterns**:
 
    ```python
-   def my_grpc_method() -> FlextResult[ResponseType]:
+   def my_grpc_method() -> r[ResponseType]:
        # Explicit error handling, no exceptions
    ```
 
