@@ -102,7 +102,7 @@ class FlextGrpcSettings(FlextSettings):
         """
         return r[FlextGrpcSettings].ok(
             cls.model_validate({
-                "host": "0.0.0.0",  # noqa: S104 - Production servers require binding to all interfaces (0.0.0.0) for Kubernetes/container deployments. TLS is enabled to mitigate security risk. See https://kubernetes.io/docs/concepts/services-networking/service/#type-loadbalancer
+                "host": "0.0.0.0",
                 "security": {"tls_enabled": True},
             })
         )
