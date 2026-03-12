@@ -522,7 +522,7 @@ class FlextGrpcServices:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
 
-    def execute(self, **_kwargs: object) -> r[ServicePayload]:
+    def execute(self, **_kwargs: t.Scalar) -> r[ServicePayload]:
         """Execute main service operation."""
         return r[ServicePayload].ok(
             ServicePayload.from_values(status="ready", service="flext-grpc-service")

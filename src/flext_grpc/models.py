@@ -454,7 +454,7 @@ class FlextGrpcModels(FlextModels):
             values: t.Grpc.GrpcDict = Field(default_factory=dict)
 
             @classmethod
-            def from_values(cls, **values: object) -> Self:
+            def from_values(cls, **values: t.Scalar) -> Self:
                 """Build payload from keyword values."""
 
                 def normalize_payload_value(value: object) -> object:
