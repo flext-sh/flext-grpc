@@ -86,7 +86,7 @@ class FlextGrpc:
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: list[str] | None = None,
-    ) -> r[t.ContainerValue]:
+    ) -> r[object]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"

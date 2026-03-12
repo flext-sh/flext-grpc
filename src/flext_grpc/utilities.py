@@ -18,7 +18,7 @@ import grpc
 import psutil
 from flext_core import FlextLogger, FlextUtilities, r
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
+from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c
 
 logger = FlextLogger.create_module_logger(__name__)
 
@@ -40,7 +40,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
     @classmethod
     def create_channel_entity(
-        cls, target: str, options: Mapping[str, t.ContainerValue] | None = None
+        cls, target: str, options: Mapping[str, object] | None = None
     ) -> r[FlextGrpcModels.Grpc.Channel]:
         """Create a gRPC channel entity directly."""
         if not target or not target.strip():
@@ -59,7 +59,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
     @classmethod
     def create_client_entity(
-        cls, target: str, options: Mapping[str, t.ContainerValue] | None = None
+        cls, target: str, options: Mapping[str, object] | None = None
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Create a gRPC client entity directly."""
         if not target or not target.strip():
@@ -173,7 +173,7 @@ class FlextGrpcUtilities(FlextUtilities):
             return type_names.get(stream_type, "Unknown")
 
         @staticmethod
-        def get_system_info() -> dict[str, t.ContainerValue]:
+        def get_system_info() -> dict[str, object]:
             """Get system information for gRPC diagnostics."""
             cpu: int = 0
             mem_total: int = 0
@@ -189,8 +189,8 @@ class FlextGrpcUtilities(FlextUtilities):
                 )
             try:
                 mem_val = psutil.virtual_memory()
-                total_val: t.ContainerValue = getattr(mem_val, "total", 0)
-                avail_val: t.ContainerValue = getattr(mem_val, "available", 0)
+                total_val: object = getattr(mem_val, "total", 0)
+                avail_val: object = getattr(mem_val, "available", 0)
                 mem_total = int(str(total_val)) if total_val else 0
                 mem_avail = int(str(avail_val)) if avail_val else 0
             except (OSError, RuntimeError, AttributeError):

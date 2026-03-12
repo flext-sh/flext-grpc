@@ -38,7 +38,7 @@ ServicePayload = FlextGrpcModels.Grpc.Payload
 
 
 class _MetricValueModel(FlextGrpcModels.Value):
-    value: t.ContainerValue
+    value: object
 
 
 class _StreamRuntimeState(FlextGrpcModels.Value):
@@ -131,7 +131,7 @@ class MetricsCollector:
         with self._lock:
             return self._metrics.values.get(key)
 
-    def record_metric(self, key: str, value: t.ContainerValue) -> None:
+    def record_metric(self, key: str, value: object) -> None:
         """Thread-safe metric recording.
 
         Args:
@@ -140,7 +140,7 @@ class MetricsCollector:
 
         """
 
-        def normalize_to_json(val: t.ContainerValue) -> t.JsonValue:
+        def normalize_to_json(val: object) -> t.JsonValue:
             if val is None:
                 return ""
             if isinstance(val, (str, int, float, bool)):
@@ -195,7 +195,7 @@ class ConnectionPool:
                     break
         return r[bool].ok(True)
 
-    def release(self, connection: t.ContainerValue) -> r[bool]:
+    def release(self, connection: object) -> r[bool]:
         """Release connection back to pool."""
 
         def _release() -> bool:
@@ -522,7 +522,7 @@ class FlextGrpcServices:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
 
-    def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
+    def execute(self, **_kwargs: object) -> r[ServicePayload]:
         """Execute main service operation."""
         return r[ServicePayload].ok(
             ServicePayload.from_values(status="ready", service="flext-grpc-service")

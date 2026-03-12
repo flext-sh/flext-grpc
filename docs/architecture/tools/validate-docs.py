@@ -11,8 +11,6 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from flext_grpc import t
-
 
 class ArchitectureValidator:
     """Validates architecture documentation completeness and consistency."""
@@ -34,11 +32,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, t.ContainerValue]] = []
-        self.warnings: list[dict[str, t.ContainerValue]] = []
-        self.recommendations: list[dict[str, t.ContainerValue]] = []
+        self.issues: list[dict[str, object]] = []
+        self.warnings: list[dict[str, object]] = []
+        self.recommendations: list[dict[str, object]] = []
 
-    def validate_all(self) -> dict[str, t.ContainerValue]:
+    def validate_all(self) -> dict[str, object]:
         """Run all validation checks."""
         # Reset collections
         self.issues = []
@@ -277,7 +275,7 @@ class ArchitectureValidator:
                     "message": "Architecture documentation contains outdated test coverage metrics",
                 })
 
-    def _generate_summary(self) -> dict[str, t.ContainerValue]:
+    def _generate_summary(self) -> dict[str, object]:
         """Generate validation summary."""
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
@@ -309,7 +307,7 @@ class ArchitectureValidator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-    def _print_results(self, summary: dict[str, t.ContainerValue]) -> None:
+    def _print_results(self, summary: dict[str, object]) -> None:
         """Print validation results."""
         # Reserved for future summary display functionality
         _ = summary  # Reserved for future use
@@ -328,7 +326,7 @@ class ArchitectureValidator:
 
 
 def save_report(
-    results: dict[str, t.ContainerValue],
+    results: dict[str, object],
     output_path: Path | None = None,
 ) -> None:
     """Save validation report to file."""

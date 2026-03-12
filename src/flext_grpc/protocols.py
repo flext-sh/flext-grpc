@@ -236,7 +236,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def create_channel(
-                self, target: str, options: Mapping[str, t.ContainerValue] | None = None
+                self, target: str, options: Mapping[str, object] | None = None
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcChannel]:
                 """Create gRPC channel."""
                 ...
@@ -300,7 +300,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC configuration management."""
 
             def create_client_config(
-                self, target: str, options: Mapping[str, t.ContainerValue] | None = None
+                self, target: str, options: Mapping[str, object] | None = None
             ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Create gRPC client configuration."""
                 ...
@@ -309,7 +309,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 self,
                 host: str,
                 port: int,
-                options: Mapping[str, t.ContainerValue] | None = None,
+                options: Mapping[str, object] | None = None,
             ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
                 """Create gRPC server configuration."""
                 ...
@@ -410,7 +410,7 @@ class FlextGrpcProtocols(FlextProtocols):
         class EntityFactory(Protocol):
             """Protocol for entity factory callables."""
 
-            def __call__(self, **kwargs: t.ContainerValue) -> r[object]:
+            def __call__(self, **kwargs: object) -> r[object]:
                 """Create entity with given arguments."""
                 ...
 

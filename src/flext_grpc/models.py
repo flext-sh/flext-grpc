@@ -454,10 +454,10 @@ class FlextGrpcModels(FlextModels):
             values: t.Grpc.GrpcDict = Field(default_factory=dict)
 
             @classmethod
-            def from_values(cls, **values: t.ContainerValue) -> Self:
+            def from_values(cls, **values: object) -> Self:
                 """Build payload from keyword values."""
 
-                def normalize_payload_value(value: t.ContainerValue) -> t.JsonValue:
+                def normalize_payload_value(value: object) -> t.JsonValue:
                     match value:
                         case None:
                             return ""
@@ -507,7 +507,7 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelStateLiteral = "idle"
-            options: dict[str, t.ContainerValue] = Field(default_factory=dict)
+            options: dict[str, object] = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             def connect(self) -> r[Self]:
@@ -550,7 +550,7 @@ class FlextGrpcModels(FlextModels):
             port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
-            services: list[t.ContainerValue] = Field(
+            services: list[object] = Field(
                 default_factory=list, description="gRPC services"
             )
             grpc_server: p.Grpc.GrpcServer | None = None

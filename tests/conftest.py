@@ -11,7 +11,7 @@ from __future__ import annotations
 import pytest
 from flext_core import FlextConstants, FlextContainer
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcSettings, t
+from flext_grpc import FlextGrpcConstants, FlextGrpcSettings
 
 
 @pytest.fixture(autouse=True)
@@ -22,7 +22,7 @@ def clean_container() -> object:
 
 
 @pytest.fixture
-def sample_grpc_config() -> dict[str, t.ContainerValue]:
+def sample_grpc_config() -> dict[str, object]:
     """Sample gRPC configuration for tests."""
     return {
         "host": FlextConstants.Platform.DEFAULT_HOST,
