@@ -163,7 +163,7 @@ class FlextGrpc:
 
     def execute(self) -> r[FlextGrpcSettings]:
         """Execute main facade operation."""
-        return r.ok(self.grpc_config)
+        return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def execute_operation(
         self, request: FlextGrpcModels.Grpc.OperationExecutionRequest
@@ -184,7 +184,7 @@ class FlextGrpc:
                 )
         if result.is_failure:
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")
-        return r.ok(self.grpc_config)
+        return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def make_call(
         self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
@@ -208,7 +208,7 @@ class FlextGrpc:
         """Parse gRPC address string."""
         if not t.Grpc.GrpcValidation.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
-        return r.ok(t.Grpc.GrpcValidation.parse_target(address))
+        return r[tuple[str, int]].ok(t.Grpc.GrpcValidation.parse_target(address))
 
     def send_data(
         self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue

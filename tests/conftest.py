@@ -11,12 +11,13 @@ from __future__ import annotations
 import pytest
 from flext_core import FlextConstants, FlextContainer
 
-from flext_grpc import FlextGrpcConstants, t
+from flext_grpc import FlextGrpcConstants, FlextGrpcSettings, t
 
 
 @pytest.fixture(autouse=True)
 def clean_container() -> object:
-    """Clean global container before each test."""
+    """Clean global container and settings before each test."""
+    FlextGrpcSettings._instances.clear()
     return FlextContainer.get_global()
 
 

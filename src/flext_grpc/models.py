@@ -494,13 +494,13 @@ class FlextGrpcModels(FlextModels):
 
                 """
                 try:
-                    return r.ok(self.model_copy(update=kwargs))
+                    return r[Self].ok(self.model_copy(update=kwargs))
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r.fail(str(e)).map(lambda _unused: self)
+                    return r[Self].fail(str(e)).map(lambda _unused: self)
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
-                return r.ok(True)
+                return r[bool].ok(True)
 
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
@@ -520,7 +520,7 @@ class FlextGrpcModels(FlextModels):
 
             def disconnect(self) -> r[Self]:
                 """Transition to idle."""
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value}),
                 )
 
@@ -541,7 +541,7 @@ class FlextGrpcModels(FlextModels):
                 """Functional validation composition."""
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
-                return r.ok(True)
+                return r[bool].ok(True)
 
         class Server(Entity, StateMachine):
             """Generic gRPC server with state machine and validation delegation."""
@@ -562,7 +562,7 @@ class FlextGrpcModels(FlextModels):
                 service: gRPC service object (dynamic type from grpc library)
 
                 """
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"services": [*self.services, service]}),
                 )
 
@@ -577,10 +577,12 @@ class FlextGrpcModels(FlextModels):
             def mark_stopped(self) -> r[Self]:
                 """Transition to stopped."""
                 if self.state not in {"stopping", "running"}:
-                    return r.fail(f"Cannot mark stopped from {self.state}").map(
-                        lambda _unused: self
+                    return (
+                        r[Self]
+                        .fail(f"Cannot mark stopped from {self.state}")
+                        .map(lambda _unused: self)
                     )
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
                 )
 
@@ -612,7 +614,7 @@ class FlextGrpcModels(FlextModels):
                     return r[bool].fail(f"Invalid port: {self.port}")
                 if self.max_workers < 1:
                     return r[bool].fail("Max workers must be >= 1")
-                return r.ok(True)
+                return r[bool].ok(True)
 
         class Service(Entity):
             """Generic gRPC service with validation delegation."""
@@ -645,8 +647,8 @@ class FlextGrpcModels(FlextModels):
             def add_method(self, method_name: str) -> r[Self]:
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
-                    return r.fail("Invalid method").map(lambda _unused: self)
-                return r.ok(
+                    return r[Self].fail("Invalid method").map(lambda _unused: self)
+                return r[Self].ok(
                     self.model_copy(update={"methods": [*self.methods, method_name]}),
                 )
 
@@ -667,14 +669,14 @@ class FlextGrpcModels(FlextModels):
                     target=target,
                     state="idle",
                 )
-                return r.ok(self.model_copy(update={"channel": channel}))
+                return r[Self].ok(self.model_copy(update={"channel": channel}))
 
             @override
             def validate_business_rules(self) -> r[bool]:
                 """Delegate validation."""
                 if self.channel and self.channel.validate_business_rules().is_failure:
                     return r[bool].fail("Invalid channel")
-                return r.ok(True)
+                return r[bool].ok(True)
 
         class GrpcStream(Entity):
             """Generic gRPC stream with validation delegation."""

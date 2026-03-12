@@ -179,7 +179,7 @@ class ConnectionPool:
                 if not self._pool.empty():
                     conn = self._pool.get_nowait()
                     self._active.add(conn)
-                    return r.ok(conn)
+                    return r[object].ok(conn)
                 return r[object].fail("No available connections")
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r[object].fail(f"Connection acquisition failed: {e}")
@@ -193,7 +193,7 @@ class ConnectionPool:
                     _ = self._pool.get_nowait()
                 except (grpc.RpcError, ConnectionError, TimeoutError):
                     break
-        return r.ok(True)
+        return r[bool].ok(True)
 
     def release(self, connection: t.ContainerValue) -> r[bool]:
         """Release connection back to pool."""
@@ -232,7 +232,7 @@ class GrpcServerManager(ServerLifecycleManager):
         server_key = f"{server.host}:{server.port}"
         started_at = self._metrics.get_metric(f"{server_key}_started_at")
         stopped_at = self._metrics.get_metric(f"{server_key}_stopped_at")
-        return r.ok(
+        return r[ServicePayload].ok(
             ServicePayload.from_values(
                 is_active=server_key in self._active_servers,
                 started_at=started_at,
@@ -342,7 +342,7 @@ class GrpcClientManager(ClientConnectionManager):
             grpc_channel = self._active_channels[target]
             grpc_channel.close()
             del self._active_channels[target]
-        return r.ok(client)
+        return r[FlextGrpcModels.Grpc.Client].ok(client)
 
     def get_client_status(
         self, client: FlextGrpcModels.Grpc.Client
@@ -352,7 +352,9 @@ class GrpcClientManager(ClientConnectionManager):
         if client.channel is not None:
             target = client.channel.target or ""
         is_connected = bool(target and target in self._active_channels)
-        return r.ok(ServicePayload.from_values(connected=is_connected, target=target))
+        return r[ServicePayload].ok(
+            ServicePayload.from_values(connected=is_connected, target=target)
+        )
 
     def make_call(
         self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
@@ -377,7 +379,7 @@ class GrpcClientManager(ClientConnectionManager):
                 echo_response = stub.Echo(
                     EchoRequest(message=str(request), metadata={})
                 )
-                return r.ok(
+                return r[ServicePayload].ok(
                     ServicePayload.from_values(
                         method="Echo",
                         message=echo_response.message,
@@ -389,7 +391,7 @@ class GrpcClientManager(ClientConnectionManager):
                 health_response = stub.HealthCheck(
                     HealthRequest(service="FlextGrpcService")
                 )
-                return r.ok(
+                return r[ServicePayload].ok(
                     ServicePayload.from_values(
                         method="HealthCheck",
                         status=health_response.status,
@@ -424,7 +426,7 @@ class GrpcStreamManager(StreamProcessor):
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key in self._active_streams:
             del self._active_streams[stream_key]
-        return r.ok(stream)
+        return r[FlextGrpcModels.Grpc.GrpcStream].ok(stream)
 
     @override
     def create_stream(
@@ -444,7 +446,7 @@ class GrpcStreamManager(StreamProcessor):
             stream=stream, created_at=time.time()
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
-        return r.ok(stream)
+        return r[FlextGrpcModels.Grpc.GrpcStream].ok(stream)
 
     @override
     def send_data(
@@ -465,7 +467,7 @@ class GrpcStreamManager(StreamProcessor):
             stream_state = _StreamRuntimeState.model_validate(stream_info)
             stream_state.buffer.append(data)
             self._active_streams[stream_key] = stream_state
-            return r.ok(
+            return r[ServicePayload].ok(
                 ServicePayload.from_values(
                     stream_id=stream.id,
                     data_sent=str(data),
@@ -522,7 +524,7 @@ class FlextGrpcServices:
 
     def execute(self, **_kwargs: t.ContainerValue) -> r[ServicePayload]:
         """Execute main service operation."""
-        return r.ok(
+        return r[ServicePayload].ok(
             ServicePayload.from_values(status="ready", service="flext-grpc-service")
         )
 
