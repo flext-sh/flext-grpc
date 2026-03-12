@@ -74,7 +74,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_server_status(
                 self,
-            ) -> FlextProtocols.Result[t.ConfigurationMapping]:
+            ) -> FlextProtocols.Result[object]:
                 """Get gRPC server status information."""
                 ...
 
@@ -115,7 +115,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_client_status(
                 self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
-            ) -> FlextProtocols.Result[t.ConfigurationMapping]:
+            ) -> FlextProtocols.Result[object]:
                 """Get gRPC client status information."""
                 ...
 
@@ -161,7 +161,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def handle_bidirectional_streaming(
                 self, stream: FlextGrpcProtocols.Grpc.GrpcStream
-            ) -> FlextProtocols.Result[t.ConfigurationMapping]:
+            ) -> FlextProtocols.Result[object]:
                 """Handle bidirectional streaming."""
                 ...
 

@@ -123,7 +123,7 @@ class FlextGrpcModels(FlextModels):
             """Basic channel configuration (immutable value model)."""
 
             address: str
-            options: Mapping[str, t.JsonValue] | None = None
+            options: Mapping[str, object] | None = None
 
         class SecurityConfig(FlextModels.Value):
             """Generic gRPC security configuration with validation."""
@@ -403,7 +403,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Method to invoke on entity",
             )
-            parameters: Mapping[str, t.JsonValue] = Field(
+            parameters: Mapping[str, object] = Field(
                 default_factory=dict,
                 description="Operation parameters",
             )
@@ -416,7 +416,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Associated entity",
             )
-            data: t.JsonValue | None = Field(
+            data: object | None = Field(
                 default=None,
                 description="Request data",
             )
@@ -438,7 +438,7 @@ class FlextGrpcModels(FlextModels):
                 default=None,
                 description="Error message if failed",
             )
-            metadata: Mapping[str, t.JsonValue] = Field(
+            metadata: Mapping[str, object] = Field(
                 default_factory=dict,
                 description="Response metadata",
             )
@@ -457,7 +457,7 @@ class FlextGrpcModels(FlextModels):
             def from_values(cls, **values: object) -> Self:
                 """Build payload from keyword values."""
 
-                def normalize_payload_value(value: object) -> t.JsonValue:
+                def normalize_payload_value(value: object) -> object:
                     match value:
                         case None:
                             return ""

@@ -121,7 +121,7 @@ class MetricsCollector:
         with self._lock:
             return ServicePayload(values=self._metrics.values.copy())
 
-    def get_metric(self, key: str) -> t.JsonValue | None:
+    def get_metric(self, key: str) -> object | None:
         """Thread-safe metric retrieval.
 
         Returns:
@@ -140,7 +140,7 @@ class MetricsCollector:
 
         """
 
-        def normalize_to_json(val: object) -> t.JsonValue:
+        def normalize_to_json(val: object) -> object:
             if val is None:
                 return ""
             if isinstance(val, (str, int, float, bool)):
