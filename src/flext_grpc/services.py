@@ -140,20 +140,20 @@ class MetricsCollector:
 
         """
 
-        def normalize_to_json(val: object) -> object:
+        def _normalize_value(val: object) -> object:
             if val is None:
                 return ""
             if isinstance(val, (str, int, float, bool)):
                 return val
             if isinstance(val, list):
-                return [normalize_to_json(item) for item in val]
+                return [_normalize_value(item) for item in val]
             if isinstance(val, dict):
-                return {str(k): normalize_to_json(v) for k, v in val.items()}
+                return {str(k): _normalize_value(v) for k, v in val.items()}
             return str(val)
 
         with self._lock:
             normalized = _MetricValueModel.model_validate({"value": value})
-            json_val = normalize_to_json(normalized.value)
+            json_val = _normalize_value(normalized.value)
             self._metrics.values[key] = json_val
 
 
