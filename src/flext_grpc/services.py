@@ -230,13 +230,15 @@ class GrpcServerManager(ServerLifecycleManager):
     ) -> r[ServicePayload]:
         """Get server metrics."""
         server_key = f"{server.host}:{server.port}"
-        started_at = self._metrics.get_metric(f"{server_key}_started_at")
-        stopped_at = self._metrics.get_metric(f"{server_key}_stopped_at")
+        started_at_raw = self._metrics.get_metric(f"{server_key}_started_at")
+        stopped_at_raw = self._metrics.get_metric(f"{server_key}_stopped_at")
+        started_at_str: str = str(started_at_raw) if started_at_raw is not None else ""
+        stopped_at_str: str = str(stopped_at_raw) if stopped_at_raw is not None else ""
         return r[ServicePayload].ok(
             ServicePayload.from_values(
                 is_active=server_key in self._active_servers,
-                started_at=started_at,
-                stopped_at=stopped_at,
+                started_at=started_at_str,
+                stopped_at=stopped_at_str,
             )
         )
 
