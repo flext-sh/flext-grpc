@@ -22,36 +22,36 @@ class TestFlextGrpcProtocols:
         assert hasattr(FlextGrpcProtocols, "Grpc")
 
     def test_server_protocol_exists(self) -> None:
-        """Test that ServerProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ServerProtocol")
+        """Test that Server exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Server")
 
     def test_client_protocol_exists(self) -> None:
-        """Test that ClientProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ClientProtocol")
+        """Test that Client exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Client")
 
     def test_streaming_protocol_exists(self) -> None:
-        """Test that StreamingProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "StreamingProtocol")
+        """Test that Streaming exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Streaming")
 
     def test_service_protocol_exists(self) -> None:
-        """Test that ServiceProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ServiceProtocol")
+        """Test that Service exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Service")
 
     def test_channel_protocol_exists(self) -> None:
-        """Test that ChannelProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ChannelProtocol")
+        """Test that Channel exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Channel")
 
     def test_metrics_protocol_exists(self) -> None:
-        """Test that MetricsProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "MetricsProtocol")
+        """Test that Metrics exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Metrics")
 
     def test_configuration_protocol_exists(self) -> None:
-        """Test that ConfigurationProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ConfigurationProtocol")
+        """Test that Configuration exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Configuration")
 
     def test_protocols_are_protocols(self) -> None:
         """Test that protocols are proper Protocol subclasses."""
-        assert is_protocol(FlextGrpcProtocols.Grpc.ServerProtocol)
-        assert is_protocol(FlextGrpcProtocols.Grpc.ClientProtocol)
-        assert is_protocol(FlextGrpcProtocols.Grpc.StreamingProtocol)
-        assert is_protocol(FlextGrpcProtocols.Grpc.ServiceProtocol)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Server)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Client)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Streaming)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Service)

@@ -60,7 +60,7 @@
 - [✅ CORRECT - Railway-oriented programming](#-correct---railway-oriented-programming)
 - [❌ FORBIDDEN - Exception-based error handling](#-forbidden---exception-based-error-handling)
   - [Type Annotations](#type-annotations)
-- [Protocol for dependency injection](#protocol-for-dependency-injection)
+- [ for dependency injection](#protocol-for-dependency-injection)
 - [Generic service class](#generic-service-class)
   - [Domain Patterns](#domain-patterns)
   - [Testing Standards](#testing-standards)
@@ -273,7 +273,7 @@ T = TypeVar("T")
 
 
 # Protocol for dependency injection
-class GrpcServerProtocol(Protocol):
+class GrpcServer(Protocol):
     def start(self) -> r[FlextGrpcServer]: ...
     def stop(self) -> r[FlextGrpcServer]: ...
 

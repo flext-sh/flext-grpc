@@ -24,7 +24,7 @@ from flext_grpc import c
 
 
 @runtime_checkable
-class _GrpcServicerProtocol(Protocol):
+class _GrpcServicer(Protocol):
     """Protocol for gRPC service implementations (duck typing)."""
 
 
@@ -42,7 +42,7 @@ class FlextGrpcTypes(FlextTypes):
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
-        GrpcServicer: TypeAlias = _GrpcServicerProtocol
+        GrpcServicer: TypeAlias = _GrpcServicer
 
         Dict: TypeAlias = dict[str, object]
         GrpcDict: TypeAlias = dict[str, object]

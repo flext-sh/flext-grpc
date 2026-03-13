@@ -33,8 +33,8 @@ class FlextGrpcProtocols(FlextProtocols):
     service: p.Service[str]
 
     # gRPC-specific protocols
-    server: p.Grpc.ServerProtocol
-    client: p.Grpc.ClientProtocol
+    server: p.Grpc.Server
+    client: p.Grpc.Client
     """
 
     class Grpc:
@@ -50,7 +50,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC service implementations (duck typing)."""
 
         @runtime_checkable
-        class ServerProtocol(Protocol):
+        class Server(Protocol):
             """Protocol for gRPC server management operations."""
 
             def add_service(
@@ -98,7 +98,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC message objects (duck typing for protobuf messages)."""
 
         @runtime_checkable
-        class ClientProtocol(Protocol):
+        class Client(Protocol):
             """Protocol for gRPC client communication operations."""
 
             def connect_client(
@@ -141,7 +141,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC stream objects (duck typing)."""
 
         @runtime_checkable
-        class StreamingProtocol(Protocol):
+        class Streaming(Protocol):
             """Protocol for gRPC streaming operations."""
 
             def close_stream(
@@ -194,7 +194,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC method handlers (duck typing)."""
 
         @runtime_checkable
-        class ServiceProtocol(Protocol):
+        class Service(Protocol):
             """Protocol for gRPC service definition and management."""
 
             def create_service(
@@ -226,7 +226,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
         @runtime_checkable
-        class ChannelProtocol(Protocol):
+        class Channel(Protocol):
             """Protocol for gRPC channel management operations."""
 
             def close_channel(
@@ -258,7 +258,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
         @runtime_checkable
-        class MetricsProtocol(Protocol):
+        class Metrics(Protocol):
             """Protocol for gRPC metrics collection and monitoring."""
 
             def collect_client_metrics(
@@ -296,7 +296,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
         @runtime_checkable
-        class ConfigurationProtocol(Protocol):
+        class Configuration(Protocol):
             """Protocol for gRPC configuration management."""
 
             def create_client_config(
@@ -333,7 +333,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC resource objects (channels, servers, streams)."""
 
         @runtime_checkable
-        class ResourceManagerProtocol(Protocol):
+        class ResourceManager(Protocol):
             """Protocol for gRPC resource management operations."""
 
             def acquire(self) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:

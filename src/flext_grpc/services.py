@@ -54,7 +54,7 @@ def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
 
 
 @runtime_checkable
-class ServerLifecycleProtocol(Protocol):
+class ServerLifecycle(Protocol):
     """Protocol for server lifecycle management."""
 
     def start_server(
@@ -71,7 +71,7 @@ class ServerLifecycleProtocol(Protocol):
 
 
 @runtime_checkable
-class ClientConnectionProtocol(Protocol):
+class ClientConnection(Protocol):
     """Protocol for client connection management."""
 
     def connect(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
@@ -86,7 +86,7 @@ class ClientConnectionProtocol(Protocol):
 
 
 @runtime_checkable
-class StreamProcessorProtocol(Protocol):
+class StreamProcessor(Protocol):
     """Protocol for stream processing."""
 
     def close_stream(
@@ -217,7 +217,7 @@ class ConnectionPool:
         ).map_error(lambda e: f"Connection release failed: {e}")
 
 
-class GrpcServerManager(ServerLifecycleProtocol):
+class GrpcServerManager(ServerLifecycle):
     """Dedicated server lifecycle management."""
 
     def __init__(self) -> None:
@@ -299,7 +299,7 @@ class GrpcServerManager(ServerLifecycleProtocol):
             return r[FlextGrpcModels.Grpc.Server].fail(f"Server stop failed: {e}")
 
 
-class GrpcClientManager(ClientConnectionProtocol):
+class GrpcClientManager(ClientConnection):
     """Dedicated client connection management."""
 
     def __init__(self) -> None:
@@ -415,7 +415,7 @@ class GrpcClientManager(ClientConnectionProtocol):
             return r[ServicePayload].fail(f"Call execution failed: {e}")
 
 
-class GrpcStreamManager(StreamProcessorProtocol):
+class GrpcStreamManager(StreamProcessor):
     """Dedicated stream processing with buffering."""
 
     def __init__(self) -> None:
@@ -688,14 +688,14 @@ class FlextGrpcServices:
 
 
 __all__ = [
-    "ClientConnectionProtocol",
+    "ClientConnection",
     "ConnectionPool",
     "FlextGrpcServices",
     "GrpcClientManager",
     "GrpcServerManager",
     "GrpcStreamManager",
     "MetricsCollector",
-    "ServerLifecycleProtocol",
+    "ServerLifecycle",
     "ServicePayload",
-    "StreamProcessorProtocol",
+    "StreamProcessor",
 ]

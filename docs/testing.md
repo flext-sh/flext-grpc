@@ -72,7 +72,7 @@
 - [Issue: @runtime_checkable missing](#issue-runtime_checkable-missing)
 - [Location: src/flext_grpc/protocols.py](#location-srcflext_grpcprotocolspy)
 - [Fix: @runtime_checkable](#fix-runtime_checkable)
-- [class ServerProtocol(Protocol): ...](#class-serverprotocolprotocol-) - [4. Update Configuration Tests](#4-update-configuration-tests)
+- [class Server(Protocol): ...](#class-serverprotocolprotocol-) - [4. Update Configuration Tests](#4-update-configuration-tests)
 - [Issue: Default host changed](#issue-default-host-changed)
 - [Location: tests/unit/test_config.py](#location-testsunittest_configpy)
 - [Fix: assert config.host == "localhost" # Update expectation](#fix-assert-confighost--localhost---update-expectation)
@@ -284,7 +284,7 @@ TOTAL                                          1798    956    380     14    39%
 # Issue: @runtime_checkable missing
 # Location: src/flext_grpc/protocols.py
 # Fix: @runtime_checkable
-#      class ServerProtocol(Protocol): ...
+#      class Server(Protocol): ...
 ```
 
 #### 4. Update Configuration Tests

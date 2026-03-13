@@ -245,7 +245,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
   from typing import runtime_checkable
 
   @runtime_checkable
-  class ServerProtocol(Protocol):
+  class Server(Protocol):
       # ... existing methods
   ```
 

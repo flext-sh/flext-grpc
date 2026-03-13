@@ -360,7 +360,7 @@ jobs:
 ## References
 
 - [gRPC Python Generated Code](https://grpc.io/docs/languages/python/generated-code/)
-- [Protocol Buffers Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)
+- [Buffers Python](https://developers.google.com/protocol-buffers/docs/pythontutorial)
 - [Docker for Development](https://docs.docker.com/develop/dev-best-practices/)
 - [Semantic Versioning](https://semver.org/)
 
