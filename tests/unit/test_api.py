@@ -162,7 +162,7 @@ class TestFlextGrpc:
         assert service_spec.entity_type == "service"
         assert stream_spec.entity_type == "stream"
         with pytest.raises(ValidationError):
-            FlextGrpcModels.Grpc.OperationSpec.model_validate({
+            FlextGrpcModels.Grpc.OperationSpec({
                 "name": "op",
                 "entity_type": "invalid",
             })

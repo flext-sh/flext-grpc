@@ -117,7 +117,7 @@ class FlextGrpcSettings(FlextSettings):
 
         """
         return r[FlextGrpcSettings].ok(
-            cls.model_validate({
+            cls({
                 "host": "0.0.0.0",
                 "security": {"tls_enabled": True},
             })
@@ -134,7 +134,7 @@ class FlextGrpcSettings(FlextSettings):
             r[FlextGrpcSettings]: Development configuration instance.
 
         """
-        return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
+        return r[FlextGrpcSettings].ok(cls({"host": "127.0.0.1"}))
 
 
 __all__ = ["FlextGrpcModels", "FlextGrpcSettings"]

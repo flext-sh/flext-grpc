@@ -156,7 +156,7 @@ class MetricsCollector:
             return str(val)
 
         with self._lock:
-            normalized = _MetricValueModel.model_validate({"value": value})
+            normalized = _MetricValueModel({"value": value})
             json_val = _normalize_value(normalized.value)
             self._metrics.values[key] = json_val
 
@@ -470,7 +470,7 @@ class GrpcStreamManager(StreamProcessor):
             return r[ServicePayload].fail("Stream not found")
         stream_info = self._active_streams[stream_key]
         try:
-            stream_state = _StreamRuntimeState.model_validate(stream_info)
+            stream_state = _StreamRuntimeState(stream_info)
             stream_state.buffer.append(data)
             self._active_streams[stream_key] = stream_state
             return r[ServicePayload].ok(
