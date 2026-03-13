@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TypeAlias
+from typing import Annotated, TypeAlias
 
 from flext_core import FlextSettings, r
 from pydantic import Field, computed_field
@@ -35,34 +35,50 @@ class FlextGrpcSettings(FlextSettings):
     """
 
     # Flat convenience fields (settable via constructor)
-    host: str = Field(
-        default=c.Grpc.GrpcNetwork.DEFAULT_HOST, validation_alias="grpc_host"
-    )
-    port: int = Field(
-        default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        ge=1,
-        le=65535,
-        validation_alias="grpc_port",
-    )
-    max_workers: int = Field(
-        default=c.Grpc.Service.MAX_WORKERS,
-        ge=1,
-        le=100,
-        validation_alias="grpc_max_workers",
-    )
-    timeout: float = Field(
-        default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
-        gt=0,
-        validation_alias="grpc_timeout",
-    )
+    host: Annotated[
+        str,
+        Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST, validation_alias="grpc_host"),
+    ]
+    port: Annotated[
+        int,
+        Field(
+            default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+            ge=1,
+            le=65535,
+            validation_alias="grpc_port",
+        ),
+    ]
+    max_workers: Annotated[
+        int,
+        Field(
+            default=c.Grpc.Service.MAX_WORKERS,
+            ge=1,
+            le=100,
+            validation_alias="grpc_max_workers",
+        ),
+    ]
+    timeout: Annotated[
+        float,
+        Field(
+            default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
+            gt=0,
+            validation_alias="grpc_timeout",
+        ),
+    ]
 
     # Nested configuration models
-    network: GrpcNetworkConfig = Field(default_factory=GrpcNetworkConfig)
-    security: GrpcSecurityConfig = Field(default_factory=GrpcSecurityConfig)
-    performance: GrpcPerformanceConfig = Field(default_factory=GrpcPerformanceConfig)
-    streaming: GrpcStreamingConfig = Field(default_factory=GrpcStreamingConfig)
-    client: GrpcClientConfig = Field(default_factory=GrpcClientConfig)
-    monitoring: GrpcMonitoringConfig = Field(default_factory=GrpcMonitoringConfig)
+    network: Annotated[GrpcNetworkConfig, Field(default_factory=GrpcNetworkConfig)]
+    security: Annotated[GrpcSecurityConfig, Field(default_factory=GrpcSecurityConfig)]
+    performance: Annotated[
+        GrpcPerformanceConfig, Field(default_factory=GrpcPerformanceConfig)
+    ]
+    streaming: Annotated[
+        GrpcStreamingConfig, Field(default_factory=GrpcStreamingConfig)
+    ]
+    client: Annotated[GrpcClientConfig, Field(default_factory=GrpcClientConfig)]
+    monitoring: Annotated[
+        GrpcMonitoringConfig, Field(default_factory=GrpcMonitoringConfig)
+    ]
 
     @computed_field
     @property

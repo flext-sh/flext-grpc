@@ -12,11 +12,10 @@ from __future__ import annotations
 
 import threading
 import time
-from abc import ABC, abstractmethod
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import override
+from typing import Annotated, Protocol, override, runtime_checkable
 
 import grpc
 from flext_core import r
@@ -44,7 +43,9 @@ class _MetricValueModel(FlextGrpcModels.Value):
 class _StreamRuntimeState(FlextGrpcModels.Value):
     stream: FlextGrpcModels.Grpc.GrpcStream
     created_at: float
-    buffer: deque[t.ConfigValue] = Field(default_factory=lambda: deque(maxlen=500))
+    buffer: Annotated[
+        deque[t.ConfigValue], Field(default_factory=lambda: deque(maxlen=500))
+    ]
 
 
 def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
@@ -52,52 +53,54 @@ def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
     return FlextGrpcServiceServicer()
 
 
-class ServerLifecycleManager(ABC):
-    """Abstract base for server lifecycle management."""
+@runtime_checkable
+class ServerLifecycleProtocol(Protocol):
+    """Protocol for server lifecycle management."""
 
-    @abstractmethod
     def start_server(
         self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Start server implementation."""
+        ...
 
-    @abstractmethod
     def stop_server(
         self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
         """Stop server implementation."""
+        ...
 
 
-class ClientConnectionManager(ABC):
-    """Abstract base for client connection management."""
+@runtime_checkable
+class ClientConnectionProtocol(Protocol):
+    """Protocol for client connection management."""
 
-    @abstractmethod
     def connect(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
         """Connect to target."""
+        ...
 
-    @abstractmethod
     def disconnect(
         self, client: FlextGrpcModels.Grpc.Client
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Disconnect client."""
+        ...
 
 
-class StreamProcessor(ABC):
-    """Abstract base for stream processing."""
+@runtime_checkable
+class StreamProcessorProtocol(Protocol):
+    """Protocol for stream processing."""
 
-    @abstractmethod
     def close_stream(
         self, stream: FlextGrpcModels.Grpc.GrpcStream
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Close stream."""
+        ...
 
-    @abstractmethod
     def create_stream(
         self, **kwargs: t.ConfigValue
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create stream."""
+        ...
 
-    @abstractmethod
     def send_data(
         self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:
@@ -105,6 +108,7 @@ class StreamProcessor(ABC):
 
         Note: Uses t.ConfigValue for gRPC message compatibility
         """
+        ...
 
 
 class MetricsCollector:
@@ -213,7 +217,7 @@ class ConnectionPool:
         ).map_error(lambda e: f"Connection release failed: {e}")
 
 
-class GrpcServerManager(ServerLifecycleManager):
+class GrpcServerManager(ServerLifecycleProtocol):
     """Dedicated server lifecycle management."""
 
     def __init__(self) -> None:
@@ -295,7 +299,7 @@ class GrpcServerManager(ServerLifecycleManager):
             return r[FlextGrpcModels.Grpc.Server].fail(f"Server stop failed: {e}")
 
 
-class GrpcClientManager(ClientConnectionManager):
+class GrpcClientManager(ClientConnectionProtocol):
     """Dedicated client connection management."""
 
     def __init__(self) -> None:
@@ -411,7 +415,7 @@ class GrpcClientManager(ClientConnectionManager):
             return r[ServicePayload].fail(f"Call execution failed: {e}")
 
 
-class GrpcStreamManager(StreamProcessor):
+class GrpcStreamManager(StreamProcessorProtocol):
     """Dedicated stream processing with buffering."""
 
     def __init__(self) -> None:
@@ -684,11 +688,14 @@ class FlextGrpcServices:
 
 
 __all__ = [
+    "ClientConnectionProtocol",
     "ConnectionPool",
     "FlextGrpcServices",
     "GrpcClientManager",
     "GrpcServerManager",
     "GrpcStreamManager",
     "MetricsCollector",
+    "ServerLifecycleProtocol",
     "ServicePayload",
+    "StreamProcessorProtocol",
 ]
