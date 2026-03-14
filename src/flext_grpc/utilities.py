@@ -54,6 +54,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 target=target,
                 state="idle",
                 options=dict(options) if options else {},
+                domain_events=[],
             ),
             catch=(grpc.RpcError, ConnectionError, TimeoutError),
         ).map_error(lambda e: f"Failed to create channel entity: {e}")
@@ -73,7 +74,10 @@ class FlextGrpcUtilities(FlextUtilities):
                     target=target,
                     state="idle",
                     options=dict(options) if options else {},
+                    domain_events=[],
                 ),
+                options={},
+                domain_events=[],
             ),
             catch=(grpc.RpcError, ConnectionError, TimeoutError),
         ).map_error(lambda e: f"Failed to create client entity: {e}")
@@ -88,7 +92,12 @@ class FlextGrpcUtilities(FlextUtilities):
         """Create a gRPC server entity directly."""
         return FlextUtilities.try_(
             lambda: FlextGrpcModels.Grpc.Server(
-                unique_id=str(uuid4()), host=host, port=port, max_workers=max_workers
+                unique_id=str(uuid4()),
+                host=host,
+                port=port,
+                max_workers=max_workers,
+                services=[],
+                domain_events=[],
             ),
             catch=(grpc.RpcError, ConnectionError, TimeoutError),
         ).map_error(lambda e: f"Failed to create server entity: {e}")
@@ -105,6 +114,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 unique_id=str(uuid4()),
                 name=name,
                 methods=["HealthCheck"] if methods is None else methods,
+                domain_events=[],
             ),
             catch=(grpc.RpcError, ConnectionError, TimeoutError),
         ).map_error(lambda e: f"Failed to create service entity: {e}")
@@ -126,7 +136,10 @@ class FlextGrpcUtilities(FlextUtilities):
             )
         return FlextUtilities.try_(
             lambda: FlextGrpcModels.Grpc.GrpcStream(
-                unique_id=str(uuid4()), method_name=method_name, stream_type=stream_type
+                unique_id=str(uuid4()),
+                method_name=method_name,
+                stream_type=stream_type,
+                domain_events=[],
             ),
             catch=(grpc.RpcError, ConnectionError, TimeoutError),
         ).map_error(lambda e: f"Failed to create stream entity: {e}")
