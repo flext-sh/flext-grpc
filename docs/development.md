@@ -60,7 +60,7 @@
 - [✅ CORRECT - Railway-oriented programming](#-correct---railway-oriented-programming)
 - [❌ FORBIDDEN - Exception-based error handling](#-forbidden---exception-based-error-handling)
   - [Type Annotations](#type-annotations)
-- [ for dependency injection](#protocol-for-dependency-injection)
+- [for dependency injection](#protocol-for-dependency-injection)
 - [Generic service class](#generic-service-class)
   - [Domain Patterns](#domain-patterns)
   - [Testing Standards](#testing-standards)
