@@ -15,7 +15,7 @@ from flext_grpc import FlextGrpcConstants, FlextGrpcSettings
 
 
 @pytest.fixture(autouse=True)
-def clean_container() -> object:
+def clean_container():
     """Clean global container and settings before each test."""
     FlextGrpcSettings._instances.clear()
     return FlextContainer.get_global()
