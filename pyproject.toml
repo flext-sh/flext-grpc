@@ -192,19 +192,34 @@ extraPaths = [
 pythonPlatform = "Linux"
 pythonVersion = "3.13"
 reportConstantRedefinition = "error"
+reportConstantRedefinition = "error"
+reportIncompatibleMethodOverride = "error"
 reportIncompatibleMethodOverride = "error"
 reportIncompatibleVariableOverride = "error"
+reportIncompatibleVariableOverride = "error"
+reportInconsistentConstructor = "error"
 reportInconsistentConstructor = "error"
 reportMissingImports = "error"
+reportMissingImports = "error"
+reportMissingModuleSource = "error"
 reportMissingModuleSource = "error"
 reportMissingTypeStubs = "warning"
+reportMissingTypeStubs = "warning"
+reportPrivateUsage = "warning"
 reportPrivateUsage = "warning"
 reportUnnecessaryCast = "error"
+reportUnnecessaryCast = "error"
+reportUnnecessaryComparison = "warning"
 reportUnnecessaryComparison = "warning"
 reportUnnecessaryIsInstance = "warning"
+reportUnnecessaryIsInstance = "warning"
+reportUnusedClass = "error"
 reportUnusedClass = "error"
 reportUnusedFunction = "error"
+reportUnusedFunction = "error"
 reportUnusedImport = "error"
+reportUnusedImport = "error"
+reportUnusedVariable = "error"
 reportUnusedVariable = "error"
 typeCheckingMode = "strict"
 
@@ -581,6 +596,11 @@ split-on-trailing-comma = true
   "RUF036",
 ]
 
+[tool.coverage.report]
+fail_under = 15
+precision = 2
+show_missing = true
+skip_covered = false
 
 [tool.pytest.ini_options]
 addopts = [
@@ -608,7 +628,6 @@ python_files = [
 ]
 
 # [MANAGED] pyrefly
-
 
 [tool.coverage.report]
 fail_under = 15
