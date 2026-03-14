@@ -42,7 +42,6 @@ if TYPE_CHECKING:
     from tests.unit.test_utilities import TestFlextGrpcUtilities
     from tests.utilities import TestsFlextGrpcUtilities, u
 
-# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcEntities": ("tests.unit.test_entities", "FlextGrpcEntities"),
     "TestErrorIntegration": ("tests.unit.test_errors", "TestErrorIntegration"),

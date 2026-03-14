@@ -67,7 +67,6 @@ if TYPE_CHECKING:
     from flext_grpc.typings import FlextGrpcTypes, t
     from flext_grpc.utilities import FlextGrpcUtilities, u
 
-# Lazy import mapping: export_name -> (module_path, attr_name)
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "ClientConnection": ("flext_grpc.services", "ClientConnection"),
     "ConnectionPool": ("flext_grpc.services", "ConnectionPool"),
