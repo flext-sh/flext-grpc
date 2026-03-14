@@ -36,6 +36,10 @@ from flext_grpc.utilities import FlextGrpcUtilities
 ServicePayload = FlextGrpcModels.Grpc.Payload
 
 
+def _new_stream_buffer() -> deque[t.ConfigValue]:
+    return deque(maxlen=500)
+
+
 class _MetricValueModel(FlextGrpcModels.Value):
     value: t.ConfigValue
 
@@ -43,9 +47,7 @@ class _MetricValueModel(FlextGrpcModels.Value):
 class _StreamRuntimeState(FlextGrpcModels.Value):
     stream: FlextGrpcModels.Grpc.GrpcStream
     created_at: float
-    buffer: Annotated[
-        deque[t.ConfigValue], Field(default_factory=lambda: deque(maxlen=500))
-    ]
+    buffer: Annotated[deque[t.ConfigValue], Field(default_factory=_new_stream_buffer)]
 
 
 def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
@@ -117,7 +119,7 @@ class MetricsCollector:
     def __init__(self) -> None:
         """Initialize metrics collector with thread-safe storage."""
         super().__init__()
-        self._metrics = ServicePayload()
+        self._metrics = ServicePayload(values={})
         self._lock = threading.RLock()
 
     def get_all_metrics(self) -> ServicePayload:
@@ -149,10 +151,6 @@ class MetricsCollector:
                 return ""
             if isinstance(val, (str, int, float, bool)):
                 return val
-            if isinstance(val, list):
-                return [_normalize_value(item) for item in val]
-            if isinstance(val, dict):
-                return {str(k): _normalize_value(v) for k, v in val.items()}
             return str(val)
 
         with self._lock:
@@ -449,7 +447,9 @@ class GrpcStreamManager(StreamProcessor):
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
         self._active_streams[stream_key] = _StreamRuntimeState(
-            stream=stream, created_at=time.time()
+            stream=stream,
+            created_at=time.time(),
+            buffer=_new_stream_buffer(),
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r[FlextGrpcModels.Grpc.GrpcStream].ok(stream)
