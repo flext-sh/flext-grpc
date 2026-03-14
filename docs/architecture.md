@@ -1,6 +1,5 @@
 # flext-grpc Architecture
 
-
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [Architectural Principles](#architectural-principles)
@@ -198,7 +197,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 - Comprehensive error handling system
 - Specific exceptions for different failure modes
-- Integration with FlextResult error handling
+- Integration with r error handling
 
 **Protocol Buffers (proto/ - 369 lines)**
 
@@ -213,7 +212,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 All components integrate with flext-core patterns.
 
 ```python
-def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
+def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
     return (
         validate_config(config)
         .flat_map(lambda _: create_server_entity(config))
@@ -378,7 +377,7 @@ This architecture provides a solid foundation for gRPC communication within the 
 
 - [flext-core Foundation](https://github.com/organization/flext/tree/main/flext-core/docs/architecture/overview.md) - Clean architecture and CQRS patterns
 - [flext-core Service Patterns](https://github.com/organization/flext/tree/main/flext-core/docs/guides/service-patterns.md) - Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/CLAUDE.md) - HTTP foundation patterns
+- [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/AGENTS.md) - HTTP foundation patterns
 
 **External Resources**:
 

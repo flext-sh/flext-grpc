@@ -139,7 +139,7 @@ System(flext_grpc, "FLEXT-gRPC",
      "Enterprise gRPC communication library providing clean API over grpcio/protobuf for microservices communication")
 
 System_Boundary(flext_ecosystem, "FLEXT Ecosystem") {
-    System(flext_core, "FLEXT-Core", "Foundation library with FlextResult,
+    System(flext_core, "FLEXT-Core", "Foundation library with r,
      FlextContainer, FlextService patterns")
     System(flext_observability, "FLEXT-Observability", "Monitoring, metrics, and distributed tracing")
     System(flext_cli, "FLEXT-CLI", "Command-line interface and plugin system")
@@ -157,7 +157,7 @@ System_Ext(security, "Security Services", "Identity providers, certificate autho
 Rel(user, flext_grpc, "Uses", "Python API for gRPC communication")
 Rel(architect, flext_grpc, "Designs with", "Architecture patterns and best practices")
 
-Rel(flext_grpc, flext_core, "Depends on", "FlextResult patterns, dependency injection")
+Rel(flext_grpc, flext_core, "Depends on", "r patterns, dependency injection")
 Rel(flext_grpc, flext_observability, "Integrates with", "Metrics collection, tracing")
 Rel(flext_grpc, flext_cli, "Used by", "CLI diagnostic commands")
 

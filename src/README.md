@@ -125,7 +125,7 @@ src/flext_grpc/
 
 **Result Pattern**: Railway-oriented programming for error handling
 
-- All operations return `FlextResult<T>` for explicit error handling
+- All operations return `r<T>` for explicit error handling
 - No exceptions for business logic failures
 - Composable operations with map/flat_map support
 
@@ -157,7 +157,7 @@ src/flext_grpc/
 - Class and method documentation with examples
 - Integration notes and architectural positioning
 
-**Error Handling**: Comprehensive error handling with FlextResult pattern
+**Error Handling**: Comprehensive error handling with r pattern
 
 - No uncaught exceptions in business logic
 - Clear error messages with actionable information
@@ -184,7 +184,7 @@ src/flext_grpc/
 **flext-core Foundation**: Built on established FLEXT patterns
 
 - FlextModels.Entity base class for all domain entities
-- FlextResult for consistent error handling
+- r for consistent error handling
 - Global dependency injection container
 
 **flext-observability**: Monitoring and observability integration
@@ -293,11 +293,11 @@ For detailed status and development priorities, see [../docs/TODO.md](../docs/TO
 
 - [ ] Code follows Clean Architecture principles
 - [ ] Domain validation implemented for entities
-- [ ] FlextResult pattern used for error handling
+- [ ] r pattern used for error handling
 - [ ] Comprehensive docstrings with examples
 - [ ] Type annotations for all parameters/returns
 - [ ] Unit tests with 90%+ coverage
 - [ ] Integration with existing patterns
 - [ ] No circular dependencies introduced
 
-For detailed development guidance, see [../CLAUDE.md](../CLAUDE.md).
+For detailed development guidance, see [../AGENTS.md](../AGENTS.md).

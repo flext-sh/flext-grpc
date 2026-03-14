@@ -300,7 +300,7 @@ docs/architecture/
 | ADR     | Title                               | Status         | Impact |
 | ------- | ----------------------------------- | -------------- | ------ |
 | ADR-001 | Clean Architecture Adoption         | ✅ Implemented | High   |
-| ADR-002 | FlextResult Railway Pattern         | ✅ Implemented | High   |
+| ADR-002 | r Railway Pattern         | ✅ Implemented | High   |
 | ADR-003 | Protocol Buffer Generation Strategy | ⚠️ Blocked     | High   |
 | ADR-004 | C4 Model Documentation              | ✅ Implemented | Medium |
 
@@ -359,7 +359,7 @@ make docs
 
 Person(user, "FLEXT Developer", "Develops microservices using FLEXT ecosystem")
 System(flext_grpc, "FLEXT-gRPC", "Enterprise gRPC communication library")
-System_Ext(flext_core, "FLEXT-Core", "Foundation library with FlextResult patterns")
+System_Ext(flext_core, "FLEXT-Core", "Foundation library with r patterns")
 System_Ext(flext_observability, "FLEXT-Observability", "Monitoring and metrics")
 System_Ext(grpc_clients, "gRPC Clients", "Other microservices")
 
@@ -391,7 +391,7 @@ def calculate_architecture_health():
         "documentation_completeness": 85,
         "security_audit_score": 95,
         "performance_benchmarks": 88,
-        "maintainability_index": 78
+        "maintainability_index": 78,
     }
 
     # Weighted average calculation
@@ -400,7 +400,7 @@ def calculate_architecture_health():
         "documentation_completeness": 0.20,
         "security_audit_score": 0.20,
         "performance_benchmarks": 0.20,
-        "maintainability_index": 0.15
+        "maintainability_index": 0.15,
     }
 
     health_score = sum(metrics[k] * weights[k] for k in metrics)

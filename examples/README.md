@@ -68,7 +68,7 @@ examples/
 - FlextGrpcServer entity creation and validation
 - Domain rule validation patterns
 - State transition management
-- FlextResult pattern usage
+- r pattern usage
 
 **Usage**:
 
@@ -133,11 +133,11 @@ FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 ### Comprehensive Error Patterns
 
 **File**: `03_error_handling_patterns.py`\
-**Purpose**: Demonstrates enterprise-grade error handling using FlextResult patterns
+**Purpose**: Demonstrates enterprise-grade error handling using r patterns
 
 **Key Concepts**:
 
-- FlextResult success/failure handling
+- r success/failure handling
 - Domain validation error management
 - Error propagation patterns
 - Logging and monitoring integration
@@ -193,7 +193,7 @@ flexcore_client = FlextGrpcClient(
     id="flexcore-client",
     host=FlextConstants["Platform.DEFAULT_HOST"],
     port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
-    created_at=datetime.now(timezone.utc)
+    created_at=datetime.now(timezone.utc),
 )
 
 # Service operations (when Protocol Buffers are implemented)
@@ -224,7 +224,7 @@ prod_config = FlextGrpcSettings(
     timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,
     use_ssl=True,
     cert_file="/etc/ssl/certs/server.pem",
-    key_file="/etc/ssl/private/server.key"
+    key_file="/etc/ssl/private/server.key",
 )
 
 # Development configuration
@@ -233,7 +233,7 @@ dev_config = FlextGrpcSettings(
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=4,
     timeout=10.0,
-    dev_mode=True
+    dev_mode=True,
 )
 ```
 
@@ -308,7 +308,7 @@ server = FlextGrpcServer(
     host=FlextGrpcConstants.Network.DEFAULT_HOST,
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=10,
-    created_at=datetime.now(timezone.utc)
+    created_at=datetime.now(timezone.utc),
 )
 
 # Always validate before use
@@ -325,7 +325,7 @@ print(f"Server created: {server.id}")
 ```python
 from flext_grpc import FlextGrpcServerService
 
-# Service operations with FlextResult handling
+# Service operations with r handling
 service = FlextGrpcServerService()
 result = service.execute("start", server)
 
@@ -358,7 +358,7 @@ if server_result.success:
 
 - ✅ Entity creation and validation (basic_usage.py)
 - ✅ Domain service operations and state management
-- ✅ Error handling patterns with FlextResult
+- ✅ Error handling patterns with r
 - ✅ Configuration management and validation
 - ✅ Factory function usage (API functions)
 
@@ -381,10 +381,10 @@ if server_result.success:
 **Current Working Functionality** (Real, not aspirational):
 
 1. **Entity Creation**: FlextGrpcServer, FlextGrpcClient entities with validation
-1. **Domain Validation**: Entity.validate_domain_rules() with FlextResult patterns
+1. **Domain Validation**: Entity.validate_domain_rules() with r patterns
 1. **State Management**: Entity state transitions (stopped → starting → running)
 1. **Configuration**: FlextGrpcSettings with validation and defaults
-1. **Error Handling**: FlextResult success/failure patterns
+1. **Error Handling**: r success/failure patterns
 1. **API Functions**: create_server(), create_client() factory functions
 
 **What Examples DON'T Demonstrate** (Missing functionality):
@@ -425,7 +425,7 @@ For current development gaps and realistic timelines, see [../docs/TODO.md](../d
 
 - **Professional Code**: Enterprise-grade code quality
 - **Comprehensive Comments**: Clear explanations for complex concepts
-- **Error Handling**: Proper FlextResult pattern usage
+- **Error Handling**: Proper r pattern usage
 - **Performance Awareness**: Efficient resource usage
 - **Security Conscious**: No hardcoded secrets or insecure patterns
 
@@ -449,11 +449,7 @@ Author: FLEXT Development Team
 Version: 0.9.9
 """
 
-from flext_grpc import (
-    FlextGrpcPlatform,
-    FlextGrpcServer,
-    FlextGrpcSettings
-)
+from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -469,12 +465,13 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import FlextResult
+from flext_core import r
 from flext_core import FlextRuntime
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
 from datetime import datetime, timezone
+
 
 def main() -> None:
     """Main example execution function."""
@@ -483,6 +480,7 @@ def main() -> None:
     # Example implementation here
 
     print("Example completed successfully")
+
 
 if __name__ == "__main__":
     main()

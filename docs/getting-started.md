@@ -1,7 +1,6 @@
 # Getting Started with flext-grpc
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [System Requirements](#system-requirements)
@@ -22,7 +21,6 @@
   - [Known Issues](#known-issues)
 - [Next Steps](#next-steps)
 - [Related Documentation](#related-documentation)
-
 <!-- TOC END -->
 
 ## Table of Contents
@@ -111,7 +109,7 @@ print(f'Server: {server.address}, state: {server.state}')
 from flext_grpc import create_server
 
 # Create gRPC server
-server = create_server('localhost', 50051, 10)
+server = create_server("localhost", 50051, 10)
 print(f"Server address: {server.address}")
 print(f"Server state: {server.state}")
 ```
@@ -122,7 +120,7 @@ print(f"Server state: {server.state}")
 from flext_grpc import create_client
 
 # Create gRPC client
-client = create_client('localhost:50051')
+client = create_client("localhost:50051")
 print(f"Client created: {type(client).__name__}")
 ```
 
@@ -139,15 +137,10 @@ print(f"Platform ready: {type(platform).__name__}")
 ### Configuration
 
 ```python
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
-config = FlextGrpcSettings(
-    host='localhost',
-    port=50051,
-    max_workers=10,
-    timeout=30.0
-)
+config = FlextGrpcSettings(host="localhost", port=50051, max_workers=10, timeout=30.0)
 print(f"Config: {config.host}:{config.port}")
 ```
 
@@ -178,7 +171,7 @@ Current status verification:
 poetry run python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
-from flext_grpc.settings import FlextGrpcSettings
+from flext_grpc import FlextGrpcSettings
 print('✅ All imports successful')
 "
 
@@ -210,7 +203,7 @@ print(f'✅ Server creation: {server.address}')
 1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
 1. **Configuration** - See [Configuration](configuration.md) for advanced settings
 
-______________________________________________________________________
+---
 
 For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 
@@ -229,7 +222,7 @@ For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 
 - [flext-core Foundation](https://github.com/organization/flext/tree/main/flext-core/docs/architecture/overview.md) - Clean architecture and CQRS patterns
 - [flext-core Service Patterns](https://github.com/organization/flext/tree/main/flext-core/docs/guides/service-patterns.md) - Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/CLAUDE.md) - HTTP foundation patterns
+- [flext-api HTTP Framework](https://github.com/organization/flext/tree/main/flext-api/AGENTS.md) - HTTP foundation patterns
 
 **External Resources**:
 

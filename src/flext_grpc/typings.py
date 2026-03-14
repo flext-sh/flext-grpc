@@ -16,45 +16,18 @@ from __future__ import annotations
 
 import logging
 import re
+from typing import Protocol, TypeAlias, runtime_checkable
 
-# Note: All protocol definitions are centralized in protocols.py
-# Use p.Grpc.* for protocols (ServerProtocol, ClientProtocol, GrpcChannel, etc.)
-from flext_grpc.constants import FlextGrpcConstants
+from flext_core import FlextTypes
 
-c = FlextGrpcConstants
-
-# =============================================================================
-# GRPC-SPECIFIC TYPE VARIABLES - Domain-specific TypeVars for gRPC operations
-# =============================================================================
+from flext_grpc import c
 
 
-# JSON value type alias - defined at module level for recursive reference
-type JsonValue = (
-    str | int | float | bool | list[JsonValue] | dict[str, JsonValue] | None
-)
+@runtime_checkable
+class _GrpcServicer(Protocol):
+    """Protocol for gRPC service implementations (duck typing)."""
 
 
-# FLEXT Foundation Types (minimal implementation for independence)
-class FlextTypes:
-    """Minimal FlextTypes implementation for independence."""
-
-    # Re-export module-level JsonValue for class access (recursive type)
-    type JsonValue = (
-        str
-        | int
-        | float
-        | bool
-        | list[FlextTypes.JsonValue]
-        | dict[str, FlextTypes.JsonValue]
-        | None
-    )
-    type ConfigValue = (
-        str | int | bool | list[str] | dict[str, FlextTypes.JsonValue] | None
-    )
-    type GeneralValueType = JsonValue  # Alias for compatibility
-
-
-# gRPC domain TypeVars
 class FlextGrpcTypes(FlextTypes):
     """gRPC-specific type definitions extending t.
 
@@ -63,295 +36,149 @@ class FlextGrpcTypes(FlextTypes):
     Uses Python 3.13+ type syntax and patterns.
     """
 
-    # Type aliases for convenience (moved inside class)
-    # ConfigValue inherited from FlextTypes
-
-    # gRPC target types (moved from flext-core to domain-specific location)
-    type GrpcTarget = str
-    # Type aliases for gRPC literals - use type alias syntax
-    # Updated to access Literal types directly from Grpc (not via GrpcLiterals)
-    type GrpcStreamType = c.Grpc.StreamTypeLiteral
-    type GrpcChannelState = c.Grpc.ChannelStateLiteral
-    type GrpcServerState = c.Grpc.ServerStateLiteral
-
-    # gRPC options type - standardized options dict
-    type GrpcOptions = dict[
-        str,
-        str
-        | int
-        | float
-        | bool
-        | list[FlextTypes.JsonValue]
-        | dict[str, FlextTypes.JsonValue]
-        | None,
-    ]
-
-    # =========================================================================
-    # GRPC SERVER TYPES - Complex server management types
-    # =========================================================================
-
-    # =========================================================================
-    # GRPC CORE TYPES - Commonly used gRPC-specific types
-    # =========================================================================
+    ConfigValue: TypeAlias = object
+    GrpcOptions = dict[str, object]
 
     class Grpc:
-        """Core gRPC types extending t."""
+        """gRPC-specific type namespace for domain aliases and validators."""
 
-        # gRPC basic types
-        type GrpcDict = dict[str, FlextTypes.JsonValue]
-        type GrpcHeaders = dict[str, str]
-        type GrpcMetadata = dict[str, FlextTypes.JsonValue]
-        type GrpcConfigDict = dict[str, str | int | bool | FlextTypes.JsonValue]
+        GrpcServicer: TypeAlias = _GrpcServicer
 
-        # gRPC network types
-        type GrpcAddress = dict[str, str | int]
-        type GrpcEndpoint = dict[str, str | int | bool]
-        type GrpcConnection = dict[str, FlextTypes.JsonValue]
-
-        # gRPC service types
-        type GrpcServiceData = dict[str, FlextTypes.JsonValue]
-        type GrpcMethodData = dict[str, FlextTypes.JsonValue]
-        type GrpcRequestDict = dict[str, FlextTypes.JsonValue]
-        type GrpcResponseDict = dict[str, FlextTypes.JsonValue]
-
-        # gRPC stream types
-        type GrpcStreamData = dict[str, FlextTypes.JsonValue]
-        type GrpcStreamMeta = dict[str, str | int | bool]
-
-    # Alias for backward compatibility - avoid inheritance to prevent override issues
-    # class Core:
-    #     """Alias for GrpcCore for backward compatibility."""
-
-    class Server:
-        """gRPC server complex types."""
-
-        type ServerConfiguration = dict[
+        Dict: TypeAlias = dict[str, object]
+        GrpcDict: TypeAlias = dict[str, object]
+        Headers: TypeAlias = dict[str, str]
+        Metadata: TypeAlias = dict[str, object]
+        ConfigDict: TypeAlias = dict[str, str | int | bool | object]
+        Address: TypeAlias = dict[str, str | int]
+        Endpoint: TypeAlias = dict[str, str | int | bool]
+        Connection: TypeAlias = dict[str, object]
+        ServiceData: TypeAlias = dict[str, object]
+        MethodData: TypeAlias = dict[str, object]
+        RequestDict: TypeAlias = dict[str, object]
+        ResponseDict: TypeAlias = dict[str, object]
+        StreamData: TypeAlias = dict[str, object]
+        StreamMeta: TypeAlias = dict[str, str | int | bool]
+        Target = str
+        StreamType = c.Grpc.StreamTypeLiteral
+        ChannelState: TypeAlias = c.Grpc.ChannelStateLiteral
+        ServerState: TypeAlias = c.Grpc.ServerStateLiteral
+        Options: TypeAlias = dict[
             str,
-            str | int | bool | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type ServerLifecycle = dict[
-            str, str | bool | int | dict[str, FlextTypes.JsonValue]
-        ]
-        type ServerMetrics = dict[
-            str,
-            int | float | bool | dict[str, FlextTypes.JsonValue],
-        ]
-        type ServerSecurity = dict[
-            str,
-            bool | str | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type ServiceRegistry = dict[
-            str,
-            list[str] | dict[str, FlextTypes.JsonValue],
-        ]
-        type HandlerConfiguration = list[dict[str, str | FlextTypes.JsonValue]]
-
-    # =========================================================================
-    # GRPC CLIENT TYPES - Complex client management types
-    # =========================================================================
-
-    class Client:
-        """gRPC client complex types."""
-
-        type ClientConfiguration = dict[
-            str,
-            str | int | bool | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type ConnectionPool = dict[str, int | bool | dict[str, FlextTypes.JsonValue]]
-        type RetryConfiguration = dict[str, int | float | bool | list[str]]
-        type LoadBalancing = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
-        type ClientMetrics = dict[
-            str,
-            int | float | dict[str, FlextTypes.JsonValue],
-        ]
-        type ChannelOptions = dict[
-            str, str | int | bool | dict[str, FlextTypes.JsonValue]
+            FlextTypes.Scalar | list[object] | dict[str, object] | None,
         ]
 
-    # =========================================================================
-    # GRPC STREAMING TYPES - Complex streaming operation types
-    # =========================================================================
+        class Server:
+            """gRPC server complex types."""
 
-    class Streaming:
-        """gRPC streaming complex types."""
+            ServerConfiguration = dict[str, str | int | bool | dict[str, object]]
+            ServerLifecycle = dict[str, str | bool | int | dict[str, object]]
+            ServerMetrics = dict[str, int | float | bool | dict[str, object]]
+            ServerSecurity = dict[str, bool | str | dict[str, object]]
+            ServiceRegistry = dict[str, list[str] | dict[str, object]]
+            HandlerConfiguration: TypeAlias = list[dict[str, str | object]]
 
-        type StreamConfiguration = dict[
-            str,
-            bool | int | str | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type StreamingContext = dict[
-            str,
-            str | bool | dict[str, FlextTypes.JsonValue],
-        ]
-        type StreamMetrics = dict[
-            str, int | float | bool | dict[str, FlextTypes.JsonValue]
-        ]
-        type FlowControl = dict[str, int | bool | dict[str, FlextGrpcTypes.ConfigValue]]
-        type BackpressureHandling = dict[
-            str, str | int | bool | dict[str, FlextTypes.JsonValue]
-        ]
-        type StreamingPipeline = list[dict[str, str | FlextTypes.JsonValue]]
+        class Client:
+            """gRPC client complex types."""
 
-    # =========================================================================
-    # GRPC SERVICE TYPES - Complex service definition types
-    # =========================================================================
+            ClientConfiguration = dict[str, str | int | bool | dict[str, object]]
+            ConnectionPool = dict[str, int | bool | dict[str, object]]
+            RetryConfiguration: TypeAlias = dict[str, int | float | bool | list[str]]
+            LoadBalancing: TypeAlias = dict[str, str | bool | dict[str, object]]
+            ClientMetrics = dict[str, int | float | dict[str, object]]
+            ChannelOptions = dict[str, str | int | bool | dict[str, object]]
 
-    class GrpcService:
-        """gRPC service complex types."""
+        class Streaming:
+            """gRPC streaming complex types."""
 
-        type ServiceDefinition = dict[
-            str,
-            str | list[str] | dict[str, FlextTypes.JsonValue],
-        ]
-        type MethodDefinition = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
-        type ServiceMetadata = dict[
-            str,
-            str | int | dict[str, FlextTypes.JsonValue],
-        ]
-        type InterceptorChain = list[dict[str, str | FlextTypes.JsonValue]]
-        type ServiceDiscovery = dict[
-            str,
-            str | list[str] | dict[str, FlextTypes.JsonValue],
-        ]
-        type HealthCheck = dict[str, bool | str | int | dict[str, FlextTypes.JsonValue]]
+            StreamConfiguration = dict[str, bool | int | str | dict[str, object]]
+            StreamingContext = dict[str, str | bool | dict[str, object]]
+            StreamMetrics = dict[str, int | float | bool | dict[str, object]]
+            FlowControl = dict[str, int | bool | dict[str, object]]
+            BackpressureHandling = dict[str, str | int | bool | dict[str, object]]
+            StreamingPipeline: TypeAlias = list[dict[str, str | object]]
 
-    # =========================================================================
-    # GRPC SECURITY TYPES - Complex security configuration types
-    # =========================================================================
+        class GrpcService:
+            """gRPC service complex types."""
 
-    class Security:
-        """gRPC security complex types."""
+            ServiceDefinition = dict[str, str | list[str] | dict[str, object]]
+            MethodDefinition = dict[str, str | bool | dict[str, object]]
+            ServiceMetadata = dict[str, str | int | dict[str, object]]
+            InterceptorChain: TypeAlias = list[dict[str, str | object]]
+            ServiceDiscovery = dict[str, str | list[str] | dict[str, object]]
+            HealthCheck = dict[str, bool | str | int | dict[str, object]]
 
-        type SecurityConfiguration = dict[
-            str,
-            bool | str | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type TlsConfiguration = dict[str, str | bool | dict[str, FlextTypes.JsonValue]]
-        type AuthenticationConfig = dict[str, str | dict[str, FlextTypes.JsonValue]]
-        type AuthorizationRules = list[dict[str, str | bool | list[str]]]
-        type CertificateManagement = dict[
-            str,
-            str | bool | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type SecurityMetrics = dict[
-            str,
-            int | bool | dict[str, FlextTypes.JsonValue],
-        ]
+        class Security:
+            """gRPC security complex types."""
 
-    # =========================================================================
-    # GRPC MONITORING TYPES - Complex monitoring and observability types
-    # =========================================================================
+            SecurityConfiguration = dict[str, bool | str | dict[str, object]]
+            TlsConfiguration = dict[str, str | bool | dict[str, object]]
+            AuthenticationConfig: TypeAlias = dict[str, str | dict[str, object]]
+            AuthorizationRules: TypeAlias = list[dict[str, str | bool | list[str]]]
+            CertificateManagement = dict[str, str | bool | dict[str, object]]
+            SecurityMetrics = dict[str, int | bool | dict[str, object]]
 
-    class Monitoring:
-        """gRPC monitoring complex types."""
+        class Monitoring:
+            """gRPC monitoring complex types."""
 
-        type MonitoringConfiguration = dict[
-            str,
-            bool | str | int | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type MetricsCollection = dict[
-            str,
-            str | bool | dict[str, FlextTypes.JsonValue],
-        ]
-        type TracingConfiguration = dict[
-            str, bool | str | dict[str, FlextTypes.JsonValue]
-        ]
-        type LoggingSetup = dict[
-            str,
-            str | bool | int | dict[str, FlextGrpcTypes.ConfigValue],
-        ]
-        type AlertingRules = list[dict[str, str | int | float | bool]]
-        type PerformanceMetrics = dict[
-            str,
-            float | int | dict[str, FlextTypes.JsonValue],
-        ]
+            MonitoringConfiguration = dict[str, bool | str | int | dict[str, object]]
+            MetricsCollection = dict[str, str | bool | dict[str, object]]
+            TracingConfiguration = dict[str, bool | str | dict[str, object]]
+            LoggingSetup = dict[str, str | bool | int | dict[str, object]]
+            AlertingRules: TypeAlias = list[dict[str, FlextTypes.Scalar]]
+            PerformanceMetrics = dict[str, float | int | dict[str, object]]
 
-    # =========================================================================
-    # GRPC LITERAL TYPES - Domain-specific literal values (moved to constants)
-    # =========================================================================
-    # All literal types are now defined at c.Grpc level for direct access.
-    # Use: c.Grpc.ChannelStateLiteral, c.Grpc.ServerStateLiteral, c.Grpc.StreamTypeLiteral
+        class Project:
+            """gRPC-specific project types.
 
-    # =========================================================================
-    # GRPC PROJECT TYPES - Domain-specific project types extending t
-    # =========================================================================
-
-    class Project:
-        """gRPC-specific project types.
-
-        Adds gRPC/microservices-specific project types.
-        Follows domain separation principle:
-        gRPC domain owns microservices-specific types.
-        """
-
-        # gRPC-specific project configurations
-        type GrpcProjectConfig = dict[
-            str, FlextGrpcTypes.ConfigValue | FlextTypes.JsonValue
-        ]
-        type MicroserviceConfig = dict[str, str | int | bool | list[str]]
-        type StreamingConfig = dict[str, bool | str | dict[str, FlextTypes.JsonValue]]
-        type ServiceMeshConfig = dict[
-            str, FlextGrpcTypes.ConfigValue | FlextTypes.JsonValue
-        ]
-
-    # =========================================================================
-    # GRPC PROTOCOLS - Moved to protocols.py
-    # =========================================================================
-    # All protocol definitions are centralized in protocols.py
-    # Use p.Grpc.* for protocols (GrpcChannel, GrpcServer, GrpcStub, etc.)
-
-    # =========================================================================
-    # GRPC VALIDATION - Helper functions for gRPC operations
-    # =========================================================================
-
-    class GrpcValidation:
-        """gRPC validation utilities."""
-
-        @staticmethod
-        def validate_target(target: str) -> bool:
-            """Validate a gRPC target string in the form host:port."""
-            if not target or ":" not in target:
-                return False
-            try:
-                host, port_str = target.split(":", 1)
-                if not host or not port_str:
-                    return False
-                if not re.match(r"^[a-zA-Z0-9.-]+$", host):
-                    return False
-                port = int(port_str)
-                max_port = 65535
-                return 1 <= port <= max_port
-            except (ValueError, AttributeError):
-                logger = logging.getLogger(__name__)
-                logger.debug("Invalid gRPC target: %s", target)
-                return False
-
-        @staticmethod
-        def parse_target(target: str) -> tuple[str, int]:
-            """Parse a validated gRPC target into (host, port).
-
-            Raises ValueError if the target is invalid. Prefer checking with
-            validate_target() beforehand when you need a boolean.
-
-            Returns:
-                tuple["str", "int"]: Host and port components.
-
+            Adds gRPC/microservices-specific project types.
+            Follows domain separation principle:
+            gRPC domain owns microservices-specific types.
             """
-            if not FlextGrpcTypes.GrpcValidation.validate_target(target):
-                msg = f"Invalid gRPC target: {target}"
-                raise ValueError(msg)
-            host, port_str = target.split(":", 1)
-            return (host, int(port_str))
+
+            ProjectConfig = dict[str, object]
+            MicroserviceConfig: TypeAlias = dict[str, str | int | bool | list[str]]
+            StreamingConfig = dict[str, bool | str | dict[str, object]]
+            ServiceMeshConfig = dict[str, object]
+
+        class GrpcValidation:
+            """gRPC validation utilities."""
+
+            @staticmethod
+            def parse_target(target: str) -> tuple[str, int]:
+                """Parse a validated gRPC target into (host, port).
+
+                Raises ValueError if the target is invalid. Prefer checking with
+                validate_target() beforehand when you need a boolean.
+
+                Returns:
+                    tuple["str", "int"]: Host and port components.
+
+                """
+                if not FlextGrpcTypes.Grpc.GrpcValidation.validate_target(target):
+                    msg = f"Invalid gRPC target: {target}"
+                    raise ValueError(msg)
+                host, port_str = target.split(":", 1)
+                return (host, int(port_str))
+
+            @staticmethod
+            def validate_target(target: str) -> bool:
+                """Validate a gRPC target string in the form host:port."""
+                if not target or ":" not in target:
+                    return False
+                try:
+                    host, port_str = target.split(":", 1)
+                    if not host or not port_str:
+                        return False
+                    if not re.match(r"^[a-zA-Z0-9.-]+$", host):
+                        return False
+                    port = int(port_str)
+                    max_port = 65535
+                    return 1 <= port <= max_port
+                except (ValueError, AttributeError):
+                    logger = logging.getLogger(__name__)
+                    logger.debug("Invalid gRPC target: %s", target)
+                    return False
 
 
-# Alias for simplified usage
 t = FlextGrpcTypes
-
-# Namespace composition via class inheritance
-# Grpc namespace provides access to nested classes through inheritance
-# Access patterns:
-# - t.Grpc.* for Grpc-specific types
-# - t.Project.* for project types
-# - t.Core.* for core types (inherited from parent)
-
 __all__ = ["FlextGrpcTypes", "t"]

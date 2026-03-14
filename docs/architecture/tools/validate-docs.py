@@ -11,8 +11,6 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from flext_core import FlextTypes as t
-
 
 class ArchitectureValidator:
     """Validates architecture documentation completeness and consistency."""
@@ -34,11 +32,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, t.GeneralValueType]] = []
-        self.warnings: list[dict[str, t.GeneralValueType]] = []
-        self.recommendations: list[dict[str, t.GeneralValueType]] = []
+        self.issues: list[dict[str, object]] = []
+        self.warnings: list[dict[str, object]] = []
+        self.recommendations: list[dict[str, object]] = []
 
-    def validate_all(self) -> dict[str, t.GeneralValueType]:
+    def validate_all(self) -> dict[str, object]:
         """Run all validation checks."""
         # Reset collections
         self.issues = []
@@ -277,7 +275,7 @@ class ArchitectureValidator:
                     "message": "Architecture documentation contains outdated test coverage metrics",
                 })
 
-    def _generate_summary(self) -> dict[str, t.GeneralValueType]:
+    def _generate_summary(self) -> dict[str, object]:
         """Generate validation summary."""
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
@@ -309,7 +307,7 @@ class ArchitectureValidator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-    def _print_results(self, summary: dict[str, t.GeneralValueType]) -> None:
+    def _print_results(self, summary: dict[str, object]) -> None:
         """Print validation results."""
         # Reserved for future summary display functionality
         _ = summary  # Reserved for future use
@@ -327,7 +325,10 @@ class ArchitectureValidator:
                 pass
 
 
-def save_report(results: dict[str, t.GeneralValueType], output_path: Path | None = None) -> None:
+def save_report(
+    results: dict[str, object],
+    output_path: Path | None = None,
+) -> None:
     """Save validation report to file."""
     if output_path is None:
         timestamp: str = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
@@ -344,9 +345,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="FLEXT-gRPC Architecture Documentation Validation",
     )
-    parser.add_argument("--path", default=".", help="Root path to validate")
-    parser.add_argument("--output", help="Output path for report")
-    parser.add_argument("--quiet", action="store_true", help="Suppress detailed output")
+    _ = parser.add_argument("--path", default=".", help="Root path to validate")
+    _ = parser.add_argument("--output", help="Output path for report")
+    _ = parser.add_argument(
+        "--quiet", action="store_true", help="Suppress detailed output"
+    )
 
     args = parser.parse_args()
 
@@ -365,7 +368,7 @@ def main() -> None:
     summary = results["summary"]
     if isinstance(summary, dict) and (
         summary.get("status") == "critical"
-        or summary.get("quality_score", 0)
+        or int(str(summary.get("quality_score", 0)))
         < ArchitectureValidator.CRITICAL_QUALITY_SCORE
     ):
         sys.exit(1)

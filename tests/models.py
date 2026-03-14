@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests.models import FlextTestsModels
+from flext_tests import FlextTestsModels
 
-from flext_grpc.models import FlextGrpcModels
+from flext_grpc import FlextGrpcModels
 
 
 class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
@@ -38,20 +38,10 @@ class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
     - All production models come from FlextGrpcModels
     """
 
-    class Tests:
-        """Project-specific test fixtures namespace.
-
-        Provides test fixtures for flext-grpc testing.
-        Extends the base FlextTestsModels.Tests namespace.
-        """
-
-        class Grpc:
-            """gRPC-specific test fixtures."""
-
 
 # Short aliases per FLEXT convention
-tm = TestsFlextGrpcModels  # Primary test models alias
-m = TestsFlextGrpcModels  # Alternative alias for production model access
+tm = TestsFlextGrpcModels
+m = TestsFlextGrpcModels  # Primary test models alias
 
 __all__ = [
     "TestsFlextGrpcModels",

@@ -5,9 +5,9 @@ SPDX-License-Identifier: MIT
 
 """
 
-from typing import Protocol
+from typing import is_protocol
 
-from flext_grpc.protocols import FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols
 
 
 class TestFlextGrpcProtocols:
@@ -22,41 +22,36 @@ class TestFlextGrpcProtocols:
         assert hasattr(FlextGrpcProtocols, "Grpc")
 
     def test_server_protocol_exists(self) -> None:
-        """Test that ServerProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ServerProtocol")
+        """Test that Server exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Server")
 
     def test_client_protocol_exists(self) -> None:
-        """Test that ClientProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ClientProtocol")
+        """Test that Client exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Client")
 
     def test_streaming_protocol_exists(self) -> None:
-        """Test that StreamingProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "StreamingProtocol")
+        """Test that Streaming exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Streaming")
 
     def test_service_protocol_exists(self) -> None:
-        """Test that ServiceProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ServiceProtocol")
+        """Test that Service exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Service")
 
     def test_channel_protocol_exists(self) -> None:
-        """Test that ChannelProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ChannelProtocol")
+        """Test that Channel exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Channel")
 
     def test_metrics_protocol_exists(self) -> None:
-        """Test that MetricsProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "MetricsProtocol")
+        """Test that Metrics exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Metrics")
 
     def test_configuration_protocol_exists(self) -> None:
-        """Test that ConfigurationProtocol exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "ConfigurationProtocol")
+        """Test that Configuration exists."""
+        assert hasattr(FlextGrpcProtocols.Grpc, "Configuration")
 
     def test_protocols_are_protocols(self) -> None:
         """Test that protocols are proper Protocol subclasses."""
-        # Check that protocols exist and are Protocol subclasses
-        assert issubclass(FlextGrpcProtocols.Grpc.ServerProtocol, Protocol)
-        assert issubclass(FlextGrpcProtocols.Grpc.ClientProtocol, Protocol)
-        assert issubclass(FlextGrpcProtocols.Grpc.StreamingProtocol, Protocol)
-        assert issubclass(FlextGrpcProtocols.Grpc.ServiceProtocol, Protocol)
-
-        # Note: These protocols inherit from concrete classes (p.Service),
-        # so they cannot be @runtime_checkable. This is expected behavior for protocols
-        # that extend domain services while maintaining Protocol typing benefits.
+        assert is_protocol(FlextGrpcProtocols.Grpc.Server)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Client)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Streaming)
+        assert is_protocol(FlextGrpcProtocols.Grpc.Service)

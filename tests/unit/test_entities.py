@@ -2,8 +2,9 @@
 
 import pytest
 
-from flext_grpc.constants import c
-from flext_grpc.entities import FlextGrpcEntities
+from flext_grpc import FlextGrpcModels
+
+FlextGrpcEntities = FlextGrpcModels.Grpc
 
 
 class TestFlextGrpcEntities:
@@ -19,7 +20,6 @@ class TestFlextGrpcEntities:
     def test_grpc_client_creation(self) -> None:
         """Test gRPC client entity creation."""
         client = FlextGrpcEntities.Client()
-        # Note: target property was removed, access channel.target if needed
         assert client is not None
 
     def test_grpc_channel_creation(self) -> None:
@@ -30,9 +30,7 @@ class TestFlextGrpcEntities:
     def test_grpc_stream_creation(self) -> None:
         """Test gRPC stream entity creation."""
         stream = FlextGrpcEntities.GrpcStream(
-            unique_id="test_stream",
-            method_name="test_method",
-            stream_type="unary",
+            unique_id="test_stream", method_name="test_method", stream_type="unary"
         )
         assert stream.unique_id == "test_stream"
         assert stream.method_name == "test_method"
@@ -41,20 +39,19 @@ class TestFlextGrpcEntities:
     def test_service_creation_with_validation(self) -> None:
         """Test service creation with validation."""
         service = FlextGrpcEntities.Service(
-            name="TestService",
-            methods=["method1", "method2"],
+            name="TestService", methods=["method1", "method2"]
         )
         assert service.name == "TestService"
         assert service.methods == ["method1", "method2"]
 
     def test_service_validation_empty_methods(self) -> None:
         """Test service validation fails with empty methods."""
-        with pytest.raises(ValueError):  # Pydantic validation error
+        with pytest.raises(ValueError):
             FlextGrpcEntities.Service(name="TestService", methods=[])
 
     def test_service_validation_empty_name(self) -> None:
         """Test service validation fails with empty name."""
-        with pytest.raises(ValueError):  # Pydantic validation error
+        with pytest.raises(ValueError):
             FlextGrpcEntities.Service(name="", methods=["method1"])
 
     def test_channel_business_rules(self) -> None:
@@ -72,9 +69,7 @@ class TestFlextGrpcEntities:
 
     def test_channel_state_machine(self) -> None:
         """Test channel state machine transitions."""
-        channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", state="idle"
-        )
+        channel = FlextGrpcEntities.Channel(target="localhost:50051", state="idle")
         result = channel.connect()
         assert result.is_success
         connected_channel = result.value
@@ -93,7 +88,7 @@ class TestFlextGrpcEntities:
         server = FlextGrpcEntities.Server(host="localhost", port=50051)
         assert server.host == "localhost"
         assert server.port == 50051
-        assert server.max_workers == 10  # default
+        assert server.max_workers == 10
 
     def test_client_with_channel(self) -> None:
         """Test client creation with channel."""

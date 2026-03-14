@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests.utilities import FlextTestsUtilities
+from flext_tests import FlextTestsUtilities
 
-from flext_grpc.utilities import FlextGrpcUtilities
+from flext_grpc import FlextGrpcUtilities
 
 
 class TestsFlextGrpcUtilities(FlextTestsUtilities, FlextGrpcUtilities):
@@ -33,10 +33,5 @@ class TestsFlextGrpcUtilities(FlextTestsUtilities, FlextGrpcUtilities):
     """
 
 
-# Short alias for test utilities
 u = TestsFlextGrpcUtilities
-
-__all__ = [
-    "TestsFlextGrpcUtilities",
-    "u",
-]
+__all__ = ["TestsFlextGrpcUtilities", "u"]

@@ -1,6 +1,5 @@
 # flext-grpc Troubleshooting
 
-
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [Fixed Issues](#fixed-issues)
@@ -127,7 +126,8 @@ poetry run pytest tests/ -v
 
 ```python
 import sys
-sys.path.insert(0, 'src')  # For development
+
+sys.path.insert(0, "src")  # For development
 # or use poetry run for installed package
 ```
 
@@ -151,7 +151,7 @@ poetry show grpcio grpcio-tools protobuf  # Check versions
 ```python
 from flext_grpc import create_server, FlextGrpcPlatform
 
-server = create_server('localhost', 50051, 10)
+server = create_server("localhost", 50051, 10)
 platform = FlextGrpcPlatform()
 
 # Check server state
@@ -167,24 +167,26 @@ if start_result.is_failure:
 
 ### gRPC Service Development
 
-1. **Always use FlextResult patterns**:
+1. **Always use r patterns**:
 
    ```python
-   def my_grpc_method() -> FlextResult[ResponseType]:
+   def my_grpc_method() -> r[ResponseType]:
        # Explicit error handling, no exceptions
    ```
 
 2. **Validate inputs using Pydantic models**:
 
    ```python
-   from flext_grpc.settings import FlextGrpcSettings
-   config = FlextGrpcSettings(host='localhost', port=50051, max_workers=10)
+   from flext_grpc import FlextGrpcSettings
+
+   config = FlextGrpcSettings(host="localhost", port=50051, max_workers=10)
    ```
 
 3. **Use platform for complex operations**:
 
    ```python
    from flext_grpc import FlextGrpcPlatform
+
    platform = FlextGrpcPlatform()
    # Use platform methods for lifecycle management
    ```

@@ -13,11 +13,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Final, TypeAlias
+from typing import Final
 
-from flext_tests.constants import FlextTestsConstants
+from flext_tests import FlextTestsConstants
 
-from flext_grpc.constants import FlextGrpcConstants
+from flext_grpc import FlextGrpcConstants
 
 
 class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
@@ -28,11 +28,11 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
     2. FlextGrpcConstants - for domain constants (.Grpc.*)
 
     Access patterns:
-    - tc.Tests.Docker.* (container testing)
-    - tc.Tests.Matcher.* (assertion messages)
-    - tc.Tests.Factory.* (test data generation)
-    - tc.Grpc.* (domain constants from production)
-    - tc.TestGrpc.* (project-specific test data)
+    - c.Tests.Docker.* (container testing)
+    - c.Tests.Matcher.* (assertion messages)
+    - c.Tests.Factory.* (test data generation)
+    - c.Grpc.* (domain constants from production)
+    - c.TestGrpc.* (project-specific test data)
 
     Rules:
     - NEVER duplicate constants from FlextTestsConstants or FlextGrpcConstants
@@ -80,26 +80,6 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
         TEST_RESPONSE_MESSAGE: Final[str] = "test_response"
         TEST_ERROR_MESSAGE: Final[str] = "test_error"
 
-    class Literals:
-        """Literal type aliases for test constants (Python 3.13 pattern)."""
 
-        ChannelStateLiteral: TypeAlias = FlextGrpcConstants.Grpc.ChannelStateLiteral
-        ServerStateLiteral: TypeAlias = FlextGrpcConstants.Grpc.ServerStateLiteral
-        StreamTypeLiteral: TypeAlias = FlextGrpcConstants.Grpc.StreamTypeLiteral
-        LoadBalancingPolicyLiteral: TypeAlias = (
-            FlextGrpcConstants.Grpc.LoadBalancingPolicyLiteral
-        )
-        CompressionTypeLiteral: TypeAlias = (
-            FlextGrpcConstants.Grpc.CompressionTypeLiteral
-        )
-
-
-# Short aliases per FLEXT convention
-tc = TestsFlextGrpcConstants  # Primary test constants alias
-c = TestsFlextGrpcConstants  # Alternative alias for compatibility
-
-__all__ = [
-    "TestsFlextGrpcConstants",
-    "c",
-    "tc",
-]
+c = TestsFlextGrpcConstants
+__all__ = ["TestsFlextGrpcConstants", "c"]

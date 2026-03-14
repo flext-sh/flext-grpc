@@ -1,7 +1,6 @@
 # FLEXT gRPC Documentation
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Documentation Structure](#documentation-structure)
   - [gRPC-Specific Documentation](#grpc-specific-documentation)
@@ -9,7 +8,6 @@
 - [Documentation Scope](#documentation-scope)
 - [What This Documentation Does NOT Cover](#what-this-documentation-does-not-cover)
 - [Contributing to Documentation](#contributing-to-documentation)
-
 <!-- TOC END -->
 
 ## Table of Contents
@@ -70,6 +68,6 @@ For general FLEXT concepts, refer to workspace documentation:
 1. **Standards**: Follow [FLEXT documentation standards](../../docs/standards/documentation.md)
 1. **No Duplication**: Reference workspace docs instead of duplicating general concepts
 
-______________________________________________________________________
+---
 
 For current development status, see the main [README.md](../README.md).

@@ -235,10 +235,7 @@ pytest --cov=src --cov-report=term-missing
 def test_entity_creation_and_validation():
     """Test entity creation with domain validation."""
     # Arrange
-    entity_data = {
-        "id": "test-entity",
-        "created_at": datetime.now(timezone.utc)
-    }
+    entity_data = {"id": "test-entity", "created_at": datetime.now(timezone.utc)}
 
     # Act
     entity = FlextGrpcServer(**entity_data)

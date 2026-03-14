@@ -9,32 +9,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests.protocols import FlextTestsProtocols
+from flext_tests import FlextTestsProtocols
 
-from flext_grpc.protocols import FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols
 
 
 class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
     """Test protocols combining FlextTestsProtocols and FlextGrpcProtocols.
 
     Provides access to:
-    - tp.Tests.Docker.* (from FlextTestsProtocols)
-    - tp.Tests.Factory.* (from FlextTestsProtocols)
-    - tp.Grpc.* (from FlextGrpcProtocols)
+    - p.Tests.Docker.* (from FlextTestsProtocols)
+    - p.Tests.Factory.* (from FlextTestsProtocols)
+    - p.Grpc.* (from FlextGrpcProtocols)
     """
 
-    class Tests:
-        """Project-specific test protocols.
 
-        Extends FlextTestsProtocols.Tests with Grpc-specific protocols.
-        """
-
-        class Grpc:
-            """Grpc-specific test protocols."""
-
-
-# Runtime aliases
 p = TestsFlextGrpcProtocols
-tp = TestsFlextGrpcProtocols
-
-__all__ = ["TestsFlextGrpcProtocols", "p", "tp"]
+__all__ = ["TestsFlextGrpcProtocols", "p"]

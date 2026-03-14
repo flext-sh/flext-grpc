@@ -1,6 +1,5 @@
 # Documentation Maintenance Framework API Reference
 
-
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [📚 Overview](#overview)
@@ -363,7 +362,11 @@ Synchronize documentation changes with git.
 
 ```python
 changes = [
-    {"file_path": "docs/README.md", "changed": True, "optimizations_applied": ["TOC added"]}
+    {
+        "file_path": "docs/README.md",
+        "changed": True,
+        "optimizations_applied": ["TOC added"],
+    }
 ]
 result = sync.sync_changes(changes, "optimization")
 print(f"Committed: {result['commit_created']}")
@@ -556,7 +559,7 @@ class StyleCheckResult:
 import json
 
 # Load configuration
-with open("docs/maintenance/config.json", 'r') as f:
+with open("docs/maintenance/config.json", "r") as f:
     config = json.load(f)
 
 # Access settings
@@ -567,7 +570,7 @@ link_timeout = config["validation"]["link_timeout"]
 config["audit"]["quality_thresholds"]["excellent"] = 85
 
 # Save configuration
-with open("docs/maintenance/config.json", 'w') as f:
+with open("docs/maintenance/config.json", "w") as f:
     json.dump(config, f, indent=2)
 ```
 
@@ -579,14 +582,14 @@ CUSTOM_AUDIT_RULES = {
     "required_sections": ["Overview", "Installation", "Usage", "API"],
     "forbidden_terms": ["TODO", "FIXME", "HACK"],
     "required_metadata": ["title", "last_updated"],
-    "project_terms": ["FLEXT", "gRPC", "protobuf"]
+    "project_terms": ["FLEXT", "gRPC", "protobuf"],
 }
 
 CUSTOM_STYLE_RULES = {
     "max_line_length": 120,
     "heading_style": "atx",  # # style
     "list_marker": "-",
-    "emphasis_style": "*"    # *text* instead of _text_
+    "emphasis_style": "*",  # *text* instead of _text_
 }
 ```
 
@@ -597,6 +600,7 @@ CUSTOM_STYLE_RULES = {
 ```python
 from pathlib import Path
 
+
 def find_docs_files(root_path: str = ".") -> List[Path]:
     """Find all documentation files."""
     root = Path(root_path)
@@ -606,12 +610,7 @@ def find_docs_files(root_path: str = ".") -> List[Path]:
         files.extend(root.rglob(pattern))
 
     # Exclude maintenance files and common directories
-    exclude_patterns = [
-        "docs/maintenance/",
-        ".git/",
-        "node_modules/",
-        "__pycache__/"
-    ]
+    exclude_patterns = ["docs/maintenance/", ".git/", "node_modules/", "__pycache__/"]
 
     filtered_files = []
     for file in files:
@@ -624,15 +623,11 @@ def find_docs_files(root_path: str = ".") -> List[Path]:
 ### Quality Score Calculation
 
 ```python
-def calculate_quality_score(structure: float, accuracy: float,
-                          completeness: float, freshness: float) -> float:
+def calculate_quality_score(
+    structure: float, accuracy: float, completeness: float, freshness: float
+) -> float:
     """Calculate overall quality score."""
-    return (
-        structure * 0.3 +
-        accuracy * 0.3 +
-        completeness * 0.25 +
-        freshness * 0.15
-    )
+    return structure * 0.3 + accuracy * 0.3 + completeness * 0.25 + freshness * 0.15
 ```
 
 ### Report Generation
@@ -655,8 +650,10 @@ Quality Distribution:
     quality_ranges = {
         "Excellent (90-100%)": len([r for r in audit_results if r.quality_score >= 90]),
         "Good (80-89%)": len([r for r in audit_results if 80 <= r.quality_score < 90]),
-        "Needs Work (70-79%)": len([r for r in audit_results if 70 <= r.quality_score < 80]),
-        "Critical (<70%)": len([r for r in audit_results if r.quality_score < 70])
+        "Needs Work (70-79%)": len([
+            r for r in audit_results if 70 <= r.quality_score < 80
+        ]),
+        "Critical (<70%)": len([r for r in audit_results if r.quality_score < 70]),
     }
 
     for label, count in quality_ranges.items():
@@ -673,22 +670,31 @@ Quality Distribution:
 ```python
 class DocumentationMaintenanceError(Exception):
     """Base exception for maintenance operations."""
+
     pass
+
 
 class AuditError(DocumentationMaintenanceError):
     """Raised when audit operations fail."""
+
     pass
+
 
 class ValidationError(DocumentationMaintenanceError):
     """Raised when validation operations fail."""
+
     pass
+
 
 class OptimizationError(DocumentationMaintenanceError):
     """Raised when optimization operations fail."""
+
     pass
+
 
 class SynchronizationError(DocumentationMaintenanceError):
     """Raised when synchronization operations fail."""
+
     pass
 ```
 
@@ -722,7 +728,7 @@ def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
         "total_files": audit_report.total_files,
         "quality_distribution": audit_report.quality_distribution,
         "critical_issues": len(audit_report.critical_issues),
-        "improvement_areas": len(audit_report.recommendations)
+        "improvement_areas": len(audit_report.recommendations),
     }
 ```
 
@@ -741,8 +747,11 @@ def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, object]:
         "current_quality": current.average_quality,
         "previous_quality": previous.average_quality,
         "change": current.average_quality - previous.average_quality,
-        "direction": "improving" if current.average_quality > previous.average_quality else "declining",
-        "critical_issues_change": len(current.critical_issues) - len(previous.critical_issues)
+        "direction": "improving"
+        if current.average_quality > previous.average_quality
+        else "declining",
+        "critical_issues_change": len(current.critical_issues)
+        - len(previous.critical_issues),
     }
 
     return trend
@@ -804,6 +813,7 @@ echo "✅ Documentation quality checks passed"
 # custom_integration.py
 from docs.maintenance import audit, validation, optimization, reporting
 
+
 class CustomDocumentationWorkflow:
     def __init__(self):
         self.auditor = audit.DocumentationAuditor()
@@ -852,10 +862,7 @@ def migrate_config(old_config: Dict) -> Dict:
     # Handle version-specific migrations
     if "version" not in old_config:
         # Migrate from unversioned config
-        old_config["system"] = {
-            "version": "1.0.0",
-            "migrated": True
-        }
+        old_config["system"] = {"version": "1.0.0", "migrated": True}
 
     return old_config
 ```
@@ -875,6 +882,7 @@ def migrate_config(old_config: Dict) -> Dict:
 # For large documentation sets
 import gc
 
+
 def process_large_docs():
     auditor = DocumentationAuditor()
 
@@ -883,7 +891,7 @@ def process_large_docs():
     all_files = auditor.discover_files()
 
     for i in range(0, len(all_files), batch_size):
-        batch = all_files[i:i + batch_size]
+        batch = all_files[i : i + batch_size]
         results = auditor.run_audit(batch)
 
         # Process results
@@ -908,6 +916,7 @@ def process_large_docs():
 # Safe file operations
 from pathlib import Path
 
+
 def safe_read_file(file_path: Path) -> str:
     """Safely read documentation file."""
     if not file_path.exists():
@@ -923,7 +932,7 @@ def safe_read_file(file_path: Path) -> str:
     except ValueError:
         raise ValueError(f"File outside docs directory: {file_path}")
 
-    return file_path.read_text(encoding='utf-8')
+    return file_path.read_text(encoding="utf-8")
 ```
 
 ---

@@ -10,239 +10,131 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import r
-from pydantic import BaseModel, Field
-from pydantic_settings import SettingsConfigDict
+from typing import Annotated, TypeAlias
 
+from flext_core import FlextSettings, r
+from pydantic import Field, computed_field
+
+from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
 
-# Import configuration models from models.py (centralized location)
-_m = FlextGrpcModels
-GrpcSecurityConfig = _m.Settings.SecurityConfig
-GrpcNetworkConfig = _m.Settings.NetworkConfig
-GrpcPerformanceConfig = _m.Settings.PerformanceConfig
-GrpcStreamingConfig = _m.Settings.StreamingConfig
-GrpcClientConfig = _m.Settings.ClientSettingsConfig
-GrpcMonitoringConfig = _m.Settings.MonitoringConfig
+GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
+GrpcSecurityConfig: TypeAlias = FlextGrpcModels.Grpc.SecurityConfig
+GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
+GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
+GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
+GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
 
 
-class FlextGrpcSettings(BaseModel):
-    """Generic gRPC configuration system using AutoConfig pattern.
+class FlextGrpcSettings(FlextSettings):
+    """gRPC runtime settings with flat convenience fields and nested configurations.
 
-    **ARCHITECTURAL PATTERN**: Zero-Boilerplate Auto-Registration
-
-    This class uses FlextSettings.AutoConfig for automatic:
-    - Singleton pattern (thread-safe)
-    - Namespace registration (accessible via config.grpc)
-    - Environment variable loading from FLEXT_GRPC_* variables
-    - .env file loading (production/development)
-    - Automatic type conversion and validation via Pydantic v2
-
-    Uses extensive Pydantic models, generic patterns, and FLEXT ecosystem integration
-    for complete gRPC configuration management with validation and composition.
+    Provides both flat fields for simple configuration and nested config models
+    for advanced settings. Flat fields are convenience accessors that sync with
+    nested configurations.
     """
 
-    model_config = SettingsConfigDict(
-        env_prefix="FLEXT_GRPC_",
-        env_file=".env",
-        env_file_encoding="utf-8",
-        case_sensitive=False,
-        extra="ignore",
-        validate_assignment=True,
-        str_strip_whitespace=True,
-        validate_default=True,
-        frozen=False,
-        arbitrary_types_allowed=True,
-        strict=False,
-    )
+    # Flat convenience fields (settable via constructor)
+    host: Annotated[
+        str,
+        Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST, validation_alias="grpc_host"),
+    ]
+    port: Annotated[
+        int,
+        Field(
+            default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+            ge=1,
+            le=65535,
+            validation_alias="grpc_port",
+        ),
+    ]
+    max_workers: Annotated[
+        int,
+        Field(
+            default=c.Grpc.Service.MAX_WORKERS,
+            ge=1,
+            le=100,
+            validation_alias="grpc_max_workers",
+        ),
+    ]
+    timeout: Annotated[
+        float,
+        Field(
+            default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
+            gt=0,
+            validation_alias="grpc_timeout",
+        ),
+    ]
 
-    # Core configuration sections with composition
-    network: GrpcNetworkConfig = Field(default_factory=GrpcNetworkConfig)
-    security: GrpcSecurityConfig = Field(default_factory=GrpcSecurityConfig)
-    performance: GrpcPerformanceConfig = Field(default_factory=GrpcPerformanceConfig)
-    streaming: GrpcStreamingConfig = Field(default_factory=GrpcStreamingConfig)
-    client: GrpcClientConfig = Field(default_factory=GrpcClientConfig)
-    monitoring: GrpcMonitoringConfig = Field(default_factory=GrpcMonitoringConfig)
+    # Nested configuration models
+    network: Annotated[GrpcNetworkConfig, Field(default_factory=GrpcNetworkConfig)]
+    security: Annotated[GrpcSecurityConfig, Field(default_factory=GrpcSecurityConfig)]
+    performance: Annotated[
+        GrpcPerformanceConfig, Field(default_factory=GrpcPerformanceConfig)
+    ]
+    streaming: Annotated[
+        GrpcStreamingConfig, Field(default_factory=GrpcStreamingConfig)
+    ]
+    client: Annotated[GrpcClientConfig, Field(default_factory=GrpcClientConfig)]
+    monitoring: Annotated[
+        GrpcMonitoringConfig, Field(default_factory=GrpcMonitoringConfig)
+    ]
 
-    def __init__(
-        self,
-        host: str | None = None,
-        port: int | None = None,
-        max_workers: int | None = None,
-        timeout: float | None = None,
-        *,
-        tls_enabled: bool | None = None,
-        streaming_enabled: bool | None = None,
-        network: GrpcNetworkConfig | None = None,
-        security: GrpcSecurityConfig | None = None,
-        performance: GrpcPerformanceConfig | None = None,
-        streaming: GrpcStreamingConfig | None = None,
-        client: GrpcClientConfig | None = None,
-        monitoring: GrpcMonitoringConfig | None = None,
-        **_kwargs: object,
-    ) -> None:
-        """Initialize with backward compatibility for legacy fields."""
-        network_config: GrpcNetworkConfig = network or GrpcNetworkConfig()
-        if host is not None:
-            network_config = network_config.model_copy(update={"host": host})
-        if port is not None:
-            network_config = network_config.model_copy(update={"port": port})
-
-        security_config: GrpcSecurityConfig = security or GrpcSecurityConfig()
-        if tls_enabled is not None:
-            security_config = security_config.model_copy(
-                update={"tls_enabled": tls_enabled}
-            )
-
-        performance_config: GrpcPerformanceConfig = (
-            performance or GrpcPerformanceConfig()
-        )
-        if max_workers is not None:
-            performance_config = performance_config.model_copy(
-                update={"max_workers": max_workers}
-            )
-
-        streaming_config: GrpcStreamingConfig = streaming or GrpcStreamingConfig()
-        if streaming_enabled is not None:
-            streaming_config = streaming_config.model_copy(
-                update={"enabled": streaming_enabled},
-            )
-
-        client_config: GrpcClientConfig = client or GrpcClientConfig()
-        if timeout is not None:
-            client_config = client_config.model_copy(update={"timeout": timeout})
-
-        # Initialize with updated configs using BaseModel.__init__
-        # AutoConfig only accepts config_class, env_prefix, env_file
-        # So we initialize BaseModel directly with our fields
-        super().__init__(
-            network=network_config,
-            security=security_config,
-            performance=performance_config,
-            streaming=streaming_config,
-            client=client_config,
-            monitoring=monitoring or GrpcMonitoringConfig(),
-        )
-
-    @property
-    def host(self) -> str:
-        """Get host from network config."""
-        return self.network.host
-
-    @property
-    def port(self) -> int:
-        """Get port from network config."""
-        return self.network.port
-
-    @property
-    def max_workers(self) -> int:
-        """Get max workers from performance config."""
-        return self.performance.max_workers
-
-    @property
-    def timeout(self) -> float:
-        """Get timeout from client config."""
-        return self.client.timeout
-
+    @computed_field
     @property
     def tls_enabled(self) -> bool:
-        """Get TLS enabled from security config."""
+        """Computed property indicating if TLS is enabled."""
         return self.security.tls_enabled
 
+    @computed_field
     @property
     def streaming_enabled(self) -> bool:
-        """Get streaming enabled from streaming config."""
+        """Computed property indicating if streaming is enabled."""
         return self.streaming.enabled
 
     def validate_configuration(self) -> r[bool]:
-        """Validate complete configuration with cross-section checks."""
-        try:
-            # Cross-validation: TLS and client cert requirements
-            if self.security.client_cert_required and not self.security.tls_enabled:
-                return r.fail("Client certificates require TLS to be enabled")
+        """Validate configuration consistency.
 
-            # Cross-validation: Performance limits
-            if self.performance.max_concurrent_rpcs > self.performance.max_workers * 10:
-                return r.fail("RPC limit too high for worker count")
+        Checks that security configuration is valid, particularly that
+        client certificates are not required without TLS enabled.
 
-            # Cross-validation: Network and security
-            http_port = 80  # Standard HTTP port
-            if self.security.tls_enabled and self.network.port == http_port:
-                return r.fail("TLS enabled but using HTTP port")
+        Returns:
+            r[bool]: Success if configuration is valid, failure with error message otherwise.
 
-            return r.ok(True)
-        except Exception as e:
-            return r.fail(f"Configuration validation failed: {e}")
+        """
+        if not self.security.tls_enabled and self.security.client_cert_required:
+            return r[bool].fail("Client certificates require TLS to be enabled")
+        return r[bool].ok(True)
 
     @classmethod
     def create_production_config(cls) -> r[FlextGrpcSettings]:
-        """Create production-ready configuration with enterprise defaults."""
-        try:
-            config = cls(
-                network=GrpcNetworkConfig(
-                    host="127.0.0.1",  # Bind to localhost for security
-                    port=50051,
-                    max_connections=1000,
-                    keepalive_time=30,
-                    keepalive_timeout=5,
-                ),
-                security=GrpcSecurityConfig(
-                    tls_enabled=False,  # Disable TLS for testing/production without certs
-                    auth_enabled=False,  # Disable auth for testing/production without tokens
-                ),
-                performance=GrpcPerformanceConfig(
-                    max_workers=20,
-                    max_concurrent_rpcs=200,  # Within limit: 20 * 10 = 200
-                    thread_pool_size=100,
-                ),
-                streaming=GrpcStreamingConfig(
-                    max_concurrent_streams=50,
-                    stream_buffer_size=1000,
-                ),
-                client=GrpcClientConfig(
-                    timeout=30.0,
-                    retry_attempts=5,
-                ),
-                monitoring=GrpcMonitoringConfig(
-                    metrics_enabled=True,
-                    tracing_enabled=True,
-                    health_check_enabled=True,
-                ),
-            )
-            validation = config.validate_configuration()
-            return validation.map(lambda _: config)
-        except Exception as e:
-            return r.fail(f"Production config creation failed: {e}")
+        """Create a production-ready gRPC configuration.
+
+        Production configuration enables TLS and uses secure defaults.
+
+        Returns:
+            r[FlextGrpcSettings]: Production configuration instance.
+
+        """
+        return r[FlextGrpcSettings].ok(
+            cls.model_validate({
+                "host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
+                "security": {"tls_enabled": True},
+            })
+        )
 
     @classmethod
     def create_development_config(cls) -> r[FlextGrpcSettings]:
-        """Create development configuration with relaxed settings."""
-        try:
-            config = cls(
-                network=GrpcNetworkConfig(
-                    host="localhost",
-                    port=50051,
-                ),
-                security=GrpcSecurityConfig(),
-                performance=GrpcPerformanceConfig(
-                    max_workers=5,
-                    max_concurrent_rpcs=100,
-                ),
-                streaming=GrpcStreamingConfig(),
-                client=GrpcClientConfig(),
-                monitoring=GrpcMonitoringConfig(),
-            )
-            return r.ok(config)
-        except Exception as e:
-            return r.fail(f"Development config creation failed: {e}")
+        """Create a development gRPC configuration.
+
+        Development configuration uses localhost and insecure defaults
+        for ease of testing.
+
+        Returns:
+            r[FlextGrpcSettings]: Development configuration instance.
+
+        """
+        return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
 
 
-__all__ = [
-    "FlextGrpcSettings",
-    "GrpcClientConfig",
-    "GrpcMonitoringConfig",
-    "GrpcNetworkConfig",
-    "GrpcPerformanceConfig",
-    "GrpcSecurityConfig",
-    "GrpcStreamingConfig",
-]
+__all__ = ["FlextGrpcModels", "FlextGrpcSettings"]

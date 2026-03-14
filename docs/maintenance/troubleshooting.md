@@ -1,6 +1,5 @@
 # Documentation Maintenance Troubleshooting Guide
 
-
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [Quick Diagnosis](#quick-diagnosis)
@@ -270,7 +269,7 @@ make docs
 CUSTOM_AUDIT_RULES = {
     "ignore_patterns": ["<!-- ignore-audit -->"],
     "custom_headings": ["Changelog", "Migration Guide"],
-    "project_terms": ["gRPC", "FLEXT", "protobuf"]
+    "project_terms": ["gRPC", "FLEXT", "protobuf"],
 }
 ```
 

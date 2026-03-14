@@ -12,7 +12,7 @@ System_Boundary(flext_grpc_system, "FLEXT-gRPC System") {
 }
 
 System_Boundary(flext_runtime, "FLEXT Runtime Environment") {
-    Container(flext_core, "FLEXT-Core", "Python Library", "Foundation patterns: FlextResult, FlextContainer")
+    Container(flext_core, "FLEXT-Core", "Python Library", "Foundation patterns: r, FlextContainer")
     Container(flext_observability, "FLEXT-Observability", "Python Library", "Metrics, tracing, and monitoring")
     Container(flext_cli, "FLEXT-CLI", "Python Library", "Command-line interface and diagnostics")
 }
