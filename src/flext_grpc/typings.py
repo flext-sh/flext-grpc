@@ -36,27 +36,30 @@ class FlextGrpcTypes(FlextTypes):
     Uses Python 3.13+ type syntax and patterns.
     """
 
-    ConfigValue: TypeAlias = object
-    GrpcOptions = dict[str, object]
+    ConfigValue: TypeAlias = FlextTypes.ContainerValue | None
+    GrpcOptions = dict[str, FlextTypes.ContainerValue | None]
 
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
         GrpcServicer: TypeAlias = _GrpcServicer
 
-        Dict: TypeAlias = dict[str, object]
-        GrpcDict: TypeAlias = dict[str, object]
+        Dict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        GrpcDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
         Headers: TypeAlias = dict[str, str]
-        Metadata: TypeAlias = dict[str, object]
-        ConfigDict: TypeAlias = dict[str, str | int | bool | object]
+        Metadata: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        ConfigDict: TypeAlias = dict[
+            str,
+            str | int | bool | FlextTypes.ContainerValue | None,
+        ]
         Address: TypeAlias = dict[str, str | int]
         Endpoint: TypeAlias = dict[str, str | int | bool]
-        Connection: TypeAlias = dict[str, object]
-        ServiceData: TypeAlias = dict[str, object]
-        MethodData: TypeAlias = dict[str, object]
-        RequestDict: TypeAlias = dict[str, object]
-        ResponseDict: TypeAlias = dict[str, object]
-        StreamData: TypeAlias = dict[str, object]
+        Connection: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        ServiceData: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        MethodData: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        RequestDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        ResponseDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
+        StreamData: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
         StreamMeta: TypeAlias = dict[str, str | int | bool]
         Target = str
         StreamType = c.Grpc.StreamTypeLiteral
@@ -64,68 +67,167 @@ class FlextGrpcTypes(FlextTypes):
         ServerState: TypeAlias = c.Grpc.ServerStateLiteral
         Options: TypeAlias = dict[
             str,
-            FlextTypes.Scalar | list[object] | dict[str, object] | None,
+            FlextTypes.Scalar
+            | list[FlextTypes.ContainerValue | None]
+            | dict[str, FlextTypes.ContainerValue | None]
+            | None,
         ]
 
         class Server:
             """gRPC server complex types."""
 
-            ServerConfiguration = dict[str, str | int | bool | dict[str, object]]
-            ServerLifecycle = dict[str, str | bool | int | dict[str, object]]
-            ServerMetrics = dict[str, int | float | bool | dict[str, object]]
-            ServerSecurity = dict[str, bool | str | dict[str, object]]
-            ServiceRegistry = dict[str, list[str] | dict[str, object]]
-            HandlerConfiguration: TypeAlias = list[dict[str, str | object]]
+            ServerConfiguration = dict[
+                str,
+                str | int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ServerLifecycle = dict[
+                str,
+                str | bool | int | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ServerMetrics = dict[
+                str,
+                int | float | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ServerSecurity = dict[
+                str,
+                bool | str | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ServiceRegistry = dict[
+                str,
+                list[str] | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            HandlerConfiguration: TypeAlias = list[
+                dict[str, str | FlextTypes.ContainerValue | None]
+            ]
 
         class Client:
             """gRPC client complex types."""
 
-            ClientConfiguration = dict[str, str | int | bool | dict[str, object]]
-            ConnectionPool = dict[str, int | bool | dict[str, object]]
+            ClientConfiguration = dict[
+                str,
+                str | int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ConnectionPool = dict[
+                str,
+                int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
             RetryConfiguration: TypeAlias = dict[str, int | float | bool | list[str]]
-            LoadBalancing: TypeAlias = dict[str, str | bool | dict[str, object]]
-            ClientMetrics = dict[str, int | float | dict[str, object]]
-            ChannelOptions = dict[str, str | int | bool | dict[str, object]]
+            LoadBalancing: TypeAlias = dict[
+                str,
+                str | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ClientMetrics = dict[
+                str,
+                int | float | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ChannelOptions = dict[
+                str,
+                str | int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
 
         class Streaming:
             """gRPC streaming complex types."""
 
-            StreamConfiguration = dict[str, bool | int | str | dict[str, object]]
-            StreamingContext = dict[str, str | bool | dict[str, object]]
-            StreamMetrics = dict[str, int | float | bool | dict[str, object]]
-            FlowControl = dict[str, int | bool | dict[str, object]]
-            BackpressureHandling = dict[str, str | int | bool | dict[str, object]]
-            StreamingPipeline: TypeAlias = list[dict[str, str | object]]
+            StreamConfiguration = dict[
+                str,
+                bool | int | str | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            StreamingContext = dict[
+                str,
+                str | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            StreamMetrics = dict[
+                str,
+                int | float | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            FlowControl = dict[
+                str,
+                int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            BackpressureHandling = dict[
+                str,
+                str | int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            StreamingPipeline: TypeAlias = list[
+                dict[str, str | FlextTypes.ContainerValue | None]
+            ]
 
         class GrpcService:
             """gRPC service complex types."""
 
-            ServiceDefinition = dict[str, str | list[str] | dict[str, object]]
-            MethodDefinition = dict[str, str | bool | dict[str, object]]
-            ServiceMetadata = dict[str, str | int | dict[str, object]]
-            InterceptorChain: TypeAlias = list[dict[str, str | object]]
-            ServiceDiscovery = dict[str, str | list[str] | dict[str, object]]
-            HealthCheck = dict[str, bool | str | int | dict[str, object]]
+            ServiceDefinition = dict[
+                str,
+                str | list[str] | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            MethodDefinition = dict[
+                str,
+                str | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ServiceMetadata = dict[
+                str,
+                str | int | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            InterceptorChain: TypeAlias = list[
+                dict[str, str | FlextTypes.ContainerValue | None]
+            ]
+            ServiceDiscovery = dict[
+                str,
+                str | list[str] | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            HealthCheck = dict[
+                str,
+                bool | str | int | dict[str, FlextTypes.ContainerValue | None],
+            ]
 
         class Security:
             """gRPC security complex types."""
 
-            SecurityConfiguration = dict[str, bool | str | dict[str, object]]
-            TlsConfiguration = dict[str, str | bool | dict[str, object]]
-            AuthenticationConfig: TypeAlias = dict[str, str | dict[str, object]]
+            SecurityConfiguration = dict[
+                str,
+                bool | str | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            TlsConfiguration = dict[
+                str,
+                str | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            AuthenticationConfig: TypeAlias = dict[
+                str,
+                str | dict[str, FlextTypes.ContainerValue | None],
+            ]
             AuthorizationRules: TypeAlias = list[dict[str, str | bool | list[str]]]
-            CertificateManagement = dict[str, str | bool | dict[str, object]]
-            SecurityMetrics = dict[str, int | bool | dict[str, object]]
+            CertificateManagement = dict[
+                str,
+                str | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            SecurityMetrics = dict[
+                str,
+                int | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
 
         class Monitoring:
             """gRPC monitoring complex types."""
 
-            MonitoringConfiguration = dict[str, bool | str | int | dict[str, object]]
-            MetricsCollection = dict[str, str | bool | dict[str, object]]
-            TracingConfiguration = dict[str, bool | str | dict[str, object]]
-            LoggingSetup = dict[str, str | bool | int | dict[str, object]]
+            MonitoringConfiguration = dict[
+                str,
+                bool | str | int | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            MetricsCollection = dict[
+                str,
+                str | bool | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            TracingConfiguration = dict[
+                str,
+                bool | str | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            LoggingSetup = dict[
+                str,
+                str | bool | int | dict[str, FlextTypes.ContainerValue | None],
+            ]
             AlertingRules: TypeAlias = list[dict[str, FlextTypes.Scalar]]
-            PerformanceMetrics = dict[str, float | int | dict[str, object]]
+            PerformanceMetrics = dict[
+                str,
+                float | int | dict[str, FlextTypes.ContainerValue | None],
+            ]
 
         class Project:
             """gRPC-specific project types.
@@ -135,10 +237,13 @@ class FlextGrpcTypes(FlextTypes):
             gRPC domain owns microservices-specific types.
             """
 
-            ProjectConfig = dict[str, object]
+            ProjectConfig = dict[str, FlextTypes.ContainerValue | None]
             MicroserviceConfig: TypeAlias = dict[str, str | int | bool | list[str]]
-            StreamingConfig = dict[str, bool | str | dict[str, object]]
-            ServiceMeshConfig = dict[str, object]
+            StreamingConfig = dict[
+                str,
+                bool | str | dict[str, FlextTypes.ContainerValue | None],
+            ]
+            ServiceMeshConfig = dict[str, FlextTypes.ContainerValue | None]
 
         class GrpcValidation:
             """gRPC validation utilities."""

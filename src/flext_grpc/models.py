@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from datetime import UTC, datetime
+from datetime import datetime
 from typing import Annotated, Literal, Self, override
 
 import grpc
@@ -153,7 +153,7 @@ class FlextGrpcModels(FlextModels):
             """Basic channel configuration (immutable value model)."""
 
             address: str
-            options: Mapping[str, object] | None = None
+            options: Mapping[str, t.ConfigValue] | None = None
 
         class SecurityConfig(FlextModels.Value):
             """Generic gRPC security configuration with validation."""
@@ -531,7 +531,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             parameters: Annotated[
-                Mapping[str, object],
+                Mapping[str, t.ConfigValue],
                 Field(
                     default_factory=dict,
                     description="Operation parameters",
@@ -550,7 +550,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             data: Annotated[
-                object | None,
+                t.ConfigValue | None,
                 Field(
                     default=None,
                     description="Request data",
@@ -581,7 +581,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             metadata: Annotated[
-                Mapping[str, object],
+                Mapping[str, t.ConfigValue],
                 Field(
                     default_factory=dict,
                     description="Response metadata",
@@ -599,28 +599,17 @@ class FlextGrpcModels(FlextModels):
             values: Annotated[t.Grpc.GrpcDict, Field(default_factory=dict)]
 
             @classmethod
-            def from_values(cls, **values: t.Scalar) -> Self:
+            def from_values(cls, **values: t.ConfigValue) -> Self:
                 """Build payload from keyword values."""
 
-                def normalize_payload_value(value: object) -> object:
-                    match value:
-                        case None:
-                            return ""
-                        case str() | int() | float():
-                            return value
-                        case list() as items:
-                            return [normalize_payload_value(item) for item in items]
-                        case tuple() as items:
-                            return [normalize_payload_value(item) for item in items]
-                        case Mapping() as items:
-                            return {
-                                str(item_key): normalize_payload_value(item_value)
-                                for item_key, item_value in items.items()
-                            }
-                        case _:
-                            return str(value)
+                def normalize_payload_value(value: t.ConfigValue) -> t.ConfigValue:
+                    if value is None:
+                        return ""
+                    if isinstance(value, (str, int, float, bool)):
+                        return value
+                    return str(value)
 
-                normalized_values = {
+                normalized_values: t.Grpc.GrpcDict = {
                     metric_key: normalize_payload_value(metric_value)
                     for metric_key, metric_value in values.items()
                 }
@@ -628,10 +617,6 @@ class FlextGrpcModels(FlextModels):
 
         class Entity(FlextModels.Entity):
             """Generic base entity with functional patterns."""
-
-            created_at: Annotated[
-                datetime, Field(default_factory=lambda: datetime.now(UTC))
-            ]
 
             def copy_with(self, **kwargs: str | int | bool | None) -> r[Self]:
                 """Functional copy using r.
@@ -654,7 +639,7 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelStateLiteral = "idle"
-            options: Annotated[dict[str, object], Field(default_factory=dict)]
+            options: Annotated[dict[str, t.ConfigValue], Field(default_factory=dict)]
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             def connect(self) -> r[Self]:
@@ -698,7 +683,8 @@ class FlextGrpcModels(FlextModels):
             state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
             services: Annotated[
-                list[object], Field(default_factory=list, description="gRPC services")
+                list[p.Grpc.GrpcServicer],
+                Field(default_factory=list, description="gRPC services"),
             ]
             grpc_server: p.Grpc.GrpcServer | None = None
 
@@ -815,6 +801,7 @@ class FlextGrpcModels(FlextModels):
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
                     state="idle",
+                    options={},
                     domain_events=[],
                 )
                 return r[Self].ok(self.model_copy(update={"channel": channel}))
@@ -849,9 +836,6 @@ class FlextGrpcModels(FlextModels):
     ServiceDefinition: type[Grpc.ServiceDefinition] = Grpc.ServiceDefinition
     StreamMetrics: type[Grpc.StreamMetrics] = Grpc.StreamMetrics
     ServiceMetrics: type[Grpc.ServiceMetrics] = Grpc.ServiceMetrics
-    OperationExecutionRequest: type[Grpc.OperationExecutionRequest] = (
-        Grpc.OperationExecutionRequest
-    )
     ServerConfig: type[Grpc.ServerConfig] = Grpc.ServerConfig
     ClientConfig: type[Grpc.ClientConfig] = Grpc.ClientConfig
     ChannelConfig: type[Grpc.ChannelConfig] = Grpc.ChannelConfig

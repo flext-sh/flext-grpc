@@ -37,7 +37,7 @@ ServicePayload = FlextGrpcModels.Grpc.Payload
 
 
 class _MetricValueModel(FlextGrpcModels.Value):
-    value: object
+    value: t.ConfigValue
 
 
 class _StreamRuntimeState(FlextGrpcModels.Value):
@@ -125,7 +125,7 @@ class MetricsCollector:
         with self._lock:
             return ServicePayload(values=self._metrics.values.copy())
 
-    def get_metric(self, key: str) -> object | None:
+    def get_metric(self, key: str) -> t.ConfigValue | None:
         """Thread-safe metric retrieval.
 
         Returns:
@@ -135,7 +135,7 @@ class MetricsCollector:
         with self._lock:
             return self._metrics.values.get(key)
 
-    def record_metric(self, key: str, value: object) -> None:
+    def record_metric(self, key: str, value: t.ConfigValue) -> None:
         """Thread-safe metric recording.
 
         Args:
@@ -144,7 +144,7 @@ class MetricsCollector:
 
         """
 
-        def _normalize_value(val: object) -> object:
+        def _normalize_value(val: t.ConfigValue) -> t.ConfigValue:
             if val is None:
                 return ""
             if isinstance(val, (str, int, float, bool)):
@@ -172,21 +172,21 @@ class ConnectionPool:
 
         """
         super().__init__()
-        self._pool: Queue[object] = Queue(maxsize=max_size)
-        self._active: set[object] = set()
+        self._pool: Queue[grpc.Channel] = Queue(maxsize=max_size)
+        self._active: set[grpc.Channel] = set()
         self._lock = threading.RLock()
 
-    def acquire(self) -> r[object]:
+    def acquire(self) -> r[grpc.Channel]:
         """Acquire connection from pool."""
         try:
             with self._lock:
                 if not self._pool.empty():
                     conn = self._pool.get_nowait()
                     self._active.add(conn)
-                    return r[object].ok(conn)
-                return r[object].fail("No available connections")
+                    return r[grpc.Channel].ok(conn)
+                return r[grpc.Channel].fail("No available connections")
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-            return r[object].fail(f"Connection acquisition failed: {e}")
+            return r[grpc.Channel].fail(f"Connection acquisition failed: {e}")
 
     def cleanup(self) -> r[bool]:
         """Cleanup all connections."""
@@ -199,7 +199,7 @@ class ConnectionPool:
                     break
         return r[bool].ok(True)
 
-    def release(self, connection: object) -> r[bool]:
+    def release(self, connection: grpc.Channel) -> r[bool]:
         """Release connection back to pool."""
 
         def _release() -> bool:
