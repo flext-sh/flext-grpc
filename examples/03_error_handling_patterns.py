@@ -48,7 +48,7 @@ def validate_user_input(username: str, email: str) -> r[t.Grpc.Headers]:
             _raise_email_error()
         return r[t.Grpc.Headers].ok({"username": username, "email": email})
     except FlextGrpcValidationError as e:
-        logger.exception("Validation failed", field=e.field, error=str(e))
+        logger.exception("Validation failed", field=e.field or "", error=str(e))
         return r[t.Grpc.Headers].fail(f"Validation error: {e}")
 
 
@@ -62,10 +62,6 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
     def _raise_workers_error() -> NoReturn:
         msg = "Workers must be positive"
         raise FlextGrpcSettingsurationError(msg, config_key="max_workers")
-
-    def _raise_config_error(error_msg: str) -> NoReturn:
-        msg: str = f"Failed to create config: {error_msg}"
-        raise FlextGrpcSettingsurationError(msg)
 
     try:
         max_port = 65535
@@ -83,7 +79,7 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
         except Exception as e:
             return r[t.Grpc.ConfigDict].fail(str(e))
     except FlextGrpcSettingsurationError as e:
-        logger.exception("Configuration error", key=e.config_key, error=str(e))
+        logger.exception("Configuration error", key=e.config_key or "", error=str(e))
         return r[t.Grpc.ConfigDict].fail(f"Configuration error: {e}")
 
 
@@ -195,14 +191,14 @@ def demonstrate_error_context() -> None:
         "Validation error with field context",
         error_type=type(validation_error).__name__,
         error_message=str(validation_error),
-        field_name=validation_error.field,
+        field_name=validation_error.field or "",
         error_category="validation",
     )
     logger.error(
         "Configuration error with config context",
         error_type=type(config_error).__name__,
         error_message=str(config_error),
-        config_key=config_error.config_key,
+        config_key=config_error.config_key or "",
         error_category="configuration",
     )
 

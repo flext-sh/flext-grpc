@@ -13,17 +13,17 @@ from typing import TYPE_CHECKING, Any
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
-    from constants import TestsFlextGrpcConstants, TestsFlextGrpcConstants as c
-    from models import TestsFlextGrpcModels, TestsFlextGrpcModels as m, tm
-    from utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
+    from .constants import TestsFlextGrpcConstants, TestsFlextGrpcConstants as c
+    from .models import TestsFlextGrpcModels, TestsFlextGrpcModels as m, tm
+    from .utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "TestsFlextGrpcConstants": ("constants", "TestsFlextGrpcConstants"),
-    "TestsFlextGrpcModels": ("models", "TestsFlextGrpcModels"),
-    "TestsFlextGrpcUtilities": ("utilities", "TestsFlextGrpcUtilities"),
-    "c": ("constants", "TestsFlextGrpcConstants"),
-    "m": ("models", "TestsFlextGrpcModels"),
-    "tm": ("models", "tm"),
-    "u": ("utilities", "TestsFlextGrpcUtilities"),
+    "TestsFlextGrpcConstants": ("tests.constants", "TestsFlextGrpcConstants"),
+    "TestsFlextGrpcModels": ("tests.models", "TestsFlextGrpcModels"),
+    "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
+    "c": ("tests.constants", "TestsFlextGrpcConstants"),
+    "m": ("tests.models", "TestsFlextGrpcModels"),
+    "tm": ("tests.models", "tm"),
+    "u": ("tests.utilities", "TestsFlextGrpcUtilities"),
 }
 __all__ = [
     "TestsFlextGrpcConstants",

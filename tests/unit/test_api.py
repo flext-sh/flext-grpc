@@ -1,5 +1,7 @@
 """Tests for flext_grpc.api module."""
 
+from datetime import UTC, datetime
+
 import pytest
 from pydantic import ValidationError
 
@@ -16,7 +18,7 @@ class TestFlextGrpc:
 
     def test_init_with_config(self) -> None:
         """Test FlextGrpc initialization with config."""
-        config = FlextGrpcSettings()
+        config = FlextGrpcSettings.model_validate({})
         grpc = FlextGrpc(config=config)
         assert grpc.grpc_config == config
 
@@ -142,19 +144,19 @@ class TestFlextGrpc:
     def test_validate_entity_type(self) -> None:
         """Test entity type validation via OperationSpec model."""
         server_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="server"
+            name="op", entity_type="server", method_name=None, parameters={}
         )
         client_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="client"
+            name="op", entity_type="client", method_name=None, parameters={}
         )
         channel_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="channel"
+            name="op", entity_type="channel", method_name=None, parameters={}
         )
         service_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="service"
+            name="op", entity_type="service", method_name=None, parameters={}
         )
         stream_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="stream"
+            name="op", entity_type="stream", method_name=None, parameters={}
         )
         assert server_spec.entity_type == "server"
         assert client_spec.entity_type == "client"
@@ -162,17 +164,22 @@ class TestFlextGrpc:
         assert service_spec.entity_type == "service"
         assert stream_spec.entity_type == "stream"
         with pytest.raises(ValidationError):
-            FlextGrpcModels.Grpc.OperationSpec({
+            FlextGrpcModels.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",
             })
 
     def test_request_creation(self) -> None:
         operation = FlextGrpcModels.Grpc.OperationSpec(
-            name="test_operation", entity_type="server"
+            name="test_operation",
+            entity_type="server",
+            method_name=None,
+            parameters={},
         )
         request = FlextGrpcModels.Grpc.Request(
-            operation=operation, data={"value": "test"}
+            operation=operation,
+            entity=None,
+            data={"value": "test"},
         )
         assert request.data == {"value": "test"}
         assert request.operation.name == "test_operation"
@@ -180,9 +187,20 @@ class TestFlextGrpc:
 
     def test_response_creation(self) -> None:
         data = FlextGrpcModels.Grpc.StreamInfo(
-            stream_id="stream-1", stream_type="unary", target="localhost:50051"
+            stream_id="stream-1",
+            stream_type="unary",
+            target="localhost:50051",
+            created_at=datetime.now(UTC),
+            total_requests_sent=0,
+            average_latency_ms=0.0,
+            error_count=0,
         )
-        response = FlextGrpcModels.Grpc.Response(success=True, data=data)
+        response = FlextGrpcModels.Grpc.Response(
+            success=True,
+            data=data,
+            error=None,
+            metadata={},
+        )
         assert response.data == data
         assert response.success is True
         assert response.model_dump().get("has_error") is False

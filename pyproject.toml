@@ -581,11 +581,6 @@ split-on-trailing-comma = true
   "RUF036",
 ]
 
-[tool.coverage.report]
-fail_under = 15
-precision = 2
-show_missing = true
-skip_covered = false
 
 [tool.pytest.ini_options]
 addopts = [
@@ -613,3 +608,10 @@ python_files = [
 ]
 
 # [MANAGED] pyrefly
+
+
+[tool.coverage.report]
+fail_under = 15
+precision = 2
+show_missing = true
+skip_covered = false

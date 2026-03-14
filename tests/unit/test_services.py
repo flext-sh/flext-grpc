@@ -1,5 +1,7 @@
 """Tests for flext_grpc.services module."""
 
+import grpc
+
 from flext_grpc import ConnectionPool, FlextGrpcServices, MetricsCollector
 
 
@@ -32,7 +34,7 @@ class TestFlextGrpcServices:
     def test_connection_pool_release(self) -> None:
         """Test connection pool release."""
         pool = ConnectionPool(max_size=5)
-        mock_connection = "mock_connection_123"
+        mock_connection = grpc.insecure_channel("localhost:50051")
         release_result = pool.release(mock_connection)
         assert release_result.is_success
 

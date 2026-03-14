@@ -43,11 +43,11 @@ class GrpcServerManager:
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
-            config = FlextGrpcSettings(
-                host=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
-                port=port,
-                max_workers=10 + i * 5,
-            )
+            config = FlextGrpcSettings.model_validate({
+                "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
+                "port": port,
+                "max_workers": 10 + i * 5,
+            })
             self.server_configs[server_id] = config
             server_result = self.grpc.create_server(
                 host=config.network.host,
@@ -127,10 +127,10 @@ class AdvancedGrpcOperations:
             return r[CompleteSetup].fail(setup_result.error or "Setup failed")
         setup = setup_result.value
         complete_setup: CompleteSetup = {
-            "server": setup.server,
-            "client": setup.client,
-            "service": setup.service,
-            "target": setup.target,
+            "server": setup["server"],
+            "client": setup["client"],
+            "service": setup["service"],
+            "target": setup["target"],
         }
         return r[CompleteSetup].ok(complete_setup)
 

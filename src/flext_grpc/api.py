@@ -10,6 +10,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import TypedDict
+
 from flext_core import r
 
 from flext_grpc.constants import c
@@ -31,7 +33,9 @@ class FlextGrpc:
         """Initialize facade with FLEXT ecosystem integration."""
         super().__init__()
         self._service = FlextGrpcServices()
-        self._grpc_config = config if config is not None else FlextGrpcSettings()
+        self._grpc_config = (
+            config if config is not None else FlextGrpcSettings.model_validate({})
+        )
         object.__setattr__(self, "_config", self._grpc_config)
 
     @property
@@ -86,7 +90,7 @@ class FlextGrpc:
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: list[str] | None = None,
-    ) -> r[object]:
+    ) -> r[GrpcCompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
@@ -261,3 +265,10 @@ class FlextGrpc:
 
 
 __all__ = ["FlextGrpc"]
+
+
+class GrpcCompleteSetup(TypedDict):
+    server: FlextGrpcModels.Grpc.Server
+    client: FlextGrpcModels.Grpc.Client
+    service: FlextGrpcModels.Grpc.Service
+    target: str
