@@ -1,12 +1,7 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
 # Regenerate with: make codegen
 #
-"""Enterprise gRPC Communication Platform for FLEXT ecosystem.
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
-"""
+"""Flext grpc package."""
 
 from __future__ import annotations
 
@@ -17,6 +12,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
+    from flext_grpc import proto
     from flext_grpc.__version__ import (
         __all__,
         __author__,
@@ -118,6 +114,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "c": ("flext_grpc.constants", "c"),
     "m": ("flext_grpc.models", "m"),
     "p": ("flext_grpc.protocols", "p"),
+    "proto": ("flext_grpc.proto", ""),
     "t": ("flext_grpc.typings", "t"),
     "u": ("flext_grpc.utilities", "u"),
 }
@@ -167,6 +164,7 @@ __all__ = [
     "c",
     "m",
     "p",
+    "proto",
     "t",
     "u",
 ]

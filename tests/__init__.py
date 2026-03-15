@@ -1,13 +1,7 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
 # Regenerate with: make codegen
 #
-"""FLEXT gRPC Tests - Test infrastructure and utilities.
-
-Provides TestsFlextGrpc classes extending FlextTests and FlextGrpc for comprehensive testing.
-
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-"""
+"""Tests package."""
 
 from __future__ import annotations
 
@@ -18,6 +12,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
+    from tests import unit
     from tests.conftest import clean_container, sample_grpc_config, test_addresses
     from tests.constants import TestsFlextGrpcConstants, c
     from tests.models import TestsFlextGrpcModels, m, tm
@@ -85,6 +80,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "test_addresses": ("tests.conftest", "test_addresses"),
     "tm": ("tests.models", "tm"),
     "u": ("tests.utilities", "u"),
+    "unit": ("tests.unit", ""),
 }
 
 __all__ = [
@@ -118,6 +114,7 @@ __all__ = [
     "test_addresses",
     "tm",
     "u",
+    "unit",
 ]
 
 
