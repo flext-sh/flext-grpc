@@ -4,6 +4,8 @@
 Validates architecture documentation for completeness, consistency, and accuracy.
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import re
