@@ -10,13 +10,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated, TypeAlias
+from typing import Annotated
 
 from flext_core import FlextSettings, r
 from pydantic import Field, computed_field
 
 from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
+
 
 class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings with flat convenience fields and nested configurations.
@@ -127,5 +128,6 @@ class FlextGrpcSettings(FlextSettings):
 
         """
         return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
+
 
 __all__ = ["FlextGrpcModels", "FlextGrpcSettings"]

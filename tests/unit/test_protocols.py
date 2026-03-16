@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-
 from typing import is_protocol
 
 from flext_grpc import FlextGrpcProtocols

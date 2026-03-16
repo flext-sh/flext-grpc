@@ -16,14 +16,14 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import Protocol, TypeAlias, runtime_checkable
+from typing import TypeAlias, runtime_checkable
 
 from flext_core import FlextTypes
 
 from flext_grpc import c
 
-@runtime_checkable
 
+@runtime_checkable
 class FlextGrpcTypes(FlextTypes):
     """gRPC-specific type definitions extending t.
 
@@ -280,10 +280,10 @@ class FlextGrpcTypes(FlextTypes):
                     logger.debug("Invalid gRPC target: %s", target)
                     return False
 
+
 t = FlextGrpcTypes
 __all__ = ["FlextGrpcTypes", "t"]
 
-from typing import TypeAlias
 
 GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
 

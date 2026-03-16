@@ -246,4 +246,5 @@ class FlextGrpcUtilities(FlextUtilities):
             """Validate gRPC port number."""
             return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
 
+
 u = FlextGrpcUtilities

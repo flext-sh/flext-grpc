@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 import grpc
 
 from flext_grpc import ConnectionPool, FlextGrpcServices, MetricsCollector

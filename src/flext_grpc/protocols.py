@@ -435,14 +435,18 @@ __all__ = ["FlextGrpcProtocols", "p"]
 
 p = FlextGrpcProtocols
 
+
 class GrpcContextProtocol(Protocol):
     pass
+
 
 class GrpcChannelProtocol(Protocol):
     pass
 
+
 class GrpcServerProtocol(Protocol):
     pass
+
 
 class ServerLifecycle(Protocol):
     """Protocol for server lifecycle management."""
@@ -459,6 +463,7 @@ class ServerLifecycle(Protocol):
         """Stop server implementation."""
         ...
 
+
 class ClientConnection(Protocol):
     """Protocol for client connection management."""
 
@@ -471,6 +476,7 @@ class ClientConnection(Protocol):
     ) -> r[FlextGrpcModels.Grpc.Client]:
         """Disconnect client."""
         ...
+
 
 class StreamProcessor(Protocol):
     """Protocol for stream processing."""
@@ -495,6 +501,7 @@ class StreamProcessor(Protocol):
         Note: Uses t.ConfigValue for gRPC message compatibility
         """
         ...
+
 
 class _GrpcServicer(Protocol):
     """Protocol for gRPC service implementations (duck typing)."""
