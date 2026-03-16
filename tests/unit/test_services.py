@@ -1,5 +1,8 @@
 """Tests for flext_grpc.services module."""
 
+from __future__ import annotations
+
+
 import grpc
 
 from flext_grpc import ConnectionPool, FlextGrpcServices, MetricsCollector

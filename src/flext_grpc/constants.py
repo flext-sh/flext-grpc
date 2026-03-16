@@ -276,5 +276,6 @@ class FlextGrpcConstants(FlextConstants):
         "Compression types tuple - generated from CompressionTypes StrEnum."
 
 
-c = FlextGrpcConstants
 __all__: list[str] = ["FlextGrpcConstants", "c"]
+
+c = FlextGrpcConstants

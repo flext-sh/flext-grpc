@@ -431,5 +431,70 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
 
-p = FlextGrpcProtocols
 __all__ = ["FlextGrpcProtocols", "p"]
+
+p = FlextGrpcProtocols
+
+class GrpcContextProtocol(Protocol):
+    pass
+
+class GrpcChannelProtocol(Protocol):
+    pass
+
+class GrpcServerProtocol(Protocol):
+    pass
+
+class ServerLifecycle(Protocol):
+    """Protocol for server lifecycle management."""
+
+    def start_server(
+        self, server: FlextGrpcModels.Grpc.Server
+    ) -> r[FlextGrpcModels.Grpc.Server]:
+        """Start server implementation."""
+        ...
+
+    def stop_server(
+        self, server: FlextGrpcModels.Grpc.Server
+    ) -> r[FlextGrpcModels.Grpc.Server]:
+        """Stop server implementation."""
+        ...
+
+class ClientConnection(Protocol):
+    """Protocol for client connection management."""
+
+    def connect(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
+        """Connect to target."""
+        ...
+
+    def disconnect(
+        self, client: FlextGrpcModels.Grpc.Client
+    ) -> r[FlextGrpcModels.Grpc.Client]:
+        """Disconnect client."""
+        ...
+
+class StreamProcessor(Protocol):
+    """Protocol for stream processing."""
+
+    def close_stream(
+        self, stream: FlextGrpcModels.Grpc.GrpcStream
+    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        """Close stream."""
+        ...
+
+    def create_stream(
+        self, **kwargs: t.ConfigValue
+    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        """Create stream."""
+        ...
+
+    def send_data(
+        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
+    ) -> r[ServicePayload]:
+        """Send data through stream.
+
+        Note: Uses t.ConfigValue for gRPC message compatibility
+        """
+        ...
+
+class _GrpcServicer(Protocol):
+    """Protocol for gRPC service implementations (duck typing)."""

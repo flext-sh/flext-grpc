@@ -41,10 +41,11 @@ class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
 
 # Short aliases per FLEXT convention
 tm = TestsFlextGrpcModels
-m = TestsFlextGrpcModels  # Primary test models alias
 
 __all__ = [
     "TestsFlextGrpcModels",
     "m",
     "tm",
 ]
+
+m = TestsFlextGrpcModels

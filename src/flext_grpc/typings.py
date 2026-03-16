@@ -22,11 +22,7 @@ from flext_core import FlextTypes
 
 from flext_grpc import c
 
-
 @runtime_checkable
-class _GrpcServicer(Protocol):
-    """Protocol for gRPC service implementations (duck typing)."""
-
 
 class FlextGrpcTypes(FlextTypes):
     """gRPC-specific type definitions extending t.
@@ -284,6 +280,19 @@ class FlextGrpcTypes(FlextTypes):
                     logger.debug("Invalid gRPC target: %s", target)
                     return False
 
-
 t = FlextGrpcTypes
 __all__ = ["FlextGrpcTypes", "t"]
+
+from typing import TypeAlias
+
+GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
+
+GrpcSecurityConfig: TypeAlias = FlextGrpcModels.Grpc.SecurityConfig
+
+GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
+
+GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
+
+GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
+
+GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig

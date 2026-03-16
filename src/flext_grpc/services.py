@@ -35,83 +35,26 @@ from flext_grpc.utilities import FlextGrpcUtilities
 
 ServicePayload = FlextGrpcModels.Grpc.Payload
 
-
 def _new_stream_buffer() -> deque[t.ConfigValue]:
     return deque(maxlen=500)
 
-
 class _MetricValueModel(FlextGrpcModels.Value):
     value: t.ConfigValue
-
 
 class _StreamRuntimeState(FlextGrpcModels.Value):
     stream: FlextGrpcModels.Grpc.GrpcStream
     created_at: float
     buffer: Annotated[deque[t.ConfigValue], Field(default_factory=_new_stream_buffer)]
 
-
 def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
     """Create runtime gRPC servicer instance for server registration."""
     return FlextGrpcServiceServicer()
 
+@runtime_checkable
 
 @runtime_checkable
-class ServerLifecycle(Protocol):
-    """Protocol for server lifecycle management."""
-
-    def start_server(
-        self, server: FlextGrpcModels.Grpc.Server
-    ) -> r[FlextGrpcModels.Grpc.Server]:
-        """Start server implementation."""
-        ...
-
-    def stop_server(
-        self, server: FlextGrpcModels.Grpc.Server
-    ) -> r[FlextGrpcModels.Grpc.Server]:
-        """Stop server implementation."""
-        ...
-
 
 @runtime_checkable
-class ClientConnection(Protocol):
-    """Protocol for client connection management."""
-
-    def connect(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
-        """Connect to target."""
-        ...
-
-    def disconnect(
-        self, client: FlextGrpcModels.Grpc.Client
-    ) -> r[FlextGrpcModels.Grpc.Client]:
-        """Disconnect client."""
-        ...
-
-
-@runtime_checkable
-class StreamProcessor(Protocol):
-    """Protocol for stream processing."""
-
-    def close_stream(
-        self, stream: FlextGrpcModels.Grpc.GrpcStream
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
-        """Close stream."""
-        ...
-
-    def create_stream(
-        self, **kwargs: t.ConfigValue
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
-        """Create stream."""
-        ...
-
-    def send_data(
-        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
-    ) -> r[ServicePayload]:
-        """Send data through stream.
-
-        Note: Uses t.ConfigValue for gRPC message compatibility
-        """
-        ...
-
 
 class MetricsCollector:
     """Dedicated metrics collection with thread safety."""
@@ -157,7 +100,6 @@ class MetricsCollector:
             normalized = _MetricValueModel(value=value)
             json_val = _normalize_value(normalized.value)
             self._metrics.values[key] = json_val
-
 
 class ConnectionPool:
     """Generic connection pool with resource management."""
@@ -213,7 +155,6 @@ class ConnectionPool:
             _release,
             catch=(grpc.RpcError, ConnectionError, TimeoutError),
         ).map_error(lambda e: f"Connection release failed: {e}")
-
 
 class GrpcServerManager(ServerLifecycle):
     """Dedicated server lifecycle management."""
@@ -295,7 +236,6 @@ class GrpcServerManager(ServerLifecycle):
             return stopping_server.mark_stopped()
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r[FlextGrpcModels.Grpc.Server].fail(f"Server stop failed: {e}")
-
 
 class GrpcClientManager(ClientConnection):
     """Dedicated client connection management."""
@@ -412,7 +352,6 @@ class GrpcClientManager(ClientConnection):
         except (ConnectionError, TimeoutError) as e:
             return r[ServicePayload].fail(f"Call execution failed: {e}")
 
-
 class GrpcStreamManager(StreamProcessor):
     """Dedicated stream processing with buffering."""
 
@@ -484,7 +423,6 @@ class GrpcStreamManager(StreamProcessor):
             return r[ServicePayload].fail(f"Invalid stream state: {e}")
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r[ServicePayload].fail(f"Data send failed: {e}")
-
 
 class FlextGrpcServices:
     """Generic gRPC service facade using SOLID principles and delegation.
@@ -685,7 +623,6 @@ class FlextGrpcServices:
                 )
             return r[ServicePayload].ok(ServicePayload.from_values(status="closed"))
         return r[ServicePayload].fail(f"Unsupported stream command: {command}")
-
 
 __all__ = [
     "ClientConnection",

@@ -1,5 +1,8 @@
 """Tests for flext_grpc.utilities module."""
 
+from __future__ import annotations
+
+
 from flext_grpc import FlextGrpcUtilities
 
 

@@ -18,14 +18,6 @@ from pydantic import Field, computed_field
 from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
 
-GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
-GrpcSecurityConfig: TypeAlias = FlextGrpcModels.Grpc.SecurityConfig
-GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
-GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
-GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
-GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
-
-
 class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings with flat convenience fields and nested configurations.
 
@@ -135,6 +127,5 @@ class FlextGrpcSettings(FlextSettings):
 
         """
         return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
-
 
 __all__ = ["FlextGrpcModels", "FlextGrpcSettings"]

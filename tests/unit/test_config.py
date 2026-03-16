@@ -1,5 +1,8 @@
 """Tests for flext_grpc.config module."""
 
+from __future__ import annotations
+
+
 import pytest
 
 from flext_grpc import FlextGrpcSettings, m

@@ -81,5 +81,6 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
         TEST_ERROR_MESSAGE: Final[str] = "test_error"
 
 
-c = TestsFlextGrpcConstants
 __all__ = ["TestsFlextGrpcConstants", "c"]
+
+c = TestsFlextGrpcConstants

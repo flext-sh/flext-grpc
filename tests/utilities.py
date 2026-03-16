@@ -33,5 +33,6 @@ class TestsFlextGrpcUtilities(FlextTestsUtilities, FlextGrpcUtilities):
     """
 
 
-u = TestsFlextGrpcUtilities
 __all__ = ["TestsFlextGrpcUtilities", "u"]
+
+u = TestsFlextGrpcUtilities

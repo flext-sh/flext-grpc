@@ -862,3 +862,5 @@ class FlextGrpcModels(FlextModels):
 m: type[FlextGrpcModels] = FlextGrpcModels
 
 __all__ = ["FlextGrpcModels", "m"]
+
+m = FlextGrpcModels

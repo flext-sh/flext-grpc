@@ -17,15 +17,6 @@ from flext_core import FlextConstants, r
 
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
 
-type CompleteSetup = dict[
-    str,
-    FlextGrpcModels.Grpc.Server
-    | FlextGrpcModels.Grpc.Client
-    | FlextGrpcModels.Grpc.Service
-    | str,
-]
-
-
 class GrpcServerManager:
     """Advanced server management example using FlextGrpc facade."""
 
@@ -102,7 +93,6 @@ class GrpcServerManager:
                 results[server_id] = True
         return results
 
-
 class AdvancedGrpcOperations:
     """Advanced gRPC operations using FlextGrpc facade."""
 
@@ -152,7 +142,6 @@ class AdvancedGrpcOperations:
             else:
                 print(f"Failed to create {stream_type} stream: {stream_result.error}")
 
-
 def example_1_server_pool() -> None:
     """Example 1: Server pool management through facade."""
     manager = GrpcServerManager()
@@ -169,7 +158,6 @@ def example_1_server_pool() -> None:
     successful_stops = sum(1 for success in stop_results.values() if success)
     print(f"Stopped {successful_stops}/{len(stop_results)} servers")
 
-
 def example_2_client_pool() -> None:
     """Example 2: Advanced operations through facade."""
     ops = AdvancedGrpcOperations()
@@ -185,7 +173,6 @@ def example_2_client_pool() -> None:
     else:
         print(f"Setup creation failed: {setup_result.error}")
     ops.demonstrate_streaming()
-
 
 def example_3_service_creation() -> None:
     """Example 3: Service creation patterns through facade."""
@@ -208,7 +195,6 @@ def example_3_service_creation() -> None:
             print(f"Failed to create {service_name}: {service_result.error}")
     print(f"Successfully created {len(created_services)} services")
 
-
 def example_4_streaming() -> None:
     """Example 4: Streaming operations through facade."""
     grpc = FlextGrpc()
@@ -230,7 +216,6 @@ def example_4_streaming() -> None:
         else:
             print(f"Failed to create {stream_type} stream: {stream_result.error}")
     print(f"Successfully created {len(created_streams)} streaming operations")
-
 
 def example_5_error_handling() -> None:
     """Example 5: Comprehensive error handling through facade."""
@@ -263,7 +248,6 @@ def example_5_error_handling() -> None:
         )
     print("Error handling validation completed - all invalid inputs properly rejected")
 
-
 def main() -> None:
     """Run all advanced examples."""
     example_1_server_pool()
@@ -271,7 +255,6 @@ def main() -> None:
     example_3_service_creation()
     example_4_streaming()
     example_5_error_handling()
-
 
 if __name__ == "__main__":
     main()
