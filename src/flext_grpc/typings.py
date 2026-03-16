@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import TypeAlias, runtime_checkable
+from typing import TypeAlias
 
 from flext_core import FlextTypes
 
@@ -25,7 +25,6 @@ from flext_grpc.models import FlextGrpcModels
 from flext_grpc.protocols import FlextGrpcProtocols
 
 
-@runtime_checkable
 class FlextGrpcTypes(FlextTypes):
     """gRPC-specific type definitions extending t.
 

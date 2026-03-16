@@ -504,7 +504,3 @@ class StreamProcessor(Protocol):
         Note: Uses t.ConfigValue for gRPC message compatibility
         """
         ...
-
-
-class _GrpcServicer(Protocol):
-    """Protocol for gRPC service implementations (duck typing)."""

@@ -15,7 +15,7 @@ import time
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import Annotated, override, runtime_checkable
+from typing import Annotated, override
 
 import grpc
 from flext_core import r
@@ -56,9 +56,6 @@ def create_real_servicer(_server_key: str) -> FlextGrpcServiceServicer:
     return FlextGrpcServiceServicer()
 
 
-@runtime_checkable
-@runtime_checkable
-@runtime_checkable
 class MetricsCollector:
     """Dedicated metrics collection with thread safety."""
 
