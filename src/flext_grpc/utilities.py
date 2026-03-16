@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping
-from typing import TypeGuard
+from typing import TypeIs
 from uuid import uuid4
 
 import grpc
@@ -27,7 +27,7 @@ GrpcChannelType = grpc.Channel
 __all__ = ["FlextGrpcUtilities", "u"]
 
 
-def _is_valid_stream_type(value: str) -> TypeGuard[c.Grpc.StreamTypeLiteral]:
+def _is_valid_stream_type(value: str) -> TypeIs[c.Grpc.StreamTypeLiteral]:
     """Check if value is a valid stream type literal."""
     return value in c.Grpc.STREAM_TYPES
 

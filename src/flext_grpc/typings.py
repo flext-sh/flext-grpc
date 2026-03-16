@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import logging
 import re
-from typing import TypeAlias
 
 from flext_core import FlextTypes
 
@@ -33,36 +32,36 @@ class FlextGrpcTypes(FlextTypes):
     Uses Python 3.13+ type syntax and patterns.
     """
 
-    ConfigValue: TypeAlias = FlextTypes.ContainerValue | None
+    type ConfigValue = FlextTypes.ContainerValue | None
     GrpcOptions = dict[str, FlextTypes.ContainerValue | None]
 
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
-        GrpcServicer: TypeAlias = FlextGrpcProtocols.Grpc.GrpcServicer
+        type GrpcServicer = FlextGrpcProtocols.Grpc.GrpcServicer
 
-        Dict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        GrpcDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        Headers: TypeAlias = dict[str, str]
-        Metadata: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        ConfigDict: TypeAlias = dict[
+        type Dict = dict[str, FlextTypes.ContainerValue | None]
+        type GrpcDict = dict[str, FlextTypes.ContainerValue | None]
+        type Headers = dict[str, str]
+        type Metadata = dict[str, FlextTypes.ContainerValue | None]
+        type ConfigDict = dict[
             str,
             str | int | bool | FlextTypes.ContainerValue | None,
         ]
-        Address: TypeAlias = dict[str, str | int]
-        Endpoint: TypeAlias = dict[str, str | int | bool]
-        Connection: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        ServiceData: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        MethodData: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        RequestDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        ResponseDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        StreamData: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
-        StreamMeta: TypeAlias = dict[str, str | int | bool]
+        type Address = dict[str, str | int]
+        type Endpoint = dict[str, str | int | bool]
+        type Connection = dict[str, FlextTypes.ContainerValue | None]
+        type ServiceData = dict[str, FlextTypes.ContainerValue | None]
+        type MethodData = dict[str, FlextTypes.ContainerValue | None]
+        type RequestDict = dict[str, FlextTypes.ContainerValue | None]
+        type ResponseDict = dict[str, FlextTypes.ContainerValue | None]
+        type StreamData = dict[str, FlextTypes.ContainerValue | None]
+        type StreamMeta = dict[str, str | int | bool]
         Target = str
         StreamType = c.Grpc.StreamTypeLiteral
-        ChannelState: TypeAlias = c.Grpc.ChannelStateLiteral
-        ServerState: TypeAlias = c.Grpc.ServerStateLiteral
-        Options: TypeAlias = dict[
+        type ChannelState = c.Grpc.ChannelStateLiteral
+        type ServerState = c.Grpc.ServerStateLiteral
+        type Options = dict[
             str,
             FlextTypes.Scalar
             | list[FlextTypes.ContainerValue | None]
@@ -93,7 +92,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 list[str] | dict[str, FlextTypes.ContainerValue | None],
             ]
-            HandlerConfiguration: TypeAlias = list[
+            type HandlerConfiguration = list[
                 dict[str, str | FlextTypes.ContainerValue | None]
             ]
 
@@ -108,8 +107,8 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 int | bool | dict[str, FlextTypes.ContainerValue | None],
             ]
-            RetryConfiguration: TypeAlias = dict[str, int | float | bool | list[str]]
-            LoadBalancing: TypeAlias = dict[
+            type RetryConfiguration = dict[str, int | float | bool | list[str]]
+            type LoadBalancing = dict[
                 str,
                 str | bool | dict[str, FlextTypes.ContainerValue | None],
             ]
@@ -145,7 +144,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | int | bool | dict[str, FlextTypes.ContainerValue | None],
             ]
-            StreamingPipeline: TypeAlias = list[
+            type StreamingPipeline = list[
                 dict[str, str | FlextTypes.ContainerValue | None]
             ]
 
@@ -164,7 +163,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | int | dict[str, FlextTypes.ContainerValue | None],
             ]
-            InterceptorChain: TypeAlias = list[
+            type InterceptorChain = list[
                 dict[str, str | FlextTypes.ContainerValue | None]
             ]
             ServiceDiscovery = dict[
@@ -187,11 +186,11 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | bool | dict[str, FlextTypes.ContainerValue | None],
             ]
-            AuthenticationConfig: TypeAlias = dict[
+            type AuthenticationConfig = dict[
                 str,
                 str | dict[str, FlextTypes.ContainerValue | None],
             ]
-            AuthorizationRules: TypeAlias = list[dict[str, str | bool | list[str]]]
+            type AuthorizationRules = list[dict[str, str | bool | list[str]]]
             CertificateManagement = dict[
                 str,
                 str | bool | dict[str, FlextTypes.ContainerValue | None],
@@ -220,7 +219,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | bool | int | dict[str, FlextTypes.ContainerValue | None],
             ]
-            AlertingRules: TypeAlias = list[dict[str, FlextTypes.Scalar]]
+            type AlertingRules = list[dict[str, FlextTypes.Scalar]]
             PerformanceMetrics = dict[
                 str,
                 float | int | dict[str, FlextTypes.ContainerValue | None],
@@ -235,7 +234,7 @@ class FlextGrpcTypes(FlextTypes):
             """
 
             ProjectConfig = dict[str, FlextTypes.ContainerValue | None]
-            MicroserviceConfig: TypeAlias = dict[str, str | int | bool | list[str]]
+            type MicroserviceConfig = dict[str, str | int | bool | list[str]]
             StreamingConfig = dict[
                 str,
                 bool | str | dict[str, FlextTypes.ContainerValue | None],
@@ -286,14 +285,14 @@ t = FlextGrpcTypes
 __all__ = ["FlextGrpcTypes", "t"]
 
 
-GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
+type GrpcNetworkConfig = FlextGrpcModels.Grpc.NetworkConfig
 
-GrpcSecurityConfig: TypeAlias = FlextGrpcModels.Grpc.SecurityConfig
+type GrpcSecurityConfig = FlextGrpcModels.Grpc.SecurityConfig
 
-GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
+type GrpcPerformanceConfig = FlextGrpcModels.Grpc.PerformanceConfig
 
-GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
+type GrpcStreamingConfig = FlextGrpcModels.Grpc.StreamingConfig
 
-GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
+type GrpcClientConfig = FlextGrpcModels.Grpc.ClientSettingsConfig
 
-GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
+type GrpcMonitoringConfig = FlextGrpcModels.Grpc.MonitoringConfig

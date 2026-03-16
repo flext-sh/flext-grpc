@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from enum import StrEnum
+from enum import StrEnum, unique
 from typing import Final, Literal
 
 from flext_core import FlextConstants
@@ -169,6 +169,7 @@ class FlextGrpcConstants(FlextConstants):
                 FlextConstants.Network.DEFAULT_TIMEOUT
             )
 
+        @unique
         class ChannelState(StrEnum):
             """gRPC channel state enumeration (single source of truth).
 
@@ -183,6 +184,7 @@ class FlextGrpcConstants(FlextConstants):
             TRANSIENT_FAILURE = "transient_failure"
             SHUTDOWN = "shutdown"
 
+        @unique
         class ServerState(StrEnum):
             """gRPC server state enumeration (single source of truth).
 
@@ -196,6 +198,7 @@ class FlextGrpcConstants(FlextConstants):
             RUNNING = "running"
             STOPPING = "stopping"
 
+        @unique
         class GrpcOperations(StrEnum):
             """gRPC operation types (single source of truth).
 
@@ -209,6 +212,7 @@ class FlextGrpcConstants(FlextConstants):
             CLIENT_STREAMING = "client_streaming"
             BIDIRECTIONAL = "bidirectional"
 
+        @unique
         class CompressionTypes(StrEnum):
             """gRPC compression types (single source of truth).
 
@@ -221,6 +225,7 @@ class FlextGrpcConstants(FlextConstants):
             GZIP = "gzip"
             DEFLATE = "deflate"
 
+        @unique
         class LoadBalancingPolicies(StrEnum):
             """gRPC load balancing policies (single source of truth).
 
