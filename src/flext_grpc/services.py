@@ -30,6 +30,7 @@ from flext_grpc.proto.stubs import (
     HealthRequest,
     add_FlextGrpcServiceServicer_to_server,
 )
+from flext_grpc.protocols import ClientConnection, ServerLifecycle, StreamProcessor
 from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 

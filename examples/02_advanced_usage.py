@@ -14,9 +14,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import FlextConstants, r
+from typings import CompleteSetup
 
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
-from examples.typings import CompleteSetup
 
 
 class GrpcServerManager:

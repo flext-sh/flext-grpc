@@ -12,6 +12,9 @@ from typing import Protocol, runtime_checkable
 from flext_core import FlextProtocols, r, t
 
 from flext_grpc import c
+from flext_grpc.models import FlextGrpcModels
+
+ServicePayload = FlextGrpcModels.Grpc.Payload
 
 
 class FlextGrpcProtocols(FlextProtocols):

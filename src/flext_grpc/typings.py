@@ -21,6 +21,8 @@ from typing import TypeAlias, runtime_checkable
 from flext_core import FlextTypes
 
 from flext_grpc import c
+from flext_grpc.models import FlextGrpcModels
+from flext_grpc.protocols import FlextGrpcProtocols
 
 
 @runtime_checkable
@@ -38,7 +40,7 @@ class FlextGrpcTypes(FlextTypes):
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
-        GrpcServicer: TypeAlias = _GrpcServicer
+        GrpcServicer: TypeAlias = FlextGrpcProtocols.Grpc.GrpcServicer
 
         Dict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]
         GrpcDict: TypeAlias = dict[str, FlextTypes.ContainerValue | None]

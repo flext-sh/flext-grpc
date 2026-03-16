@@ -18,6 +18,13 @@ from pydantic import Field, computed_field
 from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
 
+GrpcNetworkConfig = FlextGrpcModels.Grpc.NetworkConfig
+GrpcSecurityConfig = FlextGrpcModels.Grpc.SecurityConfig
+GrpcPerformanceConfig = FlextGrpcModels.Grpc.PerformanceConfig
+GrpcStreamingConfig = FlextGrpcModels.Grpc.StreamingConfig
+GrpcClientConfig = FlextGrpcModels.Grpc.ClientSettingsConfig
+GrpcMonitoringConfig = FlextGrpcModels.Grpc.MonitoringConfig
+
 
 class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings with flat convenience fields and nested configurations.
