@@ -20,7 +20,6 @@ import re
 from flext_core import FlextTypes
 
 from flext_grpc import c
-from flext_grpc.models import FlextGrpcModels
 from flext_grpc.protocols import FlextGrpcProtocols
 
 
@@ -283,16 +282,3 @@ class FlextGrpcTypes(FlextTypes):
 
 t = FlextGrpcTypes
 __all__ = ["FlextGrpcTypes", "t"]
-
-
-type GrpcNetworkConfig = FlextGrpcModels.Grpc.NetworkConfig
-
-type GrpcSecurityConfig = FlextGrpcModels.Grpc.SecurityConfig
-
-type GrpcPerformanceConfig = FlextGrpcModels.Grpc.PerformanceConfig
-
-type GrpcStreamingConfig = FlextGrpcModels.Grpc.StreamingConfig
-
-type GrpcClientConfig = FlextGrpcModels.Grpc.ClientSettingsConfig
-
-type GrpcMonitoringConfig = FlextGrpcModels.Grpc.MonitoringConfig
