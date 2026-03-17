@@ -18,7 +18,7 @@ import grpc
 from flext_core import FlextModels, r
 from pydantic import BaseModel, Field, computed_field, field_validator
 
-from flext_grpc import FlextGrpcProtocols as p, c, t
+from flext_grpc import FlextGrpcProtocols as p, c, t, u
 
 
 class FlextGrpcModels(FlextModels):
@@ -605,7 +605,7 @@ class FlextGrpcModels(FlextModels):
                 def normalize_payload_value(value: t.ConfigValue) -> t.ConfigValue:
                     if value is None:
                         return ""
-                    if isinstance(value, (str, int, float, bool)):
+                    if u.is_primitive(value):
                         return value
                     return str(value)
 

@@ -21,6 +21,7 @@ import grpc
 from flext_core import r
 from pydantic import Field, ValidationError
 
+from flext_grpc import u
 from flext_grpc.constants import c
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto.stubs import (
@@ -92,7 +93,7 @@ class MetricsCollector:
         def _normalize_value(val: t.ConfigValue) -> t.ConfigValue:
             if val is None:
                 return ""
-            if isinstance(val, (str, int, float, bool)):
+            if u.is_primitive(val):
                 return val
             return str(val)
 
