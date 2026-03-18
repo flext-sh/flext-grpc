@@ -34,7 +34,7 @@ m = FlextAutoModels
 
 class GrpcCompleteSetup(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    server: FlextGrpcModels.Grpc.Server
-    client: FlextGrpcModels.Grpc.Client
-    service: FlextGrpcModels.Grpc.Service
+    server: object
+    client: object
+    service: object
     target: str

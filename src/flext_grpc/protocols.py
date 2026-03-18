@@ -14,6 +14,24 @@ from flext_core import FlextProtocols, r, t
 from flext_grpc import c
 
 
+class ClientConnection:
+    """Base class for gRPC client connection management."""
+
+    pass
+
+
+class ServerLifecycle:
+    """Base class for gRPC server lifecycle management."""
+
+    pass
+
+
+class StreamProcessor:
+    """Base class for gRPC stream processing."""
+
+    pass
+
+
 class FlextGrpcProtocols(FlextProtocols):
     """Unified gRPC protocols extending FlextProtocols.
 
@@ -431,6 +449,12 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
 
-__all__ = ["FlextGrpcProtocols", "p"]
+__all__ = [
+    "ClientConnection",
+    "FlextGrpcProtocols",
+    "ServerLifecycle",
+    "StreamProcessor",
+    "p",
+]
 
 p = FlextGrpcProtocols
