@@ -12,7 +12,6 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
-    from flext_grpc import proto
     from flext_grpc.__version__ import (
         __all__,
         __author__,
@@ -34,15 +33,6 @@ if TYPE_CHECKING:
         FlextGrpcValidationError,
     )
     from flext_grpc.models import m
-    from flext_grpc.proto.stubs import (
-        EchoRequest,
-        EchoResponse,
-        FlextGrpcServiceServicer,
-        FlextGrpcServiceStub,
-        HealthRequest,
-        HealthResponse,
-        add_FlextGrpcServiceServicer_to_server,
-    )
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services import (
         ClientConnection,
@@ -63,16 +53,12 @@ if TYPE_CHECKING:
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "ClientConnection": ("flext_grpc.services", "ClientConnection"),
     "ConnectionPool": ("flext_grpc.services", "ConnectionPool"),
-    "EchoRequest": ("flext_grpc.proto.stubs", "EchoRequest"),
-    "EchoResponse": ("flext_grpc.proto.stubs", "EchoResponse"),
     "FlextGrpc": ("flext_grpc.api", "FlextGrpc"),
     "FlextGrpcConnectionError": ("flext_grpc.errors", "FlextGrpcConnectionError"),
     "FlextGrpcConstants": ("flext_grpc.constants", "FlextGrpcConstants"),
     "FlextGrpcError": ("flext_grpc.errors", "FlextGrpcError"),
     "FlextGrpcModels": ("flext_grpc.settings", "FlextGrpcModels"),
     "FlextGrpcProtocols": ("flext_grpc.protocols", "FlextGrpcProtocols"),
-    "FlextGrpcServiceServicer": ("flext_grpc.proto.stubs", "FlextGrpcServiceServicer"),
-    "FlextGrpcServiceStub": ("flext_grpc.proto.stubs", "FlextGrpcServiceStub"),
     "FlextGrpcServices": ("flext_grpc.services", "FlextGrpcServices"),
     "FlextGrpcSettings": ("flext_grpc.settings", "FlextGrpcSettings"),
     "FlextGrpcSettingsurationError": (
@@ -86,8 +72,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "GrpcClientManager": ("flext_grpc.services", "GrpcClientManager"),
     "GrpcServerManager": ("flext_grpc.services", "GrpcServerManager"),
     "GrpcStreamManager": ("flext_grpc.services", "GrpcStreamManager"),
-    "HealthRequest": ("flext_grpc.proto.stubs", "HealthRequest"),
-    "HealthResponse": ("flext_grpc.proto.stubs", "HealthResponse"),
     "MetricsCollector": ("flext_grpc.services", "MetricsCollector"),
     "ServerLifecycle": ("flext_grpc.services", "ServerLifecycle"),
     "ServicePayload": ("flext_grpc.services", "ServicePayload"),
@@ -101,14 +85,9 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "__url__": ("flext_grpc.__version__", "__url__"),
     "__version__": ("flext_grpc.__version__", "__version__"),
     "__version_info__": ("flext_grpc.__version__", "__version_info__"),
-    "add_FlextGrpcServiceServicer_to_server": (
-        "flext_grpc.proto.stubs",
-        "add_FlextGrpcServiceServicer_to_server",
-    ),
     "c": ("flext_grpc.constants", "c"),
     "m": ("flext_grpc.models", "m"),
     "p": ("flext_grpc.protocols", "p"),
-    "proto": ("flext_grpc.proto", ""),
     "t": ("flext_grpc.typings", "t"),
     "u": ("flext_grpc.utilities", "u"),
 }
@@ -116,16 +95,12 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
 __all__ = [
     "ClientConnection",
     "ConnectionPool",
-    "EchoRequest",
-    "EchoResponse",
     "FlextGrpc",
     "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcError",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
-    "FlextGrpcServiceServicer",
-    "FlextGrpcServiceStub",
     "FlextGrpcServices",
     "FlextGrpcSettings",
     "FlextGrpcSettingsurationError",
@@ -136,8 +111,6 @@ __all__ = [
     "GrpcClientManager",
     "GrpcServerManager",
     "GrpcStreamManager",
-    "HealthRequest",
-    "HealthResponse",
     "MetricsCollector",
     "ServerLifecycle",
     "ServicePayload",
@@ -151,11 +124,9 @@ __all__ = [
     "__url__",
     "__version__",
     "__version_info__",
-    "add_FlextGrpcServiceServicer_to_server",
     "c",
     "m",
     "p",
-    "proto",
     "t",
     "u",
 ]

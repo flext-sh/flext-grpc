@@ -13,3 +13,7 @@ from flext_tests import FlextTestsTypes
 
 class TestsFlextGrpcTypes(FlextTestsTypes):
     """Test type aliases for flextgrpc."""
+
+
+t = TestsFlextGrpcTypes
+__all__ = ["TestsFlextGrpcTypes", "t"]
