@@ -1,10 +1,10 @@
 """Constants for flext-grpc tests.
 
-Provides TestsFlextGrpcConstants, extending FlextTestsConstants with flext-grpc-specific
+Provides TestsFlextGrpcConstants, extending c with flext-grpc-specific
 constants using COMPOSITION INHERITANCE.
 
 Inheritance hierarchy:
-- FlextTestsConstants (flext_tests) - Provides .Tests.* namespace
+- c (flext_tests) - Provides .Tests.* namespace
 - FlextGrpcConstants (production) - Provides .Grpc.* namespace
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -20,11 +20,11 @@ from flext_tests import c
 from flext_grpc import FlextGrpcConstants
 
 
-class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
+class TestsFlextGrpcConstants(c, FlextGrpcConstants):
     """Constants for flext-grpc tests using COMPOSITION INHERITANCE.
 
     MANDATORY: Inherits from BOTH:
-    1. FlextTestsConstants - for test infrastructure (.Tests.*)
+    1. c - for test infrastructure (.Tests.*)
     2. FlextGrpcConstants - for domain constants (.Grpc.*)
 
     Access patterns:
@@ -35,9 +35,9 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
     - c.TestGrpc.* (project-specific test data)
 
     Rules:
-    - NEVER duplicate constants from FlextTestsConstants or FlextGrpcConstants
+    - NEVER duplicate constants from c or FlextGrpcConstants
     - Only flext-grpc-specific test constants allowed
-    - All generic constants come from FlextTestsConstants
+    - All generic constants come from c
     - All production constants come from FlextGrpcConstants
     """
 

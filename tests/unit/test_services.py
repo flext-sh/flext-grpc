@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import grpc
+from flext_tests import tm
 
 from flext_grpc import ConnectionPool, FlextGrpcServices, MetricsCollector
 
@@ -13,45 +14,45 @@ class TestFlextGrpcServices:
     def test_init(self) -> None:
         """Test FlextGrpcServices initialization."""
         services = FlextGrpcServices()
-        assert services is not None
+        tm.that(services is not None, eq=True)
 
     def test_connect_client(self) -> None:
         """Test client connection."""
         services = FlextGrpcServices()
         result = services.connect_client("localhost:50051")
-        assert result.is_success or not result.is_success
+        tm.that(result.is_success or not result.is_success, eq=True)
 
     def test_create_stream(self) -> None:
         """Test stream creation."""
         services = FlextGrpcServices()
         result = services.create_stream("test_method")
-        assert result.is_success
+        tm.that(result.is_success, eq=True)
 
     def test_execute_method(self) -> None:
         """Test execute method."""
         services = FlextGrpcServices()
         result = services.execute()
-        assert result.is_success
+        tm.that(result.is_success, eq=True)
 
     def test_connection_pool_release(self) -> None:
         """Test connection pool release."""
         pool = ConnectionPool(max_size=5)
         mock_connection = grpc.insecure_channel("localhost:50051")
         release_result = pool.release(mock_connection)
-        assert release_result.is_success
+        tm.that(release_result.is_success, eq=True)
 
     def test_connection_pool_cleanup(self) -> None:
         """Test connection pool cleanup."""
         pool = ConnectionPool(max_size=5)
         result = pool.cleanup()
-        assert result.is_success
+        tm.that(result.is_success, eq=True)
 
     def test_metrics_collector(self) -> None:
         """Test metrics collector directly."""
         collector = MetricsCollector()
         collector.record_metric("test_key", "test_value")
         value = collector.get_metric("test_key")
-        assert value == "test_value"
+        tm.that(value == "test_value", eq=True)
         metrics_payload = collector.get_all_metrics()
-        assert "test_key" in metrics_payload.values
-        assert metrics_payload.values["test_key"] == "test_value"
+        tm.that("test_key" in metrics_payload.values, eq=True)
+        tm.that(metrics_payload.values["test_key"] == "test_value", eq=True)

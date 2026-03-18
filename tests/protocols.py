@@ -1,6 +1,6 @@
 """Test protocol definitions for flext-grpc.
 
-Provides TestsFlextGrpcProtocols, combining FlextTestsProtocols with
+Provides TestsFlextGrpcProtocols, combining p with
 FlextGrpcProtocols for test-specific protocol definitions.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
@@ -14,12 +14,12 @@ from flext_tests import p
 from flext_grpc import FlextGrpcProtocols
 
 
-class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
-    """Test protocols combining FlextTestsProtocols and FlextGrpcProtocols.
+class TestsFlextGrpcProtocols(p, FlextGrpcProtocols):
+    """Test protocols combining p and FlextGrpcProtocols.
 
     Provides access to:
-    - p.Tests.Docker.* (from FlextTestsProtocols)
-    - p.Tests.Factory.* (from FlextTestsProtocols)
+    - p.Tests.Docker.* (from p)
+    - p.Tests.Factory.* (from p)
     - p.Grpc.* (from FlextGrpcProtocols)
     """
 

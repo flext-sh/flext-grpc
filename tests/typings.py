@@ -11,7 +11,7 @@ from __future__ import annotations
 from flext_tests import t
 
 
-class TestsFlextGrpcTypes(FlextTestsTypes):
+class TestsFlextGrpcTypes(t):
     """Test type aliases for flextgrpc."""
 
 

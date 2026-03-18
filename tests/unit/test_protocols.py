@@ -9,6 +9,8 @@ from __future__ import annotations
 
 from typing import is_protocol
 
+from flext_tests import tm
+
 from flext_grpc import FlextGrpcProtocols
 
 
@@ -17,43 +19,43 @@ class TestFlextGrpcProtocols:
 
     def test_protocols_class_exists(self) -> None:
         """Test that FlextGrpcProtocols class exists."""
-        assert FlextGrpcProtocols is not None
+        tm.that(FlextGrpcProtocols is not None, eq=True)
 
     def test_grpc_namespace_exists(self) -> None:
         """Test that Grpc namespace exists."""
-        assert hasattr(FlextGrpcProtocols, "Grpc")
+        tm.that(hasattr(FlextGrpcProtocols, "Grpc"), eq=True)
 
     def test_server_protocol_exists(self) -> None:
         """Test that Server exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Server")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Server"), eq=True)
 
     def test_client_protocol_exists(self) -> None:
         """Test that Client exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Client")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Client"), eq=True)
 
     def test_streaming_protocol_exists(self) -> None:
         """Test that Streaming exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Streaming")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Streaming"), eq=True)
 
     def test_service_protocol_exists(self) -> None:
         """Test that Service exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Service")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Service"), eq=True)
 
     def test_channel_protocol_exists(self) -> None:
         """Test that Channel exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Channel")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Channel"), eq=True)
 
     def test_metrics_protocol_exists(self) -> None:
         """Test that Metrics exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Metrics")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Metrics"), eq=True)
 
     def test_configuration_protocol_exists(self) -> None:
         """Test that Configuration exists."""
-        assert hasattr(FlextGrpcProtocols.Grpc, "Configuration")
+        tm.that(hasattr(FlextGrpcProtocols.Grpc, "Configuration"), eq=True)
 
     def test_protocols_are_protocols(self) -> None:
         """Test that protocols are proper Protocol subclasses."""
-        assert is_protocol(FlextGrpcProtocols.Grpc.Server)
-        assert is_protocol(FlextGrpcProtocols.Grpc.Client)
-        assert is_protocol(FlextGrpcProtocols.Grpc.Streaming)
-        assert is_protocol(FlextGrpcProtocols.Grpc.Service)
+        tm.that(is_protocol(FlextGrpcProtocols.Grpc.Server), eq=True)
+        tm.that(is_protocol(FlextGrpcProtocols.Grpc.Client), eq=True)
+        tm.that(is_protocol(FlextGrpcProtocols.Grpc.Streaming), eq=True)
+        tm.that(is_protocol(FlextGrpcProtocols.Grpc.Service), eq=True)

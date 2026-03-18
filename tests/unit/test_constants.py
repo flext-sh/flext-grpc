@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from flext_tests import tm
+
 from flext_grpc import FlextGrpcConstants
 
 
@@ -10,26 +12,42 @@ class TestFlextGrpcConstants:
 
     def test_network_constants(self) -> None:
         """Test network constants."""
-        assert FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST == "127.0.0.1"
-        assert FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT == 50051
-        assert FlextGrpcConstants.Grpc.GrpcNetwork.MIN_PORT == 1
-        assert FlextGrpcConstants.Grpc.GrpcNetwork.MAX_PORT == 65535
+        tm.that(
+            FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST == "127.0.0.1", eq=True
+        )
+        tm.that(FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT == 50051, eq=True)
+        tm.that(FlextGrpcConstants.Grpc.GrpcNetwork.MIN_PORT == 1, eq=True)
+        tm.that(FlextGrpcConstants.Grpc.GrpcNetwork.MAX_PORT == 65535, eq=True)
 
     def test_service_constants(self) -> None:
         """Test service constants."""
-        assert FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS == 10
-        assert FlextGrpcConstants.Grpc.Service.MIN_WORKERS == 1
-        assert FlextGrpcConstants.Grpc.Service.MAX_WORKERS == 100
+        tm.that(FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS == 10, eq=True)
+        tm.that(FlextGrpcConstants.Grpc.Service.MIN_WORKERS == 1, eq=True)
+        tm.that(FlextGrpcConstants.Grpc.Service.MAX_WORKERS == 100, eq=True)
 
     def test_validation_constants(self) -> None:
         """Test validation constants."""
-        assert FlextGrpcConstants.Grpc.GrpcValidation.ADDRESS_PARTS_COUNT == 2
-        assert FlextGrpcConstants.Grpc.GrpcValidation.MAX_PORT_NUMBER == 65535
+        tm.that(
+            FlextGrpcConstants.Grpc.GrpcValidation.ADDRESS_PARTS_COUNT == 2, eq=True
+        )
+        tm.that(
+            FlextGrpcConstants.Grpc.GrpcValidation.MAX_PORT_NUMBER == 65535, eq=True
+        )
 
     def test_streaming_constants(self) -> None:
         """Test streaming constants."""
-        assert FlextGrpcConstants.Grpc.Streaming.CLIENT_STREAMING_BUFFER_THRESHOLD == 10
-        assert FlextGrpcConstants.Grpc.Streaming.SERVER_STREAMING_BATCH_SIZE == 100
-        assert (
-            FlextGrpcConstants.Grpc.Streaming.BIDIRECTIONAL_STREAMING_QUEUE_SIZE == 1000
+        tm.that(
+            FlextGrpcConstants.Grpc.Streaming.CLIENT_STREAMING_BUFFER_THRESHOLD == 10,
+            eq=True,
+        )
+        tm.that(
+            FlextGrpcConstants.Grpc.Streaming.SERVER_STREAMING_BATCH_SIZE == 100,
+            eq=True,
+        )
+        tm.that(
+            (
+                FlextGrpcConstants.Grpc.Streaming.BIDIRECTIONAL_STREAMING_QUEUE_SIZE
+                == 1000
+            ),
+            eq=True,
         )

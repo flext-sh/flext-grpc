@@ -38,6 +38,7 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 from flext_core import FlextExceptions
+from flext_tests import tm
 
 from flext_grpc import (
     FlextGrpcConnectionError,
@@ -55,13 +56,13 @@ class TestFlextGrpcError:
         """Test FlextGrpcError can be created with message."""
         message = "Base gRPC error occurred"
         error = FlextGrpcError(message)
-        assert message in str(error)
-        assert isinstance(error, Exception)
+        tm.that(message in str(error), eq=True)
+        tm.that(isinstance(error, Exception), eq=True)
 
     def test_base_error_inheritance(self) -> None:
         """Test FlextGrpcError inherits from FlextExceptions."""
         error = FlextGrpcError("test")
-        assert isinstance(error, FlextExceptions.BaseError)
+        tm.that(isinstance(error, FlextExceptions.BaseError), eq=True)
 
 
 class TestFlextGrpcValidationError:
@@ -72,27 +73,27 @@ class TestFlextGrpcValidationError:
         message = "Invalid field value"
         field_name = "username"
         error = FlextGrpcValidationError(message, field=field_name)
-        assert message in str(error)
-        assert error.field == field_name
+        tm.that(message in str(error), eq=True)
+        tm.that(error.field == field_name, eq=True)
 
     def test_validation_error_without_field_name(self) -> None:
         """Test validation error with None field_name."""
         message = "General validation error"
         error = FlextGrpcValidationError(message, field=None)
-        assert message in str(error)
-        assert error.field is None
+        tm.that(message in str(error), eq=True)
+        tm.that(error.field is None, eq=True)
 
     def test_validation_error_default_field_name(self) -> None:
         """Test validation error with default field_name parameter."""
         message = "Default validation error"
         error = FlextGrpcValidationError(message)
-        assert message in str(error)
-        assert error.field is None
+        tm.that(message in str(error), eq=True)
+        tm.that(error.field is None, eq=True)
 
     def test_validation_error_inheritance(self) -> None:
         """Test FlextGrpcValidationError inherits correctly."""
         error = FlextGrpcValidationError("test")
-        assert isinstance(error, FlextExceptions.BaseError)
+        tm.that(isinstance(error, FlextExceptions.BaseError), eq=True)
 
 
 class TestFlextGrpcConnectionError:
@@ -102,12 +103,12 @@ class TestFlextGrpcConnectionError:
         """Test connection error can be created."""
         message = "Connection failed"
         error = FlextGrpcConnectionError(message)
-        assert message in str(error)
+        tm.that(message in str(error), eq=True)
 
     def test_connection_error_inheritance(self) -> None:
         """Test FlextGrpcConnectionError inherits correctly."""
         error = FlextGrpcConnectionError("test")
-        assert isinstance(error, FlextExceptions.BaseError)
+        tm.that(isinstance(error, FlextExceptions.BaseError), eq=True)
 
 
 class TestFlextGrpcTimeoutError:
@@ -117,12 +118,12 @@ class TestFlextGrpcTimeoutError:
         """Test timeout error can be created."""
         message = "Request timed out"
         error = FlextGrpcTimeoutError(message)
-        assert message in str(error)
+        tm.that(message in str(error), eq=True)
 
     def test_timeout_error_inheritance(self) -> None:
         """Test FlextGrpcTimeoutError inherits correctly."""
         error = FlextGrpcTimeoutError("test")
-        assert isinstance(error, FlextExceptions.BaseError)
+        tm.that(isinstance(error, FlextExceptions.BaseError), eq=True)
 
 
 class TestFlextGrpcSettingsurationError:
@@ -133,28 +134,28 @@ class TestFlextGrpcSettingsurationError:
         message = "Invalid configuration"
         config_key = "port"
         error = FlextGrpcSettingsurationError(message, config_key=config_key)
-        assert message in str(error)
-        assert error.config_key == config_key
+        tm.that(message in str(error), eq=True)
+        tm.that(error.config_key == config_key, eq=True)
 
     def test_configuration_error_with_minimal_params(self) -> None:
         """Test configuration error with only message."""
         message = "Configuration error"
         error = FlextGrpcSettingsurationError(message)
-        assert message in str(error)
-        assert error.config_key is None
+        tm.that(message in str(error), eq=True)
+        tm.that(error.config_key is None, eq=True)
 
     def test_configuration_error_with_key_only(self) -> None:
         """Test configuration error with config_key but no value."""
         message = "Missing configuration"
         config_key = "host"
         error = FlextGrpcSettingsurationError(message, config_key=config_key)
-        assert message in str(error)
-        assert error.config_key == config_key
+        tm.that(message in str(error), eq=True)
+        tm.that(error.config_key == config_key, eq=True)
 
     def test_configuration_error_inheritance(self) -> None:
         """Test FlextGrpcSettingsurationError inherits correctly."""
         error = FlextGrpcSettingsurationError("test")
-        assert isinstance(error, FlextExceptions.BaseError)
+        tm.that(isinstance(error, FlextExceptions.BaseError), eq=True)
 
 
 class TestErrorIntegration:
@@ -170,8 +171,8 @@ class TestErrorIntegration:
             FlextGrpcSettingsurationError("config error", config_key="key"),
         ]
         for error in errors:
-            assert isinstance(error, Exception)
-            assert len(str(error)) > 0
+            tm.that(isinstance(error, Exception), eq=True)
+            tm.that(len(str(error)) > 0, eq=True)
 
     def test_error_hierarchy_consistency(self) -> None:
         """Test error hierarchy follows flext-core patterns."""
@@ -182,24 +183,36 @@ class TestErrorIntegration:
             FlextGrpcTimeoutError("test"),
             FlextGrpcSettingsurationError("test"),
         ]
-        assert isinstance(FlextGrpcError("test"), FlextExceptions.BaseError)
-        assert isinstance(FlextGrpcValidationError("test"), FlextExceptions.BaseError)
-        assert isinstance(FlextGrpcConnectionError("test"), FlextExceptions.BaseError)
-        assert isinstance(FlextGrpcTimeoutError("test"), FlextExceptions.BaseError)
-        assert isinstance(
-            FlextGrpcSettingsurationError("test"), FlextExceptions.BaseError
+        tm.that(isinstance(FlextGrpcError("test"), FlextExceptions.BaseError), eq=True)
+        tm.that(
+            isinstance(FlextGrpcValidationError("test"), FlextExceptions.BaseError),
+            eq=True,
+        )
+        tm.that(
+            isinstance(FlextGrpcConnectionError("test"), FlextExceptions.BaseError),
+            eq=True,
+        )
+        tm.that(
+            isinstance(FlextGrpcTimeoutError("test"), FlextExceptions.BaseError),
+            eq=True,
+        )
+        tm.that(
+            isinstance(
+                FlextGrpcSettingsurationError("test"), FlextExceptions.BaseError
+            ),
+            eq=True,
         )
         for error in errors:
-            assert isinstance(error, Exception)
+            tm.that(isinstance(error, Exception), eq=True)
 
     def test_error_with_complex_scenarios(self) -> None:
         """Test errors in complex real-world scenarios."""
         unicode_error = FlextGrpcValidationError(
             "Invalid value for field 'データ'", field="データ"
         )
-        assert unicode_error.field == "データ"
+        tm.that(unicode_error.field == "データ", eq=True)
         config_key = "complex_setting"
         config_error = FlextGrpcSettingsurationError(
             "Complex config failed", config_key=config_key
         )
-        assert config_error.config_key == config_key
+        tm.that(config_error.config_key == config_key, eq=True)
