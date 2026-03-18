@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .constants import TestsFlextGrpcConstants, c
     from .models import TestsFlextGrpcModels, m, tm
     from .protocols import TestsFlextGrpcProtocols, p
-    from .typings import TestsFlextGrpcTypes
+    from .typings import TestsFlextGrpcTypes, t
     from .unit.test_api import TestFlextGrpc
     from .unit.test_config import TestFlextGrpcSettings
     from .unit.test_constants import TestFlextGrpcConstants
@@ -33,7 +33,7 @@ if TYPE_CHECKING:
     from .unit.test_models import TestFlextGrpcModels
     from .unit.test_protocols import TestFlextGrpcProtocols
     from .unit.test_services import TestFlextGrpcServices
-    from .unit.test_typings import TestFlextGrpcTypes, TestFlextGrpcTypes as t
+    from .unit.test_typings import TestFlextGrpcTypes
     from .unit.test_utilities import TestFlextGrpcUtilities
     from .utilities import TestsFlextGrpcUtilities, u
 
@@ -76,7 +76,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "m": ("tests.models", "m"),
     "p": ("tests.protocols", "p"),
     "sample_grpc_config": ("tests.conftest", "sample_grpc_config"),
-    "t": ("tests.unit.test_typings", "TestFlextGrpcTypes"),
+    "t": ("tests.typings", "t"),
     "test_addresses": ("tests.conftest", "test_addresses"),
     "tm": ("tests.models", "tm"),
     "u": ("tests.utilities", "u"),
