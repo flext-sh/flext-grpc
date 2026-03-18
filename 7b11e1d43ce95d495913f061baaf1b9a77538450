@@ -1,0 +1,25 @@
+src/flext_grpc/protocols.py
+  94129b03712af7a6 17-34,453-457
+src/flext_grpc/_models.py
+  94129b03712af7a6 37-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.1.15",
+  "base_commit_sha": "7b11e1d43ce95d495913f061baaf1b9a77538450",
+  "prompts": {
+    "94129b03712af7a6": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_2fe0a7de2ffeolmRBqYY1IOvu6",
+        "model": "anthropic/claude-haiku-4-5"
+      },
+      "human_author": "FLEXT Bot <team@flext.sh>",
+      "messages": [],
+      "total_additions": 33,
+      "total_deletions": 9,
+      "accepted_lines": 26,
+      "overriden_lines": 0
+    }
+  }
+}
