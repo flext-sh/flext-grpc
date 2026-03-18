@@ -23,7 +23,7 @@ class TestFlextGrpcUtilities:
     def test_grpc_parse_address(self) -> None:
         """Test gRPC address parsing utility."""
         parsed = FlextGrpcUtilities.Grpc.parse_address("localhost:50051")
-        tm.that(parsed is not None, eq=True)
+        assert parsed is not None
         host, port = parsed
         tm.that(host == "localhost", eq=True)
         tm.that(port == 50051, eq=True)
@@ -38,8 +38,8 @@ class TestFlextGrpcUtilities:
         result = FlextGrpcUtilities.create_client_entity("localhost:50051")
         tm.that(result.is_success, eq=True)
         client = result.value
-        tm.that(client is not None, eq=True)
-        tm.that(client.channel is not None, eq=True)
+        assert client is not None
+        assert client.channel is not None
         tm.that(client.channel.target == "localhost:50051", eq=True)
 
     def test_create_server_entity(self) -> None:
