@@ -6,8 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
-from typing import Protocol, runtime_checkable
+from collections.abc import Callable, Iterable, Mapping
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    from grpc import GenericRpcHandler
 
 from flext_core import FlextProtocols, r, t
 
@@ -388,9 +391,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Close the channel."""
                 ...
 
-            def unsubscribe(
-                self, callback: FlextGrpcProtocols.Grpc.GrpcCallbackFunction
-            ) -> None:
+            def unsubscribe(self, callback: Callable[[object], None]) -> None:
                 """Remove a subscription callback from the channel."""
                 ...
 
@@ -403,7 +404,7 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC server operations (duck typing for grpc.Server)."""
 
             def add_generic_rpc_handlers(
-                self, handlers: list[FlextGrpcProtocols.Grpc.GrpcRpcHandler]
+                self, generic_rpc_handlers: Iterable[GenericRpcHandler]
             ) -> None:
                 """Add generic RPC handlers."""
                 ...
@@ -412,7 +413,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Start the server."""
                 ...
 
-            def stop(self, grace: float | None) -> None:
+            def stop(self, grace: float | None) -> object:
                 """Stop the server with optional grace period."""
                 ...
 

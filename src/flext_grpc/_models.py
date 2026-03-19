@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict
 
+from flext_grpc.protocols import FlextGrpcProtocols
+
 
 class FlextAutoConstants:
     pass
@@ -34,7 +36,7 @@ m = FlextAutoModels
 
 class GrpcCompleteSetup(BaseModel):
     model_config = ConfigDict(extra="forbid")
-    server: object
-    client: object
-    service: object
+    server: FlextGrpcProtocols.Grpc.GrpcServer
+    client: FlextGrpcProtocols.Grpc.GrpcStub
+    service: FlextGrpcProtocols.Grpc.GrpcServicer
     target: str
