@@ -19,7 +19,7 @@ import grpc
 import psutil
 from flext_core import FlextUtilities, r
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
+from flext_grpc import FlextGrpcModels, c, t
 
 logger = logging.getLogger(__name__)
 
@@ -123,7 +123,7 @@ class FlextGrpcUtilities(FlextUtilities):
     def create_stream_entity(
         cls,
         method_name: str,
-        stream_type: FlextGrpcConstants.Grpc.StreamTypeLiteral | str,
+        stream_type: c.Grpc.StreamTypeLiteral | str,
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
         """Create a gRPC stream entity directly."""
         if not _is_valid_stream_type(stream_type):

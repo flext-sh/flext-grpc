@@ -12,12 +12,7 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
-    from flext_grpc.decorators import d
-    from flext_grpc.exceptions import e
-    from flext_grpc.handlers import h
-    from flext_grpc.mixins import x
-    from flext_grpc.result import r
-    from flext_grpc.service import s
+    from flext_grpc import d, e, h, r, s, x
 
     from . import unit as unit
     from .conftest import clean_container, sample_grpc_config, test_addresses
@@ -80,20 +75,20 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
     "c": ("tests.constants", "c"),
     "clean_container": ("tests.conftest", "clean_container"),
-    "d": ("flext_grpc.decorators", "d"),
-    "e": ("flext_grpc.exceptions", "e"),
-    "h": ("flext_grpc.handlers", "h"),
+    "d": ("flext_grpc", "d"),
+    "e": ("flext_grpc", "e"),
+    "h": ("flext_grpc", "h"),
     "m": ("tests.models", "m"),
     "p": ("tests.protocols", "p"),
-    "r": ("flext_grpc.result", "r"),
-    "s": ("flext_grpc.service", "s"),
+    "r": ("flext_grpc", "r"),
+    "s": ("flext_grpc", "s"),
     "sample_grpc_config": ("tests.conftest", "sample_grpc_config"),
     "t": ("tests.typings", "t"),
     "test_addresses": ("tests.conftest", "test_addresses"),
     "tm": ("tests.models", "tm"),
     "u": ("tests.utilities", "u"),
     "unit": ("tests.unit", ""),
-    "x": ("flext_grpc.mixins", "x"),
+    "x": ("flext_grpc", "x"),
 }
 
 __all__ = [
