@@ -79,7 +79,9 @@ class FlextGrpcConstants(FlextConstants):
             MAX_WORKERS: Final[int] = 20
             MAX_CONCURRENT_RPCS: Final[int] = 200
             MAX_CONCURRENT_STREAMS: Final[int] = 50
-            DEFAULT_TIMEOUT: Final[float] = 30.0
+            DEFAULT_TIMEOUT: Final[float] = float(
+                FlextConstants.Network.DEFAULT_TIMEOUT
+            )
             THREAD_POOL_SIZE: Final[int] = 100
 
         class Production:
@@ -91,7 +93,7 @@ class FlextGrpcConstants(FlextConstants):
             HIGH_WORKER_TIMEOUT: Final[float] = float(
                 FlextConstants.Network.DEFAULT_TIMEOUT
             )
-            RETRY_ATTEMPTS: Final[int] = 3
+            RETRY_ATTEMPTS: Final[int] = FlextConstants.DEFAULT_MAX_RETRY_ATTEMPTS
             RETRY_TIMEOUT: Final[float] = float(FlextConstants.Network.DEFAULT_TIMEOUT)
             MAX_RETRY_ATTEMPTS: Final[int] = 5
             HIGH_RETRY_TIMEOUT: Final[float] = 10.0

@@ -14,11 +14,10 @@ from typing import TypedDict
 
 from flext_core import r
 
-from flext_grpc.constants import c
+from flext_grpc import c, t
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.services import FlextGrpcServices, ServicePayload
 from flext_grpc.settings import FlextGrpcSettings
-from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
 

@@ -21,8 +21,7 @@ import grpc
 from flext_core import r
 from pydantic import Field, ValidationError
 
-from flext_grpc import u
-from flext_grpc.constants import c
+from flext_grpc import c, t, u
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto.stubs import (
     EchoRequest,
@@ -32,7 +31,6 @@ from flext_grpc.proto.stubs import (
     add_FlextGrpcServiceServicer_to_server,
 )
 from flext_grpc.protocols import ClientConnection, ServerLifecycle, StreamProcessor
-from flext_grpc.typings import t
 from flext_grpc.utilities import FlextGrpcUtilities
 
 ServicePayload = FlextGrpcModels.Grpc.Payload
