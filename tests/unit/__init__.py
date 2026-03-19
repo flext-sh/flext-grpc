@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
     from .test_api import TestFlextGrpc
     from .test_config import TestFlextGrpcSettings
-    from .test_constants import TestFlextGrpcConstants, TestFlextGrpcConstants as c
+    from .test_constants import TestFlextGrpcConstants
     from .test_entities import FlextGrpcEntities, TestFlextGrpcEntities
     from .test_errors import (
         TestErrorIntegration,
@@ -24,11 +24,11 @@ if TYPE_CHECKING:
         TestFlextGrpcTimeoutError,
         TestFlextGrpcValidationError,
     )
-    from .test_models import TestFlextGrpcModels, TestFlextGrpcModels as m
-    from .test_protocols import TestFlextGrpcProtocols, TestFlextGrpcProtocols as p
+    from .test_models import TestFlextGrpcModels
+    from .test_protocols import TestFlextGrpcProtocols
     from .test_services import TestFlextGrpcServices
-    from .test_typings import TestFlextGrpcTypes, TestFlextGrpcTypes as t
-    from .test_utilities import TestFlextGrpcUtilities, TestFlextGrpcUtilities as u
+    from .test_typings import TestFlextGrpcTypes
+    from .test_utilities import TestFlextGrpcUtilities
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcEntities": ("tests.unit.test_entities", "FlextGrpcEntities"),
@@ -59,11 +59,6 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "tests.unit.test_errors",
         "TestFlextGrpcValidationError",
     ),
-    "c": ("tests.unit.test_constants", "TestFlextGrpcConstants"),
-    "m": ("tests.unit.test_models", "TestFlextGrpcModels"),
-    "p": ("tests.unit.test_protocols", "TestFlextGrpcProtocols"),
-    "t": ("tests.unit.test_typings", "TestFlextGrpcTypes"),
-    "u": ("tests.unit.test_utilities", "TestFlextGrpcUtilities"),
 }
 
 __all__ = [
@@ -83,11 +78,6 @@ __all__ = [
     "TestFlextGrpcTypes",
     "TestFlextGrpcUtilities",
     "TestFlextGrpcValidationError",
-    "c",
-    "m",
-    "p",
-    "t",
-    "u",
 ]
 
 
