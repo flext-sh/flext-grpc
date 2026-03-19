@@ -34,7 +34,7 @@ if TYPE_CHECKING:
         FlextGrpcTimeoutError,
         FlextGrpcValidationError,
     )
-    from flext_grpc.models import m
+    from flext_grpc.models import FlextGrpcModels, m
     from flext_grpc.proto.stubs import (
         EchoRequest,
         EchoResponse,
@@ -44,25 +44,28 @@ if TYPE_CHECKING:
         HealthResponse,
         add_FlextGrpcServiceServicer_to_server,
     )
-    from flext_grpc.protocols import FlextGrpcProtocols, p
-    from flext_grpc.services import (
+    from flext_grpc.protocols import (
         ClientConnection,
+        FlextGrpcProtocols,
+        ServerLifecycle,
+        StreamProcessor,
+        p,
+    )
+    from flext_grpc.services import (
         ConnectionPool,
         FlextGrpcServices,
         GrpcClientManager,
         GrpcServerManager,
         GrpcStreamManager,
         MetricsCollector,
-        ServerLifecycle,
         ServicePayload,
-        StreamProcessor,
     )
-    from flext_grpc.settings import FlextGrpcModels, FlextGrpcSettings
+    from flext_grpc.settings import FlextGrpcSettings
     from flext_grpc.typings import FlextGrpcTypes, t
     from flext_grpc.utilities import FlextGrpcUtilities, u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "ClientConnection": ("flext_grpc.services", "ClientConnection"),
+    "ClientConnection": ("flext_grpc.protocols", "ClientConnection"),
     "ConnectionPool": ("flext_grpc.services", "ConnectionPool"),
     "EchoRequest": ("flext_grpc.proto.stubs", "EchoRequest"),
     "EchoResponse": ("flext_grpc.proto.stubs", "EchoResponse"),
@@ -70,7 +73,7 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcConnectionError": ("flext_grpc.errors", "FlextGrpcConnectionError"),
     "FlextGrpcConstants": ("flext_grpc.constants", "FlextGrpcConstants"),
     "FlextGrpcError": ("flext_grpc.errors", "FlextGrpcError"),
-    "FlextGrpcModels": ("flext_grpc.settings", "FlextGrpcModels"),
+    "FlextGrpcModels": ("flext_grpc.models", "FlextGrpcModels"),
     "FlextGrpcProtocols": ("flext_grpc.protocols", "FlextGrpcProtocols"),
     "FlextGrpcServiceServicer": ("flext_grpc.proto.stubs", "FlextGrpcServiceServicer"),
     "FlextGrpcServiceStub": ("flext_grpc.proto.stubs", "FlextGrpcServiceStub"),
@@ -90,9 +93,9 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "HealthRequest": ("flext_grpc.proto.stubs", "HealthRequest"),
     "HealthResponse": ("flext_grpc.proto.stubs", "HealthResponse"),
     "MetricsCollector": ("flext_grpc.services", "MetricsCollector"),
-    "ServerLifecycle": ("flext_grpc.services", "ServerLifecycle"),
+    "ServerLifecycle": ("flext_grpc.protocols", "ServerLifecycle"),
     "ServicePayload": ("flext_grpc.services", "ServicePayload"),
-    "StreamProcessor": ("flext_grpc.services", "StreamProcessor"),
+    "StreamProcessor": ("flext_grpc.protocols", "StreamProcessor"),
     "__all__": ("flext_grpc.__version__", "__all__"),
     "__author__": ("flext_grpc.__version__", "__author__"),
     "__author_email__": ("flext_grpc.__version__", "__author_email__"),

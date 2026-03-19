@@ -17,8 +17,8 @@ from typing import Annotated, Literal, Self, override
 import grpc
 from flext_core import FlextModels, r
 from pydantic import BaseModel, Field, computed_field, field_validator
-
-from flext_grpc import FlextGrpcProtocols, c, t, u
+from flext_grpc import FlextGrpcProtocols, c, t
+from flext_core import u
 
 p = FlextGrpcProtocols
 
