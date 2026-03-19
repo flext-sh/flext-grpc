@@ -17,9 +17,9 @@ from uuid import uuid4
 
 import grpc
 import psutil
-from flext_core import FlextUtilities, r, t
+from flext_core import FlextUtilities, r
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c
+from flext_grpc import FlextGrpcConstants, FlextGrpcModels, c, t
 
 logger = logging.getLogger(__name__)
 
