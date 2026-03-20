@@ -12,14 +12,14 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
 
-    from flext_grpc import d, e, h, r, s, x
+    from flext_grpc import c, d, e, h, m, p, r, s, t, u, x
 
     from . import unit as unit
     from .conftest import clean_container, sample_grpc_config, test_addresses
-    from .constants import TestsFlextGrpcConstants, c
-    from .models import TestsFlextGrpcModels, m, tm
-    from .protocols import TestsFlextGrpcProtocols, p
-    from .typings import TestsFlextGrpcTypes, t
+    from .constants import TestsFlextGrpcConstants
+    from .models import TestsFlextGrpcModels, tm
+    from .protocols import TestsFlextGrpcProtocols
+    from .typings import TestsFlextGrpcTypes
     from .unit.test_api import TestFlextGrpc
     from .unit.test_config import TestFlextGrpcSettings
     from .unit.test_constants import TestFlextGrpcConstants
@@ -37,7 +37,7 @@ if TYPE_CHECKING:
     from .unit.test_services import TestFlextGrpcServices
     from .unit.test_typings import TestFlextGrpcTypes
     from .unit.test_utilities import TestFlextGrpcUtilities
-    from .utilities import TestsFlextGrpcUtilities, u
+    from .utilities import TestsFlextGrpcUtilities
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcEntities": ("tests.unit.test_entities", "FlextGrpcEntities"),
@@ -73,20 +73,20 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "TestsFlextGrpcProtocols": ("tests.protocols", "TestsFlextGrpcProtocols"),
     "TestsFlextGrpcTypes": ("tests.typings", "TestsFlextGrpcTypes"),
     "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
-    "c": ("tests.constants", "c"),
+    "c": ("flext_grpc", "c"),
     "clean_container": ("tests.conftest", "clean_container"),
     "d": ("flext_grpc", "d"),
     "e": ("flext_grpc", "e"),
     "h": ("flext_grpc", "h"),
-    "m": ("tests.models", "m"),
-    "p": ("tests.protocols", "p"),
+    "m": ("flext_grpc", "m"),
+    "p": ("flext_grpc", "p"),
     "r": ("flext_grpc", "r"),
     "s": ("flext_grpc", "s"),
     "sample_grpc_config": ("tests.conftest", "sample_grpc_config"),
-    "t": ("tests.typings", "t"),
+    "t": ("flext_grpc", "t"),
     "test_addresses": ("tests.conftest", "test_addresses"),
     "tm": ("tests.models", "tm"),
-    "u": ("tests.utilities", "u"),
+    "u": ("flext_grpc", "u"),
     "unit": ("tests.unit", ""),
     "x": ("flext_grpc", "x"),
 }

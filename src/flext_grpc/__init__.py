@@ -26,7 +26,7 @@ if TYPE_CHECKING:
         __version_info__,
     )
     from flext_grpc.api import FlextGrpc
-    from flext_grpc.constants import FlextGrpcConstants, c
+    from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
     from flext_grpc.errors import (
         FlextGrpcConnectionError,
         FlextGrpcError,
@@ -34,7 +34,7 @@ if TYPE_CHECKING:
         FlextGrpcTimeoutError,
         FlextGrpcValidationError,
     )
-    from flext_grpc.models import FlextGrpcModels, m
+    from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
     from flext_grpc.proto.stubs import (
         EchoRequest,
         EchoResponse,
@@ -47,9 +47,9 @@ if TYPE_CHECKING:
     from flext_grpc.protocols import (
         ClientConnection,
         FlextGrpcProtocols,
+        FlextGrpcProtocols as p,
         ServerLifecycle,
         StreamProcessor,
-        p,
     )
     from flext_grpc.services import (
         ConnectionPool,
@@ -61,8 +61,8 @@ if TYPE_CHECKING:
         ServicePayload,
     )
     from flext_grpc.settings import FlextGrpcSettings
-    from flext_grpc.typings import FlextGrpcTypes, t
-    from flext_grpc.utilities import FlextGrpcUtilities, u
+    from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
+    from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "ClientConnection": ("flext_grpc.protocols", "ClientConnection"),
@@ -109,17 +109,17 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "flext_grpc.proto.stubs",
         "add_FlextGrpcServiceServicer_to_server",
     ),
-    "c": ("flext_grpc.constants", "c"),
+    "c": ("flext_grpc.constants", "FlextGrpcConstants"),
     "d": ("flext_core", "d"),
     "e": ("flext_core", "e"),
     "h": ("flext_core", "h"),
-    "m": ("flext_grpc.models", "m"),
-    "p": ("flext_grpc.protocols", "p"),
+    "m": ("flext_grpc.models", "FlextGrpcModels"),
+    "p": ("flext_grpc.protocols", "FlextGrpcProtocols"),
     "proto": ("flext_grpc.proto", ""),
     "r": ("flext_core", "r"),
     "s": ("flext_core", "s"),
-    "t": ("flext_grpc.typings", "t"),
-    "u": ("flext_grpc.utilities", "u"),
+    "t": ("flext_grpc.typings", "FlextGrpcTypes"),
+    "u": ("flext_grpc.utilities", "FlextGrpcUtilities"),
     "x": ("flext_core", "x"),
 }
 
