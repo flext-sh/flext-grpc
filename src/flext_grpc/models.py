@@ -138,7 +138,7 @@ class FlextGrpcModels(FlextModels):
             max_workers: Annotated[
                 int, Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
             ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
+            timeout: Annotated[float, Field(default=c.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS)]
 
         class ClientConfig(FlextModels.Value):
             """Basic client configuration (immutable value model)."""
@@ -149,7 +149,7 @@ class FlextGrpcModels(FlextModels):
                     default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
                 ),
             ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
+            timeout: Annotated[float, Field(default=c.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS)]
 
         class ChannelConfig(FlextModels.Value):
             """Basic channel configuration (immutable value model)."""

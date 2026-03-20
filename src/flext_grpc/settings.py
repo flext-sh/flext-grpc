@@ -60,7 +60,7 @@ class FlextGrpcSettings(FlextSettings):
     timeout: Annotated[
         float,
         Field(
-            default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
+            default=c.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS,
             gt=0,
             validation_alias="grpc_timeout",
         ),

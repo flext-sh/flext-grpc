@@ -28,7 +28,7 @@ def sample_grpc_config() -> dict[str, object]:
         "host": FlextConstants.Platform.DEFAULT_HOST,
         "port": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         "max_workers": FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
-        "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
+        "timeout": FlextConstants.DEFAULT_TIMEOUT_SECONDS,
     }
 
 

@@ -30,8 +30,8 @@ class FlextGrpcConstants(FlextConstants):
     ```python
     from flext_grpc import FlextGrpcConstants
 
-    timeout = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
-    port = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+    timeout = FlextGrpcConstants.DEFAULT_TIMEOUT_SECONDS
+    port = FlextGrpcConstants.DEFAULT_GRPC_PORT
     ```
     """
 
@@ -50,7 +50,7 @@ class FlextGrpcConstants(FlextConstants):
             MIN_PORT: Final[int] = 1
             MAX_PORT: Final[int] = 65535
             DEFAULT_TIMEOUT: Final[float] = float(
-                FlextConstants.Network.DEFAULT_TIMEOUT
+                FlextConstants.DEFAULT_TIMEOUT_SECONDS
             )
             HOST: Final[str] = "127.0.0.1"
             LOCALHOST_IP: Final[str] = "127.0.0.1"
@@ -69,7 +69,7 @@ class FlextGrpcConstants(FlextConstants):
 
             MAX_WORKERS: Final[int] = 20
             DEFAULT_TIMEOUT: Final[float] = float(
-                FlextConstants.Network.DEFAULT_TIMEOUT
+                FlextConstants.DEFAULT_TIMEOUT_SECONDS
             )
 
         class Production:
