@@ -15,10 +15,10 @@ from datetime import datetime
 from typing import Annotated, Literal, Self, override
 
 import grpc
-from flext_core import FlextModels, r
+from flext_core import FlextModels, r, u
 from pydantic import BaseModel, Field, computed_field, field_validator
+
 from flext_grpc import FlextGrpcProtocols, c, t
-from flext_core import u
 
 p = FlextGrpcProtocols
 
