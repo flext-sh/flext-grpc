@@ -214,19 +214,16 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC network configuration with validation."""
 
             host: Annotated[
-                str,
+                t.NonEmptyStr,
                 Field(
                     default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
-                    min_length=1,
                     description="gRPC server host",
                 ),
             ]
             port: Annotated[
-                int,
+                t.PortNumber,
                 Field(
                     default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-                    ge=1,
-                    le=65535,
                     description="gRPC server port",
                 ),
             ]
@@ -240,18 +237,16 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             keepalive_time: Annotated[
-                int,
+                t.PositiveInt,
                 Field(
                     default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS // 1000,
-                    ge=1,
                     description="Keepalive ping interval (seconds)",
                 ),
             ]
             keepalive_timeout: Annotated[
-                int,
+                t.PositiveInt,
                 Field(
                     default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000,
-                    ge=1,
                     description="Keepalive timeout (seconds)",
                 ),
             ]
@@ -363,11 +358,9 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             retry_attempts: Annotated[
-                int,
+                t.RetryCount,
                 Field(
                     default=3,
-                    ge=0,
-                    le=10,
                     description="Maximum retry attempts",
                 ),
             ]
