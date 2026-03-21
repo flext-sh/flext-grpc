@@ -20,54 +20,46 @@ if TYPE_CHECKING:
     from .models import TestsFlextGrpcModels, TestsFlextGrpcModels as m, tm
     from .protocols import TestsFlextGrpcProtocols, TestsFlextGrpcProtocols as p
     from .typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
-    from .unit.test_api import TestFlextGrpc
-    from .unit.test_config import TestFlextGrpcSettings
-    from .unit.test_constants import TestFlextGrpcConstants
-    from .unit.test_entities import FlextGrpcEntities, TestFlextGrpcEntities
-    from .unit.test_errors import (
+    from .unit import (
+        FlextGrpcEntities,
         TestErrorIntegration,
+        TestFlextGrpc,
         TestFlextGrpcConnectionError,
+        TestFlextGrpcConstants,
+        TestFlextGrpcEntities,
         TestFlextGrpcError,
+        TestFlextGrpcModels,
+        TestFlextGrpcProtocols,
+        TestFlextGrpcServices,
+        TestFlextGrpcSettings,
         TestFlextGrpcSettingsurationError,
         TestFlextGrpcTimeoutError,
+        TestFlextGrpcTypes,
+        TestFlextGrpcUtilities,
         TestFlextGrpcValidationError,
     )
-    from .unit.test_models import TestFlextGrpcModels
-    from .unit.test_protocols import TestFlextGrpcProtocols
-    from .unit.test_services import TestFlextGrpcServices
-    from .unit.test_typings import TestFlextGrpcTypes
-    from .unit.test_utilities import TestFlextGrpcUtilities
     from .utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
-    "FlextGrpcEntities": ("tests.unit.test_entities", "FlextGrpcEntities"),
-    "TestErrorIntegration": ("tests.unit.test_errors", "TestErrorIntegration"),
-    "TestFlextGrpc": ("tests.unit.test_api", "TestFlextGrpc"),
-    "TestFlextGrpcConnectionError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcConnectionError",
-    ),
-    "TestFlextGrpcConstants": ("tests.unit.test_constants", "TestFlextGrpcConstants"),
-    "TestFlextGrpcEntities": ("tests.unit.test_entities", "TestFlextGrpcEntities"),
-    "TestFlextGrpcError": ("tests.unit.test_errors", "TestFlextGrpcError"),
-    "TestFlextGrpcModels": ("tests.unit.test_models", "TestFlextGrpcModels"),
-    "TestFlextGrpcProtocols": ("tests.unit.test_protocols", "TestFlextGrpcProtocols"),
-    "TestFlextGrpcServices": ("tests.unit.test_services", "TestFlextGrpcServices"),
-    "TestFlextGrpcSettings": ("tests.unit.test_config", "TestFlextGrpcSettings"),
+    "FlextGrpcEntities": ("tests.unit", "FlextGrpcEntities"),
+    "TestErrorIntegration": ("tests.unit", "TestErrorIntegration"),
+    "TestFlextGrpc": ("tests.unit", "TestFlextGrpc"),
+    "TestFlextGrpcConnectionError": ("tests.unit", "TestFlextGrpcConnectionError"),
+    "TestFlextGrpcConstants": ("tests.unit", "TestFlextGrpcConstants"),
+    "TestFlextGrpcEntities": ("tests.unit", "TestFlextGrpcEntities"),
+    "TestFlextGrpcError": ("tests.unit", "TestFlextGrpcError"),
+    "TestFlextGrpcModels": ("tests.unit", "TestFlextGrpcModels"),
+    "TestFlextGrpcProtocols": ("tests.unit", "TestFlextGrpcProtocols"),
+    "TestFlextGrpcServices": ("tests.unit", "TestFlextGrpcServices"),
+    "TestFlextGrpcSettings": ("tests.unit", "TestFlextGrpcSettings"),
     "TestFlextGrpcSettingsurationError": (
-        "tests.unit.test_errors",
+        "tests.unit",
         "TestFlextGrpcSettingsurationError",
     ),
-    "TestFlextGrpcTimeoutError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcTimeoutError",
-    ),
-    "TestFlextGrpcTypes": ("tests.unit.test_typings", "TestFlextGrpcTypes"),
-    "TestFlextGrpcUtilities": ("tests.unit.test_utilities", "TestFlextGrpcUtilities"),
-    "TestFlextGrpcValidationError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcValidationError",
-    ),
+    "TestFlextGrpcTimeoutError": ("tests.unit", "TestFlextGrpcTimeoutError"),
+    "TestFlextGrpcTypes": ("tests.unit", "TestFlextGrpcTypes"),
+    "TestFlextGrpcUtilities": ("tests.unit", "TestFlextGrpcUtilities"),
+    "TestFlextGrpcValidationError": ("tests.unit", "TestFlextGrpcValidationError"),
     "TestsFlextGrpcConstants": ("tests.constants", "TestsFlextGrpcConstants"),
     "TestsFlextGrpcModels": ("tests.models", "TestsFlextGrpcModels"),
     "TestsFlextGrpcProtocols": ("tests.protocols", "TestsFlextGrpcProtocols"),
