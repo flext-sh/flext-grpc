@@ -25,7 +25,7 @@ def clean_container() -> FlextContainer:
 def sample_grpc_config() -> dict[str, object]:
     """Sample gRPC configuration for tests."""
     return {
-        "host": FlextConstants.Platform.DEFAULT_HOST,
+        "host": FlextConstants.DEFAULT_HOST,
         "port": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         "max_workers": FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
         "timeout": FlextConstants.DEFAULT_TIMEOUT_SECONDS,
@@ -37,7 +37,7 @@ def test_addresses() -> dict[str, list[str]]:
     """Test addresses for validation."""
     return {
         "valid": [
-            f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+            f"{FlextConstants.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "127.0.0.1:8080",
             "example.com:443",
             "api-server:9000",

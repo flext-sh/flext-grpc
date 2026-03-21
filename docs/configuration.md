@@ -109,7 +109,7 @@ config = FlextGrpcSettings(
 Configuration values can be set via environment variables with `GRPC_` prefix:
 
 ```bash
-export GRPC_HOST="${FlextConstants.Platform.PRODUCTION_HOST}"
+export GRPC_HOST="${FlextConstants.PRODUCTION_HOST}"
 export GRPC_PORT="${FlextGrpcConstants.Network.DEFAULT_PORT}"
 export GRPC_MAX_WORKERS="20"
 export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"
@@ -129,15 +129,15 @@ config = FlextGrpcSettings()
 Server bind address. Common values:
 
 - `FlextGrpcConstants.Network.DEFAULT_HOST` - Local development
-- `FlextConstants.Platform.LOCALHOST_IP` - Local IPv4 only
-- `FlextConstants.Platform.PRODUCTION_HOST` - All interfaces (production)
+- `FlextConstants.LOCALHOST_IP` - Local IPv4 only
+- `FlextConstants.PRODUCTION_HOST` - All interfaces (production)
 
 ```python
 # Development
 config = FlextGrpcSettings(host=FlextGrpcConstants.Network.DEFAULT_HOST)
 
 # Production
-config = FlextGrpcSettings(host=FlextConstants.Platform.PRODUCTION_HOST)
+config = FlextGrpcSettings(host=FlextConstants.PRODUCTION_HOST)
 ```
 
 #### `port: int = FlextGrpcConstants.Network.DEFAULT_PORT`
@@ -149,7 +149,7 @@ Server port number. Valid range: 1024-65535
 config = FlextGrpcSettings(port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 # Custom port
-config = FlextGrpcSettings(port=FlextConstants.Platform.DEFAULT_HTTP_PORT)
+config = FlextGrpcSettings(port=FlextConstants.DEFAULT_HTTP_PORT)
 ```
 
 #### `max_workers: int = 10`
@@ -360,7 +360,7 @@ def create_test_config() -> FlextGrpcSettings:
 ```yaml
 # grpc_config.yaml
 grpc:
-  host: "${FlextConstants.Platform.PRODUCTION_HOST}"
+  host: "${FlextConstants.PRODUCTION_HOST}"
   port: ${FlextGrpcConstants.Network.DEFAULT_PORT}
   max_workers: 20
   timeout: ${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}
@@ -601,7 +601,7 @@ config = FlextGrpcSettings(
 ```bash
 # Multiple ways to set the same value can conflict
 export GRPC_PORT=${FlextGrpcConstants.Network.DEFAULT_PORT}
-export GRPC_PORT=${FlextConstants.Platform.DEFAULT_HTTP_PORT}  # Overwrites previous value
+export GRPC_PORT=${FlextConstants.DEFAULT_HTTP_PORT}  # Overwrites previous value
 ```
 
 ### Debugging Configuration

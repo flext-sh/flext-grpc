@@ -172,7 +172,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Key Integration Points**:
 
-- FlexCore (Go) service communication (port ${FlextConstants.Platform.DEFAULT_HTTP_PORT})
+- FlexCore (Go) service communication (port ${FlextConstants.DEFAULT_HTTP_PORT})
 - FLEXT Service (Go/Python) integration (port 8081)
 - flext-core foundation pattern usage
 - flext-observability monitoring integration

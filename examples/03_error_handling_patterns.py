@@ -169,7 +169,7 @@ def error_recovery_patterns() -> r[str]:
     if primary_config_result.is_failure:
         logger.warning("Primary config failed, trying fallback")
         fallback_config_result = create_server_config(
-            FlextConstants.Platform.DEFAULT_HTTP_PORT, 2
+            FlextConstants.DEFAULT_HTTP_PORT, 2
         )
         if fallback_config_result.is_success:
             logger.info("✅ Fallback configuration successful")

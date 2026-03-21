@@ -106,7 +106,7 @@ class AdvancedGrpcOperations:
 
     def create_complete_setup(
         self,
-        host: str = FlextConstants.Platform.DEFAULT_HOST,
+        host: str = FlextConstants.DEFAULT_HOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
         methods: list[str] | None = None,

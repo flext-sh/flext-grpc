@@ -30,8 +30,8 @@ class FlextGrpcConstants(FlextConstants):
     ```python
     from flext_grpc import FlextGrpcConstants
 
-    timeout = FlextGrpcConstants.DEFAULT_TIMEOUT_SECONDS
-    port = FlextGrpcConstants.DEFAULT_GRPC_PORT
+    timeout = FlextGrpcConstants.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS
+    port = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     ```
     """
 
@@ -80,7 +80,7 @@ class FlextGrpcConstants(FlextConstants):
             MAX_RETRY_ATTEMPTS: Final[int] = 5
 
         class GrpcValidation:
-            """gRPC validation constants extending c.Validation."""
+            """gRPC validation constants extending c."""
 
             MAX_PORT_NUMBER: Final[int] = 65535
 
