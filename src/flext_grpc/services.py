@@ -15,7 +15,7 @@ import time
 from collections import deque
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import Annotated, override
+from typing import Annotated
 
 import grpc
 from flext_core import r
@@ -186,7 +186,6 @@ class GrpcServerManager(ServerLifecycle):
             )
         )
 
-    @override
     def start_server(
         self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
@@ -215,7 +214,6 @@ class GrpcServerManager(ServerLifecycle):
         except (grpc.RpcError, ConnectionError, TimeoutError) as e:
             return r[FlextGrpcModels.Grpc.Server].fail(f"Server start failed: {e}")
 
-    @override
     def stop_server(
         self, server: FlextGrpcModels.Grpc.Server
     ) -> r[FlextGrpcModels.Grpc.Server]:
@@ -249,15 +247,17 @@ class GrpcClientManager(ClientConnection):
         self._connection_pool = ConnectionPool(max_size=20)
         self._metrics = MetricsCollector()
 
-    @override
     def connect(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
         """Establish client connection with pooling."""
         if target in self._active_channels:
             return FlextGrpcUtilities.create_client_entity(target=target)
 
         def _connect() -> FlextGrpcModels.Grpc.Client:
-            grpc_channel: grpc.Channel = grpc.insecure_channel(target)
-            grpc.channel_ready_future(grpc_channel).result(timeout=5.0)
+            try:
+                grpc_channel: grpc.Channel = grpc.insecure_channel(target)
+                grpc.channel_ready_future(grpc_channel).result(timeout=5.0)
+            except (grpc.RpcError, grpc.FutureTimeoutError) as exc:
+                raise RuntimeError(str(exc)) from exc
             self._active_channels[target] = grpc_channel
             self._metrics.record_metric(f"{target}_connected_at", time.time())
             client_result = FlextGrpcUtilities.create_client_entity(target=target)
@@ -268,15 +268,12 @@ class GrpcClientManager(ClientConnection):
         return FlextGrpcUtilities.try_(
             _connect,
             catch=(
-                grpc.RpcError,
-                grpc.FutureTimeoutError,
                 ConnectionError,
                 TimeoutError,
                 RuntimeError,
             ),
         ).map_error(lambda e: f"Connection failed: {e}")
 
-    @override
     def disconnect(
         self, client: FlextGrpcModels.Grpc.Client
     ) -> r[FlextGrpcModels.Grpc.Client]:
@@ -322,9 +319,7 @@ class GrpcClientManager(ClientConnection):
             grpc_channel = self._active_channels[target]
             stub = FlextGrpcServiceStub(grpc_channel)
             if method == "Echo":
-                echo_response = stub.Echo(
-                    EchoRequest(message=str(request), metadata={})
-                )
+                echo_response = stub.Echo(EchoRequest(message=str(request)))
                 return r[ServicePayload].ok(
                     ServicePayload.from_values(
                         method="Echo",
@@ -364,7 +359,6 @@ class GrpcStreamManager(StreamProcessor):
         self._active_streams: dict[str, _StreamRuntimeState] = {}
         self._metrics = MetricsCollector()
 
-    @override
     def close_stream(
         self, stream: FlextGrpcModels.Grpc.GrpcStream
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
@@ -374,7 +368,6 @@ class GrpcStreamManager(StreamProcessor):
             del self._active_streams[stream_key]
         return r[FlextGrpcModels.Grpc.GrpcStream].ok(stream)
 
-    @override
     def create_stream(
         self, **kwargs: t.ConfigValue
     ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
@@ -396,7 +389,6 @@ class GrpcStreamManager(StreamProcessor):
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r[FlextGrpcModels.Grpc.GrpcStream].ok(stream)
 
-    @override
     def send_data(
         self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:

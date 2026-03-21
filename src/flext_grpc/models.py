@@ -37,6 +37,42 @@ class FlextGrpcModels(FlextModels):
     class Grpc:
         """Domain models for gRPC core business entities."""
 
+        # =========================================================================
+        # PROTO MESSAGE MODELS - RPC request/response messages
+        # =========================================================================
+
+        class EchoRequest(FlextModels.Value):
+            """Echo request message (immutable value model)."""
+
+            message: Annotated[str, Field(description="Echo message")]
+
+        class EchoResponse(FlextModels.Value):
+            """Echo response message (immutable value model)."""
+
+            message: Annotated[str, Field(description="Echo message")]
+            server_id: Annotated[
+                str,
+                Field(default="", description="Server identifier"),
+            ]
+            timestamp: Annotated[
+                datetime,
+                Field(default_factory=datetime.now, description="Response timestamp"),
+            ]
+
+        class HealthRequest(FlextModels.Value):
+            """Health check request message (immutable value model)."""
+
+            service: Annotated[str, Field(default="", description="Service name")]
+
+        class HealthResponse(FlextModels.Value):
+            """Health check response message (immutable value model)."""
+
+            status: Annotated[str, Field(description="Health status")]
+            message: Annotated[
+                str,
+                Field(default="", description="Health check message"),
+            ]
+
         class StreamInfo(FlextModels.Value):
             """Basic stream information (immutable value model)."""
 
@@ -138,7 +174,7 @@ class FlextGrpcModels(FlextModels):
             max_workers: Annotated[
                 int, Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
             ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS)]
+            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
 
         class ClientConfig(FlextModels.Value):
             """Basic client configuration (immutable value model)."""
@@ -149,7 +185,7 @@ class FlextGrpcModels(FlextModels):
                     default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
                 ),
             ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS)]
+            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
 
         class ChannelConfig(FlextModels.Value):
             """Basic channel configuration (immutable value model)."""
@@ -826,6 +862,10 @@ class FlextGrpcModels(FlextModels):
                 return v
 
     # Class-level aliases at facade root (flat namespace: m.StreamInfo, m.Request, etc.)
+    EchoRequest: type[Grpc.EchoRequest] = Grpc.EchoRequest
+    EchoResponse: type[Grpc.EchoResponse] = Grpc.EchoResponse
+    HealthRequest: type[Grpc.HealthRequest] = Grpc.HealthRequest
+    HealthResponse: type[Grpc.HealthResponse] = Grpc.HealthResponse
     StreamInfo: type[Grpc.StreamInfo] = Grpc.StreamInfo
     HealthCheck: type[Grpc.HealthCheck] = Grpc.HealthCheck
     ServiceDefinition: type[Grpc.ServiceDefinition] = Grpc.ServiceDefinition

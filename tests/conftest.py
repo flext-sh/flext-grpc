@@ -22,7 +22,7 @@ def clean_container() -> FlextContainer:
 
 
 @pytest.fixture
-def sample_grpc_config() -> dict[str, object]:
+def sample_grpc_config() -> dict[str, str | int | float]:
     """Sample gRPC configuration for tests."""
     return {
         "host": FlextConstants.DEFAULT_HOST,

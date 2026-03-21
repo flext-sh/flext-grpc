@@ -12,7 +12,9 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 if TYPE_CHECKING:
     from grpc import GenericRpcHandler
 
-from flext_core import FlextProtocols, c, r, t
+from flext_core import FlextProtocols, r, t
+
+from flext_grpc.constants import FlextGrpcConstants as c
 
 
 class ClientConnection:

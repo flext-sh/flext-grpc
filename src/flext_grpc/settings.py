@@ -60,24 +60,36 @@ class FlextGrpcSettings(FlextSettings):
     timeout: Annotated[
         float,
         Field(
-            default=c.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS,
+            default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
             gt=0,
             validation_alias="grpc_timeout",
         ),
     ]
 
     # Nested configuration models
-    network: Annotated[GrpcNetworkConfig, Field(default_factory=GrpcNetworkConfig)]
-    security: Annotated[GrpcSecurityConfig, Field(default_factory=GrpcSecurityConfig)]
+    network: Annotated[
+        GrpcNetworkConfig,
+        Field(default_factory=lambda: GrpcNetworkConfig.model_validate({})),
+    ]
+    security: Annotated[
+        GrpcSecurityConfig,
+        Field(default_factory=lambda: GrpcSecurityConfig.model_validate({})),
+    ]
     performance: Annotated[
-        GrpcPerformanceConfig, Field(default_factory=GrpcPerformanceConfig)
+        GrpcPerformanceConfig,
+        Field(default_factory=lambda: GrpcPerformanceConfig.model_validate({})),
     ]
     streaming: Annotated[
-        GrpcStreamingConfig, Field(default_factory=GrpcStreamingConfig)
+        GrpcStreamingConfig,
+        Field(default_factory=lambda: GrpcStreamingConfig.model_validate({})),
     ]
-    client: Annotated[GrpcClientConfig, Field(default_factory=GrpcClientConfig)]
+    client: Annotated[
+        GrpcClientConfig,
+        Field(default_factory=lambda: GrpcClientConfig.model_validate({})),
+    ]
     monitoring: Annotated[
-        GrpcMonitoringConfig, Field(default_factory=GrpcMonitoringConfig)
+        GrpcMonitoringConfig,
+        Field(default_factory=lambda: GrpcMonitoringConfig.model_validate({})),
     ]
 
     @computed_field

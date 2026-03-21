@@ -30,7 +30,7 @@ class FlextGrpcConstants(FlextConstants):
     ```python
     from flext_grpc import FlextGrpcConstants
 
-    timeout = FlextGrpcConstants.Grpc.GrpcDEFAULT_TIMEOUT_SECONDS
+    timeout = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
     port = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     ```
     """
@@ -61,6 +61,7 @@ class FlextGrpcConstants(FlextConstants):
             """gRPC service constants extending c.Service."""
 
             DEFAULT_MAX_WORKERS: Final[int] = 10
+            MIN_WORKERS: Final[int] = 1
             MAX_WORKERS: Final[int] = 100
             DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
 
@@ -82,6 +83,7 @@ class FlextGrpcConstants(FlextConstants):
         class GrpcValidation:
             """gRPC validation constants extending c."""
 
+            ADDRESS_PARTS_COUNT: Final[int] = 2
             MAX_PORT_NUMBER: Final[int] = 65535
 
         class GrpcMessages:
@@ -110,6 +112,10 @@ class FlextGrpcConstants(FlextConstants):
 
         class Streaming:
             """gRPC streaming constants."""
+
+            CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
+            SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
+            BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
 
         @unique
         class ChannelState(StrEnum):
