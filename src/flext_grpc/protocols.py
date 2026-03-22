@@ -390,7 +390,9 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Close the channel."""
                 ...
 
-            def unsubscribe(self, callback: Callable[[object], None]) -> None:
+            def unsubscribe(
+                self, callback: Callable[[t.NormalizedValue], None]
+            ) -> None:
                 """Remove a subscription callback from the channel."""
                 ...
 

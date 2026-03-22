@@ -92,7 +92,7 @@ providing enterprise-grade gRPC patterns with Clean Architecture and Domain-Driv
 #### Core Architecture (100%)
 
 - **Clean Architecture**: Complete separation of concerns implemented
-- **Domain-Driven Design**: Entity, value object, and aggregate patterns implemented
+- **Domain-Driven Design**: Entity, value t.NormalizedValue, and aggregate patterns implemented
 - **Railway-Oriented Programming**: r[T] error handling throughout
 - **Layer Separation**: Infrastructure, Application, Domain, Foundation layers properly separated
 

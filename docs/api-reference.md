@@ -163,7 +163,7 @@ Closes connection to the server.
 
 #### FlextGrpcSettings
 
-Configuration value object with validation.
+Configuration value t.NormalizedValue with validation.
 
 **Properties:**
 

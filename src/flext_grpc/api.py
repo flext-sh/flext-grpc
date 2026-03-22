@@ -211,7 +211,7 @@ class FlextGrpc:
         Returns:
         Response data dictionary
 
-        Note: Uses object for gRPC message compatibility
+        Note: Uses t.NormalizedValue for gRPC message compatibility
 
         """
         return self._service.send_data(stream, data)

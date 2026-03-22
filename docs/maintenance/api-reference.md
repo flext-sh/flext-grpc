@@ -59,20 +59,20 @@ output_path: Optional[Path] = None)`](#save_reportreport-auditreport-output_path
   - [🔗 Validation API](#-validation-api) - [LinkValidator](#linkvalidator) - [Methods](#methods) - [`validate_external_link(url: str) -> LinkValidationResult`](#validate_external_linkurl-str---linkvalidationresult) - [`validate_internal_links(content: str, file_path: Path,
     ](#validate_internal_linkscontent-str-file_path-path) - [StyleValidator](#stylevalidator) - [Methods](#methods) - [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path---stylecheckresult)
   - [🔧 Optimization API](#-optimization-api) - [DocumentationOptimizer](#documentationoptimizer) - [Methods](#methods) - [`optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str,
-object]`](#optimize_filefile_path-path-dry_run-bool--false---dictstr-object) - [`optimize_all_files(files: Optional[List[Path]] = None,
+t.NormalizedValue]`](#optimize_filefile_path-path-dry_run-bool--false---dictstr-t.NormalizedValue) - [`optimize_all_files(files: Optional[List[Path]] = None,
 dry_run: bool = False) -> Dict[str,
-object]`](#optimize_all_filesfiles-optionallistpath--none-dry_run-bool--false---dictstr-object)
-  - [🔄 Synchronization API](#-synchronization-api) - [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) - [`sync_changes(changes: List[Dict[str, object]],
+t.NormalizedValue]`](#optimize_all_filesfiles-optionallistpath--none-dry_run-bool--false---dictstr-t.NormalizedValue)
+  - [🔄 Synchronization API](#-synchronization-api) - [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) - [`sync_changes(changes: List[Dict[str, t.NormalizedValue]],
 action: str = "maintenance") -> Dict[str,
-object]`](#sync_changeschanges-listdictstr-object-action-str--maintenance---dictstr-object) - [`detect_conflicts(target_branch: str = "main") -> List[Dict[str,
-object]]`](#detect_conflictstarget_branch-str--main---listdictstr-object) - [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr--none---str)
+t.NormalizedValue]`](#sync_changeschanges-listdictstr-t.NormalizedValue-action-str--maintenance---dictstr-t.NormalizedValue) - [`detect_conflicts(target_branch: str = "main") -> List[Dict[str,
+t.NormalizedValue]]`](#detect_conflictstarget_branch-str--main---listdictstr-t.NormalizedValue) - [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr--none---str)
   - [📊 Reporting API](#-reporting-api) - [DocumentationReporter](#documentationreporter) - [Methods](#methods) - [`generate_comprehensive_report(audit_report, validation_report,
     ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict,
 output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath--none) - [`export_csv_report(report_data: Dict,
 output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str,
-object]`](#generate_trend_reportdays-int--30---dictstr-object)
+t.NormalizedValue]`](#generate_trend_reportdays-int--30---dictstr-t.NormalizedValue)
   - [🚀 Automation API](#-automation-api) - [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) - [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str,
-object]`](#run_scheduled_maintenancemaintenance_type-str--daily---dictstr-object)
+t.NormalizedValue]`](#run_scheduled_maintenancemaintenance_type-str--daily---dictstr-t.NormalizedValue)
   - [📋 Data Structures](#-data-structures)
     - [AuditResult](#auditresult)
     - [AuditReport](#auditreport)
@@ -162,7 +162,7 @@ Perform comprehensive audit of a single file.
 
 - `file_path`: Path to the file to audit
 
-**Returns**: AuditResult object with quality metrics
+**Returns**: AuditResult t.NormalizedValue with quality metrics
 
 **Example**:
 
@@ -304,7 +304,7 @@ optimizer = DocumentationOptimizer(root_path=".")
 
 #### Methods
 
-##### `optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, object]`
+##### `optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, t.NormalizedValue]`
 
 Optimize a single documentation file.
 
@@ -322,7 +322,7 @@ result = optimizer.optimize_file(Path("docs/README.md"))
 print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
 
-##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`
+##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, t.NormalizedValue]`
 
 Optimize all documentation files.
 
@@ -347,7 +347,7 @@ sync = DocumentationSynchronizer(root_path=".")
 
 #### Methods
 
-##### `sync_changes(changes: List[Dict[str, object]], action: str = "maintenance") -> Dict[str, object]`
+##### `sync_changes(changes: List[Dict[str, t.NormalizedValue]], action: str = "maintenance") -> Dict[str, t.NormalizedValue]`
 
 Synchronize documentation changes with git.
 
@@ -372,7 +372,7 @@ result = sync.sync_changes(changes, "optimization")
 print(f"Committed: {result['commit_created']}")
 ```
 
-##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`
+##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, t.NormalizedValue]]`
 
 Detect potential merge conflicts.
 
@@ -408,7 +408,7 @@ reporter = DocumentationReporter(root_path=".")
 
 ##### `generate_comprehensive_report(audit_report, validation_report
 
-     optimization_report) -> Dict[str, object]`
+     optimization_report) -> Dict[str, t.NormalizedValue]`
 
 Generate comprehensive quality report.
 
@@ -438,7 +438,7 @@ Export report data to CSV.
 - `report_data`: Report data to export
 - `output_path`: CSV output path
 
-##### `generate_trend_report(days: int = 30) -> Dict[str, object]`
+##### `generate_trend_report(days: int = 30) -> Dict[str, t.NormalizedValue]`
 
 Generate trend analysis report.
 
@@ -462,7 +462,7 @@ automation = AutomatedMaintenance(root_path=".")
 
 #### Methods
 
-##### `run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, object]`
+##### `run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, t.NormalizedValue]`
 
 Run scheduled maintenance tasks.
 
@@ -494,10 +494,10 @@ class AuditResult:
     structure_score: float
     completeness_score: float
     freshness_score: float
-    issues: List[Dict[str, object]]
-    warnings: List[Dict[str, object]]
-    suggestions: List[Dict[str, object]]
-    metadata: Dict[str, object]
+    issues: List[Dict[str, t.NormalizedValue]]
+    warnings: List[Dict[str, t.NormalizedValue]]
+    suggestions: List[Dict[str, t.NormalizedValue]]
+    metadata: Dict[str, t.NormalizedValue]
 ```
 
 ### AuditReport
@@ -510,10 +510,10 @@ class AuditReport:
     total_size: int
     average_quality: float
     quality_distribution: Dict[str, int]
-    critical_issues: List[Dict[str, object]]
-    recommendations: List[Dict[str, object]]
+    critical_issues: List[Dict[str, t.NormalizedValue]]
+    recommendations: List[Dict[str, t.NormalizedValue]]
     file_results: List[AuditResult]
-    summary: Dict[str, object]
+    summary: Dict[str, t.NormalizedValue]
 ```
 
 ### LinkValidationResult
@@ -547,7 +547,7 @@ class ReferenceValidationResult:
 @dataclass
 class StyleCheckResult:
     file_path: str
-    issues: List[Dict[str, object]]
+    issues: List[Dict[str, t.NormalizedValue]]
     score: float
 ```
 
@@ -721,7 +721,7 @@ except Exception as e:
 ### Quality Metrics
 
 ```python
-def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
+def get_quality_metrics(audit_report: AuditReport) -> Dict[str, t.NormalizedValue]:
     """Extract quality metrics from audit report."""
     return {
         "overall_score": audit_report.average_quality,
@@ -735,7 +735,7 @@ def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
 ### Trend Analysis
 
 ```python
-def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, object]:
+def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, t.NormalizedValue]:
     """Analyze quality trends over time."""
     if len(reports) < 2:
         return {"error": "Need at least 2 reports for trend analysis"}
