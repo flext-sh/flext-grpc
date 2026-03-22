@@ -12,10 +12,6 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Mapping
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
 from uuid import uuid4
 
 import grpc
@@ -178,12 +174,20 @@ class FlextGrpcUtilities(FlextUtilities):
                 return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
             if not method_name or not method_name.strip():
                 return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
-            narrowed_type = cast("c.Grpc.StreamTypeLiteral", stream_type)
+            validated_type: c.Grpc.StreamTypeLiteral = (
+                "unary"
+                if stream_type == "unary"
+                else "server_streaming"
+                if stream_type == "server_streaming"
+                else "client_streaming"
+                if stream_type == "client_streaming"
+                else "bidirectional"
+            )
             return FlextUtilities.try_(
                 lambda: m.Grpc.GrpcStream(
                     unique_id=str(uuid4()),
                     method_name=method_name,
-                    stream_type=narrowed_type,
+                    stream_type=validated_type,
                     domain_events=[],
                 ),
                 catch=(grpc.RpcError, ConnectionError, TimeoutError),

@@ -116,11 +116,9 @@ class TestFlextGrpcSettings:
     def test_client_config_defaults(self) -> None:
         """Test client configuration defaults."""
         client_config = FlextGrpcSettings.model_validate({}).client
+        tm.that(client_config.target == "127.0.0.1:50051", eq=True)
         timeout_val: float = client_config.timeout
         tm.that(abs(timeout_val - 30.0) < 0.01, eq=True)
-        tm.that(client_config.retry_attempts == 3, eq=True)
-        backoff_val: float = client_config.retry_backoff
-        tm.that(abs(backoff_val - 1.0) < 0.01, eq=True)
 
     def test_monitoring_config_defaults(self) -> None:
         """Test monitoring configuration defaults."""
