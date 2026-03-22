@@ -11,15 +11,14 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
 if TYPE_CHECKING:
     from flext_core.typings import FlextTypes
-
-    from flext_grpc import d, e, h, r, s, x
+    from flext_tests import d, e, h, r, s, x
 
     from . import unit as unit
     from .conftest import clean_container, sample_grpc_config, test_addresses
-    from .constants import TestsFlextGrpcConstants, TestsFlextGrpcConstants as c
-    from .models import TestsFlextGrpcModels, TestsFlextGrpcModels as m, tm
-    from .protocols import TestsFlextGrpcProtocols, TestsFlextGrpcProtocols as p
-    from .typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
+    from .constants import FlextGrpcTestConstants, FlextGrpcTestConstants as c
+    from .models import FlextGrpcTestModels, FlextGrpcTestModels as m
+    from .protocols import FlextGrpcTestProtocols, FlextGrpcTestProtocols as p
+    from .typings import FlextGrpcTestTypes, FlextGrpcTestTypes as t
     from .unit.test_api import TestFlextGrpc
     from .unit.test_config import TestFlextGrpcSettings
     from .unit.test_constants import TestFlextGrpcConstants
@@ -37,10 +36,15 @@ if TYPE_CHECKING:
     from .unit.test_services import TestFlextGrpcServices
     from .unit.test_typings import TestFlextGrpcTypes
     from .unit.test_utilities import TestFlextGrpcUtilities
-    from .utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
+    from .utilities import FlextGrpcTestUtilities, FlextGrpcTestUtilities as u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcEntities": ("tests.unit.test_entities", "FlextGrpcEntities"),
+    "FlextGrpcTestConstants": ("tests.constants", "FlextGrpcTestConstants"),
+    "FlextGrpcTestModels": ("tests.models", "FlextGrpcTestModels"),
+    "FlextGrpcTestProtocols": ("tests.protocols", "FlextGrpcTestProtocols"),
+    "FlextGrpcTestTypes": ("tests.typings", "FlextGrpcTestTypes"),
+    "FlextGrpcTestUtilities": ("tests.utilities", "FlextGrpcTestUtilities"),
     "TestErrorIntegration": ("tests.unit.test_errors", "TestErrorIntegration"),
     "TestFlextGrpc": ("tests.unit.test_api", "TestFlextGrpc"),
     "TestFlextGrpcConnectionError": (
@@ -68,31 +72,30 @@ _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
         "tests.unit.test_errors",
         "TestFlextGrpcValidationError",
     ),
-    "TestsFlextGrpcConstants": ("tests.constants", "TestsFlextGrpcConstants"),
-    "TestsFlextGrpcModels": ("tests.models", "TestsFlextGrpcModels"),
-    "TestsFlextGrpcProtocols": ("tests.protocols", "TestsFlextGrpcProtocols"),
-    "TestsFlextGrpcTypes": ("tests.typings", "TestsFlextGrpcTypes"),
-    "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
-    "c": ("tests.constants", "TestsFlextGrpcConstants"),
+    "c": ("tests.constants", "FlextGrpcTestConstants"),
     "clean_container": ("tests.conftest", "clean_container"),
-    "d": ("flext_grpc", "d"),
-    "e": ("flext_grpc", "e"),
-    "h": ("flext_grpc", "h"),
-    "m": ("tests.models", "TestsFlextGrpcModels"),
-    "p": ("tests.protocols", "TestsFlextGrpcProtocols"),
-    "r": ("flext_grpc", "r"),
-    "s": ("flext_grpc", "s"),
+    "d": ("flext_tests", "d"),
+    "e": ("flext_tests", "e"),
+    "h": ("flext_tests", "h"),
+    "m": ("tests.models", "FlextGrpcTestModels"),
+    "p": ("tests.protocols", "FlextGrpcTestProtocols"),
+    "r": ("flext_tests", "r"),
+    "s": ("flext_tests", "s"),
     "sample_grpc_config": ("tests.conftest", "sample_grpc_config"),
-    "t": ("tests.typings", "TestsFlextGrpcTypes"),
+    "t": ("tests.typings", "FlextGrpcTestTypes"),
     "test_addresses": ("tests.conftest", "test_addresses"),
-    "tm": ("tests.models", "tm"),
-    "u": ("tests.utilities", "TestsFlextGrpcUtilities"),
+    "u": ("tests.utilities", "FlextGrpcTestUtilities"),
     "unit": ("tests.unit", ""),
-    "x": ("flext_grpc", "x"),
+    "x": ("flext_tests", "x"),
 }
 
 __all__ = [
     "FlextGrpcEntities",
+    "FlextGrpcTestConstants",
+    "FlextGrpcTestModels",
+    "FlextGrpcTestProtocols",
+    "FlextGrpcTestTypes",
+    "FlextGrpcTestUtilities",
     "TestErrorIntegration",
     "TestFlextGrpc",
     "TestFlextGrpcConnectionError",
@@ -108,11 +111,6 @@ __all__ = [
     "TestFlextGrpcTypes",
     "TestFlextGrpcUtilities",
     "TestFlextGrpcValidationError",
-    "TestsFlextGrpcConstants",
-    "TestsFlextGrpcModels",
-    "TestsFlextGrpcProtocols",
-    "TestsFlextGrpcTypes",
-    "TestsFlextGrpcUtilities",
     "c",
     "clean_container",
     "d",
@@ -125,7 +123,6 @@ __all__ = [
     "sample_grpc_config",
     "t",
     "test_addresses",
-    "tm",
     "u",
     "unit",
     "x",

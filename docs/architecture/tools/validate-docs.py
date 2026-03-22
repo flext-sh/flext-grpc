@@ -12,6 +12,27 @@ import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import TypedDict
+
+
+class ValidationSummary(TypedDict):
+    """Summary of validation results."""
+
+    quality_score: int
+    status: str
+    total_issues: int
+    total_warnings: int
+    total_recommendations: int
+    timestamp: str
+
+
+class ValidationResults(TypedDict):
+    """Complete validation results."""
+
+    summary: ValidationSummary
+    issues: list[dict[str, str | int | list[str]]]
+    warnings: list[dict[str, str | int | list[str]]]
+    recommendations: list[dict[str, str | int | list[str]]]
 
 
 class ArchitectureValidator:
@@ -34,11 +55,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, object]] = []
-        self.warnings: list[dict[str, object]] = []
-        self.recommendations: list[dict[str, object]] = []
+        self.issues: list[dict[str, str | int | list[str]]] = []
+        self.warnings: list[dict[str, str | int | list[str]]] = []
+        self.recommendations: list[dict[str, str | int | list[str]]] = []
 
-    def validate_all(self) -> dict[str, object]:
+    def validate_all(self) -> ValidationResults:
         """Run all validation checks."""
         # Reset collections
         self.issues = []
@@ -59,12 +80,12 @@ class ArchitectureValidator:
         # Print results
         self._print_results(summary)
 
-        return {
-            "summary": summary,
-            "issues": self.issues,
-            "warnings": self.warnings,
-            "recommendations": self.recommendations,
-        }
+        return ValidationResults(
+            summary=summary,
+            issues=self.issues,
+            warnings=self.warnings,
+            recommendations=self.recommendations,
+        )
 
     def _validate_c4_model_completeness(self) -> None:
         """Validate C4 model documentation completeness."""
@@ -277,7 +298,7 @@ class ArchitectureValidator:
                     "message": "Architecture documentation contains outdated test coverage metrics",
                 })
 
-    def _generate_summary(self) -> dict[str, object]:
+    def _generate_summary(self) -> ValidationSummary:
         """Generate validation summary."""
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
@@ -309,7 +330,7 @@ class ArchitectureValidator:
             "timestamp": datetime.now(UTC).isoformat(),
         }
 
-    def _print_results(self, summary: dict[str, object]) -> None:
+    def _print_results(self, summary: ValidationSummary) -> None:
         """Print validation results."""
         # Reserved for future summary display functionality
         _ = summary  # Reserved for future use
@@ -328,7 +349,7 @@ class ArchitectureValidator:
 
 
 def save_report(
-    results: dict[str, object],
+    results: ValidationResults,
     output_path: Path | None = None,
 ) -> None:
     """Save validation report to file."""
@@ -368,10 +389,9 @@ def main() -> None:
 
     # Exit with appropriate code
     summary = results["summary"]
-    if isinstance(summary, dict) and (
-        summary.get("status") == "critical"
-        or int(str(summary.get("quality_score", 0)))
-        < ArchitectureValidator.CRITICAL_QUALITY_SCORE
+    if (
+        summary["status"] == "critical"
+        or summary["quality_score"] < ArchitectureValidator.CRITICAL_QUALITY_SCORE
     ):
         sys.exit(1)
     else:

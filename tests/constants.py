@@ -1,11 +1,4 @@
-"""Constants for flext-grpc tests.
-
-Provides TestsFlextGrpcConstants, extending c with flext-grpc-specific
-constants using COMPOSITION INHERITANCE.
-
-Inheritance hierarchy:
-- c (flext_tests) - Provides .Tests.* namespace
-- FlextGrpcConstants (production) - Provides .Grpc.* namespace
+"""Test constants for flext-grpc.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -15,72 +8,59 @@ from __future__ import annotations
 
 from typing import Final
 
-from flext_tests import c
+from flext_tests import FlextTestsConstants
 
 from flext_grpc import FlextGrpcConstants
 
 
-class TestsFlextGrpcConstants(c, FlextGrpcConstants):
-    """Constants for flext-grpc tests using COMPOSITION INHERITANCE.
+class FlextGrpcTestConstants(FlextTestsConstants, FlextGrpcConstants):
+    """Test constants for flext-grpc."""
 
-    MANDATORY: Inherits from BOTH:
-    1. c - for test infrastructure (.Tests.*)
-    2. FlextGrpcConstants - for domain constants (.Grpc.*)
+    class Grpc(FlextGrpcConstants.Grpc):
+        """Grpc domain test constants."""
 
-    Access patterns:
-    - c.Tests.Docker.* (container testing)
-    - c.Tests.Matcher.* (assertion messages)
-    - c.Tests.Factory.* (test data generation)
-    - c.Grpc.* (domain constants from production)
-    - c.TestGrpc.* (project-specific test data)
+        class Tests:
+            """Test-specific constants."""
 
-    Rules:
-    - NEVER duplicate constants from c or FlextGrpcConstants
-    - Only flext-grpc-specific test constants allowed
-    - All generic constants come from c
-    - All production constants come from FlextGrpcConstants
-    """
+            class Paths:
+                """Test path constants."""
 
-    class Paths:
-        """Test path constants."""
+                TEST_INPUT_DIR: Final[str] = "tests/fixtures/data/input"
+                TEST_OUTPUT_DIR: Final[str] = "tests/fixtures/data/output"
+                TEST_TEMP_PREFIX: Final[str] = "flext_grpc_test_"
 
-        TEST_INPUT_DIR: Final[str] = "tests/fixtures/data/input"
-        TEST_OUTPUT_DIR: Final[str] = "tests/fixtures/data/output"
-        TEST_TEMP_PREFIX: Final[str] = "flext_grpc_test_"
+            class TestGrpc:
+                """gRPC test server constants."""
 
-    class TestGrpc:
-        """gRPC test server constants."""
+                DEFAULT_HOST: Final[str] = "localhost"
+                DEFAULT_PORT: Final[int] = 50051
+                TEST_SERVICE_NAME: Final[str] = "TestService"
+                TEST_METHOD_NAME: Final[str] = "TestMethod"
+                CONNECTION_TIMEOUT: Final[float] = 5.0
+                OPERATION_TIMEOUT: Final[float] = 10.0
 
-        DEFAULT_HOST: Final[str] = "localhost"
-        DEFAULT_PORT: Final[int] = 50051
-        TEST_SERVICE_NAME: Final[str] = "TestService"
-        TEST_METHOD_NAME: Final[str] = "TestMethod"
-        CONNECTION_TIMEOUT: Final[float] = 5.0
-        OPERATION_TIMEOUT: Final[float] = 10.0
+            class TestChannels:
+                """gRPC channel test constants."""
 
-    class TestChannels:
-        """gRPC channel test constants."""
+                TEST_CHANNEL_HOST: Final[str] = "localhost"
+                TEST_CHANNEL_PORT: Final[int] = 50052
+                TEST_CHANNEL_TARGET: Final[str] = "localhost:50052"
 
-        TEST_CHANNEL_HOST: Final[str] = "localhost"
-        TEST_CHANNEL_PORT: Final[int] = 50052
-        TEST_CHANNEL_TARGET: Final[str] = "localhost:50052"
+            class TestStreaming:
+                """gRPC streaming test constants."""
 
-    class TestStreaming:
-        """gRPC streaming test constants."""
+                TEST_BUFFER_SIZE: Final[int] = 1024
+                TEST_BATCH_SIZE: Final[int] = 10
+                TEST_QUEUE_SIZE: Final[int] = 100
+                TEST_STREAM_TIMEOUT: Final[float] = 30.0
 
-        TEST_BUFFER_SIZE: Final[int] = 1024
-        TEST_BATCH_SIZE: Final[int] = 10
-        TEST_QUEUE_SIZE: Final[int] = 100
-        TEST_STREAM_TIMEOUT: Final[float] = 30.0
+            class TestMessages:
+                """gRPC message test constants."""
 
-    class TestMessages:
-        """gRPC message test constants."""
-
-        TEST_REQUEST_MESSAGE: Final[str] = "test_request"
-        TEST_RESPONSE_MESSAGE: Final[str] = "test_response"
-        TEST_ERROR_MESSAGE: Final[str] = "test_error"
+                TEST_REQUEST_MESSAGE: Final[str] = "test_request"
+                TEST_RESPONSE_MESSAGE: Final[str] = "test_response"
+                TEST_ERROR_MESSAGE: Final[str] = "test_error"
 
 
-__all__ = ["TestsFlextGrpcConstants", "c"]
-
-c = TestsFlextGrpcConstants
+c = FlextGrpcTestConstants
+__all__ = ["FlextGrpcTestConstants", "c"]

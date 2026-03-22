@@ -1,6 +1,4 @@
-"""Module skeleton for TestsFlextGrpcTypes.
-
-Test type aliases for flextgrpc.
+"""Test type aliases for flext-grpc.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -8,12 +6,20 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests import t
+from flext_tests import FlextTestsTypes
+
+from flext_grpc import FlextGrpcTypes
 
 
-class TestsFlextGrpcTypes(t):
-    """Test type aliases for flextgrpc."""
+class FlextGrpcTestTypes(FlextTestsTypes, FlextGrpcTypes):
+    """Test type aliases for flext-grpc."""
+
+    class Grpc(FlextGrpcTypes.Grpc):
+        """Grpc domain test type aliases."""
+
+        class Tests:
+            """Test-specific type aliases."""
 
 
-t = TestsFlextGrpcTypes
-__all__ = ["TestsFlextGrpcTypes", "t"]
+t = FlextGrpcTestTypes
+__all__ = ["FlextGrpcTestTypes", "t"]
