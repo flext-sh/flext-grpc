@@ -17,10 +17,9 @@ from __future__ import annotations
 import logging
 import re
 
-from flext_core import FlextTypes
+from flext_core import FlextTypes, p
 
 from flext_grpc import c
-from flext_grpc.protocols import FlextGrpcProtocols
 
 
 class FlextGrpcTypes(FlextTypes):
@@ -37,7 +36,7 @@ class FlextGrpcTypes(FlextTypes):
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
-        type GrpcServicer = FlextGrpcProtocols.Grpc.GrpcServicer
+        type GrpcServicer = p.Grpc.GrpcServicer
 
         type Dict = dict[str, FlextTypes.ContainerValue | None]
         type GrpcDict = dict[str, FlextTypes.ContainerValue | None]

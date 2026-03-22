@@ -14,11 +14,7 @@ from typing import TypedDict
 
 from flext_core import r
 
-from flext_grpc import c, t
-from flext_grpc.models import FlextGrpcModels
-from flext_grpc.services import FlextGrpcServices, ServicePayload
-from flext_grpc.settings import FlextGrpcSettings
-from flext_grpc.utilities import FlextGrpcUtilities
+from flext_grpc import FlextGrpcServices, FlextGrpcSettings, ServicePayload, c, m, t, u
 
 
 class FlextGrpc:
@@ -42,9 +38,7 @@ class FlextGrpc:
         """Get gRPC-specific configuration."""
         return self._grpc_config
 
-    def close_stream(
-        self, stream: FlextGrpcModels.Grpc.GrpcStream
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+    def close_stream(self, stream: m.Grpc.GrpcStream) -> r[m.Grpc.GrpcStream]:
         """Delegate stream closing.
 
         Args:
@@ -56,7 +50,7 @@ class FlextGrpc:
         """
         return self._service.close_stream(stream)
 
-    def connect_client(self, target: str) -> r[FlextGrpcModels.Grpc.Client]:
+    def connect_client(self, target: str) -> r[m.Grpc.Client]:
         """Delegate client connection.
 
         Args:
@@ -70,18 +64,18 @@ class FlextGrpc:
 
     def create_channel(
         self, target: str, options: t.GrpcOptions | None = None
-    ) -> r[FlextGrpcModels.Grpc.Channel]:
+    ) -> r[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
-        return FlextGrpcUtilities.create_channel_entity(
+        return u.create_channel_entity(
             target=target,
             options={} if options is None else options,
         )
 
     def create_client(
         self, target: str, options: t.GrpcOptions | None = None
-    ) -> r[FlextGrpcModels.Grpc.Client]:
+    ) -> r[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
-        return FlextGrpcUtilities.create_client_entity(target=target, options=options)
+        return u.create_client_entity(target=target, options=options)
 
     def create_complete_setup(
         self,
@@ -117,9 +111,9 @@ class FlextGrpc:
         host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
-    ) -> r[FlextGrpcModels.Grpc.Server]:
+    ) -> r[m.Grpc.Server]:
         """Create typed server entity from validated inputs."""
-        return FlextGrpcUtilities.create_server_entity(
+        return u.create_server_entity(
             host=host,
             port=port,
             max_workers=max_workers,
@@ -127,32 +121,24 @@ class FlextGrpc:
 
     def create_service(
         self, name: str, methods: list[str] | None = None
-    ) -> r[FlextGrpcModels.Grpc.Service]:
+    ) -> r[m.Grpc.Service]:
         """Create typed service entity from validated inputs."""
-        return FlextGrpcUtilities.create_service_entity(
+        return u.create_service_entity(
             name=name,
             methods=[] if methods is None else methods,
         )
 
     def create_stream(
         self, method_name: str = "DefaultMethod", stream_type: str = "unary"
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+    ) -> r[m.Grpc.GrpcStream]:
         """Create typed stream entity from validated inputs."""
         if not method_name.strip():
-            return r[FlextGrpcModels.Grpc.GrpcStream].fail(
-                "Stream method name cannot be empty"
-            )
+            return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
         if stream_type not in c.Grpc.STREAM_TYPES:
-            return r[FlextGrpcModels.Grpc.GrpcStream].fail(
-                f"Invalid stream type: {stream_type}"
-            )
-        return FlextGrpcUtilities.create_stream_entity(
-            method_name=method_name, stream_type=stream_type
-        )
+            return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
+        return u.create_stream_entity(method_name=method_name, stream_type=stream_type)
 
-    def disconnect_client(
-        self, client: FlextGrpcModels.Grpc.Client
-    ) -> r[FlextGrpcModels.Grpc.Client]:
+    def disconnect_client(self, client: m.Grpc.Client) -> r[m.Grpc.Client]:
         """Delegate client disconnection.
 
         Args:
@@ -169,7 +155,7 @@ class FlextGrpc:
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def execute_operation(
-        self, request: FlextGrpcModels.Grpc.OperationExecutionRequest
+        self, request: m.Grpc.OperationExecutionRequest
     ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         kwargs = request.keyword_arguments
@@ -190,7 +176,7 @@ class FlextGrpc:
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def make_call(
-        self, client: FlextGrpcModels.Grpc.Client, method: str, request: t.ConfigValue
+        self, client: m.Grpc.Client, method: str, request: t.ConfigValue
     ) -> r[ServicePayload]:
         """Delegate method calls.
 
@@ -214,7 +200,7 @@ class FlextGrpc:
         return r[tuple[str, int]].ok(t.Grpc.GrpcValidation.parse_target(address))
 
     def send_data(
-        self, stream: FlextGrpcModels.Grpc.GrpcStream, data: t.ConfigValue
+        self, stream: m.Grpc.GrpcStream, data: t.ConfigValue
     ) -> r[ServicePayload]:
         """Delegate data sending.
 
@@ -230,9 +216,7 @@ class FlextGrpc:
         """
         return self._service.send_data(stream, data)
 
-    def start_server(
-        self, server: FlextGrpcModels.Grpc.Server
-    ) -> r[FlextGrpcModels.Grpc.Server]:
+    def start_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
         """Delegate server start.
 
         Args:
@@ -244,9 +228,7 @@ class FlextGrpc:
         """
         return self._service.start_server(server)
 
-    def stop_server(
-        self, server: FlextGrpcModels.Grpc.Server
-    ) -> r[FlextGrpcModels.Grpc.Server]:
+    def stop_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
         """Delegate server stop.
 
         Args:
@@ -267,7 +249,7 @@ __all__ = ["FlextGrpc"]
 
 
 class GrpcCompleteSetup(TypedDict):
-    server: FlextGrpcModels.Grpc.Server
-    client: FlextGrpcModels.Grpc.Client
-    service: FlextGrpcModels.Grpc.Service
+    server: m.Grpc.Server
+    client: m.Grpc.Client
+    service: m.Grpc.Service
     target: str

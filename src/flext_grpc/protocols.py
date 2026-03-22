@@ -6,15 +6,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import threading
 from collections.abc import Callable, Iterable, Mapping
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
-
-if TYPE_CHECKING:
-    from grpc import GenericRpcHandler
+from typing import Protocol, runtime_checkable
 
 from flext_core import FlextProtocols, r, t
+from grpc import GenericRpcHandler
 
-from flext_grpc.constants import FlextGrpcConstants as c
+from flext_grpc import c
 
 
 class ClientConnection:
@@ -413,7 +412,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Start the server."""
                 ...
 
-            def stop(self, grace: float | None) -> object:
+            def stop(self, grace: float | None) -> threading.Event:
                 """Stop the server with optional grace period."""
                 ...
 

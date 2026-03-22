@@ -15,15 +15,7 @@ from typing import Annotated
 from flext_core import FlextSettings, r
 from pydantic import Field, computed_field
 
-from flext_grpc import c
-from flext_grpc.models import FlextGrpcModels
-
-GrpcNetworkConfig = FlextGrpcModels.Grpc.NetworkConfig
-GrpcSecurityConfig = FlextGrpcModels.Grpc.SecurityConfig
-GrpcPerformanceConfig = FlextGrpcModels.Grpc.PerformanceConfig
-GrpcStreamingConfig = FlextGrpcModels.Grpc.StreamingConfig
-GrpcClientConfig = FlextGrpcModels.Grpc.ClientSettingsConfig
-GrpcMonitoringConfig = FlextGrpcModels.Grpc.MonitoringConfig
+from flext_grpc import c, m
 
 
 class FlextGrpcSettings(FlextSettings):
@@ -68,28 +60,28 @@ class FlextGrpcSettings(FlextSettings):
 
     # Nested configuration models
     network: Annotated[
-        GrpcNetworkConfig,
-        Field(default_factory=lambda: GrpcNetworkConfig.model_validate({})),
+        m.Grpc.NetworkConfig,
+        Field(default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})),
     ]
     security: Annotated[
-        GrpcSecurityConfig,
-        Field(default_factory=lambda: GrpcSecurityConfig.model_validate({})),
+        m.Grpc.SecurityConfig,
+        Field(default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})),
     ]
     performance: Annotated[
-        GrpcPerformanceConfig,
-        Field(default_factory=lambda: GrpcPerformanceConfig.model_validate({})),
+        m.Grpc.PerformanceConfig,
+        Field(default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})),
     ]
     streaming: Annotated[
-        GrpcStreamingConfig,
-        Field(default_factory=lambda: GrpcStreamingConfig.model_validate({})),
+        m.Grpc.StreamingConfig,
+        Field(default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})),
     ]
     client: Annotated[
-        GrpcClientConfig,
-        Field(default_factory=lambda: GrpcClientConfig.model_validate({})),
+        m.Grpc.ClientConfig,
+        Field(default_factory=lambda: m.Grpc.ClientConfig.model_validate({})),
     ]
     monitoring: Annotated[
-        GrpcMonitoringConfig,
-        Field(default_factory=lambda: GrpcMonitoringConfig.model_validate({})),
+        m.Grpc.MonitoringConfig,
+        Field(default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})),
     ]
 
     @computed_field
@@ -149,4 +141,4 @@ class FlextGrpcSettings(FlextSettings):
         return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
 
 
-__all__ = ["FlextGrpcModels", "FlextGrpcSettings"]
+__all__ = ["FlextGrpcSettings", "m"]
