@@ -13,6 +13,7 @@ from __future__ import annotations
 import threading
 import time
 from collections import deque
+from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 from typing import Annotated
@@ -164,7 +165,7 @@ class GrpcServerManager(ServerLifecycle):
     def __init__(self) -> None:
         """Initialize server manager with metrics tracking."""
         super().__init__()
-        self._active_servers: dict[str, grpc.Server] = {}
+        self._active_servers: MutableMapping[str, grpc.Server] = {}
         self._metrics = MetricsCollector()
         self._thread_pool = ThreadPoolExecutor(
             max_workers=50, thread_name_prefix="flext-grpc-server"
@@ -234,7 +235,7 @@ class GrpcClientManager(ClientConnection):
     def __init__(self) -> None:
         """Initialize client manager with connection pooling."""
         super().__init__()
-        self._active_channels: dict[str, grpc.Channel] = {}
+        self._active_channels: MutableMapping[str, grpc.Channel] = {}
         self._connection_pool = ConnectionPool(max_size=20)
         self._metrics = MetricsCollector()
 
@@ -343,7 +344,7 @@ class GrpcStreamManager(StreamProcessor):
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: dict[str, _StreamRuntimeState] = {}
+        self._active_streams: MutableMapping[str, _StreamRuntimeState] = {}
         self._metrics = MetricsCollector()
 
     def close_stream(self, stream: m.Grpc.GrpcStream) -> r[m.Grpc.GrpcStream]:
