@@ -40,7 +40,7 @@ class FlextGrpcTypes(FlextTypes):
         type GrpcServicer = FlextGrpcProtocols.Grpc.GrpcServicer
 
         type Dict = Mapping[str, FlextTypes.ContainerValue | None]
-        type GrpcDict = Mapping[str, FlextTypes.ContainerValue | None]
+        type GrpcDict = dict[str, FlextTypes.ContainerValue | None]
         type Headers = Mapping[str, str]
         type Metadata = Mapping[str, FlextTypes.ContainerValue | None]
         type ConfigDict = Mapping[
