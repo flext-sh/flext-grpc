@@ -414,7 +414,7 @@ def test_server_entity_lifecycle():
 import pytest
 import grpc
 from flext_grpc import create_server
-from tests.fixtures import grpc_server
+from tests import grpc_server
 
 
 @pytest.mark.asyncio
