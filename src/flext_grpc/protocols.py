@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import threading
-from collections.abc import Callable, Iterable, Mapping
+from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
 from flext_core import FlextProtocols, r, t
@@ -102,7 +102,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 self,
                 host: str,
                 port: int,
-                services: list[FlextGrpcProtocols.Grpc.GrpcServicer] | None = None,
+                services: Sequence[FlextGrpcProtocols.Grpc.GrpcServicer] | None = None,
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcServer]:
                 """Start gRPC server."""
                 ...
@@ -188,7 +188,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def handle_client_streaming(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-                data_list: list[FlextGrpcProtocols.Grpc.GrpcMessage],
+                data_list: Sequence[FlextGrpcProtocols.Grpc.GrpcMessage],
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcMessage]:
                 """Handle client-side streaming."""
                 ...
@@ -197,7 +197,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
                 request: FlextGrpcProtocols.Grpc.GrpcMessage,
-            ) -> FlextProtocols.Result[list[FlextGrpcProtocols.Grpc.GrpcMessage]]:
+            ) -> FlextProtocols.Result[Sequence[FlextGrpcProtocols.Grpc.GrpcMessage]]:
                 """Handle server-side streaming."""
                 ...
 
@@ -227,7 +227,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_service_methods(
                 self, service: FlextGrpcProtocols.Grpc.GrpcServicer
-            ) -> FlextProtocols.Result[list[str]]:
+            ) -> FlextProtocols.Result[Sequence[str]]:
                 """Get list of service methods."""
                 ...
 

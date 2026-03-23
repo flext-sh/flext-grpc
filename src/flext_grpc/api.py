@@ -10,6 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import TypedDict
 
 from flext_core import r
@@ -82,7 +83,7 @@ class FlextGrpc:
         host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
-        methods: list[str] | None = None,
+        methods: Sequence[str] | None = None,
     ) -> r[GrpcCompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
@@ -120,7 +121,7 @@ class FlextGrpc:
         )
 
     def create_service(
-        self, name: str, methods: list[str] | None = None
+        self, name: str, methods: Sequence[str] | None = None
     ) -> r[m.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         return u.create_service_entity(

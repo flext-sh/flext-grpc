@@ -8,6 +8,8 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
+
 import pytest
 from flext_core import FlextConstants, FlextContainer
 
@@ -22,7 +24,7 @@ def clean_container() -> FlextContainer:
 
 
 @pytest.fixture
-def sample_grpc_config() -> dict[str, str | int | float]:
+def sample_grpc_config() -> Mapping[str, str | int | float]:
     """Sample gRPC configuration for tests."""
     return {
         "host": FlextConstants.DEFAULT_HOST,
@@ -33,7 +35,7 @@ def sample_grpc_config() -> dict[str, str | int | float]:
 
 
 @pytest.fixture
-def test_addresses() -> dict[str, list[str]]:
+def test_addresses() -> Mapping[str, Sequence[str]]:
     """Test addresses for validation."""
     return {
         "valid": [

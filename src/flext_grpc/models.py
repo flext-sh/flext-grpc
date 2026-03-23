@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Annotated, Literal, Self, override
 
@@ -94,7 +94,7 @@ class FlextGrpcModels(FlextModels):
 
             service_name: Annotated[str, Field(description="Service name")]
             methods: Annotated[
-                list[str],
+                Sequence[str],
                 Field(
                     default_factory=list,
                     description="Service methods",
@@ -487,9 +487,9 @@ class FlextGrpcModels(FlextModels):
             @classmethod
             def validate_list_not_empty[T](
                 cls,
-                value: list[T],
+                value: Sequence[T],
                 field_name: str,
-            ) -> list[T]:
+            ) -> Sequence[T]:
                 """Generic list validation with type preservation."""
                 if not value:
                     msg = f"{field_name} cannot be empty"
@@ -668,7 +668,7 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelStateLiteral = "idle"
-            options: Annotated[dict[str, t.ConfigValue], Field(default_factory=dict)]
+            options: Annotated[Mapping[str, t.ConfigValue], Field(default_factory=dict)]
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             def connect(self) -> r[Self]:
@@ -712,7 +712,7 @@ class FlextGrpcModels(FlextModels):
             state: c.Grpc.ServerStateLiteral = "stopped"
             max_workers: int = 10
             services: Annotated[
-                list[p.Grpc.GrpcServicer],
+                Sequence[p.Grpc.GrpcServicer],
                 Field(default_factory=list, description="gRPC services"),
             ]
             grpc_server: p.Grpc.GrpcServer | None = None
@@ -782,11 +782,11 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC service with validation delegation."""
 
             name: str = ""
-            methods: Annotated[list[str], Field(default_factory=list)]
+            methods: Annotated[Sequence[str], Field(default_factory=list)]
 
             @field_validator("methods")
             @classmethod
-            def validate_methods(cls, v: list[str]) -> list[str]:
+            def validate_methods(cls, v: Sequence[str]) -> Sequence[str]:
                 """Validate methods list is not empty with valid items."""
                 if not v:
                     msg = "methods cannot be empty"

@@ -10,6 +10,7 @@ import argparse
 import json
 import re
 import sys
+from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict
@@ -30,9 +31,9 @@ class ValidationResults(TypedDict):
     """Complete validation results."""
 
     summary: ValidationSummary
-    issues: list[dict[str, str | int | list[str]]]
-    warnings: list[dict[str, str | int | list[str]]]
-    recommendations: list[dict[str, str | int | list[str]]]
+    issues: Sequence[Mapping[str, str | int | Sequence[str]]]
+    warnings: Sequence[Mapping[str, str | int | Sequence[str]]]
+    recommendations: Sequence[Mapping[str, str | int | Sequence[str]]]
 
 
 class ArchitectureValidator:
@@ -55,9 +56,9 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: list[dict[str, str | int | list[str]]] = []
-        self.warnings: list[dict[str, str | int | list[str]]] = []
-        self.recommendations: list[dict[str, str | int | list[str]]] = []
+        self.issues: Sequence[Mapping[str, str | int | Sequence[str]]] = []
+        self.warnings: Sequence[Mapping[str, str | int | Sequence[str]]] = []
+        self.recommendations: Sequence[Mapping[str, str | int | Sequence[str]]] = []
 
     def validate_all(self) -> ValidationResults:
         """Run all validation checks."""
@@ -268,7 +269,7 @@ class ArchitectureValidator:
             "README.md",
         ]
 
-        versions: dict[str, str] = {}
+        versions: Mapping[str, str] = {}
         for file_path in files_to_check:
             full_path = self.root_path / file_path
             if full_path.exists():
