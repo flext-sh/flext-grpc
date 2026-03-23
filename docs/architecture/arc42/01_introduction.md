@@ -1,7 +1,6 @@
 # 1. Introduction and Goals
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [1.1 Purpose and Scope](#11-purpose-and-scope)
   - [Purpose](#purpose)
@@ -29,7 +28,6 @@
   - [Technical Assumptions](#technical-assumptions)
   - [Business Assumptions](#business-assumptions)
   - [Environmental Assumptions](#environmental-assumptions)
-
 <!-- TOC END -->
 
 ## Table of Contents

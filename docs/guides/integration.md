@@ -1,7 +1,6 @@
 # flext-grpc FLEXT Ecosystem Integration
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Integration Overview](#integration-overview)
   - [FLEXT Ecosystem Position](#flext-ecosystem-position)
@@ -30,7 +29,6 @@
   - [Working Integrations](#working-integrations)
   - [Planned Integrations](#planned-integrations)
   - [Integration Priorities](#integration-priorities)
-
 <!-- TOC END -->
 
 ## Table of Contents

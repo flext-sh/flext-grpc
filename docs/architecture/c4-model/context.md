@@ -1,7 +1,6 @@
 # C4 Model - Context View (Level 1)
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [System Purpose](#system-purpose)
@@ -42,7 +41,6 @@
   - [Immediate Actions (Next Sprint)](#immediate-actions-next-sprint)
   - [Short Term (Next Month)](#short-term-next-month)
   - [Long Term (Next Quarter)](#long-term-next-quarter)
-
 <!-- TOC END -->
 
 ## Table of Contents

@@ -1,7 +1,6 @@
 # Architecture Decision Records (ADRs)
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [ADR Process](#adr-process)
@@ -58,7 +57,6 @@
 - [Contributing](#contributing)
   - [ADR Submission Process](#adr-submission-process)
   - [ADR Review Checklist](#adr-review-checklist)
-
 <!-- TOC END -->
 
 ## Table of Contents

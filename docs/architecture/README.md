@@ -1,7 +1,6 @@
 # FLEXT-gRPC Architecture Documentation
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [📋 Documentation Framework](#documentation-framework)
   - [🏗️ C4 Model (Primary)](#c4-model-primary)
@@ -46,7 +45,6 @@
   - [Contribution Guidelines](#contribution-guidelines)
   - [Quality Standards](#quality-standards)
   - [Review Process](#review-process)
-
 <!-- TOC END -->
 
 ## Table of Contents

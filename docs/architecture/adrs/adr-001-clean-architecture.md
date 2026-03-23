@@ -1,7 +1,6 @@
 # ADR-001: Clean Architecture Adoption
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Status](#status)
 - [Context](#context)
@@ -20,7 +19,6 @@
   - [Interface Design](#interface-design)
 - [References](#references)
 - [Notes](#notes)
-
 <!-- TOC END -->
 
 ## Table of Contents

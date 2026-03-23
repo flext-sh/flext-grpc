@@ -25,7 +25,7 @@
   - [Performance](#performance)
   - [Monitoring](#monitoring)
 - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
-  - [r Usage](#flextresult-usage)
+  - [r Usage](#r-usage)
   - [Container Integration](#container-integration)
 - [Troubleshooting Configuration](#troubleshooting-configuration)
   - [Common Issues](#common-issues)

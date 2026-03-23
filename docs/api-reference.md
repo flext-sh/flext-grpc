@@ -16,7 +16,7 @@
 - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
   - [Railway-Oriented Programming](#railway-oriented-programming)
   - [Dependency Injection](#dependency-injection)
-- [Buffer Integration](#protocol-buffer-integration)
+- [Protocol Buffer Integration](#protocol-buffer-integration)
   - [Service Definitions](#service-definitions)
   - [Message Types](#message-types)
 - [Current Status](#current-status)
