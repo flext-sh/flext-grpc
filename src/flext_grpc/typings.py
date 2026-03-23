@@ -19,8 +19,7 @@ import re
 
 from flext_core import FlextTypes
 
-from flext_grpc import c
-from flext_grpc.protocols import FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols, c
 
 
 class FlextGrpcTypes(FlextTypes):

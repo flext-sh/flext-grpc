@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_grpc.models import FlextGrpcModels
+from flext_grpc import FlextGrpcModels
 
 type CompleteSetup = dict[
     str,
