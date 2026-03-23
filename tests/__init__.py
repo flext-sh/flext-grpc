@@ -13,17 +13,17 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
-    from . import unit as unit
-    from .conftest import clean_container, sample_grpc_config, test_addresses
-    from .constants import FlextGrpcTestConstants, FlextGrpcTestConstants as c
-    from .models import FlextGrpcTestModels, FlextGrpcTestModels as m
-    from .protocols import FlextGrpcTestProtocols, FlextGrpcTestProtocols as p
-    from .typings import FlextGrpcTestTypes, FlextGrpcTestTypes as t
-    from .unit.test_api import TestFlextGrpc
-    from .unit.test_config import TestFlextGrpcSettings
-    from .unit.test_constants import TestFlextGrpcConstants
-    from .unit.test_entities import FlextGrpcEntities, TestFlextGrpcEntities
-    from .unit.test_errors import (
+    from tests import unit
+    from tests.conftest import clean_container, sample_grpc_config, test_addresses
+    from tests.constants import FlextGrpcTestConstants, FlextGrpcTestConstants as c
+    from tests.models import FlextGrpcTestModels, FlextGrpcTestModels as m
+    from tests.protocols import FlextGrpcTestProtocols, FlextGrpcTestProtocols as p
+    from tests.typings import FlextGrpcTestTypes, FlextGrpcTestTypes as t
+    from tests.unit.test_api import TestFlextGrpc
+    from tests.unit.test_config import TestFlextGrpcSettings
+    from tests.unit.test_constants import TestFlextGrpcConstants
+    from tests.unit.test_entities import FlextGrpcEntities, TestFlextGrpcEntities
+    from tests.unit.test_errors import (
         TestErrorIntegration,
         TestFlextGrpcConnectionError,
         TestFlextGrpcError,
@@ -31,12 +31,12 @@ if TYPE_CHECKING:
         TestFlextGrpcTimeoutError,
         TestFlextGrpcValidationError,
     )
-    from .unit.test_models import TestFlextGrpcModels
-    from .unit.test_protocols import TestFlextGrpcProtocols
-    from .unit.test_services import TestFlextGrpcServices
-    from .unit.test_typings import TestFlextGrpcTypes
-    from .unit.test_utilities import TestFlextGrpcUtilities
-    from .utilities import FlextGrpcTestUtilities, FlextGrpcTestUtilities as u
+    from tests.unit.test_models import TestFlextGrpcModels
+    from tests.unit.test_protocols import TestFlextGrpcProtocols
+    from tests.unit.test_services import TestFlextGrpcServices
+    from tests.unit.test_typings import TestFlextGrpcTypes
+    from tests.unit.test_utilities import TestFlextGrpcUtilities
+    from tests.utilities import FlextGrpcTestUtilities, FlextGrpcTestUtilities as u
 
 _LAZY_IMPORTS: dict[str, tuple[str, str]] = {
     "FlextGrpcEntities": ("tests.unit.test_entities", "FlextGrpcEntities"),
