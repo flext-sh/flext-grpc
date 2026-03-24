@@ -100,7 +100,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     unique_id=str(uuid4()),
                     target=target,
                     state="idle",
-                    options={k: v for k, v in options.items()} if options else {},  # noqa: C416
+                    options=dict(options.items()) if options else {},
                     domain_events=[],
                 ),
                 catch=(grpc.RpcError, ConnectionError, TimeoutError),
@@ -122,7 +122,7 @@ class FlextGrpcUtilities(FlextUtilities):
                         unique_id=str(uuid4()),
                         target=target,
                         state="idle",
-                        options={k: v for k, v in options.items()} if options else {},  # noqa: C416
+                        options=dict(options.items()) if options else {},
                         domain_events=[],
                     ),
                     options={},
