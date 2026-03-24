@@ -8,12 +8,12 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from collections.abc import Sequence, Mapping
+from collections.abc import Mapping
 
 import pytest
 from flext_core import FlextConstants, FlextContainer
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcSettings
+from flext_grpc import FlextGrpcConstants, FlextGrpcSettings, t
 
 
 @pytest.fixture(autouse=True)
@@ -35,7 +35,7 @@ def sample_grpc_config() -> Mapping[str, str | int | float]:
 
 
 @pytest.fixture
-def test_addresses() -> Mapping[str, Sequence[str]]:
+def test_addresses() -> Mapping[str, t.StrSequence]:
     """Test addresses for validation."""
     return {
         "valid": [

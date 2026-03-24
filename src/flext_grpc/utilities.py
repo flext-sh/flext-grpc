@@ -11,7 +11,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import logging
-from collections.abc import Sequence, Mapping
+from collections.abc import Mapping
 from uuid import uuid4
 
 import grpc
@@ -62,7 +62,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
     @classmethod
     def create_service_entity(
-        cls, name: str, methods: Sequence[str] | None = None
+        cls, name: str, methods: t.StrSequence | None = None
     ) -> r[m.Grpc.Service]:
         """Delegate to Grpc.create_service_entity."""
         return cls.Grpc.create_service_entity(name=name, methods=methods)
@@ -148,7 +148,7 @@ class FlextGrpcUtilities(FlextUtilities):
 
         @classmethod
         def create_service_entity(
-            cls, name: str, methods: Sequence[str] | None = None
+            cls, name: str, methods: t.StrSequence | None = None
         ) -> r[m.Grpc.Service]:
             """Create a gRPC service entity directly."""
             if not name or not name.strip():

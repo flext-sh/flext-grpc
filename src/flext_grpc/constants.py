@@ -12,7 +12,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Sequence
-
 from enum import StrEnum, unique
 from typing import Final, Literal
 
@@ -30,7 +29,7 @@ class FlextGrpcConstants(FlextConstants):
 
     Usage:
     ```python
-    from flext_grpc import FlextGrpcConstants
+    from flext_grpc import FlextGrpcConstants, t
 
     timeout = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
     port = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT

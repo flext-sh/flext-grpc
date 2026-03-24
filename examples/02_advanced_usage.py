@@ -17,7 +17,13 @@ from collections.abc import Mapping, Sequence
 
 from flext_core import FlextConstants, r
 
-from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
+from flext_grpc import (
+    FlextGrpc,
+    FlextGrpcConstants,
+    FlextGrpcModels,
+    FlextGrpcSettings,
+    t,
+)
 
 from .typings import CompleteSetup
 
@@ -56,9 +62,9 @@ class GrpcServerManager:
             server_results.append(server_result)
         return server_results
 
-    def get_server_status(self) -> Mapping[str, Mapping[str, str]]:
+    def get_server_status(self) -> Mapping[str, t.StrMapping]:
         """Get status of all servers through facade."""
-        status: Mapping[str, Mapping[str, str]] = {}
+        status: Mapping[str, t.StrMapping] = {}
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
             status[server_id] = {
@@ -111,7 +117,7 @@ class AdvancedGrpcOperations:
         host: str = FlextConstants.DEFAULT_HOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
-        methods: Sequence[str] | None = None,
+        methods: t.StrSequence | None = None,
     ) -> r[CompleteSetup]:
         """Create a complete gRPC setup through facade."""
         if methods is None:

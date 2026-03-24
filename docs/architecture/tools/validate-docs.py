@@ -15,6 +15,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict
 
+from flext_grpc import t
+
 
 class ValidationSummary(TypedDict):
     """Summary of validation results."""
@@ -31,9 +33,9 @@ class ValidationResults(TypedDict):
     """Complete validation results."""
 
     summary: ValidationSummary
-    issues: Sequence[Mapping[str, str | int | Sequence[str]]]
-    warnings: Sequence[Mapping[str, str | int | Sequence[str]]]
-    recommendations: Sequence[Mapping[str, str | int | Sequence[str]]]
+    issues: Sequence[Mapping[str, str | int | t.StrSequence]]
+    warnings: Sequence[Mapping[str, str | int | t.StrSequence]]
+    recommendations: Sequence[Mapping[str, str | int | t.StrSequence]]
 
 
 class ArchitectureValidator:
@@ -56,9 +58,9 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: Sequence[Mapping[str, str | int | Sequence[str]]] = []
-        self.warnings: Sequence[Mapping[str, str | int | Sequence[str]]] = []
-        self.recommendations: Sequence[Mapping[str, str | int | Sequence[str]]] = []
+        self.issues: Sequence[Mapping[str, str | int | t.StrSequence]] = []
+        self.warnings: Sequence[Mapping[str, str | int | t.StrSequence]] = []
+        self.recommendations: Sequence[Mapping[str, str | int | t.StrSequence]] = []
 
     def validate_all(self) -> ValidationResults:
         """Run all validation checks."""
@@ -269,7 +271,7 @@ class ArchitectureValidator:
             "README.md",
         ]
 
-        versions: Mapping[str, str] = {}
+        versions: t.StrMapping = {}
         for file_path in files_to_check:
             full_path = self.root_path / file_path
             if full_path.exists():
