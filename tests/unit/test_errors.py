@@ -172,7 +172,7 @@ class TestErrorIntegration:
         ]
         for error in errors:
             tm.that(isinstance(error, Exception), eq=True)
-            tm.that(len(str(error)) > 0, eq=True)
+            tm.that(str(error), eq=True)
 
     def test_error_hierarchy_consistency(self) -> None:
         """Test error hierarchy follows flext-core patterns."""
