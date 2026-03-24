@@ -10,9 +10,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TypedDict
-
 from flext_core import r
+from pydantic import BaseModel
 
 from flext_grpc import FlextGrpcServices, FlextGrpcSettings, c, m, t, u
 
@@ -87,7 +86,7 @@ class FlextGrpc:
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: t.StrSequence | None = None,
-    ) -> r[FlextGrpcCompleteSetup]:
+    ) -> r[FlextGrpc.CompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
@@ -100,12 +99,12 @@ class FlextGrpc:
                     name=service_name,
                     methods=resolved_methods,
                 ).map(
-                    lambda svc: {
-                        "server": pair[0],
-                        "client": pair[1],
-                        "service": svc,
-                        "target": target,
-                    },
+                    lambda svc: FlextGrpc.CompleteSetup(
+                        server=pair[0],
+                        client=pair[1],
+                        service=svc,
+                        target=target,
+                    ),
                 ),
             )
         )
@@ -258,12 +257,13 @@ class FlextGrpc:
         """Validate gRPC target string."""
         return t.Grpc.GrpcValidation.validate_target(target)
 
+    class CompleteSetup(BaseModel):
+        """Complete gRPC setup result."""
+
+        server: m.Grpc.Server
+        client: m.Grpc.Client
+        service: m.Grpc.Service
+        target: str
+
 
 __all__ = ["FlextGrpc"]
-
-
-class FlextGrpcCompleteSetup(TypedDict):
-    server: m.Grpc.Server
-    client: m.Grpc.Client
-    service: m.Grpc.Service
-    target: str
