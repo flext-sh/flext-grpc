@@ -30,7 +30,9 @@ class TestFlextGrpcConstants:
 
     def test_streaming_constants(self) -> None:
         """Test streaming constants."""
-        tm.that(FlextGrpcConstants.Grpc.Streaming.CLIENT_STREAMING_BUFFER_THRESHOLD, eq=10)
+        tm.that(
+            FlextGrpcConstants.Grpc.Streaming.CLIENT_STREAMING_BUFFER_THRESHOLD, eq=10
+        )
         tm.that(FlextGrpcConstants.Grpc.Streaming.SERVER_STREAMING_BATCH_SIZE, eq=100)
         tm.that(
             (

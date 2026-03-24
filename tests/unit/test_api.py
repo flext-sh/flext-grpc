@@ -91,7 +91,7 @@ class TestFlextGrpc:
         result = grpc.execute()
         tm.that(result.is_success, eq=True)
         config = result.value
-        tm.that(isinstance(config, FlextGrpcSettings), eq=True)
+        tm.that(config, is_=FlextGrpcSettings)
 
     def test_create_server_direct(self) -> None:
         """Test direct server creation."""

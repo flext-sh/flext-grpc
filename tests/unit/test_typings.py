@@ -43,15 +43,24 @@ class TestFlextGrpcTypes:
 
     def test_parse_target_edge_cases(self) -> None:
         """Test edge cases for target parsing."""
-        tm.that(t.Grpc.GrpcValidation.parse_target("localhost:50051"), eq=(
-            "localhost",
-            50051,
-        ))
-        tm.that(t.Grpc.GrpcValidation.parse_target("127.0.0.1:8080"), eq=(
-            "127.0.0.1",
-            8080,
-        ))
-        tm.that(t.Grpc.GrpcValidation.parse_target("service.domain.com:443"), eq=(
-            "service.domain.com",
-            443,
-        ))
+        tm.that(
+            t.Grpc.GrpcValidation.parse_target("localhost:50051"),
+            eq=(
+                "localhost",
+                50051,
+            ),
+        )
+        tm.that(
+            t.Grpc.GrpcValidation.parse_target("127.0.0.1:8080"),
+            eq=(
+                "127.0.0.1",
+                8080,
+            ),
+        )
+        tm.that(
+            t.Grpc.GrpcValidation.parse_target("service.domain.com:443"),
+            eq=(
+                "service.domain.com",
+                443,
+            ),
+        )

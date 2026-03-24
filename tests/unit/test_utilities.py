@@ -75,7 +75,7 @@ class TestFlextGrpcUtilities:
     def test_grpc_get_system_info(self) -> None:
         """Test system info retrieval."""
         info = FlextGrpcUtilities.Grpc.get_system_info()
-        tm.that(isinstance(info, dict), eq=True)
+        tm.that(info, is_=dict)
 
     def test_grpc_format_address(self) -> None:
         """Test gRPC address formatting."""
@@ -90,9 +90,9 @@ class TestFlextGrpcUtilities:
     def test_grpc_get_channel_state_name(self) -> None:
         """Test channel state name retrieval."""
         name = FlextGrpcUtilities.Grpc.get_channel_state_name("idle")
-        tm.that(isinstance(name, str), eq=True)
+        tm.that(name, is_=str)
 
     def test_grpc_get_server_state_name(self) -> None:
         """Test server state name retrieval."""
         name = FlextGrpcUtilities.Grpc.get_server_state_name("stopped")
-        tm.that(isinstance(name, str), eq=True)
+        tm.that(name, is_=str)
