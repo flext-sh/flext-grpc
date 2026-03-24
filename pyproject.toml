@@ -30,7 +30,7 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "flext-core",
+  "flext-core @ file:../flext-core",
   "grpcio-tools>=1.75.1",
   "grpcio>=1.76,<2",
   "prometheus-client>=0.23",

@@ -27,10 +27,10 @@ if TYPE_CHECKING:
         add_FlextGrpcServiceServicer_to_server,
     )
 
-_LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "FlextGrpcServiceServicer": ("flext_grpc.proto.stubs", "FlextGrpcServiceServicer"),
-    "FlextGrpcServiceStub": ("flext_grpc.proto.stubs", "FlextGrpcServiceStub"),
-    "add_FlextGrpcServiceServicer_to_server": ("flext_grpc.proto.stubs", "add_FlextGrpcServiceServicer_to_server"),
+_LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
+    "FlextGrpcServiceServicer": ["flext_grpc.proto.stubs", "FlextGrpcServiceServicer"],
+    "FlextGrpcServiceStub": ["flext_grpc.proto.stubs", "FlextGrpcServiceStub"],
+    "add_FlextGrpcServiceServicer_to_server": ["flext_grpc.proto.stubs", "add_FlextGrpcServiceServicer_to_server"],
 }
 
 __all__ = [
