@@ -647,7 +647,7 @@ class FlextGrpcModels(FlextModels):
         class Entity(FlextModels.Entity):
             """Generic base entity with functional patterns."""
 
-            def copy_with(self, **kwargs: str | int | bool | None) -> r[Self]:
+            def copy_with(self, **kwargs: t.Scalar | None) -> r[Self]:
                 """Functional copy using r.
 
                 Args:

@@ -45,17 +45,17 @@ class FlextGrpcTypes(FlextTypes):
         type Metadata = Mapping[str, FlextTypes.ContainerValue | None]
         type ConfigDict = Mapping[
             str,
-            str | int | bool | FlextTypes.ContainerValue | None,
+            FlextTypes.Scalar | FlextTypes.ContainerValue | None,
         ]
         type Address = Mapping[str, str | int]
-        type Endpoint = Mapping[str, str | int | bool]
+        type Endpoint = Mapping[str, FlextTypes.Scalar]
         type Connection = Mapping[str, FlextTypes.ContainerValue | None]
         type ServiceData = Mapping[str, FlextTypes.ContainerValue | None]
         type MethodData = Mapping[str, FlextTypes.ContainerValue | None]
         type RequestDict = Mapping[str, FlextTypes.ContainerValue | None]
         type ResponseDict = Mapping[str, FlextTypes.ContainerValue | None]
         type StreamData = Mapping[str, FlextTypes.ContainerValue | None]
-        type StreamMeta = Mapping[str, str | int | bool]
+        type StreamMeta = Mapping[str, FlextTypes.Scalar]
         Target = str
         StreamType = c.Grpc.StreamTypeLiteral
         type ChannelState = c.Grpc.ChannelStateLiteral
@@ -73,7 +73,7 @@ class FlextGrpcTypes(FlextTypes):
 
             ServerConfiguration = Mapping[
                 str,
-                str | int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             ServerLifecycle = Mapping[
                 str,
@@ -100,7 +100,7 @@ class FlextGrpcTypes(FlextTypes):
 
             ClientConfiguration = Mapping[
                 str,
-                str | int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             ConnectionPool = Mapping[
                 str,
@@ -117,7 +117,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             ChannelOptions = Mapping[
                 str,
-                str | int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
             ]
 
         class Streaming:
@@ -141,7 +141,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             BackpressureHandling = Mapping[
                 str,
-                str | int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             type StreamingPipeline = Sequence[
                 Mapping[str, str | FlextTypes.ContainerValue | None]
@@ -233,7 +233,7 @@ class FlextGrpcTypes(FlextTypes):
             """
 
             ProjectConfig = Mapping[str, FlextTypes.ContainerValue | None]
-            type MicroserviceConfig = Mapping[str, str | int | bool | Sequence[str]]
+            type MicroserviceConfig = Mapping[str, FlextTypes.Scalar | Sequence[str]]
             StreamingConfig = Mapping[
                 str,
                 bool | str | Mapping[str, FlextTypes.ContainerValue | None],

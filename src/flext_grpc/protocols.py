@@ -325,7 +325,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 self,
                 target: str,
                 options: Mapping[str, t.ContainerValue | None] | None = None,
-            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
+            ) -> FlextProtocols.Result[Mapping[str, t.Scalar]]:
                 """Create gRPC client configuration."""
                 ...
 
@@ -334,7 +334,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 host: str,
                 port: int,
                 options: Mapping[str, t.ContainerValue | None] | None = None,
-            ) -> FlextProtocols.Result[Mapping[str, str | int | bool]]:
+            ) -> FlextProtocols.Result[Mapping[str, t.Scalar]]:
                 """Create gRPC server configuration."""
                 ...
 
