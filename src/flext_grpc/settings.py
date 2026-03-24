@@ -15,7 +15,7 @@ from typing import Annotated
 from flext_core import FlextSettings, r
 from pydantic import Field, computed_field
 
-from flext_grpc import c, m
+from flext_grpc import c, m, t
 
 
 class FlextGrpcSettings(FlextSettings):
@@ -32,28 +32,23 @@ class FlextGrpcSettings(FlextSettings):
         Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST, validation_alias="grpc_host"),
     ]
     port: Annotated[
-        int,
+        t.PortNumber,
         Field(
             default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-            ge=1,
-            le=65535,
             validation_alias="grpc_port",
         ),
     ]
     max_workers: Annotated[
-        int,
+        t.WorkerCount,
         Field(
             default=c.Grpc.Service.MAX_WORKERS,
-            ge=1,
-            le=100,
             validation_alias="grpc_max_workers",
         ),
     ]
     timeout: Annotated[
-        float,
+        t.PositiveTimeout,
         Field(
             default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
-            gt=0,
             validation_alias="grpc_timeout",
         ),
     ]

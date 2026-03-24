@@ -78,9 +78,9 @@ class FlextGrpcModels(FlextModels):
             stream_type: str
             target: str
             created_at: Annotated[datetime, Field(default_factory=datetime.now)]
-            total_requests_sent: Annotated[int, Field(default=0)]
-            average_latency_ms: Annotated[float, Field(default=0.0)]
-            error_count: Annotated[int, Field(default=0)]
+            total_requests_sent: Annotated[t.NonNegativeInt, Field(default=0)]
+            average_latency_ms: Annotated[t.NonNegativeFloat, Field(default=0.0)]
+            error_count: Annotated[t.NonNegativeInt, Field(default=0)]
 
         class HealthCheck(FlextModels.Value):
             """gRPC health check model (immutable value model)."""
@@ -94,7 +94,7 @@ class FlextGrpcModels(FlextModels):
 
             service_name: Annotated[str, Field(description="Service name")]
             methods: Annotated[
-                Sequence[str],
+                t.StrSequence,
                 Field(
                     default_factory=list,
                     description="Service methods",
@@ -116,32 +116,44 @@ class FlextGrpcModels(FlextModels):
 
             stream_id: Annotated[str, Field(description="Stream ID")]
             throughput_rps: Annotated[
-                float,
+                t.NonNegativeFloat,
                 Field(
                     description="Throughput in requests per second",
                 ),
             ]
-            latency_p50: Annotated[float, Field(description="50th percentile latency")]
-            latency_p95: Annotated[float, Field(description="95th percentile latency")]
-            latency_p99: Annotated[float, Field(description="99th percentile latency")]
-            error_rate: Annotated[float, Field(description="Error rate")]
+            latency_p50: Annotated[
+                t.NonNegativeFloat, Field(description="50th percentile latency")
+            ]
+            latency_p95: Annotated[
+                t.NonNegativeFloat, Field(description="95th percentile latency")
+            ]
+            latency_p99: Annotated[
+                t.NonNegativeFloat, Field(description="99th percentile latency")
+            ]
+            error_rate: Annotated[t.NonNegativeFloat, Field(description="Error rate")]
             memory_usage_bytes: Annotated[
-                int, Field(description="Memory usage in bytes")
+                t.NonNegativeInt, Field(description="Memory usage in bytes")
             ]
 
         class ServiceMetrics(FlextModels.Value):
             """gRPC service metrics model (immutable value model)."""
 
             service_name: Annotated[str, Field(description="Service name")]
-            total_requests: Annotated[int, Field(description="Total requests")]
+            total_requests: Annotated[
+                t.NonNegativeInt, Field(description="Total requests")
+            ]
             successful_requests: Annotated[
-                int, Field(description="Successful requests")
+                t.NonNegativeInt, Field(description="Successful requests")
             ]
-            failed_requests: Annotated[int, Field(description="Failed requests")]
+            failed_requests: Annotated[
+                t.NonNegativeInt, Field(description="Failed requests")
+            ]
             avg_response_time: Annotated[
-                float, Field(description="Average response time")
+                t.NonNegativeFloat, Field(description="Average response time")
             ]
-            active_connections: Annotated[int, Field(description="Active connections")]
+            active_connections: Annotated[
+                t.NonNegativeInt, Field(description="Active connections")
+            ]
 
         class OperationExecutionRequest(FlextModels.Value):
             """Operation execution request for gRPC service operations."""
@@ -150,14 +162,14 @@ class FlextGrpcModels(FlextModels):
                 str, Field(description="Operation name to execute")
             ]
             arguments: Annotated[
-                Mapping[str, t.Scalar],
+                t.ConfigurationMapping,
                 Field(
                     default_factory=dict,
                     description="Positional arguments as dict",
                 ),
             ]
             keyword_arguments: Annotated[
-                Mapping[str, t.Scalar],
+                t.ConfigurationMapping,
                 Field(
                     default_factory=dict,
                     description="Keyword arguments",
@@ -168,11 +180,15 @@ class FlextGrpcModels(FlextModels):
             """Basic server configuration (immutable value model)."""
 
             host: Annotated[str, Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)]
-            port: Annotated[int, Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)]
-            max_workers: Annotated[
-                int, Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
+            port: Annotated[
+                t.PortNumber, Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
             ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
+            max_workers: Annotated[
+                t.WorkerCount, Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
+            ]
+            timeout: Annotated[
+                t.PositiveTimeout, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
+            ]
 
         class ClientConfig(FlextModels.Value):
             """Basic client configuration (immutable value model)."""
@@ -183,7 +199,9 @@ class FlextGrpcModels(FlextModels):
                     default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
                 ),
             ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
+            timeout: Annotated[
+                t.PositiveTimeout, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
+            ]
 
         class ChannelConfig(FlextModels.Value):
             """Basic channel configuration (immutable value model)."""
@@ -262,11 +280,9 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             max_connections: Annotated[
-                int,
+                t.BatchSize,
                 Field(
                     default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
-                    ge=1,
-                    le=10000,
                     description="Maximum concurrent connections",
                 ),
             ]
@@ -298,11 +314,9 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             max_concurrent_rpcs: Annotated[
-                int,
+                t.BatchSize,
                 Field(
                     default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
-                    ge=1,
-                    le=10000,
                     description="Maximum concurrent RPCs",
                 ),
             ]
@@ -345,11 +359,9 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             max_concurrent_streams: Annotated[
-                int,
+                t.WorkerCount,
                 Field(
                     default=10,
-                    ge=1,
-                    le=100,
                     description="Maximum concurrent streams",
                 ),
             ]
@@ -383,11 +395,9 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC client configuration."""
 
             timeout: Annotated[
-                float,
+                t.PositiveTimeout,
                 Field(
                     default=30.0,
-                    gt=0,
-                    le=300,
                     description="RPC timeout (seconds)",
                 ),
             ]
@@ -708,9 +718,9 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC server with state machine and validation delegation."""
 
             host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
-            port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            port: t.PortNumber = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             state: c.Grpc.ServerStateLiteral = "stopped"
-            max_workers: int = 10
+            max_workers: t.WorkerCount = 10
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
                 Field(default_factory=list, description="gRPC services"),
@@ -782,11 +792,11 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC service with validation delegation."""
 
             name: str = ""
-            methods: Annotated[Sequence[str], Field(default_factory=list)]
+            methods: Annotated[t.StrSequence, Field(default_factory=list)]
 
             @field_validator("methods")
             @classmethod
-            def validate_methods(cls, v: Sequence[str]) -> Sequence[str]:
+            def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
                 """Validate methods list is not empty with valid items."""
                 if not v:
                     msg = "methods cannot be empty"

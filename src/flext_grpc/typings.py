@@ -41,7 +41,7 @@ class FlextGrpcTypes(FlextTypes):
 
         type Dict = Mapping[str, FlextTypes.ContainerValue | None]
         type GrpcDict = dict[str, FlextTypes.ContainerValue | None]
-        type Headers = Mapping[str, str]
+        type Headers = t.StrMapping
         type Metadata = Mapping[str, FlextTypes.ContainerValue | None]
         type ConfigDict = Mapping[
             str,
@@ -89,7 +89,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             ServiceRegistry = Mapping[
                 str,
-                Sequence[str] | Mapping[str, FlextTypes.ContainerValue | None],
+                t.StrSequence | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             type HandlerConfiguration = Sequence[
                 Mapping[str, str | FlextTypes.ContainerValue | None]
@@ -106,7 +106,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 int | bool | Mapping[str, FlextTypes.ContainerValue | None],
             ]
-            type RetryConfiguration = Mapping[str, int | float | bool | Sequence[str]]
+            type RetryConfiguration = Mapping[str, int | float | bool | t.StrSequence]
             type LoadBalancing = Mapping[
                 str,
                 str | bool | Mapping[str, FlextTypes.ContainerValue | None],
@@ -152,7 +152,7 @@ class FlextGrpcTypes(FlextTypes):
 
             ServiceDefinition = Mapping[
                 str,
-                str | Sequence[str] | Mapping[str, FlextTypes.ContainerValue | None],
+                str | t.StrSequence | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             MethodDefinition = Mapping[
                 str,
@@ -167,7 +167,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             ServiceDiscovery = Mapping[
                 str,
-                str | Sequence[str] | Mapping[str, FlextTypes.ContainerValue | None],
+                str | t.StrSequence | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             HealthCheck = Mapping[
                 str,
@@ -189,7 +189,7 @@ class FlextGrpcTypes(FlextTypes):
                 str,
                 str | Mapping[str, FlextTypes.ContainerValue | None],
             ]
-            type AuthorizationRules = Sequence[Mapping[str, str | bool | Sequence[str]]]
+            type AuthorizationRules = Sequence[Mapping[str, str | bool | t.StrSequence]]
             CertificateManagement = Mapping[
                 str,
                 str | bool | Mapping[str, FlextTypes.ContainerValue | None],
@@ -233,7 +233,7 @@ class FlextGrpcTypes(FlextTypes):
             """
 
             ProjectConfig = Mapping[str, FlextTypes.ContainerValue | None]
-            type MicroserviceConfig = Mapping[str, FlextTypes.Scalar | Sequence[str]]
+            type MicroserviceConfig = Mapping[str, FlextTypes.Scalar | t.StrSequence]
             StreamingConfig = Mapping[
                 str,
                 bool | str | Mapping[str, FlextTypes.ContainerValue | None],
