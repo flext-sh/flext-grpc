@@ -19,7 +19,7 @@ class TestFlextGrpcProtocols:
 
     def test_protocols_class_exists(self) -> None:
         """Test that FlextGrpcProtocols class exists."""
-        tm.that(FlextGrpcProtocols is not None, eq=True)
+        tm.that(FlextGrpcProtocols, none=False)
 
     def test_grpc_namespace_exists(self) -> None:
         """Test that Grpc namespace exists."""

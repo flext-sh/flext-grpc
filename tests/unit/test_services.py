@@ -14,7 +14,7 @@ class TestFlextGrpcServices:
     def test_init(self) -> None:
         """Test FlextGrpcServices initialization."""
         services = FlextGrpcServices()
-        tm.that(services is not None, eq=True)
+        tm.that(services, none=False)
 
     def test_connect_client(self) -> None:
         """Test client connection."""
@@ -52,7 +52,7 @@ class TestFlextGrpcServices:
         collector = MetricsCollector()
         collector.record_metric("test_key", "test_value")
         value = collector.get_metric("test_key")
-        tm.that(value == "test_value", eq=True)
+        tm.that(value, eq="test_value")
         metrics_payload = collector.get_all_metrics()
-        tm.that("test_key" in metrics_payload.values, eq=True)
-        tm.that(metrics_payload.values["test_key"] == "test_value", eq=True)
+        tm.that(metrics_payload.values, has="test_key")
+        tm.that(metrics_payload.values["test_key"], eq="test_value")

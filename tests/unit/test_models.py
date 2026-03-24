@@ -15,21 +15,21 @@ class TestFlextGrpcModels:
         config = FlextGrpcModels.Grpc.ServerConfig(
             host="127.0.0.1", port=50051, max_workers=10, timeout=30.0
         )
-        tm.that(config.host == "127.0.0.1", eq=True)
-        tm.that(config.port == 50051, eq=True)
-        tm.that(config.max_workers == 10, eq=True)
+        tm.that(config.host, eq="127.0.0.1")
+        tm.that(config.port, eq=50051)
+        tm.that(config.max_workers, eq=10)
 
     def test_client_config(self) -> None:
         """Test client config model."""
         config = FlextGrpcModels.Grpc.ClientConfig(
             target="127.0.0.1:50051", timeout=30.0
         )
-        tm.that(config.target == "127.0.0.1:50051", eq=True)
+        tm.that(config.target, eq="127.0.0.1:50051")
 
     def test_channel_config(self) -> None:
         """Test channel config model."""
         config = FlextGrpcModels.Grpc.ChannelConfig(address="localhost:50051")
-        tm.that(config.address == "localhost:50051", eq=True)
+        tm.that(config.address, eq="localhost:50051")
 
     def test_stream_info(self) -> None:
         """Test stream info model."""
@@ -38,6 +38,6 @@ class TestFlextGrpcModels:
             "stream_type": "unary",
             "target": "localhost:50051",
         })
-        tm.that(stream_info.stream_id == "test", eq=True)
-        tm.that(stream_info.stream_type == "unary", eq=True)
-        tm.that(stream_info.target == "localhost:50051", eq=True)
+        tm.that(stream_info.stream_id, eq="test")
+        tm.that(stream_info.stream_type, eq="unary")
+        tm.that(stream_info.target, eq="localhost:50051")
