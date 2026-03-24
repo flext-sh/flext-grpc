@@ -94,7 +94,7 @@ class FlextGrpcModels(FlextModels):
 
             service_name: Annotated[str, Field(description="Service name")]
             methods: Annotated[
-                t.StrSequence,
+                Sequence[str],
                 Field(
                     default_factory=list,
                     description="Service methods",
@@ -792,11 +792,11 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC service with validation delegation."""
 
             name: str = ""
-            methods: Annotated[t.StrSequence, Field(default_factory=list)]
+            methods: Annotated[Sequence[str], Field(default_factory=list)]
 
             @field_validator("methods")
             @classmethod
-            def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
+            def validate_methods(cls, v: Sequence[str]) -> Sequence[str]:
                 """Validate methods list is not empty with valid items."""
                 if not v:
                     msg = "methods cannot be empty"

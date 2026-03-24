@@ -31,9 +31,9 @@ class ValidationResults(TypedDict):
     """Complete validation results."""
 
     summary: ValidationSummary
-    issues: Sequence[Mapping[str, str | int | t.StrSequence]]
-    warnings: Sequence[Mapping[str, str | int | t.StrSequence]]
-    recommendations: Sequence[Mapping[str, str | int | t.StrSequence]]
+    issues: Sequence[Mapping[str, str | int | Sequence[str]]]
+    warnings: Sequence[Mapping[str, str | int | Sequence[str]]]
+    recommendations: Sequence[Mapping[str, str | int | Sequence[str]]]
 
 
 class ArchitectureValidator:
@@ -56,9 +56,9 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: Sequence[Mapping[str, str | int | t.StrSequence]] = []
-        self.warnings: Sequence[Mapping[str, str | int | t.StrSequence]] = []
-        self.recommendations: Sequence[Mapping[str, str | int | t.StrSequence]] = []
+        self.issues: Sequence[Mapping[str, str | int | Sequence[str]]] = []
+        self.warnings: Sequence[Mapping[str, str | int | Sequence[str]]] = []
+        self.recommendations: Sequence[Mapping[str, str | int | Sequence[str]]] = []
 
     def validate_all(self) -> ValidationResults:
         """Run all validation checks."""
@@ -269,7 +269,7 @@ class ArchitectureValidator:
             "README.md",
         ]
 
-        versions: t.StrMapping = {}
+        versions: Mapping[str, str] = {}
         for file_path in files_to_check:
             full_path = self.root_path / file_path
             if full_path.exists():

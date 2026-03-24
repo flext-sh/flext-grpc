@@ -227,7 +227,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_service_methods(
                 self, service: FlextGrpcProtocols.Grpc.GrpcServicer
-            ) -> FlextProtocols.Result[t.StrSequence]:
+            ) -> FlextProtocols.Result[Sequence[str]]:
                 """Get list of service methods."""
                 ...
 

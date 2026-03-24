@@ -56,9 +56,9 @@ class GrpcServerManager:
             server_results.append(server_result)
         return server_results
 
-    def get_server_status(self) -> Mapping[str, t.StrMapping]:
+    def get_server_status(self) -> Mapping[str, Mapping[str, str]]:
         """Get status of all servers through facade."""
-        status: Mapping[str, t.StrMapping] = {}
+        status: Mapping[str, Mapping[str, str]] = {}
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
             status[server_id] = {
@@ -111,7 +111,7 @@ class AdvancedGrpcOperations:
         host: str = FlextConstants.DEFAULT_HOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
-        methods: t.StrSequence | None = None,
+        methods: Sequence[str] | None = None,
     ) -> r[CompleteSetup]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
