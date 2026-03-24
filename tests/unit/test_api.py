@@ -55,8 +55,8 @@ class TestFlextGrpc:
         """Test target validation."""
         grpc = FlextGrpc()
         tm.that(grpc.validate_target("localhost:50051"), eq=True)
-        tm.that(grpc.validate_target("invalid"), eq=False)
-        tm.that(grpc.validate_target("localhost:99999"), eq=False)
+        tm.that(not grpc.validate_target("invalid"), eq=True)
+        tm.that(not grpc.validate_target("localhost:99999"), eq=True)
 
     def test_parse_address(self) -> None:
         """Test address parsing."""
@@ -116,11 +116,11 @@ class TestFlextGrpc:
     def test_validate_target_invalid(self) -> None:
         """Test target validation with invalid targets."""
         grpc = FlextGrpc()
-        tm.that(grpc.validate_target(""), eq=False)
-        tm.that(grpc.validate_target("no_port"), eq=False)
-        tm.that(grpc.validate_target("localhost"), eq=False)
-        tm.that(grpc.validate_target(":50051"), eq=False)
-        tm.that(grpc.validate_target("localhost:99999"), eq=False)
+        tm.that(not grpc.validate_target(""), eq=True)
+        tm.that(not grpc.validate_target("no_port"), eq=True)
+        tm.that(not grpc.validate_target("localhost"), eq=True)
+        tm.that(not grpc.validate_target(":50051"), eq=True)
+        tm.that(not grpc.validate_target("localhost:99999"), eq=True)
 
     def test_parse_address_invalid(self) -> None:
         """Test address parsing with invalid addresses."""

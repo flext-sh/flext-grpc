@@ -31,7 +31,7 @@ class TestFlextGrpcUtilities:
     def test_grpc_validate_port(self) -> None:
         """Test gRPC port validation utility."""
         tm.that(FlextGrpcUtilities.Grpc.validate_port(50051), eq=True)
-        tm.that(FlextGrpcUtilities.Grpc.validate_port(0), eq=False)
+        tm.that(not FlextGrpcUtilities.Grpc.validate_port(0), eq=True)
 
     def test_create_client_entity(self) -> None:
         """Test client entity creation."""
@@ -85,7 +85,7 @@ class TestFlextGrpcUtilities:
     def test_grpc_validate_host(self) -> None:
         """Test gRPC host validation."""
         tm.that(FlextGrpcUtilities.Grpc.validate_host("localhost"), eq=True)
-        tm.that(FlextGrpcUtilities.Grpc.validate_host(""), eq=False)
+        tm.that(not FlextGrpcUtilities.Grpc.validate_host(""), eq=True)
 
     def test_grpc_get_channel_state_name(self) -> None:
         """Test channel state name retrieval."""
