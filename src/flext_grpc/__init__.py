@@ -36,12 +36,8 @@ if TYPE_CHECKING:
     )
     from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
     from flext_grpc.proto.stubs import (
-        EchoRequest,
-        EchoResponse,
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
-        HealthRequest,
-        HealthResponse,
         add_FlextGrpcServiceServicer_to_server,
     )
     from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
@@ -51,8 +47,6 @@ if TYPE_CHECKING:
     from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
 
 _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "EchoRequest": ("flext_grpc.proto.stubs", "EchoRequest"),
-    "EchoResponse": ("flext_grpc.proto.stubs", "EchoResponse"),
     "FlextGrpc": ("flext_grpc.api", "FlextGrpc"),
     "FlextGrpcConnectionError": ("flext_grpc.errors", "FlextGrpcConnectionError"),
     "FlextGrpcConstants": ("flext_grpc.constants", "FlextGrpcConstants"),
@@ -71,8 +65,6 @@ _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
     "FlextGrpcTypes": ("flext_grpc.typings", "FlextGrpcTypes"),
     "FlextGrpcUtilities": ("flext_grpc.utilities", "FlextGrpcUtilities"),
     "FlextGrpcValidationError": ("flext_grpc.errors", "FlextGrpcValidationError"),
-    "HealthRequest": ("flext_grpc.proto.stubs", "HealthRequest"),
-    "HealthResponse": ("flext_grpc.proto.stubs", "HealthResponse"),
     "__all__": ("flext_grpc.__version__", "__all__"),
     "__author__": ("flext_grpc.__version__", "__author__"),
     "__author_email__": ("flext_grpc.__version__", "__author_email__"),
@@ -101,8 +93,6 @@ _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
 }
 
 __all__ = [
-    "EchoRequest",
-    "EchoResponse",
     "FlextGrpc",
     "FlextGrpcConnectionError",
     "FlextGrpcConstants",
@@ -118,8 +108,6 @@ __all__ = [
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
-    "HealthRequest",
-    "HealthResponse",
     "__all__",
     "__author__",
     "__author_email__",

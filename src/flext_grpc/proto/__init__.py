@@ -22,32 +22,20 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
 
     from flext_grpc.proto.stubs import (
-        EchoRequest,
-        EchoResponse,
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
-        HealthRequest,
-        HealthResponse,
         add_FlextGrpcServiceServicer_to_server,
     )
 
 _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "EchoRequest": ("flext_grpc.proto.stubs", "EchoRequest"),
-    "EchoResponse": ("flext_grpc.proto.stubs", "EchoResponse"),
     "FlextGrpcServiceServicer": ("flext_grpc.proto.stubs", "FlextGrpcServiceServicer"),
     "FlextGrpcServiceStub": ("flext_grpc.proto.stubs", "FlextGrpcServiceStub"),
-    "HealthRequest": ("flext_grpc.proto.stubs", "HealthRequest"),
-    "HealthResponse": ("flext_grpc.proto.stubs", "HealthResponse"),
     "add_FlextGrpcServiceServicer_to_server": ("flext_grpc.proto.stubs", "add_FlextGrpcServiceServicer_to_server"),
 }
 
 __all__ = [
-    "EchoRequest",
-    "EchoResponse",
     "FlextGrpcServiceServicer",
     "FlextGrpcServiceStub",
-    "HealthRequest",
-    "HealthResponse",
     "add_FlextGrpcServiceServicer_to_server",
 ]
 
