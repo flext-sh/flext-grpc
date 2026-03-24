@@ -83,7 +83,7 @@ class FlextGrpc:
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: t.StrSequence | None = None,
-    ) -> r[GrpcCompleteSetup]:
+    ) -> r[FlextGrpcCompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
@@ -248,7 +248,7 @@ class FlextGrpc:
 __all__ = ["FlextGrpc"]
 
 
-class GrpcCompleteSetup(TypedDict):
+class FlextGrpcCompleteSetup(TypedDict):
     server: m.Grpc.Server
     client: m.Grpc.Client
     service: m.Grpc.Service
