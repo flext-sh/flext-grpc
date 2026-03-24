@@ -14,7 +14,7 @@ from typing import TypedDict
 
 from flext_core import r
 
-from flext_grpc import FlextGrpcServices, FlextGrpcSettings, ServicePayload, c, m, t, u
+from flext_grpc import FlextGrpcServices, FlextGrpcSettings, c, m, t, u
 
 
 class FlextGrpc:
@@ -177,7 +177,7 @@ class FlextGrpc:
 
     def make_call(
         self, client: m.Grpc.Client, method: str, request: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[m.Grpc.Payload]:
         """Delegate method calls.
 
         Args:
@@ -201,7 +201,7 @@ class FlextGrpc:
 
     def send_data(
         self, stream: m.Grpc.GrpcStream, data: t.ConfigValue
-    ) -> r[ServicePayload]:
+    ) -> r[m.Grpc.Payload]:
         """Delegate data sending.
 
         Args:

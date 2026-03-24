@@ -44,29 +44,13 @@ if TYPE_CHECKING:
         HealthResponse,
         add_FlextGrpcServiceServicer_to_server,
     )
-    from flext_grpc.protocols import (
-        ClientConnection,
-        FlextGrpcProtocols,
-        FlextGrpcProtocols as p,
-        ServerLifecycle,
-        StreamProcessor,
-    )
-    from flext_grpc.services import (
-        ConnectionPool,
-        FlextGrpcServices,
-        GrpcClientManager,
-        GrpcServerManager,
-        GrpcStreamManager,
-        MetricsCollector,
-        ServicePayload,
-    )
+    from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
+    from flext_grpc.services import FlextGrpcServices
     from flext_grpc.settings import FlextGrpcSettings
     from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
     from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
 
 _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
-    "ClientConnection": ("flext_grpc.protocols", "ClientConnection"),
-    "ConnectionPool": ("flext_grpc.services", "ConnectionPool"),
     "EchoRequest": ("flext_grpc.proto.stubs", "EchoRequest"),
     "EchoResponse": ("flext_grpc.proto.stubs", "EchoResponse"),
     "FlextGrpc": ("flext_grpc.api", "FlextGrpc"),
@@ -87,15 +71,8 @@ _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
     "FlextGrpcTypes": ("flext_grpc.typings", "FlextGrpcTypes"),
     "FlextGrpcUtilities": ("flext_grpc.utilities", "FlextGrpcUtilities"),
     "FlextGrpcValidationError": ("flext_grpc.errors", "FlextGrpcValidationError"),
-    "GrpcClientManager": ("flext_grpc.services", "GrpcClientManager"),
-    "GrpcServerManager": ("flext_grpc.services", "GrpcServerManager"),
-    "GrpcStreamManager": ("flext_grpc.services", "GrpcStreamManager"),
     "HealthRequest": ("flext_grpc.proto.stubs", "HealthRequest"),
     "HealthResponse": ("flext_grpc.proto.stubs", "HealthResponse"),
-    "MetricsCollector": ("flext_grpc.services", "MetricsCollector"),
-    "ServerLifecycle": ("flext_grpc.protocols", "ServerLifecycle"),
-    "ServicePayload": ("flext_grpc.services", "ServicePayload"),
-    "StreamProcessor": ("flext_grpc.protocols", "StreamProcessor"),
     "__all__": ("flext_grpc.__version__", "__all__"),
     "__author__": ("flext_grpc.__version__", "__author__"),
     "__author_email__": ("flext_grpc.__version__", "__author_email__"),
@@ -124,8 +101,6 @@ _LAZY_IMPORTS: Mapping[str, tuple[str, str]] = {
 }
 
 __all__ = [
-    "ClientConnection",
-    "ConnectionPool",
     "EchoRequest",
     "EchoResponse",
     "FlextGrpc",
@@ -143,15 +118,8 @@ __all__ = [
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
-    "GrpcClientManager",
-    "GrpcServerManager",
-    "GrpcStreamManager",
     "HealthRequest",
     "HealthResponse",
-    "MetricsCollector",
-    "ServerLifecycle",
-    "ServicePayload",
-    "StreamProcessor",
     "__all__",
     "__author__",
     "__author_email__",

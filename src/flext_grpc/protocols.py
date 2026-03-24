@@ -16,24 +16,6 @@ from grpc import GenericRpcHandler
 from flext_grpc import c
 
 
-class ClientConnection:
-    """Base class for gRPC client connection management."""
-
-    pass
-
-
-class ServerLifecycle:
-    """Base class for gRPC server lifecycle management."""
-
-    pass
-
-
-class StreamProcessor:
-    """Base class for gRPC stream processing."""
-
-    pass
-
-
 class FlextGrpcProtocols(FlextProtocols):
     """Unified gRPC protocols extending FlextProtocols.
 
@@ -56,6 +38,15 @@ class FlextGrpcProtocols(FlextProtocols):
     server: p.Grpc.Server
     client: p.Grpc.Client
     """
+
+    class ClientConnection:
+        """Base class for gRPC client connection management."""
+
+    class ServerLifecycle:
+        """Base class for gRPC server lifecycle management."""
+
+    class StreamProcessor:
+        """Base class for gRPC stream processing."""
 
     class Grpc:
         """gRPC domain-specific protocols.
@@ -390,9 +381,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Close the channel."""
                 ...
 
-            def unsubscribe(
-                self, callback: Callable[[t.NormalizedValue], None]
-            ) -> None:
+            def unsubscribe(self, callback: Callable[..., None]) -> None:
                 """Remove a subscription callback from the channel."""
                 ...
 
@@ -451,12 +440,9 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
 
+p = FlextGrpcProtocols
+
 __all__ = [
-    "ClientConnection",
     "FlextGrpcProtocols",
-    "ServerLifecycle",
-    "StreamProcessor",
     "p",
 ]
-
-p = FlextGrpcProtocols

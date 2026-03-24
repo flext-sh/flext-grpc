@@ -41,7 +41,7 @@ class FlextGrpcTypes(FlextTypes):
 
         type Dict = Mapping[str, FlextTypes.ContainerValue | None]
         type GrpcDict = dict[str, FlextTypes.ContainerValue | None]
-        type Headers = t.StrMapping
+        type Headers = FlextTypes.StrMapping
         type Metadata = Mapping[str, FlextTypes.ContainerValue | None]
         type ConfigDict = Mapping[
             str,
