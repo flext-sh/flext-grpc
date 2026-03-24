@@ -13,7 +13,7 @@ class TestFlextGrpcUtilities:
     def test_init(self) -> None:
         """Test FlextGrpcUtilities initialization."""
         utilities = FlextGrpcUtilities()
-        tm.that(utilities, none=False)
+        assert utilities is not None
 
     def test_system_utilities(self) -> None:
         """Test system utilities."""

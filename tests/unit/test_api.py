@@ -17,7 +17,7 @@ class TestFlextGrpc:
     def test_init(self) -> None:
         """Test FlextGrpc initialization."""
         grpc = FlextGrpc()
-        tm.that(grpc, none=False)
+        assert grpc is not None
 
     def test_init_with_config(self) -> None:
         """Test FlextGrpc initialization with config."""

@@ -23,16 +23,18 @@ from flext_core import r
 from pydantic import Field, ValidationError
 
 from flext_grpc import (
-    EchoRequest,
     FlextGrpcServiceServicer,
     FlextGrpcServiceStub,
-    HealthRequest,
     add_FlextGrpcServiceServicer_to_server,
     c,
     m,
     t,
     u,
 )
+from flext_grpc.models import FlextGrpcModels as _GrpcModels
+
+EchoRequest = _GrpcModels.Grpc.EchoRequest
+HealthRequest = _GrpcModels.Grpc.HealthRequest
 
 
 class FlextGrpcServices:

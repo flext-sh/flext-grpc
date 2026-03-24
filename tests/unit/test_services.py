@@ -5,7 +5,10 @@ from __future__ import annotations
 import grpc
 from flext_tests import tm
 
-from flext_grpc import ConnectionPool, FlextGrpcServices, MetricsCollector
+from flext_grpc import FlextGrpcServices
+
+ConnectionPool = FlextGrpcServices.Grpc.ConnectionPool
+MetricsCollector = FlextGrpcServices.Grpc.MetricsCollector
 
 
 class TestFlextGrpcServices:
@@ -14,7 +17,7 @@ class TestFlextGrpcServices:
     def test_init(self) -> None:
         """Test FlextGrpcServices initialization."""
         services = FlextGrpcServices()
-        tm.that(services, none=False)
+        assert services is not None
 
     def test_connect_client(self) -> None:
         """Test client connection."""
