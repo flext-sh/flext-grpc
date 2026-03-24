@@ -693,7 +693,7 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC channel with state machine delegation."""
 
             target: str = ""
-            state: c.Grpc.ChannelStateLiteral = "idle"
+            state: c.Grpc.ChannelState = "idle"
             options: Annotated[Mapping[str, t.ConfigValue], Field(default_factory=dict)]
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
@@ -735,7 +735,7 @@ class FlextGrpcModels(FlextModels):
 
             host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
             port: t.PortNumber = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-            state: c.Grpc.ServerStateLiteral = "stopped"
+            state: c.Grpc.ServerState = "stopped"
             max_workers: t.WorkerCount = 10
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
@@ -873,7 +873,7 @@ class FlextGrpcModels(FlextModels):
 
             id: str = ""
             method_name: str = ""
-            stream_type: c.Grpc.StreamTypeLiteral = "unary"
+            stream_type: c.Grpc.GrpcOperations = "unary"
             grpc_stub: p.Grpc.GrpcStub | None = None
 
             @field_validator("method_name")

@@ -57,9 +57,9 @@ class FlextGrpcTypes(FlextTypes):
         type StreamData = Mapping[str, FlextTypes.ContainerValue | None]
         type StreamMeta = Mapping[str, FlextTypes.Scalar]
         Target = str
-        StreamType = c.Grpc.StreamTypeLiteral
-        type ChannelState = c.Grpc.ChannelStateLiteral
-        type ServerState = c.Grpc.ServerStateLiteral
+        StreamType = c.Grpc.GrpcOperations
+        type ChannelState = c.Grpc.ChannelState
+        type ServerState = c.Grpc.ServerState
         type Options = Mapping[
             str,
             FlextTypes.Scalar

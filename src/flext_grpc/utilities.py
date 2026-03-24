@@ -75,7 +75,7 @@ class FlextGrpcUtilities(FlextUtilities):
     def create_stream_entity(
         cls,
         method_name: str,
-        stream_type: c.Grpc.StreamTypeLiteral | str,
+        stream_type: c.Grpc.GrpcOperations | str,
     ) -> r[m.Grpc.GrpcStream]:
         """Delegate to Grpc.create_stream_entity."""
         return cls.Grpc.create_stream_entity(
@@ -174,14 +174,14 @@ class FlextGrpcUtilities(FlextUtilities):
         def create_stream_entity(
             cls,
             method_name: str,
-            stream_type: c.Grpc.StreamTypeLiteral | str,
+            stream_type: c.Grpc.GrpcOperations | str,
         ) -> r[m.Grpc.GrpcStream]:
             """Create a gRPC stream entity directly."""
             if stream_type not in c.Grpc.STREAM_TYPES:
                 return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
             if not method_name or not method_name.strip():
                 return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
-            validated_type: c.Grpc.StreamTypeLiteral = (
+            validated_type: c.Grpc.GrpcOperations = (
                 "unary"
                 if stream_type == "unary"
                 else "server_streaming"

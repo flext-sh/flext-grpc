@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from enum import StrEnum, unique
-from typing import Final, Literal
+from typing import Final
 
 from flext_core import FlextConstants
 
@@ -188,39 +188,6 @@ class FlextGrpcConstants(FlextConstants):
             GRPCLB = "grpclb"
             XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
 
-        type ChannelStateLiteral = Literal[
-            "idle",
-            "connecting",
-            "ready",
-            "transient_failure",
-            "shutdown",
-        ]
-        "Channel state literal - references ChannelState StrEnum members."
-        type ServerStateLiteral = Literal["stopped", "starting", "running", "stopping"]
-        "Server state literal - references ServerState StrEnum members."
-        type StreamTypeLiteral = Literal[
-            "unary",
-            "server_streaming",
-            "client_streaming",
-            "bidirectional",
-        ]
-        "Stream type literal - references GrpcOperations StrEnum members."
-        type LoadBalancingPolicyLiteral = Literal[
-            "round_robin",
-            "pick_first",
-            "grpclb",
-            "xds_cluster_resolver",
-        ]
-        "Load balancing policy literal - references LoadBalancingPolicies StrEnum members."
-        type CompressionTypeLiteral = Literal["none", "gzip", "deflate"]
-        "Compression type literal - references CompressionTypes StrEnum members."
-        type GrpcOperationLiteral = Literal[
-            "unary",
-            "server_streaming",
-            "client_streaming",
-            "bidirectional",
-        ]
-        "gRPC operation literal - references GrpcOperations StrEnum members."
         "Channel states tuple - generated from ChannelState StrEnum."
         "Server states tuple - generated from ServerState StrEnum."
         STREAM_TYPES: Final[tuple[str, ...]] = tuple(

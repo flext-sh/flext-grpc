@@ -535,7 +535,7 @@ class FlextGrpcServices:
     def _create_stream_entity(
         self,
         method_name: str,
-        stream_type: c.Grpc.StreamTypeLiteral | str,
+        stream_type: c.Grpc.GrpcOperations | str,
     ) -> r[m.Grpc.GrpcStream]:
         """Delegate entity creation to utilities."""
         return u.create_stream_entity(method_name, stream_type)
