@@ -12,6 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Sequence
+
 from enum import StrEnum, unique
 from typing import Final, Literal
 
