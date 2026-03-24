@@ -16,7 +16,11 @@ class TestFlextGrpcEntities:
     def test_grpc_server_creation(self) -> None:
         """Test gRPC server entity creation."""
         server = FlextGrpcEntities.Server(
-            host="localhost", port=50051, max_workers=10, services=[], domain_events=[]
+            host="localhost",
+            port=50051,
+            max_workers=10,
+            services=[],
+            domain_events=[],
         )
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
@@ -30,7 +34,9 @@ class TestFlextGrpcEntities:
     def test_grpc_channel_creation(self) -> None:
         """Test gRPC channel entity creation."""
         channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", options={}, domain_events=[]
+            target="localhost:50051",
+            options={},
+            domain_events=[],
         )
         tm.that(channel.target, eq="localhost:50051")
 
@@ -49,7 +55,9 @@ class TestFlextGrpcEntities:
     def test_service_creation_with_validation(self) -> None:
         """Test service creation with validation."""
         service = FlextGrpcEntities.Service(
-            name="TestService", methods=["method1", "method2"], domain_events=[]
+            name="TestService",
+            methods=["method1", "method2"],
+            domain_events=[],
         )
         tm.that(service.name, eq="TestService")
         tm.that(service.methods, eq=["method1", "method2"])
@@ -67,7 +75,9 @@ class TestFlextGrpcEntities:
     def test_channel_business_rules(self) -> None:
         """Test channel business rules validation."""
         channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", options={}, domain_events=[]
+            target="localhost:50051",
+            options={},
+            domain_events=[],
         )
         result = channel.validate_business_rules()
         tm.that(result.is_success, eq=True)
@@ -82,7 +92,10 @@ class TestFlextGrpcEntities:
     def test_channel_state_machine(self) -> None:
         """Test channel state machine transitions."""
         channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", state="idle", options={}, domain_events=[]
+            target="localhost:50051",
+            state="idle",
+            options={},
+            domain_events=[],
         )
         result = channel.connect()
         tm.that(result.is_success, eq=True)
@@ -92,7 +105,9 @@ class TestFlextGrpcEntities:
     def test_entity_copy_with(self) -> None:
         """Test entity copy_with method."""
         channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", options={}, domain_events=[]
+            target="localhost:50051",
+            options={},
+            domain_events=[],
         )
         result = channel.copy_with(target="127.0.0.1:8080")
         tm.that(result.is_success, eq=True)
@@ -102,7 +117,10 @@ class TestFlextGrpcEntities:
     def test_server_creation_defaults(self) -> None:
         """Test server creation with defaults."""
         server = FlextGrpcEntities.Server(
-            host="localhost", port=50051, services=[], domain_events=[]
+            host="localhost",
+            port=50051,
+            services=[],
+            domain_events=[],
         )
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
@@ -111,7 +129,9 @@ class TestFlextGrpcEntities:
     def test_client_with_channel(self) -> None:
         """Test client creation with channel."""
         channel = FlextGrpcEntities.Channel(
-            target="localhost:50051", options={}, domain_events=[]
+            target="localhost:50051",
+            options={},
+            domain_events=[],
         )
         client = FlextGrpcEntities.Client(channel=channel, options={}, domain_events=[])
         tm.that(client.channel, eq=channel)

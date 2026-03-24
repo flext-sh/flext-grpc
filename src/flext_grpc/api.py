@@ -63,7 +63,9 @@ class FlextGrpc:
         return self._service.connect_client(target)
 
     def create_channel(
-        self, target: str, options: t.GrpcOptions | None = None
+        self,
+        target: str,
+        options: t.GrpcOptions | None = None,
     ) -> r[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         return u.create_channel_entity(
@@ -72,7 +74,9 @@ class FlextGrpc:
         )
 
     def create_client(
-        self, target: str, options: t.GrpcOptions | None = None
+        self,
+        target: str,
+        options: t.GrpcOptions | None = None,
     ) -> r[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return u.create_client_entity(target=target, options=options)
@@ -101,8 +105,8 @@ class FlextGrpc:
                         "client": pair[1],
                         "service": svc,
                         "target": target,
-                    }
-                )
+                    },
+                ),
             )
         )
 
@@ -120,7 +124,9 @@ class FlextGrpc:
         )
 
     def create_service(
-        self, name: str, methods: t.StrSequence | None = None
+        self,
+        name: str,
+        methods: t.StrSequence | None = None,
     ) -> r[m.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         return u.create_service_entity(
@@ -129,7 +135,9 @@ class FlextGrpc:
         )
 
     def create_stream(
-        self, method_name: str = "DefaultMethod", stream_type: str = "unary"
+        self,
+        method_name: str = "DefaultMethod",
+        stream_type: str = "unary",
     ) -> r[m.Grpc.GrpcStream]:
         """Create typed stream entity from validated inputs."""
         if not method_name.strip():
@@ -155,7 +163,8 @@ class FlextGrpc:
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def execute_operation(
-        self, request: m.Grpc.OperationExecutionRequest
+        self,
+        request: m.Grpc.OperationExecutionRequest,
     ) -> r[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         kwargs = request.keyword_arguments
@@ -164,19 +173,22 @@ class FlextGrpc:
                 target = kwargs.get("target")
                 if not isinstance(target, str):
                     return r[FlextGrpcSettings].fail(
-                        "connect_client requires string target"
+                        "connect_client requires string target",
                     )
                 result = self._service.connect_client(target)
             case _:
                 return r[FlextGrpcSettings].fail(
-                    f"Unknown operation: {request.operation_name}"
+                    f"Unknown operation: {request.operation_name}",
                 )
         if result.is_failure:
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def make_call(
-        self, client: m.Grpc.Client, method: str, request: t.ConfigValue
+        self,
+        client: m.Grpc.Client,
+        method: str,
+        request: t.ConfigValue,
     ) -> r[m.Grpc.Payload]:
         """Delegate method calls.
 
@@ -200,7 +212,9 @@ class FlextGrpc:
         return r[tuple[str, int]].ok(t.Grpc.GrpcValidation.parse_target(address))
 
     def send_data(
-        self, stream: m.Grpc.GrpcStream, data: t.ConfigValue
+        self,
+        stream: m.Grpc.GrpcStream,
+        data: t.ConfigValue,
     ) -> r[m.Grpc.Payload]:
         """Delegate data sending.
 

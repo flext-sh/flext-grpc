@@ -13,7 +13,10 @@ class TestFlextGrpcModels:
     def test_server_config(self) -> None:
         """Test server config model."""
         config = FlextGrpcModels.Grpc.ServerConfig(
-            host="127.0.0.1", port=50051, max_workers=10, timeout=30.0
+            host="127.0.0.1",
+            port=50051,
+            max_workers=10,
+            timeout=30.0,
         )
         tm.that(config.host, eq="127.0.0.1")
         tm.that(config.port, eq=50051)
@@ -22,7 +25,8 @@ class TestFlextGrpcModels:
     def test_client_config(self) -> None:
         """Test client config model."""
         config = FlextGrpcModels.Grpc.ClientConfig(
-            target="127.0.0.1:50051", timeout=30.0
+            target="127.0.0.1:50051",
+            timeout=30.0,
         )
         tm.that(config.target, eq="127.0.0.1:50051")
 

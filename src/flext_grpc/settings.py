@@ -119,7 +119,7 @@ class FlextGrpcSettings(FlextSettings):
             cls.model_validate({
                 "host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
                 "security": {"tls_enabled": True},
-            })
+            }),
         )
 
     @classmethod

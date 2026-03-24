@@ -51,7 +51,7 @@ class FlextGrpcConstants(FlextConstants):
             MIN_PORT: Final[int] = 1
             MAX_PORT: Final[int] = 65535
             DEFAULT_TIMEOUT: Final[float] = float(
-                FlextConstants.DEFAULT_TIMEOUT_SECONDS
+                FlextConstants.DEFAULT_TIMEOUT_SECONDS,
             )
             HOST: Final[str] = "127.0.0.1"
             LOCALHOST_IP: Final[str] = "127.0.0.1"
@@ -71,7 +71,7 @@ class FlextGrpcConstants(FlextConstants):
 
             MAX_WORKERS: Final[int] = 20
             DEFAULT_TIMEOUT: Final[float] = float(
-                FlextConstants.DEFAULT_TIMEOUT_SECONDS
+                FlextConstants.DEFAULT_TIMEOUT_SECONDS,
             )
 
         class Production:
@@ -189,23 +189,36 @@ class FlextGrpcConstants(FlextConstants):
             XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
 
         type ChannelStateLiteral = Literal[
-            "idle", "connecting", "ready", "transient_failure", "shutdown"
+            "idle",
+            "connecting",
+            "ready",
+            "transient_failure",
+            "shutdown",
         ]
         "Channel state literal - references ChannelState StrEnum members."
         type ServerStateLiteral = Literal["stopped", "starting", "running", "stopping"]
         "Server state literal - references ServerState StrEnum members."
         type StreamTypeLiteral = Literal[
-            "unary", "server_streaming", "client_streaming", "bidirectional"
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
         ]
         "Stream type literal - references GrpcOperations StrEnum members."
         type LoadBalancingPolicyLiteral = Literal[
-            "round_robin", "pick_first", "grpclb", "xds_cluster_resolver"
+            "round_robin",
+            "pick_first",
+            "grpclb",
+            "xds_cluster_resolver",
         ]
         "Load balancing policy literal - references LoadBalancingPolicies StrEnum members."
         type CompressionTypeLiteral = Literal["none", "gzip", "deflate"]
         "Compression type literal - references CompressionTypes StrEnum members."
         type GrpcOperationLiteral = Literal[
-            "unary", "server_streaming", "client_streaming", "bidirectional"
+            "unary",
+            "server_streaming",
+            "client_streaming",
+            "bidirectional",
         ]
         "gRPC operation literal - references GrpcOperations StrEnum members."
         "Channel states tuple - generated from ChannelState StrEnum."

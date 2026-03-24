@@ -99,7 +99,9 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def stop_server(
-                self, *, grace_period: float = 30.0
+                self,
+                *,
+                grace_period: float = 30.0,
             ) -> FlextProtocols.Result[bool]:
                 """Stop gRPC server."""
                 ...
@@ -113,19 +115,24 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC client communication operations."""
 
             def connect_client(
-                self, target: str, *, timeout: float = 30.0
+                self,
+                target: str,
+                *,
+                timeout: float = 30.0,
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcChannel]:
                 """Connect gRPC client to server."""
                 ...
 
             def disconnect_client(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[bool]:
                 """Disconnect gRPC client."""
                 ...
 
             def get_client_status(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[t.ContainerValue | None]:
                 """Get gRPC client status information."""
                 ...
@@ -142,7 +149,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def validate_connection(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[bool]:
                 """Validate gRPC client connection."""
                 ...
@@ -156,7 +164,8 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC streaming operations."""
 
             def close_stream(
-                self, stream: FlextGrpcProtocols.Grpc.GrpcStream
+                self,
+                stream: FlextGrpcProtocols.Grpc.GrpcStream,
             ) -> FlextProtocols.Result[bool]:
                 """Close gRPC stream."""
                 ...
@@ -171,7 +180,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def handle_bidirectional_streaming(
-                self, stream: FlextGrpcProtocols.Grpc.GrpcStream
+                self,
+                stream: FlextGrpcProtocols.Grpc.GrpcStream,
             ) -> FlextProtocols.Result[t.ContainerValue | None]:
                 """Handle bidirectional streaming."""
                 ...
@@ -217,7 +227,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def get_service_methods(
-                self, service: FlextGrpcProtocols.Grpc.GrpcServicer
+                self,
+                service: FlextGrpcProtocols.Grpc.GrpcServicer,
             ) -> FlextProtocols.Result[t.StrSequence]:
                 """Get list of service methods."""
                 ...
@@ -231,7 +242,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def validate_service(
-                self, service: FlextGrpcProtocols.Grpc.GrpcServicer
+                self,
+                service: FlextGrpcProtocols.Grpc.GrpcServicer,
             ) -> FlextProtocols.Result[bool]:
                 """Validate gRPC service definition."""
                 ...
@@ -241,7 +253,8 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC channel management operations."""
 
             def close_channel(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[bool]:
                 """Close gRPC channel."""
                 ...
@@ -255,7 +268,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def get_channel_state(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[str]:
                 """Get gRPC channel connection state."""
                 ...
@@ -275,19 +289,22 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC metrics collection and monitoring."""
 
             def collect_client_metrics(
-                self, channel: FlextGrpcProtocols.Grpc.GrpcChannel
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Collect gRPC client metrics."""
                 ...
 
             def collect_server_metrics(
-                self, server: FlextGrpcProtocols.Grpc.GrpcServer
+                self,
+                server: FlextGrpcProtocols.Grpc.GrpcServer,
             ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Collect gRPC server metrics."""
                 ...
 
             def collect_stream_metrics(
-                self, stream: FlextGrpcProtocols.Grpc.GrpcStream
+                self,
+                stream: FlextGrpcProtocols.Grpc.GrpcStream,
             ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
                 """Collect gRPC stream metrics."""
                 ...
@@ -299,7 +316,9 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def start_metrics_collection(
-                self, *, interval: float = 60.0
+                self,
+                *,
+                interval: float = 60.0,
             ) -> FlextProtocols.Result[bool]:
                 """Start automatic metrics collection."""
                 ...
@@ -330,7 +349,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def parse_address(
-                self, address: str
+                self,
+                address: str,
             ) -> FlextProtocols.Result[tuple[str, int]]:
                 """Parse gRPC address string."""
                 ...
@@ -360,7 +380,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
             def release(
-                self, resource: FlextGrpcProtocols.Grpc.GrpcResource
+                self,
+                resource: FlextGrpcProtocols.Grpc.GrpcResource,
             ) -> r[bool]:
                 """Release a resource."""
                 ...
@@ -394,7 +415,8 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC server operations (duck typing for grpc.Server)."""
 
             def add_generic_rpc_handlers(
-                self, generic_rpc_handlers: Iterable[GenericRpcHandler]
+                self,
+                generic_rpc_handlers: Iterable[GenericRpcHandler],
             ) -> None:
                 """Add generic RPC handlers."""
                 ...
@@ -424,7 +446,8 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for entity factory callables."""
 
             def __call__(
-                self, **kwargs: t.Scalar
+                self,
+                **kwargs: t.Scalar,
             ) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Create entity with given arguments."""
                 ...
@@ -434,7 +457,8 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for operation handler callables."""
 
             def __call__(
-                self, **kwargs: t.Scalar
+                self,
+                **kwargs: t.Scalar,
             ) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Execute operation with given arguments."""
                 ...

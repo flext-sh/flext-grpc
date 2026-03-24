@@ -84,15 +84,16 @@ class TestFlextGrpcSettings:
     def test_security_config_validation(self) -> None:
         """Test security configuration validation."""
         insecure_config = FlextGrpcSettings.model_validate({
-            "security": {"tls_enabled": False, "client_cert_required": True}
+            "security": {"tls_enabled": False, "client_cert_required": True},
         })
         insecure_result = insecure_config.validate_configuration()
         tm.that(insecure_result.is_failure, eq=True)
         tm.that(
-            insecure_result.error, eq="Client certificates require TLS to be enabled"
+            insecure_result.error,
+            eq="Client certificates require TLS to be enabled",
         )
         secure_config = FlextGrpcSettings.model_validate({
-            "security": {"tls_enabled": True, "client_cert_required": True}
+            "security": {"tls_enabled": True, "client_cert_required": True},
         })
         secure_result = secure_config.validate_configuration()
         tm.that(secure_result.is_success, eq=True)

@@ -101,7 +101,8 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             endpoint: Annotated[
-                str | None, Field(default=None, description="Service endpoint")
+                str | None,
+                Field(default=None, description="Service endpoint"),
             ]
             metadata: Annotated[
                 t.Grpc.Metadata | None,
@@ -122,17 +123,21 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             latency_p50: Annotated[
-                t.NonNegativeFloat, Field(description="50th percentile latency")
+                t.NonNegativeFloat,
+                Field(description="50th percentile latency"),
             ]
             latency_p95: Annotated[
-                t.NonNegativeFloat, Field(description="95th percentile latency")
+                t.NonNegativeFloat,
+                Field(description="95th percentile latency"),
             ]
             latency_p99: Annotated[
-                t.NonNegativeFloat, Field(description="99th percentile latency")
+                t.NonNegativeFloat,
+                Field(description="99th percentile latency"),
             ]
             error_rate: Annotated[t.NonNegativeFloat, Field(description="Error rate")]
             memory_usage_bytes: Annotated[
-                t.NonNegativeInt, Field(description="Memory usage in bytes")
+                t.NonNegativeInt,
+                Field(description="Memory usage in bytes"),
             ]
 
         class ServiceMetrics(FlextModels.Value):
@@ -140,26 +145,32 @@ class FlextGrpcModels(FlextModels):
 
             service_name: Annotated[str, Field(description="Service name")]
             total_requests: Annotated[
-                t.NonNegativeInt, Field(description="Total requests")
+                t.NonNegativeInt,
+                Field(description="Total requests"),
             ]
             successful_requests: Annotated[
-                t.NonNegativeInt, Field(description="Successful requests")
+                t.NonNegativeInt,
+                Field(description="Successful requests"),
             ]
             failed_requests: Annotated[
-                t.NonNegativeInt, Field(description="Failed requests")
+                t.NonNegativeInt,
+                Field(description="Failed requests"),
             ]
             avg_response_time: Annotated[
-                t.NonNegativeFloat, Field(description="Average response time")
+                t.NonNegativeFloat,
+                Field(description="Average response time"),
             ]
             active_connections: Annotated[
-                t.NonNegativeInt, Field(description="Active connections")
+                t.NonNegativeInt,
+                Field(description="Active connections"),
             ]
 
         class OperationExecutionRequest(FlextModels.Value):
             """Operation execution request for gRPC service operations."""
 
             operation_name: Annotated[
-                str, Field(description="Operation name to execute")
+                str,
+                Field(description="Operation name to execute"),
             ]
             arguments: Annotated[
                 t.ConfigurationMapping,
@@ -181,13 +192,16 @@ class FlextGrpcModels(FlextModels):
 
             host: Annotated[str, Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)]
             port: Annotated[
-                t.PortNumber, Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)
+                t.PortNumber,
+                Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT),
             ]
             max_workers: Annotated[
-                t.WorkerCount, Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
+                t.WorkerCount,
+                Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS),
             ]
             timeout: Annotated[
-                t.PositiveTimeout, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
+                t.PositiveTimeout,
+                Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT),
             ]
 
         class ClientConfig(FlextModels.Value):
@@ -200,7 +214,8 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             timeout: Annotated[
-                t.PositiveTimeout, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)
+                t.PositiveTimeout,
+                Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT),
             ]
 
         class ChannelConfig(FlextModels.Value):
@@ -466,7 +481,8 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             log_level: Annotated[
-                str, Field(default="INFO", description="Logging level")
+                str,
+                Field(default="INFO", description="Logging level"),
             ]
 
         class StateTransition(FlextModels.Value):

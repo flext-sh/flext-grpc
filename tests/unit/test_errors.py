@@ -194,11 +194,13 @@ class TestErrorIntegration:
     def test_error_with_complex_scenarios(self) -> None:
         """Test errors in complex real-world scenarios."""
         unicode_error = FlextGrpcValidationError(
-            "Invalid value for field 'データ'", field="データ"
+            "Invalid value for field 'データ'",
+            field="データ",
         )
         tm.that(unicode_error.field, eq="データ")
         config_key = "complex_setting"
         config_error = FlextGrpcSettingsurationError(
-            "Complex config failed", config_key=config_key
+            "Complex config failed",
+            config_key=config_key,
         )
         tm.that(config_error.config_key, eq=config_key)

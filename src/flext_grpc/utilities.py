@@ -57,12 +57,16 @@ class FlextGrpcUtilities(FlextUtilities):
     ) -> r[m.Grpc.Server]:
         """Delegate to Grpc.create_server_entity."""
         return cls.Grpc.create_server_entity(
-            host=host, port=port, max_workers=max_workers
+            host=host,
+            port=port,
+            max_workers=max_workers,
         )
 
     @classmethod
     def create_service_entity(
-        cls, name: str, methods: t.StrSequence | None = None
+        cls,
+        name: str,
+        methods: t.StrSequence | None = None,
     ) -> r[m.Grpc.Service]:
         """Delegate to Grpc.create_service_entity."""
         return cls.Grpc.create_service_entity(name=name, methods=methods)
@@ -75,7 +79,8 @@ class FlextGrpcUtilities(FlextUtilities):
     ) -> r[m.Grpc.GrpcStream]:
         """Delegate to Grpc.create_stream_entity."""
         return cls.Grpc.create_stream_entity(
-            method_name=method_name, stream_type=stream_type
+            method_name=method_name,
+            stream_type=stream_type,
         )
 
     class Grpc:
@@ -148,7 +153,9 @@ class FlextGrpcUtilities(FlextUtilities):
 
         @classmethod
         def create_service_entity(
-            cls, name: str, methods: t.StrSequence | None = None
+            cls,
+            name: str,
+            methods: t.StrSequence | None = None,
         ) -> r[m.Grpc.Service]:
             """Create a gRPC service entity directly."""
             if not name or not name.strip():
@@ -245,7 +252,8 @@ class FlextGrpcUtilities(FlextUtilities):
                     cpu = int(cpu_str) if cpu_str.isdigit() else 0
             except (OSError, RuntimeError, AttributeError):
                 logger.debug(
-                    "Failed to retrieve CPU count for diagnostics", exc_info=True
+                    "Failed to retrieve CPU count for diagnostics",
+                    exc_info=True,
                 )
             try:
                 mem_val = psutil.virtual_memory()
@@ -255,7 +263,8 @@ class FlextGrpcUtilities(FlextUtilities):
                 mem_avail = int(str(avail_val)) if avail_val else 0
             except (OSError, RuntimeError, AttributeError):
                 logger.debug(
-                    "Failed to retrieve memory info for diagnostics", exc_info=True
+                    "Failed to retrieve memory info for diagnostics",
+                    exc_info=True,
                 )
             return {
                 "cpu_count": cpu,

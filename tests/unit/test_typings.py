@@ -35,7 +35,8 @@ class TestFlextGrpcTypes:
         tm.that(not t.Grpc.GrpcValidation.validate_target(":50051"), eq=True)
         tm.that(not t.Grpc.GrpcValidation.validate_target("localhost:"), eq=True)
         tm.that(
-            not t.Grpc.GrpcValidation.validate_target("invalid@host:50051"), eq=True
+            not t.Grpc.GrpcValidation.validate_target("invalid@host:50051"),
+            eq=True,
         )
         tm.that(not t.Grpc.GrpcValidation.validate_target("localhost:0"), eq=True)
         tm.that(not t.Grpc.GrpcValidation.validate_target("localhost:65536"), eq=True)

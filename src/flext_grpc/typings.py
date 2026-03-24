@@ -107,7 +107,8 @@ class FlextGrpcTypes(FlextTypes):
                 int | bool | Mapping[str, FlextTypes.ContainerValue | None],
             ]
             type RetryConfiguration = Mapping[
-                str, int | float | bool | FlextTypes.StrSequence
+                str,
+                int | float | bool | FlextTypes.StrSequence,
             ]
             type LoadBalancing = Mapping[
                 str,
@@ -242,7 +243,8 @@ class FlextGrpcTypes(FlextTypes):
 
             ProjectConfig = Mapping[str, FlextTypes.ContainerValue | None]
             type MicroserviceConfig = Mapping[
-                str, FlextTypes.Scalar | FlextTypes.StrSequence
+                str,
+                FlextTypes.Scalar | FlextTypes.StrSequence,
             ]
             StreamingConfig = Mapping[
                 str,

@@ -150,19 +150,34 @@ class TestFlextGrpc:
     def test_validate_entity_type(self) -> None:
         """Test entity type validation via OperationSpec model."""
         server_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="server", method_name=None, parameters={}
+            name="op",
+            entity_type="server",
+            method_name=None,
+            parameters={},
         )
         client_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="client", method_name=None, parameters={}
+            name="op",
+            entity_type="client",
+            method_name=None,
+            parameters={},
         )
         channel_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="channel", method_name=None, parameters={}
+            name="op",
+            entity_type="channel",
+            method_name=None,
+            parameters={},
         )
         service_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="service", method_name=None, parameters={}
+            name="op",
+            entity_type="service",
+            method_name=None,
+            parameters={},
         )
         stream_spec = FlextGrpcModels.Grpc.OperationSpec(
-            name="op", entity_type="stream", method_name=None, parameters={}
+            name="op",
+            entity_type="stream",
+            method_name=None,
+            parameters={},
         )
         tm.that(server_spec.entity_type, eq="server")
         tm.that(client_spec.entity_type, eq="client")

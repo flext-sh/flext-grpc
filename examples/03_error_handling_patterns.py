@@ -133,7 +133,8 @@ def comprehensive_error_handling_pipeline() -> r[str]:
         return r[str].fail(f"Pipeline failed at validation: {validation_result.error}")
     logger.info("✅ User input validation passed")
     config_result = create_server_config(
-        FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT, 4
+        FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        4,
     )
     if config_result.is_failure:
         return r[str].fail(f"Pipeline failed at configuration: {config_result.error}")
@@ -147,7 +148,7 @@ def comprehensive_error_handling_pipeline() -> r[str]:
         result = scenario_func()
         if result.is_failure:
             logger.warning(
-                f"⚠️ {scenario_name} scenario failed as expected: {result.error}"
+                f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
             )
     return r[str].ok("Pipeline completed with graceful error handling")
 
@@ -169,7 +170,8 @@ def error_recovery_patterns() -> r[str]:
     if primary_config_result.is_failure:
         logger.warning("Primary config failed, trying fallback")
         fallback_config_result = create_server_config(
-            FlextConstants.DEFAULT_HTTP_PORT, 2
+            FlextConstants.DEFAULT_HTTP_PORT,
+            2,
         )
         if fallback_config_result.is_success:
             logger.info("✅ Fallback configuration successful")
@@ -181,7 +183,8 @@ def demonstrate_error_context() -> None:
     """Demonstrate how error context helps with debugging."""
     logger.info("Demonstrating error context for debugging")
     validation_error = FlextGrpcValidationError(
-        "Email format is invalid - missing @ symbol", field="user_email"
+        "Email format is invalid - missing @ symbol",
+        field="user_email",
     )
     config_error = FlextGrpcSettingsurationError(
         "Invalid port configuration for production environment",
