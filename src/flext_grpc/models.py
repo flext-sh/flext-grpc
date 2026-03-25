@@ -879,38 +879,6 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return v
 
-    # Class-level aliases at facade root (flat namespace: m.StreamInfo, m.Request, etc.)
-    EchoRequest: type[Grpc.EchoRequest] = Grpc.EchoRequest
-    EchoResponse: type[Grpc.EchoResponse] = Grpc.EchoResponse
-    HealthRequest: type[Grpc.HealthRequest] = Grpc.HealthRequest
-    HealthResponse: type[Grpc.HealthResponse] = Grpc.HealthResponse
-    StreamInfo: type[Grpc.StreamInfo] = Grpc.StreamInfo
-    HealthCheck: type[Grpc.HealthCheck] = Grpc.HealthCheck
-    ServiceDefinition: type[Grpc.ServiceDefinition] = Grpc.ServiceDefinition
-    StreamMetrics: type[Grpc.StreamMetrics] = Grpc.StreamMetrics
-    ServiceMetrics: type[Grpc.ServiceMetrics] = Grpc.ServiceMetrics
-    ServerConfig: type[Grpc.ServerConfig] = Grpc.ServerConfig
-    ClientConfig: type[Grpc.ClientConfig] = Grpc.ClientConfig
-    ChannelConfig: type[Grpc.ChannelConfig] = Grpc.ChannelConfig
-    SecurityConfig: type[Grpc.SecurityConfig] = Grpc.SecurityConfig
-    NetworkConfig: type[Grpc.NetworkConfig] = Grpc.NetworkConfig
-    PerformanceConfig: type[Grpc.PerformanceConfig] = Grpc.PerformanceConfig
-    StreamingConfig: type[Grpc.StreamingConfig] = Grpc.StreamingConfig
-    ClientSettingsConfig: type[Grpc.ClientSettingsConfig] = Grpc.ClientSettingsConfig
-    MonitoringConfig: type[Grpc.MonitoringConfig] = Grpc.MonitoringConfig
-    StateTransition: type[Grpc.StateTransition] = Grpc.StateTransition
-    EntityValidator: type[Grpc.EntityValidator] = Grpc.EntityValidator
-    OperationSpec: type[Grpc.OperationSpec] = Grpc.OperationSpec
-    Request: type[Grpc.Request] = Grpc.Request
-    Response: type[Grpc.Response] = Grpc.Response
-    Payload: type[Grpc.Payload] = Grpc.Payload
-    GrpcEntity: type[Grpc.Entity] = Grpc.Entity
-    Channel: type[Grpc.Channel] = Grpc.Channel
-    Server: type[Grpc.Server] = Grpc.Server
-    Client: type[Grpc.Client] = Grpc.Client
-    GrpcStream: type[Grpc.GrpcStream] = Grpc.GrpcStream
-    StateMachine: type[Grpc.StateMachine] = Grpc.StateMachine
-
 
 m: type[FlextGrpcModels] = FlextGrpcModels
 
