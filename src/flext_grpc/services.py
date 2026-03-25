@@ -16,7 +16,6 @@ from collections import deque
 from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
-from typing import Annotated
 
 import grpc
 from flext_core import r
@@ -50,10 +49,9 @@ class FlextGrpcServices:
     class _StreamRuntimeState(m.Value):
         stream: m.Grpc.GrpcStream
         created_at: float
-        buffer: Annotated[
-            deque[t.ConfigValue],
-            Field(default_factory=lambda: deque[t.ConfigValue](maxlen=500)),
-        ]
+        buffer: deque[t.ConfigValue] = Field(
+            default_factory=lambda: deque[t.ConfigValue](maxlen=500)
+        )
 
     @staticmethod
     def _new_stream_buffer() -> deque[t.ConfigValue]:

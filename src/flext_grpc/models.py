@@ -54,8 +54,8 @@ class FlextGrpcModels(FlextModels):
             ]
             timestamp: Annotated[
                 datetime,
-                Field(default_factory=datetime.now, description="Response timestamp"),
-            ]
+                Field(description="Response timestamp"),
+            ] = Field(default_factory=datetime.now)
 
         class HealthRequest(FlextModels.Value):
             """Health check request message (immutable value model)."""
@@ -77,7 +77,7 @@ class FlextGrpcModels(FlextModels):
             stream_id: str
             stream_type: str
             target: str
-            created_at: Annotated[datetime, Field(default_factory=datetime.now)]
+            created_at: datetime = Field(default_factory=datetime.now)
             total_requests_sent: Annotated[t.NonNegativeInt, Field(default=0)]
             average_latency_ms: Annotated[t.NonNegativeFloat, Field(default=0.0)]
             error_count: Annotated[t.NonNegativeInt, Field(default=0)]
@@ -96,10 +96,9 @@ class FlextGrpcModels(FlextModels):
             methods: Annotated[
                 t.StrSequence,
                 Field(
-                    default_factory=list,
                     description="Service methods",
                 ),
-            ]
+            ] = Field(default_factory=list)
             endpoint: Annotated[
                 str | None,
                 Field(default=None, description="Service endpoint"),
@@ -175,17 +174,15 @@ class FlextGrpcModels(FlextModels):
             arguments: Annotated[
                 t.ConfigurationMapping,
                 Field(
-                    default_factory=dict,
                     description="Positional arguments as dict",
                 ),
-            ]
+            ] = Field(default_factory=dict)
             keyword_arguments: Annotated[
                 t.ConfigurationMapping,
                 Field(
-                    default_factory=dict,
                     description="Keyword arguments",
                 ),
-            ]
+            ] = Field(default_factory=dict)
 
         class ServerConfig(FlextModels.Value):
             """Basic server configuration (immutable value model)."""
@@ -442,10 +439,9 @@ class FlextGrpcModels(FlextModels):
             channel_options: Annotated[
                 Mapping[str, str | int],
                 Field(
-                    default_factory=dict,
                     description="Additional channel options",
                 ),
-            ]
+            ] = Field(default_factory=dict)
 
         class MonitoringConfig(FlextModels.Value):
             """Generic gRPC monitoring and observability configuration."""
@@ -588,10 +584,9 @@ class FlextGrpcModels(FlextModels):
             parameters: Annotated[
                 Mapping[str, t.ConfigValue],
                 Field(
-                    default_factory=dict,
                     description="Operation parameters",
                 ),
-            ]
+            ] = Field(default_factory=dict)
 
         class Request(FlextModels.Value):
             """Generic request model with validation."""
@@ -638,10 +633,9 @@ class FlextGrpcModels(FlextModels):
             metadata: Annotated[
                 Mapping[str, t.ConfigValue],
                 Field(
-                    default_factory=dict,
                     description="Response metadata",
                 ),
-            ]
+            ] = Field(default_factory=dict)
 
             @computed_field
             def has_error(self) -> bool:
@@ -651,7 +645,7 @@ class FlextGrpcModels(FlextModels):
         class Payload(BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: Annotated[t.Grpc.GrpcDict, Field(default_factory=dict)]
+            values: t.Grpc.GrpcDict = Field(default_factory=dict)
 
             @classmethod
             def from_values(cls, **values: t.ConfigValue) -> Self:
@@ -694,7 +688,7 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelState = "idle"
-            options: Annotated[Mapping[str, t.ConfigValue], Field(default_factory=dict)]
+            options: Mapping[str, t.ConfigValue] = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             def connect(self) -> r[Self]:
@@ -739,8 +733,8 @@ class FlextGrpcModels(FlextModels):
             max_workers: t.WorkerCount = 10
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
-                Field(default_factory=list, description="gRPC services"),
-            ]
+                Field(description="gRPC services"),
+            ] = Field(default_factory=list)
             grpc_server: p.Grpc.GrpcServer | None = None
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
@@ -808,7 +802,7 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC service with validation delegation."""
 
             name: str = ""
-            methods: Annotated[t.StrSequence, Field(default_factory=list)]
+            methods: t.StrSequence = Field(default_factory=list)
 
             @field_validator("methods")
             @classmethod
@@ -848,7 +842,7 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC client with channel delegation."""
 
             channel: FlextGrpcModels.Grpc.Channel | None = None
-            options: Annotated[t.GrpcOptions, Field(default_factory=dict)]
+            options: t.GrpcOptions = Field(default_factory=dict)
             grpc_stub: p.Grpc.GrpcStub | None = None
 
             def connect_to(self, target: str) -> r[Self]:

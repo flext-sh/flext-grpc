@@ -54,30 +54,24 @@ class FlextGrpcSettings(FlextSettings):
     ]
 
     # Nested configuration models
-    network: Annotated[
-        m.Grpc.NetworkConfig,
-        Field(default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})),
-    ]
-    security: Annotated[
-        m.Grpc.SecurityConfig,
-        Field(default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})),
-    ]
-    performance: Annotated[
-        m.Grpc.PerformanceConfig,
-        Field(default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})),
-    ]
-    streaming: Annotated[
-        m.Grpc.StreamingConfig,
-        Field(default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})),
-    ]
-    client: Annotated[
-        m.Grpc.ClientConfig,
-        Field(default_factory=lambda: m.Grpc.ClientConfig.model_validate({})),
-    ]
-    monitoring: Annotated[
-        m.Grpc.MonitoringConfig,
-        Field(default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})),
-    ]
+    network: m.Grpc.NetworkConfig = Field(
+        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})
+    )
+    security: m.Grpc.SecurityConfig = Field(
+        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})
+    )
+    performance: m.Grpc.PerformanceConfig = Field(
+        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})
+    )
+    streaming: m.Grpc.StreamingConfig = Field(
+        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})
+    )
+    client: m.Grpc.ClientConfig = Field(
+        default_factory=lambda: m.Grpc.ClientConfig.model_validate({})
+    )
+    monitoring: m.Grpc.MonitoringConfig = Field(
+        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})
+    )
 
     @computed_field
     @property

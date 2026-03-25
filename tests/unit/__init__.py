@@ -41,7 +41,10 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "MetricsCollector": ["tests.unit.test_services", "MetricsCollector"],
     "TestErrorIntegration": ["tests.unit.test_errors", "TestErrorIntegration"],
     "TestFlextGrpc": ["tests.unit.test_api", "TestFlextGrpc"],
-    "TestFlextGrpcConnectionError": ["tests.unit.test_errors", "TestFlextGrpcConnectionError"],
+    "TestFlextGrpcConnectionError": [
+        "tests.unit.test_errors",
+        "TestFlextGrpcConnectionError",
+    ],
     "TestFlextGrpcConstants": ["tests.unit.test_constants", "TestFlextGrpcConstants"],
     "TestFlextGrpcEntities": ["tests.unit.test_entities", "TestFlextGrpcEntities"],
     "TestFlextGrpcError": ["tests.unit.test_errors", "TestFlextGrpcError"],
@@ -49,11 +52,20 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "TestFlextGrpcProtocols": ["tests.unit.test_protocols", "TestFlextGrpcProtocols"],
     "TestFlextGrpcServices": ["tests.unit.test_services", "TestFlextGrpcServices"],
     "TestFlextGrpcSettings": ["tests.unit.test_config", "TestFlextGrpcSettings"],
-    "TestFlextGrpcSettingsurationError": ["tests.unit.test_errors", "TestFlextGrpcSettingsurationError"],
-    "TestFlextGrpcTimeoutError": ["tests.unit.test_errors", "TestFlextGrpcTimeoutError"],
+    "TestFlextGrpcSettingsurationError": [
+        "tests.unit.test_errors",
+        "TestFlextGrpcSettingsurationError",
+    ],
+    "TestFlextGrpcTimeoutError": [
+        "tests.unit.test_errors",
+        "TestFlextGrpcTimeoutError",
+    ],
     "TestFlextGrpcTypes": ["tests.unit.test_typings", "TestFlextGrpcTypes"],
     "TestFlextGrpcUtilities": ["tests.unit.test_utilities", "TestFlextGrpcUtilities"],
-    "TestFlextGrpcValidationError": ["tests.unit.test_errors", "TestFlextGrpcValidationError"],
+    "TestFlextGrpcValidationError": [
+        "tests.unit.test_errors",
+        "TestFlextGrpcValidationError",
+    ],
 }
 
 __all__ = [
