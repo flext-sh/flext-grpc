@@ -675,9 +675,9 @@ class FlextGrpcModels(FlextModels):
 
                 """
                 try:
-                    return r.ok(self.model_copy(update=kwargs))
+                    return r[Self].ok(self.model_copy(update=kwargs))
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r.fail(str(e))
+                    return r[Self].fail(str(e))
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
@@ -701,7 +701,7 @@ class FlextGrpcModels(FlextModels):
 
             def disconnect(self) -> r[Self]:
                 """Transition to idle."""
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value}),
                 )
 
@@ -744,7 +744,7 @@ class FlextGrpcModels(FlextModels):
                 service: gRPC service t.NormalizedValue (dynamic type from grpc library)
 
                 """
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"services": [*self.services, service]}),
                 )
 
@@ -764,7 +764,7 @@ class FlextGrpcModels(FlextModels):
                         .fail(f"Cannot mark stopped from {self.state}")
                         .map(lambda _unused: self)
                     )
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
                 )
 
@@ -830,7 +830,7 @@ class FlextGrpcModels(FlextModels):
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
-                return r.ok(
+                return r[Self].ok(
                     self.model_copy(update={"methods": [*self.methods, method_name]}),
                 )
 
@@ -853,7 +853,7 @@ class FlextGrpcModels(FlextModels):
                     options={},
                     domain_events=[],
                 )
-                return r.ok(self.model_copy(update={"channel": channel}))
+                return r[Self].ok(self.model_copy(update={"channel": channel}))
 
             @override
             def validate_business_rules(self) -> r[bool]:

@@ -111,7 +111,7 @@ class FlextGrpc:
                 service_result.error or "Service creation failed"
             )
 
-        return r.ok(
+        return r[FlextGrpc.CompleteSetup].ok(
             FlextGrpc.CompleteSetup(
                 server=server_result.value,
                 client=client_result.value,
