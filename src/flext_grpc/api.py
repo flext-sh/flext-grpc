@@ -90,23 +90,26 @@ class FlextGrpc:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
-        return (
-            self
-            .create_server(host=host, port=port)
-            .flat_map(lambda s: self.create_client(target=target).map(lambda c: (s, c)))
-            .flat_map(
-                lambda pair: self.create_service(
-                    name=service_name,
-                    methods=resolved_methods,
-                ).map(
-                    lambda svc: FlextGrpc.CompleteSetup(
-                        server=pair[0],
-                        client=pair[1],
-                        service=svc,
-                        target=target,
-                    ),
-                ),
-            )
+
+        server_result = self.create_server(host=host, port=port)
+        if server_result.is_failure:
+            return r[FlextGrpc.CompleteSetup].fail(server_result.error or "Server creation failed")
+
+        client_result = self.create_client(target=target)
+        if client_result.is_failure:
+            return r[FlextGrpc.CompleteSetup].fail(client_result.error or "Client creation failed")
+
+        service_result = self.create_service(name=service_name, methods=resolved_methods)
+        if service_result.is_failure:
+            return r[FlextGrpc.CompleteSetup].fail(service_result.error or "Service creation failed")
+
+        return r.ok(
+            FlextGrpc.CompleteSetup(
+                server=server_result.value,
+                client=client_result.value,
+                service=service_result.value,
+                target=target,
+            ),
         )
 
     def create_server(

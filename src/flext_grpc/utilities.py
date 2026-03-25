@@ -99,7 +99,7 @@ class FlextGrpcUtilities(FlextUtilities):
                 lambda: m.Grpc.Channel(
                     unique_id=str(uuid4()),
                     target=target,
-                    state="idle",
+                    state=c.Grpc.ChannelState.IDLE,
                     options=dict(options.items()) if options else {},
                     domain_events=[],
                 ),
@@ -121,7 +121,7 @@ class FlextGrpcUtilities(FlextUtilities):
                     channel=m.Grpc.Channel(
                         unique_id=str(uuid4()),
                         target=target,
-                        state="idle",
+                        state=c.Grpc.ChannelState.IDLE,
                         options=dict(options.items()) if options else {},
                         domain_events=[],
                     ),
@@ -182,13 +182,13 @@ class FlextGrpcUtilities(FlextUtilities):
             if not method_name or not method_name.strip():
                 return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
             validated_type: c.Grpc.GrpcOperations = (
-                "unary"
+                c.Grpc.GrpcOperations.UNARY
                 if stream_type == "unary"
-                else "server_streaming"
+                else c.Grpc.GrpcOperations.SERVER_STREAMING
                 if stream_type == "server_streaming"
-                else "client_streaming"
+                else c.Grpc.GrpcOperations.CLIENT_STREAMING
                 if stream_type == "client_streaming"
-                else "bidirectional"
+                else c.Grpc.GrpcOperations.BIDIRECTIONAL
             )
             return FlextUtilities.try_(
                 lambda: m.Grpc.GrpcStream(

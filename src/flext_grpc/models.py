@@ -675,9 +675,9 @@ class FlextGrpcModels(FlextModels):
 
                 """
                 try:
-                    return r[Self].ok(self.model_copy(update=kwargs))
+                    return r.ok(self.model_copy(update=kwargs))
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r[Self].fail(str(e)).map(lambda _unused: self)
+                    return r.fail(str(e))
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
@@ -687,7 +687,7 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC channel with state machine delegation."""
 
             target: str = ""
-            state: c.Grpc.ChannelState = "idle"
+            state: c.Grpc.ChannelState = c.Grpc.ChannelState.IDLE
             options: Mapping[str, t.ConfigValue] = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
@@ -701,7 +701,7 @@ class FlextGrpcModels(FlextModels):
 
             def disconnect(self) -> r[Self]:
                 """Transition to idle."""
-                return r[Self].ok(
+                return r.ok(
                     self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value}),
                 )
 
@@ -729,7 +729,7 @@ class FlextGrpcModels(FlextModels):
 
             host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
             port: t.PortNumber = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-            state: c.Grpc.ServerState = "stopped"
+            state: c.Grpc.ServerState = c.Grpc.ServerState.STOPPED
             max_workers: t.WorkerCount = 10
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
@@ -744,7 +744,7 @@ class FlextGrpcModels(FlextModels):
                 service: gRPC service t.NormalizedValue (dynamic type from grpc library)
 
                 """
-                return r[Self].ok(
+                return r.ok(
                     self.model_copy(update={"services": [*self.services, service]}),
                 )
 
@@ -764,7 +764,7 @@ class FlextGrpcModels(FlextModels):
                         .fail(f"Cannot mark stopped from {self.state}")
                         .map(lambda _unused: self)
                     )
-                return r[Self].ok(
+                return r.ok(
                     self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
                 )
 
@@ -830,7 +830,7 @@ class FlextGrpcModels(FlextModels):
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
-                return r[Self].ok(
+                return r.ok(
                     self.model_copy(update={"methods": [*self.methods, method_name]}),
                 )
 
@@ -849,11 +849,11 @@ class FlextGrpcModels(FlextModels):
                 """Connect functionally."""
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
-                    state="idle",
+                    state=c.Grpc.ChannelState.IDLE,
                     options={},
                     domain_events=[],
                 )
-                return r[Self].ok(self.model_copy(update={"channel": channel}))
+                return r.ok(self.model_copy(update={"channel": channel}))
 
             @override
             def validate_business_rules(self) -> r[bool]:
@@ -867,7 +867,7 @@ class FlextGrpcModels(FlextModels):
 
             id: str = ""
             method_name: str = ""
-            stream_type: c.Grpc.GrpcOperations = "unary"
+            stream_type: c.Grpc.GrpcOperations = c.Grpc.GrpcOperations.UNARY
             grpc_stub: p.Grpc.GrpcStub | None = None
 
             @field_validator("method_name")

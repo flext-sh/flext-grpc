@@ -13,7 +13,8 @@ from typing import Protocol, runtime_checkable
 from flext_core import FlextProtocols, r
 from grpc import GenericRpcHandler
 
-from flext_grpc import c, t
+from flext_core import FlextTypes as t
+from flext_grpc.constants import FlextGrpcConstants as c
 
 
 class FlextGrpcProtocols(FlextProtocols):
