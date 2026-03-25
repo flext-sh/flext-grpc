@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from tests.unit.test_api import TestFlextGrpc
     from tests.unit.test_config import TestFlextGrpcSettings
     from tests.unit.test_constants import TestFlextGrpcConstants
-    from tests.unit.test_entities import FlextGrpcEntities, TestFlextGrpcEntities
+    from tests.unit.test_entities import TestFlextGrpcEntities
     from tests.unit.test_errors import (
         TestErrorIntegration,
         TestFlextGrpcConnectionError,
@@ -27,18 +27,11 @@ if TYPE_CHECKING:
     )
     from tests.unit.test_models import TestFlextGrpcModels
     from tests.unit.test_protocols import TestFlextGrpcProtocols
-    from tests.unit.test_services import (
-        ConnectionPool,
-        MetricsCollector,
-        TestFlextGrpcServices,
-    )
+    from tests.unit.test_services import TestFlextGrpcServices
     from tests.unit.test_typings import TestFlextGrpcTypes
     from tests.unit.test_utilities import TestFlextGrpcUtilities
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "ConnectionPool": ["tests.unit.test_services", "ConnectionPool"],
-    "FlextGrpcEntities": ["tests.unit.test_entities", "FlextGrpcEntities"],
-    "MetricsCollector": ["tests.unit.test_services", "MetricsCollector"],
     "TestErrorIntegration": ["tests.unit.test_errors", "TestErrorIntegration"],
     "TestFlextGrpc": ["tests.unit.test_api", "TestFlextGrpc"],
     "TestFlextGrpcConnectionError": [
@@ -69,9 +62,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
 }
 
 __all__ = [
-    "ConnectionPool",
-    "FlextGrpcEntities",
-    "MetricsCollector",
     "TestErrorIntegration",
     "TestFlextGrpc",
     "TestFlextGrpcConnectionError",
