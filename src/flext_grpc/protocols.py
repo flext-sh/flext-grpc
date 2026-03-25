@@ -10,10 +10,9 @@ import threading
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from typing import Protocol, runtime_checkable
 
-from flext_core import FlextProtocols, r
+from flext_core import FlextProtocols, FlextTypes as t, r
 from grpc import GenericRpcHandler
 
-from flext_core import FlextTypes as t
 from flext_grpc.constants import FlextGrpcConstants as c
 
 

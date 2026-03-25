@@ -93,15 +93,23 @@ class FlextGrpc:
 
         server_result = self.create_server(host=host, port=port)
         if server_result.is_failure:
-            return r[FlextGrpc.CompleteSetup].fail(server_result.error or "Server creation failed")
+            return r[FlextGrpc.CompleteSetup].fail(
+                server_result.error or "Server creation failed"
+            )
 
         client_result = self.create_client(target=target)
         if client_result.is_failure:
-            return r[FlextGrpc.CompleteSetup].fail(client_result.error or "Client creation failed")
+            return r[FlextGrpc.CompleteSetup].fail(
+                client_result.error or "Client creation failed"
+            )
 
-        service_result = self.create_service(name=service_name, methods=resolved_methods)
+        service_result = self.create_service(
+            name=service_name, methods=resolved_methods
+        )
         if service_result.is_failure:
-            return r[FlextGrpc.CompleteSetup].fail(service_result.error or "Service creation failed")
+            return r[FlextGrpc.CompleteSetup].fail(
+                service_result.error or "Service creation failed"
+            )
 
         return r.ok(
             FlextGrpc.CompleteSetup(
