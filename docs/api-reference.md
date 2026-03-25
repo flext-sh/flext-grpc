@@ -409,11 +409,7 @@ from flext_core import t
 from flext_core import u
 
 
-<<<<<<< Updated upstream
 def setup_grpc_server(host: str, port: int) -> r[str]:
-=======
-def setup_grpc_server(host: str, port: int) -> FlextResult[str]:
->>>>>>> Stashed changes
     return (
         create_config(host=host, port=port)
         .flat_map(lambda config: create_server(config))

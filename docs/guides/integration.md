@@ -177,7 +177,6 @@ from flext_grpc import FlextGrpcServer
 from flext_grpc import AuthInterceptor  # Future
 
 
-
 class AuthenticatedGrpcService:
     """gRPC service with flext-auth integration."""
 
@@ -315,13 +314,7 @@ class FlextServiceConnector:
         """Connect to target service."""
         return client.connect()
 
-<<<<<<< Updated upstream
     def _make_call(self, client: FlextGrpcClient, method: str, data: dict) -> r[t.Dict]:
-=======
-    def _make_call(
-        self, client: FlextGrpcClient, method: str, data: dict
-    ) -> FlextResult[t.Dict]:
->>>>>>> Stashed changes
         """Make the actual service call."""
         # gRPC call implementation
         return r.ok({"response": "data"})
@@ -631,11 +624,7 @@ class FlextGrpcProductionService:
 
     def _load_production_config(self) -> r[FlextGrpcSettings]:
         """Load production configuration."""
-<<<<<<< Updated upstream
         return r.ok(
-=======
-        return FlextResult.ok(
->>>>>>> Stashed changes
             FlextGrpcSettings(
                 host="0.0.0.0",
                 port=50051,

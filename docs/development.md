@@ -221,11 +221,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings
 
 
-<<<<<<< Updated upstream
 def create_validated_config(host: str, port: int) -> r[FlextGrpcSettings]:
-=======
-def create_validated_config(host: str, port: int) -> FlextResult[FlextGrpcSettings]:
->>>>>>> Stashed changes
     """Create and validate gRPC configuration."""
 
     return (
@@ -280,7 +276,6 @@ T = TypeVar("T")
 class GrpcServer(Protocol):
     def start(self) -> r[FlextGrpcServer]: ...
     def stop(self) -> r[FlextGrpcServer]: ...
-
 
 
 # Generic service class
@@ -500,7 +495,6 @@ class FlextGrpcServerService:
     def __init__(self, server: FlextGrpcServer):
         self._server = server  # Domain dependency only
 
-<<<<<<< Updated upstream
 
 # Infrastructure Layer - Depends on Domain + Service
 from flext_grpc import FlextGrpcServer
@@ -508,15 +502,6 @@ from flext_grpc import FlextGrpcServerService
 
 
 def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
-=======
-
-# Infrastructure Layer - Depends on Domain + Service
-from flext_grpc.entities import FlextGrpcServer
-from flext_grpc.services import FlextGrpcServerService
-
-
-def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
->>>>>>> Stashed changes
     # Infrastructure function using domain and service layers
     pass
 ```
@@ -604,11 +589,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings, FlextGrpcServer
 
 
-<<<<<<< Updated upstream
 def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
-=======
-def create_server(config: FlextGrpcSettings) -> FlextResult[FlextGrpcServer]:
->>>>>>> Stashed changes
     """Create a gRPC server with the specified configuration.
 
     Creates and validates a gRPC server instance using Clean Architecture
