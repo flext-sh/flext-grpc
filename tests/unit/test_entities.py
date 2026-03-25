@@ -63,7 +63,9 @@ class TestFlextGrpcEntities:
     def test_service_validation_empty_methods(self) -> None:
         """Test service validation fails with empty methods."""
         with pytest.raises(ValueError):
-            FlextGrpcModels.Grpc.Service(name="TestService", methods=[], domain_events=[])
+            FlextGrpcModels.Grpc.Service(
+                name="TestService", methods=[], domain_events=[]
+            )
 
     def test_service_validation_empty_name(self) -> None:
         """Test service validation fails with empty name."""
@@ -131,5 +133,7 @@ class TestFlextGrpcEntities:
             options={},
             domain_events=[],
         )
-        client = FlextGrpcModels.Grpc.Client(channel=channel, options={}, domain_events=[])
+        client = FlextGrpcModels.Grpc.Client(
+            channel=channel, options={}, domain_events=[]
+        )
         tm.that(client.channel, eq=channel)
