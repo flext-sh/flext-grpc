@@ -238,6 +238,7 @@ class ServerInterface(Protocol):
     def stop(self) -> r[bool]: ...
 
 
+
 # Infrastructure implements interfaces
 class GrpcServerAdapter(ServerInterface):
     def __init__(self, grpc_server):

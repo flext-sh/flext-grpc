@@ -10,9 +10,9 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
+
 if TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from tests.unit.test_api import TestFlextGrpc
     from tests.unit.test_config import TestFlextGrpcSettings
     from tests.unit.test_constants import TestFlextGrpcConstants
@@ -34,10 +34,7 @@ if TYPE_CHECKING:
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "TestErrorIntegration": ["tests.unit.test_errors", "TestErrorIntegration"],
     "TestFlextGrpc": ["tests.unit.test_api", "TestFlextGrpc"],
-    "TestFlextGrpcConnectionError": [
-        "tests.unit.test_errors",
-        "TestFlextGrpcConnectionError",
-    ],
+    "TestFlextGrpcConnectionError": ["tests.unit.test_errors", "TestFlextGrpcConnectionError"],
     "TestFlextGrpcConstants": ["tests.unit.test_constants", "TestFlextGrpcConstants"],
     "TestFlextGrpcEntities": ["tests.unit.test_entities", "TestFlextGrpcEntities"],
     "TestFlextGrpcError": ["tests.unit.test_errors", "TestFlextGrpcError"],
@@ -45,20 +42,11 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "TestFlextGrpcProtocols": ["tests.unit.test_protocols", "TestFlextGrpcProtocols"],
     "TestFlextGrpcServices": ["tests.unit.test_services", "TestFlextGrpcServices"],
     "TestFlextGrpcSettings": ["tests.unit.test_config", "TestFlextGrpcSettings"],
-    "TestFlextGrpcSettingsurationError": [
-        "tests.unit.test_errors",
-        "TestFlextGrpcSettingsurationError",
-    ],
-    "TestFlextGrpcTimeoutError": [
-        "tests.unit.test_errors",
-        "TestFlextGrpcTimeoutError",
-    ],
+    "TestFlextGrpcSettingsurationError": ["tests.unit.test_errors", "TestFlextGrpcSettingsurationError"],
+    "TestFlextGrpcTimeoutError": ["tests.unit.test_errors", "TestFlextGrpcTimeoutError"],
     "TestFlextGrpcTypes": ["tests.unit.test_typings", "TestFlextGrpcTypes"],
     "TestFlextGrpcUtilities": ["tests.unit.test_utilities", "TestFlextGrpcUtilities"],
-    "TestFlextGrpcValidationError": [
-        "tests.unit.test_errors",
-        "TestFlextGrpcValidationError",
-    ],
+    "TestFlextGrpcValidationError": ["tests.unit.test_errors", "TestFlextGrpcValidationError"],
 }
 
 __all__ = [
@@ -97,7 +85,6 @@ def __getattr__(name: str) -> FlextTypes.ModuleExport:
 
     Raises:
         AttributeError: If attribute not registered.
-
     """
     if name in _LAZY_CACHE:
         return _LAZY_CACHE[name]
@@ -112,7 +99,6 @@ def __dir__() -> Sequence[str]:
 
     Returns:
         List of public names from module exports.
-
     """
     return sorted(__all__)
 

@@ -526,7 +526,11 @@ from flext_core import t
 from flext_core import u
 
 
+<<<<<<< Updated upstream
 def setup_configuration() -> r[FlextGrpcSettings]:
+=======
+def setup_configuration() -> FlextResult[FlextGrpcSettings]:
+>>>>>>> Stashed changes
     return create_config(
         host=FlextGrpcConstants.Network.DEFAULT_HOST,
         port=FlextGrpcConstants.Network.DEFAULT_PORT,

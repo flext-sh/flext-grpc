@@ -10,10 +10,11 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
-if TYPE_CHECKING:
-    from flext_core import FlextTypes, d, e, h, r, s, x
 
-    from flext_grpc import proto
+if TYPE_CHECKING:
+    from flext_core import FlextTypes
+    from flext_core import d, e, h, r, s, x
+
     from flext_grpc.__version__ import (
         __all__,
         __author__,
@@ -35,6 +36,7 @@ if TYPE_CHECKING:
         FlextGrpcValidationError,
     )
     from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
+    import flext_grpc.proto as proto
     from flext_grpc.proto.stubs import (
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
@@ -57,10 +59,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpcServiceStub": ["flext_grpc.proto.stubs", "FlextGrpcServiceStub"],
     "FlextGrpcServices": ["flext_grpc.services", "FlextGrpcServices"],
     "FlextGrpcSettings": ["flext_grpc.settings", "FlextGrpcSettings"],
-    "FlextGrpcSettingsurationError": [
-        "flext_grpc.errors",
-        "FlextGrpcSettingsurationError",
-    ],
+    "FlextGrpcSettingsurationError": ["flext_grpc.errors", "FlextGrpcSettingsurationError"],
     "FlextGrpcTimeoutError": ["flext_grpc.errors", "FlextGrpcTimeoutError"],
     "FlextGrpcTypes": ["flext_grpc.typings", "FlextGrpcTypes"],
     "FlextGrpcUtilities": ["flext_grpc.utilities", "FlextGrpcUtilities"],
@@ -74,10 +73,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "__url__": ["flext_grpc.__version__", "__url__"],
     "__version__": ["flext_grpc.__version__", "__version__"],
     "__version_info__": ["flext_grpc.__version__", "__version_info__"],
-    "add_FlextGrpcServiceServicer_to_server": [
-        "flext_grpc.proto.stubs",
-        "add_FlextGrpcServiceServicer_to_server",
-    ],
+    "add_FlextGrpcServiceServicer_to_server": ["flext_grpc.proto.stubs", "add_FlextGrpcServiceServicer_to_server"],
     "c": ["flext_grpc.constants", "FlextGrpcConstants"],
     "d": ["flext_core", "d"],
     "e": ["flext_core", "e"],
@@ -150,7 +146,6 @@ def __getattr__(name: str) -> FlextTypes.ModuleExport:
 
     Raises:
         AttributeError: If attribute not registered.
-
     """
     if name in _LAZY_CACHE:
         return _LAZY_CACHE[name]
@@ -165,7 +160,6 @@ def __dir__() -> Sequence[str]:
 
     Returns:
         List of public names from module exports.
-
     """
     return sorted(__all__)
 
