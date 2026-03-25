@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Sequence
 
 from flext_core import FlextConstants, r
 
@@ -34,16 +34,16 @@ class GrpcServerManager:
     def __init__(self) -> None:
         """Initialize the gRPC server manager with facade."""
         self.grpc = FlextGrpc()
-        self.servers: Mapping[str, FlextGrpcModels.Grpc.Server] = {}
-        self.server_configs: Mapping[str, FlextGrpcSettings] = {}
+        self.servers: dict[str, FlextGrpcModels.Grpc.Server] = {}
+        self.server_configs: dict[str, FlextGrpcSettings] = {}
 
     def create_server_pool(
         self,
         base_port: int = 8000,
         count: int = 3,
-    ) -> Sequence[r[FlextGrpcModels.Grpc.Server]]:
+    ) -> list[r[FlextGrpcModels.Grpc.Server]]:
         """Create a pool of servers on consecutive ports through facade."""
-        server_results: Sequence[r[FlextGrpcModels.Grpc.Server]] = []
+        server_results: list[r[FlextGrpcModels.Grpc.Server]] = []
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
@@ -64,9 +64,9 @@ class GrpcServerManager:
             server_results.append(server_result)
         return server_results
 
-    def get_server_status(self) -> Mapping[str, t.StrMapping]:
+    def get_server_status(self) -> dict[str, dict[str, str]]:
         """Get status of all servers through facade."""
-        status: Mapping[str, t.StrMapping] = {}
+        status: dict[str, dict[str, str]] = {}
         for server_id, server in self.servers.items():
             config = self.server_configs[server_id]
             status[server_id] = {
@@ -79,9 +79,9 @@ class GrpcServerManager:
             }
         return status
 
-    def start_all_servers(self) -> Mapping[str, bool]:
+    def start_all_servers(self) -> dict[str, bool]:
         """Start all servers in the pool through facade."""
-        results: Mapping[str, bool] = {}
+        results: dict[str, bool] = {}
         for server_id, server in self.servers.items():
             start_result = self.grpc.start_server(server)
             if start_result.is_success:
@@ -91,9 +91,9 @@ class GrpcServerManager:
                 results[server_id] = False
         return results
 
-    def stop_all_servers(self) -> Mapping[str, bool]:
+    def stop_all_servers(self) -> dict[str, bool]:
         """Stop all servers in the pool through facade."""
-        results: Mapping[str, bool] = {}
+        results: dict[str, bool] = {}
         for server_id, server in self.servers.items():
             if server.state == "running":
                 stop_result = self.grpc.stop_server(server)
@@ -133,13 +133,7 @@ class AdvancedGrpcOperations:
         if setup_result.is_failure:
             return r[CompleteSetup].fail(setup_result.error or "Setup failed")
         setup = setup_result.value
-        complete_setup: CompleteSetup = {
-            "server": setup["server"],
-            "client": setup["client"],
-            "service": setup["service"],
-            "target": setup["target"],
-        }
-        return r[CompleteSetup].ok(complete_setup)
+        return r[CompleteSetup].ok(setup)
 
     def demonstrate_streaming(self) -> None:
         """Demonstrate streaming operations through facade."""
@@ -189,7 +183,7 @@ def example_2_client_pool() -> None:
     )
     if setup_result.is_success:
         setup = setup_result.value
-        print(f"Created setup for target: {setup['target']}")
+        print(f"Created setup for target: {setup.target}")
     else:
         print(f"Setup creation failed: {setup_result.error}")
     ops.demonstrate_streaming()
@@ -203,7 +197,7 @@ def example_3_service_creation() -> None:
         ("OrderService", ["GetOrder", "CreateOrder", "UpdateOrder"]),
         ("NotificationService", ["SendNotification", "GetNotifications"]),
     ]
-    created_services: Sequence[FlextGrpcModels.Grpc.Service] = []
+    created_services: list[FlextGrpcModels.Grpc.Service] = []
     for service_name, methods in services:
         service_result = grpc.create_service(name=service_name, methods=methods)
         if service_result.is_success:
@@ -226,7 +220,7 @@ def example_4_streaming() -> None:
         ("UploadData", "client_streaming"),
         ("Chat", "bidirectional"),
     ]
-    created_streams: Sequence[FlextGrpcModels.Grpc.GrpcStream] = []
+    created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
             method_name=method_name,

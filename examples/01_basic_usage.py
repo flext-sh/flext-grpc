@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
 
 
 def example_1_basic_entities() -> None:
@@ -51,10 +51,10 @@ def example_2_configuration() -> None:
     print(
         f"Created config with host: {default_config.network.host}, port: {default_config.network.port}",
     )
-    custom_config = FlextGrpcSettings(
-        network=FlextGrpcModels.NetworkConfig(host="example.com", port=9090),
-        performance=FlextGrpcModels.PerformanceConfig(max_workers=20),
-    )
+    custom_config = FlextGrpcSettings.model_validate({
+        "network": {"host": "example.com", "port": 9090},
+        "performance": {"max_workers": 20},
+    })
     print(
         f"Created custom config: {custom_config.network.host}:{custom_config.network.port}",
     )
