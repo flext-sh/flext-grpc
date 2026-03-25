@@ -252,7 +252,7 @@ def main() -> None:
             logger.info(f"✅ result: {result.value}")
         else:
             logger.error(f"❌ failed: {result.error}")
-    except Exception:
+    except (ValueError, RuntimeError, OSError):
         logger.exception("❌ exception occurred")
     logger.info("\n🎉 Error handling examples completed!")
     logger.info("Key takeaways:")
