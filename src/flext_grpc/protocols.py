@@ -464,10 +464,6 @@ class FlextGrpcProtocols(FlextProtocols):
                 ...
 
 
-ClientConnection = FlextGrpcProtocols.Grpc.ClientConnection
-ServerLifecycle = FlextGrpcProtocols.Grpc.ServerLifecycle
-StreamProcessor = FlextGrpcProtocols.Grpc.StreamProcessor
-
 p = FlextGrpcProtocols
 
 __all__ = [

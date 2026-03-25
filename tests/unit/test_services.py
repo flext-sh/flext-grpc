@@ -7,9 +7,6 @@ from flext_tests import tm
 
 from flext_grpc import FlextGrpcServices
 
-ConnectionPool = FlextGrpcServices.Grpc.ConnectionPool
-MetricsCollector = FlextGrpcServices.Grpc.MetricsCollector
-
 
 class TestFlextGrpcServices:
     """Test cases for FlextGrpcServices class."""
@@ -39,20 +36,20 @@ class TestFlextGrpcServices:
 
     def test_connection_pool_release(self) -> None:
         """Test connection pool release."""
-        pool = ConnectionPool(max_size=5)
+        pool = FlextGrpcServices.Grpc.ConnectionPool(max_size=5)
         mock_connection = grpc.insecure_channel("localhost:50051")
         release_result = pool.release(mock_connection)
         tm.that(release_result.is_success, eq=True)
 
     def test_connection_pool_cleanup(self) -> None:
         """Test connection pool cleanup."""
-        pool = ConnectionPool(max_size=5)
+        pool = FlextGrpcServices.Grpc.ConnectionPool(max_size=5)
         result = pool.cleanup()
         tm.that(result.is_success, eq=True)
 
     def test_metrics_collector(self) -> None:
         """Test metrics collector directly."""
-        collector = MetricsCollector()
+        collector = FlextGrpcServices.Grpc.MetricsCollector()
         collector.record_metric("test_key", "test_value")
         value = collector.get_metric("test_key")
         tm.that(value, eq="test_value")
