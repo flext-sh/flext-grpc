@@ -10,7 +10,7 @@ import argparse
 import json
 import re
 import sys
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping, MutableMapping, MutableSequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict
@@ -33,9 +33,9 @@ class ValidationResults(TypedDict):
     """Complete validation results."""
 
     summary: ValidationSummary
-    issues: Sequence[Mapping[str, str | int | t.StrSequence]]
-    warnings: Sequence[Mapping[str, str | int | t.StrSequence]]
-    recommendations: Sequence[Mapping[str, str | int | t.StrSequence]]
+    issues: MutableSequence[Mapping[str, str | int | t.StrSequence]]
+    warnings: MutableSequence[Mapping[str, str | int | t.StrSequence]]
+    recommendations: MutableSequence[Mapping[str, str | int | t.StrSequence]]
 
 
 class ArchitectureValidator:
@@ -58,9 +58,11 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: Sequence[Mapping[str, str | int | t.StrSequence]] = []
-        self.warnings: Sequence[Mapping[str, str | int | t.StrSequence]] = []
-        self.recommendations: Sequence[Mapping[str, str | int | t.StrSequence]] = []
+        self.issues: MutableSequence[Mapping[str, str | int | t.StrSequence]] = []
+        self.warnings: MutableSequence[Mapping[str, str | int | t.StrSequence]] = []
+        self.recommendations: MutableSequence[
+            Mapping[str, str | int | t.StrSequence]
+        ] = []
 
     def validate_all(self) -> ValidationResults:
         """Run all validation checks."""
@@ -271,7 +273,7 @@ class ArchitectureValidator:
             "README.md",
         ]
 
-        versions: t.StrMapping = {}
+        versions: MutableMapping[str, str] = {}
         for file_path in files_to_check:
             full_path = self.root_path / file_path
             if full_path.exists():
