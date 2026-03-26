@@ -675,9 +675,11 @@ class FlextGrpcModels(FlextModels):
 
                 """
                 try:
-                    return r[Self].ok(self.model_copy(update=kwargs))
+                    return r[Self](
+                        value=self.model_copy(update=kwargs), is_success=True
+                    )
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r[Self].fail(str(e))
+                    return r[Self](error=str(e), is_success=False)
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
@@ -701,8 +703,11 @@ class FlextGrpcModels(FlextModels):
 
             def disconnect(self) -> r[Self]:
                 """Transition to idle."""
-                return r[Self].ok(
-                    self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"state": c.Grpc.ChannelState.IDLE.value}
+                    ),
+                    is_success=True,
                 )
 
             def is_ready(self) -> bool:
@@ -744,8 +749,11 @@ class FlextGrpcModels(FlextModels):
                 service: gRPC service t.NormalizedValue (dynamic type from grpc library)
 
                 """
-                return r[Self].ok(
-                    self.model_copy(update={"services": [*self.services, service]}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"services": [*self.services, service]}
+                    ),
+                    is_success=True,
                 )
 
             def mark_running(self) -> r[Self]:
@@ -764,8 +772,11 @@ class FlextGrpcModels(FlextModels):
                         .fail(f"Cannot mark stopped from {self.state}")
                         .map(lambda _unused: self)
                     )
-                return r[Self].ok(
-                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"state": c.Grpc.ServerState.STOPPED.value}
+                    ),
+                    is_success=True,
                 )
 
             def start(self) -> r[Self]:
@@ -830,8 +841,11 @@ class FlextGrpcModels(FlextModels):
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
-                return r[Self].ok(
-                    self.model_copy(update={"methods": [*self.methods, method_name]}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"methods": [*self.methods, method_name]}
+                    ),
+                    is_success=True,
                 )
 
             def has_method(self, method_name: str) -> bool:
@@ -853,7 +867,9 @@ class FlextGrpcModels(FlextModels):
                     options={},
                     domain_events=[],
                 )
-                return r[Self].ok(self.model_copy(update={"channel": channel}))
+                return r[Self](
+                    value=self.model_copy(update={"channel": channel}), is_success=True
+                )
 
             @override
             def validate_business_rules(self) -> r[bool]:

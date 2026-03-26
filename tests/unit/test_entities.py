@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from flext_tests import tm
 
-from flext_grpc import FlextGrpcModels
+from flext_grpc import FlextGrpcModels, c
 
 
 class TestFlextGrpcEntities:
@@ -43,7 +43,7 @@ class TestFlextGrpcEntities:
         stream = FlextGrpcModels.Grpc.GrpcStream(
             unique_id="test_stream",
             method_name="test_method",
-            stream_type="unary",
+            stream_type=c.Grpc.GrpcOperations.UNARY,
             domain_events=[],
         )
         tm.that(stream.unique_id, eq="test_stream")
@@ -93,7 +93,7 @@ class TestFlextGrpcEntities:
         """Test channel state machine transitions."""
         channel = FlextGrpcModels.Grpc.Channel(
             target="localhost:50051",
-            state="idle",
+            state=c.Grpc.ChannelState.IDLE,
             options={},
             domain_events=[],
         )
