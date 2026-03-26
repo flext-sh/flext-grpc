@@ -11,9 +11,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 import pytest
-from flext_core import FlextConstants, FlextContainer
+from flext_core import FlextContainer
 
 from flext_grpc import FlextGrpcConstants, FlextGrpcSettings, t
+from tests import c
 
 
 @pytest.fixture(autouse=True)
@@ -27,10 +28,10 @@ def clean_container() -> FlextContainer:
 def sample_grpc_config() -> Mapping[str, str | int | float]:
     """Sample gRPC configuration for tests."""
     return {
-        "host": FlextConstants.DEFAULT_HOST,
+        "host": c.DEFAULT_HOST,
         "port": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         "max_workers": FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
-        "timeout": FlextConstants.DEFAULT_TIMEOUT_SECONDS,
+        "timeout": c.DEFAULT_TIMEOUT_SECONDS,
     }
 
 
@@ -39,7 +40,7 @@ def test_addresses() -> Mapping[str, t.StrSequence]:
     """Test addresses for validation."""
     return {
         "valid": [
-            f"{FlextConstants.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+            f"{c.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "127.0.0.1:8080",
             "example.com:443",
             "api-server:9000",
