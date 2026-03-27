@@ -28,9 +28,9 @@ if TYPE_CHECKING:
     from flext_grpc.api import FlextGrpc
     from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
     from flext_grpc.errors import (
+        FlextGrpcConfigurationError,
         FlextGrpcConnectionError,
         FlextGrpcError,
-        FlextGrpcSettingsurationError,
         FlextGrpcTimeoutError,
         FlextGrpcValidationError,
     )
@@ -57,9 +57,9 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpcServiceStub": ["flext_grpc.proto.stubs", "FlextGrpcServiceStub"],
     "FlextGrpcServices": ["flext_grpc.services", "FlextGrpcServices"],
     "FlextGrpcSettings": ["flext_grpc.settings", "FlextGrpcSettings"],
-    "FlextGrpcSettingsurationError": [
+    "FlextGrpcConfigurationError": [
         "flext_grpc.errors",
-        "FlextGrpcSettingsurationError",
+        "FlextGrpcConfigurationError",
     ],
     "FlextGrpcTimeoutError": ["flext_grpc.errors", "FlextGrpcTimeoutError"],
     "FlextGrpcTypes": ["flext_grpc.typings", "FlextGrpcTypes"],
@@ -94,6 +94,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
 
 __all__ = [
     "FlextGrpc",
+    "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcConstants",
     "FlextGrpcError",
@@ -103,7 +104,6 @@ __all__ = [
     "FlextGrpcServiceStub",
     "FlextGrpcServices",
     "FlextGrpcSettings",
-    "FlextGrpcSettingsurationError",
     "FlextGrpcTimeoutError",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",

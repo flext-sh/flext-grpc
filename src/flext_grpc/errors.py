@@ -33,7 +33,7 @@ class FlextGrpcTimeoutError(e.BaseError):
     """Timeout error for gRPC operations that exceed time limits."""
 
 
-class FlextGrpcSettingsurationError(e.BaseError):
+class FlextGrpcConfigurationError(e.BaseError):
     """Configuration error for gRPC settings issues."""
 
     def __init__(self, message: str, *, config_key: str | None = None) -> None:
@@ -43,9 +43,9 @@ class FlextGrpcSettingsurationError(e.BaseError):
 
 
 __all__ = [
+    "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcError",
-    "FlextGrpcSettingsurationError",
     "FlextGrpcTimeoutError",
     "FlextGrpcValidationError",
 ]

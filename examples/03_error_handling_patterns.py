@@ -18,10 +18,10 @@ from typing import NoReturn
 from flext_core import FlextConstants, FlextLogger, r
 
 from flext_grpc import (
+    FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcConstants,
     FlextGrpcError,
-    FlextGrpcSettingsurationError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
     t,
@@ -57,11 +57,11 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
 
     def _raise_port_error() -> NoReturn:
         msg = "Port must be between 1 and 65535"
-        raise FlextGrpcSettingsurationError(msg, config_key="port")
+        raise FlextGrpcConfigurationError(msg, config_key="port")
 
     def _raise_workers_error() -> NoReturn:
         msg = "Workers must be positive"
-        raise FlextGrpcSettingsurationError(msg, config_key="max_workers")
+        raise FlextGrpcConfigurationError(msg, config_key="max_workers")
 
     try:
         max_port = 65535
@@ -78,7 +78,7 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
             return r[t.Grpc.ConfigDict].ok(config)
         except Exception as e:
             return r[t.Grpc.ConfigDict].fail(str(e))
-    except FlextGrpcSettingsurationError as e:
+    except FlextGrpcConfigurationError as e:
         logger.exception("Configuration error", key=e.config_key or "", error=str(e))
         return r[t.Grpc.ConfigDict].fail(f"Configuration error: {e}")
 
@@ -186,7 +186,7 @@ def demonstrate_error_context() -> None:
         "Email format is invalid - missing @ symbol",
         field="user_email",
     )
-    config_error = FlextGrpcSettingsurationError(
+    config_error = FlextGrpcConfigurationError(
         "Invalid port configuration for production environment",
         config_key="server_port",
     )

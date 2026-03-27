@@ -26,9 +26,9 @@ if TYPE_CHECKING:
     from tests.unit.test_entities import TestFlextGrpcEntities
     from tests.unit.test_errors import (
         TestErrorIntegration,
+        TestFlextGrpcConfigurationError,
         TestFlextGrpcConnectionError,
         TestFlextGrpcError,
-        TestFlextGrpcSettingsurationError,
         TestFlextGrpcTimeoutError,
         TestFlextGrpcValidationError,
     )
@@ -58,9 +58,9 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "TestFlextGrpcProtocols": ["tests.unit.test_protocols", "TestFlextGrpcProtocols"],
     "TestFlextGrpcServices": ["tests.unit.test_services", "TestFlextGrpcServices"],
     "TestFlextGrpcSettings": ["tests.unit.test_config", "TestFlextGrpcSettings"],
-    "TestFlextGrpcSettingsurationError": [
+    "TestFlextGrpcConfigurationError": [
         "tests.unit.test_errors",
-        "TestFlextGrpcSettingsurationError",
+        "TestFlextGrpcConfigurationError",
     ],
     "TestFlextGrpcTimeoutError": [
         "tests.unit.test_errors",
@@ -97,6 +97,7 @@ __all__ = [
     "FlextGrpcTestUtilities",
     "TestErrorIntegration",
     "TestFlextGrpc",
+    "TestFlextGrpcConfigurationError",
     "TestFlextGrpcConnectionError",
     "TestFlextGrpcConstants",
     "TestFlextGrpcEntities",
@@ -105,7 +106,6 @@ __all__ = [
     "TestFlextGrpcProtocols",
     "TestFlextGrpcServices",
     "TestFlextGrpcSettings",
-    "TestFlextGrpcSettingsurationError",
     "TestFlextGrpcTimeoutError",
     "TestFlextGrpcTypes",
     "TestFlextGrpcUtilities",

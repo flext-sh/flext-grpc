@@ -41,9 +41,9 @@ from flext_core import FlextExceptions
 from flext_tests import tm
 
 from flext_grpc import (
+    FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcError,
-    FlextGrpcSettingsurationError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
@@ -126,21 +126,21 @@ class TestFlextGrpcTimeoutError:
         tm.that(error, is_=FlextExceptions.BaseError)
 
 
-class TestFlextGrpcSettingsurationError:
+class TestFlextGrpcConfigurationError:
     """Test gRPC configuration error with config context."""
 
     def test_configuration_error_with_all_params(self) -> None:
         """Test configuration error with all parameters."""
         message = "Invalid configuration"
         config_key = "port"
-        error = FlextGrpcSettingsurationError(message, config_key=config_key)
+        error = FlextGrpcConfigurationError(message, config_key=config_key)
         tm.that(str(error), has=message)
         tm.that(error.config_key, eq=config_key)
 
     def test_configuration_error_with_minimal_params(self) -> None:
         """Test configuration error with only message."""
         message = "Configuration error"
-        error = FlextGrpcSettingsurationError(message)
+        error = FlextGrpcConfigurationError(message)
         tm.that(str(error), has=message)
         tm.that(error.config_key, none=True)
 
@@ -148,13 +148,13 @@ class TestFlextGrpcSettingsurationError:
         """Test configuration error with config_key but no value."""
         message = "Missing configuration"
         config_key = "host"
-        error = FlextGrpcSettingsurationError(message, config_key=config_key)
+        error = FlextGrpcConfigurationError(message, config_key=config_key)
         tm.that(str(error), has=message)
         tm.that(error.config_key, eq=config_key)
 
     def test_configuration_error_inheritance(self) -> None:
-        """Test FlextGrpcSettingsurationError inherits correctly."""
-        error = FlextGrpcSettingsurationError("test")
+        """Test FlextGrpcConfigurationError inherits correctly."""
+        error = FlextGrpcConfigurationError("test")
         tm.that(error, is_=FlextExceptions.BaseError)
 
 
@@ -168,7 +168,7 @@ class TestErrorIntegration:
             FlextGrpcValidationError("validation error", field="field"),
             FlextGrpcConnectionError("connection error"),
             FlextGrpcTimeoutError("timeout error"),
-            FlextGrpcSettingsurationError("config error", config_key="key"),
+            FlextGrpcConfigurationError("config error", config_key="key"),
         ]
         for error in errors:
             tm.that(error, is_=Exception)
@@ -181,13 +181,13 @@ class TestErrorIntegration:
             FlextGrpcValidationError("test"),
             FlextGrpcConnectionError("test"),
             FlextGrpcTimeoutError("test"),
-            FlextGrpcSettingsurationError("test"),
+            FlextGrpcConfigurationError("test"),
         ]
         tm.that(FlextGrpcError("test"), is_=FlextExceptions.BaseError)
         tm.that(FlextGrpcValidationError("test"), is_=FlextExceptions.BaseError)
         tm.that(FlextGrpcConnectionError("test"), is_=FlextExceptions.BaseError)
         tm.that(FlextGrpcTimeoutError("test"), is_=FlextExceptions.BaseError)
-        tm.that(FlextGrpcSettingsurationError("test"), is_=FlextExceptions.BaseError)
+        tm.that(FlextGrpcConfigurationError("test"), is_=FlextExceptions.BaseError)
         for error in errors:
             tm.that(error, is_=Exception)
 
@@ -199,7 +199,7 @@ class TestErrorIntegration:
         )
         tm.that(unicode_error.field, eq="データ")
         config_key = "complex_setting"
-        config_error = FlextGrpcSettingsurationError(
+        config_error = FlextGrpcConfigurationError(
             "Complex config failed",
             config_key=config_key,
         )
