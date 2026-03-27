@@ -71,7 +71,10 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "__url__": ["flext_grpc.__version__", "__url__"],
     "__version__": ["flext_grpc.__version__", "__version__"],
     "__version_info__": ["flext_grpc.__version__", "__version_info__"],
-    "add_FlextGrpcServiceServicer_to_server": ["flext_grpc.proto.stubs", "add_FlextGrpcServiceServicer_to_server"],
+    "add_FlextGrpcServiceServicer_to_server": [
+        "flext_grpc.proto.stubs",
+        "add_FlextGrpcServiceServicer_to_server",
+    ],
     "c": ["flext_grpc.constants", "FlextGrpcConstants"],
     "d": ["flext_core", "d"],
     "e": ["flext_core", "e"],
