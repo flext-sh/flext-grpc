@@ -56,7 +56,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpcProtocols": ["flext_grpc.protocols", "FlextGrpcProtocols"],
     "FlextGrpcServiceServicer": ["flext_grpc.proto.stubs", "FlextGrpcServiceServicer"],
     "FlextGrpcServiceStub": ["flext_grpc.proto.stubs", "FlextGrpcServiceStub"],
-    "FlextGrpcServices": ["flext_grpc.services", "FlextGrpcServices"],
+    "FlextGrpcServices": ["flext_grpc._utilities.services", "FlextGrpcServices"],
     "FlextGrpcSettings": ["flext_grpc.settings", "FlextGrpcSettings"],
     "FlextGrpcTimeoutError": ["flext_grpc.errors", "FlextGrpcTimeoutError"],
     "FlextGrpcTypes": ["flext_grpc.typings", "FlextGrpcTypes"],
