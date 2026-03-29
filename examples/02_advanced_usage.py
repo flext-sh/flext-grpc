@@ -22,6 +22,7 @@ from flext_grpc import (
     FlextGrpcConstants,
     FlextGrpcModels,
     FlextGrpcSettings,
+    c,
     t,
 )
 

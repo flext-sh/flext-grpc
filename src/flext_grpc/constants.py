@@ -51,7 +51,7 @@ class FlextGrpcConstants(FlextConstants):
             MIN_PORT: Final[int] = 1
             MAX_PORT: Final[int] = 65535
             DEFAULT_TIMEOUT: Final[float] = float(
-                c.DEFAULT_TIMEOUT_SECONDS,
+                FlextConstants.DEFAULT_TIMEOUT_SECONDS,
             )
             HOST: Final[str] = "127.0.0.1"
             LOCALHOST_IP: Final[str] = "127.0.0.1"
@@ -71,14 +71,14 @@ class FlextGrpcConstants(FlextConstants):
 
             MAX_WORKERS: Final[int] = 20
             DEFAULT_TIMEOUT: Final[float] = float(
-                c.DEFAULT_TIMEOUT_SECONDS,
+                FlextConstants.DEFAULT_TIMEOUT_SECONDS,
             )
 
         class Production:
             """gRPC production validation constants."""
 
             MIN_PORT: Final[int] = 1024
-            RETRY_ATTEMPTS: Final[int] = c.MAX_RETRY_ATTEMPTS
+            RETRY_ATTEMPTS: Final[int] = FlextConstants.MAX_RETRY_ATTEMPTS
             MAX_RETRY_ATTEMPTS: Final[int] = 5
 
         class GrpcValidation:
