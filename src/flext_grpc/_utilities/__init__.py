@@ -13,10 +13,10 @@ from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 if TYPE_CHECKING:
     from flext_core import FlextTypes
 
-    from flext_grpc._utilities.services import FlextGrpcServices
+    from flext_grpc.services import FlextGrpcServices
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "FlextGrpcServices": ["flext_grpc._utilities.services", "FlextGrpcServices"],
+    "FlextGrpcServices": ["flext_grpc.services", "FlextGrpcServices"],
 }
 
 __all__ = [
