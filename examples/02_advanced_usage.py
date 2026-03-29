@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from flext_core import FlextConstants, r
+from flext_core import r
 
 from flext_grpc import (
     FlextGrpc,
@@ -116,7 +116,7 @@ class AdvancedGrpcOperations:
 
     def create_complete_setup(
         self,
-        host: str = FlextConstants.DEFAULT_HOST,
+        host: str = c.LOCALHOST,
         port: int = 8080,
         service_name: str = "AdvancedService",
         methods: t.StrSequence | None = None,
