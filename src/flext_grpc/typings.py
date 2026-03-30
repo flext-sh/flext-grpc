@@ -20,8 +20,7 @@ from collections.abc import Mapping, Sequence
 
 from flext_core import FlextTypes
 
-from flext_grpc.constants import FlextGrpcConstants as c
-from flext_grpc.protocols import FlextGrpcProtocols
+from flext_grpc import FlextGrpcConstants as c, FlextGrpcProtocols
 
 
 class FlextGrpcTypes(FlextTypes):

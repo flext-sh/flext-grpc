@@ -15,7 +15,6 @@ if TYPE_CHECKING:
 
     from flext_grpc import proto
     from flext_grpc.__version__ import (
-        __all__,
         __author__,
         __author_email__,
         __description__,
@@ -62,7 +61,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpcTypes": ["flext_grpc.typings", "FlextGrpcTypes"],
     "FlextGrpcUtilities": ["flext_grpc.utilities", "FlextGrpcUtilities"],
     "FlextGrpcValidationError": ["flext_grpc.errors", "FlextGrpcValidationError"],
-    "__all__": ["flext_grpc.__version__", "__all__"],
     "__author__": ["flext_grpc.__version__", "__author__"],
     "__author_email__": ["flext_grpc.__version__", "__author_email__"],
     "__description__": ["flext_grpc.__version__", "__description__"],
@@ -105,7 +103,6 @@ __all__ = [
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcValidationError",
-    "__all__",
     "__author__",
     "__author_email__",
     "__description__",
