@@ -10,20 +10,21 @@ from typing import TYPE_CHECKING
 
 from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
 
+from flext_grpc.__version__ import (
+    __author__,
+    __author_email__,
+    __description__,
+    __license__,
+    __title__,
+    __url__,
+    __version__,
+    __version_info__,
+)
+
 if TYPE_CHECKING:
     from flext_core import FlextTypes, d, e, h, r, s, x
 
     from flext_grpc import proto
-    from flext_grpc.__version__ import (
-        __author__,
-        __author_email__,
-        __description__,
-        __license__,
-        __title__,
-        __url__,
-        __version__,
-        __version_info__,
-    )
     from flext_grpc.api import FlextGrpc
     from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
     from flext_grpc.errors import (
@@ -61,14 +62,6 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpcTypes": ["flext_grpc.typings", "FlextGrpcTypes"],
     "FlextGrpcUtilities": ["flext_grpc.utilities", "FlextGrpcUtilities"],
     "FlextGrpcValidationError": ["flext_grpc.errors", "FlextGrpcValidationError"],
-    "__author__": ["flext_grpc.__version__", "__author__"],
-    "__author_email__": ["flext_grpc.__version__", "__author_email__"],
-    "__description__": ["flext_grpc.__version__", "__description__"],
-    "__license__": ["flext_grpc.__version__", "__license__"],
-    "__title__": ["flext_grpc.__version__", "__title__"],
-    "__url__": ["flext_grpc.__version__", "__url__"],
-    "__version__": ["flext_grpc.__version__", "__version__"],
-    "__version_info__": ["flext_grpc.__version__", "__version_info__"],
     "add_FlextGrpcServiceServicer_to_server": [
         "flext_grpc.proto.stubs",
         "add_FlextGrpcServiceServicer_to_server",
