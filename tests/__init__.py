@@ -14,12 +14,24 @@ if TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
-    from tests import unit
+    from tests import conftest, constants, models, protocols, typings, unit, utilities
     from tests.conftest import clean_container, sample_grpc_config, test_addresses
     from tests.constants import FlextGrpcTestConstants, FlextGrpcTestConstants as c
     from tests.models import FlextGrpcTestModels, FlextGrpcTestModels as m
     from tests.protocols import FlextGrpcTestProtocols, FlextGrpcTestProtocols as p
     from tests.typings import FlextGrpcTestTypes, FlextGrpcTestTypes as t
+    from tests.unit import (
+        test_api,
+        test_config,
+        test_constants,
+        test_entities,
+        test_errors,
+        test_models,
+        test_protocols,
+        test_services,
+        test_typings,
+        test_utilities,
+    )
     from tests.unit.test_api import TestFlextGrpc
     from tests.unit.test_config import TestFlextGrpcSettings
     from tests.unit.test_constants import TestFlextGrpcConstants
@@ -74,18 +86,34 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     ],
     "c": ["tests.constants", "FlextGrpcTestConstants"],
     "clean_container": ["tests.conftest", "clean_container"],
+    "conftest": ["tests.conftest", ""],
+    "constants": ["tests.constants", ""],
     "d": ["flext_tests", "d"],
     "e": ["flext_tests", "e"],
     "h": ["flext_tests", "h"],
     "m": ["tests.models", "FlextGrpcTestModels"],
+    "models": ["tests.models", ""],
     "p": ["tests.protocols", "FlextGrpcTestProtocols"],
+    "protocols": ["tests.protocols", ""],
     "r": ["flext_tests", "r"],
     "s": ["flext_tests", "s"],
     "sample_grpc_config": ["tests.conftest", "sample_grpc_config"],
     "t": ["tests.typings", "FlextGrpcTestTypes"],
     "test_addresses": ["tests.conftest", "test_addresses"],
+    "test_api": ["tests.unit.test_api", ""],
+    "test_config": ["tests.unit.test_config", ""],
+    "test_constants": ["tests.unit.test_constants", ""],
+    "test_entities": ["tests.unit.test_entities", ""],
+    "test_errors": ["tests.unit.test_errors", ""],
+    "test_models": ["tests.unit.test_models", ""],
+    "test_protocols": ["tests.unit.test_protocols", ""],
+    "test_services": ["tests.unit.test_services", ""],
+    "test_typings": ["tests.unit.test_typings", ""],
+    "test_utilities": ["tests.unit.test_utilities", ""],
+    "typings": ["tests.typings", ""],
     "u": ["tests.utilities", "FlextGrpcTestUtilities"],
     "unit": ["tests.unit", ""],
+    "utilities": ["tests.utilities", ""],
     "x": ["flext_tests", "x"],
 }
 
@@ -112,18 +140,34 @@ __all__ = [
     "TestFlextGrpcValidationError",
     "c",
     "clean_container",
+    "conftest",
+    "constants",
     "d",
     "e",
     "h",
     "m",
+    "models",
     "p",
+    "protocols",
     "r",
     "s",
     "sample_grpc_config",
     "t",
     "test_addresses",
+    "test_api",
+    "test_config",
+    "test_constants",
+    "test_entities",
+    "test_errors",
+    "test_models",
+    "test_protocols",
+    "test_services",
+    "test_typings",
+    "test_utilities",
+    "typings",
     "u",
     "unit",
+    "utilities",
     "x",
 ]
 

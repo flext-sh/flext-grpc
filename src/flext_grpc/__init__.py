@@ -24,7 +24,18 @@ from flext_grpc.__version__ import (
 if TYPE_CHECKING:
     from flext_core import FlextTypes, d, e, h, r, s, x
 
-    from flext_grpc import proto
+    from flext_grpc import (
+        api,
+        constants,
+        errors,
+        models,
+        proto,
+        protocols,
+        services,
+        settings,
+        typings,
+        utilities,
+    )
     from flext_grpc.api import FlextGrpc
     from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
     from flext_grpc.errors import (
@@ -35,6 +46,7 @@ if TYPE_CHECKING:
         FlextGrpcValidationError,
     )
     from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
+    from flext_grpc.proto import stubs
     from flext_grpc.proto.stubs import (
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
@@ -66,17 +78,27 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
         "flext_grpc.proto.stubs",
         "add_FlextGrpcServiceServicer_to_server",
     ],
+    "api": ["flext_grpc.api", ""],
     "c": ["flext_grpc.constants", "FlextGrpcConstants"],
+    "constants": ["flext_grpc.constants", ""],
     "d": ["flext_core", "d"],
     "e": ["flext_core", "e"],
+    "errors": ["flext_grpc.errors", ""],
     "h": ["flext_core", "h"],
     "m": ["flext_grpc.models", "FlextGrpcModels"],
+    "models": ["flext_grpc.models", ""],
     "p": ["flext_grpc.protocols", "FlextGrpcProtocols"],
     "proto": ["flext_grpc.proto", ""],
+    "protocols": ["flext_grpc.protocols", ""],
     "r": ["flext_core", "r"],
     "s": ["flext_core", "s"],
+    "services": ["flext_grpc.services", ""],
+    "settings": ["flext_grpc.settings", ""],
+    "stubs": ["flext_grpc.proto.stubs", ""],
     "t": ["flext_grpc.typings", "FlextGrpcTypes"],
+    "typings": ["flext_grpc.typings", ""],
     "u": ["flext_grpc.utilities", "FlextGrpcUtilities"],
+    "utilities": ["flext_grpc.utilities", ""],
     "x": ["flext_core", "x"],
 }
 
@@ -105,17 +127,27 @@ __all__ = [
     "__version__",
     "__version_info__",
     "add_FlextGrpcServiceServicer_to_server",
+    "api",
     "c",
+    "constants",
     "d",
     "e",
+    "errors",
     "h",
     "m",
+    "models",
     "p",
     "proto",
+    "protocols",
     "r",
     "s",
+    "services",
+    "settings",
+    "stubs",
     "t",
+    "typings",
     "u",
+    "utilities",
     "x",
 ]
 
