@@ -29,7 +29,6 @@ if TYPE_CHECKING:
         constants,
         errors,
         models,
-        proto,
         protocols,
         services,
         settings,
@@ -40,8 +39,7 @@ if TYPE_CHECKING:
     from flext_grpc.constants import *
     from flext_grpc.errors import *
     from flext_grpc.models import *
-    from flext_grpc.proto import stubs
-    from flext_grpc.proto.stubs import *
+    from flext_grpc.proto import *
     from flext_grpc.protocols import *
     from flext_grpc.services import *
     from flext_grpc.settings import *
