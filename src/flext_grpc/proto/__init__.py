@@ -30,7 +30,10 @@ if TYPE_CHECKING:
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpcServiceServicer": ["flext_grpc.proto.stubs", "FlextGrpcServiceServicer"],
     "FlextGrpcServiceStub": ["flext_grpc.proto.stubs", "FlextGrpcServiceStub"],
-    "add_FlextGrpcServiceServicer_to_server": ["flext_grpc.proto.stubs", "add_FlextGrpcServiceServicer_to_server"],
+    "add_FlextGrpcServiceServicer_to_server": [
+        "flext_grpc.proto.stubs",
+        "add_FlextGrpcServiceServicer_to_server",
+    ],
 }
 
 __all__ = [
