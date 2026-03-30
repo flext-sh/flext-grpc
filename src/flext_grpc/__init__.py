@@ -5,58 +5,68 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, MutableMapping, Sequence
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import cleanup_submodule_namespace, lazy_getattr
+from flext_core.lazy import install_lazy_exports
 
 from flext_grpc.__version__ import (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
+    __author__ as __author__,
+    __author_email__ as __author_email__,
+    __description__ as __description__,
+    __license__ as __license__,
+    __title__ as __title__,
+    __url__ as __url__,
+    __version__ as __version__,
+    __version_info__ as __version_info__,
 )
 
 if TYPE_CHECKING:
-    from flext_core import FlextTypes, d, e, h, r, s, x
-
     from flext_grpc import (
-        api,
-        constants,
-        errors,
-        models,
-        proto,
-        protocols,
-        services,
-        settings,
-        typings,
-        utilities,
+        api as api,
+        constants as constants,
+        errors as errors,
+        models as models,
+        proto as proto,
+        protocols as protocols,
+        services as services,
+        settings as settings,
+        typings as typings,
+        utilities as utilities,
     )
-    from flext_grpc.api import FlextGrpc
-    from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
+    from flext_grpc.api import FlextGrpc as FlextGrpc
+    from flext_grpc.constants import (
+        FlextGrpcConstants as FlextGrpcConstants,
+        FlextGrpcConstants as c,
+    )
     from flext_grpc.errors import (
-        FlextGrpcConfigurationError,
-        FlextGrpcConnectionError,
-        FlextGrpcError,
-        FlextGrpcTimeoutError,
-        FlextGrpcValidationError,
+        FlextGrpcConfigurationError as FlextGrpcConfigurationError,
+        FlextGrpcConnectionError as FlextGrpcConnectionError,
+        FlextGrpcError as FlextGrpcError,
+        FlextGrpcTimeoutError as FlextGrpcTimeoutError,
+        FlextGrpcValidationError as FlextGrpcValidationError,
     )
-    from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
-    from flext_grpc.proto import stubs
+    from flext_grpc.models import (
+        FlextGrpcModels as FlextGrpcModels,
+        FlextGrpcModels as m,
+    )
+    from flext_grpc.proto import stubs as stubs
     from flext_grpc.proto.stubs import (
-        FlextGrpcServiceServicer,
-        FlextGrpcServiceStub,
-        add_FlextGrpcServiceServicer_to_server,
+        FlextGrpcServiceServicer as FlextGrpcServiceServicer,
+        FlextGrpcServiceStub as FlextGrpcServiceStub,
+        add_FlextGrpcServiceServicer_to_server as add_FlextGrpcServiceServicer_to_server,
     )
-    from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
-    from flext_grpc.services import FlextGrpcServices
-    from flext_grpc.settings import FlextGrpcSettings
-    from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
-    from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
+    from flext_grpc.protocols import (
+        FlextGrpcProtocols as FlextGrpcProtocols,
+        FlextGrpcProtocols as p,
+    )
+    from flext_grpc.services import FlextGrpcServices as FlextGrpcServices
+    from flext_grpc.settings import FlextGrpcSettings as FlextGrpcSettings
+    from flext_grpc.typings import FlextGrpcTypes as FlextGrpcTypes, FlextGrpcTypes as t
+    from flext_grpc.utilities import (
+        FlextGrpcUtilities as FlextGrpcUtilities,
+        FlextGrpcUtilities as u,
+    )
 
 _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "FlextGrpc": ["flext_grpc.api", "FlextGrpc"],
@@ -102,7 +112,7 @@ _LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
     "x": ["flext_core", "x"],
 }
 
-__all__ = [
+_EXPORTS: Sequence[str] = [
     "FlextGrpc",
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
@@ -152,41 +162,4 @@ __all__ = [
 ]
 
 
-_LAZY_CACHE: MutableMapping[str, FlextTypes.ModuleExport] = {}
-
-
-def __getattr__(name: str) -> FlextTypes.ModuleExport:
-    """Lazy-load module attributes on first access (PEP 562).
-
-    A local cache ``_LAZY_CACHE`` persists resolved objects across repeated
-    accesses during process lifetime.
-
-    Args:
-        name: Attribute name requested by dir()/import.
-
-    Returns:
-        Lazy-loaded module export type.
-
-    Raises:
-        AttributeError: If attribute not registered.
-
-    """
-    if name in _LAZY_CACHE:
-        return _LAZY_CACHE[name]
-
-    value = lazy_getattr(name, _LAZY_IMPORTS, globals(), __name__)
-    _LAZY_CACHE[name] = value
-    return value
-
-
-def __dir__() -> Sequence[str]:
-    """Return list of available attributes for dir() and autocomplete.
-
-    Returns:
-        List of public names from module exports.
-
-    """
-    return sorted(__all__)
-
-
-cleanup_submodule_namespace(__name__, _LAZY_IMPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, _EXPORTS)
