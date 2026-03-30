@@ -19,29 +19,15 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc.proto import stubs as stubs
-    from flext_grpc.proto.stubs import (
-        FlextGrpcServiceServicer as FlextGrpcServiceServicer,
-        FlextGrpcServiceStub as FlextGrpcServiceStub,
-        add_FlextGrpcServiceServicer_to_server as add_FlextGrpcServiceServicer_to_server,
-    )
+    from flext_grpc.proto import stubs
+    from flext_grpc.proto.stubs import *
 
-_LAZY_IMPORTS: Mapping[str, Sequence[str]] = {
-    "FlextGrpcServiceServicer": ["flext_grpc.proto.stubs", "FlextGrpcServiceServicer"],
-    "FlextGrpcServiceStub": ["flext_grpc.proto.stubs", "FlextGrpcServiceStub"],
-    "add_FlextGrpcServiceServicer_to_server": [
-        "flext_grpc.proto.stubs",
-        "add_FlextGrpcServiceServicer_to_server",
-    ],
-    "stubs": ["flext_grpc.proto.stubs", ""],
+_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+    "FlextGrpcServiceServicer": "flext_grpc.proto.stubs",
+    "FlextGrpcServiceStub": "flext_grpc.proto.stubs",
+    "add_FlextGrpcServiceServicer_to_server": "flext_grpc.proto.stubs",
+    "stubs": "flext_grpc.proto.stubs",
 }
 
-_EXPORTS: Sequence[str] = [
-    "FlextGrpcServiceServicer",
-    "FlextGrpcServiceStub",
-    "add_FlextGrpcServiceServicer_to_server",
-    "stubs",
-]
 
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, _EXPORTS)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, sorted(_LAZY_IMPORTS))
