@@ -10,6 +10,9 @@ from typing import TYPE_CHECKING as _TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
 
+if _TYPE_CHECKING:
+    from flext_core import FlextTypes
+
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "typings": "examples.typings",
 }
