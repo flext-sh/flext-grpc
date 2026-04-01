@@ -13,16 +13,23 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
-    from tests.unit.test_api import *
-    from tests.unit.test_config import *
-    from tests.unit.test_constants import *
-    from tests.unit.test_entities import *
-    from tests.unit.test_errors import *
-    from tests.unit.test_models import *
-    from tests.unit.test_protocols import *
-    from tests.unit.test_services import *
-    from tests.unit.test_typings import *
-    from tests.unit.test_utilities import *
+    from tests.unit.test_api import TestFlextGrpc
+    from tests.unit.test_config import TestFlextGrpcSettings
+    from tests.unit.test_constants import TestFlextGrpcConstants
+    from tests.unit.test_entities import TestFlextGrpcEntities
+    from tests.unit.test_errors import (
+        TestErrorIntegration,
+        TestFlextGrpcConfigurationError,
+        TestFlextGrpcConnectionError,
+        TestFlextGrpcError,
+        TestFlextGrpcTimeoutError,
+        TestFlextGrpcValidationError,
+    )
+    from tests.unit.test_models import TestFlextGrpcModels
+    from tests.unit.test_protocols import TestFlextGrpcProtocols
+    from tests.unit.test_services import TestFlextGrpcServices
+    from tests.unit.test_typings import TestFlextGrpcTypes
+    from tests.unit.test_utilities import TestFlextGrpcUtilities
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "TestErrorIntegration": "tests.unit.test_errors",
