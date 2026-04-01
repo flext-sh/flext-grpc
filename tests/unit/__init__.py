@@ -13,6 +13,18 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
+    from tests.unit import (
+        test_api,
+        test_config,
+        test_constants,
+        test_entities,
+        test_errors,
+        test_models,
+        test_protocols,
+        test_services,
+        test_typings,
+        test_utilities,
+    )
     from tests.unit.test_api import TestFlextGrpc
     from tests.unit.test_config import TestFlextGrpcSettings
     from tests.unit.test_constants import TestFlextGrpcConstants

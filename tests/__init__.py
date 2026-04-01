@@ -14,13 +14,40 @@ if _TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_tests import d, e, h, r, s, x
 
-    from tests.conftest import *
-    from tests.constants import *
-    from tests.models import *
-    from tests.protocols import *
-    from tests.typings import *
-    from tests.unit import *
-    from tests.utilities import *
+    from tests import conftest, constants, models, protocols, typings, unit, utilities
+    from tests.conftest import clean_container, sample_grpc_config, test_addresses
+    from tests.constants import FlextGrpcTestConstants, FlextGrpcTestConstants as c
+    from tests.models import FlextGrpcTestModels, FlextGrpcTestModels as m
+    from tests.protocols import FlextGrpcTestProtocols, FlextGrpcTestProtocols as p
+    from tests.typings import FlextGrpcTestTypes, FlextGrpcTestTypes as t
+    from tests.unit import (
+        TestErrorIntegration,
+        TestFlextGrpc,
+        TestFlextGrpcConfigurationError,
+        TestFlextGrpcConnectionError,
+        TestFlextGrpcConstants,
+        TestFlextGrpcEntities,
+        TestFlextGrpcError,
+        TestFlextGrpcModels,
+        TestFlextGrpcProtocols,
+        TestFlextGrpcServices,
+        TestFlextGrpcSettings,
+        TestFlextGrpcTimeoutError,
+        TestFlextGrpcTypes,
+        TestFlextGrpcUtilities,
+        TestFlextGrpcValidationError,
+        test_api,
+        test_config,
+        test_constants,
+        test_entities,
+        test_errors,
+        test_models,
+        test_protocols,
+        test_services,
+        test_typings,
+        test_utilities,
+    )
+    from tests.utilities import FlextGrpcTestUtilities, FlextGrpcTestUtilities as u
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = merge_lazy_imports(
     ("tests.unit",),

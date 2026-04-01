@@ -21,7 +21,12 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
-    from flext_grpc.proto.stubs import *
+    from flext_grpc.proto import stubs
+    from flext_grpc.proto.stubs import (
+        FlextGrpcServiceServicer,
+        FlextGrpcServiceStub,
+        add_FlextGrpcServiceServicer_to_server,
+    )
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "FlextGrpcServiceServicer": "flext_grpc.proto.stubs",
