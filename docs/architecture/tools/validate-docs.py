@@ -10,7 +10,7 @@ import argparse
 import json
 import re
 import sys
-from collections.abc import Mapping, MutableMapping, MutableSequence
+from collections.abc import Mapping, MutableSequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict
@@ -273,7 +273,7 @@ class ArchitectureValidator:
             "README.md",
         ]
 
-        versions: MutableMapping[str, str] = {}
+        versions: t.MutableStrMapping = {}
         for file_path in files_to_check:
             full_path = self.root_path / file_path
             if full_path.exists():

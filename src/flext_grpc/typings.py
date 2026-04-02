@@ -64,7 +64,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             ServerMetrics = Mapping[
                 str,
-                int | float | bool | FlextTypes.OptionalContainerValueMapping,
+                FlextTypes.Numeric | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             ServerSecurity = Mapping[
                 str,
@@ -91,7 +91,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             type RetryConfiguration = Mapping[
                 str,
-                int | float | bool | FlextTypes.StrSequence,
+                FlextTypes.Numeric | bool | FlextTypes.StrSequence,
             ]
             type LoadBalancing = Mapping[
                 str,
@@ -99,7 +99,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             ClientMetrics = Mapping[
                 str,
-                int | float | FlextTypes.OptionalContainerValueMapping,
+                FlextTypes.Numeric | FlextTypes.OptionalContainerValueMapping,
             ]
             ChannelOptions = Mapping[
                 str,
@@ -119,7 +119,7 @@ class FlextGrpcTypes(FlextTypes):
             ]
             StreamMetrics = Mapping[
                 str,
-                int | float | bool | FlextTypes.OptionalContainerValueMapping,
+                FlextTypes.Numeric | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             FlowControl = Mapping[
                 str,

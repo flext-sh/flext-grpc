@@ -11,11 +11,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Sequence
 from enum import StrEnum, unique
 from typing import Final
 
 from flext_core import FlextConstants
+from flext_grpc import t
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -198,6 +198,6 @@ class FlextGrpcConstants(FlextConstants):
         "Compression types tuple - generated from CompressionTypes StrEnum."
 
 
-__all__: Sequence[str] = ["FlextGrpcConstants", "c"]
+__all__: t.StrSequence = ["FlextGrpcConstants", "c"]
 
 c = FlextGrpcConstants

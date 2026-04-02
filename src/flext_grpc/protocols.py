@@ -291,27 +291,27 @@ class FlextGrpcProtocols(FlextProtocols):
             def collect_client_metrics(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
                 """Collect gRPC client metrics."""
                 ...
 
             def collect_server_metrics(
                 self,
                 server: FlextGrpcProtocols.Grpc.GrpcServer,
-            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
                 """Collect gRPC server metrics."""
                 ...
 
             def collect_stream_metrics(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
                 """Collect gRPC stream metrics."""
                 ...
 
             def get_global_metrics(
                 self,
-            ) -> FlextProtocols.Result[Mapping[str, int | float | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
                 """Get global gRPC metrics."""
                 ...
 
