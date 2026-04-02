@@ -19,12 +19,12 @@ class FlextGrpcStream:
     class _StreamRuntimeState(m.Value):
         stream: m.Grpc.GrpcStream
         created_at: float
-        buffer: deque[t.ConfigValue] = Field(
-            default_factory=lambda: deque[t.ConfigValue](maxlen=500)
+        buffer: deque[t.OptionalContainerValueMapping] = Field(
+            default_factory=lambda: deque[t.OptionalContainerValueMapping](maxlen=500)
         )
 
     @staticmethod
-    def _new_stream_buffer() -> deque[t.ConfigValue]:
+    def _new_stream_buffer() -> deque[t.OptionalContainerValueMapping]:
         return deque(maxlen=500)
 
     class GrpcStreamManager:
@@ -46,7 +46,9 @@ class FlextGrpcStream:
                 del self._active_streams[stream_key]
             return r[m.Grpc.GrpcStream].ok(stream)
 
-        def create_stream(self, **kwargs: t.ConfigValue) -> r[m.Grpc.GrpcStream]:
+        def create_stream(
+            self, **kwargs: t.OptionalContainerValueMapping
+        ) -> r[m.Grpc.GrpcStream]:
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             stream_type = str(kwargs.get("stream_type", "unary"))
@@ -66,7 +68,7 @@ class FlextGrpcStream:
         def send_data(
             self,
             stream: m.Grpc.GrpcStream,
-            data: t.ConfigValue,
+            data: t.OptionalContainerValueMapping,
         ) -> r[m.Grpc.Payload]:
             """Send data with buffering strategy.
 

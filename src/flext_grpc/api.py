@@ -85,7 +85,7 @@ class FlextGrpc(
     def create_channel(
         self,
         target: str,
-        options: t.GrpcOptions | None = None,
+        options: t.OptionalContainerValueMapping | None = None,
     ) -> r[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         return u.Grpc.create_channel_entity(
@@ -96,7 +96,7 @@ class FlextGrpc(
     def create_client(
         self,
         target: str,
-        options: t.GrpcOptions | None = None,
+        options: t.OptionalContainerValueMapping | None = None,
     ) -> r[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return u.Grpc.create_client_entity(target=target, options=options)
@@ -230,7 +230,7 @@ class FlextGrpc(
         self,
         client: m.Grpc.Client,
         method: str,
-        request: t.ConfigValue,
+        request: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.Payload]:
         """Delegate method calls.
 
@@ -256,7 +256,7 @@ class FlextGrpc(
     def send_data(
         self,
         stream: m.Grpc.GrpcStream,
-        data: t.ConfigValue,
+        data: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.Payload]:
         """Delegate data sending.
 

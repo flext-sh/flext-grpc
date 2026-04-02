@@ -89,7 +89,7 @@ class FlextGrpcClient:
             self,
             client: m.Grpc.Client,
             method: str,
-            request: t.ConfigValue,
+            request: t.OptionalContainerValueMapping,
         ) -> r[m.Grpc.Payload]:
             """Execute gRPC call through client.
 

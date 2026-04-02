@@ -61,7 +61,7 @@ class FlextGrpcServices:
     def create_stream(
         self,
         method_name: str | int | None = "DefaultMethod",
-        **kwargs: t.ConfigValue,
+        **kwargs: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.GrpcStream]:
         """Delegate stream creation to specialized manager."""
         method_name_str = (
@@ -92,7 +92,7 @@ class FlextGrpcServices:
         self,
         client: m.Grpc.Client,
         method: str,
-        request: t.ConfigValue,
+        request: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.Payload]:
         """Delegate method calls to specialized manager.
 
@@ -107,7 +107,7 @@ class FlextGrpcServices:
     def send_data(
         self,
         stream: m.Grpc.GrpcStream,
-        data: t.ConfigValue,
+        data: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.Payload]:
         """Delegate data sending to specialized manager.
 
@@ -129,7 +129,7 @@ class FlextGrpcServices:
     def _create_client_entity(
         self,
         target: str,
-        options: t.GrpcOptions | None = None,
+        options: t.OptionalContainerValueMapping | None = None,
     ) -> r[m.Grpc.Client]:
         """Delegate entity creation to utilities.
 
@@ -152,7 +152,7 @@ class FlextGrpcServices:
         self,
         command: str,
         client: m.Grpc.Client,
-        **kwargs: t.ConfigValue,
+        **kwargs: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.Payload]:
         """Execute client-specific commands."""
         if command == "connect":
@@ -208,7 +208,7 @@ class FlextGrpcServices:
         self,
         command: str,
         stream: m.Grpc.GrpcStream,
-        **kwargs: t.ConfigValue,
+        **kwargs: t.OptionalContainerValueMapping,
     ) -> r[m.Grpc.Payload]:
         """Execute stream-specific commands."""
         if command == "create":

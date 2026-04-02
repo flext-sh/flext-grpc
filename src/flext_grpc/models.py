@@ -104,7 +104,7 @@ class FlextGrpcModels(FlextModels):
                 Field(default=None, description="Service endpoint"),
             ]
             metadata: Annotated[
-                t.Grpc.Metadata | None,
+                t.OptionalContainerValueMapping | None,
                 Field(
                     default=None,
                     description="Service metadata",
@@ -219,7 +219,7 @@ class FlextGrpcModels(FlextModels):
             """Basic channel configuration (immutable value model)."""
 
             address: str
-            options: Mapping[str, t.ConfigValue] | None = None
+            options: Mapping[str, t.OptionalContainerValueMapping] | None = None
 
         class SecurityConfig(FlextModels.Value):
             """Generic gRPC security configuration with validation."""
@@ -582,7 +582,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             parameters: Annotated[
-                Mapping[str, t.ConfigValue],
+                Mapping[str, t.OptionalContainerValueMapping],
                 Field(
                     description="Operation parameters",
                 ),
@@ -600,7 +600,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             data: Annotated[
-                t.ConfigValue | None,
+                t.OptionalContainerValueMapping | None,
                 Field(
                     default=None,
                     description="Request data",
@@ -631,7 +631,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             metadata: Annotated[
-                Mapping[str, t.ConfigValue],
+                Mapping[str, t.OptionalContainerValueMapping],
                 Field(
                     description="Response metadata",
                 ),
@@ -645,20 +645,22 @@ class FlextGrpcModels(FlextModels):
         class Payload(BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: t.Grpc.GrpcDict = Field(default_factory=dict)
+            values: t.OptionalContainerValueMapping = Field(default_factory=dict)
 
             @classmethod
-            def from_values(cls, **values: t.ConfigValue) -> Self:
+            def from_values(cls, **values: t.OptionalContainerValueMapping) -> Self:
                 """Build payload from keyword values."""
 
-                def normalize_payload_value(value: t.ConfigValue) -> t.ConfigValue:
+                def normalize_payload_value(
+                    value: t.OptionalContainerValueMapping,
+                ) -> t.OptionalContainerValueMapping:
                     if value is None:
                         return ""
                     if u.is_primitive(value):
                         return value
                     return str(value)
 
-                normalized_values: t.Grpc.GrpcDict = {
+                normalized_values: t.OptionalContainerValueMapping = {
                     metric_key: normalize_payload_value(metric_value)
                     for metric_key, metric_value in values.items()
                 }
@@ -690,7 +692,9 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelState = c.Grpc.ChannelState.IDLE
-            options: Mapping[str, t.ConfigValue] = Field(default_factory=dict)
+            options: Mapping[str, t.OptionalContainerValueMapping] = Field(
+                default_factory=dict
+            )
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             def connect(self) -> r[Self]:
@@ -856,7 +860,7 @@ class FlextGrpcModels(FlextModels):
             """Generic gRPC client with channel delegation."""
 
             channel: FlextGrpcModels.Grpc.Channel | None = None
-            options: t.GrpcOptions = Field(default_factory=dict)
+            options: t.OptionalContainerValueMapping = Field(default_factory=dict)
             grpc_stub: p.Grpc.GrpcStub | None = None
 
             def connect_to(self, target: str) -> r[Self]:

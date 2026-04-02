@@ -133,7 +133,10 @@ class TestFlextGrpc:
     def test_create_channel_with_options(self) -> None:
         """Test channel creation with custom options."""
         grpc = FlextGrpc()
-        options: t.GrpcOptions = {"timeout": 30, "compression": "gzip"}
+        options: t.OptionalContainerValueMapping = {
+            "timeout": 30,
+            "compression": "gzip",
+        }
         result = grpc.create_channel(target="localhost:50051", options=options)
         tm.that(result.is_success, eq=True)
         channel = result.value

@@ -11,7 +11,7 @@ class FlextGrpcMetrics:
     """Mixin providing metrics collection for FlextGrpc facade."""
 
     class _MetricValueModel(m.Value):
-        value: t.ConfigValue
+        value: t.OptionalContainerValueMapping
 
     class MetricsCollector:
         """Dedicated metrics collection with thread safety."""
@@ -27,7 +27,7 @@ class FlextGrpcMetrics:
             with self._lock:
                 return m.Grpc.Payload(values=self._metrics.values.copy())
 
-        def get_metric(self, key: str) -> t.ConfigValue | None:
+        def get_metric(self, key: str) -> t.OptionalContainerValueMapping | None:
             """Thread-safe metric retrieval.
 
             Returns:
@@ -37,7 +37,9 @@ class FlextGrpcMetrics:
             with self._lock:
                 return self._metrics.values.get(key)
 
-        def record_metric(self, key: str, value: t.ConfigValue) -> None:
+        def record_metric(
+            self, key: str, value: t.OptionalContainerValueMapping
+        ) -> None:
             """Thread-safe metric recording.
 
             Args:
@@ -46,7 +48,9 @@ class FlextGrpcMetrics:
 
             """
 
-            def _normalize_value(val: t.ConfigValue) -> t.ConfigValue:
+            def _normalize_value(
+                val: t.OptionalContainerValueMapping,
+            ) -> t.OptionalContainerValueMapping:
                 if val is None:
                     return ""
                 if u.is_primitive(val):

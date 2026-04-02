@@ -20,7 +20,7 @@ from collections.abc import Mapping, Sequence
 
 from flext_core import FlextTypes
 
-from flext_grpc import FlextGrpcConstants as c, FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols
 
 
 class FlextGrpcTypes(FlextTypes):
@@ -31,35 +31,19 @@ class FlextGrpcTypes(FlextTypes):
     Uses Python 3.13+ type syntax and patterns.
     """
 
-    type ConfigValue = FlextTypes.ContainerValue | None
-    GrpcOptions = Mapping[str, FlextTypes.ContainerValue | None]
-
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
         type GrpcServicer = FlextGrpcProtocols.Grpc.GrpcServicer
 
-        type Dict = Mapping[str, FlextTypes.ContainerValue | None]
-        type GrpcDict = dict[str, FlextTypes.ContainerValue | None]
         type Headers = FlextTypes.StrMapping
-        type Metadata = Mapping[str, FlextTypes.ContainerValue | None]
         type ConfigDict = Mapping[
             str,
             FlextTypes.Scalar | FlextTypes.ContainerValue | None,
         ]
         type Address = Mapping[str, str | int]
         type Endpoint = Mapping[str, FlextTypes.Scalar]
-        type Connection = Mapping[str, FlextTypes.ContainerValue | None]
-        type ServiceData = Mapping[str, FlextTypes.ContainerValue | None]
-        type MethodData = Mapping[str, FlextTypes.ContainerValue | None]
-        type RequestDict = Mapping[str, FlextTypes.ContainerValue | None]
-        type ResponseDict = Mapping[str, FlextTypes.ContainerValue | None]
-        type StreamData = Mapping[str, FlextTypes.ContainerValue | None]
         type StreamMeta = Mapping[str, FlextTypes.Scalar]
-        Target = str
-        StreamType = c.Grpc.GrpcOperations
-        type ChannelState = c.Grpc.ChannelState
-        type ServerState = c.Grpc.ServerState
         type Options = Mapping[
             str,
             FlextTypes.Scalar
