@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from flext_tests import tm
 
-from flext_grpc import FlextGrpcModels
+from tests import m
 
 
 class TestFlextGrpcModels:
@@ -12,7 +12,7 @@ class TestFlextGrpcModels:
 
     def test_server_config(self) -> None:
         """Test server config model."""
-        config = FlextGrpcModels.Grpc.ServerConfig(
+        config = m.Grpc.ServerConfig(
             host="127.0.0.1",
             port=50051,
             max_workers=10,
@@ -24,7 +24,7 @@ class TestFlextGrpcModels:
 
     def test_client_config(self) -> None:
         """Test client config model."""
-        config = FlextGrpcModels.Grpc.ClientConfig(
+        config = m.Grpc.ClientConfig(
             target="127.0.0.1:50051",
             timeout=30.0,
         )
@@ -32,12 +32,12 @@ class TestFlextGrpcModels:
 
     def test_channel_config(self) -> None:
         """Test channel config model."""
-        config = FlextGrpcModels.Grpc.ChannelConfig(address="localhost:50051")
+        config = m.Grpc.ChannelConfig(address="localhost:50051")
         tm.that(config.address, eq="localhost:50051")
 
     def test_stream_info(self) -> None:
         """Test stream info model."""
-        stream_info = FlextGrpcModels.Grpc.StreamInfo.model_validate({
+        stream_info = m.Grpc.StreamInfo.model_validate({
             "stream_id": "test",
             "stream_type": "unary",
             "target": "localhost:50051",

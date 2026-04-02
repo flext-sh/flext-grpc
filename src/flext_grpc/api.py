@@ -13,24 +13,45 @@ from __future__ import annotations
 from flext_core import r
 from pydantic import BaseModel
 
-from flext_grpc import FlextGrpcServices, FlextGrpcSettings, c, m, t, u
+from flext_grpc import (
+    FlextGrpcClient,
+    FlextGrpcConnectionPool,
+    FlextGrpcMetrics,
+    FlextGrpcServer,
+    FlextGrpcSettings,
+    FlextGrpcStream,
+    c,
+    m,
+    t,
+    u,
+)
 
 
-class FlextGrpc:
+class FlextGrpc(
+    FlextGrpcMetrics,
+    FlextGrpcConnectionPool,
+    FlextGrpcServer,
+    FlextGrpcClient,
+    FlextGrpcStream,
+):
     """Generic unified gRPC facade with SOLID patterns and minimal code.
 
-    Uses generic types, functional composition, Pydantic v2 models, and delegation
-    to reduce bloat while maintaining full functionality with Python 3.13+ features.
+    Uses MRO composition from service mixins, functional composition,
+    Pydantic v2 models, and delegation to reduce bloat while maintaining
+    full functionality with Python 3.13+ features.
     """
 
     def __init__(self, config: FlextGrpcSettings | None = None) -> None:
         """Initialize facade with FLEXT ecosystem integration."""
         super().__init__()
-        self._service = FlextGrpcServices()
         self._grpc_config = (
             config if config is not None else FlextGrpcSettings.model_validate({})
         )
-        object.__setattr__(self, "_config", self._grpc_config)
+        self._server_manager = FlextGrpcServer.GrpcServerManager()
+        self._client_manager = FlextGrpcClient.GrpcClientManager()
+        self._stream_manager = FlextGrpcStream.GrpcStreamManager()
+        self._metrics_collector = FlextGrpcMetrics.MetricsCollector()
+        self._resource_manager = FlextGrpcConnectionPool.ConnectionPool(max_size=20)
 
     @property
     def grpc_config(self) -> FlextGrpcSettings:
@@ -47,7 +68,7 @@ class FlextGrpc:
         Closed stream entity
 
         """
-        return self._service.close_stream(stream)
+        return self._stream_manager.close_stream(stream)
 
     def connect_client(self, target: str) -> r[m.Grpc.Client]:
         """Delegate client connection.
@@ -59,7 +80,7 @@ class FlextGrpc:
         Connected client entity
 
         """
-        return self._service.connect_client(target)
+        return self._client_manager.connect(target)
 
     def create_channel(
         self,
@@ -67,7 +88,7 @@ class FlextGrpc:
         options: t.GrpcOptions | None = None,
     ) -> r[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
-        return u.create_channel_entity(
+        return u.Grpc.create_channel_entity(
             target=target,
             options={} if options is None else options,
         )
@@ -78,7 +99,7 @@ class FlextGrpc:
         options: t.GrpcOptions | None = None,
     ) -> r[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
-        return u.create_client_entity(target=target, options=options)
+        return u.Grpc.create_client_entity(target=target, options=options)
 
     def create_complete_setup(
         self,
@@ -127,7 +148,7 @@ class FlextGrpc:
         max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
     ) -> r[m.Grpc.Server]:
         """Create typed server entity from validated inputs."""
-        return u.create_server_entity(
+        return u.Grpc.create_server_entity(
             host=host,
             port=port,
             max_workers=max_workers,
@@ -139,7 +160,7 @@ class FlextGrpc:
         methods: t.StrSequence | None = None,
     ) -> r[m.Grpc.Service]:
         """Create typed service entity from validated inputs."""
-        return u.create_service_entity(
+        return u.Grpc.create_service_entity(
             name=name,
             methods=[] if methods is None else methods,
         )
@@ -154,7 +175,10 @@ class FlextGrpc:
             return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
         if stream_type not in c.Grpc.STREAM_TYPES:
             return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
-        return u.create_stream_entity(method_name=method_name, stream_type=stream_type)
+        return u.Grpc.create_stream_entity(
+            method_name=method_name,
+            stream_type=stream_type,
+        )
 
     def disconnect_client(self, client: m.Grpc.Client) -> r[m.Grpc.Client]:
         """Delegate client disconnection.
@@ -166,7 +190,7 @@ class FlextGrpc:
         Disconnected client entity
 
         """
-        return self._service.disconnect_client(client)
+        return self._client_manager.disconnect(client)
 
     def execute(self) -> r[FlextGrpcSettings]:
         """Execute main facade operation."""
@@ -185,7 +209,7 @@ class FlextGrpc:
                     return r[FlextGrpcSettings].fail(
                         "connect_client requires string target",
                     )
-                result = self._service.connect_client(target)
+                result = self._client_manager.connect(target)
             case _:
                 return r[FlextGrpcSettings].fail(
                     f"Unknown operation: {request.operation_name}",
@@ -193,6 +217,14 @@ class FlextGrpc:
         if result.is_failure:
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")
         return r[FlextGrpcSettings].ok(self.grpc_config)
+
+    def get_client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+        """Get client status through delegation."""
+        return self._client_manager.get_client_status(client)
+
+    def get_server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+        """Delegate server status to specialized manager."""
+        return self._server_manager.get_server_metrics(server)
 
     def make_call(
         self,
@@ -213,13 +245,13 @@ class FlextGrpc:
         Note: Uses ConfigValue for gRPC protocol message compatibility
 
         """
-        return self._service.make_call(client, method, request)
+        return self._client_manager.make_call(client, method, request)
 
     def parse_address(self, address: str) -> r[tuple[str, int]]:
         """Parse gRPC address string."""
-        if not t.Grpc.GrpcValidation.validate_target(address):
+        if not u.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
-        return r[tuple[str, int]].ok(t.Grpc.GrpcValidation.parse_target(address))
+        return r[tuple[str, int]].ok(u.Grpc.parse_address(address))
 
     def send_data(
         self,
@@ -238,7 +270,7 @@ class FlextGrpc:
         Note: Uses t.NormalizedValue for gRPC message compatibility
 
         """
-        return self._service.send_data(stream, data)
+        return self._stream_manager.send_data(stream, data)
 
     def start_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
         """Delegate server start.
@@ -250,7 +282,7 @@ class FlextGrpc:
         Started server entity
 
         """
-        return self._service.start_server(server)
+        return self._server_manager.start_server(server)
 
     def stop_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
         """Delegate server stop.
@@ -262,11 +294,11 @@ class FlextGrpc:
         Stopped server entity
 
         """
-        return self._service.stop_server(server)
+        return self._server_manager.stop_server(server)
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
-        return t.Grpc.GrpcValidation.validate_target(target)
+        return u.Grpc.validate_target(target)
 
     class CompleteSetup(BaseModel):
         """Complete gRPC setup result."""

@@ -13,8 +13,8 @@ from collections.abc import Mapping
 import pytest
 from flext_core import FlextContainer
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcSettings, t
-from tests import c
+from flext_grpc import FlextGrpcSettings
+from tests import c, t
 
 
 @pytest.fixture(autouse=True)
@@ -29,8 +29,8 @@ def sample_grpc_config() -> Mapping[str, str | int | float]:
     """Sample gRPC configuration for tests."""
     return {
         "host": c.LOCALHOST,
-        "port": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        "max_workers": FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
+        "port": c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        "max_workers": c.Grpc.Service.DEFAULT_MAX_WORKERS,
         "timeout": c.DEFAULT_TIMEOUT_SECONDS,
     }
 
@@ -40,7 +40,7 @@ def test_addresses() -> Mapping[str, t.StrSequence]:
     """Test addresses for validation."""
     return {
         "valid": [
-            f"{c.LOCALHOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+            f"{c.LOCALHOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "127.0.0.1:8080",
             "example.com:443",
             "api-server:9000",
@@ -48,7 +48,7 @@ def test_addresses() -> Mapping[str, t.StrSequence]:
         "invalid": [
             "",
             "localhost",
-            f":{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+            f":{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
             "localhost:",
             "localhost:abc",
             "localhost:-1",

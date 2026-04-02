@@ -38,10 +38,10 @@ if _TYPE_CHECKING:
         TestFlextGrpcValidationError,
     )
     from tests.unit.test_models import TestFlextGrpcModels
-    from tests.unit.test_protocols import TestFlextGrpcProtocols
+    from tests.unit.test_protocols import Testp
     from tests.unit.test_services import TestFlextGrpcServices
     from tests.unit.test_typings import TestFlextGrpcTypes
-    from tests.unit.test_utilities import TestFlextGrpcUtilities
+    from tests.unit.test_utilities import Testu
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "TestErrorIntegration": "tests.unit.test_errors",
@@ -52,13 +52,13 @@ _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "TestFlextGrpcEntities": "tests.unit.test_entities",
     "TestFlextGrpcError": "tests.unit.test_errors",
     "TestFlextGrpcModels": "tests.unit.test_models",
-    "TestFlextGrpcProtocols": "tests.unit.test_protocols",
     "TestFlextGrpcServices": "tests.unit.test_services",
     "TestFlextGrpcSettings": "tests.unit.test_config",
     "TestFlextGrpcTimeoutError": "tests.unit.test_errors",
     "TestFlextGrpcTypes": "tests.unit.test_typings",
-    "TestFlextGrpcUtilities": "tests.unit.test_utilities",
     "TestFlextGrpcValidationError": "tests.unit.test_errors",
+    "Testp": "tests.unit.test_protocols",
+    "Testu": "tests.unit.test_utilities",
     "test_api": "tests.unit.test_api",
     "test_config": "tests.unit.test_config",
     "test_constants": "tests.unit.test_constants",

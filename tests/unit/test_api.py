@@ -8,7 +8,8 @@ import pytest
 from flext_tests import tm
 from pydantic import ValidationError
 
-from flext_grpc import FlextGrpc, FlextGrpcModels, FlextGrpcSettings, t
+from flext_grpc import FlextGrpc, FlextGrpcSettings
+from tests import m, t
 
 
 class TestFlextGrpc:
@@ -81,7 +82,7 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_service(name="TestService", methods=["method1", "method2"])
         tm.that(result.is_success, eq=True)
-        service: FlextGrpcModels.Grpc.Service = result.value
+        service: m.Grpc.Service = result.value
         tm.that(service.name, eq="TestService")
         tm.that(service.methods, eq=["method1", "method2"])
 
@@ -143,37 +144,37 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.create_service(name="DefaultService", methods=["default_method"])
         tm.that(result.is_success, eq=True)
-        service: FlextGrpcModels.Grpc.Service = result.value
+        service: m.Grpc.Service = result.value
         tm.that(service.name, eq="DefaultService")
         tm.that(service.methods, eq=["default_method"])
 
     def test_validate_entity_type(self) -> None:
         """Test entity type validation via OperationSpec model."""
-        server_spec = FlextGrpcModels.Grpc.OperationSpec(
+        server_spec = m.Grpc.OperationSpec(
             name="op",
             entity_type="server",
             method_name=None,
             parameters={},
         )
-        client_spec = FlextGrpcModels.Grpc.OperationSpec(
+        client_spec = m.Grpc.OperationSpec(
             name="op",
             entity_type="client",
             method_name=None,
             parameters={},
         )
-        channel_spec = FlextGrpcModels.Grpc.OperationSpec(
+        channel_spec = m.Grpc.OperationSpec(
             name="op",
             entity_type="channel",
             method_name=None,
             parameters={},
         )
-        service_spec = FlextGrpcModels.Grpc.OperationSpec(
+        service_spec = m.Grpc.OperationSpec(
             name="op",
             entity_type="service",
             method_name=None,
             parameters={},
         )
-        stream_spec = FlextGrpcModels.Grpc.OperationSpec(
+        stream_spec = m.Grpc.OperationSpec(
             name="op",
             entity_type="stream",
             method_name=None,
@@ -185,19 +186,19 @@ class TestFlextGrpc:
         tm.that(service_spec.entity_type, eq="service")
         tm.that(stream_spec.entity_type, eq="stream")
         with pytest.raises(ValidationError):
-            FlextGrpcModels.Grpc.OperationSpec.model_validate({
+            m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",
             })
 
     def test_request_creation(self) -> None:
-        operation = FlextGrpcModels.Grpc.OperationSpec(
+        operation = m.Grpc.OperationSpec(
             name="test_operation",
             entity_type="server",
             method_name=None,
             parameters={},
         )
-        request = FlextGrpcModels.Grpc.Request(
+        request = m.Grpc.Request(
             operation=operation,
             entity=None,
             data={"value": "test"},
@@ -207,7 +208,7 @@ class TestFlextGrpc:
         tm.that(request.model_dump().get("is_valid") is True, eq=True)
 
     def test_response_creation(self) -> None:
-        data = FlextGrpcModels.Grpc.StreamInfo(
+        data = m.Grpc.StreamInfo(
             stream_id="stream-1",
             stream_type="unary",
             target="localhost:50051",
@@ -216,7 +217,7 @@ class TestFlextGrpc:
             average_latency_ms=0.0,
             error_count=0,
         )
-        response = FlextGrpcModels.Grpc.Response(
+        response = m.Grpc.Response(
             success=True,
             data=data,
             error=None,

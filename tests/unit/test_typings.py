@@ -5,7 +5,7 @@ from __future__ import annotations
 import pytest
 from flext_tests import tm
 
-from flext_grpc import t
+from tests import t
 
 
 class TestFlextGrpcTypes:

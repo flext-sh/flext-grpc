@@ -1,7 +1,7 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
 # Regenerate with: make gen
 #
-"""FLEXT gRPC utilities submodules."""
+"""Internal utilities subpackage."""
 
 from __future__ import annotations
 
@@ -13,7 +13,8 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
 
-    from flext_grpc._utilities.grpc import *
+    from flext_grpc._utilities import grpc
+    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, logger
 
 _LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
     "FlextGrpcUtilitiesGrpc": "flext_grpc._utilities.grpc",

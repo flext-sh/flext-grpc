@@ -13,7 +13,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from flext_core import FlextSettings, r
-from pydantic import Field, computed_field
+from pydantic import AliasChoices, Field, computed_field
 
 from flext_grpc import c, m, t
 
@@ -29,27 +29,30 @@ class FlextGrpcSettings(FlextSettings):
     # Flat convenience fields (settable via constructor)
     host: Annotated[
         str,
-        Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST, validation_alias="grpc_host"),
+        Field(
+            default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
+            validation_alias=AliasChoices("host", "grpc_host"),
+        ),
     ]
     port: Annotated[
         t.PortNumber,
         Field(
             default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-            validation_alias="grpc_port",
+            validation_alias=AliasChoices("port", "grpc_port"),
         ),
     ]
     max_workers: Annotated[
         t.WorkerCount,
         Field(
             default=c.Grpc.Service.MAX_WORKERS,
-            validation_alias="grpc_max_workers",
+            validation_alias=AliasChoices("max_workers", "grpc_max_workers"),
         ),
     ]
     timeout: Annotated[
         t.PositiveTimeout,
         Field(
             default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
-            validation_alias="grpc_timeout",
+            validation_alias=AliasChoices("timeout", "grpc_timeout"),
         ),
     ]
 

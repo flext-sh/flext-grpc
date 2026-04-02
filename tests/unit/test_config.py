@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import pytest
 from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings
@@ -18,13 +19,19 @@ class TestFlextGrpcSettings:
         tm.that(config.port, eq=50051)
         tm.that(config.max_workers, eq=100)
 
-    def test_init_custom(self) -> None:
+    def test_init_custom(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test custom configuration initialization."""
-        config = FlextGrpcSettings.model_validate({
-            "host": "0.0.0.0",
-            "port": 8080,
-            "max_workers": 5,
-        })
+        monkeypatch.delenv("GRPC_PORT", raising=False)
+        monkeypatch.delenv("GRPC_HOST", raising=False)
+        monkeypatch.delenv("GRPC_MAX_WORKERS", raising=False)
+        monkeypatch.delenv("FLEXT_HOST", raising=False)
+        monkeypatch.delenv("FLEXT_PORT", raising=False)
+        monkeypatch.delenv("FLEXT_MAX_WORKERS", raising=False)
+        config = FlextGrpcSettings(
+            host="0.0.0.0",
+            port=8080,
+            max_workers=5,
+        )
         tm.that(config.host, eq="0.0.0.0")
         tm.that(config.port, eq=8080)
         tm.that(config.max_workers, eq=5)
@@ -57,13 +64,20 @@ class TestFlextGrpcSettings:
         config = result.value
         tm.that(config, is_=FlextGrpcSettings)
 
-    def test_properties(self) -> None:
+    def test_properties(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test configuration properties."""
-        config = FlextGrpcSettings.model_validate({
-            "host": "127.0.0.1",
-            "port": 8080,
-            "max_workers": 20,
-        })
+        monkeypatch.delenv("GRPC_PORT", raising=False)
+        monkeypatch.delenv("GRPC_HOST", raising=False)
+        monkeypatch.delenv("GRPC_MAX_WORKERS", raising=False)
+        monkeypatch.delenv("FLEXT_HOST", raising=False)
+        monkeypatch.delenv("FLEXT_PORT", raising=False)
+        monkeypatch.delenv("FLEXT_MAX_WORKERS", raising=False)
+        monkeypatch.delenv("FLEXT_TIMEOUT", raising=False)
+        config = FlextGrpcSettings(
+            host="127.0.0.1",
+            port=8080,
+            max_workers=20,
+        )
         tm.that(config.host, eq="127.0.0.1")
         tm.that(config.port, eq=8080)
         tm.that(config.max_workers, eq=20)
@@ -72,12 +86,16 @@ class TestFlextGrpcSettings:
         tm.that(config.tls_enabled is False, eq=True)
         tm.that(config.streaming_enabled is True, eq=True)
 
-    def test_config_with_custom_network(self) -> None:
+    def test_config_with_custom_network(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test configuration with custom network settings."""
-        config = FlextGrpcSettings.model_validate({
-            "host": "192.168.1.100",
-            "port": 9090,
-        })
+        monkeypatch.delenv("GRPC_PORT", raising=False)
+        monkeypatch.delenv("GRPC_HOST", raising=False)
+        monkeypatch.delenv("FLEXT_HOST", raising=False)
+        monkeypatch.delenv("FLEXT_PORT", raising=False)
+        config = FlextGrpcSettings(
+            host="192.168.1.100",
+            port=9090,
+        )
         tm.that(config.host, eq="192.168.1.100")
         tm.that(config.port, eq=9090)
 
