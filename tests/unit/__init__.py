@@ -12,7 +12,6 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from tests.unit import (
         test_api,
         test_config,
@@ -43,7 +42,7 @@ if _TYPE_CHECKING:
     from tests.unit.test_typings import TestFlextGrpcTypes
     from tests.unit.test_utilities import Testu
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "TestErrorIntegration": "tests.unit.test_errors",
     "TestFlextGrpc": "tests.unit.test_api",
     "TestFlextGrpcConfigurationError": "tests.unit.test_errors",

@@ -19,7 +19,6 @@ import re
 from collections.abc import Mapping, Sequence
 
 from flext_core import FlextTypes
-
 from flext_grpc import FlextGrpcProtocols
 
 
@@ -41,14 +40,14 @@ class FlextGrpcTypes(FlextTypes):
             str,
             FlextTypes.Scalar | FlextTypes.ContainerValue | None,
         ]
-        type Address = Mapping[str, str | int]
+        type Address = FlextTypes.HeaderMapping
         type Endpoint = Mapping[str, FlextTypes.Scalar]
         type StreamMeta = Mapping[str, FlextTypes.Scalar]
         type Options = Mapping[
             str,
             FlextTypes.Scalar
             | Sequence[FlextTypes.ContainerValue | None]
-            | Mapping[str, FlextTypes.ContainerValue | None]
+            | FlextTypes.OptionalContainerValueMapping
             | None,
         ]
 
@@ -57,26 +56,26 @@ class FlextGrpcTypes(FlextTypes):
 
             ServerConfiguration = Mapping[
                 str,
-                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | FlextTypes.OptionalContainerValueMapping,
             ]
             ServerLifecycle = Mapping[
                 str,
-                str | bool | int | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | int | FlextTypes.OptionalContainerValueMapping,
             ]
             ServerMetrics = Mapping[
                 str,
-                int | float | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                int | float | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             ServerSecurity = Mapping[
                 str,
-                bool | str | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | str | FlextTypes.OptionalContainerValueMapping,
             ]
             ServiceRegistry = Mapping[
                 str,
-                FlextTypes.StrSequence | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.StrSequence | FlextTypes.OptionalContainerValueMapping,
             ]
             type HandlerConfiguration = Sequence[
-                Mapping[str, str | FlextTypes.ContainerValue | None]
+                FlextTypes.OptionalContainerValueMapping
             ]
 
         class Client:
@@ -84,11 +83,11 @@ class FlextGrpcTypes(FlextTypes):
 
             ClientConfiguration = Mapping[
                 str,
-                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | FlextTypes.OptionalContainerValueMapping,
             ]
             ConnectionPool = Mapping[
                 str,
-                int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                int | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             type RetryConfiguration = Mapping[
                 str,
@@ -96,15 +95,15 @@ class FlextGrpcTypes(FlextTypes):
             ]
             type LoadBalancing = Mapping[
                 str,
-                str | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             ClientMetrics = Mapping[
                 str,
-                int | float | Mapping[str, FlextTypes.ContainerValue | None],
+                int | float | FlextTypes.OptionalContainerValueMapping,
             ]
             ChannelOptions = Mapping[
                 str,
-                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | FlextTypes.OptionalContainerValueMapping,
             ]
 
         class Streaming:
@@ -112,57 +111,49 @@ class FlextGrpcTypes(FlextTypes):
 
             StreamConfiguration = Mapping[
                 str,
-                bool | int | str | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | int | str | FlextTypes.OptionalContainerValueMapping,
             ]
             StreamingContext = Mapping[
                 str,
-                str | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             StreamMetrics = Mapping[
                 str,
-                int | float | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                int | float | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             FlowControl = Mapping[
                 str,
-                int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                int | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             BackpressureHandling = Mapping[
                 str,
-                FlextTypes.Scalar | Mapping[str, FlextTypes.ContainerValue | None],
+                FlextTypes.Scalar | FlextTypes.OptionalContainerValueMapping,
             ]
-            type StreamingPipeline = Sequence[
-                Mapping[str, str | FlextTypes.ContainerValue | None]
-            ]
+            type StreamingPipeline = Sequence[FlextTypes.OptionalContainerValueMapping]
 
         class GrpcService:
             """gRPC service complex types."""
 
             ServiceDefinition = Mapping[
                 str,
-                str
-                | FlextTypes.StrSequence
-                | Mapping[str, FlextTypes.ContainerValue | None],
+                str | FlextTypes.StrSequence | FlextTypes.OptionalContainerValueMapping,
             ]
             MethodDefinition = Mapping[
                 str,
-                str | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             ServiceMetadata = Mapping[
                 str,
-                str | int | Mapping[str, FlextTypes.ContainerValue | None],
+                str | int | FlextTypes.OptionalContainerValueMapping,
             ]
-            type InterceptorChain = Sequence[
-                Mapping[str, str | FlextTypes.ContainerValue | None]
-            ]
+            type InterceptorChain = Sequence[FlextTypes.OptionalContainerValueMapping]
             ServiceDiscovery = Mapping[
                 str,
-                str
-                | FlextTypes.StrSequence
-                | Mapping[str, FlextTypes.ContainerValue | None],
+                str | FlextTypes.StrSequence | FlextTypes.OptionalContainerValueMapping,
             ]
             HealthCheck = Mapping[
                 str,
-                bool | str | int | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | str | int | FlextTypes.OptionalContainerValueMapping,
             ]
 
         class Security:
@@ -170,26 +161,26 @@ class FlextGrpcTypes(FlextTypes):
 
             SecurityConfiguration = Mapping[
                 str,
-                bool | str | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | str | FlextTypes.OptionalContainerValueMapping,
             ]
             TlsConfiguration = Mapping[
                 str,
-                str | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             type AuthenticationConfig = Mapping[
                 str,
-                str | Mapping[str, FlextTypes.ContainerValue | None],
+                str | FlextTypes.OptionalContainerValueMapping,
             ]
             type AuthorizationRules = Sequence[
                 Mapping[str, str | bool | FlextTypes.StrSequence]
             ]
             CertificateManagement = Mapping[
                 str,
-                str | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             SecurityMetrics = Mapping[
                 str,
-                int | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                int | bool | FlextTypes.OptionalContainerValueMapping,
             ]
 
         class Monitoring:
@@ -197,24 +188,24 @@ class FlextGrpcTypes(FlextTypes):
 
             MonitoringConfiguration = Mapping[
                 str,
-                bool | str | int | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | str | int | FlextTypes.OptionalContainerValueMapping,
             ]
             MetricsCollection = Mapping[
                 str,
-                str | bool | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | FlextTypes.OptionalContainerValueMapping,
             ]
             TracingConfiguration = Mapping[
                 str,
-                bool | str | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | str | FlextTypes.OptionalContainerValueMapping,
             ]
             LoggingSetup = Mapping[
                 str,
-                str | bool | int | Mapping[str, FlextTypes.ContainerValue | None],
+                str | bool | int | FlextTypes.OptionalContainerValueMapping,
             ]
             type AlertingRules = Sequence[Mapping[str, FlextTypes.Scalar]]
             PerformanceMetrics = Mapping[
                 str,
-                float | int | Mapping[str, FlextTypes.ContainerValue | None],
+                float | int | FlextTypes.OptionalContainerValueMapping,
             ]
 
         class Project:
@@ -225,16 +216,16 @@ class FlextGrpcTypes(FlextTypes):
             gRPC domain owns microservices-specific types.
             """
 
-            ProjectConfig = Mapping[str, FlextTypes.ContainerValue | None]
+            ProjectConfig = FlextTypes.OptionalContainerValueMapping
             type MicroserviceConfig = Mapping[
                 str,
                 FlextTypes.Scalar | FlextTypes.StrSequence,
             ]
             StreamingConfig = Mapping[
                 str,
-                bool | str | Mapping[str, FlextTypes.ContainerValue | None],
+                bool | str | FlextTypes.OptionalContainerValueMapping,
             ]
-            ServiceMeshConfig = Mapping[str, FlextTypes.ContainerValue | None]
+            ServiceMeshConfig = FlextTypes.OptionalContainerValueMapping
 
         class GrpcValidation:
             """gRPC validation utilities."""

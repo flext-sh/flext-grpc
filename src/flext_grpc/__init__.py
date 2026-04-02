@@ -9,7 +9,6 @@ from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING as _TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports, merge_lazy_imports
-
 from flext_grpc.__version__ import (
     __author__,
     __author_email__,
@@ -23,7 +22,6 @@ from flext_grpc.__version__ import (
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes, d, e, h, r, s, x
-
     from flext_grpc import (
         _utilities,
         api,
@@ -72,7 +70,7 @@ if _TYPE_CHECKING:
     from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
     from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = merge_lazy_imports(
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
     (
         "flext_grpc._utilities",
         "flext_grpc.proto",

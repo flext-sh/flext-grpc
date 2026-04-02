@@ -11,8 +11,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 import pytest
-from flext_core import FlextContainer
 
+from flext_core import FlextContainer
 from flext_grpc import FlextGrpcSettings
 from tests import c, t
 
@@ -25,7 +25,7 @@ def clean_container() -> FlextContainer:
 
 
 @pytest.fixture
-def sample_grpc_config() -> Mapping[str, str | int | float]:
+def sample_grpc_config() -> t.ConfigValueMapping:
     """Sample gRPC configuration for tests."""
     return {
         "host": c.LOCALHOST,

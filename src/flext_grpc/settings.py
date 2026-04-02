@@ -12,9 +12,9 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from flext_core import FlextSettings, r
 from pydantic import AliasChoices, Field, computed_field
 
+from flext_core import FlextSettings, r
 from flext_grpc import c, m, t
 
 

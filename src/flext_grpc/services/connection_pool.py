@@ -6,8 +6,8 @@ import threading
 from queue import Queue
 
 import grpc
-from flext_core import r
 
+from flext_core import r
 from flext_grpc import u
 
 

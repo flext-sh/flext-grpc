@@ -7,8 +7,8 @@ from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
 
 import grpc
-from flext_core import r
 
+from flext_core import r
 from flext_grpc import (
     FlextGrpcMetrics,
     FlextGrpcServiceServicer,

@@ -11,8 +11,6 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_core import r
-from pydantic import BaseModel
-
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcConnectionPool,
@@ -107,20 +105,20 @@ class FlextGrpc(
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: t.StrSequence | None = None,
-    ) -> r[FlextGrpc.CompleteSetup]:
+    ) -> r[m.CompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
 
         server_result = self.create_server(host=host, port=port)
         if server_result.is_failure:
-            return r[FlextGrpc.CompleteSetup].fail(
+            return r[m.CompleteSetup].fail(
                 server_result.error or "Server creation failed"
             )
 
         client_result = self.create_client(target=target)
         if client_result.is_failure:
-            return r[FlextGrpc.CompleteSetup].fail(
+            return r[m.CompleteSetup].fail(
                 client_result.error or "Client creation failed"
             )
 
@@ -128,12 +126,12 @@ class FlextGrpc(
             name=service_name, methods=resolved_methods
         )
         if service_result.is_failure:
-            return r[FlextGrpc.CompleteSetup].fail(
+            return r[m.CompleteSetup].fail(
                 service_result.error or "Service creation failed"
             )
 
-        return r[FlextGrpc.CompleteSetup].ok(
-            FlextGrpc.CompleteSetup(
+        return r[m.CompleteSetup].ok(
+            m.CompleteSetup(
                 server=server_result.value,
                 client=client_result.value,
                 service=service_result.value,
@@ -299,14 +297,6 @@ class FlextGrpc(
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
         return u.Grpc.validate_target(target)
-
-    class CompleteSetup(BaseModel):
-        """Complete gRPC setup result."""
-
-        server: m.Grpc.Server
-        client: m.Grpc.Client
-        service: m.Grpc.Service
-        target: str
 
 
 __all__ = ["FlextGrpc"]

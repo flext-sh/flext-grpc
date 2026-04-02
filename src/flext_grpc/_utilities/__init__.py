@@ -12,11 +12,10 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from flext_grpc._utilities import grpc
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, logger
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "FlextGrpcUtilitiesGrpc": "flext_grpc._utilities.grpc",
     "grpc": "flext_grpc._utilities.grpc",
     "logger": "flext_grpc._utilities.grpc",

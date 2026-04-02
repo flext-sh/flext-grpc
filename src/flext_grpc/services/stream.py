@@ -7,9 +7,9 @@ from collections import deque
 from collections.abc import MutableMapping
 
 import grpc
-from flext_core import r
 from pydantic import Field, ValidationError
 
+from flext_core import r
 from flext_grpc import FlextGrpcMetrics, m, t, u
 
 

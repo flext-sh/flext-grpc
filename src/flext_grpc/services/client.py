@@ -6,8 +6,8 @@ import time
 from collections.abc import MutableMapping
 
 import grpc
-from flext_core import r
 
+from flext_core import r
 from flext_grpc import (
     FlextGrpcConnectionPool,
     FlextGrpcMetrics,

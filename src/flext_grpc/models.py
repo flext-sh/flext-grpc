@@ -15,9 +15,9 @@ from datetime import datetime
 from typing import Annotated, Literal, Self, override
 
 import grpc
-from flext_core import FlextModels, r, u
 from pydantic import BaseModel, Field, computed_field, field_validator
 
+from flext_core import FlextModels, r, u
 from flext_grpc import c, p, t
 
 
@@ -437,7 +437,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
             channel_options: Annotated[
-                Mapping[str, str | int],
+                t.HeaderMapping,
                 Field(
                     description="Additional channel options",
                 ),
@@ -898,6 +898,14 @@ class FlextGrpcModels(FlextModels):
                     msg = "method_name cannot be empty"
                     raise ValueError(msg)
                 return v
+
+    class CompleteSetup(BaseModel):
+        """Complete gRPC setup result."""
+
+        server: FlextGrpcModels.Grpc.Server
+        client: FlextGrpcModels.Grpc.Client
+        service: FlextGrpcModels.Grpc.Service
+        target: str
 
 
 m: type[FlextGrpcModels] = FlextGrpcModels

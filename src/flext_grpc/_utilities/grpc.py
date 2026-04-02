@@ -9,10 +9,7 @@ import socket
 from uuid import uuid4
 
 from flext_core import r
-
-from flext_grpc.constants import FlextGrpcConstants
-from flext_grpc.models import FlextGrpcModels
-from flext_grpc.typings import FlextGrpcTypes
+from flext_grpc import FlextGrpcConstants, FlextGrpcModels, FlextGrpcTypes
 
 logger = logging.getLogger(__name__)
 

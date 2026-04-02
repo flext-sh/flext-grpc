@@ -12,7 +12,6 @@ from flext_core.lazy import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
-
     from flext_grpc.services import (
         _compat,
         client,
@@ -28,7 +27,7 @@ if _TYPE_CHECKING:
     from flext_grpc.services.server import FlextGrpcServer
     from flext_grpc.services.stream import FlextGrpcStream
 
-_LAZY_IMPORTS: Mapping[str, str | Sequence[str]] = {
+_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "FlextGrpcClient": "flext_grpc.services.client",
     "FlextGrpcConnectionPool": "flext_grpc.services.connection_pool",
     "FlextGrpcMetrics": "flext_grpc.services.metrics",
