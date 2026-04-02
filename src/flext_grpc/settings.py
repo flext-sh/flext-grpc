@@ -14,8 +14,8 @@ from typing import Annotated
 
 from pydantic import AliasChoices, Field, computed_field
 
-from flext_core import FlextSettings, r
-from flext_grpc import c, m, t
+from flext_core import FlextSettings
+from flext_grpc import c, m, r, t
 
 
 class FlextGrpcSettings(FlextSettings):

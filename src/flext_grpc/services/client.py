@@ -7,19 +7,18 @@ from collections.abc import MutableMapping
 
 import grpc
 
-from flext_core import r
 from flext_grpc import (
     FlextGrpcConnectionPool,
     FlextGrpcMetrics,
-    FlextGrpcModels as _GrpcModels,
     FlextGrpcServiceStub,
     m,
+    r,
     t,
     u,
 )
 
-EchoRequest = _GrpcModels.Grpc.EchoRequest
-HealthRequest = _GrpcModels.Grpc.HealthRequest
+EchoRequest = m.Grpc.EchoRequest
+HealthRequest = m.Grpc.HealthRequest
 
 
 class FlextGrpcClient:

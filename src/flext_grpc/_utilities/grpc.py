@@ -9,7 +9,7 @@ import socket
 from uuid import uuid4
 
 from flext_core import r
-from flext_grpc import FlextGrpcConstants, FlextGrpcModels, FlextGrpcTypes
+from flext_grpc import c, m, t
 
 logger = logging.getLogger(__name__)
 
@@ -20,12 +20,12 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def create_channel_entity(
         target: str,
-        options: FlextGrpcTypes.GrpcOptions | None = None,
-    ) -> r[FlextGrpcModels.Grpc.Channel]:
+        options: t.Grpc.Options | None = None,
+    ) -> r[m.Grpc.Channel]:
         """Create a typed channel entity from validated inputs."""
         resolved_options = {} if options is None else dict(options)
-        return r[FlextGrpcModels.Grpc.Channel].create_from_callable(
-            lambda: FlextGrpcModels.Grpc.Channel(
+        return r[m.Grpc.Channel].create_from_callable(
+            lambda: m.Grpc.Channel(
                 target=target,
                 options=resolved_options,
             ),
@@ -34,8 +34,8 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def create_client_entity(
         target: str,
-        options: FlextGrpcTypes.GrpcOptions | None = None,
-    ) -> r[FlextGrpcModels.Grpc.Client]:
+        options: t.Grpc.Options | None = None,
+    ) -> r[m.Grpc.Client]:
         """Create a typed client entity backed by a typed channel entity."""
         resolved_options = {} if options is None else dict(options)
         channel_result = FlextGrpcUtilitiesGrpc.create_channel_entity(
@@ -43,11 +43,11 @@ class FlextGrpcUtilitiesGrpc:
             options=resolved_options,
         )
         if channel_result.is_failure:
-            return r[FlextGrpcModels.Grpc.Client].fail(
+            return r[m.Grpc.Client].fail(
                 channel_result.error or "Client channel creation failed",
             )
-        return r[FlextGrpcModels.Grpc.Client].create_from_callable(
-            lambda: FlextGrpcModels.Grpc.Client(
+        return r[m.Grpc.Client].create_from_callable(
+            lambda: m.Grpc.Client(
                 channel=channel_result.value,
                 options=resolved_options,
             ),
@@ -55,13 +55,13 @@ class FlextGrpcUtilitiesGrpc:
 
     @staticmethod
     def create_server_entity(
-        host: str = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
-        port: int = FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        max_workers: int = FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
-    ) -> r[FlextGrpcModels.Grpc.Server]:
+        host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
+        port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
+    ) -> r[m.Grpc.Server]:
         """Create a typed server entity from validated inputs."""
-        return r[FlextGrpcModels.Grpc.Server].create_from_callable(
-            lambda: FlextGrpcModels.Grpc.Server(
+        return r[m.Grpc.Server].create_from_callable(
+            lambda: m.Grpc.Server(
                 host=host,
                 port=port,
                 max_workers=max_workers,
@@ -71,12 +71,12 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def create_service_entity(
         name: str,
-        methods: FlextGrpcTypes.StrSequence | None = None,
-    ) -> r[FlextGrpcModels.Grpc.Service]:
+        methods: t.StrSequence | None = None,
+    ) -> r[m.Grpc.Service]:
         """Create a typed service entity with a minimal valid method set."""
         resolved_methods = ["HealthCheck"] if methods is None else list(methods)
-        return r[FlextGrpcModels.Grpc.Service].create_from_callable(
-            lambda: FlextGrpcModels.Grpc.Service(
+        return r[m.Grpc.Service].create_from_callable(
+            lambda: m.Grpc.Service(
                 name=name,
                 methods=resolved_methods,
             ),
@@ -85,12 +85,12 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def create_stream_entity(
         method_name: str,
-        stream_type: FlextGrpcConstants.Grpc.GrpcOperations | str,
-    ) -> r[FlextGrpcModels.Grpc.GrpcStream]:
+        stream_type: c.Grpc.GrpcOperations | str,
+    ) -> r[m.Grpc.GrpcStream]:
         """Create a typed stream entity from validated inputs."""
-        resolved_stream_type = FlextGrpcConstants.Grpc.GrpcOperations(stream_type)
-        return r[FlextGrpcModels.Grpc.GrpcStream].create_from_callable(
-            lambda: FlextGrpcModels.Grpc.GrpcStream(
+        resolved_stream_type = c.Grpc.GrpcOperations(stream_type)
+        return r[m.Grpc.GrpcStream].create_from_callable(
+            lambda: m.Grpc.GrpcStream(
                 id=str(uuid4()),
                 method_name=method_name,
                 stream_type=resolved_stream_type,
@@ -104,28 +104,28 @@ class FlextGrpcUtilitiesGrpc:
 
     @staticmethod
     def get_channel_state_name(
-        state: FlextGrpcConstants.Grpc.ChannelState | str,
+        state: c.Grpc.ChannelState | str,
     ) -> str:
         """Return the channel state name as its canonical string value."""
-        if isinstance(state, FlextGrpcConstants.Grpc.ChannelState):
+        if isinstance(state, c.Grpc.ChannelState):
             return state.value
         return str(state)
 
     @staticmethod
     def get_server_state_name(
-        state: FlextGrpcConstants.Grpc.ServerState | str,
+        state: c.Grpc.ServerState | str,
     ) -> str:
         """Return the server state name as its canonical string value."""
-        if isinstance(state, FlextGrpcConstants.Grpc.ServerState):
+        if isinstance(state, c.Grpc.ServerState):
             return state.value
         return str(state)
 
     @staticmethod
-    def get_system_info() -> dict[str, FlextGrpcTypes.ConfigValue]:
+    def get_system_info() -> dict[str, t.Grpc.ConfigValue]:
         """Return a small typed runtime snapshot for gRPC diagnostics."""
         return {
-            "default_host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
-            "default_port": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+            "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
+            "default_port": c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
             "hostname": socket.gethostname(),
             "pid": os.getpid(),
         }
@@ -133,7 +133,7 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def parse_address(address: str) -> tuple[str, int]:
         """Parse a validated gRPC address into host and port."""
-        return FlextGrpcTypes.Grpc.GrpcValidation.parse_target(address)
+        return t.Grpc.GrpcValidation.parse_target(address)
 
     @staticmethod
     def validate_host(host: str) -> bool:
@@ -143,16 +143,12 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def validate_port(port: int) -> bool:
         """Validate that a port is within the canonical gRPC range."""
-        return (
-            FlextGrpcConstants.Grpc.GrpcNetwork.MIN_PORT
-            <= port
-            <= FlextGrpcConstants.Grpc.GrpcNetwork.MAX_PORT
-        )
+        return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
 
     @staticmethod
     def validate_target(target: str) -> bool:
         """Validate a gRPC target string in ``host:port`` format."""
-        return FlextGrpcTypes.Grpc.GrpcValidation.validate_target(target)
+        return t.Grpc.GrpcValidation.validate_target(target)
 
 
 grpc = FlextGrpcUtilitiesGrpc

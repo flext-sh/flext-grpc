@@ -18,8 +18,7 @@ import logging
 import re
 from collections.abc import Mapping, Sequence
 
-from flext_core import FlextTypes
-from flext_grpc import FlextGrpcProtocols
+from flext_core import FlextTypes, p
 
 
 class FlextGrpcTypes(FlextTypes):
@@ -33,7 +32,7 @@ class FlextGrpcTypes(FlextTypes):
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
-        type GrpcServicer = FlextGrpcProtocols.Grpc.GrpcServicer
+        type GrpcServicer = p.Grpc.GrpcServicer
 
         type Headers = FlextTypes.StrMapping
         type ConfigDict = Mapping[

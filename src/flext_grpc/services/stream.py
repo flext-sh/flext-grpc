@@ -9,8 +9,7 @@ from collections.abc import MutableMapping
 import grpc
 from pydantic import Field, ValidationError
 
-from flext_core import r
-from flext_grpc import FlextGrpcMetrics, m, t, u
+from flext_grpc import FlextGrpcMetrics, m, r, t, u
 
 
 class FlextGrpcStream:

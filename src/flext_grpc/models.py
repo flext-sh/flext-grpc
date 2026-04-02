@@ -648,12 +648,12 @@ class FlextGrpcModels(FlextModels):
             values: t.OptionalContainerValueMapping = Field(default_factory=dict)
 
             @classmethod
-            def from_values(cls, **values: t.OptionalContainerValueMapping) -> Self:
+            def from_values(cls, **values: t.OptionalContainerValue) -> Self:
                 """Build payload from keyword values."""
 
                 def normalize_payload_value(
-                    value: t.OptionalContainerValueMapping,
-                ) -> t.OptionalContainerValueMapping:
+                    value: t.OptionalContainerValue,
+                ) -> t.OptionalContainerValue:
                     if value is None:
                         return ""
                     if u.is_primitive(value):

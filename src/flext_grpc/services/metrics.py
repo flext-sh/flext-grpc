@@ -11,7 +11,7 @@ class FlextGrpcMetrics:
     """Mixin providing metrics collection for FlextGrpc facade."""
 
     class _MetricValueModel(m.Value):
-        value: t.OptionalContainerValueMapping
+        value: t.OptionalContainerValue
 
     class MetricsCollector:
         """Dedicated metrics collection with thread safety."""
@@ -25,9 +25,9 @@ class FlextGrpcMetrics:
         def get_all_metrics(self) -> m.Grpc.Payload:
             """Get all metrics snapshot."""
             with self._lock:
-                return m.Grpc.Payload(values=self._metrics.values.copy())
+                return m.Grpc.Payload(values=dict(self._metrics.values))
 
-        def get_metric(self, key: str) -> t.OptionalContainerValueMapping | None:
+        def get_metric(self, key: str) -> t.OptionalContainerValue | None:
             """Thread-safe metric retrieval.
 
             Returns:
@@ -37,9 +37,7 @@ class FlextGrpcMetrics:
             with self._lock:
                 return self._metrics.values.get(key)
 
-        def record_metric(
-            self, key: str, value: t.OptionalContainerValueMapping
-        ) -> None:
+        def record_metric(self, key: str, value: t.OptionalContainerValue) -> None:
             """Thread-safe metric recording.
 
             Args:
@@ -49,8 +47,8 @@ class FlextGrpcMetrics:
             """
 
             def _normalize_value(
-                val: t.OptionalContainerValueMapping,
-            ) -> t.OptionalContainerValueMapping:
+                val: t.OptionalContainerValue,
+            ) -> t.OptionalContainerValue:
                 if val is None:
                     return ""
                 if u.is_primitive(val):
@@ -60,7 +58,11 @@ class FlextGrpcMetrics:
             with self._lock:
                 normalized = FlextGrpcMetrics._MetricValueModel(value=value)
                 json_val = _normalize_value(normalized.value)
-                self._metrics.values[key] = json_val
+                updated_values: dict[str, t.OptionalContainerValue] = dict(
+                    self._metrics.values
+                )
+                updated_values[key] = json_val
+                self._metrics = m.Grpc.Payload(values=updated_values)
 
 
 __all__ = ["FlextGrpcMetrics"]

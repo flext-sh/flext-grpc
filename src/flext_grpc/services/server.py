@@ -8,12 +8,12 @@ from concurrent.futures import ThreadPoolExecutor
 
 import grpc
 
-from flext_core import r
 from flext_grpc import (
     FlextGrpcMetrics,
     FlextGrpcServiceServicer,
     add_FlextGrpcServiceServicer_to_server,
     m,
+    r,
 )
 
 

@@ -14,8 +14,7 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
-from flext_core import FlextConstants
-from flext_grpc import t
+from flext_core import FlextConstants, t
 
 
 class FlextGrpcConstants(FlextConstants):
