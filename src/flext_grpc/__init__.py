@@ -21,7 +21,13 @@ from flext_grpc.__version__ import (
 )
 
 if _TYPE_CHECKING:
-    from flext_core import FlextTypes, d, e, h, r, s, x
+    from flext_core import FlextTypes
+    from flext_core.decorators import FlextDecorators as d
+    from flext_core.exceptions import FlextExceptions as e
+    from flext_core.handlers import FlextHandlers as h
+    from flext_core.mixins import FlextMixins as x
+    from flext_core.result import FlextResult as r
+    from flext_core.service import FlextService as s
     from flext_grpc import (
         _utilities,
         api,
@@ -93,24 +99,24 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
         "api": "flext_grpc.api",
         "c": ("flext_grpc.constants", "FlextGrpcConstants"),
         "constants": "flext_grpc.constants",
-        "d": "flext_core",
-        "e": "flext_core",
+        "d": ("flext_core.decorators", "FlextDecorators"),
+        "e": ("flext_core.exceptions", "FlextExceptions"),
         "errors": "flext_grpc.errors",
-        "h": "flext_core",
+        "h": ("flext_core.handlers", "FlextHandlers"),
         "m": ("flext_grpc.models", "FlextGrpcModels"),
         "models": "flext_grpc.models",
         "p": ("flext_grpc.protocols", "FlextGrpcProtocols"),
         "proto": "flext_grpc.proto",
         "protocols": "flext_grpc.protocols",
-        "r": "flext_core",
-        "s": "flext_core",
+        "r": ("flext_core.result", "FlextResult"),
+        "s": ("flext_core.service", "FlextService"),
         "services": "flext_grpc.services",
         "settings": "flext_grpc.settings",
         "t": ("flext_grpc.typings", "FlextGrpcTypes"),
         "typings": "flext_grpc.typings",
         "u": ("flext_grpc.utilities", "FlextGrpcUtilities"),
         "utilities": "flext_grpc.utilities",
-        "x": "flext_core",
+        "x": ("flext_core.mixins", "FlextMixins"),
     },
 )
 
