@@ -29,24 +29,6 @@ if _t.TYPE_CHECKING:
         FlextGrpcServiceStub,
         add_FlextGrpcServiceServicer_to_server,
     )
-
-    _ = (
-        FlextGrpcServiceServicer,
-        FlextGrpcServiceStub,
-        add_FlextGrpcServiceServicer_to_server,
-        c,
-        d,
-        e,
-        h,
-        m,
-        p,
-        r,
-        s,
-        stubs,
-        t,
-        u,
-        x,
-    )
 _LAZY_IMPORTS = {
     "FlextGrpcServiceServicer": "flext_grpc.proto.stubs",
     "FlextGrpcServiceStub": "flext_grpc.proto.stubs",
