@@ -10,9 +10,17 @@ import typing as _t
 from flext_core.lazy import install_lazy_exports
 
 if _t.TYPE_CHECKING:
-    import flext_grpc.validate_docs as _flext_grpc_validate_docs
+    import docs.architecture.tools.validate_docs as _docs_architecture_tools_validate_docs
 
-    validate_docs = _flext_grpc_validate_docs
+    validate_docs = _docs_architecture_tools_validate_docs
+    from docs.architecture.tools.validate_docs import (
+        ArchitectureValidator,
+        ValidationResults,
+        ValidationSummary,
+        main,
+        save_report,
+    )
+
     from flext_core.constants import FlextConstants as c
     from flext_core.decorators import FlextDecorators as d
     from flext_core.exceptions import FlextExceptions as e
@@ -24,30 +32,23 @@ if _t.TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_grpc.validate_docs import (
-        ArchitectureValidator,
-        ValidationResults,
-        ValidationSummary,
-        main,
-        save_report,
-    )
 _LAZY_IMPORTS = {
-    "ArchitectureValidator": "flext_grpc.validate_docs",
-    "ValidationResults": "flext_grpc.validate_docs",
-    "ValidationSummary": "flext_grpc.validate_docs",
+    "ArchitectureValidator": "docs.architecture.tools.validate_docs",
+    "ValidationResults": "docs.architecture.tools.validate_docs",
+    "ValidationSummary": "docs.architecture.tools.validate_docs",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
     "m": ("flext_core.models", "FlextModels"),
-    "main": "flext_grpc.validate_docs",
+    "main": "docs.architecture.tools.validate_docs",
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "save_report": "flext_grpc.validate_docs",
+    "save_report": "docs.architecture.tools.validate_docs",
     "t": ("flext_core.typings", "FlextTypes"),
     "u": ("flext_core.utilities", "FlextUtilities"),
-    "validate_docs": "flext_grpc.validate_docs",
+    "validate_docs": "docs.architecture.tools.validate_docs",
     "x": ("flext_core.mixins", "FlextMixins"),
 }
 
