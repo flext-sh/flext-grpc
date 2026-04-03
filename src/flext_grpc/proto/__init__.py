@@ -8,7 +8,7 @@ from __future__ import annotations
 from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING as _TYPE_CHECKING
 
-from flext_core.lazy import install_lazy_exports
+from flext_core import install_lazy_exports
 
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
@@ -24,10 +24,16 @@ if _TYPE_CHECKING:
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
     from flext_grpc.proto import stubs
-    from flext_grpc.proto.stubs import FlextGrpcServiceServicer
+    from flext_grpc.proto.stubs import (
+        FlextGrpcServiceServicer,
+        FlextGrpcServiceStub,
+        add_FlextGrpcServiceServicer_to_server,
+    )
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "FlextGrpcServiceServicer": "flext_grpc.stubs",
+    "FlextGrpcServiceServicer": "flext_grpc.proto.stubs",
+    "FlextGrpcServiceStub": "flext_grpc.proto.stubs",
+    "add_FlextGrpcServiceServicer_to_server": "flext_grpc.proto.stubs",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -36,7 +42,7 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "stubs": "flext_grpc.stubs",
+    "stubs": "flext_grpc.proto.stubs",
     "t": ("flext_core.typings", "FlextTypes"),
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),

@@ -25,14 +25,16 @@ if _TYPE_CHECKING:
     from flext_core.utilities import FlextUtilities as u
     from flext_grpc import validate_docs
     from flext_grpc.validate_docs import (
+        ArchitectureValidator,
+        ValidationResults,
         ValidationSummary,
         main,
-        output_path,
-        reports_dir,
-        timestamp,
+        save_report,
     )
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
+    "ArchitectureValidator": "flext_grpc.validate_docs",
+    "ValidationResults": "flext_grpc.validate_docs",
     "ValidationSummary": "flext_grpc.validate_docs",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
@@ -40,13 +42,11 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "h": ("flext_core.handlers", "FlextHandlers"),
     "m": ("flext_core.models", "FlextModels"),
     "main": "flext_grpc.validate_docs",
-    "output_path": "flext_grpc.validate_docs",
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
-    "reports_dir": "flext_grpc.validate_docs",
     "s": ("flext_core.service", "FlextService"),
+    "save_report": "flext_grpc.validate_docs",
     "t": ("flext_core.typings", "FlextTypes"),
-    "timestamp": "flext_grpc.validate_docs",
     "u": ("flext_core.utilities", "FlextUtilities"),
     "validate_docs": "flext_grpc.validate_docs",
     "x": ("flext_core.mixins", "FlextMixins"),

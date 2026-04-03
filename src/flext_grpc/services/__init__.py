@@ -23,7 +23,15 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_grpc import client, connection_pool, metrics, server, stream
+    from flext_grpc.services import (
+        _compat,
+        client,
+        connection_pool,
+        metrics,
+        server,
+        stream,
+    )
+    from flext_grpc.services._compat import FlextGrpcServices
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
     from flext_grpc.services.metrics import FlextGrpcMetrics
@@ -31,24 +39,26 @@ if _TYPE_CHECKING:
     from flext_grpc.services.stream import FlextGrpcStream
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "FlextGrpcClient": "flext_grpc.client",
-    "FlextGrpcConnectionPool": "flext_grpc.connection_pool",
-    "FlextGrpcMetrics": "flext_grpc.metrics",
-    "FlextGrpcServer": "flext_grpc.server",
-    "FlextGrpcStream": "flext_grpc.stream",
+    "FlextGrpcClient": "flext_grpc.services.client",
+    "FlextGrpcConnectionPool": "flext_grpc.services.connection_pool",
+    "FlextGrpcMetrics": "flext_grpc.services.metrics",
+    "FlextGrpcServer": "flext_grpc.services.server",
+    "FlextGrpcServices": "flext_grpc.services._compat",
+    "FlextGrpcStream": "flext_grpc.services.stream",
+    "_compat": "flext_grpc.services._compat",
     "c": ("flext_core.constants", "FlextConstants"),
-    "client": "flext_grpc.client",
-    "connection_pool": "flext_grpc.connection_pool",
+    "client": "flext_grpc.services.client",
+    "connection_pool": "flext_grpc.services.connection_pool",
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
     "m": ("flext_core.models", "FlextModels"),
-    "metrics": "flext_grpc.metrics",
+    "metrics": "flext_grpc.services.metrics",
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "server": "flext_grpc.server",
-    "stream": "flext_grpc.stream",
+    "server": "flext_grpc.services.server",
+    "stream": "flext_grpc.services.stream",
     "t": ("flext_core.typings", "FlextTypes"),
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),

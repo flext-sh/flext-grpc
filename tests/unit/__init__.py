@@ -23,7 +23,7 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_grpc import (
+    from tests.unit import (
         test_api,
         test_config,
         test_constants,
@@ -35,28 +35,40 @@ if _TYPE_CHECKING:
         test_typings,
         test_utilities,
     )
-    from flext_grpc.test_api import TestFlextGrpc
-    from flext_grpc.test_config import TestFlextGrpcSettings
-    from flext_grpc.test_constants import TestFlextGrpcConstants
-    from flext_grpc.test_entities import TestFlextGrpcEntities
-    from flext_grpc.test_errors import TestFlextGrpcError
-    from flext_grpc.test_models import TestFlextGrpcModels
-    from flext_grpc.test_protocols import Testp
-    from flext_grpc.test_services import TestFlextGrpcServices
-    from flext_grpc.test_typings import TestFlextGrpcTypes
-    from flext_grpc.test_utilities import Testu
+    from tests.unit.test_api import TestFlextGrpc
+    from tests.unit.test_config import TestFlextGrpcSettings
+    from tests.unit.test_constants import TestFlextGrpcConstants
+    from tests.unit.test_entities import TestFlextGrpcEntities
+    from tests.unit.test_errors import (
+        TestErrorIntegration,
+        TestFlextGrpcConfigurationError,
+        TestFlextGrpcConnectionError,
+        TestFlextGrpcError,
+        TestFlextGrpcTimeoutError,
+        TestFlextGrpcValidationError,
+    )
+    from tests.unit.test_models import TestFlextGrpcModels
+    from tests.unit.test_protocols import Testp
+    from tests.unit.test_services import TestFlextGrpcServices
+    from tests.unit.test_typings import TestFlextGrpcTypes
+    from tests.unit.test_utilities import Testu
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "TestFlextGrpc": "flext_grpc.test_api",
-    "TestFlextGrpcConstants": "flext_grpc.test_constants",
-    "TestFlextGrpcEntities": "flext_grpc.test_entities",
-    "TestFlextGrpcError": "flext_grpc.test_errors",
-    "TestFlextGrpcModels": "flext_grpc.test_models",
-    "TestFlextGrpcServices": "flext_grpc.test_services",
-    "TestFlextGrpcSettings": "flext_grpc.test_config",
-    "TestFlextGrpcTypes": "flext_grpc.test_typings",
-    "Testp": "flext_grpc.test_protocols",
-    "Testu": "flext_grpc.test_utilities",
+    "TestErrorIntegration": "tests.unit.test_errors",
+    "TestFlextGrpc": "tests.unit.test_api",
+    "TestFlextGrpcConfigurationError": "tests.unit.test_errors",
+    "TestFlextGrpcConnectionError": "tests.unit.test_errors",
+    "TestFlextGrpcConstants": "tests.unit.test_constants",
+    "TestFlextGrpcEntities": "tests.unit.test_entities",
+    "TestFlextGrpcError": "tests.unit.test_errors",
+    "TestFlextGrpcModels": "tests.unit.test_models",
+    "TestFlextGrpcServices": "tests.unit.test_services",
+    "TestFlextGrpcSettings": "tests.unit.test_config",
+    "TestFlextGrpcTimeoutError": "tests.unit.test_errors",
+    "TestFlextGrpcTypes": "tests.unit.test_typings",
+    "TestFlextGrpcValidationError": "tests.unit.test_errors",
+    "Testp": "tests.unit.test_protocols",
+    "Testu": "tests.unit.test_utilities",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -66,16 +78,16 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
     "t": ("flext_core.typings", "FlextTypes"),
-    "test_api": "flext_grpc.test_api",
-    "test_config": "flext_grpc.test_config",
-    "test_constants": "flext_grpc.test_constants",
-    "test_entities": "flext_grpc.test_entities",
-    "test_errors": "flext_grpc.test_errors",
-    "test_models": "flext_grpc.test_models",
-    "test_protocols": "flext_grpc.test_protocols",
-    "test_services": "flext_grpc.test_services",
-    "test_typings": "flext_grpc.test_typings",
-    "test_utilities": "flext_grpc.test_utilities",
+    "test_api": "tests.unit.test_api",
+    "test_config": "tests.unit.test_config",
+    "test_constants": "tests.unit.test_constants",
+    "test_entities": "tests.unit.test_entities",
+    "test_errors": "tests.unit.test_errors",
+    "test_models": "tests.unit.test_models",
+    "test_protocols": "tests.unit.test_protocols",
+    "test_services": "tests.unit.test_services",
+    "test_typings": "tests.unit.test_typings",
+    "test_utilities": "tests.unit.test_utilities",
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
