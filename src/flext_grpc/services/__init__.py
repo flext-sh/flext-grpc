@@ -24,11 +24,11 @@ if _TYPE_CHECKING:
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
     from flext_grpc import client, connection_pool, metrics, server, stream
-    from flext_grpc.client import FlextGrpcClient
-    from flext_grpc.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.metrics import FlextGrpcMetrics
-    from flext_grpc.server import FlextGrpcServer
-    from flext_grpc.stream import FlextGrpcStream
+    from flext_grpc.services.client import FlextGrpcClient
+    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from flext_grpc.services.server import FlextGrpcServer
+    from flext_grpc.services.stream import FlextGrpcStream
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "FlextGrpcClient": "flext_grpc.client",

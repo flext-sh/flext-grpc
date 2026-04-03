@@ -23,8 +23,8 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_grpc import stubs
-    from flext_grpc.stubs import FlextGrpcServiceServicer
+    from flext_grpc.proto import stubs
+    from flext_grpc.proto.stubs import FlextGrpcServiceServicer
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "FlextGrpcServiceServicer": "flext_grpc.stubs",

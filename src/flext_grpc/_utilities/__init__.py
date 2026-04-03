@@ -13,7 +13,7 @@ from flext_core.lazy import install_lazy_exports
 if _TYPE_CHECKING:
     from flext_core import FlextTypes
     from flext_grpc import grpc
-    from flext_grpc.grpc import FlextGrpcUtilitiesGrpc, logger
+    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, logger
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "FlextGrpcUtilitiesGrpc": "flext_grpc.grpc",

@@ -60,7 +60,6 @@ if _TYPE_CHECKING:
         FlextGrpcConnectionPool,
         FlextGrpcMetrics,
         FlextGrpcServer,
-        FlextGrpcServices,
         FlextGrpcStream,
     )
     from flext_grpc.settings import FlextGrpcSettings
