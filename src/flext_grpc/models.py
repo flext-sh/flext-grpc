@@ -219,7 +219,7 @@ class FlextGrpcModels(FlextModels):
             """Basic channel configuration (immutable value model)."""
 
             address: str
-            options: Mapping[str, t.OptionalContainerValueMapping] | None = None
+            options: t.OptionalContainerValueMapping | None = None
 
         class SecurityConfig(FlextModels.Value):
             """Generic gRPC security configuration with validation."""
@@ -692,9 +692,7 @@ class FlextGrpcModels(FlextModels):
 
             target: str = ""
             state: c.Grpc.ChannelState = c.Grpc.ChannelState.IDLE
-            options: Mapping[str, t.OptionalContainerValueMapping] = Field(
-                default_factory=dict
-            )
+            options: t.OptionalContainerValueMapping = Field(default_factory=dict)
             grpc_channel: p.Grpc.GrpcChannel | None = None
 
             def connect(self) -> r[Self]:

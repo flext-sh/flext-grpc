@@ -46,7 +46,7 @@ class FlextGrpcStream:
             return r[m.Grpc.GrpcStream].ok(stream)
 
         def create_stream(
-            self, **kwargs: t.OptionalContainerValueMapping
+            self, **kwargs: t.OptionalContainerValue
         ) -> r[m.Grpc.GrpcStream]:
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))

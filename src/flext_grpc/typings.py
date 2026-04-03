@@ -18,7 +18,8 @@ import logging
 import re
 from collections.abc import Mapping, Sequence
 
-from flext_core import FlextTypes, p
+from flext_core import FlextTypes
+from flext_grpc import p
 
 
 class FlextGrpcTypes(FlextTypes):

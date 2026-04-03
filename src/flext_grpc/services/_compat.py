@@ -10,6 +10,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+
 from flext_core import r
 from flext_grpc import (
     FlextGrpcClient,
@@ -60,7 +62,7 @@ class FlextGrpcServices:
     def create_stream(
         self,
         method_name: str | int | None = "DefaultMethod",
-        **kwargs: t.OptionalContainerValueMapping,
+        **kwargs: t.OptionalContainerValue,
     ) -> r[m.Grpc.GrpcStream]:
         """Delegate stream creation to specialized manager."""
         method_name_str = (
@@ -151,7 +153,7 @@ class FlextGrpcServices:
         self,
         command: str,
         client: m.Grpc.Client,
-        **kwargs: t.OptionalContainerValueMapping,
+        **kwargs: t.OptionalContainerValue,
     ) -> r[m.Grpc.Payload]:
         """Execute client-specific commands."""
         if command == "connect":
@@ -176,6 +178,8 @@ class FlextGrpcServices:
             request = kwargs.get("request")
             if request is None:
                 return r[m.Grpc.Payload].fail("Request parameter is required")
+            if not isinstance(request, Mapping):
+                return r[m.Grpc.Payload].fail("Request parameter must be a mapping")
             return self.make_call(client, str(kwargs.get("method", "")), request)
         return r[m.Grpc.Payload].fail(f"Unsupported client command: {command}")
 
@@ -207,7 +211,7 @@ class FlextGrpcServices:
         self,
         command: str,
         stream: m.Grpc.GrpcStream,
-        **kwargs: t.OptionalContainerValueMapping,
+        **kwargs: t.OptionalContainerValue,
     ) -> r[m.Grpc.Payload]:
         """Execute stream-specific commands."""
         if command == "create":
@@ -228,6 +232,8 @@ class FlextGrpcServices:
             data = kwargs.get("data")
             if data is None:
                 return r[m.Grpc.Payload].fail("Data parameter is required")
+            if not isinstance(data, Mapping):
+                return r[m.Grpc.Payload].fail("Data parameter must be a mapping")
             return self.send_data(stream, data)
         if command == "close":
             close_result = self.close_stream(stream)

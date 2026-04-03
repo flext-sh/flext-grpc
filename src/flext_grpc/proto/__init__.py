@@ -5,13 +5,14 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
-from typing import TYPE_CHECKING as _TYPE_CHECKING
+import typing as _t
 
-from flext_core import install_lazy_exports
+from flext_core.lazy import install_lazy_exports
 
-if _TYPE_CHECKING:
-    from flext_core import FlextTypes
+if _t.TYPE_CHECKING:
+    import flext_grpc.proto.stubs as _flext_grpc_proto_stubs
+
+    stubs = _flext_grpc_proto_stubs
     from flext_core.constants import FlextConstants as c
     from flext_core.decorators import FlextDecorators as d
     from flext_core.exceptions import FlextExceptions as e
@@ -23,14 +24,30 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_grpc.proto import stubs
     from flext_grpc.proto.stubs import (
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
         add_FlextGrpcServiceServicer_to_server,
     )
 
-_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
+    _ = (
+        FlextGrpcServiceServicer,
+        FlextGrpcServiceStub,
+        add_FlextGrpcServiceServicer_to_server,
+        c,
+        d,
+        e,
+        h,
+        m,
+        p,
+        r,
+        s,
+        stubs,
+        t,
+        u,
+        x,
+    )
+_LAZY_IMPORTS = {
     "FlextGrpcServiceServicer": "flext_grpc.proto.stubs",
     "FlextGrpcServiceStub": "flext_grpc.proto.stubs",
     "add_FlextGrpcServiceServicer_to_server": "flext_grpc.proto.stubs",
@@ -47,6 +64,24 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
+
+__all__ = [
+    "FlextGrpcServiceServicer",
+    "FlextGrpcServiceStub",
+    "add_FlextGrpcServiceServicer_to_server",
+    "c",
+    "d",
+    "e",
+    "h",
+    "m",
+    "p",
+    "r",
+    "s",
+    "stubs",
+    "t",
+    "u",
+    "x",
+]
 
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)

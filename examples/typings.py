@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from flext_grpc import FlextGrpc
+from flext_grpc import m
 
-type CompleteSetup = FlextGrpc.CompleteSetup
+type CompleteSetup = m.CompleteSetup

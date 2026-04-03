@@ -5,21 +5,32 @@
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
-from typing import TYPE_CHECKING as _TYPE_CHECKING
+import typing as _t
 
 from flext_core.lazy import install_lazy_exports
+from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, logger
 
-if _TYPE_CHECKING:
-    from flext_core import FlextTypes
-    from flext_grpc._utilities import grpc
-    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, logger
+if _t.TYPE_CHECKING:
+    import flext_grpc._utilities.grpc as _flext_grpc__utilities_grpc
 
-_LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
+    grpc = _flext_grpc__utilities_grpc
+
+    _ = (
+        FlextGrpcUtilitiesGrpc,
+        grpc,
+        logger,
+    )
+_LAZY_IMPORTS = {
     "FlextGrpcUtilitiesGrpc": "flext_grpc._utilities.grpc",
     "grpc": "flext_grpc._utilities.grpc",
     "logger": "flext_grpc._utilities.grpc",
 }
+
+__all__ = [
+    "FlextGrpcUtilitiesGrpc",
+    "grpc",
+    "logger",
+]
 
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)

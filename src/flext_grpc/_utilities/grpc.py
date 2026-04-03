@@ -20,7 +20,7 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def create_channel_entity(
         target: str,
-        options: t.Grpc.Options | None = None,
+        options: t.OptionalContainerValueMapping | None = None,
     ) -> r[m.Grpc.Channel]:
         """Create a typed channel entity from validated inputs."""
         resolved_options = {} if options is None else dict(options)
@@ -34,7 +34,7 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def create_client_entity(
         target: str,
-        options: t.Grpc.Options | None = None,
+        options: t.OptionalContainerValueMapping | None = None,
     ) -> r[m.Grpc.Client]:
         """Create a typed client entity backed by a typed channel entity."""
         resolved_options = {} if options is None else dict(options)
@@ -121,7 +121,7 @@ class FlextGrpcUtilitiesGrpc:
         return str(state)
 
     @staticmethod
-    def get_system_info() -> dict[str, t.Grpc.ConfigValue]:
+    def get_system_info() -> dict[str, t.ContainerValue]:
         """Return a small typed runtime snapshot for gRPC diagnostics."""
         return {
             "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,

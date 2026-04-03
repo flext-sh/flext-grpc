@@ -12,8 +12,10 @@ from typing import Protocol, runtime_checkable
 
 from grpc import GenericRpcHandler
 
-from flext_core import FlextProtocols
-from flext_grpc import c, r, t
+from flext_core.protocols import FlextProtocols
+from flext_core.result import FlextResult
+from flext_core.typings import FlextTypes
+from flext_grpc.constants import FlextGrpcConstants
 
 
 class FlextGrpcProtocols(FlextProtocols):
@@ -85,7 +87,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def get_server_status(
                 self,
-            ) -> FlextProtocols.Result[t.ContainerValue | None]:
+            ) -> FlextProtocols.Result[FlextTypes.ContainerValue | None]:
                 """Get gRPC server status information."""
                 ...
 
@@ -133,14 +135,14 @@ class FlextGrpcProtocols(FlextProtocols):
             def get_client_status(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-            ) -> FlextProtocols.Result[t.ContainerValue | None]:
+            ) -> FlextProtocols.Result[FlextTypes.ContainerValue | None]:
                 """Get gRPC client status information."""
                 ...
 
             def make_call(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-                method: c.Grpc.GrpcOperations | str,
+                method: FlextGrpcConstants.Grpc.GrpcOperations | str,
                 request: FlextGrpcProtocols.Grpc.GrpcMessage,
                 *,
                 timeout: float = 30.0,
@@ -172,7 +174,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def create_stream(
                 self,
-                stream_type: c.Grpc.GrpcOperations | str,
+                stream_type: FlextGrpcConstants.Grpc.GrpcOperations | str,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
                 method: str,
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcStream]:
@@ -182,7 +184,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def handle_bidirectional_streaming(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-            ) -> FlextProtocols.Result[t.ContainerValue | None]:
+            ) -> FlextProtocols.Result[FlextTypes.ContainerValue | None]:
                 """Handle bidirectional streaming."""
                 ...
 
@@ -229,7 +231,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def get_service_methods(
                 self,
                 service: FlextGrpcProtocols.Grpc.GrpcServicer,
-            ) -> FlextProtocols.Result[t.StrSequence]:
+            ) -> FlextProtocols.Result[FlextTypes.StrSequence]:
                 """Get list of service methods."""
                 ...
 
@@ -262,7 +264,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def create_channel(
                 self,
                 target: str,
-                options: Mapping[str, t.ContainerValue | None] | None = None,
+                options: Mapping[str, FlextTypes.ContainerValue | None] | None = None,
             ) -> FlextProtocols.Result[FlextGrpcProtocols.Grpc.GrpcChannel]:
                 """Create gRPC channel."""
                 ...
@@ -291,27 +293,27 @@ class FlextGrpcProtocols(FlextProtocols):
             def collect_client_metrics(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, FlextTypes.Numeric | str]]:
                 """Collect gRPC client metrics."""
                 ...
 
             def collect_server_metrics(
                 self,
                 server: FlextGrpcProtocols.Grpc.GrpcServer,
-            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, FlextTypes.Numeric | str]]:
                 """Collect gRPC server metrics."""
                 ...
 
             def collect_stream_metrics(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, FlextTypes.Numeric | str]]:
                 """Collect gRPC stream metrics."""
                 ...
 
             def get_global_metrics(
                 self,
-            ) -> FlextProtocols.Result[Mapping[str, t.Numeric | str]]:
+            ) -> FlextProtocols.Result[Mapping[str, FlextTypes.Numeric | str]]:
                 """Get global gRPC metrics."""
                 ...
 
@@ -334,8 +336,8 @@ class FlextGrpcProtocols(FlextProtocols):
             def create_client_config(
                 self,
                 target: str,
-                options: Mapping[str, t.ContainerValue | None] | None = None,
-            ) -> FlextProtocols.Result[t.ScalarMapping]:
+                options: Mapping[str, FlextTypes.ContainerValue | None] | None = None,
+            ) -> FlextProtocols.Result[FlextTypes.ScalarMapping]:
                 """Create gRPC client configuration."""
                 ...
 
@@ -343,8 +345,8 @@ class FlextGrpcProtocols(FlextProtocols):
                 self,
                 host: str,
                 port: int,
-                options: Mapping[str, t.ContainerValue | None] | None = None,
-            ) -> FlextProtocols.Result[t.ScalarMapping]:
+                options: Mapping[str, FlextTypes.ContainerValue | None] | None = None,
+            ) -> FlextProtocols.Result[FlextTypes.ScalarMapping]:
                 """Create gRPC server configuration."""
                 ...
 
@@ -359,7 +361,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Validate gRPC address format."""
                 ...
 
-            def validate_config(self) -> r[bool]:
+            def validate_config(self) -> FlextResult[bool]:
                 """Validate gRPC configuration."""
                 ...
 
@@ -371,18 +373,18 @@ class FlextGrpcProtocols(FlextProtocols):
         class ResourceManager(Protocol):
             """Protocol for gRPC resource management operations."""
 
-            def acquire(self) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
+            def acquire(self) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Acquire a resource."""
                 ...
 
-            def cleanup(self) -> r[bool]:
+            def cleanup(self) -> FlextResult[bool]:
                 """Cleanup all resources."""
                 ...
 
             def release(
                 self,
                 resource: FlextGrpcProtocols.Grpc.GrpcResource,
-            ) -> r[bool]:
+            ) -> FlextResult[bool]:
                 """Release a resource."""
                 ...
 
@@ -390,7 +392,11 @@ class FlextGrpcProtocols(FlextProtocols):
         class GrpcCallbackFunction(Protocol):
             """Protocol for gRPC callback functions."""
 
-            def __call__(self, *args: t.Scalar, **kwargs: t.Scalar) -> None:
+            def __call__(
+                self,
+                *args: FlextTypes.Scalar,
+                **kwargs: FlextTypes.Scalar,
+            ) -> None:
                 """Call the callback."""
                 ...
 
@@ -447,8 +453,8 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def __call__(
                 self,
-                **kwargs: t.Scalar,
-            ) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
+                **kwargs: FlextTypes.Scalar,
+            ) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Create entity with given arguments."""
                 ...
 
@@ -458,8 +464,8 @@ class FlextGrpcProtocols(FlextProtocols):
 
             def __call__(
                 self,
-                **kwargs: t.Scalar,
-            ) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
+                **kwargs: FlextTypes.Scalar,
+            ) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Execute operation with given arguments."""
                 ...
 
