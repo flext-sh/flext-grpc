@@ -235,7 +235,7 @@ from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
 from flext_core import r
-from flext_core import FlextRuntime
+from flext_core import u
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
@@ -277,7 +277,7 @@ from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
 from flext_core import r
-from flext_core import FlextRuntime
+from flext_core import u
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
@@ -520,7 +520,7 @@ from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
 from flext_core import r
-from flext_core import FlextRuntime
+from flext_core import u
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
@@ -554,7 +554,7 @@ from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
 from flext_core import r
-from flext_core import FlextRuntime
+from flext_core import u
 from flext_core import FlextService
 from flext_core import t
 from flext_core import u
