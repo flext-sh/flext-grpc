@@ -181,7 +181,7 @@ docs/architecture/
 │   └── evolution/             # Architecture evolution
 └── tools/                     # Automation and tooling
     ├── generate-diagrams.sh   # Diagram generation script
-    ├── validate-docs.py       # Documentation validation
+    ├── validate_docs.py       # Documentation validation
     └── update-arc42.py        # Arc42 synchronization
 ```
 

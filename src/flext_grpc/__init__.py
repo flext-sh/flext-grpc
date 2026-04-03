@@ -10,6 +10,7 @@ from typing import TYPE_CHECKING as _TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports, merge_lazy_imports
 from flext_grpc.__version__ import (
+    __all__,
     __author__,
     __author_email__,
     __description__,
@@ -31,33 +32,28 @@ if _TYPE_CHECKING:
     from flext_grpc import (
         _utilities,
         api,
+        client,
+        connection_pool,
         constants,
         errors,
+        metrics,
         models,
         proto,
         protocols,
+        server,
         services,
         settings,
+        stream,
+        stubs,
         typings,
         utilities,
     )
     from flext_grpc._utilities import FlextGrpcUtilitiesGrpc, grpc, logger
     from flext_grpc.api import FlextGrpc
     from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
-    from flext_grpc.errors import (
-        FlextGrpcConfigurationError,
-        FlextGrpcConnectionError,
-        FlextGrpcError,
-        FlextGrpcTimeoutError,
-        FlextGrpcValidationError,
-    )
+    from flext_grpc.errors import FlextGrpcError
     from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
-    from flext_grpc.proto import (
-        FlextGrpcServiceServicer,
-        FlextGrpcServiceStub,
-        add_FlextGrpcServiceServicer_to_server,
-        stubs,
-    )
+    from flext_grpc.proto import FlextGrpcServiceServicer
     from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
     from flext_grpc.services import (
         FlextGrpcClient,
@@ -66,11 +62,6 @@ if _TYPE_CHECKING:
         FlextGrpcServer,
         FlextGrpcServices,
         FlextGrpcStream,
-        client,
-        connection_pool,
-        metrics,
-        server,
-        stream,
     )
     from flext_grpc.settings import FlextGrpcSettings
     from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
@@ -84,34 +75,36 @@ _LAZY_IMPORTS: FlextTypes.LazyImportIndex = merge_lazy_imports(
     ),
     {
         "FlextGrpc": "flext_grpc.api",
-        "FlextGrpcConfigurationError": "flext_grpc.errors",
-        "FlextGrpcConnectionError": "flext_grpc.errors",
         "FlextGrpcConstants": "flext_grpc.constants",
         "FlextGrpcError": "flext_grpc.errors",
         "FlextGrpcModels": "flext_grpc.models",
         "FlextGrpcProtocols": "flext_grpc.protocols",
         "FlextGrpcSettings": "flext_grpc.settings",
-        "FlextGrpcTimeoutError": "flext_grpc.errors",
         "FlextGrpcTypes": "flext_grpc.typings",
         "FlextGrpcUtilities": "flext_grpc.utilities",
-        "FlextGrpcValidationError": "flext_grpc.errors",
         "_utilities": "flext_grpc._utilities",
         "api": "flext_grpc.api",
         "c": ("flext_grpc.constants", "FlextGrpcConstants"),
+        "client": "flext_grpc.client",
+        "connection_pool": "flext_grpc.connection_pool",
         "constants": "flext_grpc.constants",
         "d": ("flext_core.decorators", "FlextDecorators"),
         "e": ("flext_core.exceptions", "FlextExceptions"),
         "errors": "flext_grpc.errors",
         "h": ("flext_core.handlers", "FlextHandlers"),
         "m": ("flext_grpc.models", "FlextGrpcModels"),
+        "metrics": "flext_grpc.metrics",
         "models": "flext_grpc.models",
         "p": ("flext_grpc.protocols", "FlextGrpcProtocols"),
         "proto": "flext_grpc.proto",
         "protocols": "flext_grpc.protocols",
         "r": ("flext_core.result", "FlextResult"),
         "s": ("flext_core.service", "FlextService"),
+        "server": "flext_grpc.server",
         "services": "flext_grpc.services",
         "settings": "flext_grpc.settings",
+        "stream": "flext_grpc.stream",
+        "stubs": "flext_grpc.stubs",
         "t": ("flext_grpc.typings", "FlextGrpcTypes"),
         "typings": "flext_grpc.typings",
         "u": ("flext_grpc.utilities", "FlextGrpcUtilities"),
@@ -126,6 +119,7 @@ install_lazy_exports(
     globals(),
     _LAZY_IMPORTS,
     [
+        "__all__",
         "__author__",
         "__author_email__",
         "__description__",

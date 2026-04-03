@@ -1,7 +1,7 @@
 # AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
 # Regenerate with: make gen
 #
-"""Services package."""
+"""Tools package."""
 
 from __future__ import annotations
 
@@ -23,34 +23,32 @@ if _TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from flext_grpc import client, connection_pool, metrics, server, stream
-    from flext_grpc.client import FlextGrpcClient
-    from flext_grpc.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.metrics import FlextGrpcMetrics
-    from flext_grpc.server import FlextGrpcServer
-    from flext_grpc.stream import FlextGrpcStream
+    from flext_grpc import validate_docs
+    from flext_grpc.validate_docs import (
+        ValidationSummary,
+        main,
+        output_path,
+        reports_dir,
+        timestamp,
+    )
 
 _LAZY_IMPORTS: FlextTypes.LazyImportIndex = {
-    "FlextGrpcClient": "flext_grpc.client",
-    "FlextGrpcConnectionPool": "flext_grpc.connection_pool",
-    "FlextGrpcMetrics": "flext_grpc.metrics",
-    "FlextGrpcServer": "flext_grpc.server",
-    "FlextGrpcStream": "flext_grpc.stream",
+    "ValidationSummary": "flext_grpc.validate_docs",
     "c": ("flext_core.constants", "FlextConstants"),
-    "client": "flext_grpc.client",
-    "connection_pool": "flext_grpc.connection_pool",
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
     "m": ("flext_core.models", "FlextModels"),
-    "metrics": "flext_grpc.metrics",
+    "main": "flext_grpc.validate_docs",
+    "output_path": "flext_grpc.validate_docs",
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
+    "reports_dir": "flext_grpc.validate_docs",
     "s": ("flext_core.service", "FlextService"),
-    "server": "flext_grpc.server",
-    "stream": "flext_grpc.stream",
     "t": ("flext_core.typings", "FlextTypes"),
+    "timestamp": "flext_grpc.validate_docs",
     "u": ("flext_core.utilities", "FlextUtilities"),
+    "validate_docs": "flext_grpc.validate_docs",
     "x": ("flext_core.mixins", "FlextMixins"),
 }
 
