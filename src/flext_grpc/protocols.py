@@ -41,7 +41,8 @@ class FlextGrpcProtocols(FlextProtocols):
     client: p.Grpc.Client
     """
 
-    class Grpc:
+    @runtime_checkable
+    class Grpc(Protocol):
         """gRPC domain-specific protocols.
 
         Provides protocols for gRPC server management, client communication,
@@ -49,13 +50,16 @@ class FlextGrpcProtocols(FlextProtocols):
         metrics collection, and configuration.
         """
 
-        class ClientConnection:
+        @runtime_checkable
+        class ClientConnection(Protocol):
             """Base class for gRPC client connection management."""
 
-        class ServerLifecycle:
+        @runtime_checkable
+        class ServerLifecycle(Protocol):
             """Base class for gRPC server lifecycle management."""
 
-        class StreamProcessor:
+        @runtime_checkable
+        class StreamProcessor(Protocol):
             """Base class for gRPC stream processing."""
 
         @runtime_checkable
