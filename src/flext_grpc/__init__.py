@@ -25,7 +25,7 @@ if _t.TYPE_CHECKING:
 
     _utilities = _flext_grpc__utilities
     import flext_grpc.api as _flext_grpc_api
-    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, grpc, logger
+    from flext_grpc._utilities import FlextGrpcUtilitiesGrpc, grpc, logger
 
     api = _flext_grpc_api
     import flext_grpc.constants as _flext_grpc_constants
@@ -50,14 +50,12 @@ if _t.TYPE_CHECKING:
     from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
 
     proto = _flext_grpc_proto
-    import flext_grpc.proto.stubs as _flext_grpc_proto_stubs
-
-    stubs = _flext_grpc_proto_stubs
     import flext_grpc.protocols as _flext_grpc_protocols
-    from flext_grpc.proto.stubs import (
+    from flext_grpc.proto import (
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
         add_FlextGrpcServiceServicer_to_server,
+        stubs,
     )
 
     protocols = _flext_grpc_protocols
@@ -65,28 +63,20 @@ if _t.TYPE_CHECKING:
     from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
 
     services = _flext_grpc_services
-    import flext_grpc.services.client as _flext_grpc_services_client
-    from flext_grpc.services._compat import FlextGrpcServices
-
-    client = _flext_grpc_services_client
-    import flext_grpc.services.connection_pool as _flext_grpc_services_connection_pool
-    from flext_grpc.services.client import FlextGrpcClient
-
-    connection_pool = _flext_grpc_services_connection_pool
-    import flext_grpc.services.metrics as _flext_grpc_services_metrics
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-
-    metrics = _flext_grpc_services_metrics
-    import flext_grpc.services.server as _flext_grpc_services_server
-    from flext_grpc.services.metrics import FlextGrpcMetrics
-
-    server = _flext_grpc_services_server
-    import flext_grpc.services.stream as _flext_grpc_services_stream
-    from flext_grpc.services.server import FlextGrpcServer
-
-    stream = _flext_grpc_services_stream
     import flext_grpc.settings as _flext_grpc_settings
-    from flext_grpc.services.stream import FlextGrpcStream
+    from flext_grpc.services import (
+        FlextGrpcClient,
+        FlextGrpcConnectionPool,
+        FlextGrpcMetrics,
+        FlextGrpcServer,
+        FlextGrpcServices,
+        FlextGrpcStream,
+        client,
+        connection_pool,
+        metrics,
+        server,
+        stream,
+    )
 
     settings = _flext_grpc_settings
     import flext_grpc.typings as _flext_grpc_typings

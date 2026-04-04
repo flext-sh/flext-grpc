@@ -33,54 +33,34 @@ if _t.TYPE_CHECKING:
     from tests.typings import FlextGrpcTestTypes, FlextGrpcTestTypes as t
 
     unit = _tests_unit
-    import tests.unit.test_api as _tests_unit_test_api
-
-    test_api = _tests_unit_test_api
-    import tests.unit.test_config as _tests_unit_test_config
-    from tests.unit.test_api import TestFlextGrpc
-
-    test_config = _tests_unit_test_config
-    import tests.unit.test_constants as _tests_unit_test_constants
-    from tests.unit.test_config import TestFlextGrpcSettings
-
-    test_constants = _tests_unit_test_constants
-    import tests.unit.test_entities as _tests_unit_test_entities
-    from tests.unit.test_constants import TestFlextGrpcConstants
-
-    test_entities = _tests_unit_test_entities
-    import tests.unit.test_errors as _tests_unit_test_errors
-    from tests.unit.test_entities import TestFlextGrpcEntities
-
-    test_errors = _tests_unit_test_errors
-    import tests.unit.test_models as _tests_unit_test_models
-    from tests.unit.test_errors import (
+    import tests.utilities as _tests_utilities
+    from tests.unit import (
         TestErrorIntegration,
+        TestFlextGrpc,
         TestFlextGrpcConfigurationError,
         TestFlextGrpcConnectionError,
+        TestFlextGrpcConstants,
+        TestFlextGrpcEntities,
         TestFlextGrpcError,
+        TestFlextGrpcModels,
+        TestFlextGrpcServices,
+        TestFlextGrpcSettings,
         TestFlextGrpcTimeoutError,
+        TestFlextGrpcTypes,
         TestFlextGrpcValidationError,
+        Testp,
+        Testu,
+        test_api,
+        test_config,
+        test_constants,
+        test_entities,
+        test_errors,
+        test_models,
+        test_protocols,
+        test_services,
+        test_typings,
+        test_utilities,
     )
-
-    test_models = _tests_unit_test_models
-    import tests.unit.test_protocols as _tests_unit_test_protocols
-    from tests.unit.test_models import TestFlextGrpcModels
-
-    test_protocols = _tests_unit_test_protocols
-    import tests.unit.test_services as _tests_unit_test_services
-    from tests.unit.test_protocols import Testp
-
-    test_services = _tests_unit_test_services
-    import tests.unit.test_typings as _tests_unit_test_typings
-    from tests.unit.test_services import TestFlextGrpcServices
-
-    test_typings = _tests_unit_test_typings
-    import tests.unit.test_utilities as _tests_unit_test_utilities
-    from tests.unit.test_typings import TestFlextGrpcTypes
-
-    test_utilities = _tests_unit_test_utilities
-    import tests.utilities as _tests_utilities
-    from tests.unit.test_utilities import Testu
 
     utilities = _tests_utilities
     from flext_core.decorators import FlextDecorators as d
