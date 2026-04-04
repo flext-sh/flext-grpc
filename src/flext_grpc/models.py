@@ -532,7 +532,7 @@ class FlextGrpcModels(FlextModels):
             Provides state transition logic that can be composed into
             entity classes for state management.
 
-            Note: Uses BaseModel (not Value/FrozenStrictModel) because
+            Note: Uses BaseModel (not Value/ContractModel) because
             StateMachine is composed with Entity via multiple inheritance.
             Entity's model_post_init sets updated_at which requires
             the model to NOT be frozen.
