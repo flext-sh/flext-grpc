@@ -12,16 +12,6 @@ from flext_grpc.__version__ import *
 
 if _t.TYPE_CHECKING:
     import flext_grpc._utilities as _flext_grpc__utilities
-    from flext_grpc.__version__ import (
-        __author__,
-        __author_email__,
-        __description__,
-        __license__,
-        __title__,
-        __url__,
-        __version__,
-        __version_info__,
-    )
 
     _utilities = _flext_grpc__utilities
     import flext_grpc.api as _flext_grpc_api

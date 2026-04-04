@@ -12,10 +12,8 @@ from typing import Protocol, runtime_checkable
 
 from grpc import GenericRpcHandler
 
-from flext_core.protocols import FlextProtocols
-from flext_core.result import FlextResult
-from flext_core.typings import FlextTypes
-from flext_grpc.constants import FlextGrpcConstants
+from flext_core import FlextProtocols, FlextResult, FlextTypes
+from flext_grpc import FlextGrpcConstants
 
 
 class FlextGrpcProtocols(FlextProtocols):
