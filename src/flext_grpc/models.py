@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from datetime import datetime
-from typing import Annotated, Literal, Self, override
+from typing import Annotated, ClassVar, Literal, Self, override
 
 import grpc
 from pydantic import BaseModel, Field, computed_field, field_validator
@@ -52,10 +52,9 @@ class FlextGrpcModels(FlextModels):
                 str,
                 Field(default="", description="Server identifier"),
             ]
-            timestamp: Annotated[
-                datetime,
-                Field(description="Response timestamp"),
-            ] = Field(default_factory=datetime.now)
+            timestamp: datetime = Field(
+                default_factory=datetime.now, description="Response timestamp"
+            )
 
         class HealthRequest(FlextModels.Value):
             """Health check request message (immutable value model)."""
@@ -74,13 +73,21 @@ class FlextGrpcModels(FlextModels):
         class StreamInfo(FlextModels.Value):
             """Basic stream information (immutable value model)."""
 
-            stream_id: str
-            stream_type: str
-            target: str
-            created_at: datetime = Field(default_factory=datetime.now)
-            total_requests_sent: Annotated[t.NonNegativeInt, Field(default=0)]
-            average_latency_ms: Annotated[t.NonNegativeFloat, Field(default=0.0)]
-            error_count: Annotated[t.NonNegativeInt, Field(default=0)]
+            stream_id: str = Field(description="Unique stream identifier")
+            stream_type: str = Field(description="Stream communication type")
+            target: str = Field(description="Target endpoint address")
+            created_at: datetime = Field(
+                default_factory=datetime.now, description="Stream creation timestamp"
+            )
+            total_requests_sent: t.NonNegativeInt = Field(
+                default=0, description="Total requests sent on stream"
+            )
+            average_latency_ms: t.NonNegativeFloat = Field(
+                default=0.0, description="Average latency in milliseconds"
+            )
+            error_count: t.NonNegativeInt = Field(
+                default=0, description="Number of errors on stream"
+            )
 
         class HealthCheck(FlextModels.Value):
             """gRPC health check model (immutable value model)."""
@@ -93,12 +100,9 @@ class FlextGrpcModels(FlextModels):
             """gRPC service definition model (immutable value model)."""
 
             service_name: Annotated[str, Field(description="Service name")]
-            methods: Annotated[
-                t.StrSequence,
-                Field(
-                    description="Service methods",
-                ),
-            ] = Field(default_factory=list)
+            methods: t.StrSequence = Field(
+                default_factory=list, description="Service methods"
+            )
             endpoint: Annotated[
                 str | None,
                 Field(default=None, description="Service endpoint"),
@@ -171,55 +175,52 @@ class FlextGrpcModels(FlextModels):
                 str,
                 Field(description="Operation name to execute"),
             ]
-            arguments: Annotated[
-                t.ConfigurationMapping,
-                Field(
-                    description="Positional arguments as dict",
-                ),
-            ] = Field(default_factory=dict)
-            keyword_arguments: Annotated[
-                t.ConfigurationMapping,
-                Field(
-                    description="Keyword arguments",
-                ),
-            ] = Field(default_factory=dict)
+            arguments: t.ConfigurationMapping = Field(
+                default_factory=dict, description="Positional arguments as dict"
+            )
+            keyword_arguments: t.ConfigurationMapping = Field(
+                default_factory=dict, description="Keyword arguments"
+            )
 
         class ServerConfig(FlextModels.Value):
             """Basic server configuration (immutable value model)."""
 
-            host: Annotated[str, Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)]
-            port: Annotated[
-                t.PortNumber,
-                Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT),
-            ]
-            max_workers: Annotated[
-                t.WorkerCount,
-                Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS),
-            ]
-            timeout: Annotated[
-                t.PositiveTimeout,
-                Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT),
-            ]
+            host: str = Field(
+                default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
+                description="Server host address",
+            )
+            port: t.PortNumber = Field(
+                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+                description="Server port number",
+            )
+            max_workers: t.WorkerCount = Field(
+                default=c.Grpc.Service.DEFAULT_MAX_WORKERS,
+                description="Maximum worker threads",
+            )
+            timeout: t.PositiveTimeout = Field(
+                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
+                description="Request timeout in seconds",
+            )
 
         class ClientConfig(FlextModels.Value):
             """Basic client configuration (immutable value model)."""
 
-            target: Annotated[
-                str,
-                Field(
-                    default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
-                ),
-            ]
-            timeout: Annotated[
-                t.PositiveTimeout,
-                Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT),
-            ]
+            target: str = Field(
+                default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+                description="Target server address",
+            )
+            timeout: t.PositiveTimeout = Field(
+                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
+                description="Request timeout in seconds",
+            )
 
         class ChannelConfig(FlextModels.Value):
             """Basic channel configuration (immutable value model)."""
 
-            address: str
-            options: t.OptionalContainerValueMapping | None = None
+            address: str = Field(description="Channel address")
+            options: t.OptionalContainerValueMapping | None = Field(
+                default=None, description="Channel options"
+            )
 
         class SecurityConfig(FlextModels.Value):
             """Generic gRPC security configuration with validation."""
@@ -484,7 +485,7 @@ class FlextGrpcModels(FlextModels):
         class StateTransition(FlextModels.Value):
             """State transition result model."""
 
-            state: str
+            state: str = Field(description="Target state after transition")
 
         class EntityValidator(FlextModels.Value):
             """Generic entity validator using functional composition.
@@ -568,6 +569,8 @@ class FlextGrpcModels(FlextModels):
 
         class OperationSpec(FlextModels.Value):
             """Generic operation specification using Pydantic."""
+
+            _flext_enforcement_exempt: ClassVar[bool] = True
 
             name: Annotated[str, Field(min_length=1, description="Operation name")]
             entity_type: Annotated[
