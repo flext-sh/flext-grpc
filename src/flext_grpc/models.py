@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from datetime import datetime
-from typing import Annotated, ClassVar, Literal, Self, override
+from typing import Annotated, Self, override
 
 import grpc
 from pydantic import BaseModel, Field, computed_field, field_validator
@@ -336,27 +336,27 @@ class FlextGrpcModels(FlextModels):
             max_receive_message_length: Annotated[
                 int,
                 Field(
-                    default=4 * 1024 * 1024,
-                    ge=1024,
-                    le=100 * 1024 * 1024,
+                    default=c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH,
+                    ge=c.Grpc.PerformanceLimits.MIN_MESSAGE_LENGTH,
+                    le=c.Grpc.PerformanceLimits.MAX_MESSAGE_LENGTH,
                     description="Maximum receive message length (bytes)",
                 ),
             ]
             max_send_message_length: Annotated[
                 int,
                 Field(
-                    default=4 * 1024 * 1024,
-                    ge=1024,
-                    le=100 * 1024 * 1024,
+                    default=c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH,
+                    ge=c.Grpc.PerformanceLimits.MIN_MESSAGE_LENGTH,
+                    le=c.Grpc.PerformanceLimits.MAX_MESSAGE_LENGTH,
                     description="Maximum send message length (bytes)",
                 ),
             ]
             thread_pool_size: Annotated[
                 int,
                 Field(
-                    default=50,
-                    ge=1,
-                    le=200,
+                    default=c.Grpc.PerformanceLimits.DEFAULT_THREAD_POOL_SIZE,
+                    ge=c.Grpc.PerformanceLimits.MIN_THREAD_POOL_SIZE,
+                    le=c.Grpc.PerformanceLimits.MAX_THREAD_POOL_SIZE,
                     description="Thread pool size",
                 ),
             ]
@@ -374,16 +374,16 @@ class FlextGrpcModels(FlextModels):
             max_concurrent_streams: Annotated[
                 t.WorkerCount,
                 Field(
-                    default=10,
+                    default=c.Grpc.Streaming.DEFAULT_MAX_CONCURRENT_STREAMS,
                     description="Maximum concurrent streams",
                 ),
             ]
             stream_buffer_size: Annotated[
                 int,
                 Field(
-                    default=500,
-                    ge=10,
-                    le=10000,
+                    default=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
+                    ge=c.Grpc.Streaming.MIN_BUFFER_SIZE,
+                    le=c.Grpc.Streaming.MAX_BUFFER_SIZE,
                     description="Stream buffer size",
                 ),
             ]
@@ -570,11 +570,9 @@ class FlextGrpcModels(FlextModels):
         class OperationSpec(FlextModels.Value):
             """Generic operation specification using Pydantic."""
 
-            _flext_enforcement_exempt: ClassVar[bool] = True
-
             name: Annotated[str, Field(min_length=1, description="Operation name")]
             entity_type: Annotated[
-                Literal["server", "client", "channel", "service", "stream"],
+                t.Grpc.EntityKind,
                 Field(description="Type of entity to operate on"),
             ]
             method_name: Annotated[
@@ -594,7 +592,9 @@ class FlextGrpcModels(FlextModels):
         class Request(FlextModels.Value):
             """Generic request model with validation."""
 
-            operation: FlextGrpcModels.Grpc.OperationSpec
+            operation: FlextGrpcModels.Grpc.OperationSpec = Field(
+                description="Operation specification to execute",
+            )
             entity: Annotated[
                 BaseModel | None,
                 Field(
@@ -648,7 +648,9 @@ class FlextGrpcModels(FlextModels):
         class Payload(BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: t.OptionalContainerValueMapping = Field(default_factory=dict)
+            values: t.OptionalContainerValueMapping = Field(
+                default_factory=dict, description="Key-value payload data"
+            )
 
             @classmethod
             def from_values(cls, **values: t.OptionalContainerValue) -> Self:
@@ -693,10 +695,18 @@ class FlextGrpcModels(FlextModels):
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
 
-            target: str = ""
-            state: c.Grpc.ChannelState = c.Grpc.ChannelState.IDLE
-            options: t.OptionalContainerValueMapping = Field(default_factory=dict)
-            grpc_channel: p.Grpc.GrpcChannel | None = None
+            target: str = Field(default="", description="gRPC server target address")
+            state: c.Grpc.ChannelState = Field(
+                default=c.Grpc.ChannelState.IDLE,
+                description="Current channel connection state",
+            )
+            options: t.OptionalContainerValueMapping = Field(
+                default_factory=dict, description="Channel configuration options"
+            )
+            grpc_channel: Annotated[
+                p.Grpc.GrpcChannel | None,
+                Field(default=None, description="Underlying gRPC channel instance"),
+            ]
 
             def connect(self) -> r[Self]:
                 """Transition to connecting."""
@@ -737,15 +747,30 @@ class FlextGrpcModels(FlextModels):
         class Server(Entity, StateMachine):
             """Generic gRPC server with state machine and validation delegation."""
 
-            host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
-            port: t.PortNumber = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-            state: c.Grpc.ServerState = c.Grpc.ServerState.STOPPED
-            max_workers: t.WorkerCount = 10
+            host: str = Field(
+                default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
+                description="Server bind host address",
+            )
+            port: t.PortNumber = Field(
+                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+                description="Server listen port number",
+            )
+            state: c.Grpc.ServerState = Field(
+                default=c.Grpc.ServerState.STOPPED,
+                description="Current server lifecycle state",
+            )
+            max_workers: t.WorkerCount = Field(
+                default=c.Grpc.Service.DEFAULT_MAX_WORKERS,
+                description="Maximum worker threads for request handling",
+            )
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
                 Field(description="gRPC services"),
             ] = Field(default_factory=list)
-            grpc_server: p.Grpc.GrpcServer | None = None
+            grpc_server: Annotated[
+                p.Grpc.GrpcServer | None,
+                Field(default=None, description="Underlying gRPC server instance"),
+            ]
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
                 """Add service functionally.
@@ -817,8 +842,10 @@ class FlextGrpcModels(FlextModels):
         class Service(Entity):
             """Generic gRPC service with validation delegation."""
 
-            name: str = ""
-            methods: t.StrSequence = Field(default_factory=list)
+            name: str = Field(default="", description="Service name identifier")
+            methods: t.StrSequence = Field(
+                default_factory=list, description="Registered RPC method names"
+            )
 
             @field_validator("methods")
             @classmethod
@@ -860,9 +887,16 @@ class FlextGrpcModels(FlextModels):
         class Client(Entity):
             """Generic gRPC client with channel delegation."""
 
-            channel: FlextGrpcModels.Grpc.Channel | None = None
-            options: t.OptionalContainerValueMapping = Field(default_factory=dict)
-            grpc_stub: p.Grpc.GrpcStub | None = None
+            channel: FlextGrpcModels.Grpc.Channel | None = Field(
+                default=None, description="Associated gRPC channel for communication"
+            )
+            options: t.OptionalContainerValueMapping = Field(
+                default_factory=dict, description="Client configuration options"
+            )
+            grpc_stub: Annotated[
+                p.Grpc.GrpcStub | None,
+                Field(default=None, description="gRPC client stub for RPC calls"),
+            ]
 
             def connect_to(self, target: str) -> r[Self]:
                 """Connect functionally."""
@@ -886,10 +920,18 @@ class FlextGrpcModels(FlextModels):
         class GrpcStream(Entity):
             """Generic gRPC stream with validation delegation."""
 
-            id: str = ""
-            method_name: str = ""
-            stream_type: c.Grpc.GrpcOperations = c.Grpc.GrpcOperations.UNARY
-            grpc_stub: p.Grpc.GrpcStub | None = None
+            id: str = Field(default="", description="Unique stream identifier")
+            method_name: str = Field(
+                default="", description="RPC method name for this stream"
+            )
+            stream_type: c.Grpc.GrpcOperations = Field(
+                default=c.Grpc.GrpcOperations.UNARY,
+                description="Stream communication pattern type",
+            )
+            grpc_stub: Annotated[
+                p.Grpc.GrpcStub | None,
+                Field(default=None, description="gRPC stub used by this stream"),
+            ]
 
             @field_validator("method_name")
             @classmethod
@@ -900,17 +942,21 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return v
 
-    class CompleteSetup(BaseModel):
-        """Complete gRPC setup result."""
+        class CompleteSetup(BaseModel):
+            """Complete gRPC setup result with server, client, and service."""
 
-        server: FlextGrpcModels.Grpc.Server
-        client: FlextGrpcModels.Grpc.Client
-        service: FlextGrpcModels.Grpc.Service
-        target: str
+            server: FlextGrpcModels.Grpc.Server = Field(
+                description="Configured gRPC server instance"
+            )
+            client: FlextGrpcModels.Grpc.Client = Field(
+                description="Configured gRPC client instance"
+            )
+            service: FlextGrpcModels.Grpc.Service = Field(
+                description="Configured gRPC service definition"
+            )
+            target: str = Field(description="Target server address for the setup")
 
-
-m: type[FlextGrpcModels] = FlextGrpcModels
-
-__all__ = ["FlextGrpcModels", "m"]
 
 m = FlextGrpcModels
+
+__all__ = ["FlextGrpcModels", "m"]

@@ -12,6 +12,7 @@ from flext_grpc import (
     FlextGrpcMetrics,
     FlextGrpcServiceServicer,
     add_FlextGrpcServiceServicer_to_server,
+    c,
     m,
     r,
 )
@@ -99,7 +100,9 @@ class FlextGrpcServer:
                     return stopping_result
                 stopping_server = stopping_result.value
                 grpc_server = self._active_servers[server_key]
-                _ = grpc_server.stop(grace=2.0)
+                _ = grpc_server.stop(
+                    grace=c.Grpc.GrpcNetwork.DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT,
+                )
                 del self._active_servers[server_key]
                 self._metrics.record_metric(f"{server_key}_stopped_at", time.time())
                 return stopping_server.mark_stopped()

@@ -9,22 +9,29 @@ from collections.abc import MutableMapping
 import grpc
 from pydantic import Field, ValidationError
 
-from flext_grpc import FlextGrpcMetrics, m, r, t, u
+from flext_grpc import FlextGrpcMetrics, c, m, r, t, u
 
 
 class FlextGrpcStream:
     """Mixin providing stream processing for FlextGrpc facade."""
 
     class _StreamRuntimeState(m.Value):
-        stream: m.Grpc.GrpcStream
-        created_at: float
+        stream: m.Grpc.GrpcStream = Field(
+            description="gRPC stream instance being tracked"
+        )
+        created_at: float = Field(
+            description="Stream creation timestamp in epoch seconds"
+        )
         buffer: deque[t.OptionalContainerValueMapping] = Field(
-            default_factory=lambda: deque[t.OptionalContainerValueMapping](maxlen=500)
+            default_factory=lambda: deque[t.OptionalContainerValueMapping](
+                maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
+            ),
+            description="Bounded message buffer for stream processing",
         )
 
     @staticmethod
     def _new_stream_buffer() -> deque[t.OptionalContainerValueMapping]:
-        return deque(maxlen=500)
+        return deque(maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE)
 
     class GrpcStreamManager:
         """Dedicated stream processing with buffering."""

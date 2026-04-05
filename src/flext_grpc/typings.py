@@ -17,6 +17,7 @@ from __future__ import annotations
 import logging
 import re
 from collections.abc import Mapping, Sequence
+from typing import Literal
 
 from flext_core import FlextTypes
 from flext_grpc import p
@@ -33,6 +34,7 @@ class FlextGrpcTypes(FlextTypes):
     class Grpc:
         """gRPC-specific type namespace for domain aliases and validators."""
 
+        type EntityKind = Literal["server", "client", "channel", "service", "stream"]
         type GrpcServicer = p.Grpc.GrpcServicer
 
         type Headers = FlextTypes.StrMapping

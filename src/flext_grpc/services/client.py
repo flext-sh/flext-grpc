@@ -11,6 +11,7 @@ from flext_grpc import (
     FlextGrpcConnectionPool,
     FlextGrpcMetrics,
     FlextGrpcServiceStub,
+    c,
     m,
     r,
     t,
@@ -32,7 +33,7 @@ class FlextGrpcClient:
             super().__init__()
             self._active_channels: MutableMapping[str, grpc.Channel] = {}
             self._connection_pool = FlextGrpcConnectionPool.ConnectionPool(
-                max_size=20,
+                max_size=c.Grpc.Connection.DEFAULT_POOL_SIZE,
             )
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
@@ -44,7 +45,9 @@ class FlextGrpcClient:
             def _connect() -> m.Grpc.Client:
                 try:
                     grpc_channel: grpc.Channel = grpc.insecure_channel(target)
-                    grpc.channel_ready_future(grpc_channel).result(timeout=5.0)
+                    grpc.channel_ready_future(grpc_channel).result(
+                        timeout=c.Grpc.GrpcNetwork.DEFAULT_CHANNEL_READY_TIMEOUT,
+                    )
                 except (grpc.RpcError, grpc.FutureTimeoutError) as exc:
                     raise RuntimeError(str(exc)) from exc
                 self._active_channels[target] = grpc_channel

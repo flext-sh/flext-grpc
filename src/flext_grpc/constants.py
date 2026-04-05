@@ -45,30 +45,51 @@ class FlextGrpcConstants(FlextConstants):
         class GrpcNetwork:
             """gRPC-specific network constants."""
 
-            DEFAULT_HOST: Final[str] = "127.0.0.1"
+            DEFAULT_CHANNEL_READY_TIMEOUT: Final[float] = 5.0
+            DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: Final[float] = 2.0
             DEFAULT_GRPC_PORT: Final[int] = 50051
-            MIN_PORT: Final[int] = 1
-            MAX_PORT: Final[int] = 65535
+            DEFAULT_HOST: Final[str] = "127.0.0.1"
+            DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000
+            DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000
             DEFAULT_TIMEOUT: Final[float] = float(
                 FlextConstants.DEFAULT_TIMEOUT_SECONDS,
             )
-            HOST: Final[str] = "127.0.0.1"
-            LOCALHOST_IP: Final[str] = "127.0.0.1"
-            DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000
-            DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000
+            MAX_PORT: Final[int] = 65535
+            MIN_PORT: Final[int] = 1
+
+        class PerformanceLimits:
+            """Performance configuration limits."""
+
+            DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
+            DEFAULT_THREAD_POOL_SIZE: Final[int] = 50
+            MAX_MESSAGE_LENGTH: Final[int] = 100 * 1024 * 1024
+            MAX_THREAD_POOL_SIZE: Final[int] = 200
+            MIN_MESSAGE_LENGTH: Final[int] = 1024
+            MIN_THREAD_POOL_SIZE: Final[int] = 1
 
         class Service:
             """gRPC service constants extending c.Service."""
 
-            DEFAULT_MAX_WORKERS: Final[int] = 10
-            MIN_WORKERS: Final[int] = 1
-            MAX_WORKERS: Final[int] = 100
             DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
+            DEFAULT_MAX_WORKERS: Final[int] = 10
+            MAX_WORKERS: Final[int] = 100
+            MIN_WORKERS: Final[int] = 1
+
+        class Streaming:
+            """Streaming configuration defaults."""
+
+            BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
+            CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
+            DEFAULT_BUFFER_SIZE: Final[int] = 500
+            DEFAULT_MAX_CONCURRENT_STREAMS: Final[int] = 10
+            MAX_BUFFER_SIZE: Final[int] = 10000
+            MIN_BUFFER_SIZE: Final[int] = 10
+            SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
 
         class Connection:
-            """gRPC connection and performance constants."""
+            """Connection pool defaults."""
 
-            MAX_WORKERS: Final[int] = 20
+            DEFAULT_POOL_SIZE: Final[int] = 20
             DEFAULT_TIMEOUT: Final[float] = float(
                 FlextConstants.DEFAULT_TIMEOUT_SECONDS,
             )
@@ -109,13 +130,6 @@ class FlextGrpcConstants(FlextConstants):
             """gRPC timeout validation constants."""
 
             MAX_TIMEOUT_SECONDS: Final[float] = 300.0
-
-        class Streaming:
-            """gRPC streaming constants."""
-
-            CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
-            SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
-            BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
 
         @unique
         class ChannelState(StrEnum):
@@ -187,14 +201,30 @@ class FlextGrpcConstants(FlextConstants):
             GRPCLB = "grpclb"
             XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
 
-        "Channel states tuple - generated from ChannelState StrEnum."
-        "Server states tuple - generated from ServerState StrEnum."
+        CHANNEL_STATES: Final[tuple[str, ...]] = tuple(
+            member.value for member in ChannelState.__members__.values()
+        )
+        """Channel states tuple - generated from ChannelState StrEnum."""
+
+        COMPRESSION_TYPES: Final[tuple[str, ...]] = tuple(
+            member.value for member in CompressionTypes.__members__.values()
+        )
+        """Compression types tuple - generated from CompressionTypes StrEnum."""
+
+        LOAD_BALANCING_POLICIES: Final[tuple[str, ...]] = tuple(
+            member.value for member in LoadBalancingPolicies.__members__.values()
+        )
+        """Load balancing policies tuple - generated from LoadBalancingPolicies StrEnum."""
+
+        SERVER_STATES: Final[tuple[str, ...]] = tuple(
+            member.value for member in ServerState.__members__.values()
+        )
+        """Server states tuple - generated from ServerState StrEnum."""
+
         STREAM_TYPES: Final[tuple[str, ...]] = tuple(
             member.value for member in GrpcOperations.__members__.values()
         )
-        "Stream types tuple - generated from GrpcOperations StrEnum."
-        "Load balancing policies tuple - generated from LoadBalancingPolicies StrEnum."
-        "Compression types tuple - generated from CompressionTypes StrEnum."
+        """Stream types tuple - generated from GrpcOperations StrEnum."""
 
 
 __all__: t.StrSequence = ["FlextGrpcConstants", "c"]

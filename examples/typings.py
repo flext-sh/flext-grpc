@@ -4,4 +4,4 @@ from __future__ import annotations
 
 from flext_grpc import m
 
-type CompleteSetup = m.CompleteSetup
+type CompleteSetup = m.Grpc.CompleteSetup

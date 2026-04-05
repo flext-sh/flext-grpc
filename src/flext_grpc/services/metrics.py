@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import threading
 
+from pydantic import Field
+
 from flext_grpc import m, t, u
 
 
@@ -11,7 +13,9 @@ class FlextGrpcMetrics:
     """Mixin providing metrics collection for FlextGrpc facade."""
 
     class _MetricValueModel(m.Value):
-        value: t.OptionalContainerValue
+        value: t.OptionalContainerValue = Field(
+            description="Normalized metric measurement value"
+        )
 
     class MetricsCollector:
         """Dedicated metrics collection with thread safety."""

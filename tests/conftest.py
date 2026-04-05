@@ -8,20 +8,22 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 
 import pytest
 
-from flext_core import FlextContainer
 from flext_grpc import FlextGrpcSettings
 from tests import c, t
 
+pytest_plugins = ["flext_tests.conftest_plugin"]
 
-@pytest.fixture(autouse=True)
-def clean_container() -> FlextContainer:
-    """Clean global container and settings before each test."""
-    FlextGrpcSettings._instances.clear()
-    return FlextContainer.get_global()
+
+@pytest.fixture
+def grpc_settings(
+    settings_factory: Callable[..., FlextGrpcSettings],
+) -> FlextGrpcSettings:
+    """Provide clean FlextGrpcSettings for tests."""
+    return settings_factory(FlextGrpcSettings)
 
 
 @pytest.fixture

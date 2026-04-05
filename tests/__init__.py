@@ -14,7 +14,12 @@ if _t.TYPE_CHECKING:
 
     conftest = _tests_conftest
     import tests.constants as _tests_constants
-    from tests.conftest import clean_container, sample_grpc_config, test_addresses
+    from tests.conftest import (
+        grpc_settings,
+        pytest_plugins,
+        sample_grpc_config,
+        test_addresses,
+    )
 
     constants = _tests_constants
     import tests.models as _tests_models
@@ -79,16 +84,17 @@ _LAZY_IMPORTS = merge_lazy_imports(
         "FlextGrpcTestTypes": "tests.typings",
         "FlextGrpcTestUtilities": "tests.utilities",
         "c": ("tests.constants", "FlextGrpcTestConstants"),
-        "clean_container": "tests.conftest",
         "conftest": "tests.conftest",
         "constants": "tests.constants",
         "d": ("flext_core.decorators", "FlextDecorators"),
         "e": ("flext_core.exceptions", "FlextExceptions"),
+        "grpc_settings": "tests.conftest",
         "h": ("flext_core.handlers", "FlextHandlers"),
         "m": ("tests.models", "FlextGrpcTestModels"),
         "models": "tests.models",
         "p": ("tests.protocols", "FlextGrpcTestProtocols"),
         "protocols": "tests.protocols",
+        "pytest_plugins": "tests.conftest",
         "r": ("flext_core.result", "FlextResult"),
         "s": ("flext_core.service", "FlextService"),
         "sample_grpc_config": "tests.conftest",
@@ -124,16 +130,17 @@ __all__ = [
     "Testp",
     "Testu",
     "c",
-    "clean_container",
     "conftest",
     "constants",
     "d",
     "e",
+    "grpc_settings",
     "h",
     "m",
     "models",
     "p",
     "protocols",
+    "pytest_plugins",
     "r",
     "s",
     "sample_grpc_config",

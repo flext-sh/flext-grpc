@@ -10,14 +10,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated
+from typing import Annotated, ClassVar
 
 from pydantic import AliasChoices, Field, computed_field
+from pydantic_settings import SettingsConfigDict
 
 from flext_core import FlextSettings
 from flext_grpc import c, m, r, t
 
 
+@FlextSettings.auto_register("grpc")
 class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings with flat convenience fields and nested configurations.
 
@@ -25,6 +27,11 @@ class FlextGrpcSettings(FlextSettings):
     for advanced settings. Flat fields are convenience accessors that sync with
     nested configurations.
     """
+
+    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+        env_prefix="FLEXT_GRPC_",
+        extra="ignore",
+    )
 
     # Flat convenience fields (settable via constructor)
     host: Annotated[
