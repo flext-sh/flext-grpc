@@ -1,0 +1,33 @@
+examples/typings.py
+  cdd262d4e064dc50 7
+src/flext_grpc/services/metrics.py
+  cdd262d4e064dc50 7-8,16-18
+src/flext_grpc/services/stream.py
+  cdd262d4e064dc50 19-24,26-29,34
+src/flext_grpc/api.py
+  cdd262d4e064dc50 108,115,121,129,133-134
+src/flext_grpc/typings.py
+  cdd262d4e064dc50 20,37
+src/flext_grpc/models.py
+  cdd262d4e064dc50 575,595-597,652,698-700,702-707,709,750-751,753-755,757-759,761-762,765,770-771,773,845-848,890-897,899,923-928,930-932,934
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.5",
+  "base_commit_sha": "4cc1b06897a88d77d856f094f0799d8f4ed817db",
+  "prompts": {
+    "cdd262d4e064dc50": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "bb50d2f6-2887-49fd-99be-f714814b3981",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 48,
+      "total_deletions": 39,
+      "accepted_lines": 77,
+      "overriden_lines": 11
+    }
+  }
+}
