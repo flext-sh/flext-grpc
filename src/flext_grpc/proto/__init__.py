@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import typing as _t
 
-from flext_core import install_lazy_exports
+from flext_core.lazy import install_lazy_exports
 
 if _t.TYPE_CHECKING:
     import flext_grpc.proto.stubs as _flext_grpc_proto_stubs
@@ -30,9 +30,12 @@ if _t.TYPE_CHECKING:
         add_FlextGrpcServiceServicer_to_server,
     )
 _LAZY_IMPORTS = {
-    "FlextGrpcServiceServicer": "flext_grpc.proto.stubs",
-    "FlextGrpcServiceStub": "flext_grpc.proto.stubs",
-    "add_FlextGrpcServiceServicer_to_server": "flext_grpc.proto.stubs",
+    "FlextGrpcServiceServicer": ("flext_grpc.proto.stubs", "FlextGrpcServiceServicer"),
+    "FlextGrpcServiceStub": ("flext_grpc.proto.stubs", "FlextGrpcServiceStub"),
+    "add_FlextGrpcServiceServicer_to_server": (
+        "flext_grpc.proto.stubs",
+        "add_FlextGrpcServiceServicer_to_server",
+    ),
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),

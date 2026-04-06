@@ -33,19 +33,22 @@ if _t.TYPE_CHECKING:
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
 _LAZY_IMPORTS = {
-    "ArchitectureValidator": "docs.architecture.tools.validate_docs",
-    "ValidationResults": "docs.architecture.tools.validate_docs",
-    "ValidationSummary": "docs.architecture.tools.validate_docs",
+    "ArchitectureValidator": (
+        "docs.architecture.tools.validate_docs",
+        "ArchitectureValidator",
+    ),
+    "ValidationResults": ("docs.architecture.tools.validate_docs", "ValidationResults"),
+    "ValidationSummary": ("docs.architecture.tools.validate_docs", "ValidationSummary"),
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
     "m": ("flext_core.models", "FlextModels"),
-    "main": "docs.architecture.tools.validate_docs",
+    "main": ("docs.architecture.tools.validate_docs", "main"),
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "save_report": "docs.architecture.tools.validate_docs",
+    "save_report": ("docs.architecture.tools.validate_docs", "save_report"),
     "t": ("flext_core.typings", "FlextTypes"),
     "u": ("flext_core.utilities", "FlextUtilities"),
     "validate_docs": "docs.architecture.tools.validate_docs",

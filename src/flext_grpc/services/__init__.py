@@ -46,12 +46,15 @@ if _t.TYPE_CHECKING:
     from flext_core.utilities import FlextUtilities as u
     from flext_grpc.services.stream import FlextGrpcStream
 _LAZY_IMPORTS = {
-    "FlextGrpcClient": "flext_grpc.services.client",
-    "FlextGrpcConnectionPool": "flext_grpc.services.connection_pool",
-    "FlextGrpcMetrics": "flext_grpc.services.metrics",
-    "FlextGrpcServer": "flext_grpc.services.server",
-    "FlextGrpcServices": "flext_grpc.services._compat",
-    "FlextGrpcStream": "flext_grpc.services.stream",
+    "FlextGrpcClient": ("flext_grpc.services.client", "FlextGrpcClient"),
+    "FlextGrpcConnectionPool": (
+        "flext_grpc.services.connection_pool",
+        "FlextGrpcConnectionPool",
+    ),
+    "FlextGrpcMetrics": ("flext_grpc.services.metrics", "FlextGrpcMetrics"),
+    "FlextGrpcServer": ("flext_grpc.services.server", "FlextGrpcServer"),
+    "FlextGrpcServices": ("flext_grpc.services._compat", "FlextGrpcServices"),
+    "FlextGrpcStream": ("flext_grpc.services.stream", "FlextGrpcStream"),
     "_compat": "flext_grpc.services._compat",
     "c": ("flext_core.constants", "FlextConstants"),
     "client": "flext_grpc.services.client",
