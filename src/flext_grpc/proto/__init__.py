@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import typing as _t
 
-from flext_core.lazy import install_lazy_exports
+from flext_core import install_lazy_exports
 
 if _t.TYPE_CHECKING:
     import flext_grpc.proto.stubs as _flext_grpc_proto_stubs
