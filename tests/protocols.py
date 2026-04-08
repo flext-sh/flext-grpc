@@ -11,7 +11,7 @@ from flext_tests import FlextTestsProtocols
 from flext_grpc import FlextGrpcProtocols
 
 
-class FlextGrpcTestProtocols(FlextTestsProtocols, FlextGrpcProtocols):
+class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
     """Test protocols for flext-grpc."""
 
     class Grpc(FlextGrpcProtocols.Grpc):
@@ -21,5 +21,5 @@ class FlextGrpcTestProtocols(FlextTestsProtocols, FlextGrpcProtocols):
             """Test-specific protocols."""
 
 
-p = FlextGrpcTestProtocols
-__all__ = ["FlextGrpcTestProtocols", "p"]
+p = TestsFlextGrpcProtocols
+__all__ = ["TestsFlextGrpcProtocols", "p"]

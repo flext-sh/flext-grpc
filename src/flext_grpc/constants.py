@@ -14,7 +14,7 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
-from flext_core import FlextConstants, t
+from flext_core import FlextConstants
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -226,7 +226,5 @@ class FlextGrpcConstants(FlextConstants):
         )
         """Stream types tuple - generated from GrpcOperations StrEnum."""
 
-
-__all__: t.StrSequence = ["FlextGrpcConstants", "c"]
 
 c = FlextGrpcConstants

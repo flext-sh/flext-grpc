@@ -11,7 +11,7 @@ from flext_tests import FlextTestsUtilities
 from flext_grpc import FlextGrpcUtilities
 
 
-class FlextGrpcTestUtilities(FlextTestsUtilities, FlextGrpcUtilities):
+class TestsFlextGrpcUtilities(FlextTestsUtilities, FlextGrpcUtilities):
     """Test utilities for flext-grpc."""
 
     class Grpc(FlextGrpcUtilities.Grpc):
@@ -21,5 +21,5 @@ class FlextGrpcTestUtilities(FlextTestsUtilities, FlextGrpcUtilities):
             """Test-specific utilities."""
 
 
-u = FlextGrpcTestUtilities
-__all__ = ["FlextGrpcTestUtilities", "u"]
+u = TestsFlextGrpcUtilities
+__all__ = ["TestsFlextGrpcUtilities", "u"]

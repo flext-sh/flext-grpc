@@ -10,11 +10,7 @@ import typing as _t
 from flext_core.lazy import install_lazy_exports
 
 if _t.TYPE_CHECKING:
-    import flext_grpc.services._compat as _flext_grpc_services__compat
-
-    _compat = _flext_grpc_services__compat
     import flext_grpc.services.client as _flext_grpc_services_client
-    from flext_grpc.services._compat import FlextGrpcServices
 
     client = _flext_grpc_services_client
     import flext_grpc.services.connection_pool as _flext_grpc_services_connection_pool
@@ -53,9 +49,7 @@ _LAZY_IMPORTS = {
     ),
     "FlextGrpcMetrics": ("flext_grpc.services.metrics", "FlextGrpcMetrics"),
     "FlextGrpcServer": ("flext_grpc.services.server", "FlextGrpcServer"),
-    "FlextGrpcServices": ("flext_grpc.services._compat", "FlextGrpcServices"),
     "FlextGrpcStream": ("flext_grpc.services.stream", "FlextGrpcStream"),
-    "_compat": "flext_grpc.services._compat",
     "c": ("flext_core.constants", "FlextConstants"),
     "client": "flext_grpc.services.client",
     "connection_pool": "flext_grpc.services.connection_pool",
@@ -79,9 +73,7 @@ __all__ = [
     "FlextGrpcConnectionPool",
     "FlextGrpcMetrics",
     "FlextGrpcServer",
-    "FlextGrpcServices",
     "FlextGrpcStream",
-    "_compat",
     "c",
     "client",
     "connection_pool",

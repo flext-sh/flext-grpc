@@ -17,7 +17,6 @@ if _t.TYPE_CHECKING:
         ArchitectureValidator,
         ValidationResults,
         ValidationSummary,
-        main,
         save_report,
     )
 
@@ -44,7 +43,6 @@ _LAZY_IMPORTS = {
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
     "m": ("flext_core.models", "FlextModels"),
-    "main": ("docs.architecture.tools.validate_docs", "main"),
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
@@ -64,7 +62,6 @@ __all__ = [
     "e",
     "h",
     "m",
-    "main",
     "p",
     "r",
     "s",

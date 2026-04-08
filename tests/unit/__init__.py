@@ -14,46 +14,30 @@ if _t.TYPE_CHECKING:
 
     test_api = _tests_unit_test_api
     import tests.unit.test_config as _tests_unit_test_config
-    from tests.unit.test_api import TestFlextGrpc
 
     test_config = _tests_unit_test_config
     import tests.unit.test_constants as _tests_unit_test_constants
-    from tests.unit.test_config import TestFlextGrpcSettings
 
     test_constants = _tests_unit_test_constants
     import tests.unit.test_entities as _tests_unit_test_entities
-    from tests.unit.test_constants import TestFlextGrpcConstants
 
     test_entities = _tests_unit_test_entities
     import tests.unit.test_errors as _tests_unit_test_errors
-    from tests.unit.test_entities import TestFlextGrpcEntities
 
     test_errors = _tests_unit_test_errors
     import tests.unit.test_models as _tests_unit_test_models
-    from tests.unit.test_errors import (
-        TestErrorIntegration,
-        TestFlextGrpcConfigurationError,
-        TestFlextGrpcConnectionError,
-        TestFlextGrpcError,
-        TestFlextGrpcTimeoutError,
-        TestFlextGrpcValidationError,
-    )
 
     test_models = _tests_unit_test_models
     import tests.unit.test_protocols as _tests_unit_test_protocols
-    from tests.unit.test_models import TestFlextGrpcModels
 
     test_protocols = _tests_unit_test_protocols
     import tests.unit.test_services as _tests_unit_test_services
-    from tests.unit.test_protocols import Testp
 
     test_services = _tests_unit_test_services
     import tests.unit.test_typings as _tests_unit_test_typings
-    from tests.unit.test_services import TestFlextGrpcServices
 
     test_typings = _tests_unit_test_typings
     import tests.unit.test_utilities as _tests_unit_test_utilities
-    from tests.unit.test_typings import TestFlextGrpcTypes
 
     test_utilities = _tests_unit_test_utilities
     from flext_core.constants import FlextConstants as c
@@ -67,35 +51,7 @@ if _t.TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.typings import FlextTypes as t
     from flext_core.utilities import FlextUtilities as u
-    from tests.unit.test_utilities import Testu
 _LAZY_IMPORTS = {
-    "TestErrorIntegration": ("tests.unit.test_errors", "TestErrorIntegration"),
-    "TestFlextGrpc": ("tests.unit.test_api", "TestFlextGrpc"),
-    "TestFlextGrpcConfigurationError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcConfigurationError",
-    ),
-    "TestFlextGrpcConnectionError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcConnectionError",
-    ),
-    "TestFlextGrpcConstants": ("tests.unit.test_constants", "TestFlextGrpcConstants"),
-    "TestFlextGrpcEntities": ("tests.unit.test_entities", "TestFlextGrpcEntities"),
-    "TestFlextGrpcError": ("tests.unit.test_errors", "TestFlextGrpcError"),
-    "TestFlextGrpcModels": ("tests.unit.test_models", "TestFlextGrpcModels"),
-    "TestFlextGrpcServices": ("tests.unit.test_services", "TestFlextGrpcServices"),
-    "TestFlextGrpcSettings": ("tests.unit.test_config", "TestFlextGrpcSettings"),
-    "TestFlextGrpcTimeoutError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcTimeoutError",
-    ),
-    "TestFlextGrpcTypes": ("tests.unit.test_typings", "TestFlextGrpcTypes"),
-    "TestFlextGrpcValidationError": (
-        "tests.unit.test_errors",
-        "TestFlextGrpcValidationError",
-    ),
-    "Testp": ("tests.unit.test_protocols", "Testp"),
-    "Testu": ("tests.unit.test_utilities", "Testu"),
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -120,21 +76,6 @@ _LAZY_IMPORTS = {
 }
 
 __all__ = [
-    "TestErrorIntegration",
-    "TestFlextGrpc",
-    "TestFlextGrpcConfigurationError",
-    "TestFlextGrpcConnectionError",
-    "TestFlextGrpcConstants",
-    "TestFlextGrpcEntities",
-    "TestFlextGrpcError",
-    "TestFlextGrpcModels",
-    "TestFlextGrpcServices",
-    "TestFlextGrpcSettings",
-    "TestFlextGrpcTimeoutError",
-    "TestFlextGrpcTypes",
-    "TestFlextGrpcValidationError",
-    "Testp",
-    "Testu",
     "c",
     "d",
     "e",

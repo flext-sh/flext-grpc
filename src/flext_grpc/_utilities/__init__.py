@@ -10,17 +10,15 @@ import typing as _t
 from flext_core.lazy import install_lazy_exports
 
 if _t.TYPE_CHECKING:
-    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, grpc, logger
+    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, grpc
 _LAZY_IMPORTS = {
     "FlextGrpcUtilitiesGrpc": ("flext_grpc._utilities.grpc", "FlextGrpcUtilitiesGrpc"),
     "grpc": ("flext_grpc._utilities.grpc", "grpc"),
-    "logger": ("flext_grpc._utilities.grpc", "logger"),
 }
 
 __all__ = [
     "FlextGrpcUtilitiesGrpc",
     "grpc",
-    "logger",
 ]
 
 

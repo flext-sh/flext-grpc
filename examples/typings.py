@@ -2,6 +2,20 @@
 
 from __future__ import annotations
 
-from flext_grpc import m
+from flext_grpc import FlextGrpcModels, FlextGrpcTypes
 
-type CompleteSetup = m.Grpc.CompleteSetup
+
+class ExamplesFlextGrpcTypes(FlextGrpcTypes):
+    """Example type aliases for flext-grpc."""
+
+    class Grpc(FlextGrpcTypes.Grpc):
+        """gRPC example type namespace."""
+
+        type CompleteSetup = FlextGrpcModels.Grpc.CompleteSetup
+
+
+type CompleteSetup = ExamplesFlextGrpcTypes.Grpc.CompleteSetup
+
+t = ExamplesFlextGrpcTypes
+
+__all__ = ["CompleteSetup", "ExamplesFlextGrpcTypes", "t"]

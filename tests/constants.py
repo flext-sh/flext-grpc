@@ -13,7 +13,7 @@ from flext_tests import FlextTestsConstants
 from flext_grpc import FlextGrpcConstants
 
 
-class FlextGrpcTestConstants(FlextTestsConstants, FlextGrpcConstants):
+class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
     """Test constants for flext-grpc."""
 
     class Grpc(FlextGrpcConstants.Grpc):
@@ -62,5 +62,6 @@ class FlextGrpcTestConstants(FlextTestsConstants, FlextGrpcConstants):
                 TEST_ERROR_MESSAGE: Final[str] = "test_error"
 
 
-c = FlextGrpcTestConstants
-__all__ = ["FlextGrpcTestConstants", "c"]
+c = TestsFlextGrpcConstants
+
+__all__ = ["TestsFlextGrpcConstants", "c"]

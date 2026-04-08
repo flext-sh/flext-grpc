@@ -11,7 +11,7 @@ from flext_tests import FlextTestsTypes
 from flext_grpc import FlextGrpcTypes
 
 
-class FlextGrpcTestTypes(FlextTestsTypes, FlextGrpcTypes):
+class TestsFlextGrpcTypes(FlextTestsTypes, FlextGrpcTypes):
     """Test type aliases for flext-grpc."""
 
     class Grpc(FlextGrpcTypes.Grpc):
@@ -21,5 +21,5 @@ class FlextGrpcTestTypes(FlextTestsTypes, FlextGrpcTypes):
             """Test-specific type aliases."""
 
 
-t = FlextGrpcTestTypes
-__all__ = ["FlextGrpcTestTypes", "t"]
+t = TestsFlextGrpcTypes
+__all__ = ["TestsFlextGrpcTypes", "t"]

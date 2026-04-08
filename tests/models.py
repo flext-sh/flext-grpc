@@ -11,7 +11,7 @@ from flext_tests import FlextTestsModels
 from flext_grpc import FlextGrpcModels
 
 
-class FlextGrpcTestModels(FlextTestsModels, FlextGrpcModels):
+class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
     """Test models for flext-grpc."""
 
     class Grpc(FlextGrpcModels.Grpc):
@@ -21,5 +21,5 @@ class FlextGrpcTestModels(FlextTestsModels, FlextGrpcModels):
             """Test-specific models."""
 
 
-m = FlextGrpcTestModels
-__all__ = ["FlextGrpcTestModels", "m"]
+m = TestsFlextGrpcModels
+__all__ = ["TestsFlextGrpcModels", "m"]
