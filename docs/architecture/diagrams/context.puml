@@ -9,7 +9,7 @@ Person(architect, "System Architect", "Designs microservices architecture")
 System(flext_grpc, "FLEXT-gRPC", "Enterprise gRPC communication library providing clean API over grpcio/protobuf for microservices communication")
 
 System_Boundary(flext_ecosystem, "FLEXT Ecosystem") {
-    System(flext_core, "FLEXT-Core", "Foundation library with r, FlextContainer, FlextService patterns")
+    System(flext_core, "FLEXT-Core", "Foundation library with r, FlextContainer, s patterns")
     System(flext_observability, "FLEXT-Observability", "Monitoring, metrics, and distributed tracing")
     System(flext_cli, "FLEXT-CLI", "Command-line interface and plugin system")
     System(flext_api, "FLEXT-API", "REST API framework")

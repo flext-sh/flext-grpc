@@ -12,7 +12,7 @@ from typing import Protocol, runtime_checkable
 
 from grpc import GenericRpcHandler
 
-from flext_core import FlextProtocols, FlextResult, FlextTypes
+from flext_core import FlextProtocols, FlextTypes, r
 from flext_grpc import FlextGrpcConstants
 
 
@@ -363,7 +363,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Validate gRPC address format."""
                 ...
 
-            def validate_config(self) -> FlextResult[bool]:
+            def validate_config(self) -> r[bool]:
                 """Validate gRPC configuration."""
                 ...
 
@@ -375,18 +375,18 @@ class FlextGrpcProtocols(FlextProtocols):
         class ResourceManager(Protocol):
             """Protocol for gRPC resource management operations."""
 
-            def acquire(self) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
+            def acquire(self) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Acquire a resource."""
                 ...
 
-            def cleanup(self) -> FlextResult[bool]:
+            def cleanup(self) -> r[bool]:
                 """Cleanup all resources."""
                 ...
 
             def release(
                 self,
                 resource: FlextGrpcProtocols.Grpc.GrpcResource,
-            ) -> FlextResult[bool]:
+            ) -> r[bool]:
                 """Release a resource."""
                 ...
 
@@ -456,7 +456,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def __call__(
                 self,
                 **kwargs: FlextTypes.Scalar,
-            ) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
+            ) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Create entity with given arguments."""
                 ...
 
@@ -467,7 +467,7 @@ class FlextGrpcProtocols(FlextProtocols):
             def __call__(
                 self,
                 **kwargs: FlextTypes.Scalar,
-            ) -> FlextResult[FlextGrpcProtocols.Grpc.GrpcResource]:
+            ) -> r[FlextGrpcProtocols.Grpc.GrpcResource]:
                 """Execute operation with given arguments."""
                 ...
 

@@ -39,7 +39,7 @@ from __future__ import annotations
 
 from flext_tests import tm
 
-from flext_core import FlextExceptions
+from flext_core import e
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
@@ -60,9 +60,9 @@ class TestFlextGrpcError:
         tm.that(error, is_=Exception)
 
     def test_base_error_inheritance(self) -> None:
-        """Test FlextGrpcError inherits from FlextExceptions."""
+        """Test FlextGrpcError inherits from e."""
         error = FlextGrpcError("test")
-        tm.that(error, is_=FlextExceptions.BaseError)
+        tm.that(error, is_=e.BaseError)
 
 
 class TestFlextGrpcValidationError:
@@ -93,7 +93,7 @@ class TestFlextGrpcValidationError:
     def test_validation_error_inheritance(self) -> None:
         """Test FlextGrpcValidationError inherits correctly."""
         error = FlextGrpcValidationError("test")
-        tm.that(error, is_=FlextExceptions.BaseError)
+        tm.that(error, is_=e.BaseError)
 
 
 class TestFlextGrpcConnectionError:
@@ -108,7 +108,7 @@ class TestFlextGrpcConnectionError:
     def test_connection_error_inheritance(self) -> None:
         """Test FlextGrpcConnectionError inherits correctly."""
         error = FlextGrpcConnectionError("test")
-        tm.that(error, is_=FlextExceptions.BaseError)
+        tm.that(error, is_=e.BaseError)
 
 
 class TestFlextGrpcTimeoutError:
@@ -123,7 +123,7 @@ class TestFlextGrpcTimeoutError:
     def test_timeout_error_inheritance(self) -> None:
         """Test FlextGrpcTimeoutError inherits correctly."""
         error = FlextGrpcTimeoutError("test")
-        tm.that(error, is_=FlextExceptions.BaseError)
+        tm.that(error, is_=e.BaseError)
 
 
 class TestFlextGrpcConfigurationError:
@@ -155,7 +155,7 @@ class TestFlextGrpcConfigurationError:
     def test_configuration_error_inheritance(self) -> None:
         """Test FlextGrpcConfigurationError inherits correctly."""
         error = FlextGrpcConfigurationError("test")
-        tm.that(error, is_=FlextExceptions.BaseError)
+        tm.that(error, is_=e.BaseError)
 
 
 class TestErrorIntegration:
@@ -183,11 +183,11 @@ class TestErrorIntegration:
             FlextGrpcTimeoutError("test"),
             FlextGrpcConfigurationError("test"),
         ]
-        tm.that(FlextGrpcError("test"), is_=FlextExceptions.BaseError)
-        tm.that(FlextGrpcValidationError("test"), is_=FlextExceptions.BaseError)
-        tm.that(FlextGrpcConnectionError("test"), is_=FlextExceptions.BaseError)
-        tm.that(FlextGrpcTimeoutError("test"), is_=FlextExceptions.BaseError)
-        tm.that(FlextGrpcConfigurationError("test"), is_=FlextExceptions.BaseError)
+        tm.that(FlextGrpcError("test"), is_=e.BaseError)
+        tm.that(FlextGrpcValidationError("test"), is_=e.BaseError)
+        tm.that(FlextGrpcConnectionError("test"), is_=e.BaseError)
+        tm.that(FlextGrpcTimeoutError("test"), is_=e.BaseError)
+        tm.that(FlextGrpcConfigurationError("test"), is_=e.BaseError)
         for error in errors:
             tm.that(error, is_=Exception)
 

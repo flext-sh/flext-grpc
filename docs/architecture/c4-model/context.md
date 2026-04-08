@@ -138,7 +138,7 @@ System(flext_grpc, "FLEXT-gRPC",
 
 System_Boundary(flext_ecosystem, "FLEXT Ecosystem") {
     System(flext_core, "FLEXT-Core", "Foundation library with r,
-     FlextContainer, FlextService patterns")
+     FlextContainer, s patterns")
     System(flext_observability, "FLEXT-Observability", "Monitoring, metrics, and distributed tracing")
     System(flext_cli, "FLEXT-CLI", "Command-line interface and plugin system")
     System(flext_api, "FLEXT-API", "REST API framework")
