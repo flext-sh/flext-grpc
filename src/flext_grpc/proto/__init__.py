@@ -8,12 +8,9 @@ from __future__ import annotations
 from flext_core.lazy import install_lazy_exports
 
 _LAZY_IMPORTS = {
-    "FlextGrpcServiceServicer": ("flext_grpc.proto.stubs", "FlextGrpcServiceServicer"),
-    "FlextGrpcServiceStub": ("flext_grpc.proto.stubs", "FlextGrpcServiceStub"),
-    "add_FlextGrpcServiceServicer_to_server": (
-        "flext_grpc.proto.stubs",
-        "add_FlextGrpcServiceServicer_to_server",
-    ),
+    "FlextGrpcServiceServicer": ".stubs",
+    "FlextGrpcServiceStub": ".stubs",
+    "add_FlextGrpcServiceServicer_to_server": ".stubs",
 }
 
 

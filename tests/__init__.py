@@ -22,21 +22,21 @@ if _t.TYPE_CHECKING:
     from tests.typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
     from tests.utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
 _LAZY_IMPORTS = {
-    "TestsFlextGrpcConstants": ("tests.constants", "TestsFlextGrpcConstants"),
-    "TestsFlextGrpcModels": ("tests.models", "TestsFlextGrpcModels"),
-    "TestsFlextGrpcProtocols": ("tests.protocols", "TestsFlextGrpcProtocols"),
-    "TestsFlextGrpcTypes": ("tests.typings", "TestsFlextGrpcTypes"),
-    "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
-    "c": ("tests.constants", "TestsFlextGrpcConstants"),
+    "TestsFlextGrpcConstants": ".constants",
+    "TestsFlextGrpcModels": ".models",
+    "TestsFlextGrpcProtocols": ".protocols",
+    "TestsFlextGrpcTypes": ".typings",
+    "TestsFlextGrpcUtilities": ".utilities",
+    "c": (".constants", "TestsFlextGrpcConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
     "h": ("flext_core.handlers", "FlextHandlers"),
-    "m": ("tests.models", "TestsFlextGrpcModels"),
-    "p": ("tests.protocols", "TestsFlextGrpcProtocols"),
+    "m": (".models", "TestsFlextGrpcModels"),
+    "p": (".protocols", "TestsFlextGrpcProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "t": ("tests.typings", "TestsFlextGrpcTypes"),
-    "u": ("tests.utilities", "TestsFlextGrpcUtilities"),
+    "t": (".typings", "TestsFlextGrpcTypes"),
+    "u": (".utilities", "TestsFlextGrpcUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
 

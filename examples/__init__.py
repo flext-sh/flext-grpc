@@ -26,8 +26,8 @@ if _t.TYPE_CHECKING:
     from flext_core.service import FlextService as s
     from flext_core.utilities import FlextUtilities as u
 _LAZY_IMPORTS = {
-    "CompleteSetup": ("examples.typings", "CompleteSetup"),
-    "ExamplesFlextGrpcTypes": ("examples.typings", "ExamplesFlextGrpcTypes"),
+    "CompleteSetup": ".typings",
+    "ExamplesFlextGrpcTypes": ".typings",
     "c": ("flext_core.constants", "FlextConstants"),
     "d": ("flext_core.decorators", "FlextDecorators"),
     "e": ("flext_core.exceptions", "FlextExceptions"),
@@ -36,7 +36,7 @@ _LAZY_IMPORTS = {
     "p": ("flext_core.protocols", "FlextProtocols"),
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
-    "t": ("examples.typings", "ExamplesFlextGrpcTypes"),
+    "t": (".typings", "ExamplesFlextGrpcTypes"),
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }

@@ -8,8 +8,8 @@ from __future__ import annotations
 from flext_core.lazy import install_lazy_exports
 
 _LAZY_IMPORTS = {
-    "FlextGrpcUtilitiesGrpc": ("flext_grpc._utilities.grpc", "FlextGrpcUtilitiesGrpc"),
-    "grpc": ("flext_grpc._utilities.grpc", "grpc"),
+    "FlextGrpcUtilitiesGrpc": ".grpc",
+    "grpc": ".grpc",
 }
 
 
