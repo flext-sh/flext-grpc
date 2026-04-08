@@ -3,15 +3,17 @@
 
 from __future__ import annotations
 
-from flext_core.lazy import install_lazy_exports
+from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
-_LAZY_IMPORTS = {
-    "FlextGrpcClient": ".client",
-    "FlextGrpcConnectionPool": ".connection_pool",
-    "FlextGrpcMetrics": ".metrics",
-    "FlextGrpcServer": ".server",
-    "FlextGrpcStream": ".stream",
-}
+_LAZY_IMPORTS = build_lazy_import_map(
+    {
+        ".client": ("FlextGrpcClient",),
+        ".connection_pool": ("FlextGrpcConnectionPool",),
+        ".metrics": ("FlextGrpcMetrics",),
+        ".server": ("FlextGrpcServer",),
+        ".stream": ("FlextGrpcStream",),
+    },
+)
 
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)
