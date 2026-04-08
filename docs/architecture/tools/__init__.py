@@ -15,7 +15,6 @@ _LAZY_IMPORTS = {
     "ValidationResults": ("docs.architecture.tools.validate_docs", "ValidationResults"),
     "ValidationSummary": ("docs.architecture.tools.validate_docs", "ValidationSummary"),
     "save_report": ("docs.architecture.tools.validate_docs", "save_report"),
-    "validate_docs": "docs.architecture.tools.validate_docs",
 }
 
 

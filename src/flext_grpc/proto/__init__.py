@@ -14,7 +14,6 @@ _LAZY_IMPORTS = {
         "flext_grpc.proto.stubs",
         "add_FlextGrpcServiceServicer_to_server",
     ),
-    "stubs": "flext_grpc.proto.stubs",
 }
 
 

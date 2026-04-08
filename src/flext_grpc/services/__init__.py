@@ -4,12 +4,15 @@
 """Services package."""
 
 from __future__ import annotations
-from flext_core.lazy import  install_lazy_exports
 
+from flext_core.lazy import install_lazy_exports
 
 _LAZY_IMPORTS = {
     "FlextGrpcClient": ("flext_grpc.services.client", "FlextGrpcClient"),
-    "FlextGrpcConnectionPool": ("flext_grpc.services.connection_pool", "FlextGrpcConnectionPool"),
+    "FlextGrpcConnectionPool": (
+        "flext_grpc.services.connection_pool",
+        "FlextGrpcConnectionPool",
+    ),
     "FlextGrpcMetrics": ("flext_grpc.services.metrics", "FlextGrpcMetrics"),
     "FlextGrpcServer": ("flext_grpc.services.server", "FlextGrpcServer"),
     "FlextGrpcServices": ("flext_grpc.services._compat", "FlextGrpcServices"),

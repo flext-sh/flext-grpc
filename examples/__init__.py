@@ -37,7 +37,6 @@ _LAZY_IMPORTS = {
     "r": ("flext_core.result", "FlextResult"),
     "s": ("flext_core.service", "FlextService"),
     "t": ("examples.typings", "ExamplesFlextGrpcTypes"),
-    "typings": "examples.typings",
     "u": ("flext_core.utilities", "FlextUtilities"),
     "x": ("flext_core.mixins", "FlextMixins"),
 }
@@ -54,7 +53,6 @@ __all__ = [
     "r",
     "s",
     "t",
-    "typings",
     "u",
     "x",
 ]

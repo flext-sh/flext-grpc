@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import typing as _t
 
-from flext_core.lazy import install_lazy_exports, merge_lazy_imports
+from flext_core.lazy import install_lazy_exports
 
 if _t.TYPE_CHECKING:
     from flext_core.decorators import FlextDecorators as d
@@ -21,41 +21,24 @@ if _t.TYPE_CHECKING:
     from tests.protocols import TestsFlextGrpcProtocols, TestsFlextGrpcProtocols as p
     from tests.typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
     from tests.utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
-_LAZY_IMPORTS = merge_lazy_imports(
-    ("tests.unit",),
-    {
-        "TestsFlextGrpcConstants": ("tests.constants", "TestsFlextGrpcConstants"),
-        "TestsFlextGrpcModels": ("tests.models", "TestsFlextGrpcModels"),
-        "TestsFlextGrpcProtocols": ("tests.protocols", "TestsFlextGrpcProtocols"),
-        "TestsFlextGrpcTypes": ("tests.typings", "TestsFlextGrpcTypes"),
-        "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
-        "c": ("tests.constants", "TestsFlextGrpcConstants"),
-        "conftest": "tests.conftest",
-        "constants": "tests.constants",
-        "d": ("flext_core.decorators", "FlextDecorators"),
-        "e": ("flext_core.exceptions", "FlextExceptions"),
-        "h": ("flext_core.handlers", "FlextHandlers"),
-        "m": ("tests.models", "TestsFlextGrpcModels"),
-        "models": "tests.models",
-        "p": ("tests.protocols", "TestsFlextGrpcProtocols"),
-        "protocols": "tests.protocols",
-        "r": ("flext_core.result", "FlextResult"),
-        "s": ("flext_core.service", "FlextService"),
-        "t": ("tests.typings", "TestsFlextGrpcTypes"),
-        "typings": "tests.typings",
-        "u": ("tests.utilities", "TestsFlextGrpcUtilities"),
-        "unit": "tests.unit",
-        "utilities": "tests.utilities",
-        "x": ("flext_core.mixins", "FlextMixins"),
-    },
-)
-_ = _LAZY_IMPORTS.pop("cleanup_submodule_namespace", None)
-_ = _LAZY_IMPORTS.pop("install_lazy_exports", None)
-_ = _LAZY_IMPORTS.pop("lazy_getattr", None)
-_ = _LAZY_IMPORTS.pop("logger", None)
-_ = _LAZY_IMPORTS.pop("merge_lazy_imports", None)
-_ = _LAZY_IMPORTS.pop("output", None)
-_ = _LAZY_IMPORTS.pop("output_reporting", None)
+_LAZY_IMPORTS = {
+    "TestsFlextGrpcConstants": ("tests.constants", "TestsFlextGrpcConstants"),
+    "TestsFlextGrpcModels": ("tests.models", "TestsFlextGrpcModels"),
+    "TestsFlextGrpcProtocols": ("tests.protocols", "TestsFlextGrpcProtocols"),
+    "TestsFlextGrpcTypes": ("tests.typings", "TestsFlextGrpcTypes"),
+    "TestsFlextGrpcUtilities": ("tests.utilities", "TestsFlextGrpcUtilities"),
+    "c": ("tests.constants", "TestsFlextGrpcConstants"),
+    "d": ("flext_core.decorators", "FlextDecorators"),
+    "e": ("flext_core.exceptions", "FlextExceptions"),
+    "h": ("flext_core.handlers", "FlextHandlers"),
+    "m": ("tests.models", "TestsFlextGrpcModels"),
+    "p": ("tests.protocols", "TestsFlextGrpcProtocols"),
+    "r": ("flext_core.result", "FlextResult"),
+    "s": ("flext_core.service", "FlextService"),
+    "t": ("tests.typings", "TestsFlextGrpcTypes"),
+    "u": ("tests.utilities", "TestsFlextGrpcUtilities"),
+    "x": ("flext_core.mixins", "FlextMixins"),
+}
 
 __all__ = [
     "TestsFlextGrpcConstants",
@@ -64,22 +47,15 @@ __all__ = [
     "TestsFlextGrpcTypes",
     "TestsFlextGrpcUtilities",
     "c",
-    "conftest",
-    "constants",
     "d",
     "e",
     "h",
     "m",
-    "models",
     "p",
-    "protocols",
     "r",
     "s",
     "t",
-    "typings",
     "u",
-    "unit",
-    "utilities",
     "x",
 ]
 
