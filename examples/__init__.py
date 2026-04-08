@@ -10,9 +10,7 @@ import typing as _t
 from flext_core.lazy import install_lazy_exports
 
 if _t.TYPE_CHECKING:
-    import examples.typings as _examples_typings
-
-    typings = _examples_typings
+    from examples import typings
     from examples.typings import (
         CompleteSetup,
         ExamplesFlextGrpcTypes,
