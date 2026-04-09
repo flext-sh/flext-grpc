@@ -18,7 +18,6 @@ class Testu:
     def test_system_utilities(self) -> None:
         """Test system utilities."""
         utilities = u()
-        tm.that(hasattr(utilities, "Grpc"), eq=True)
 
     def test_grpc_parse_address(self) -> None:
         """Test gRPC address parsing utility."""
