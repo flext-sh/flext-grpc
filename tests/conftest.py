@@ -12,7 +12,12 @@ from collections.abc import Callable, Mapping
 
 import pytest
 
-from flext_grpc import FlextGrpcSettings
+from flext_grpc import (
+    FlextGrpc,
+    FlextGrpcConnectionPool,
+    FlextGrpcMetrics,
+    FlextGrpcSettings,
+)
 from tests import c, t
 
 pytest_plugins = ["flext_tests.conftest_plugin"]
@@ -24,6 +29,24 @@ def grpc_settings(
 ) -> FlextGrpcSettings:
     """Provide clean FlextGrpcSettings for tests."""
     return settings_factory(FlextGrpcSettings)
+
+
+@pytest.fixture(name="grpc_facade")
+def fixture_grpc_facade() -> FlextGrpc:
+    """Build the canonical public gRPC facade."""
+    return FlextGrpc()
+
+
+@pytest.fixture(name="connection_pool")
+def fixture_connection_pool() -> FlextGrpcConnectionPool.ConnectionPool:
+    """Build a connection pool service component."""
+    return FlextGrpcConnectionPool.ConnectionPool(max_size=5)
+
+
+@pytest.fixture(name="metrics_collector")
+def fixture_metrics_collector() -> FlextGrpcMetrics.MetricsCollector:
+    """Build a metrics collector service component."""
+    return FlextGrpcMetrics.MetricsCollector()
 
 
 @pytest.fixture
