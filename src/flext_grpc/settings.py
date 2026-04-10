@@ -16,7 +16,7 @@ from pydantic import AliasChoices, Field, computed_field
 from pydantic_settings import SettingsConfigDict
 
 from flext_core import FlextSettings
-from flext_grpc import c, m, r, t
+from flext_grpc import FlextGrpcModels, c, r, t
 
 
 @FlextSettings.auto_register("grpc")
@@ -64,23 +64,25 @@ class FlextGrpcSettings(FlextSettings):
     ]
 
     # Nested configuration models
-    network: m.Grpc.NetworkConfig = Field(
-        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})
+    network: FlextGrpcModels.Grpc.NetworkConfig = Field(
+        default_factory=lambda: FlextGrpcModels.Grpc.NetworkConfig.model_validate({})
     )
-    security: m.Grpc.SecurityConfig = Field(
-        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})
+    security: FlextGrpcModels.Grpc.SecurityConfig = Field(
+        default_factory=lambda: FlextGrpcModels.Grpc.SecurityConfig.model_validate({})
     )
-    performance: m.Grpc.PerformanceConfig = Field(
-        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})
+    performance: FlextGrpcModels.Grpc.PerformanceConfig = Field(
+        default_factory=lambda: (
+            FlextGrpcModels.Grpc.PerformanceConfig.model_validate({})
+        )
     )
-    streaming: m.Grpc.StreamingConfig = Field(
-        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})
+    streaming: FlextGrpcModels.Grpc.StreamingConfig = Field(
+        default_factory=lambda: FlextGrpcModels.Grpc.StreamingConfig.model_validate({})
     )
-    client: m.Grpc.ClientConfig = Field(
-        default_factory=lambda: m.Grpc.ClientConfig.model_validate({})
+    client: FlextGrpcModels.Grpc.ClientConfig = Field(
+        default_factory=lambda: FlextGrpcModels.Grpc.ClientConfig.model_validate({})
     )
-    monitoring: m.Grpc.MonitoringConfig = Field(
-        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})
+    monitoring: FlextGrpcModels.Grpc.MonitoringConfig = Field(
+        default_factory=lambda: FlextGrpcModels.Grpc.MonitoringConfig.model_validate({})
     )
 
     @computed_field
@@ -140,4 +142,4 @@ class FlextGrpcSettings(FlextSettings):
         return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
 
 
-__all__ = ["FlextGrpcSettings", "m"]
+__all__ = ["FlextGrpcSettings"]
