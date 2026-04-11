@@ -25,7 +25,11 @@ if _t.TYPE_CHECKING:
         FlextGrpcValidationError,
     )
     from flext_grpc.models import FlextGrpcModels, m
-    from flext_grpc.proto.stubs import FlextGrpcServiceServicer, FlextGrpcServiceStub
+    from flext_grpc.proto.stubs import (
+        FlextGrpcServiceServicer,
+        FlextGrpcServiceStub,
+        add_FlextGrpcServiceServicer_to_server,
+    )
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
@@ -136,6 +140,7 @@ __all__ = [
     "__url__",
     "__version__",
     "__version_info__",
+    "add_FlextGrpcServiceServicer_to_server",
     "c",
     "d",
     "e",
