@@ -24,6 +24,7 @@ from flext_grpc import (
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
     t,
+    u,
 )
 
 logger = u.fetch_logger(__name__)

@@ -661,7 +661,7 @@ class FlextGrpcModels(FlextModels):
                 ) -> t.OptionalContainerValue:
                     if value is None:
                         return ""
-                    if u.is_primitive(value):
+                    if u.primitive(value):
                         return value
                     return str(value)
 

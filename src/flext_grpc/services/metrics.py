@@ -55,7 +55,7 @@ class FlextGrpcMetrics:
             ) -> t.OptionalContainerValue:
                 if val is None:
                     return ""
-                if u.is_primitive(val):
+                if u.primitive(val):
                     return val
                 return str(val)
 
