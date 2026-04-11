@@ -21,7 +21,7 @@ if _t.TYPE_CHECKING:
     from flext_core.service import s
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, grpc
     from flext_grpc.api import FlextGrpc
-    from flext_grpc.constants import FlextGrpcConstants, FlextGrpcConstants as c
+    from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import (
         FlextGrpcConfigurationError,
         FlextGrpcConnectionError,
@@ -29,21 +29,21 @@ if _t.TYPE_CHECKING:
         FlextGrpcTimeoutError,
         FlextGrpcValidationError,
     )
-    from flext_grpc.models import FlextGrpcModels, FlextGrpcModels as m
+    from flext_grpc.models import FlextGrpcModels, m
     from flext_grpc.proto.stubs import (
         FlextGrpcServiceServicer,
         FlextGrpcServiceStub,
         add_FlextGrpcServiceServicer_to_server,
     )
-    from flext_grpc.protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
+    from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
     from flext_grpc.services.metrics import FlextGrpcMetrics
     from flext_grpc.services.server import FlextGrpcServer
     from flext_grpc.services.stream import FlextGrpcStream
     from flext_grpc.settings import FlextGrpcSettings
-    from flext_grpc.typings import FlextGrpcTypes, FlextGrpcTypes as t
-    from flext_grpc.utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
+    from flext_grpc.typings import FlextGrpcTypes, t
+    from flext_grpc.utilities import FlextGrpcUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     (
         "._utilities",
@@ -63,7 +63,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version_info__",
             ),
             ".api": ("FlextGrpc",),
-            ".constants": ("FlextGrpcConstants",),
+            ".constants": (
+                "FlextGrpcConstants",
+                "c",
+            ),
             ".errors": (
                 "FlextGrpcConfigurationError",
                 "FlextGrpcConnectionError",
@@ -71,24 +74,29 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextGrpcTimeoutError",
                 "FlextGrpcValidationError",
             ),
-            ".models": ("FlextGrpcModels",),
-            ".protocols": ("FlextGrpcProtocols",),
+            ".models": (
+                "FlextGrpcModels",
+                "m",
+            ),
+            ".protocols": (
+                "FlextGrpcProtocols",
+                "p",
+            ),
             ".settings": ("FlextGrpcSettings",),
-            ".typings": ("FlextGrpcTypes",),
-            ".utilities": ("FlextGrpcUtilities",),
+            ".typings": (
+                "FlextGrpcTypes",
+                "t",
+            ),
+            ".utilities": (
+                "FlextGrpcUtilities",
+                "u",
+            ),
             "flext_core.decorators": ("d",),
             "flext_core.exceptions": ("e",),
             "flext_core.handlers": ("h",),
             "flext_core.mixins": ("x",),
             "flext_core.result": ("r",),
             "flext_core.service": ("s",),
-        },
-        alias_groups={
-            ".constants": (("c", "FlextGrpcConstants"),),
-            ".models": (("m", "FlextGrpcModels"),),
-            ".protocols": (("p", "FlextGrpcProtocols"),),
-            ".typings": (("t", "FlextGrpcTypes"),),
-            ".utilities": (("u", "FlextGrpcUtilities"),),
         },
     ),
     exclude_names=(
@@ -102,6 +110,9 @@ _LAZY_IMPORTS = merge_lazy_imports(
     ),
     module_name=__name__,
 )
+
+
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__ = [
     "FlextGrpc",
@@ -146,6 +157,3 @@ __all__ = [
     "u",
     "x",
 ]
-
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
