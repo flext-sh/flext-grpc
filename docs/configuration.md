@@ -97,7 +97,7 @@ flext-grpc provides flexible configuration through `FlextGrpcSettings` class wit
 from flext_grpc import FlextGrpcSettings
 
 # Simple configuration
-config = FlextGrpcSettings(
+settings = FlextGrpcSettings(
     host=FlextGrpcConstants.Network.DEFAULT_HOST,
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
     max_workers=10,
@@ -117,7 +117,7 @@ export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"
 
 ```python
 # Automatically loads from environment
-config = FlextGrpcSettings()
+settings = FlextGrpcSettings()
 ```
 
 ## Configuration Parameters
@@ -134,10 +134,10 @@ Server bind address. Common values:
 
 ```python
 # Development
-config = FlextGrpcSettings(host=FlextGrpcConstants.Network.DEFAULT_HOST)
+settings = FlextGrpcSettings(host=FlextGrpcConstants.Network.DEFAULT_HOST)
 
 # Production
-config = FlextGrpcSettings(host=FlextConstants.PRODUCTION_HOST)
+settings = FlextGrpcSettings(host=FlextConstants.PRODUCTION_HOST)
 ```
 
 #### `port: int = FlextGrpcConstants.Network.DEFAULT_PORT`
@@ -146,10 +146,10 @@ Server port number. Valid range: 1024-65535
 
 ```python
 # Standard gRPC port
-config = FlextGrpcSettings(port=FlextGrpcConstants.Network.DEFAULT_PORT)
+settings = FlextGrpcSettings(port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
 # Custom port
-config = FlextGrpcSettings(port=FlextConstants.DEFAULT_HTTP_PORT)
+settings = FlextGrpcSettings(port=FlextConstants.DEFAULT_HTTP_PORT)
 ```
 
 #### `max_workers: int = 10`
@@ -158,10 +158,10 @@ Maximum number of worker threads for request processing.
 
 ```python
 # Development (low concurrency)
-config = FlextGrpcSettings(max_workers=4)
+settings = FlextGrpcSettings(max_workers=4)
 
 # Production (high concurrency)
-config = FlextGrpcSettings(max_workers=50)
+settings = FlextGrpcSettings(max_workers=50)
 ```
 
 ### Client Configuration
@@ -172,10 +172,10 @@ Request timeout in seconds.
 
 ```python
 # Quick timeout
-config = FlextGrpcSettings(timeout=5.0)
+settings = FlextGrpcSettings(timeout=5.0)
 
 # Extended timeout
-config = FlextGrpcSettings(timeout=120.0)
+settings = FlextGrpcSettings(timeout=120.0)
 ```
 
 ### Advanced Configuration
@@ -185,7 +185,7 @@ config = FlextGrpcSettings(timeout=120.0)
 ```python
 from flext_grpc import FlextGrpcSettings
 
-config = FlextGrpcSettings(
+settings = FlextGrpcSettings(
     # Connection settings
     keepalive_time_ms=FlextConstants["Network.KEEPALIVE_TIME_MS"],  # 30 seconds
     keepalive_timeout_ms=FlextConstants["Network.KEEPALIVE_TIMEOUT_MS"],  # 5 seconds
@@ -202,7 +202,7 @@ config = FlextGrpcSettings(
 #### TLS Configuration
 
 ```python
-config = FlextGrpcSettings(
+settings = FlextGrpcSettings(
     # TLS settings
     use_tls=True,
     tls_cert_file="/path/to/server.crt",
@@ -240,8 +240,8 @@ from flext_core import s
 from flext_core import t
 from flext_core import u
 
-config = FlextGrpcSettings(host="", port=99999)  # Invalid
-validation = config.validate()
+settings = FlextGrpcSettings(host="", port=99999)  # Invalid
+validation = settings.validate()
 
 if validation.is_failure:
     print(f"Configuration error: {validation.error}")
@@ -282,16 +282,16 @@ from flext_core import s
 from flext_core import t
 from flext_core import u
 
-def validate_production_config(config: FlextGrpcSettings) -> r[bool]:
+def validate_production_config(settings: FlextGrpcSettings) -> r[bool]:
     """Additional validation for production environments."""
 
-    if config.host == FlextGrpcConstants.Network.DEFAULT_HOST:
+    if settings.host == FlextGrpcConstants.Network.DEFAULT_HOST:
         return r.fail("Production servers cannot use localhost")
 
-    if config.max_workers < 10:
+    if settings.max_workers < 10:
         return r.fail("Production requires minimum 10 workers")
 
-    if not config.use_tls:
+    if not settings.use_tls:
         return r.fail("Production requires TLS encryption")
 
     return r.| ok(value=True)
@@ -419,7 +419,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 
    ```python
    # Always enable TLS for production
-   config = FlextGrpcSettings(
+   settings = FlextGrpcSettings(
        use_tls=True,
        tls_cert_file="/secure/path/server.crt",
        tls_key_file="/secure/path/server.key",
@@ -437,7 +437,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 3. **Environment Variable Security**
 
    ```bash
-   # Don't expose sensitive config in process lists
+   # Don't expose sensitive settings in process lists
    export GRPC_TLS_KEY_FILE="/secure/path/key.pem"
    ```
 
@@ -450,7 +450,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 
    # Scale workers with CPU cores
    cpu_count = os.cpu_count() or 1
-   config = FlextGrpcSettings(
+   settings = FlextGrpcSettings(
        max_workers=min(cpu_count * 4, 50)  # Cap at 50
    )
    ```
@@ -459,7 +459,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 
    ```python
    # Set appropriate message limits
-   config = FlextGrpcSettings(
+   settings = FlextGrpcSettings(
        max_receive_message_length=4 * 1024 * 1024,  # 4MB
        max_send_message_length=4 * 1024 * 1024,  # 4MB
    )
@@ -469,7 +469,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 
    ```python
    # Different timeouts for different operations
-   config = FlextGrpcSettings(
+   settings = FlextGrpcSettings(
        timeout=FlextGrpcConstants.Service.DEFAULT_TIMEOUT,  # General operations
        health_check_timeout=5.0,  # Health checks
        streaming_timeout=300.0,  # Long-running streams
@@ -481,7 +481,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 1. **Enable Health Checking**
 
    ```python
-   config = FlextGrpcSettings(
+   settings = FlextGrpcSettings(
        enable_health_checking=True,
        health_check_interval=30,  # seconds
    )
@@ -490,7 +490,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 2. **Metrics Collection**
 
    ```python
-   config = FlextGrpcSettings(
+   settings = FlextGrpcSettings(
        enable_metrics=True,
        metrics_port=FlextGrpcConstants.METRICS_PORT,  # Prometheus metrics
    )
@@ -530,7 +530,7 @@ def setup_configuration() -> r[FlextGrpcSettings]:
     return create_config(
         host=FlextGrpcConstants.Network.DEFAULT_HOST,
         port=FlextGrpcConstants.Network.DEFAULT_PORT,
-    ).flat_map(lambda config: validate_config(config))
+    ).flat_map(lambda settings: validate_config(settings))
 ```
 
 ### Container Integration
@@ -561,17 +561,17 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings
 
 container = FlextContainer.get_global()
-config = FlextGrpcSettings(
+settings = FlextGrpcSettings(
     host=FlextGrpcConstants.Network.DEFAULT_HOST,
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
 )
 
-container.register("grpc_config", config)
+container.register("grpc_config", settings)
 
 # Later retrieval
 config_result = container.get("grpc_config")
 if config_result.success:
-    config = config_result.unwrap()
+    settings = config_result.unwrap()
 ```
 
 ## Troubleshooting Configuration
@@ -582,15 +582,15 @@ if config_result.success:
 
 ```python
 # Error: Port out of range
-config = FlextGrpcSettings(port=70000)  # Too high
-config = FlextGrpcSettings(port=80)  # Too low (reserved)
+settings = FlextGrpcSettings(port=70000)  # Too high
+settings = FlextGrpcSettings(port=80)  # Too low (reserved)
 ```
 
 **TLS Certificate Issues**
 
 ```python
 # Error: File not found
-config = FlextGrpcSettings(
+settings = FlextGrpcSettings(
     use_tls=True,
     tls_cert_file="/nonexistent/cert.pem",  # File doesn't exist
 )
@@ -617,12 +617,12 @@ def debug_config():
         if key.startswith("GRPC_"):
             print(f"  {key}={value}")
 
-    config = FlextGrpcSettings()
+    settings = FlextGrpcSettings()
     print(f"\nActual configuration:")
-    print(f"  Host: {config.host}")
-    print(f"  Port: {config.port}")
-    print(f"  Workers: {config.max_workers}")
-    print(f"  Timeout: {config.timeout}")
+    print(f"  Host: {settings.host}")
+    print(f"  Port: {settings.port}")
+    print(f"  Workers: {settings.max_workers}")
+    print(f"  Timeout: {settings.timeout}")
 ```
 
 ---

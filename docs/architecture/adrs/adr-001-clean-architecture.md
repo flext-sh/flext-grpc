@@ -93,7 +93,7 @@ Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapte
 │ └── FlextGrpcPlatform (facade)         │
 ├─────────────────────────────────────────┤
 │ Infrastructure Layer                    │
-│ ├── Configuration (config.py)          │
+│ ├── Configuration (settings.py)          │
 │ ├── API Functions (api.py)             │
 │ ├── Exception Hierarchy (exceptions.py)│
 │ └── Protocol Buffers (proto/)          │

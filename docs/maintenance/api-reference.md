@@ -560,19 +560,19 @@ class StyleCheckResult:
 import json
 
 # Load configuration
-with open("docs/maintenance/config.json", "r") as f:
-    config = json.load(f)
+with open("docs/maintenance/settings.json", "r") as f:
+    settings = json.load(f)
 
 # Access settings
-audit_thresholds = config["audit"]["quality_thresholds"]
-link_timeout = config["validation"]["link_timeout"]
+audit_thresholds = settings["audit"]["quality_thresholds"]
+link_timeout = settings["validation"]["link_timeout"]
 
 # Modify settings
-config["audit"]["quality_thresholds"]["excellent"] = 85
+settings["audit"]["quality_thresholds"]["excellent"] = 85
 
 # Save configuration
-with open("docs/maintenance/config.json", "w") as f:
-    json.dump(config, f, indent=2)
+with open("docs/maintenance/settings.json", "w") as f:
+    json.dump(settings, f, indent=2)
 ```
 
 ### Custom Rules
@@ -862,7 +862,7 @@ def migrate_config(old_config: Dict) -> Dict:
     """Migrate configuration from older versions."""
     # Handle version-specific migrations
     if "version" not in old_config:
-        # Migrate from unversioned config
+        # Migrate from unversioned settings
         old_config["system"] = {"version": "1.0.0", "migrated": True}
 
     return old_config

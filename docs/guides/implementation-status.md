@@ -155,7 +155,7 @@ providing enterprise-grade gRPC patterns with Clean Architecture and Domain-Driv
 | `api.py`           | 144           | 26%           | ⚠️ Needs work         | Core API functions partially implemented        |
 | `services.py`      | 355           | 15%           | ❌ Critical issues    | Logger property setter issues                   |
 | `entities.py`      | 213           | 36%           | ⚠️ Needs testing      | Entity classes implemented but not fully tested |
-| `config.py`        | N/A           | N/A           | ✅ Complete           | Configuration working                           |
+| `settings.py`        | N/A           | N/A           | ✅ Complete           | Configuration working                           |
 | `exceptions.py`    | 88            | 76%           | ❌ Constructor issues | Exception classes have signature problems       |
 | `models.py`        | N/A           | N/A           | ✅ Complete           | Pydantic models working                         |
 | `typings.py`       | 113           | 93%           | ✅ Complete           | Type definitions comprehensive                  |

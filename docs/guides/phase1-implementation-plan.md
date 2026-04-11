@@ -254,7 +254,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 #### 1.4 Fix Configuration Defaults
 
 - **Issue**: Host default changed unexpectedly
-- **Location**: `src/flext_grpc/config.py`
+- **Location**: `src/flext_grpc/settings.py`
 - **Solution**: Verify correct default or update tests
 - **Tests Affected**: 1 configuration default test
 - **Verification**: `test_init_default` passes with correct assertions

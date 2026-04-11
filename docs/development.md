@@ -280,8 +280,8 @@ class GrpcServer(Protocol):
 
 # Generic service class
 class GrpcService(Generic[T]):
-    def __init__(self, config: T) -> None:
-        self._config = config
+    def __init__(self, settings: T) -> None:
+        self._config = settings
 
     def process(self, data: dict) -> r[t.Dict]:
         # Implementation with proper typing
@@ -397,10 +397,10 @@ class TestGrpcServer:
         """Test successful server creation."""
 
         # Arrange
-        config = FlextGrpcSettings(host="localhost", port=50051)
+        settings = FlextGrpcSettings(host="localhost", port=50051)
 
         # Act
-        result = create_server(config)
+        result = create_server(settings)
 
         # Assert
         assert result.success
@@ -412,10 +412,10 @@ class TestGrpcServer:
         """Test server creation with invalid configuration."""
 
         # Arrange
-        config = FlextGrpcSettings(host="", port=-1)  # Invalid
+        settings = FlextGrpcSettings(host="", port=-1)  # Invalid
 
         # Act
-        result = create_server(config)
+        result = create_server(settings)
 
         # Assert
         assert result.is_failure
@@ -432,8 +432,8 @@ class TestGrpcServer:
     def test_validation_errors(self, host, port, expected_error):
         """Test configuration validation errors."""
 
-        config = FlextGrpcSettings(host=host, port=port)
-        validation = config.validate()
+        settings = FlextGrpcSettings(host=host, port=port)
+        validation = settings.validate()
 
         assert validation.is_failure
         assert expected_error in validation.error
@@ -501,7 +501,7 @@ from flext_grpc import FlextGrpcServer
 from flext_grpc import FlextGrpcServerService
 
 
-def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
+def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
@@ -589,22 +589,22 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings, FlextGrpcServer
 
 
-def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
+def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
     """Create a gRPC server with the specified configuration.
 
     Creates and validates a gRPC server instance using Clean Architecture
     patterns with comprehensive error handling through r.
 
     Args:
-        config: gRPC server configuration with validation rules
+        settings: gRPC server configuration with validation rules
 
     Returns:
         r[FlextGrpcServer]: Success with server instance, or
             failure with detailed error message
 
     Example:
-        >>> config = FlextGrpcSettings(host="localhost", port=50051)
-        >>> result = create_server(config)
+        >>> settings = FlextGrpcSettings(host="localhost", port=50051)
+        >>> result = create_server(settings)
         >>> if result.success:
         ...     server = result.unwrap()
         ...     print(f"Server: {server.host}:{server.port}")
@@ -795,8 +795,8 @@ pytest tests/unit/test_config.py::test_validation -s
 make format
 
 # Check specific file
-ruff check src/flext_grpc/config.py
-mypy src/flext_grpc/config.py --strict
+ruff check src/flext_grpc/settings.py
+mypy src/flext_grpc/settings.py --strict
 ```
 
 **Debugging**
@@ -808,7 +808,7 @@ import pdb; pdb.set_trace()
 # REPL with project loaded
 make shell
 >>> from flext_grpc import FlextGrpcSettings
->>> config = FlextGrpcSettings()
+>>> settings = FlextGrpcSettings()
 ```
 
 ---

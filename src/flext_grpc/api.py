@@ -39,11 +39,11 @@ class FlextGrpc(
     full functionality with Python 3.13+ features.
     """
 
-    def __init__(self, config: FlextGrpcSettings | None = None) -> None:
+    def __init__(self, settings: FlextGrpcSettings | None = None) -> None:
         """Initialize facade with FLEXT ecosystem integration."""
         super().__init__()
         self._grpc_config = (
-            config if config is not None else FlextGrpcSettings.model_validate({})
+            settings if settings is not None else FlextGrpcSettings.model_validate({})
         )
         self._server_manager = FlextGrpcServer.GrpcServerManager()
         self._client_manager = FlextGrpcClient.GrpcClientManager()

@@ -23,7 +23,7 @@ from flext_grpc import FlextGrpcModels, c, r, t
 class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings with flat convenience fields and nested configurations.
 
-    Provides both flat fields for simple configuration and nested config models
+    Provides both flat fields for simple configuration and nested settings models
     for advanced settings. Flat fields are convenience accessors that sync with
     nested configurations.
     """

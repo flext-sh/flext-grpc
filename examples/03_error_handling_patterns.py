@@ -70,12 +70,12 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
         if workers < 1:
             _raise_workers_error()
         try:
-            config: t.Grpc.ConfigDict = {
+            settings: t.Grpc.ConfigDict = {
                 "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
                 "port": port,
                 "max_workers": workers,
             }
-            return r[t.Grpc.ConfigDict].ok(config)
+            return r[t.Grpc.ConfigDict].ok(settings)
         except Exception as e:
             return r[t.Grpc.ConfigDict].fail(str(e))
     except FlextGrpcConfigurationError as e:
@@ -168,14 +168,14 @@ def error_recovery_patterns() -> r[str]:
             return r[str].fail("Connection recovery failed after 3 attempts")
     primary_config_result = create_server_config(-1, 4)
     if primary_config_result.failure:
-        logger.warning("Primary config failed, trying fallback")
+        logger.warning("Primary settings failed, trying fallback")
         fallback_config_result = create_server_config(
             FlextConstants.DEFAULT_HTTP_PORT,
             2,
         )
         if fallback_config_result.success:
             logger.info("✅ Fallback configuration successful")
-            return r[str].ok("Recovery successful with fallback config")
+            return r[str].ok("Recovery successful with fallback settings")
     return r[str].fail("All recovery attempts failed")
 
 
@@ -198,7 +198,7 @@ def demonstrate_error_context() -> None:
         error_category="validation",
     )
     logger.error(
-        "Configuration error with config context",
+        "Configuration error with settings context",
         error_type=type(config_error).__name__,
         error_message=str(config_error),
         config_key=config_error.config_key or "",
@@ -258,7 +258,7 @@ def main() -> None:
     logger.info("Key takeaways:")
     logger.info("  • Use specific error types for better debugging")
     logger.info("  • Always use r for error handling")
-    logger.info("  • Include context (field names, config keys) in errors")
+    logger.info("  • Include context (field names, settings keys) in errors")
     logger.info("  • Implement retry and fallback patterns")
     logger.info("  • Log errors with structured context")
 

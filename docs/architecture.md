@@ -181,7 +181,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 ### Infrastructure Layer
 
-**Configuration (config.py - 228 lines)**
+**Configuration (settings.py - 228 lines)**
 
 - Production-ready settings with validation
 - Environment variable support
@@ -212,10 +212,10 @@ Each domain entity encapsulates business logic and maintains state consistency:
 All components integrate with flext-core patterns.
 
 ```python
-def create_server(config: FlextGrpcSettings) -> r[FlextGrpcServer]:
+def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
     return (
-        validate_config(config)
-        .flat_map(lambda _: create_server_entity(config))
+        validate_config(settings)
+        .flat_map(lambda _: create_server_entity(settings))
         .map(lambda server: register_with_platform(server))
     )
 ```

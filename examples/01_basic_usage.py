@@ -49,14 +49,14 @@ def example_2_configuration() -> None:
     grpc = FlextGrpc()
     default_config = FlextGrpcSettings()
     print(
-        f"Created config with host: {default_config.network.host}, port: {default_config.network.port}",
+        f"Created settings with host: {default_config.network.host}, port: {default_config.network.port}",
     )
     custom_config = FlextGrpcSettings.model_validate({
         "network": {"host": "example.com", "port": 9090},
         "performance": {"max_workers": 20},
     })
     print(
-        f"Created custom config: {custom_config.network.host}:{custom_config.network.port}",
+        f"Created custom settings: {custom_config.network.host}:{custom_config.network.port}",
     )
     invalid_server_result = grpc.create_server(host="", port=0)
     if invalid_server_result.failure:

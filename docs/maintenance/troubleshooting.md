@@ -73,22 +73,22 @@
 - Check Current Configuration
 - Run Detailed Audit
 - Adjust Quality Thresholds if Needed
-- Edit docs/maintenance/config.JSON
+- Edit docs/maintenance/settings.JSON
 - Or fix content issues
   - Symptom: Audit finds false positives
 - Create custom audit rules
 - docs/maintenance/custom_rules.py
   - 🔗 Validation Issues
     - Symptom: Link validation times out
-- Increase timeout in config
-- Edit docs/maintenance/config.JSON
+- Increase timeout in settings
+- Edit docs/maintenance/settings.JSON
 - Or exclude problematic domains
   - Symptom: False broken link reports
 - Add to ignore patterns
-- docs/maintenance/config.JSON
+- docs/maintenance/settings.JSON
   - Symptom: Style validation too strict
 - Adjust style rules
-- docs/maintenance/config.JSON
+- docs/maintenance/settings.JSON
   - 🔧 Optimization Issues
     - Symptom: Optimization doesn't apply changes
 - Check file permissions
@@ -99,7 +99,7 @@
   - Symptom: Table of contents not generating
 - Check heading count
 - Adjust TOC settings
-- docs/maintenance/config.JSON
+- docs/maintenance/settings.JSON
   - 🔄 Synchronization Issues
     - Symptom: Git operations fail
 - Check git status
@@ -234,7 +234,7 @@ python -c "import frontmatter, requests, markdown; print('✅ Dependencies insta
 
 ```bash
 ### Check Current Configuration
-cat docs/maintenance/config.JSON | jq '.audit.quality_thresholds'
+cat docs/maintenance/settings.JSON | jq '.audit.quality_thresholds'
 
 ### Run Detailed Audit
 PYTHONPATH=. python docs/maintenance/audit.py --verbose
@@ -244,7 +244,7 @@ PYTHONPATH=. python docs/maintenance/audit.py --verbose
 
 ```bash
 ### Adjust Quality Thresholds if Needed
-# Edit docs/maintenance/config.JSON
+# Edit docs/maintenance/settings.JSON
 {
   "audit": {
     "quality_thresholds": {
@@ -287,8 +287,8 @@ TimeoutError: Request timed out
 **Solution:**
 
 ```bash
-# Increase timeout in config
-# Edit docs/maintenance/config.JSON
+# Increase timeout in settings
+# Edit docs/maintenance/settings.JSON
 {
   "validation": {
     "link_timeout": 30,  // Increased from 10
@@ -316,7 +316,7 @@ TimeoutError: Request timed out
 
 ```bash
 # Add to ignore patterns
-# docs/maintenance/config.JSON
+# docs/maintenance/settings.JSON
 {
   "validation": {
     "ignore_patterns": [
@@ -340,7 +340,7 @@ Line too long (120 > 88 characters)
 
 ```bash
 # Adjust style rules
-# docs/maintenance/config.JSON
+# docs/maintenance/settings.JSON
 {
   "style": {
     "max_line_length": 120,  // Increased from 88
@@ -389,7 +389,7 @@ PYTHONPATH=. python docs/maintenance/optimization.py --file docs/README.md
 grep -c "^#" docs/README.md
 
 # Adjust TOC settings
-# docs/maintenance/config.JSON
+# docs/maintenance/settings.JSON
 {
   "optimization": {
     "toc_min_headings": 2,  // Reduced from 4
@@ -415,8 +415,8 @@ GitCommandError: 'git commit' failed
 git status
 
 # Configure git user (if needed)
-git config user.name "Documentation Maintenance"
-git config user.email "docs@internal.invalid"
+git settings user.name "Documentation Maintenance"
+git settings user.email "docs@internal.invalid"
 
 # Check repository state
 git log --oneline -5
@@ -609,7 +609,7 @@ grep -c "failed\|error" docs/maintenance/logs/*.log
    # Create diagnostic bundle
    tar -czf diagnostic_$(date +%Y%m%d).tar.gz \
      docs/maintenance/logs/ \
-     docs/maintenance/config.JSON \
+     docs/maintenance/settings.JSON \
      docs/maintenance/reports/ \
      --exclude="*.cache"
    ```
@@ -646,12 +646,12 @@ Logs: [Relevant log excerpts]
 # Validate configuration
 python -c "
 import json
-config = json.load(open('docs/maintenance/config.JSON'))
+settings = json.load(open('docs/maintenance/settings.JSON'))
 print('✅ Configuration valid')
 "
 
 # Check for deprecated settings
-grep -r "deprecated\|obsolete" docs/maintenance/config.JSON
+grep -r "deprecated\|obsolete" docs/maintenance/settings.JSON
 ```
 
 ### Dependency Updates
@@ -687,7 +687,7 @@ tar -xzf docs/maintenance/backups/docs_backup_*.tar.gz
 
 ```bash
 # Reset to defaults
-cp docs/maintenance/config.default.json docs/maintenance/config.JSON
+cp docs/maintenance/settings.default.json docs/maintenance/settings.JSON
 
 # Merge with custom settings
 # Edit manually or use merge tool

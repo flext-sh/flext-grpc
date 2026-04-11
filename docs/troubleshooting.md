@@ -179,7 +179,7 @@ if start_result.is_failure:
    ```python
    from flext_grpc import FlextGrpcSettings
 
-   config = FlextGrpcSettings(host="localhost", port=50051, max_workers=10)
+   settings = FlextGrpcSettings(host="localhost", port=50051, max_workers=10)
    ```
 
 3. **Use platform for complex operations**:

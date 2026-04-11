@@ -140,8 +140,8 @@ print(f"Platform ready: {type(platform).__name__}")
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
-config = FlextGrpcSettings(host="localhost", port=50051, max_workers=10, timeout=30.0)
-print(f"Config: {config.host}:{config.port}")
+settings = FlextGrpcSettings(host="localhost", port=50051, max_workers=10, timeout=30.0)
+print(f"Config: {settings.host}:{settings.port}")
 ```
 
 ## Development Setup

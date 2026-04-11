@@ -11,29 +11,29 @@ class TestFlextGrpcModels:
     """Test cases for FlextGrpcModels class."""
 
     def test_server_config(self) -> None:
-        """Test server config model."""
-        config = m.Grpc.ServerConfig(
+        """Test server settings model."""
+        settings = m.Grpc.ServerConfig(
             host="127.0.0.1",
             port=50051,
             max_workers=10,
             timeout=30.0,
         )
-        tm.that(config.host, eq="127.0.0.1")
-        tm.that(config.port, eq=50051)
-        tm.that(config.max_workers, eq=10)
+        tm.that(settings.host, eq="127.0.0.1")
+        tm.that(settings.port, eq=50051)
+        tm.that(settings.max_workers, eq=10)
 
     def test_client_config(self) -> None:
-        """Test client config model."""
-        config = m.Grpc.ClientConfig(
+        """Test client settings model."""
+        settings = m.Grpc.ClientConfig(
             target="127.0.0.1:50051",
             timeout=30.0,
         )
-        tm.that(config.target, eq="127.0.0.1:50051")
+        tm.that(settings.target, eq="127.0.0.1:50051")
 
     def test_channel_config(self) -> None:
-        """Test channel config model."""
-        config = m.Grpc.ChannelConfig(address="localhost:50051")
-        tm.that(config.address, eq="localhost:50051")
+        """Test channel settings model."""
+        settings = m.Grpc.ChannelConfig(address="localhost:50051")
+        tm.that(settings.address, eq="localhost:50051")
 
     def test_stream_info(self) -> None:
         """Test stream info model."""

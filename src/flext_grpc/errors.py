@@ -37,7 +37,7 @@ class FlextGrpcConfigurationError(e.BaseError):
     """Configuration error for gRPC settings issues."""
 
     def __init__(self, message: str, *, config_key: str | None = None) -> None:
-        """Initialize with optional config key."""
+        """Initialize with optional settings key."""
         super().__init__(message)
         self.config_key = config_key
 

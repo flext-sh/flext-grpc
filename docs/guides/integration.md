@@ -248,9 +248,9 @@ def create_grpc_cli() -> FlextCliApp:
     def start_server(host: str = "localhost", port: int = 50051):
         """Start gRPC server."""
         platform = FlextGrpcPlatform()
-        config = FlextGrpcSettings(host=host, port=port)
+        settings = FlextGrpcSettings(host=host, port=port)
 
-        server_result = create_server(config)
+        server_result = create_server(settings)
         if server_result.success:
             server = server_result.unwrap()
             print(f"Server started: {server.host}:{server.port}")
@@ -299,13 +299,13 @@ class FlextServiceConnector:
 
     def __init__(self, service_name: str, target_host: str, target_port: int):
         self.service_name = service_name
-        self.config = FlextGrpcSettings(host=target_host, port=target_port)
+        self.settings = FlextGrpcSettings(host=target_host, port=target_port)
 
     def call_service(self, method: str, data: dict) -> r[t.Dict]:
         """Make gRPC call to another FLEXT service."""
 
         return (
-            create_client(self.config)
+            create_client(self.settings)
             .flat_map(lambda client: self._connect_client(client))
             .flat_map(lambda client: self._make_call(client, method, data))
         )
@@ -417,7 +417,7 @@ class FlextGrpcEnvironmentSettings(FlextSettings):
     prod_grpc_workers: int = 50
 
     def create_grpc_config(self, environment: str) -> FlextGrpcSettings:
-        """Create gRPC config for specific environment."""
+        """Create gRPC settings for specific environment."""
 
         if environment == "development":
             return FlextGrpcSettings(
@@ -526,8 +526,8 @@ class TestGrpcIntegration(FlextTestCase):
     def test_server_creation_with_flext_patterns(self):
         """Test server creation using r pattern."""
 
-        config = FlextGrpcSettings(host="localhost", port=0)  # t.NormalizedValue port
-        server_result = create_server(config)
+        settings = FlextGrpcSettings(host="localhost", port=0)  # t.NormalizedValue port
+        server_result = create_server(settings)
 
         # Railway-oriented testing
         assert server_result.success
@@ -539,8 +539,8 @@ class TestGrpcIntegration(FlextTestCase):
         """Test error handling with flext-core patterns."""
 
         # Invalid configuration
-        config = FlextGrpcSettings(host="", port=-1)
-        server_result = create_server(config)
+        settings = FlextGrpcSettings(host="", port=-1)
+        server_result = create_server(settings)
 
         # Verify r error handling
         assert server_result.is_failure
@@ -617,7 +617,7 @@ class FlextGrpcProductionService:
         return (
             self
             ._load_production_config()
-            .flat_map(lambda config: self._create_production_server(config))
+            .flat_map(lambda settings: self._create_production_server(settings))
             .flat_map(lambda server: self._start_with_monitoring(server))
             .map(lambda _: None)
         )

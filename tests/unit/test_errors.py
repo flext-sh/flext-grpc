@@ -127,7 +127,7 @@ class TestFlextGrpcTimeoutError:
 
 
 class TestFlextGrpcConfigurationError:
-    """Test gRPC configuration error with config context."""
+    """Test gRPC configuration error with settings context."""
 
     def test_configuration_error_with_all_params(self) -> None:
         """Test configuration error with all parameters."""
@@ -168,7 +168,7 @@ class TestErrorIntegration:
             FlextGrpcValidationError("validation error", field="field"),
             FlextGrpcConnectionError("connection error"),
             FlextGrpcTimeoutError("timeout error"),
-            FlextGrpcConfigurationError("config error", config_key="key"),
+            FlextGrpcConfigurationError("settings error", config_key="key"),
         ]
         for error in errors:
             tm.that(error, is_=Exception)
@@ -200,7 +200,7 @@ class TestErrorIntegration:
         tm.that(unicode_error.field, eq="データ")
         config_key = "complex_setting"
         config_error = FlextGrpcConfigurationError(
-            "Complex config failed",
+            "Complex settings failed",
             config_key=config_key,
         )
         tm.that(config_error.config_key, eq=config_key)

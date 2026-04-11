@@ -21,10 +21,10 @@ class TestFlextGrpc:
         assert grpc is not None
 
     def test_init_with_config(self) -> None:
-        """Test FlextGrpc initialization with config."""
-        config = FlextGrpcSettings.model_validate({})
-        grpc = FlextGrpc(config=config)
-        tm.that(grpc.grpc_config, eq=config)
+        """Test FlextGrpc initialization with settings."""
+        settings = FlextGrpcSettings.model_validate({})
+        grpc = FlextGrpc(settings=settings)
+        tm.that(grpc.grpc_config, eq=settings)
 
     def test_create_server(self) -> None:
         """Test server creation."""
@@ -91,8 +91,8 @@ class TestFlextGrpc:
         grpc = FlextGrpc()
         result = grpc.execute()
         tm.that(result.success, eq=True)
-        config = result.value
-        tm.that(config, is_=FlextGrpcSettings)
+        settings = result.value
+        tm.that(settings, is_=FlextGrpcSettings)
 
     def test_create_server_direct(self) -> None:
         """Test direct server creation."""

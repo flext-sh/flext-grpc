@@ -178,7 +178,7 @@ pytest tests/e2e/ --benchmark-only
 - `entities.py`: 76% (needs significant improvement)
 - `services.py`: 72% (critical gaps in service operations)
 - `platform.py`: 68% (major coverage gaps in platform facade)
-- `config.py`: 78% (validation testing coverage needed)
+- `settings.py`: 78% (validation testing coverage needed)
 - `api.py`: 82% (good coverage, minor improvements needed)
 - `types.py`: 100% (excellent - complete coverage)
 - `errors.py`: 100% (excellent - complete coverage)

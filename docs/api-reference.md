@@ -38,14 +38,14 @@ server: FlextGrpcServer) -> r[FlextGrpcServer]`](#executeoperation-str-server-fl
     - [TGrpcStreamType](#tgrpcstreamtype)
   - [Exception Hierarchy](#exception-hierarchy)
     - [FlextGrpcError](#flextgrpcerror)
-    - [FlextGrpcSettingsurationError](#flextgrpcconfigurationerror)
+    - [FlextGrpcConfigurationError](#flextgrpcconfigurationerror)
     - [FlextGrpcConnectionError](#flextgrpcconnectionerror)
     - [FlextGrpcTimeoutError](#flextgrpctimeouterror)
     - [FlextGrpcValidationError](#flextgrpcvalidationerror)
   - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> r[bool]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> r[t.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> r[bool]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
-config: dict) -> r[FlextGrpcStream]`](#create_server_streammethod-str-config-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
-config: dict) -> r[FlextGrpcStream]`](#create_client_streammethod-str-config-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
-config: dict) -> r[FlextGrpcStream]`](#create_bidirectional_streammethod-str-config-dict---flextresultflextgrpcstream)
+settings: dict) -> r[FlextGrpcStream]`](#create_server_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
+settings: dict) -> r[FlextGrpcStream]`](#create_client_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
+settings: dict) -> r[FlextGrpcStream]`](#create_bidirectional_streammethod-str-settings-dict---flextresultflextgrpcstream)
   - [Utility Functions](#utility-functions) - [Address Parsing](#address-parsing) - [`parse_address(address: str) -> r[tuple[str,
 int]]`](#parse_addressaddress-str---flextresulttuplestr-int) - [`validate_address(address: str) -> r[bool]`](#validate_addressaddress-str---flextresultnone)
   - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
@@ -179,11 +179,11 @@ Configuration value t.NormalizedValue with validation.
 Validates configuration parameters.
 
 ```python
-config = FlextGrpcSettings(host="localhost", port=99999)
-validation = config.validate()
+settings = FlextGrpcSettings(host="localhost", port=99999)
+validation = settings.validate()
 
 if validation.is_failure:
-    print(f"Invalid config: {validation.error}")
+    print(f"Invalid settings: {validation.error}")
 ```
 
 ### Service Classes
@@ -282,15 +282,15 @@ class FlextGrpcError(Exception):
         self.error_code = error_code
 ```
 
-#### FlextGrpcSettingsurationError
+#### FlextGrpcConfigurationError
 
 Configuration-related errors.
 
 ```python
 try:
-    config = FlextGrpcSettings(port=-1)  # Invalid port
-    config.validate().unwrap()
-except FlextGrpcSettingsurationError as e:
+    settings = FlextGrpcSettings(port=-1)  # Invalid port
+    settings.validate().unwrap()
+except FlextGrpcConfigurationError as e:
     print(f"Configuration error: {e}")
 ```
 
@@ -338,15 +338,15 @@ Service for managing streaming operations.
 
 **Methods:**
 
-##### `create_server_stream(method: str, config: dict) -> r[FlextGrpcStream]`
+##### `create_server_stream(method: str, settings: dict) -> r[FlextGrpcStream]`
 
 Creates a server streaming operation.
 
-##### `create_client_stream(method: str, config: dict) -> r[FlextGrpcStream]`
+##### `create_client_stream(method: str, settings: dict) -> r[FlextGrpcStream]`
 
 Creates a client streaming operation.
 
-##### `create_bidirectional_stream(method: str, config: dict) -> r[FlextGrpcStream]`
+##### `create_bidirectional_stream(method: str, settings: dict) -> r[FlextGrpcStream]`
 
 Creates a bidirectional streaming operation.
 
@@ -412,7 +412,7 @@ from flext_core import u
 def setup_grpc_server(host: str, port: int) -> r[str]:
     return (
         create_config(host=host, port=port)
-        .flat_map(lambda config: create_server(config))
+        .flat_map(lambda settings: create_server(settings))
         .map(lambda server: f"Server ready: {server.host}:{server.port}")
     )
 

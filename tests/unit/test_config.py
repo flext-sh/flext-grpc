@@ -1,4 +1,4 @@
-"""Tests for flext_grpc.config module."""
+"""Tests for flext_grpc.settings module."""
 
 from __future__ import annotations
 
@@ -13,11 +13,11 @@ class TestFlextGrpcSettings:
 
     def test_init_default(self) -> None:
         """Test default configuration initialization."""
-        config = FlextGrpcSettings.model_validate({})
-        tm.that(config, none=False)
-        tm.that(config.host, eq="127.0.0.1")
-        tm.that(config.port, eq=50051)
-        tm.that(config.max_workers, eq=100)
+        settings = FlextGrpcSettings.model_validate({})
+        tm.that(settings, none=False)
+        tm.that(settings.host, eq="127.0.0.1")
+        tm.that(settings.port, eq=50051)
+        tm.that(settings.max_workers, eq=100)
 
     def test_init_custom(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test custom configuration initialization."""
@@ -27,42 +27,42 @@ class TestFlextGrpcSettings:
         monkeypatch.delenv("FLEXT_HOST", raising=False)
         monkeypatch.delenv("FLEXT_PORT", raising=False)
         monkeypatch.delenv("FLEXT_MAX_WORKERS", raising=False)
-        config = FlextGrpcSettings(
+        settings = FlextGrpcSettings(
             host="0.0.0.0",
             port=8080,
             max_workers=5,
         )
-        tm.that(config.host, eq="0.0.0.0")
-        tm.that(config.port, eq=8080)
-        tm.that(config.max_workers, eq=5)
+        tm.that(settings.host, eq="0.0.0.0")
+        tm.that(settings.port, eq=8080)
+        tm.that(settings.max_workers, eq=5)
 
     def test_validation(self) -> None:
         """Test configuration validation."""
-        config = FlextGrpcSettings.model_validate({})
-        tm.that(config.port, gte=1)
-        tm.that(config.port, lte=65535)
-        tm.that(config.max_workers, gte=1)
-        tm.that(config.max_workers, lte=100)
+        settings = FlextGrpcSettings.model_validate({})
+        tm.that(settings.port, gte=1)
+        tm.that(settings.port, lte=65535)
+        tm.that(settings.max_workers, gte=1)
+        tm.that(settings.max_workers, lte=100)
 
     def test_validate_configuration(self) -> None:
         """Test configuration validation method."""
-        config = FlextGrpcSettings.model_validate({})
-        result = config.validate_configuration()
+        settings = FlextGrpcSettings.model_validate({})
+        result = settings.validate_configuration()
         tm.that(result.success, eq=True)
 
     def test_create_production_config(self) -> None:
         """Test production configuration creation."""
         result = FlextGrpcSettings.create_production_config()
         tm.that(result.success, eq=True)
-        config = result.value
-        tm.that(config, is_=FlextGrpcSettings)
+        settings = result.value
+        tm.that(settings, is_=FlextGrpcSettings)
 
     def test_create_development_config(self) -> None:
         """Test development configuration creation."""
         result = FlextGrpcSettings.create_development_config()
         tm.that(result.success, eq=True)
-        config = result.value
-        tm.that(config, is_=FlextGrpcSettings)
+        settings = result.value
+        tm.that(settings, is_=FlextGrpcSettings)
 
     def test_properties(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test configuration properties."""
@@ -73,18 +73,18 @@ class TestFlextGrpcSettings:
         monkeypatch.delenv("FLEXT_PORT", raising=False)
         monkeypatch.delenv("FLEXT_MAX_WORKERS", raising=False)
         monkeypatch.delenv("FLEXT_TIMEOUT", raising=False)
-        config = FlextGrpcSettings(
+        settings = FlextGrpcSettings(
             host="127.0.0.1",
             port=8080,
             max_workers=20,
         )
-        tm.that(config.host, eq="127.0.0.1")
-        tm.that(config.port, eq=8080)
-        tm.that(config.max_workers, eq=20)
-        timeout_val: float = config.timeout
+        tm.that(settings.host, eq="127.0.0.1")
+        tm.that(settings.port, eq=8080)
+        tm.that(settings.max_workers, eq=20)
+        timeout_val: float = settings.timeout
         tm.that(abs(timeout_val - 30.0), lt=0.01)
-        tm.that(config.tls_enabled is False, eq=True)
-        tm.that(config.streaming_enabled is True, eq=True)
+        tm.that(settings.tls_enabled is False, eq=True)
+        tm.that(settings.streaming_enabled is True, eq=True)
 
     def test_config_with_custom_network(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test configuration with custom network settings."""
@@ -92,12 +92,12 @@ class TestFlextGrpcSettings:
         monkeypatch.delenv("GRPC_HOST", raising=False)
         monkeypatch.delenv("FLEXT_HOST", raising=False)
         monkeypatch.delenv("FLEXT_PORT", raising=False)
-        config = FlextGrpcSettings(
+        settings = FlextGrpcSettings(
             host="192.168.1.100",
             port=9090,
         )
-        tm.that(config.host, eq="192.168.1.100")
-        tm.that(config.port, eq=9090)
+        tm.that(settings.host, eq="192.168.1.100")
+        tm.that(settings.port, eq=9090)
 
     def test_security_config_validation(self) -> None:
         """Test security configuration validation."""

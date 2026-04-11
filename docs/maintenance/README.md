@@ -97,7 +97,7 @@
     - Quality Thresholds
   - ⚙️ Configuration
     - Maintenance Configuration
-- docs/maintenance/config.py
+- docs/maintenance/settings.py
   - Custom Rules
 - Custom quality rules
   - 📊 Reporting & Analytics
@@ -129,7 +129,7 @@
   - 🤝 Team Integration
     - Workflow Integration
 - Pre-commit hooks
-- .pre-commit-config.YAML
+- .pre-commit-settings.YAML
   - CI/CD Integration
 - .github/workflows/docs-maintenance.yml
   - Notification Integration
@@ -389,7 +389,7 @@ Metric: **Overall** - Score: **93%** - Target: **90%** - Status: ✅ Excellent
 ### Maintenance Configuration
 
 ```python
-# docs/maintenance/config.py
+# docs/maintenance/settings.py
 MAINTENANCE_CONFIG = {
     "audit": {
         "enabled": True,
@@ -470,7 +470,7 @@ tail -f docs/maintenance/logs/link_validation.log
 python docs/maintenance/validation.py --check-url "https://example.com"
 
 # Update link timeout
-edit docs/maintenance/config.py  # Increase link_timeout
+edit docs/maintenance/settings.py  # Increase link_timeout
 ```
 
 #### Content Not Optimizing
@@ -521,7 +521,7 @@ make docs
 
 ```bash
 # Pre-commit hooks
-# .pre-commit-config.yaml
+# .pre-commit-settings.yaml
 repos:
   - repo: local
     hooks:

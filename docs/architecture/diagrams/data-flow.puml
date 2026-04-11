@@ -16,7 +16,7 @@ developer -> app: Call FLEXT-gRPC API
 app -> api: create_client() or create_server()
 
 == Configuration Processing ==
-api -> service: Instantiate service with config
+api -> service: Instantiate service with settings
 service -> domain: Create domain entities
 domain -> protobuf: Validate message schemas
 

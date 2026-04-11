@@ -47,16 +47,16 @@ class GrpcServerManager:
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
-            config = FlextGrpcSettings.model_validate({
+            settings = FlextGrpcSettings.model_validate({
                 "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
                 "port": port,
                 "max_workers": 10 + i * 5,
             })
-            self.server_configs[server_id] = config
+            self.server_configs[server_id] = settings
             server_result = self.grpc.create_server(
-                host=config.network.host,
-                port=config.network.port,
-                max_workers=config.performance.max_workers,
+                host=settings.network.host,
+                port=settings.network.port,
+                max_workers=settings.performance.max_workers,
             )
             if server_result.success:
                 server = server_result.value
@@ -68,12 +68,12 @@ class GrpcServerManager:
         """Get status of all servers through facade."""
         status: dict[str, dict[str, str]] = {}
         for server_id, server in self.servers.items():
-            config = self.server_configs[server_id]
+            settings = self.server_configs[server_id]
             status[server_id] = {
                 "address": f"{server.host}:{server.port}",
                 "state": server.state,
                 "max_workers": str(server.max_workers),
-                "timeout": f"{config.timeout}s",
+                "timeout": f"{settings.timeout}s",
                 "is_running": str(server.state == "running"),
                 "valid": str(server.validate_business_rules().success),
             }

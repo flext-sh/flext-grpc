@@ -75,7 +75,7 @@
 - [class Server(Protocol): ...](#class-serverprotocolprotocol-) - [4. Update Configuration Tests](#4-update-configuration-tests)
 - [Issue: Default host changed](#issue-default-host-changed)
 - [Location: tests/unit/test_config.py](#location-testsunittest_configpy)
-- [Fix: assert config.host == "localhost" # Update expectation](#fix-assert-confighost--localhost---update-expectation)
+- [Fix: assert settings.host == "localhost" # Update expectation](#fix-assert-confighost--localhost---update-expectation)
   - [Coverage Improvement Targets](#coverage-improvement-targets)
     - [High Priority Modules (< 50% coverage)](#high-priority-modules--50-coverage)
       - [services.py (15% → 90%)](#servicespy-15--90)
@@ -292,7 +292,7 @@ TOTAL                                          1798    956    380     14    39%
 ```python
 # Issue: Default host changed
 # Location: tests/unit/test_config.py
-# Fix: assert config.host == "localhost"  # Update expectation
+# Fix: assert settings.host == "localhost"  # Update expectation
 ```
 
 ### Coverage Improvement Targets
@@ -436,7 +436,7 @@ async def test_real_grpc_server_operations(grpc_server):
 @pytest.mark.asyncio
 async def test_server_streaming():
     """Test server streaming operations."""
-    stream = create_stream("server_streaming", config)
+    stream = create_stream("server_streaming", settings)
 
     # Start streaming
     await stream.start()

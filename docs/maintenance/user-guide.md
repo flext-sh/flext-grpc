@@ -107,7 +107,7 @@
 - Install missing dependencies - Validation Reports Broken Links
 - Check specific URL
 - Update link or mark as expected failure
-- Edit docs/maintenance/config.JSON to exclude known broken links - Optimization Doesn't Apply Changes
+- Edit docs/maintenance/settings.JSON to exclude known broken links - Optimization Doesn't Apply Changes
 - Check file permissions
 - Run with verbose output
 - Check for syntax errors in optimization rules - Synchronization Conflicts
@@ -130,9 +130,9 @@
       - GitHub Actions
       - GitLab CI
     - Pre-commit Hooks
-- .pre-commit-config.YAML
+- .pre-commit-settings.YAML
   - Slack Notifications
-- Configure notifications in config.JSON
+- Configure notifications in settings.JSON
   - Advanced Usage
     - Custom Audit Rules
     - Automated Fixes
@@ -362,7 +362,7 @@ pip install -r docs/maintenance/requirements.txt
 curl -I "https://problematic-link.com"
 
 # Update link or mark as expected failure
-# Edit docs/maintenance/config.json to exclude known broken links
+# Edit docs/maintenance/settings.json to exclude known broken links
 ```
 
 #### Optimization Doesn't Apply Changes
@@ -410,7 +410,7 @@ tail -f docs/maintenance/logs/optimization.log
 PYTHONPATH=. python docs/maintenance/audit.py --debug
 
 # Check configuration
-cat docs/maintenance/config.json
+cat docs/maintenance/settings.json
 ```
 
 #### Reset System
@@ -515,7 +515,7 @@ documentation_maintenance:
 ### Pre-commit Hooks
 
 ```bash
-# .pre-commit-config.yaml
+# .pre-commit-settings.yaml
 repos:
   - repo: local
     hooks:
@@ -530,7 +530,7 @@ repos:
 ### Slack Notifications
 
 ```bash
-# Configure notifications in config.json
+# Configure notifications in settings.json
 {
   "notifications": {
     "slack_webhook": "https://hooks.slack.com/...",
