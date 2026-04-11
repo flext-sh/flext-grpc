@@ -608,7 +608,7 @@ class FlextGrpcProductionService:
 
     def __init__(self):
         self._container = FlextContainer.get_global()
-        self.logger = FlextLogger(__name__)
+        self.logger = u.fetch_logger(__name__)
         self._platform = FlextGrpcPlatform()
 
     def start_production_service(self) -> r[bool]:

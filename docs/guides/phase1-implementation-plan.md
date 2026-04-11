@@ -140,7 +140,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 1. **FlextGrpcServices Logger Property** (4 failures)
 
-   - Issue: `self.logger = FlextLogger(__name__)` fails with "property has no setter"
+   - Issue: `self.logger = u.fetch_logger(__name__)` fails with "property has no setter"
    - Impact: Core service class cannot be instantiated
    - Solution: Fix property setter implementation
 
@@ -201,10 +201,10 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
   ```python
   # Current (broken)
-  self.logger = FlextLogger(__name__)  # AttributeError: property has no setter
+  self.logger = u.fetch_logger(__name__)  # AttributeError: property has no setter
 
   # Fix: Use proper property assignment or initialization
-  self._logger = FlextLogger(__name__)
+  self._logger = u.fetch_logger(__name__)
   ```
 
 - **Tests Affected**: 4 service initialization tests

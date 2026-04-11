@@ -538,7 +538,7 @@ class GrpcServiceManager:
 
     def __init__(self) -> None:
         self._container = FlextContainer.get_global()
-        self.logger = FlextLogger(__name__)
+        self.logger = u.fetch_logger(__name__)
 
     def initialize(self) -> r[bool]:
         """Initialize with dependency injection."""

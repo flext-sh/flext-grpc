@@ -299,4 +299,6 @@ class FlextGrpc(
         return u.Grpc.validate_target(target)
 
 
-__all__ = ["FlextGrpc"]
+grpc = FlextGrpc
+
+__all__ = ["FlextGrpc", "grpc"]

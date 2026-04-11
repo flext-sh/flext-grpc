@@ -15,7 +15,7 @@ from __future__ import annotations
 import time
 from typing import NoReturn
 
-from flext_core import FlextConstants, FlextLogger, r
+from flext_core import FlextConstants, r
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
@@ -26,7 +26,7 @@ from flext_grpc import (
     t,
 )
 
-logger = FlextLogger(__name__)
+logger = u.fetch_logger(__name__)
 
 
 def validate_user_input(username: str, email: str) -> r[t.Grpc.Headers]:
