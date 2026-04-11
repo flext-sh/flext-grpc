@@ -35,7 +35,7 @@ class Testu:
     def test_create_client_entity(self) -> None:
         """Test client entity creation."""
         result = u.Grpc.create_client_entity("localhost:50051")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         client = result.value
         assert client is not None
         assert client.channel is not None
@@ -44,7 +44,7 @@ class Testu:
     def test_create_server_entity(self) -> None:
         """Test server entity creation."""
         result = u.Grpc.create_server_entity("localhost", 50051)
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         server = result.value
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
@@ -52,14 +52,14 @@ class Testu:
     def test_create_channel_entity(self) -> None:
         """Test channel entity creation."""
         result = u.Grpc.create_channel_entity("localhost:50051")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         channel = result.value
         tm.that(channel.target, eq="localhost:50051")
 
     def test_create_service_entity(self) -> None:
         """Test service entity creation."""
         result = u.Grpc.create_service_entity("TestService")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         service = result.value
         tm.that(service.name, eq="TestService")
 
@@ -69,14 +69,14 @@ class Testu:
             "test_method",
             "unary",
         )
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         stream = result.value
         tm.that(stream.method_name, eq="test_method")
         tm.that(stream.stream_type, eq="unary")
 
     def test_grpc_get_system_info(self) -> None:
         """Test system info retrieval."""
-        info = u.Grpc.get_system_info()
+        info = u.Grpc.system_info()
         tm.that(info, is_=dict)
 
     def test_grpc_format_address(self) -> None:
@@ -91,10 +91,10 @@ class Testu:
 
     def test_grpc_get_channel_state_name(self) -> None:
         """Test channel state name retrieval."""
-        name = u.Grpc.get_channel_state_name("idle")
+        name = u.Grpc.channel_state_name("idle")
         tm.that(name, is_=str)
 
     def test_grpc_get_server_state_name(self) -> None:
         """Test server state name retrieval."""
-        name = u.Grpc.get_server_state_name("stopped")
+        name = u.Grpc.server_state_name("stopped")
         tm.that(name, is_=str)

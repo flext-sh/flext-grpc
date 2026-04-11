@@ -53,7 +53,7 @@ class FlextGrpcClient:
                 self._active_channels[target] = grpc_channel
                 self._metrics.record_metric(f"{target}_connected_at", time.time())
                 client_result = u.Grpc.create_client_entity(target=target)
-                if client_result.is_failure:
+                if client_result.failure:
                     raise RuntimeError(client_result.error or "Connection failed")
                 return client_result.value
 
@@ -77,7 +77,7 @@ class FlextGrpcClient:
                 del self._active_channels[target]
             return r[m.Grpc.Client].ok(client)
 
-        def get_client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+        def client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
             """Get client connection status."""
             target = ""
             if client.channel is not None:

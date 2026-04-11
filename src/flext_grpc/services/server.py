@@ -39,11 +39,11 @@ class FlextGrpcServer:
                 thread_name_prefix="flext-grpc-server",
             )
 
-        def get_server_metrics(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+        def server_metrics(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
             """Get server metrics."""
             server_key = f"{server.host}:{server.port}"
-            started_at_raw = self._metrics.get_metric(f"{server_key}_started_at")
-            stopped_at_raw = self._metrics.get_metric(f"{server_key}_stopped_at")
+            started_at_raw = self._metrics.metric(f"{server_key}_started_at")
+            stopped_at_raw = self._metrics.metric(f"{server_key}_stopped_at")
             started_at_str: str = (
                 str(started_at_raw) if started_at_raw is not None else ""
             )
@@ -67,7 +67,7 @@ class FlextGrpcServer:
                 )
             try:
                 starting_result = server.start()
-                if starting_result.is_failure:
+                if starting_result.failure:
                     return starting_result
                 starting_server = starting_result.value
                 grpc_server = grpc.server(self._thread_pool)
@@ -96,7 +96,7 @@ class FlextGrpcServer:
                 return r[m.Grpc.Server].fail(f"No active server: {server_key}")
             try:
                 stopping_result = server.stop()
-                if stopping_result.is_failure:
+                if stopping_result.failure:
                     return stopping_result
                 stopping_server = stopping_result.value
                 grpc_server = self._active_servers[server_key]

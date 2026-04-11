@@ -11,7 +11,6 @@ _LAZY_IMPORTS = build_lazy_import_map(
             "ArchitectureValidator",
             "ValidationResults",
             "ValidationSummary",
-            "save_report",
         ),
     },
 )

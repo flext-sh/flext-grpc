@@ -87,7 +87,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Configure server port binding."""
                 ...
 
-            def get_server_status(
+            def server_status(
                 self,
             ) -> FlextProtocols.Result[FlextTypes.ContainerValue | None]:
                 """Get gRPC server status information."""
@@ -134,7 +134,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Disconnect gRPC client."""
                 ...
 
-            def get_client_status(
+            def client_status(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[FlextTypes.ContainerValue | None]:
@@ -230,7 +230,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Create gRPC service definition."""
                 ...
 
-            def get_service_methods(
+            def service_methods(
                 self,
                 service: FlextGrpcProtocols.Grpc.GrpcServicer,
             ) -> FlextProtocols.Result[FlextTypes.StrSequence]:
@@ -271,7 +271,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Create gRPC channel."""
                 ...
 
-            def get_channel_state(
+            def channel_state(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
             ) -> FlextProtocols.Result[str]:
@@ -313,7 +313,7 @@ class FlextGrpcProtocols(FlextProtocols):
                 """Collect gRPC stream metrics."""
                 ...
 
-            def get_global_metrics(
+            def global_metrics(
                 self,
             ) -> FlextProtocols.Result[Mapping[str, FlextTypes.Numeric | str]]:
                 """Get global gRPC metrics."""

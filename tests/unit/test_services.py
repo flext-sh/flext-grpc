@@ -17,7 +17,7 @@ class TestFlextGrpcServiceComponents:
     ) -> None:
         """Client connection should fail fast for an unreachable target."""
         result = grpc_facade.connect_client("127.0.0.1:1")
-        tm.that(result.is_failure, eq=True)
+        tm.that(result.failure, eq=True)
 
     def test_create_stream(
         self,
@@ -25,7 +25,7 @@ class TestFlextGrpcServiceComponents:
     ) -> None:
         """Stream creation uses the public facade contract."""
         result = grpc_facade.create_stream(method_name="test_method")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
 
     def test_execute_returns_settings(
         self,
@@ -33,7 +33,7 @@ class TestFlextGrpcServiceComponents:
     ) -> None:
         """Execute returns the configured facade settings."""
         result = grpc_facade.execute()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
 
     def test_connection_pool_cleanup(
         self,
@@ -41,7 +41,7 @@ class TestFlextGrpcServiceComponents:
     ) -> None:
         """Connection pool cleanup succeeds even with no active channels."""
         result = connection_pool.cleanup()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
 
     def test_metrics_collector(
         self,
@@ -49,8 +49,8 @@ class TestFlextGrpcServiceComponents:
     ) -> None:
         """Metrics collector records and exposes normalized payload values."""
         metrics_collector.record_metric("test_key", "test_value")
-        value = metrics_collector.get_metric("test_key")
+        value = metrics_collector.metric("test_key")
         tm.that(value, eq="test_value")
-        metrics_payload: m.Grpc.Payload = metrics_collector.get_all_metrics()
+        metrics_payload: m.Grpc.Payload = metrics_collector.all_metrics()
         tm.that(metrics_payload.values, has="test_key")
         tm.that(metrics_payload.values["test_key"], eq="test_value")

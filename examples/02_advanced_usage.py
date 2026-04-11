@@ -58,13 +58,13 @@ class GrpcServerManager:
                 port=config.network.port,
                 max_workers=config.performance.max_workers,
             )
-            if server_result.is_success:
+            if server_result.success:
                 server = server_result.value
                 self.servers[server_id] = server
             server_results.append(server_result)
         return server_results
 
-    def get_server_status(self) -> dict[str, dict[str, str]]:
+    def server_status(self) -> dict[str, dict[str, str]]:
         """Get status of all servers through facade."""
         status: dict[str, dict[str, str]] = {}
         for server_id, server in self.servers.items():
@@ -75,7 +75,7 @@ class GrpcServerManager:
                 "max_workers": str(server.max_workers),
                 "timeout": f"{config.timeout}s",
                 "is_running": str(server.state == "running"),
-                "is_valid": str(server.validate_business_rules().is_success),
+                "valid": str(server.validate_business_rules().success),
             }
         return status
 
@@ -84,7 +84,7 @@ class GrpcServerManager:
         results: dict[str, bool] = {}
         for server_id, server in self.servers.items():
             start_result = self.grpc.start_server(server)
-            if start_result.is_success:
+            if start_result.success:
                 self.servers[server_id] = start_result.value
                 results[server_id] = True
             else:
@@ -97,7 +97,7 @@ class GrpcServerManager:
         for server_id, server in self.servers.items():
             if server.state == "running":
                 stop_result = self.grpc.stop_server(server)
-                if stop_result.is_success:
+                if stop_result.success:
                     self.servers[server_id] = stop_result.value
                     results[server_id] = True
                 else:
@@ -130,7 +130,7 @@ class AdvancedGrpcOperations:
             service_name=service_name,
             methods=methods,
         )
-        if setup_result.is_failure:
+        if setup_result.failure:
             return r[CompleteSetup].fail(setup_result.error or "Setup failed")
         setup = setup_result.value
         return r[CompleteSetup].ok(setup)
@@ -148,7 +148,7 @@ class AdvancedGrpcOperations:
                 method_name=method_name,
                 stream_type=stream_type,
             )
-            if stream_result.is_success:
+            if stream_result.success:
                 stream = stream_result.value
                 print(f"Created {stream_type} stream: {stream.id}")
             else:
@@ -159,12 +159,12 @@ def example_1_server_pool() -> None:
     """Example 1: Server pool management through facade."""
     manager = GrpcServerManager()
     server_results = manager.create_server_pool(base_port=8000, count=3)
-    successful_creations = sum(1 for result in server_results if result.is_success)
+    successful_creations = sum(1 for result in server_results if result.success)
     print(f"Created {successful_creations}/{len(server_results)} servers")
     start_results = manager.start_all_servers()
     successful_starts = sum(1 for success in start_results.values() if success)
     print(f"Started {successful_starts}/{len(start_results)} servers")
-    status = manager.get_server_status()
+    status = manager.server_status()
     for server_id, info in status.items():
         print(f"Server {server_id}: {info['state']}, running: {info['is_running']}")
     stop_results = manager.stop_all_servers()
@@ -181,7 +181,7 @@ def example_2_client_pool() -> None:
         service_name="AdvancedService",
         methods=["ProcessData", "GetStatus", "StreamResults"],
     )
-    if setup_result.is_success:
+    if setup_result.success:
         setup = setup_result.value
         print(f"Created setup for target: {setup.target}")
     else:
@@ -200,7 +200,7 @@ def example_3_service_creation() -> None:
     created_services: list[FlextGrpcModels.Grpc.Service] = []
     for service_name, methods in services:
         service_result = grpc.create_service(name=service_name, methods=methods)
-        if service_result.is_success:
+        if service_result.success:
             service = service_result.value
             created_services.append(service)
             print(
@@ -226,7 +226,7 @@ def example_4_streaming() -> None:
             method_name=method_name,
             stream_type=stream_type,
         )
-        if stream_result.is_success:
+        if stream_result.success:
             stream = stream_result.value
             created_streams.append(stream)
             print(f"Created {stream_type} stream for method: {method_name}")
@@ -240,27 +240,27 @@ def example_5_error_handling() -> None:
     grpc = FlextGrpc()
     print("Testing various error scenarios through FlextGrpc facade...")
     invalid_server_result = grpc.create_server(host="", port=0)
-    if invalid_server_result.is_failure:
+    if invalid_server_result.failure:
         print(
             f"✓ Invalid server creation properly failed: {invalid_server_result.error}",
         )
     invalid_client_result = grpc.create_client(target="")
-    if invalid_client_result.is_failure:
+    if invalid_client_result.failure:
         print(
             f"✓ Invalid client creation properly failed: {invalid_client_result.error}",
         )
     invalid_channel_result = grpc.create_channel(target="")
-    if invalid_channel_result.is_failure:
+    if invalid_channel_result.failure:
         print(
             f"✓ Invalid channel creation properly failed: {invalid_channel_result.error}",
         )
     invalid_service_result = grpc.create_service(name="", methods=[])
-    if invalid_service_result.is_failure:
+    if invalid_service_result.failure:
         print(
             f"✓ Invalid service creation properly failed: {invalid_service_result.error}",
         )
     invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
-    if invalid_stream_result.is_failure:
+    if invalid_stream_result.failure:
         print(
             f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}",
         )

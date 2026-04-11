@@ -30,7 +30,7 @@ class TestFlextGrpc:
         """Test server creation."""
         grpc = FlextGrpc()
         result = grpc.create_server(host="localhost", port=50051)
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         server = result.value
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
@@ -39,7 +39,7 @@ class TestFlextGrpc:
         """Test client creation."""
         grpc = FlextGrpc()
         result = grpc.create_client(target="localhost:50051")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         client = result.value
         tm.that(client.channel, none=False)
 
@@ -47,7 +47,7 @@ class TestFlextGrpc:
         """Test stream creation."""
         grpc = FlextGrpc()
         result = grpc.create_stream(method_name="test_method", stream_type="unary")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         stream = result.value
         tm.that(stream.method_name, eq="test_method")
         tm.that(stream.stream_type, eq="unary")
@@ -63,7 +63,7 @@ class TestFlextGrpc:
         """Test address parsing."""
         grpc = FlextGrpc()
         result = grpc.parse_address("localhost:50051")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         host, port = result.value
         tm.that(host, eq="localhost")
         tm.that(port, eq=50051)
@@ -72,7 +72,7 @@ class TestFlextGrpc:
         """Test channel creation."""
         grpc = FlextGrpc()
         result = grpc.create_channel(target="localhost:50051")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         channel = result.value
         tm.that(channel.target, eq="localhost:50051")
         tm.that(channel.state, eq="idle")
@@ -81,7 +81,7 @@ class TestFlextGrpc:
         """Test service creation."""
         grpc = FlextGrpc()
         result = grpc.create_service(name="TestService", methods=["method1", "method2"])
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         service: m.Grpc.Service = result.value
         tm.that(service.name, eq="TestService")
         tm.that(service.methods, eq=["method1", "method2"])
@@ -90,7 +90,7 @@ class TestFlextGrpc:
         """Test execute method."""
         grpc = FlextGrpc()
         result = grpc.execute()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         config = result.value
         tm.that(config, is_=FlextGrpcSettings)
 
@@ -98,7 +98,7 @@ class TestFlextGrpc:
         """Test direct server creation."""
         grpc = FlextGrpc()
         result = grpc.create_server(host="127.0.0.1", port=8080)
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         server = result.value
         tm.that(server.host, eq="127.0.0.1")
         tm.that(server.port, eq=8080)
@@ -107,7 +107,7 @@ class TestFlextGrpc:
         """Test direct client creation."""
         grpc = FlextGrpc()
         result = grpc.create_client(target="127.0.0.1:8080")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         client = result.value
         tm.that(
             client.channel is not None and client.channel.target == "127.0.0.1:8080",
@@ -127,7 +127,7 @@ class TestFlextGrpc:
         """Test address parsing with invalid addresses."""
         grpc = FlextGrpc()
         result = grpc.parse_address("invalid_address")
-        tm.that(result.is_failure, eq=True)
+        tm.that(result.failure, eq=True)
         tm.that(result.error and "Invalid address" in result.error, eq=True)
 
     def test_create_channel_with_options(self) -> None:
@@ -138,7 +138,7 @@ class TestFlextGrpc:
             "compression": "gzip",
         }
         result = grpc.create_channel(target="localhost:50051", options=options)
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         channel = result.value
         tm.that(channel.options, eq=options)
 
@@ -146,7 +146,7 @@ class TestFlextGrpc:
         """Test service creation with defaults."""
         grpc = FlextGrpc()
         result = grpc.create_service(name="DefaultService", methods=["default_method"])
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         service: m.Grpc.Service = result.value
         tm.that(service.name, eq="DefaultService")
         tm.that(service.methods, eq=["default_method"])
@@ -208,7 +208,7 @@ class TestFlextGrpc:
         )
         tm.that(request.data, eq={"value": "test"})
         tm.that(request.operation.name, eq="test_operation")
-        tm.that(request.model_dump().get("is_valid") is True, eq=True)
+        tm.that(request.model_dump().get("valid") is True, eq=True)
 
     def test_response_creation(self) -> None:
         data = m.Grpc.StreamInfo(

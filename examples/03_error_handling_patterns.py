@@ -128,14 +128,14 @@ def comprehensive_error_handling_pipeline() -> r[str]:
     """Demonstrate comprehensive error handling in a realistic pipeline."""
     logger.info("Starting comprehensive error handling pipeline")
     validation_result = validate_user_input("john_doe", "john@example.com")
-    if validation_result.is_failure:
+    if validation_result.failure:
         return r[str].fail(f"Pipeline failed at validation: {validation_result.error}")
     logger.info("✅ User input validation passed")
     config_result = create_server_config(
         FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         4,
     )
-    if config_result.is_failure:
+    if config_result.failure:
         return r[str].fail(f"Pipeline failed at configuration: {config_result.error}")
     logger.info("✅ Server configuration created")
     scenarios = [
@@ -145,7 +145,7 @@ def comprehensive_error_handling_pipeline() -> r[str]:
     ]
     for scenario_name, scenario_func in scenarios:
         result = scenario_func()
-        if result.is_failure:
+        if result.failure:
             logger.warning(
                 f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
             )
@@ -157,7 +157,7 @@ def error_recovery_patterns() -> r[str]:
     logger.info("Testing error recovery patterns")
     for attempt in range(3):
         connection_result = simulate_connection_error()
-        if connection_result.is_success:
+        if connection_result.success:
             logger.info(f"✅ Connection succeeded on attempt {attempt + 1}")
             break
         logger.warning(f"⚠️ Connection attempt {attempt + 1} failed, retrying...")
@@ -166,13 +166,13 @@ def error_recovery_patterns() -> r[str]:
             logger.error("❌ All connection attempts failed")
             return r[str].fail("Connection recovery failed after 3 attempts")
     primary_config_result = create_server_config(-1, 4)
-    if primary_config_result.is_failure:
+    if primary_config_result.failure:
         logger.warning("Primary config failed, trying fallback")
         fallback_config_result = create_server_config(
             FlextConstants.DEFAULT_HTTP_PORT,
             2,
         )
-        if fallback_config_result.is_success:
+        if fallback_config_result.success:
             logger.info("✅ Fallback configuration successful")
             return r[str].ok("Recovery successful with fallback config")
     return r[str].fail("All recovery attempts failed")
@@ -234,20 +234,20 @@ def main() -> None:
     demonstrate_error_context()
     logger.info("\n🔄 2. Comprehensive Error Handling Pipeline")
     pipeline_result = comprehensive_error_handling_pipeline()
-    if pipeline_result.is_success:
+    if pipeline_result.success:
         logger.info(f"✅ Pipeline result: {pipeline_result.value}")
     else:
         logger.error(f"❌ Pipeline failed: {pipeline_result.error}")
     logger.info("\n🔧 3. Error Recovery Patterns")
     recovery_result = error_recovery_patterns()
-    if recovery_result.is_success:
+    if recovery_result.success:
         logger.info(f"✅ Recovery result: {recovery_result.value}")
     else:
         logger.error(f"❌ Recovery failed: {recovery_result.error}")
     logger.info("\n⚡ 4. Error Handling")
     try:
         result = error_handling()
-        if result.is_success:
+        if result.success:
             logger.info(f"✅ result: {result.value}")
         else:
             logger.error(f"❌ failed: {result.error}")

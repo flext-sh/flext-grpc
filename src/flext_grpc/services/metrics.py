@@ -26,12 +26,12 @@ class FlextGrpcMetrics:
             self._metrics = m.Grpc.Payload(values={})
             self._lock = threading.RLock()
 
-        def get_all_metrics(self) -> m.Grpc.Payload:
+        def all_metrics(self) -> m.Grpc.Payload:
             """Get all metrics snapshot."""
             with self._lock:
                 return m.Grpc.Payload(values=dict(self._metrics.values))
 
-        def get_metric(self, key: str) -> t.OptionalContainerValue | None:
+        def metric(self, key: str) -> t.OptionalContainerValue | None:
             """Thread-safe metric retrieval.
 
             Returns:

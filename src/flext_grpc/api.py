@@ -111,13 +111,13 @@ class FlextGrpc(
         target = f"{host}:{port}"
 
         server_result = self.create_server(host=host, port=port)
-        if server_result.is_failure:
+        if server_result.failure:
             return r[m.Grpc.CompleteSetup].fail(
                 server_result.error or "Server creation failed"
             )
 
         client_result = self.create_client(target=target)
-        if client_result.is_failure:
+        if client_result.failure:
             return r[m.Grpc.CompleteSetup].fail(
                 client_result.error or "Client creation failed"
             )
@@ -125,7 +125,7 @@ class FlextGrpc(
         service_result = self.create_service(
             name=service_name, methods=resolved_methods
         )
-        if service_result.is_failure:
+        if service_result.failure:
             return r[m.Grpc.CompleteSetup].fail(
                 service_result.error or "Service creation failed"
             )
@@ -212,17 +212,17 @@ class FlextGrpc(
                 return r[FlextGrpcSettings].fail(
                     f"Unknown operation: {request.operation_name}",
                 )
-        if result.is_failure:
+        if result.failure:
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
-    def get_client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+    def client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
         """Get client status through delegation."""
-        return self._client_manager.get_client_status(client)
+        return self._client_manager.client_status(client)
 
-    def get_server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+    def server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
         """Delegate server status to specialized manager."""
-        return self._server_manager.get_server_metrics(server)
+        return self._server_manager.server_metrics(server)
 
     def make_call(
         self,

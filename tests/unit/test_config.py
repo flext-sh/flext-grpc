@@ -48,19 +48,19 @@ class TestFlextGrpcSettings:
         """Test configuration validation method."""
         config = FlextGrpcSettings.model_validate({})
         result = config.validate_configuration()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
 
     def test_create_production_config(self) -> None:
         """Test production configuration creation."""
         result = FlextGrpcSettings.create_production_config()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         config = result.value
         tm.that(config, is_=FlextGrpcSettings)
 
     def test_create_development_config(self) -> None:
         """Test development configuration creation."""
         result = FlextGrpcSettings.create_development_config()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         config = result.value
         tm.that(config, is_=FlextGrpcSettings)
 
@@ -105,7 +105,7 @@ class TestFlextGrpcSettings:
             "security": {"tls_enabled": False, "client_cert_required": True},
         })
         insecure_result = insecure_config.validate_configuration()
-        tm.that(insecure_result.is_failure, eq=True)
+        tm.that(insecure_result.failure, eq=True)
         tm.that(
             insecure_result.error,
             eq="Client certificates require TLS to be enabled",
@@ -114,7 +114,7 @@ class TestFlextGrpcSettings:
             "security": {"tls_enabled": True, "client_cert_required": True},
         })
         secure_result = secure_config.validate_configuration()
-        tm.that(secure_result.is_success, eq=True)
+        tm.that(secure_result.success, eq=True)
 
     def test_performance_config_defaults(self) -> None:
         """Test performance configuration defaults."""

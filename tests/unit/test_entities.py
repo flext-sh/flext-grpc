@@ -78,13 +78,13 @@ class TestFlextGrpcEntities:
             domain_events=[],
         )
         result = channel.validate_business_rules()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
 
     def test_channel_business_rules_empty_target(self) -> None:
         """Test channel business rules fail with empty target."""
         channel = m.Grpc.Channel(target="", options={}, domain_events=[])
         result = channel.validate_business_rules()
-        tm.that(result.is_failure, eq=True)
+        tm.that(result.failure, eq=True)
         tm.that(result.error and "cannot be empty" in result.error, eq=True)
 
     def test_channel_state_machine(self) -> None:
@@ -96,7 +96,7 @@ class TestFlextGrpcEntities:
             domain_events=[],
         )
         result = channel.connect()
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         connected_channel = result.value
         tm.that(connected_channel.state, eq="connecting")
 
@@ -108,7 +108,7 @@ class TestFlextGrpcEntities:
             domain_events=[],
         )
         result = channel.copy_with(target="127.0.0.1:8080")
-        tm.that(result.is_success, eq=True)
+        tm.that(result.success, eq=True)
         new_channel = result.value
         tm.that(new_channel.target, eq="127.0.0.1:8080")
 

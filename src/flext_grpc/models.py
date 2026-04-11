@@ -611,7 +611,7 @@ class FlextGrpcModels(FlextModels):
             ]
 
             @computed_field
-            def is_valid(self) -> bool:
+            def valid(self) -> bool:
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
 
@@ -682,11 +682,9 @@ class FlextGrpcModels(FlextModels):
 
                 """
                 try:
-                    return r[Self](
-                        value=self.model_copy(update=kwargs), is_success=True
-                    )
+                    return r[Self](value=self.model_copy(update=kwargs), success=True)
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r[Self](error=str(e), is_success=False)
+                    return r[Self](error=str(e), success=False)
 
             def validate_business_rules(self) -> r[bool]:
                 """Override in subclasses for specific validation."""
@@ -722,10 +720,10 @@ class FlextGrpcModels(FlextModels):
                     value=self.model_copy(
                         update={"state": c.Grpc.ChannelState.IDLE.value}
                     ),
-                    is_success=True,
+                    success=True,
                 )
 
-            def is_ready(self) -> bool:
+            def ready(self) -> bool:
                 """Check readiness."""
                 return self.state == "ready"
 
@@ -783,7 +781,7 @@ class FlextGrpcModels(FlextModels):
                     value=self.model_copy(
                         update={"services": [*self.services, service]}
                     ),
-                    is_success=True,
+                    success=True,
                 )
 
             def mark_running(self) -> r[Self]:
@@ -806,7 +804,7 @@ class FlextGrpcModels(FlextModels):
                     value=self.model_copy(
                         update={"state": c.Grpc.ServerState.STOPPED.value}
                     ),
-                    is_success=True,
+                    success=True,
                 )
 
             def start(self) -> r[Self]:
@@ -877,7 +875,7 @@ class FlextGrpcModels(FlextModels):
                     value=self.model_copy(
                         update={"methods": [*self.methods, method_name]}
                     ),
-                    is_success=True,
+                    success=True,
                 )
 
             def has_method(self, method_name: str) -> bool:
@@ -907,13 +905,13 @@ class FlextGrpcModels(FlextModels):
                     domain_events=[],
                 )
                 return r[Self](
-                    value=self.model_copy(update={"channel": channel}), is_success=True
+                    value=self.model_copy(update={"channel": channel}), success=True
                 )
 
             @override
             def validate_business_rules(self) -> r[bool]:
                 """Delegate validation."""
-                if self.channel and self.channel.validate_business_rules().is_failure:
+                if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")
                 return r[bool].ok(True)
 

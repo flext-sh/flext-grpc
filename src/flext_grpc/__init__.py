@@ -13,12 +13,7 @@ from flext_core.lazy import (
 from flext_grpc.__version__ import *
 
 if _t.TYPE_CHECKING:
-    from flext_core.decorators import d
-    from flext_core.exceptions import e
-    from flext_core.handlers import h
-    from flext_core.mixins import x
-    from flext_core.result import r
-    from flext_core.service import s
+    from flext_core import d, e, h, r, s, x
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, grpc
     from flext_grpc.api import FlextGrpc
     from flext_grpc.constants import FlextGrpcConstants, c
@@ -30,11 +25,7 @@ if _t.TYPE_CHECKING:
         FlextGrpcValidationError,
     )
     from flext_grpc.models import FlextGrpcModels, m
-    from flext_grpc.proto.stubs import (
-        FlextGrpcServiceServicer,
-        FlextGrpcServiceStub,
-        add_FlextGrpcServiceServicer_to_server,
-    )
+    from flext_grpc.proto.stubs import FlextGrpcServiceServicer, FlextGrpcServiceStub
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
@@ -91,12 +82,14 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextGrpcUtilities",
                 "u",
             ),
-            "flext_core.decorators": ("d",),
-            "flext_core.exceptions": ("e",),
-            "flext_core.handlers": ("h",),
-            "flext_core.mixins": ("x",),
-            "flext_core.result": ("r",),
-            "flext_core.service": ("s",),
+            "flext_core": (
+                "d",
+                "e",
+                "h",
+                "r",
+                "s",
+                "x",
+            ),
         },
     ),
     exclude_names=(
@@ -143,7 +136,6 @@ __all__ = [
     "__url__",
     "__version__",
     "__version_info__",
-    "add_FlextGrpcServiceServicer_to_server",
     "c",
     "d",
     "e",

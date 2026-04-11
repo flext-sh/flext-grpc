@@ -81,13 +81,13 @@ class FlextGrpcServices:
             m.Grpc.Payload.from_values(status="ready", service="flext-grpc-service"),
         )
 
-    def get_client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+    def client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
         """Get client status through delegation."""
-        return self._client_manager.get_client_status(client)
+        return self._client_manager.client_status(client)
 
-    def get_server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+    def server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
         """Delegate server status to specialized manager."""
-        return self._server_manager.get_server_metrics(server)
+        return self._server_manager.server_metrics(server)
 
     def make_call(
         self,
@@ -158,14 +158,14 @@ class FlextGrpcServices:
         """Execute client-specific commands."""
         if command == "connect":
             connect_result = self.connect_client(str(kwargs.get("target", "")))
-            if connect_result.is_failure:
+            if connect_result.failure:
                 return r[m.Grpc.Payload].fail(
                     connect_result.error or "Client connect command failed",
                 )
             return r[m.Grpc.Payload].ok(m.Grpc.Payload.from_values(status="connected"))
         if command == "disconnect":
             disconnect_result = self.disconnect_client(client)
-            if disconnect_result.is_failure:
+            if disconnect_result.failure:
                 return r[m.Grpc.Payload].fail(
                     disconnect_result.error or "Client disconnect command failed",
                 )
@@ -173,7 +173,7 @@ class FlextGrpcServices:
                 m.Grpc.Payload.from_values(status="disconnected"),
             )
         if command == "status":
-            return self.get_client_status(client)
+            return self.client_status(client)
         if command == "call":
             request = kwargs.get("request")
             if request is None:
@@ -191,20 +191,20 @@ class FlextGrpcServices:
         """Execute server-specific commands."""
         if command == "start":
             start_result = self.start_server(server)
-            if start_result.is_failure:
+            if start_result.failure:
                 return r[m.Grpc.Payload].fail(
                     start_result.error or "Server start command failed",
                 )
             return r[m.Grpc.Payload].ok(m.Grpc.Payload.from_values(status="started"))
         if command == "stop":
             stop_result = self.stop_server(server)
-            if stop_result.is_failure:
+            if stop_result.failure:
                 return r[m.Grpc.Payload].fail(
                     stop_result.error or "Server stop command failed",
                 )
             return r[m.Grpc.Payload].ok(m.Grpc.Payload.from_values(status="stopped"))
         if command == "status":
-            return self.get_server_status(server)
+            return self.server_status(server)
         return r[m.Grpc.Payload].fail(f"Unsupported server command: {command}")
 
     def _execute_stream_command(
@@ -217,7 +217,7 @@ class FlextGrpcServices:
         if command == "create":
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             create_result = self.create_stream(method_name=method_name, **kwargs)
-            if create_result.is_failure:
+            if create_result.failure:
                 return r[m.Grpc.Payload].fail(
                     create_result.error or "Stream create command failed",
                 )
@@ -237,7 +237,7 @@ class FlextGrpcServices:
             return self.send_data(stream, data)
         if command == "close":
             close_result = self.close_stream(stream)
-            if close_result.is_failure:
+            if close_result.failure:
                 return r[m.Grpc.Payload].fail(
                     close_result.error or "Stream close command failed",
                 )

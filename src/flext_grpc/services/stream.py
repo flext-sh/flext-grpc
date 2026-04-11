@@ -59,7 +59,7 @@ class FlextGrpcStream:
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             stream_type = str(kwargs.get("stream_type", "unary"))
             stream_result = u.Grpc.create_stream_entity(method_name, stream_type)
-            if stream_result.is_failure:
+            if stream_result.failure:
                 return stream_result
             stream = stream_result.value
             stream_key = f"{stream.id}_{stream.stream_type}"

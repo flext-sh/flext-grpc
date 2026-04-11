@@ -42,7 +42,7 @@ class FlextGrpcUtilitiesGrpc:
             target=target,
             options=resolved_options,
         )
-        if channel_result.is_failure:
+        if channel_result.failure:
             return r[m.Grpc.Client].fail(
                 channel_result.error or "Client channel creation failed",
             )
@@ -103,7 +103,7 @@ class FlextGrpcUtilitiesGrpc:
         return f"{host}:{port}"
 
     @staticmethod
-    def get_channel_state_name(
+    def channel_state_name(
         state: c.Grpc.ChannelState | str,
     ) -> str:
         """Return the channel state name as its canonical string value."""
@@ -112,7 +112,7 @@ class FlextGrpcUtilitiesGrpc:
         return str(state)
 
     @staticmethod
-    def get_server_state_name(
+    def server_state_name(
         state: c.Grpc.ServerState | str,
     ) -> str:
         """Return the server state name as its canonical string value."""
@@ -121,7 +121,7 @@ class FlextGrpcUtilitiesGrpc:
         return str(state)
 
     @staticmethod
-    def get_system_info() -> dict[str, t.ContainerValue]:
+    def system_info() -> dict[str, t.ContainerValue]:
         """Return a small typed runtime snapshot for gRPC diagnostics."""
         return {
             "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
