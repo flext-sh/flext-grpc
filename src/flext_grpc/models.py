@@ -774,7 +774,7 @@ class FlextGrpcModels(FlextModels):
                 """Add service functionally.
 
                 Args:
-                service: gRPC service t.NormalizedValue (dynamic type from grpc library)
+                service: gRPC service t.RecursiveContainer (dynamic type from grpc library)
 
                 """
                 return r[Self](

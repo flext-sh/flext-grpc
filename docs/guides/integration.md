@@ -519,7 +519,9 @@ class TestGrpcIntegration(FlextTestCase):
     def test_server_creation_with_flext_patterns(self):
         """Test server creation using r pattern."""
 
-        settings = FlextGrpcSettings(host="localhost", port=0)  # t.NormalizedValue port
+        settings = FlextGrpcSettings(
+            host="localhost", port=0
+        )  # t.RecursiveContainer port
         server_result = create_server(settings)
 
         # Railway-oriented testing
