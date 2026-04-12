@@ -42,7 +42,7 @@ class FlextGrpcConfigurationError(e.BaseError):
         self.config_key = config_key
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcError",

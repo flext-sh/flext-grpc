@@ -69,4 +69,4 @@ class FlextGrpcMetrics:
                 self._metrics = m.Grpc.Payload(values=updated_values)
 
 
-__all__ = ["FlextGrpcMetrics"]
+__all__: list[str] = ["FlextGrpcMetrics"]

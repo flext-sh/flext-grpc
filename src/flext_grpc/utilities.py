@@ -15,4 +15,4 @@ class FlextGrpcUtilities(FlextUtilities):
 
 u = FlextGrpcUtilities
 
-__all__ = ["FlextGrpcUtilities", "u"]
+__all__: list[str] = ["FlextGrpcUtilities", "u"]

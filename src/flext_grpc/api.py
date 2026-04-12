@@ -301,4 +301,4 @@ class FlextGrpc(
 
 grpc = FlextGrpc
 
-__all__ = ["FlextGrpc", "grpc"]
+__all__: list[str] = ["FlextGrpc", "grpc"]

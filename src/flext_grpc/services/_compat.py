@@ -245,6 +245,6 @@ class FlextGrpcServices:
         return r[m.Grpc.Payload].fail(f"Unsupported stream command: {command}")
 
 
-__all__ = [
+__all__: list[str] = [
     "FlextGrpcServices",
 ]

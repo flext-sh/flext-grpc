@@ -141,4 +141,4 @@ class FlextGrpcClient:
                 return r[m.Grpc.Payload].fail(f"Call execution failed: {e}")
 
 
-__all__ = ["FlextGrpcClient"]
+__all__: list[str] = ["FlextGrpcClient"]

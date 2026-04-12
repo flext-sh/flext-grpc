@@ -64,4 +64,4 @@ class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
 
 c = TestsFlextGrpcConstants
 
-__all__ = ["TestsFlextGrpcConstants", "c"]
+__all__: list[str] = ["TestsFlextGrpcConstants", "c"]

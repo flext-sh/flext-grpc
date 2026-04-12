@@ -110,4 +110,4 @@ class FlextGrpcServer:
                 return r[m.Grpc.Server].fail(f"Server stop failed: {e}")
 
 
-__all__ = ["FlextGrpcServer"]
+__all__: list[str] = ["FlextGrpcServer"]

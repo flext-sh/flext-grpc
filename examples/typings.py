@@ -18,4 +18,4 @@ type CompleteSetup = ExamplesFlextGrpcTypes.Grpc.CompleteSetup
 
 t = ExamplesFlextGrpcTypes
 
-__all__ = ["CompleteSetup", "ExamplesFlextGrpcTypes", "t"]
+__all__: list[str] = ["CompleteSetup", "ExamplesFlextGrpcTypes", "t"]

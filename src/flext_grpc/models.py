@@ -957,4 +957,4 @@ class FlextGrpcModels(FlextModels):
 
 m = FlextGrpcModels
 
-__all__ = ["FlextGrpcModels", "m"]
+__all__: list[str] = ["FlextGrpcModels", "m"]

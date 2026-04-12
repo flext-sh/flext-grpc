@@ -106,4 +106,4 @@ class FlextGrpcStream:
                 return r[m.Grpc.Payload].fail(f"Data send failed: {e}")
 
 
-__all__ = ["FlextGrpcStream"]
+__all__: list[str] = ["FlextGrpcStream"]

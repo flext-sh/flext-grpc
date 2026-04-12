@@ -270,4 +270,4 @@ class FlextGrpcTypes(FlextTypes):
 
 
 t = FlextGrpcTypes
-__all__ = ["FlextGrpcTypes", "t"]
+__all__: list[str] = ["FlextGrpcTypes", "t"]

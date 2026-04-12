@@ -69,4 +69,4 @@ class FlextGrpcConnectionPool:
             ).map_error(lambda e: f"Connection release failed: {e}")
 
 
-__all__ = ["FlextGrpcConnectionPool"]
+__all__: list[str] = ["FlextGrpcConnectionPool"]

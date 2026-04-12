@@ -474,7 +474,7 @@ class FlextGrpcProtocols(FlextProtocols):
 
 p = FlextGrpcProtocols
 
-__all__ = [
+__all__: list[str] = [
     "FlextGrpcProtocols",
     "p",
 ]

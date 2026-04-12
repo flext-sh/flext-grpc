@@ -22,4 +22,4 @@ class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
 
 
 m = TestsFlextGrpcModels
-__all__ = ["TestsFlextGrpcModels", "m"]
+__all__: list[str] = ["TestsFlextGrpcModels", "m"]

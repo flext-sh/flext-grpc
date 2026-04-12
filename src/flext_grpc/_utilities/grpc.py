@@ -151,4 +151,4 @@ class FlextGrpcUtilitiesGrpc:
         return t.Grpc.GrpcValidation.validate_target(target)
 
 
-__all__ = ["FlextGrpcUtilitiesGrpc"]
+__all__: list[str] = ["FlextGrpcUtilitiesGrpc"]

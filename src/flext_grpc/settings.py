@@ -141,4 +141,4 @@ class FlextGrpcSettings(FlextSettings):
         return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
 
 
-__all__ = ["FlextGrpcSettings"]
+__all__: list[str] = ["FlextGrpcSettings"]

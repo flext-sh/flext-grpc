@@ -22,4 +22,4 @@ class TestsFlextGrpcUtilities(FlextTestsUtilities, FlextGrpcUtilities):
 
 
 u = TestsFlextGrpcUtilities
-__all__ = ["TestsFlextGrpcUtilities", "u"]
+__all__: list[str] = ["TestsFlextGrpcUtilities", "u"]
