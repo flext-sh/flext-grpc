@@ -20,8 +20,6 @@ from flext_grpc import (
 )
 from tests import c, t
 
-pytest_plugins = ["flext_tests.conftest_plugin"]
-
 
 @pytest.fixture
 def grpc_settings(
