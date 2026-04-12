@@ -29,8 +29,7 @@ class FlextGrpcSettings(FlextSettings):
     """
 
     model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
-        env_prefix="FLEXT_GRPC_",
-        extra="ignore",
+        env_prefix="FLEXT_GRPC_", extra="ignore"
     )
 
     # Flat convenience fields (settable via constructor)
