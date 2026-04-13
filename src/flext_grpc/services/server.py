@@ -14,6 +14,7 @@ from flext_grpc import (
     add_FlextGrpcServiceServicer_to_server,
     c,
     m,
+    p,
     r,
 )
 
