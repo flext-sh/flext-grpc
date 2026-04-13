@@ -17,12 +17,12 @@ from typing import Annotated, Self, override
 import grpc
 from pydantic import BaseModel, Field, computed_field, field_validator
 
-from flext_core import FlextModels, p, r, u
-from flext_grpc import c, p, t
+from flext_core import m
+from flext_grpc import c, p, r, t, u
 
 
-class FlextGrpcModels(FlextModels):
-    """gRPC domain models extending flext-core FlextModels.
+class FlextGrpcModels(m):
+    """gRPC domain models extending flext-core m.
 
     Consolidated namespace class containing all gRPC domain models as nested classes.
     Follows FLEXT principles with clean separation of concerns and SOLID design.
@@ -39,12 +39,12 @@ class FlextGrpcModels(FlextModels):
         # PROTO MESSAGE MODELS - RPC request/response messages
         # =========================================================================
 
-        class EchoRequest(FlextModels.Value):
+        class EchoRequest(m.Value):
             """Echo request message (immutable value model)."""
 
             message: Annotated[str, Field(description="Echo message")]
 
-        class EchoResponse(FlextModels.Value):
+        class EchoResponse(m.Value):
             """Echo response message (immutable value model)."""
 
             message: Annotated[str, Field(description="Echo message")]
@@ -56,12 +56,12 @@ class FlextGrpcModels(FlextModels):
                 default_factory=datetime.now, description="Response timestamp"
             )
 
-        class HealthRequest(FlextModels.Value):
+        class HealthRequest(m.Value):
             """Health check request message (immutable value model)."""
 
             service: Annotated[str, Field(default="", description="Service name")]
 
-        class HealthResponse(FlextModels.Value):
+        class HealthResponse(m.Value):
             """Health check response message (immutable value model)."""
 
             status: Annotated[str, Field(description="Health status")]
@@ -70,7 +70,7 @@ class FlextGrpcModels(FlextModels):
                 Field(default="", description="Health check message"),
             ]
 
-        class StreamInfo(FlextModels.Value):
+        class StreamInfo(m.Value):
             """Basic stream information (immutable value model)."""
 
             stream_id: str = Field(description="Unique stream identifier")
@@ -89,14 +89,14 @@ class FlextGrpcModels(FlextModels):
                 default=0, description="Number of errors on stream"
             )
 
-        class HealthCheck(FlextModels.Value):
+        class HealthCheck(m.Value):
             """gRPC health check model (immutable value model)."""
 
             service_name: Annotated[str, Field(description="Service name")]
             status: Annotated[str, Field(description="Health status")]
             timestamp: Annotated[datetime, Field(description="Check timestamp")]
 
-        class ServiceDefinition(FlextModels.Value):
+        class ServiceDefinition(m.Value):
             """gRPC service definition model (immutable value model)."""
 
             service_name: Annotated[str, Field(description="Service name")]
@@ -115,7 +115,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
 
-        class StreamMetrics(FlextModels.Value):
+        class StreamMetrics(m.Value):
             """gRPC stream metrics model (immutable value model)."""
 
             stream_id: Annotated[str, Field(description="Stream ID")]
@@ -143,7 +143,7 @@ class FlextGrpcModels(FlextModels):
                 Field(description="Memory usage in bytes"),
             ]
 
-        class ServiceMetrics(FlextModels.Value):
+        class ServiceMetrics(m.Value):
             """gRPC service metrics model (immutable value model)."""
 
             service_name: Annotated[str, Field(description="Service name")]
@@ -168,7 +168,7 @@ class FlextGrpcModels(FlextModels):
                 Field(description="Active connections"),
             ]
 
-        class OperationExecutionRequest(FlextModels.Value):
+        class OperationExecutionRequest(m.Value):
             """Operation execution request for gRPC service operations."""
 
             operation_name: Annotated[
@@ -182,7 +182,7 @@ class FlextGrpcModels(FlextModels):
                 default_factory=dict, description="Keyword arguments"
             )
 
-        class ServerConfig(FlextModels.Value):
+        class ServerConfig(m.Value):
             """Basic server configuration (immutable value model)."""
 
             host: str = Field(
@@ -202,7 +202,7 @@ class FlextGrpcModels(FlextModels):
                 description="Request timeout in seconds",
             )
 
-        class ClientConfig(FlextModels.Value):
+        class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
 
             target: str = Field(
@@ -214,7 +214,7 @@ class FlextGrpcModels(FlextModels):
                 description="Request timeout in seconds",
             )
 
-        class ChannelConfig(FlextModels.Value):
+        class ChannelConfig(m.Value):
             """Basic channel configuration (immutable value model)."""
 
             address: str = Field(description="Channel address")
@@ -222,7 +222,7 @@ class FlextGrpcModels(FlextModels):
                 default=None, description="Channel options"
             )
 
-        class SecurityConfig(FlextModels.Value):
+        class SecurityConfig(m.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: Annotated[
@@ -275,7 +275,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
 
-        class NetworkConfig(FlextModels.Value):
+        class NetworkConfig(m.Value):
             """Generic gRPC network configuration with validation."""
 
             host: Annotated[
@@ -314,7 +314,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
 
-        class PerformanceConfig(FlextModels.Value):
+        class PerformanceConfig(m.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: Annotated[
@@ -361,7 +361,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
 
-        class StreamingConfig(FlextModels.Value):
+        class StreamingConfig(m.Value):
             """Generic gRPC streaming configuration."""
 
             enabled: Annotated[
@@ -404,7 +404,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ]
 
-        class ClientSettingsConfig(FlextModels.Value):
+        class ClientSettingsConfig(m.Value):
             """Generic gRPC client configuration."""
 
             timeout: Annotated[
@@ -444,7 +444,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ] = Field(default_factory=dict)
 
-        class MonitoringConfig(FlextModels.Value):
+        class MonitoringConfig(m.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: Annotated[
@@ -482,12 +482,12 @@ class FlextGrpcModels(FlextModels):
                 Field(default="INFO", description="Logging level"),
             ]
 
-        class StateTransition(FlextModels.Value):
+        class StateTransition(m.Value):
             """State transition result model."""
 
             state: str = Field(description="Target state after transition")
 
-        class EntityValidator(FlextModels.Value):
+        class EntityValidator(m.Value):
             """Generic entity validator using functional composition.
 
             Provides validation methods that can be composed and delegated
@@ -567,7 +567,7 @@ class FlextGrpcModels(FlextModels):
                     FlextGrpcModels.Grpc.StateTransition(state=target),
                 )
 
-        class OperationSpec(FlextModels.Value):
+        class OperationSpec(m.Value):
             """Generic operation specification using Pydantic."""
 
             name: Annotated[str, Field(min_length=1, description="Operation name")]
@@ -589,7 +589,7 @@ class FlextGrpcModels(FlextModels):
                 ),
             ] = Field(default_factory=dict)
 
-        class Request(FlextModels.Value):
+        class Request(m.Value):
             """Generic request model with validation."""
 
             operation: FlextGrpcModels.Grpc.OperationSpec = Field(
@@ -615,7 +615,7 @@ class FlextGrpcModels(FlextModels):
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
 
-        class Response(FlextModels.Value):
+        class Response(m.Value):
             """Generic response model with metadata."""
 
             success: Annotated[bool, Field(description="Operation success status")]
@@ -671,7 +671,7 @@ class FlextGrpcModels(FlextModels):
                 }
                 return cls(values=normalized_values)
 
-        class Entity(FlextModels.Entity):
+        class Entity(m.Entity):
             """Generic base entity with functional patterns."""
 
             def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:

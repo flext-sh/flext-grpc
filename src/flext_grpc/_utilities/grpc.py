@@ -8,8 +8,7 @@ import re
 import socket
 from uuid import uuid4
 
-from flext_core import p, r
-from flext_grpc import c, m, t
+from flext_grpc import c, m, p, r, t
 
 logger = logging.getLogger(__name__)
 

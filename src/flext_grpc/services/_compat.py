@@ -12,7 +12,6 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import p, r
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcConnectionPool,
@@ -21,6 +20,8 @@ from flext_grpc import (
     FlextGrpcStream,
     c,
     m,
+    p,
+    r,
     t,
     u,
 )
