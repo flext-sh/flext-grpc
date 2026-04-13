@@ -212,7 +212,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -220,7 +220,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings
 
 
-def create_validated_config(host: str, port: int) -> r[FlextGrpcSettings]:
+def create_validated_config(host: str, port: int) -> p.Result[FlextGrpcSettings]:
     """Create and validate gRPC configuration."""
 
     return (
@@ -260,7 +260,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -272,8 +272,8 @@ T = TypeVar("T")
 
 # Protocol for dependency injection
 class GrpcServer(Protocol):
-    def start(self) -> r[FlextGrpcServer]: ...
-    def stop(self) -> r[FlextGrpcServer]: ...
+    def start(self) -> p.Result[FlextGrpcServer]: ...
+    def stop(self) -> p.Result[FlextGrpcServer]: ...
 
 
 # Generic service class
@@ -281,7 +281,7 @@ class GrpcService(Generic[T]):
     def __init__(self, settings: T) -> None:
         self._config = settings
 
-    def process(self, data: dict) -> r[t.Dict]:
+    def process(self, data: dict) -> p.Result[t.Dict]:
         # Implementation with proper typing
         return r.ok({"processed": data})
 ```
@@ -305,7 +305,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -319,7 +319,7 @@ class FlextGrpcServer(FlextModels.Entity):
     port: int
     state: TGrpcServerState = "stopped"
 
-    def start(self) -> r[FlextGrpcServer]:
+    def start(self) -> p.Result[FlextGrpcServer]:
         """State transition with business rules validation."""
 
         if self.state != "stopped":
@@ -328,7 +328,7 @@ class FlextGrpcServer(FlextModels.Entity):
         # State transition
         return r.ok(self.copy_with(state="starting"))
 
-    def validate_business_rules(self) -> r[bool]:
+    def validate_business_rules(self) -> p.Result[bool]:
         """Domain validation rules."""
 
         if not self.host:
@@ -378,7 +378,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -497,7 +497,7 @@ from flext_grpc import FlextGrpcServer
 from flext_grpc import FlextGrpcServerService
 
 
-def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
+def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
@@ -521,7 +521,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -535,7 +535,7 @@ class GrpcServiceManager:
         self._container = FlextContainer.get_global()
         self.logger = u.fetch_logger(__name__)
 
-    def initialize(self) -> r[bool]:
+    def initialize(self) -> p.Result[bool]:
         """Initialize with dependency injection."""
 
         # Register services
@@ -544,7 +544,7 @@ class GrpcServiceManager:
 
         return r.| ok(value=True)
 
-    def get_platform(self) -> r[FlextGrpcPlatform]:
+    def get_platform(self) -> p.Result[FlextGrpcPlatform]:
         """Retrieve platform from container."""
 
         platform_result = self._container.get("grpc_platform")
@@ -575,7 +575,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -583,7 +583,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcSettings, FlextGrpcServer
 
 
-def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
+def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     """Create a gRPC server with the specified configuration.
 
     Creates and validates a gRPC server instance using Clean Architecture
@@ -619,7 +619,7 @@ def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
 Use comments sparingly for complex business logic:
 
 ```python
-def validate_server_state(self, new_state: TGrpcServerState) -> r[bool]:
+def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
     """Validate server state transition."""
 
     # State machine validation - only specific transitions allowed

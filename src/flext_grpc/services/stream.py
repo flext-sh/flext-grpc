@@ -9,7 +9,7 @@ from collections.abc import MutableMapping
 import grpc
 from pydantic import Field, ValidationError
 
-from flext_grpc import FlextGrpcMetrics, c, m, r, t, u
+from flext_grpc import FlextGrpcMetrics, c, m, p, r, t, u
 
 
 class FlextGrpcStream:
@@ -45,7 +45,9 @@ class FlextGrpcStream:
             ] = {}
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
-        def close_stream(self, stream: m.Grpc.GrpcStream) -> r[m.Grpc.GrpcStream]:
+        def close_stream(
+            self, stream: m.Grpc.GrpcStream
+        ) -> p.Result[m.Grpc.GrpcStream]:
             """Close stream and cleanup."""
             stream_key = f"{stream.id}_{stream.stream_type}"
             if stream_key in self._active_streams:
@@ -54,7 +56,7 @@ class FlextGrpcStream:
 
         def create_stream(
             self, **kwargs: t.OptionalContainerValue
-        ) -> r[m.Grpc.GrpcStream]:
+        ) -> p.Result[m.Grpc.GrpcStream]:
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             stream_type = str(kwargs.get("stream_type", "unary"))
@@ -75,7 +77,7 @@ class FlextGrpcStream:
             self,
             stream: m.Grpc.GrpcStream,
             data: t.OptionalContainerValueMapping,
-        ) -> r[m.Grpc.Payload]:
+        ) -> p.Result[m.Grpc.Payload]:
             """Send data with buffering strategy.
 
             Args:

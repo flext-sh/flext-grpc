@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import r
+from flext_core import p, r
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcConnectionPool,
@@ -56,7 +56,7 @@ class FlextGrpc(
         """Get gRPC-specific configuration."""
         return self._grpc_config
 
-    def close_stream(self, stream: m.Grpc.GrpcStream) -> r[m.Grpc.GrpcStream]:
+    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
         """Delegate stream closing.
 
         Args:
@@ -68,7 +68,7 @@ class FlextGrpc(
         """
         return self._stream_manager.close_stream(stream)
 
-    def connect_client(self, target: str) -> r[m.Grpc.Client]:
+    def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
         """Delegate client connection.
 
         Args:
@@ -84,7 +84,7 @@ class FlextGrpc(
         self,
         target: str,
         options: t.OptionalContainerValueMapping | None = None,
-    ) -> r[m.Grpc.Channel]:
+    ) -> p.Result[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         return u.Grpc.create_channel_entity(
             target=target,
@@ -95,7 +95,7 @@ class FlextGrpc(
         self,
         target: str,
         options: t.OptionalContainerValueMapping | None = None,
-    ) -> r[m.Grpc.Client]:
+    ) -> p.Result[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return u.Grpc.create_client_entity(target=target, options=options)
 
@@ -105,7 +105,7 @@ class FlextGrpc(
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: t.StrSequence | None = None,
-    ) -> r[m.Grpc.CompleteSetup]:
+    ) -> p.Result[m.Grpc.CompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
@@ -144,7 +144,7 @@ class FlextGrpc(
         host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
-    ) -> r[m.Grpc.Server]:
+    ) -> p.Result[m.Grpc.Server]:
         """Create typed server entity from validated inputs."""
         return u.Grpc.create_server_entity(
             host=host,
@@ -156,7 +156,7 @@ class FlextGrpc(
         self,
         name: str,
         methods: t.StrSequence | None = None,
-    ) -> r[m.Grpc.Service]:
+    ) -> p.Result[m.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         return u.Grpc.create_service_entity(
             name=name,
@@ -167,7 +167,7 @@ class FlextGrpc(
         self,
         method_name: str = "DefaultMethod",
         stream_type: str = "unary",
-    ) -> r[m.Grpc.GrpcStream]:
+    ) -> p.Result[m.Grpc.GrpcStream]:
         """Create typed stream entity from validated inputs."""
         if not method_name.strip():
             return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
@@ -178,7 +178,7 @@ class FlextGrpc(
             stream_type=stream_type,
         )
 
-    def disconnect_client(self, client: m.Grpc.Client) -> r[m.Grpc.Client]:
+    def disconnect_client(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
         """Delegate client disconnection.
 
         Args:
@@ -190,14 +190,14 @@ class FlextGrpc(
         """
         return self._client_manager.disconnect(client)
 
-    def execute(self) -> r[FlextGrpcSettings]:
+    def execute(self) -> p.Result[FlextGrpcSettings]:
         """Execute main facade operation."""
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def execute_operation(
         self,
         request: m.Grpc.OperationExecutionRequest,
-    ) -> r[FlextGrpcSettings]:
+    ) -> p.Result[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring (Service protocol)."""
         kwargs = request.keyword_arguments
         match request.operation_name:
@@ -216,11 +216,11 @@ class FlextGrpc(
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
-    def client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+    def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
         """Get client status through delegation."""
         return self._client_manager.client_status(client)
 
-    def server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+    def server_status(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Payload]:
         """Delegate server status to specialized manager."""
         return self._server_manager.server_metrics(server)
 
@@ -229,7 +229,7 @@ class FlextGrpc(
         client: m.Grpc.Client,
         method: str,
         request: t.OptionalContainerValueMapping,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Delegate method calls.
 
         Args:
@@ -245,7 +245,7 @@ class FlextGrpc(
         """
         return self._client_manager.make_call(client, method, request)
 
-    def parse_address(self, address: str) -> r[tuple[str, int]]:
+    def parse_address(self, address: str) -> p.Result[tuple[str, int]]:
         """Parse gRPC address string."""
         if not u.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
@@ -255,7 +255,7 @@ class FlextGrpc(
         self,
         stream: m.Grpc.GrpcStream,
         data: t.OptionalContainerValueMapping,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Delegate data sending.
 
         Args:
@@ -270,7 +270,7 @@ class FlextGrpc(
         """
         return self._stream_manager.send_data(stream, data)
 
-    def start_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
+    def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
         """Delegate server start.
 
         Args:
@@ -282,7 +282,7 @@ class FlextGrpc(
         """
         return self._server_manager.start_server(server)
 
-    def stop_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
+    def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
         """Delegate server stop.
 
         Args:

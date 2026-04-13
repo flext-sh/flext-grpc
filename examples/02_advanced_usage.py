@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from flext_core import r
+from flext_core import p, r
 from flext_grpc import (
     FlextGrpc,
     FlextGrpcConstants,
@@ -120,7 +120,7 @@ class AdvancedGrpcOperations:
         port: int = 8080,
         service_name: str = "AdvancedService",
         methods: t.StrSequence | None = None,
-    ) -> r[CompleteSetup]:
+    ) -> p.Result[CompleteSetup]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]

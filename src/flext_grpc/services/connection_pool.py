@@ -7,7 +7,7 @@ from queue import Queue
 
 import grpc
 
-from flext_grpc import r, u
+from flext_grpc import p, r, u
 
 
 class FlextGrpcConnectionPool:
@@ -28,7 +28,7 @@ class FlextGrpcConnectionPool:
             self._active: set[grpc.Channel] = set()
             self._lock = threading.RLock()
 
-        def acquire(self) -> r[grpc.Channel]:
+        def acquire(self) -> p.Result[grpc.Channel]:
             """Acquire connection from pool."""
             try:
                 with self._lock:
@@ -40,7 +40,7 @@ class FlextGrpcConnectionPool:
             except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[grpc.Channel].fail(f"Connection acquisition failed: {e}")
 
-        def cleanup(self) -> r[bool]:
+        def cleanup(self) -> p.Result[bool]:
             """Cleanup all connections."""
             with self._lock:
                 self._active.clear()
@@ -51,7 +51,7 @@ class FlextGrpcConnectionPool:
                         break
             return r[bool].ok(True)
 
-        def release(self, connection: grpc.Channel) -> r[bool]:
+        def release(self, connection: grpc.Channel) -> p.Result[bool]:
             """Release connection back to pool."""
 
             def _release() -> bool:

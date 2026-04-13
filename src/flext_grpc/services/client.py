@@ -37,7 +37,7 @@ class FlextGrpcClient:
             )
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
-        def connect(self, target: str) -> r[m.Grpc.Client]:
+        def connect(self, target: str) -> p.Result[m.Grpc.Client]:
             """Establish client connection with pooling."""
             if target in self._active_channels:
                 return u.Grpc.create_client_entity(target=target)
@@ -66,7 +66,7 @@ class FlextGrpcClient:
                 ),
             ).map_error(lambda e: f"Connection failed: {e}")
 
-        def disconnect(self, client: m.Grpc.Client) -> r[m.Grpc.Client]:
+        def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
             """Disconnect client and cleanup resources."""
             target = ""
             if client.channel is not None:
@@ -77,7 +77,7 @@ class FlextGrpcClient:
                 del self._active_channels[target]
             return r[m.Grpc.Client].ok(client)
 
-        def client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+        def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
             """Get client connection status."""
             target = ""
             if client.channel is not None:
@@ -92,7 +92,7 @@ class FlextGrpcClient:
             client: m.Grpc.Client,
             method: str,
             request: t.OptionalContainerValueMapping,
-        ) -> r[m.Grpc.Payload]:
+        ) -> p.Result[m.Grpc.Payload]:
             """Execute gRPC call through client.
 
             Args:

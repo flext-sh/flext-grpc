@@ -16,7 +16,7 @@ from pydantic import AliasChoices, Field, computed_field
 from pydantic_settings import SettingsConfigDict
 
 from flext_core import FlextSettings
-from flext_grpc import FlextGrpcModels, c, r, t
+from flext_grpc import FlextGrpcModels, c, p, r, t
 
 
 @FlextSettings.auto_register("grpc")
@@ -96,7 +96,7 @@ class FlextGrpcSettings(FlextSettings):
         """Computed property indicating if streaming is enabled."""
         return self.streaming.enabled
 
-    def validate_configuration(self) -> r[bool]:
+    def validate_configuration(self) -> p.Result[bool]:
         """Validate configuration consistency.
 
         Checks that security configuration is valid, particularly that
@@ -111,7 +111,7 @@ class FlextGrpcSettings(FlextSettings):
         return r[bool].ok(True)
 
     @classmethod
-    def create_production_config(cls) -> r[FlextGrpcSettings]:
+    def create_production_config(cls) -> p.Result[FlextGrpcSettings]:
         """Create a production-ready gRPC configuration.
 
         Production configuration enables TLS and uses secure defaults.
@@ -128,7 +128,7 @@ class FlextGrpcSettings(FlextSettings):
         )
 
     @classmethod
-    def create_development_config(cls) -> r[FlextGrpcSettings]:
+    def create_development_config(cls) -> p.Result[FlextGrpcSettings]:
         """Create a development gRPC configuration.
 
         Development configuration uses localhost and insecure defaults

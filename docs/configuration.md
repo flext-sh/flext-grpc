@@ -233,7 +233,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
@@ -274,13 +274,13 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
 from flext_core import u
 
-def validate_production_config(settings: FlextGrpcSettings) -> r[bool]:
+def validate_production_config(settings: FlextGrpcSettings) -> p.Result[bool]:
     """Additional validation for production environments."""
 
     if settings.host == FlextGrpcConstants.Network.DEFAULT_HOST:
@@ -516,14 +516,14 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
 from flext_core import u
 
 
-def setup_configuration() -> r[FlextGrpcSettings]:
+def setup_configuration() -> p.Result[FlextGrpcSettings]:
     return create_config(
         host=FlextGrpcConstants.Network.DEFAULT_HOST,
         port=FlextGrpcConstants.Network.DEFAULT_PORT,
@@ -549,7 +549,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t

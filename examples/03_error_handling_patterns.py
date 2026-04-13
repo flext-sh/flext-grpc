@@ -30,7 +30,7 @@ from flext_grpc import (
 logger = u.fetch_logger(__name__)
 
 
-def validate_user_input(username: str, email: str) -> r[t.Grpc.Headers]:
+def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
     """Validate user input with FlextGrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
@@ -52,7 +52,7 @@ def validate_user_input(username: str, email: str) -> r[t.Grpc.Headers]:
         return r[t.Grpc.Headers].fail(f"Validation error: {e}")
 
 
-def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
+def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]:
     """Create server configuration with proper error handling."""
 
     def _raise_port_error() -> NoReturn:
@@ -83,7 +83,7 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
         return r[t.Grpc.ConfigDict].fail(f"Configuration error: {e}")
 
 
-def simulate_connection_error() -> r[str]:
+def simulate_connection_error() -> p.Result[str]:
     """Simulate a connection error scenario."""
 
     def _raise_connection_error() -> NoReturn:
@@ -97,7 +97,7 @@ def simulate_connection_error() -> r[str]:
         return r[str].fail(f"Connection error: {e}")
 
 
-def simulate_timeout_error() -> r[str]:
+def simulate_timeout_error() -> p.Result[str]:
     """Simulate a timeout error scenario."""
 
     def _raise_timeout_error() -> NoReturn:
@@ -111,7 +111,7 @@ def simulate_timeout_error() -> r[str]:
         return r[str].fail(f"Timeout error: {e}")
 
 
-def handle_generic_grpc_error() -> r[str]:
+def handle_generic_grpc_error() -> p.Result[str]:
     """Handle generic gRPC errors."""
 
     def _raise_generic_error() -> NoReturn:
@@ -125,7 +125,7 @@ def handle_generic_grpc_error() -> r[str]:
         return r[str].fail(f"gRPC error: {e}")
 
 
-def comprehensive_error_handling_pipeline() -> r[str]:
+def comprehensive_error_handling_pipeline() -> p.Result[str]:
     """Demonstrate comprehensive error handling in a realistic pipeline."""
     logger.info("Starting comprehensive error handling pipeline")
     validation_result = validate_user_input("john_doe", "john@example.com")
@@ -153,7 +153,7 @@ def comprehensive_error_handling_pipeline() -> r[str]:
     return r[str].ok("Pipeline completed with graceful error handling")
 
 
-def error_recovery_patterns() -> r[str]:
+def error_recovery_patterns() -> p.Result[str]:
     """Demonstrate error recovery patterns."""
     logger.info("Testing error recovery patterns")
     for attempt in range(3):
@@ -206,7 +206,7 @@ def demonstrate_error_context() -> None:
     )
 
 
-def error_handling() -> r[str]:
+def error_handling() -> p.Result[str]:
     """Demonstrate error handling in contexts."""
     logger.info("Testing error handling patterns")
 

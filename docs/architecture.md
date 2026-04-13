@@ -212,7 +212,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 All components integrate with flext-core patterns.
 
 ```python
-def create_server(settings: FlextGrpcSettings) -> r[FlextGrpcServer]:
+def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     return (
         validate_config(settings)
         .flat_map(lambda _: create_server_entity(settings))

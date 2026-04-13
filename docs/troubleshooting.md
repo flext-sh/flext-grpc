@@ -170,7 +170,7 @@ if start_result.is_failure:
 1. **Always use r patterns**:
 
    ```python
-   def my_grpc_method() -> r[ResponseType]:
+   def my_grpc_method() -> p.Result[ResponseType]:
        # Explicit error handling, no exceptions
    ```
 

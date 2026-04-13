@@ -17,7 +17,7 @@ from typing import Annotated, Self, override
 import grpc
 from pydantic import BaseModel, Field, computed_field, field_validator
 
-from flext_core import FlextModels, r, u
+from flext_core import FlextModels, p, r, u
 from flext_grpc import c, p, t
 
 
@@ -544,7 +544,7 @@ class FlextGrpcModels(FlextModels):
                 current: str,
                 target: str,
                 allowed_transitions: Mapping[str, set[str]],
-            ) -> r[FlextGrpcModels.Grpc.StateTransition]:
+            ) -> p.Result[FlextGrpcModels.Grpc.StateTransition]:
                 """Generic state transition with validation.
 
                 Args:
@@ -674,7 +674,7 @@ class FlextGrpcModels(FlextModels):
         class Entity(FlextModels.Entity):
             """Generic base entity with functional patterns."""
 
-            def copy_with(self, **kwargs: t.Scalar | None) -> r[Self]:
+            def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
                 """Functional copy using r.
 
                 Args:
@@ -686,7 +686,7 @@ class FlextGrpcModels(FlextModels):
                 except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                     return r[Self](error=str(e), success=False)
 
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation."""
                 return r[bool].ok(True)
 
@@ -706,7 +706,7 @@ class FlextGrpcModels(FlextModels):
                 Field(default=None, description="Underlying gRPC channel instance"),
             ]
 
-            def connect(self) -> r[Self]:
+            def connect(self) -> p.Result[Self]:
                 """Transition to connecting."""
                 return self.transition(
                     self.state,
@@ -714,7 +714,7 @@ class FlextGrpcModels(FlextModels):
                     {"idle": {"connecting"}},
                 ).map(lambda update: self.model_copy(update=update.model_dump()))
 
-            def disconnect(self) -> r[Self]:
+            def disconnect(self) -> p.Result[Self]:
                 """Transition to idle."""
                 return r[Self](
                     value=self.model_copy(
@@ -727,7 +727,7 @@ class FlextGrpcModels(FlextModels):
                 """Check readiness."""
                 return self.state == "ready"
 
-            def mark_ready(self) -> r[Self]:
+            def mark_ready(self) -> p.Result[Self]:
                 """Transition to ready."""
                 return self.transition(
                     self.state,
@@ -736,7 +736,7 @@ class FlextGrpcModels(FlextModels):
                 ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             @override
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Functional validation composition."""
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
@@ -770,7 +770,7 @@ class FlextGrpcModels(FlextModels):
                 Field(default=None, description="Underlying gRPC server instance"),
             ]
 
-            def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
+            def add_service(self, service: p.Grpc.GrpcServicer) -> p.Result[Self]:
                 """Add service functionally.
 
                 Args:
@@ -784,7 +784,7 @@ class FlextGrpcModels(FlextModels):
                     success=True,
                 )
 
-            def mark_running(self) -> r[Self]:
+            def mark_running(self) -> p.Result[Self]:
                 """Transition to running."""
                 return self.transition(
                     self.state,
@@ -792,7 +792,7 @@ class FlextGrpcModels(FlextModels):
                     {"starting": {"running"}},
                 ).map(lambda update: self.model_copy(update=update.model_dump()))
 
-            def mark_stopped(self) -> r[Self]:
+            def mark_stopped(self) -> p.Result[Self]:
                 """Transition to stopped."""
                 if self.state not in {"stopping", "running"}:
                     return (
@@ -807,7 +807,7 @@ class FlextGrpcModels(FlextModels):
                     success=True,
                 )
 
-            def start(self) -> r[Self]:
+            def start(self) -> p.Result[Self]:
                 """Transition to starting."""
                 return self.transition(
                     self.state,
@@ -815,7 +815,7 @@ class FlextGrpcModels(FlextModels):
                     {"stopped": {"starting"}},
                 ).map(lambda update: self.model_copy(update=update.model_dump()))
 
-            def stop(self) -> r[Self]:
+            def stop(self) -> p.Result[Self]:
                 """Transition to stopping."""
                 return self.transition(
                     self.state,
@@ -824,7 +824,7 @@ class FlextGrpcModels(FlextModels):
                 ).map(lambda update: self.model_copy(update=update.model_dump()))
 
             @override
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Delegate validation to generic validators."""
                 if not self.host.strip():
                     return r[bool].fail("Server host cannot be empty")
@@ -867,7 +867,7 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return v
 
-            def add_method(self, method_name: str) -> r[Self]:
+            def add_method(self, method_name: str) -> p.Result[Self]:
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
@@ -896,7 +896,7 @@ class FlextGrpcModels(FlextModels):
                 Field(default=None, description="gRPC client stub for RPC calls"),
             ]
 
-            def connect_to(self, target: str) -> r[Self]:
+            def connect_to(self, target: str) -> p.Result[Self]:
                 """Connect functionally."""
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
@@ -909,7 +909,7 @@ class FlextGrpcModels(FlextModels):
                 )
 
             @override
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Delegate validation."""
                 if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")

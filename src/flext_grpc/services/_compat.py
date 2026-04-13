@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
-from flext_core import r
+from flext_core import p, r
 from flext_grpc import (
     FlextGrpcClient,
     FlextGrpcConnectionPool,
@@ -51,11 +51,11 @@ class FlextGrpcServices:
         self._metrics_collector = FlextGrpcMetrics.MetricsCollector()
         self._resource_manager = FlextGrpcConnectionPool.ConnectionPool(max_size=20)
 
-    def close_stream(self, stream: m.Grpc.GrpcStream) -> r[m.Grpc.GrpcStream]:
+    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
         """Delegate stream closing to specialized manager."""
         return self._stream_manager.close_stream(stream)
 
-    def connect_client(self, target: str) -> r[m.Grpc.Client]:
+    def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
         """Delegate client connection to specialized manager."""
         return self._client_manager.connect(target)
 
@@ -63,7 +63,7 @@ class FlextGrpcServices:
         self,
         method_name: str | int | None = "DefaultMethod",
         **kwargs: t.OptionalContainerValue,
-    ) -> r[m.Grpc.GrpcStream]:
+    ) -> p.Result[m.Grpc.GrpcStream]:
         """Delegate stream creation to specialized manager."""
         method_name_str = (
             str(method_name) if method_name is not None else "DefaultMethod"
@@ -71,21 +71,21 @@ class FlextGrpcServices:
         kwargs["method_name"] = method_name_str
         return self._stream_manager.create_stream(**kwargs)
 
-    def disconnect_client(self, client: m.Grpc.Client) -> r[m.Grpc.Client]:
+    def disconnect_client(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
         """Delegate client disconnection to specialized manager."""
         return self._client_manager.disconnect(client)
 
-    def execute(self, **_kwargs: t.Scalar) -> r[m.Grpc.Payload]:
+    def execute(self, **_kwargs: t.Scalar) -> p.Result[m.Grpc.Payload]:
         """Execute main service operation."""
         return r[m.Grpc.Payload].ok(
             m.Grpc.Payload.from_values(status="ready", service="flext-grpc-service"),
         )
 
-    def client_status(self, client: m.Grpc.Client) -> r[m.Grpc.Payload]:
+    def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
         """Get client status through delegation."""
         return self._client_manager.client_status(client)
 
-    def server_status(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+    def server_status(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Payload]:
         """Delegate server status to specialized manager."""
         return self._server_manager.server_metrics(server)
 
@@ -94,7 +94,7 @@ class FlextGrpcServices:
         client: m.Grpc.Client,
         method: str,
         request: t.OptionalContainerValueMapping,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Delegate method calls to specialized manager.
 
         Args:
@@ -109,7 +109,7 @@ class FlextGrpcServices:
         self,
         stream: m.Grpc.GrpcStream,
         data: t.OptionalContainerValueMapping,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Delegate data sending to specialized manager.
 
         Args:
@@ -119,11 +119,11 @@ class FlextGrpcServices:
         """
         return self._stream_manager.send_data(stream, data)
 
-    def start_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
+    def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
         """Delegate server start to specialized manager."""
         return self._server_manager.start_server(server)
 
-    def stop_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
+    def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
         """Delegate server stop to specialized manager."""
         return self._server_manager.stop_server(server)
 
@@ -131,7 +131,7 @@ class FlextGrpcServices:
         self,
         target: str,
         options: t.OptionalContainerValueMapping | None = None,
-    ) -> r[m.Grpc.Client]:
+    ) -> p.Result[m.Grpc.Client]:
         """Delegate entity creation to utilities.
 
         Args:
@@ -145,7 +145,7 @@ class FlextGrpcServices:
         self,
         method_name: str,
         stream_type: c.Grpc.GrpcOperations | str,
-    ) -> r[m.Grpc.GrpcStream]:
+    ) -> p.Result[m.Grpc.GrpcStream]:
         """Delegate entity creation to utilities."""
         return u.Grpc.create_stream_entity(method_name, stream_type)
 
@@ -154,7 +154,7 @@ class FlextGrpcServices:
         command: str,
         client: m.Grpc.Client,
         **kwargs: t.OptionalContainerValue,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Execute client-specific commands."""
         if command == "connect":
             connect_result = self.connect_client(str(kwargs.get("target", "")))
@@ -187,7 +187,7 @@ class FlextGrpcServices:
         self,
         command: str,
         server: m.Grpc.Server,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Execute server-specific commands."""
         if command == "start":
             start_result = self.start_server(server)
@@ -212,7 +212,7 @@ class FlextGrpcServices:
         command: str,
         stream: m.Grpc.GrpcStream,
         **kwargs: t.OptionalContainerValue,
-    ) -> r[m.Grpc.Payload]:
+    ) -> p.Result[m.Grpc.Payload]:
         """Execute stream-specific commands."""
         if command == "create":
             method_name = str(kwargs.get("method_name", "DefaultMethod"))

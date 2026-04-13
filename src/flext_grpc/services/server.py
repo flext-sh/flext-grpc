@@ -39,7 +39,7 @@ class FlextGrpcServer:
                 thread_name_prefix="flext-grpc-server",
             )
 
-        def server_metrics(self, server: m.Grpc.Server) -> r[m.Grpc.Payload]:
+        def server_metrics(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Payload]:
             """Get server metrics."""
             server_key = f"{server.host}:{server.port}"
             started_at_raw = self._metrics.metric(f"{server_key}_started_at")
@@ -58,7 +58,7 @@ class FlextGrpcServer:
                 ),
             )
 
-        def start_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
+        def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
             """Start gRPC server with proper lifecycle."""
             server_key = f"{server.host}:{server.port}"
             if server_key in self._active_servers:
@@ -89,7 +89,7 @@ class FlextGrpcServer:
             except (grpc.RpcError, ConnectionError, TimeoutError) as e:
                 return r[m.Grpc.Server].fail(f"Server start failed: {e}")
 
-        def stop_server(self, server: m.Grpc.Server) -> r[m.Grpc.Server]:
+        def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
             """Stop gRPC server gracefully."""
             server_key = f"{server.host}:{server.port}"
             if server_key not in self._active_servers:

@@ -8,7 +8,7 @@ import re
 import socket
 from uuid import uuid4
 
-from flext_core import r
+from flext_core import p, r
 from flext_grpc import c, m, t
 
 logger = logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class FlextGrpcUtilitiesGrpc:
     def create_channel_entity(
         target: str,
         options: t.OptionalContainerValueMapping | None = None,
-    ) -> r[m.Grpc.Channel]:
+    ) -> p.Result[m.Grpc.Channel]:
         """Create a typed channel entity from validated inputs."""
         resolved_options = {} if options is None else dict(options)
         return r[m.Grpc.Channel].create_from_callable(
@@ -35,7 +35,7 @@ class FlextGrpcUtilitiesGrpc:
     def create_client_entity(
         target: str,
         options: t.OptionalContainerValueMapping | None = None,
-    ) -> r[m.Grpc.Client]:
+    ) -> p.Result[m.Grpc.Client]:
         """Create a typed client entity backed by a typed channel entity."""
         resolved_options = {} if options is None else dict(options)
         channel_result = FlextGrpcUtilitiesGrpc.create_channel_entity(
@@ -58,7 +58,7 @@ class FlextGrpcUtilitiesGrpc:
         host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
         port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
         max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
-    ) -> r[m.Grpc.Server]:
+    ) -> p.Result[m.Grpc.Server]:
         """Create a typed server entity from validated inputs."""
         return r[m.Grpc.Server].create_from_callable(
             lambda: m.Grpc.Server(
@@ -72,7 +72,7 @@ class FlextGrpcUtilitiesGrpc:
     def create_service_entity(
         name: str,
         methods: t.StrSequence | None = None,
-    ) -> r[m.Grpc.Service]:
+    ) -> p.Result[m.Grpc.Service]:
         """Create a typed service entity with a minimal valid method set."""
         resolved_methods = ["HealthCheck"] if methods is None else list(methods)
         return r[m.Grpc.Service].create_from_callable(
@@ -86,7 +86,7 @@ class FlextGrpcUtilitiesGrpc:
     def create_stream_entity(
         method_name: str,
         stream_type: c.Grpc.GrpcOperations | str,
-    ) -> r[m.Grpc.GrpcStream]:
+    ) -> p.Result[m.Grpc.GrpcStream]:
         """Create a typed stream entity from validated inputs."""
         resolved_stream_type = c.Grpc.GrpcOperations(stream_type)
         return r[m.Grpc.GrpcStream].create_from_callable(

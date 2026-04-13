@@ -28,9 +28,9 @@
 - [flext-grpc API Reference](#flext-grpc-api-reference)
   - [Core API](#core-api) - [Factory Functions](#factory-functions) - [`create_server(host: str, port: int,
 max_workers: int) -> FlextGrpcServer`](#create_serverhost-str-port-int-max_workers-int---flextgrpcserver) - [`create_client(host: str,
-port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient) - [`create_config(**kwargs) -> r[FlextGrpcSettings]`](#create_configkwargs---flextresultflextgrpcconfig) - [Domain Entities](#domain-entities) - [FlextGrpcServer](#flextgrpcserver) - [`start() -> r[FlextGrpcServer]`](#start---flextresultflextgrpcserver) - [`stop() -> r[FlextGrpcServer]`](#stop---flextresultflextgrpcserver) - [`validate_business_rules() -> r[bool]`](#validate_business_rules---flextresultnone) - [FlextGrpcClient](#flextgrpcclient) - [`connect() -> r[FlextGrpcClient]`](#connect---flextresultflextgrpcclient) - [`disconnect() -> r[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient) - [FlextGrpcSettings](#flextgrpcconfig) - [`validate() -> r[bool]`](#validate---flextresultnone) - [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform) - [`start_server(server: FlextGrpcServer) -> r[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver) - [`connect_client(client: FlextGrpcClient) -> r[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient) - [`call_service(client: FlextGrpcClient, method: str,
-request: dict) -> r[t.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict) - [FlextGrpcServerService](#flextgrpcserverservice) - [`execute(operation: str,
-server: FlextGrpcServer) -> r[FlextGrpcServer]`](#executeoperation-str-server-flextgrpcserver---flextresultflextgrpcserver)
+port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient) - [`create_config(**kwargs) -> p.Result[FlextGrpcSettings]`](#create_configkwargs---flextresultflextgrpcconfig) - [Domain Entities](#domain-entities) - [FlextGrpcServer](#flextgrpcserver) - [`start() -> p.Result[FlextGrpcServer]`](#start---flextresultflextgrpcserver) - [`stop() -> p.Result[FlextGrpcServer]`](#stop---flextresultflextgrpcserver) - [`validate_business_rules() -> p.Result[bool]`](#validate_business_rules---flextresultnone) - [FlextGrpcClient](#flextgrpcclient) - [`connect() -> p.Result[FlextGrpcClient]`](#connect---flextresultflextgrpcclient) - [`disconnect() -> p.Result[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient) - [FlextGrpcSettings](#flextgrpcconfig) - [`validate() -> p.Result[bool]`](#validate---flextresultnone) - [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform) - [`start_server(server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver) - [`connect_client(client: FlextGrpcClient) -> p.Result[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient) - [`call_service(client: FlextGrpcClient, method: str,
+request: dict) -> p.Result[t.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict) - [FlextGrpcServerService](#flextgrpcserverservice) - [`execute(operation: str,
+server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#executeoperation-str-server-flextgrpcserver---flextresultflextgrpcserver)
 - [Start server](#start-server)
   - [Type Definitions](#type-definitions)
     - [TGrpcServerState](#tgrpcserverstate)
@@ -42,12 +42,12 @@ server: FlextGrpcServer) -> r[FlextGrpcServer]`](#executeoperation-str-server-fl
     - [FlextGrpcConnectionError](#flextgrpcconnectionerror)
     - [FlextGrpcTimeoutError](#flextgrpctimeouterror)
     - [FlextGrpcValidationError](#flextgrpcvalidationerror)
-  - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> r[bool]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> r[t.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> r[bool]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
-settings: dict) -> r[FlextGrpcStream]`](#create_server_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
-settings: dict) -> r[FlextGrpcStream]`](#create_client_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
-settings: dict) -> r[FlextGrpcStream]`](#create_bidirectional_streammethod-str-settings-dict---flextresultflextgrpcstream)
-  - [Utility Functions](#utility-functions) - [Address Parsing](#address-parsing) - [`parse_address(address: str) -> r[tuple[str,
-int]]`](#parse_addressaddress-str---flextresulttuplestr-int) - [`validate_address(address: str) -> r[bool]`](#validate_addressaddress-str---flextresultnone)
+  - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> p.Result[bool]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> p.Result[t.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> p.Result[bool]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
+settings: dict) -> p.Result[FlextGrpcStream]`](#create_server_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
+settings: dict) -> p.Result[FlextGrpcStream]`](#create_client_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
+settings: dict) -> p.Result[FlextGrpcStream]`](#create_bidirectional_streammethod-str-settings-dict---flextresultflextgrpcstream)
+  - [Utility Functions](#utility-functions) - [Address Parsing](#address-parsing) - [`parse_address(address: str) -> p.Result[tuple[str,
+int]]`](#parse_addressaddress-str---flextresulttuplestr-int) - [`validate_address(address: str) -> p.Result[bool]`](#validate_addressaddress-str---flextresultnone)
   - [Integration with FLEXT Patterns](#integration-with-flext-patterns)
     - [Railway-Oriented Programming](#railway-oriented-programming)
     - [Dependency Injection](#dependency-injection)
@@ -87,7 +87,7 @@ from flext_grpc import create_client
 client = create_client("localhost", 50051)
 ```
 
-#### `create_config(**kwargs) -> r[FlextGrpcSettings]`
+#### `create_config(**kwargs) -> p.Result[FlextGrpcSettings]`
 
 Creates and validates a gRPC configuration.
 
@@ -112,7 +112,7 @@ Server entity with lifecycle management and state transitions.
 
 **Methods:**
 
-##### `start() -> r[FlextGrpcServer]`
+##### `start() -> p.Result[FlextGrpcServer]`
 
 Starts the server (state transition: stopped → starting).
 
@@ -125,11 +125,11 @@ if start_result.success:
     assert starting_server.state == "starting"
 ```
 
-##### `stop() -> r[FlextGrpcServer]`
+##### `stop() -> p.Result[FlextGrpcServer]`
 
 Stops the server (state transition: running → stopping).
 
-##### `validate_business_rules() -> r[bool]`
+##### `validate_business_rules() -> p.Result[bool]`
 
 Validates server configuration and business rules.
 
@@ -153,11 +153,11 @@ Client entity for gRPC communication.
 
 **Methods:**
 
-##### `connect() -> r[FlextGrpcClient]`
+##### `connect() -> p.Result[FlextGrpcClient]`
 
 Establishes connection to the server.
 
-##### `disconnect() -> r[FlextGrpcClient]`
+##### `disconnect() -> p.Result[FlextGrpcClient]`
 
 Closes connection to the server.
 
@@ -174,7 +174,7 @@ Configuration value t.RecursiveContainer with validation.
 
 **Methods:**
 
-##### `validate() -> r[bool]`
+##### `validate() -> p.Result[bool]`
 
 Validates configuration parameters.
 
@@ -194,7 +194,7 @@ Unified facade for all gRPC operations.
 
 **Methods:**
 
-##### `start_server(server: FlextGrpcServer) -> r[FlextGrpcServer]`
+##### `start_server(server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`
 
 Starts a gRPC server with complete lifecycle management.
 
@@ -209,11 +209,11 @@ if result.success:
     running_server = result.unwrap()
 ```
 
-##### `connect_client(client: FlextGrpcClient) -> r[FlextGrpcClient]`
+##### `connect_client(client: FlextGrpcClient) -> p.Result[FlextGrpcClient]`
 
 Establishes client connection with retry logic.
 
-##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> r[t.Dict]`
+##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> p.Result[t.Dict]`
 
 Makes a service call through the client.
 
@@ -223,7 +223,7 @@ Domain service for server operations.
 
 **Methods:**
 
-##### `execute(operation: str, server: FlextGrpcServer) -> r[FlextGrpcServer]`
+##### `execute(operation: str, server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`
 
 Executes server operations using Command pattern.
 
@@ -320,15 +320,15 @@ Streaming operations for all gRPC patterns.
 
 **Methods:**
 
-##### `send_data(data: dict) -> r[bool]`
+##### `send_data(data: dict) -> p.Result[bool]`
 
 Sends data through the stream.
 
-##### `receive_data() -> r[t.Dict]`
+##### `receive_data() -> p.Result[t.Dict]`
 
 Receives data from the stream.
 
-##### `close() -> r[bool]`
+##### `close() -> p.Result[bool]`
 
 Closes the stream.
 
@@ -338,15 +338,15 @@ Service for managing streaming operations.
 
 **Methods:**
 
-##### `create_server_stream(method: str, settings: dict) -> r[FlextGrpcStream]`
+##### `create_server_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
 
 Creates a server streaming operation.
 
-##### `create_client_stream(method: str, settings: dict) -> r[FlextGrpcStream]`
+##### `create_client_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
 
 Creates a client streaming operation.
 
-##### `create_bidirectional_stream(method: str, settings: dict) -> r[FlextGrpcStream]`
+##### `create_bidirectional_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
 
 Creates a bidirectional streaming operation.
 
@@ -354,7 +354,7 @@ Creates a bidirectional streaming operation.
 
 ### Address Parsing
 
-#### `parse_address(address: str) -> r[tuple[str, int]]`
+#### `parse_address(address: str) -> p.Result[tuple[str, int]]`
 
 Parses a gRPC address string into host and port components.
 
@@ -367,7 +367,7 @@ if result.success:
     print(f"Host: {host}, Port: {port}")
 ```
 
-#### `validate_address(address: str) -> r[bool]`
+#### `validate_address(address: str) -> p.Result[bool]`
 
 Validates a gRPC address string.
 
@@ -401,14 +401,14 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
 from flext_core import u
 
 
-def setup_grpc_server(host: str, port: int) -> r[str]:
+def setup_grpc_server(host: str, port: int) -> p.Result[str]:
     return (
         create_config(host=host, port=port)
         .flat_map(lambda settings: create_server(settings))
@@ -440,7 +440,7 @@ from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
+from flext_core import r, p
 from flext_core import u
 from flext_core import s
 from flext_core import t
