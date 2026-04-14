@@ -103,7 +103,7 @@ class FlextGrpcClient:
                 return r[m.Grpc.Payload].fail("Client not connected")
             grpc_channel = self._active_channels[target]
             stub = FlextGrpcServiceStub(grpc_channel)
-            if method == "Echo":
+            if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_result = u.Grpc.call_runtime(
                     lambda: stub.Echo(EchoRequest(message=str(request))),
                 )
@@ -120,7 +120,7 @@ class FlextGrpcClient:
                         timestamp=echo_response.timestamp,
                     ),
                 )
-            if method == "HealthCheck":
+            if method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_result = u.Grpc.call_runtime(
                     lambda: stub.HealthCheck(
                         HealthRequest(service="FlextGrpcService"),

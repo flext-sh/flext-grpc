@@ -175,6 +175,18 @@ class FlextGrpcConstants(FlextConstants):
             BIDIRECTIONAL = "bidirectional"
 
         @unique
+        class ServiceMethod(StrEnum):
+            """gRPC service method names (single source of truth).
+
+            DRY Pattern:
+                StrEnum is the single source of truth. Use ServiceMethod.ECHO.value
+                or ServiceMethod.ECHO directly - no base strings needed.
+            """
+
+            ECHO = "Echo"
+            HEALTH_CHECK = "HealthCheck"
+
+        @unique
         class CompressionTypes(StrEnum):
             """gRPC compression types (single source of truth).
 
