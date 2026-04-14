@@ -41,9 +41,9 @@ class GrpcServerManager:
         self,
         base_port: int = 8000,
         count: int = 3,
-    ) -> list[r[FlextGrpcModels.Grpc.Server]]:
+    ) -> list[p.Result[FlextGrpcModels.Grpc.Server]]:
         """Create a pool of servers on consecutive ports through facade."""
-        server_results: list[r[FlextGrpcModels.Grpc.Server]] = []
+        server_results: list[p.Result[FlextGrpcModels.Grpc.Server]] = []
         for i in range(count):
             server_id = f"pool-server-{i}"
             port = base_port + i
