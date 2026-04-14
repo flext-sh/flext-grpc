@@ -20,7 +20,7 @@
   - [What This Documentation Does NOT Cover](#what-this-documentation-does-not-cover)
   - [Contributing to Documentation](#contributing-to-documentation)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev RC | **Updated**: April 14, 2026
 
 Technical documentation for **flext-grpc** gRPC library implementation.
 

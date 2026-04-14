@@ -118,7 +118,7 @@ object]`](#run_scheduled_maintenancemaintenance_type-str--daily---dictstr-object
     - [Best Practices](#best-practices)
 - [Safe file operations](#safe-file-operations)
 
-**Version**: 1.0.0 | **Last Updated**: 2025-10-10
+**Version**: 1.0.0 | **Last Updated**: 2026-04-14
 
 Complete API reference for the FLEXT-gRPC Documentation Maintenance Framework.
 

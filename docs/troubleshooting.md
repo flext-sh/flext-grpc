@@ -55,7 +55,7 @@
   - [Getting Help](#getting-help)
   - [Future Improvements](#future-improvements)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Common issues and solutions for flext-grpc development and deployment.
 
@@ -159,7 +159,7 @@ print(f"Server state: {server.state}")
 
 # Attempt startup with error handling
 start_result = platform.start_server(server)
-if start_result.is_failure:
+if start_result.failure:
     print(f"Startup failed: {start_result.error}")
 ```
 

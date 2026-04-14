@@ -56,7 +56,7 @@ int]]`](#parse_addressaddress-str---flextresulttuplestr-int) - [`validate_addres
     - [Message Types](#message-types)
   - [Current Status](#current-status)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Intended API reference for **flext-grpc** - gRPC communication library for the FLEXT ecosystem.
 
@@ -137,7 +137,7 @@ Validates server configuration and business rules.
 server = FlextGrpcServer(host="", port=80)  # Invalid
 validation = server.validate_business_rules()
 
-if validation.is_failure:
+if validation.failure:
     print(f"Validation failed: {validation.error}")
 ```
 
@@ -182,7 +182,7 @@ Validates configuration parameters.
 settings = FlextGrpcSettings(host="localhost", port=99999)
 validation = settings.validate()
 
-if validation.is_failure:
+if validation.failure:
     print(f"Invalid settings: {validation.error}")
 ```
 
@@ -375,7 +375,7 @@ Validates a gRPC address string.
 from flext_grpc import validate_address
 
 validation = validate_address("invalid:port")
-if validation.is_failure:
+if validation.failure:
     print(f"Invalid address: {validation.error}")
 ```
 
@@ -448,7 +448,7 @@ from flext_core import u
 from flext_grpc import FlextGrpcPlatform
 
 container = FlextContainer.get_global()
-platform = container.get("grpc_platform")
+platform = container.resolve("grpc_platform")
 
 if platform.success:
     grpc_platform = platform.unwrap()

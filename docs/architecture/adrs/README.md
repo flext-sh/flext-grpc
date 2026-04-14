@@ -127,7 +127,7 @@
     - [ADR Submission Process](#adr-submission-process)
     - [ADR Review Checklist](#adr-review-checklist)
 
-**Version**: 1.0.0 | **Status**: Active | **Last Updated**: 2025-10-10
+**Version**: 1.0.0 | **Status**: Active | **Last Updated**: 2026-04-14
 
 Systematic documentation of architecture decisions for FLEXT-gRPC,
 following the ADR (Architecture Decision Record) pattern.

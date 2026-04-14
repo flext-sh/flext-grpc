@@ -110,7 +110,7 @@
 - [Python debugger](#python-debugger)
 - [REPL with project loaded](#repl-with-project-loaded)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Development workflow, contributing guidelines, and standards for flext-grpc.
 
@@ -414,7 +414,7 @@ class TestGrpcServer:
         result = create_server(settings)
 
         # Assert
-        assert result.is_failure
+        assert result.failure
         assert "Invalid configuration" in result.error
 
     @pytest.mark.parametrize(
@@ -431,7 +431,7 @@ class TestGrpcServer:
         settings = FlextGrpcSettings(host=host, port=port)
         validation = settings.validate()
 
-        assert validation.is_failure
+        assert validation.failure
         assert expected_error in validation.error
 ```
 
@@ -540,14 +540,14 @@ class GrpcServiceManager:
 
         # Register services
         platform = FlextGrpcPlatform()
-        self._container.register("grpc_platform", platform)
+        self._container.bind("grpc_platform", platform)
 
         return r.| ok(value=True)
 
     def get_platform(self) -> p.Result[FlextGrpcPlatform]:
         """Retrieve platform from container."""
 
-        platform_result = self._container.get("grpc_platform")
+        platform_result = self._container.resolve("grpc_platform")
         if platform_result.success:
             return r.ok(platform_result.unwrap())
 

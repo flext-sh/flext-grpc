@@ -83,7 +83,7 @@
 - [Multiple ways to set the same value can conflict](#multiple-ways-to-set-the-same-value-can-conflict)
   - [Debugging Configuration](#debugging-configuration)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Configuration management and settings for the flext-grpc library.
 
@@ -242,7 +242,7 @@ from flext_core import u
 settings = FlextGrpcSettings(host="", port=99999)  # Invalid
 validation = settings.validate()
 
-if validation.is_failure:
+if validation.failure:
     print(f"Configuration error: {validation.error}")
 ```
 
@@ -562,10 +562,10 @@ settings = FlextGrpcSettings(
     port=FlextGrpcConstants.Network.DEFAULT_PORT,
 )
 
-container.register("grpc_config", settings)
+container.bind("grpc_config", settings)
 
 # Later retrieval
-config_result = container.get("grpc_config")
+config_result = container.resolve("grpc_config")
 if config_result.success:
     settings = config_result.unwrap()
 ```

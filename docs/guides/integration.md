@@ -67,7 +67,7 @@
     - [Planned Integrations](#planned-integrations)
     - [Integration Priorities](#integration-priorities)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Integration patterns and guidelines for flext-grpc within the FLEXT data integration ecosystem.
 
@@ -159,7 +159,7 @@ from flext_grpc import FlextGrpcPlatform
 
 container = FlextContainer.get_global()
 platform = FlextGrpcPlatform()
-container.register("grpc_platform", platform)
+container.bind("grpc_platform", platform)
 ```
 
 ## FLEXT Service Integration
@@ -180,7 +180,7 @@ class AuthenticatedGrpcService:
 
     def __init__(self):
         container = FlextContainer.get_global()
-        self._auth_service = container.get("auth_service").unwrap()
+        self._auth_service = container.resolve("auth_service").unwrap()
 
     def create_authenticated_server(self) -> p.Result[FlextGrpcServer]:
         """Create gRPC server with authentication interceptors."""
@@ -211,8 +211,8 @@ class ObservableGrpcService:
 
     def __init__(self):
         container = FlextContainer.get_global()
-        self._metrics = container.get("metrics_collector").unwrap()
-        self._health = container.get("health_checker").unwrap()
+        self._metrics = container.resolve("metrics_collector").unwrap()
+        self._health = container.resolve("health_checker").unwrap()
 
     def create_monitored_server(self) -> p.Result[FlextGrpcServer]:
         """Create gRPC server with monitoring."""
@@ -466,7 +466,7 @@ class FlextServiceDiscovery:
 
     def __init__(self):
         container = FlextContainer.get_global()
-        self._registry = container.get("service_registry").unwrap()
+        self._registry = container.resolve("service_registry").unwrap()
 
     def discover_service(self, service_name: str) -> p.Result[FlextGrpcClient]:
         """Discover and connect to a gRPC service."""
@@ -540,7 +540,7 @@ class TestGrpcIntegration(FlextTestCase):
         server_result = create_server(settings)
 
         # Verify r error handling
-        assert server_result.is_failure
+        assert server_result.failure
         assert "Invalid configuration" in server_result.error
 ```
 
@@ -564,7 +564,7 @@ class TestGrpcMockIntegration:
         mock_container = FlextMockFactory.create_mock_container()
         mock_server_service = Mock()
 
-        mock_container.register("server_service", mock_server_service)
+        mock_container.bind("server_service", mock_server_service)
 
         platform = FlextGrpcPlatform()
         # Platform uses mocked dependencies

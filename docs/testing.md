@@ -123,7 +123,7 @@
     - [Load Testing](#load-testing)
     - [Chaos Testing](#chaos-testing)
 
-**Version**: 0.9.0 | **Updated**: 2025-10-10
+**Version**: 0.9.0 | **Updated**: 2026-04-14
 **Current Coverage**: 39% | **Test Status**: 28 failed, 36 passed (64 total tests)
 
 ## Executive Summary
@@ -325,7 +325,7 @@ def test_service_lifecycle():
 
     # Test server creation
     server_result = service.create_server(host="localhost", port=50051)
-    assert server_result.is_success
+    assert server_result.success
 
     # Test service registration
     # Test startup/shutdown

@@ -57,7 +57,7 @@
     - [Known Issues](#known-issues)
   - [Next Steps](#next-steps)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Setup guide for flext-grpc gRPC communication library.
 

@@ -73,7 +73,7 @@
     - [Security Architecture](#security-architecture)
     - [Service Discovery](#service-discovery)
 
-**Version**: 0.9.9 RC | **Updated**: September 17, 2025
+**Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
 Architectural design and patterns for the flext-grpc library within the FLEXT ecosystem.
 
