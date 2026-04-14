@@ -5,14 +5,13 @@ from __future__ import annotations
 import time
 from collections.abc import MutableMapping
 
-import grpc
-
 from flext_grpc import (
     FlextGrpcConnectionPool,
     FlextGrpcMetrics,
     FlextGrpcServiceStub,
     c,
     m,
+    p,
     r,
     t,
     u,
@@ -31,7 +30,7 @@ class FlextGrpcClient:
         def __init__(self) -> None:
             """Initialize client manager with connection pooling."""
             super().__init__()
-            self._active_channels: MutableMapping[str, grpc.Channel] = {}
+            self._active_channels: MutableMapping[str, p.Grpc.GrpcChannel] = {}
             self._connection_pool = FlextGrpcConnectionPool.ConnectionPool(
                 max_size=c.Grpc.Connection.DEFAULT_POOL_SIZE,
             )
@@ -41,30 +40,22 @@ class FlextGrpcClient:
             """Establish client connection with pooling."""
             if target in self._active_channels:
                 return u.Grpc.create_client_entity(target=target)
-
-            def _connect() -> m.Grpc.Client:
-                try:
-                    grpc_channel: grpc.Channel = grpc.insecure_channel(target)
-                    grpc.channel_ready_future(grpc_channel).result(
-                        timeout=c.Grpc.GrpcNetwork.DEFAULT_CHANNEL_READY_TIMEOUT,
-                    )
-                except (grpc.RpcError, grpc.FutureTimeoutError) as exc:
-                    raise RuntimeError(str(exc)) from exc
-                self._active_channels[target] = grpc_channel
-                self._metrics.record_metric(f"{target}_connected_at", time.time())
-                client_result = u.Grpc.create_client_entity(target=target)
-                if client_result.failure:
-                    raise RuntimeError(client_result.error or "Connection failed")
-                return client_result.value
-
-            return u.try_(
-                _connect,
-                catch=(
-                    ConnectionError,
-                    TimeoutError,
-                    RuntimeError,
-                ),
-            ).map_error(lambda e: f"Connection failed: {e}")
+            channel_result = u.Grpc.open_insecure_channel(target)
+            if channel_result.failure:
+                return r[m.Grpc.Client].fail(
+                    f"Connection failed: {u.Grpc.runtime_failure_message(channel_result)}",
+                )
+            grpc_channel = channel_result.value
+            self._active_channels[target] = grpc_channel
+            self._metrics.record_metric(f"{target}_connected_at", time.time())
+            client_result = u.Grpc.create_client_entity(target=target)
+            if client_result.failure:
+                _ = u.Grpc.run_runtime(grpc_channel.close)
+                del self._active_channels[target]
+                return r[m.Grpc.Client].fail(
+                    client_result.error or "Connection failed",
+                )
+            return client_result
 
         def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
             """Disconnect client and cleanup resources."""
@@ -73,7 +64,11 @@ class FlextGrpcClient:
                 target = client.channel.target or ""
             if target and target in self._active_channels:
                 grpc_channel = self._active_channels[target]
-                grpc_channel.close()
+                closing_result = u.Grpc.run_runtime(grpc_channel.close)
+                if closing_result.failure:
+                    return r[m.Grpc.Client].fail(
+                        f"Disconnect failed: {u.Grpc.runtime_failure_message(closing_result)}",
+                    )
                 del self._active_channels[target]
             return r[m.Grpc.Client].ok(client)
 
@@ -106,39 +101,44 @@ class FlextGrpcClient:
                 target = client.channel.target or ""
             if not target or target not in self._active_channels:
                 return r[m.Grpc.Payload].fail("Client not connected")
-            try:
-                grpc_channel = self._active_channels[target]
-                stub = FlextGrpcServiceStub(grpc_channel)
-                if method == "Echo":
-                    echo_response = stub.Echo(EchoRequest(message=str(request)))
-                    return r[m.Grpc.Payload].ok(
-                        m.Grpc.Payload.from_values(
-                            method="Echo",
-                            message=echo_response.message,
-                            server_id=echo_response.server_id,
-                            timestamp=echo_response.timestamp,
-                        ),
-                    )
-                if method == "HealthCheck":
-                    health_response = stub.HealthCheck(
-                        HealthRequest(service="FlextGrpcService"),
-                    )
-                    return r[m.Grpc.Payload].ok(
-                        m.Grpc.Payload.from_values(
-                            method="HealthCheck",
-                            status=health_response.status,
-                            message=health_response.message,
-                        ),
-                    )
-                return r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
-            except grpc.RpcError as e:
-                code_val = e.code() if hasattr(e, "code") else None
-                details_val = e.details() if hasattr(e, "details") else str(e)
-                return r[m.Grpc.Payload].fail(
-                    f"gRPC call failed: {code_val} - {details_val}",
+            grpc_channel = self._active_channels[target]
+            stub = FlextGrpcServiceStub(grpc_channel)
+            if method == "Echo":
+                echo_result = u.Grpc.call_runtime(
+                    lambda: stub.Echo(EchoRequest(message=str(request))),
                 )
-            except (ConnectionError, TimeoutError) as e:
-                return r[m.Grpc.Payload].fail(f"Call execution failed: {e}")
+                if echo_result.failure:
+                    return r[m.Grpc.Payload].fail(
+                        f"gRPC call failed: {u.Grpc.runtime_failure_message(echo_result)}",
+                    )
+                echo_response = echo_result.value
+                return r[m.Grpc.Payload].ok(
+                    m.Grpc.Payload.from_values(
+                        method="Echo",
+                        message=echo_response.message,
+                        server_id=echo_response.server_id,
+                        timestamp=echo_response.timestamp,
+                    ),
+                )
+            if method == "HealthCheck":
+                health_result = u.Grpc.call_runtime(
+                    lambda: stub.HealthCheck(
+                        HealthRequest(service="FlextGrpcService"),
+                    ),
+                )
+                if health_result.failure:
+                    return r[m.Grpc.Payload].fail(
+                        f"gRPC call failed: {u.Grpc.runtime_failure_message(health_result)}",
+                    )
+                health_response = health_result.value
+                return r[m.Grpc.Payload].ok(
+                    m.Grpc.Payload.from_values(
+                        method="HealthCheck",
+                        status=health_response.status,
+                        message=health_response.message,
+                    ),
+                )
+            return r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
 
 
 __all__: list[str] = ["FlextGrpcClient"]

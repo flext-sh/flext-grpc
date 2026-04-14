@@ -6,7 +6,6 @@ import time
 from collections import deque
 from collections.abc import MutableMapping
 
-import grpc
 from pydantic import Field, ValidationError
 
 from flext_grpc import FlextGrpcMetrics, c, m, p, r, t, u
@@ -104,8 +103,6 @@ class FlextGrpcStream:
                 )
             except ValidationError as e:
                 return r[m.Grpc.Payload].fail(f"Invalid stream state: {e}")
-            except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                return r[m.Grpc.Payload].fail(f"Data send failed: {e}")
 
 
 __all__: list[str] = ["FlextGrpcStream"]

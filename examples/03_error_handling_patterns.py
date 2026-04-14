@@ -23,6 +23,7 @@ from flext_grpc import (
     FlextGrpcError,
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
+    p,
     t,
     u,
 )

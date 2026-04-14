@@ -8,9 +8,8 @@ from __future__ import annotations
 
 import threading
 from collections.abc import Callable, Iterable, Mapping, Sequence
+from concurrent.futures import ThreadPoolExecutor
 from typing import Protocol, runtime_checkable
-
-from grpc import GenericRpcHandler
 
 from flext_core import FlextProtocols, FlextTypes
 from flext_grpc import FlextGrpcConstants
@@ -419,12 +418,24 @@ class FlextGrpcProtocols(FlextProtocols):
             """Protocol for gRPC RPC handlers."""
 
         @runtime_checkable
+        class GrpcReadyFuture(Protocol):
+            """Protocol for gRPC ready futures."""
+
+            def result(self, timeout: float | None = None) -> None:
+                """Wait until the underlying operation is ready."""
+                ...
+
+        @runtime_checkable
         class GrpcServer(Protocol):
             """Protocol for gRPC server operations (duck typing for grpc.Server)."""
 
+            def add_insecure_port(self, address: str) -> int:
+                """Bind the server to an insecure address."""
+                ...
+
             def add_generic_rpc_handlers(
                 self,
-                generic_rpc_handlers: Iterable[GenericRpcHandler],
+                generic_rpc_handlers: Iterable[FlextGrpcProtocols.Grpc.GrpcRpcHandler],
             ) -> None:
                 """Add generic RPC handlers."""
                 ...
@@ -448,6 +459,46 @@ class FlextGrpcProtocols(FlextProtocols):
         @runtime_checkable
         class GrpcChannelCredentials(Protocol):
             """Protocol for gRPC channel credentials (duck typing for grpc.ChannelCredentials)."""
+
+        @runtime_checkable
+        class GrpcCallFailure(Protocol):
+            """Protocol for gRPC call failures exposing status details."""
+
+            def code(self) -> str | None:
+                """Return the gRPC status code, if available."""
+                ...
+
+            def details(self) -> str:
+                """Return the gRPC status details."""
+                ...
+
+        @runtime_checkable
+        class GrpcRuntime(Protocol):
+            """Protocol for the imported grpc runtime module."""
+
+            RpcError: type[Exception]
+            FutureTimeoutError: type[Exception]
+
+            def insecure_channel(
+                self,
+                target: str,
+            ) -> FlextGrpcProtocols.Grpc.GrpcChannel:
+                """Create an insecure channel for a target."""
+                ...
+
+            def channel_ready_future(
+                self,
+                channel: FlextGrpcProtocols.Grpc.GrpcChannel,
+            ) -> FlextGrpcProtocols.Grpc.GrpcReadyFuture:
+                """Create a future used to wait for channel readiness."""
+                ...
+
+            def server(
+                self,
+                thread_pool: ThreadPoolExecutor,
+            ) -> FlextGrpcProtocols.Grpc.GrpcServer:
+                """Create a gRPC server using the given thread pool."""
+                ...
 
         @runtime_checkable
         class EntityFactory(Protocol):

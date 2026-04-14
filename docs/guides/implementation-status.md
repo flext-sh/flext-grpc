@@ -91,7 +91,7 @@ providing enterprise-grade gRPC patterns with Clean Architecture and Domain-Driv
 
 - **Clean Architecture**: Complete separation of concerns implemented
 - **Domain-Driven Design**: Entity, value t.RecursiveContainer, and aggregate patterns implemented
-- **Railway-Oriented Programming**: r[T] error handling throughout
+- **Railway-Oriented Programming**: p.Result[T] error handling throughout
 - **Layer Separation**: Infrastructure, Application, Domain, Foundation layers properly separated
 
 #### FLEXT Ecosystem Integration (100%)

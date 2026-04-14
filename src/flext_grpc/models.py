@@ -14,7 +14,6 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Annotated, Self, override
 
-import grpc
 from pydantic import BaseModel, Field, computed_field, field_validator
 
 from flext_core import m
@@ -681,10 +680,9 @@ class FlextGrpcModels(m):
                 **kwargs: Field updates for the entity
 
                 """
-                try:
-                    return r[Self](value=self.model_copy(update=kwargs), success=True)
-                except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r[Self](error=str(e), success=False)
+                return r[Self].create_from_callable(
+                    lambda: self.model_copy(update=kwargs),
+                )
 
             def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation."""
