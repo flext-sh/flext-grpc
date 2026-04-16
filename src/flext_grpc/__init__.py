@@ -13,9 +13,10 @@ from flext_core.lazy import (
 from flext_grpc.__version__ import *
 
 if _t.TYPE_CHECKING:
-    from flext_core import c, d, e, h, r, s, x
+    from flext_core import d, e, h, r, s, x
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
     from flext_grpc.api import FlextGrpc, grpc
+    from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import (
         FlextGrpcConfigurationError,
         FlextGrpcConnectionError,
@@ -56,9 +57,14 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "__version__",
                 "__version_info__",
             ),
+            "._utilities.grpc": ("FlextGrpcUtilitiesGrpc",),
             ".api": (
                 "FlextGrpc",
                 "grpc",
+            ),
+            ".constants": (
+                "FlextGrpcConstants",
+                "c",
             ),
             ".errors": (
                 "FlextGrpcConfigurationError",
@@ -71,10 +77,20 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextGrpcModels",
                 "m",
             ),
+            ".proto.stubs": (
+                "FlextGrpcServiceServicer",
+                "FlextGrpcServiceStub",
+                "add_FlextGrpcServiceServicer_to_server",
+            ),
             ".protocols": (
                 "FlextGrpcProtocols",
                 "p",
             ),
+            ".services.client": ("FlextGrpcClient",),
+            ".services.connection_pool": ("FlextGrpcConnectionPool",),
+            ".services.metrics": ("FlextGrpcMetrics",),
+            ".services.server": ("FlextGrpcServer",),
+            ".services.stream": ("FlextGrpcStream",),
             ".settings": ("FlextGrpcSettings",),
             ".typings": (
                 "FlextGrpcTypes",
@@ -85,7 +101,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "u",
             ),
             "flext_core": (
-                "c",
                 "d",
                 "e",
                 "h",
@@ -116,6 +131,7 @@ __all__: list[str] = [
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
     "FlextGrpcConnectionPool",
+    "FlextGrpcConstants",
     "FlextGrpcError",
     "FlextGrpcMetrics",
     "FlextGrpcModels",

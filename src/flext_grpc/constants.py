@@ -240,3 +240,5 @@ class FlextGrpcConstants(FlextConstants):
 
 
 c = FlextGrpcConstants
+
+__all__: list[str] = ["FlextGrpcConstants", "c"]

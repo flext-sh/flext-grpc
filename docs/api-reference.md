@@ -163,7 +163,7 @@ Closes connection to the server.
 
 #### FlextGrpcSettings
 
-Configuration value t.RecursiveContainer with validation.
+Configuration value object with validation.
 
 **Properties:**
 
