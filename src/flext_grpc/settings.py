@@ -12,10 +12,10 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from pydantic import AliasChoices, Field, computed_field
+from pydantic import AliasChoices
 from pydantic_settings import SettingsConfigDict
 
-from flext_core import FlextSettings
+from flext_core import FlextSettings, m, u
 from flext_grpc import FlextGrpcModels, c, p, r, t
 
 
@@ -28,69 +28,65 @@ class FlextGrpcSettings(FlextSettings):
     nested configurations.
     """
 
-    model_config: ClassVar[SettingsConfigDict] = SettingsConfigDict(
+    model_config: ClassVar[SettingsConfigDict] = m.SettingsConfigDict(
         env_prefix="FLEXT_GRPC_", extra="ignore"
     )
 
     # Flat convenience fields (settable via constructor)
     host: Annotated[
         str,
-        Field(
-            default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
+        m.Field(
             validation_alias=AliasChoices("host", "grpc_host"),
         ),
-    ]
+    ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
     port: Annotated[
         t.PortNumber,
-        Field(
-            default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        m.Field(
             validation_alias=AliasChoices("port", "grpc_port"),
         ),
-    ]
+    ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     max_workers: Annotated[
         t.WorkerCount,
-        Field(
-            default=c.Grpc.Service.MAX_WORKERS,
+        m.Field(
             validation_alias=AliasChoices("max_workers", "grpc_max_workers"),
         ),
-    ]
+    ] = c.Grpc.Service.MAX_WORKERS
     timeout: Annotated[
         t.PositiveTimeout,
-        Field(
-            default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
+        m.Field(
             validation_alias=AliasChoices("timeout", "grpc_timeout"),
         ),
-    ]
+    ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
 
     # Nested configuration models
-    network: FlextGrpcModels.Grpc.NetworkConfig = Field(
+    network: FlextGrpcModels.Grpc.NetworkConfig = m.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.NetworkConfig.model_validate({})
     )
-    security: FlextGrpcModels.Grpc.SecurityConfig = Field(
+    security: FlextGrpcModels.Grpc.SecurityConfig = m.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.SecurityConfig.model_validate({})
     )
-    performance: FlextGrpcModels.Grpc.PerformanceConfig = Field(
+    performance: FlextGrpcModels.Grpc.PerformanceConfig = m.Field(
         default_factory=lambda: (
             FlextGrpcModels.Grpc.PerformanceConfig.model_validate({})
         )
     )
-    streaming: FlextGrpcModels.Grpc.StreamingConfig = Field(
+    streaming: FlextGrpcModels.Grpc.StreamingConfig = m.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.StreamingConfig.model_validate({})
     )
-    client: FlextGrpcModels.Grpc.ClientConfig = Field(
+    client: FlextGrpcModels.Grpc.ClientConfig = m.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.ClientConfig.model_validate({})
     )
-    monitoring: FlextGrpcModels.Grpc.MonitoringConfig = Field(
+    monitoring: FlextGrpcModels.Grpc.MonitoringConfig = m.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.MonitoringConfig.model_validate({})
     )
 
-    @computed_field
+    @u.computed_field()
     @property
     def tls_enabled(self) -> bool:
         """Computed property indicating if TLS is enabled."""
         return self.security.tls_enabled
 
-    @computed_field
+    @u.computed_field()
     @property
     def streaming_enabled(self) -> bool:
         """Computed property indicating if streaming is enabled."""

@@ -6,8 +6,6 @@ import time
 from collections import deque
 from collections.abc import MutableMapping
 
-from pydantic import Field, ValidationError
-
 from flext_grpc import FlextGrpcMetrics, c, m, p, r, t, u
 
 
@@ -15,13 +13,13 @@ class FlextGrpcStream:
     """Mixin providing stream processing for FlextGrpc facade."""
 
     class _StreamRuntimeState(m.Value):
-        stream: m.Grpc.GrpcStream = Field(
+        stream: m.Grpc.GrpcStream = m.Field(
             description="gRPC stream instance being tracked"
         )
-        created_at: float = Field(
+        created_at: float = m.Field(
             description="Stream creation timestamp in epoch seconds"
         )
-        buffer: deque[t.OptionalContainerValueMapping] = Field(
+        buffer: deque[t.OptionalContainerValueMapping] = m.Field(
             default_factory=lambda: deque[t.OptionalContainerValueMapping](
                 maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
             ),
@@ -101,7 +99,7 @@ class FlextGrpcStream:
                         buffer_size=len(stream_state.buffer),
                     ),
                 )
-            except ValidationError as e:
+            except c.ValidationError as e:
                 return r[m.Grpc.Payload].fail(f"Invalid stream state: {e}")
 
 

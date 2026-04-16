@@ -14,7 +14,7 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Annotated, Self, override
 
-from pydantic import BaseModel, Field, computed_field, field_validator
+from pydantic import BaseModel, field_validator
 
 from flext_core import m
 from flext_grpc import c, p, r, t, u
@@ -41,130 +41,123 @@ class FlextGrpcModels(m):
         class EchoRequest(m.Value):
             """Echo request message (immutable value model)."""
 
-            message: Annotated[str, Field(description="Echo message")]
+            message: Annotated[str, m.Field(description="Echo message")]
 
         class EchoResponse(m.Value):
             """Echo response message (immutable value model)."""
 
-            message: Annotated[str, Field(description="Echo message")]
-            server_id: Annotated[
-                str,
-                Field(default="", description="Server identifier"),
-            ]
-            timestamp: datetime = Field(
+            message: Annotated[str, m.Field(description="Echo message")]
+            server_id: Annotated[str, m.Field(description="Server identifier")] = ""
+            timestamp: datetime = m.Field(
                 default_factory=datetime.now, description="Response timestamp"
             )
 
         class HealthRequest(m.Value):
             """Health check request message (immutable value model)."""
 
-            service: Annotated[str, Field(default="", description="Service name")]
+            service: Annotated[str, m.Field(description="Service name")] = ""
 
         class HealthResponse(m.Value):
             """Health check response message (immutable value model)."""
 
-            status: Annotated[str, Field(description="Health status")]
-            message: Annotated[
-                str,
-                Field(default="", description="Health check message"),
-            ]
+            status: Annotated[str, m.Field(description="Health status")]
+            message: Annotated[str, m.Field(description="Health check message")] = ""
 
         class StreamInfo(m.Value):
             """Basic stream information (immutable value model)."""
 
-            stream_id: str = Field(description="Unique stream identifier")
-            stream_type: str = Field(description="Stream communication type")
-            target: str = Field(description="Target endpoint address")
-            created_at: datetime = Field(
+            stream_id: str = m.Field(description="Unique stream identifier")
+            stream_type: str = m.Field(description="Stream communication type")
+            target: str = m.Field(description="Target endpoint address")
+            created_at: datetime = m.Field(
                 default_factory=datetime.now, description="Stream creation timestamp"
             )
-            total_requests_sent: t.NonNegativeInt = Field(
-                default=0, description="Total requests sent on stream"
-            )
-            average_latency_ms: t.NonNegativeFloat = Field(
-                default=0.0, description="Average latency in milliseconds"
-            )
-            error_count: t.NonNegativeInt = Field(
-                default=0, description="Number of errors on stream"
-            )
+            total_requests_sent: Annotated[
+                t.NonNegativeInt, m.Field(description="Total requests sent on stream")
+            ] = 0
+            average_latency_ms: Annotated[
+                t.NonNegativeFloat,
+                m.Field(description="Average latency in milliseconds"),
+            ] = 0.0
+            error_count: Annotated[
+                t.NonNegativeInt, m.Field(description="Number of errors on stream")
+            ] = 0
 
         class HealthCheck(m.Value):
             """gRPC health check model (immutable value model)."""
 
-            service_name: Annotated[str, Field(description="Service name")]
-            status: Annotated[str, Field(description="Health status")]
-            timestamp: Annotated[datetime, Field(description="Check timestamp")]
+            service_name: Annotated[str, m.Field(description="Service name")]
+            status: Annotated[str, m.Field(description="Health status")]
+            timestamp: Annotated[datetime, m.Field(description="Check timestamp")]
 
         class ServiceDefinition(m.Value):
             """gRPC service definition model (immutable value model)."""
 
-            service_name: Annotated[str, Field(description="Service name")]
-            methods: t.StrSequence = Field(
+            service_name: Annotated[str, m.Field(description="Service name")]
+            methods: t.StrSequence = m.Field(
                 default_factory=list, description="Service methods"
             )
-            endpoint: Annotated[
-                str | None,
-                Field(default=None, description="Service endpoint"),
-            ]
+            endpoint: Annotated[str | None, m.Field(description="Service endpoint")] = (
+                None
+            )
             metadata: Annotated[
                 t.OptionalContainerValueMapping | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Service metadata",
                 ),
-            ]
+            ] = None
 
         class StreamMetrics(m.Value):
             """gRPC stream metrics model (immutable value model)."""
 
-            stream_id: Annotated[str, Field(description="Stream ID")]
+            stream_id: Annotated[str, m.Field(description="Stream ID")]
             throughput_rps: Annotated[
                 t.NonNegativeFloat,
-                Field(
+                m.Field(
                     description="Throughput in requests per second",
                 ),
             ]
             latency_p50: Annotated[
                 t.NonNegativeFloat,
-                Field(description="50th percentile latency"),
+                m.Field(description="50th percentile latency"),
             ]
             latency_p95: Annotated[
                 t.NonNegativeFloat,
-                Field(description="95th percentile latency"),
+                m.Field(description="95th percentile latency"),
             ]
             latency_p99: Annotated[
                 t.NonNegativeFloat,
-                Field(description="99th percentile latency"),
+                m.Field(description="99th percentile latency"),
             ]
-            error_rate: Annotated[t.NonNegativeFloat, Field(description="Error rate")]
+            error_rate: Annotated[t.NonNegativeFloat, m.Field(description="Error rate")]
             memory_usage_bytes: Annotated[
                 t.NonNegativeInt,
-                Field(description="Memory usage in bytes"),
+                m.Field(description="Memory usage in bytes"),
             ]
 
         class ServiceMetrics(m.Value):
             """gRPC service metrics model (immutable value model)."""
 
-            service_name: Annotated[str, Field(description="Service name")]
+            service_name: Annotated[str, m.Field(description="Service name")]
             total_requests: Annotated[
                 t.NonNegativeInt,
-                Field(description="Total requests"),
+                m.Field(description="Total requests"),
             ]
             successful_requests: Annotated[
                 t.NonNegativeInt,
-                Field(description="Successful requests"),
+                m.Field(description="Successful requests"),
             ]
             failed_requests: Annotated[
                 t.NonNegativeInt,
-                Field(description="Failed requests"),
+                m.Field(description="Failed requests"),
             ]
             avg_response_time: Annotated[
                 t.NonNegativeFloat,
-                Field(description="Average response time"),
+                m.Field(description="Average response time"),
             ]
             active_connections: Annotated[
                 t.NonNegativeInt,
-                Field(description="Active connections"),
+                m.Field(description="Active connections"),
             ]
 
         class OperationExecutionRequest(m.Value):
@@ -172,319 +165,299 @@ class FlextGrpcModels(m):
 
             operation_name: Annotated[
                 str,
-                Field(description="Operation name to execute"),
+                m.Field(description="Operation name to execute"),
             ]
-            arguments: t.ConfigurationMapping = Field(
+            arguments: t.ConfigurationMapping = m.Field(
                 default_factory=dict, description="Positional arguments as dict"
             )
-            keyword_arguments: t.ConfigurationMapping = Field(
+            keyword_arguments: t.ConfigurationMapping = m.Field(
                 default_factory=dict, description="Keyword arguments"
             )
 
         class ServerConfig(m.Value):
             """Basic server configuration (immutable value model)."""
 
-            host: str = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
-                description="Server host address",
-            )
-            port: t.PortNumber = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-                description="Server port number",
-            )
-            max_workers: t.WorkerCount = Field(
-                default=c.Grpc.Service.DEFAULT_MAX_WORKERS,
-                description="Maximum worker threads",
-            )
-            timeout: t.PositiveTimeout = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
-                description="Request timeout in seconds",
-            )
+            host: Annotated[
+                str,
+                m.Field(
+                    description="Server host address",
+                ),
+            ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
+            port: Annotated[
+                t.PortNumber,
+                m.Field(
+                    description="Server port number",
+                ),
+            ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            max_workers: Annotated[
+                t.WorkerCount,
+                m.Field(
+                    description="Maximum worker threads",
+                ),
+            ] = c.Grpc.Service.DEFAULT_MAX_WORKERS
+            timeout: Annotated[
+                t.PositiveTimeout,
+                m.Field(
+                    description="Request timeout in seconds",
+                ),
+            ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
 
         class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
 
-            target: str = Field(
-                default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
-                description="Target server address",
-            )
-            timeout: t.PositiveTimeout = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
-                description="Request timeout in seconds",
-            )
+            target: Annotated[
+                str,
+                m.Field(
+                    description="Target server address",
+                ),
+            ] = f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
+            timeout: Annotated[
+                t.PositiveTimeout,
+                m.Field(
+                    description="Request timeout in seconds",
+                ),
+            ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
 
         class ChannelConfig(m.Value):
             """Basic channel configuration (immutable value model)."""
 
-            address: str = Field(description="Channel address")
-            options: t.OptionalContainerValueMapping | None = Field(
-                default=None, description="Channel options"
-            )
+            address: str = m.Field(description="Channel address")
+            options: Annotated[
+                t.OptionalContainerValueMapping | None,
+                m.Field(description="Channel options"),
+            ] = None
 
         class SecurityConfig(m.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: Annotated[
                 bool,
-                Field(
-                    default=False,
+                m.Field(
                     description="Enable TLS encryption",
                 ),
-            ]
+            ] = False
             tls_cert_file: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="TLS certificate file path",
                 ),
-            ]
+            ] = None
             tls_key_file: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="TLS private key file path",
                 ),
-            ]
+            ] = None
             tls_ca_file: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="TLS CA certificate file path",
                 ),
-            ]
+            ] = None
             auth_enabled: Annotated[
                 bool,
-                Field(
-                    default=False,
+                m.Field(
                     description="Enable authentication",
                 ),
-            ]
+            ] = False
             auth_token: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Authentication token",
                 ),
-            ]
+            ] = None
             client_cert_required: Annotated[
                 bool,
-                Field(
-                    default=False,
+                m.Field(
                     description="Require client certificates",
                 ),
-            ]
+            ] = False
 
         class NetworkConfig(m.Value):
             """Generic gRPC network configuration with validation."""
 
             host: Annotated[
                 t.NonEmptyStr,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
+                m.Field(
                     description="gRPC server host",
                 ),
-            ]
+            ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
             port: Annotated[
                 t.PortNumber,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+                m.Field(
                     description="gRPC server port",
                 ),
-            ]
+            ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
             max_connections: Annotated[
                 t.BatchSize,
-                Field(
-                    default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
+                m.Field(
                     description="Maximum concurrent connections",
                 ),
-            ]
+            ] = c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS
             keepalive_time: Annotated[
                 t.PositiveInt,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS // 1000,
+                m.Field(
                     description="Keepalive ping interval (seconds)",
                 ),
-            ]
+            ] = c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS // 1000
             keepalive_timeout: Annotated[
                 t.PositiveInt,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000,
+                m.Field(
                     description="Keepalive timeout (seconds)",
                 ),
-            ]
+            ] = c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
 
         class PerformanceConfig(m.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: Annotated[
                 int,
-                Field(
-                    default=c.Grpc.Service.MAX_WORKERS,
+                m.Field(
                     ge=1,
                     le=1000,
                     description="Maximum worker threads",
                 ),
-            ]
+            ] = c.Grpc.Service.MAX_WORKERS
             max_concurrent_rpcs: Annotated[
                 t.BatchSize,
-                Field(
-                    default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
+                m.Field(
                     description="Maximum concurrent RPCs",
                 ),
-            ]
+            ] = c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS
             max_receive_message_length: Annotated[
                 int,
-                Field(
-                    default=c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH,
+                m.Field(
                     ge=c.Grpc.PerformanceLimits.MIN_MESSAGE_LENGTH,
                     le=c.Grpc.PerformanceLimits.MAX_MESSAGE_LENGTH,
                     description="Maximum receive message length (bytes)",
                 ),
-            ]
+            ] = c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH
             max_send_message_length: Annotated[
                 int,
-                Field(
-                    default=c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH,
+                m.Field(
                     ge=c.Grpc.PerformanceLimits.MIN_MESSAGE_LENGTH,
                     le=c.Grpc.PerformanceLimits.MAX_MESSAGE_LENGTH,
                     description="Maximum send message length (bytes)",
                 ),
-            ]
+            ] = c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH
             thread_pool_size: Annotated[
                 int,
-                Field(
-                    default=c.Grpc.PerformanceLimits.DEFAULT_THREAD_POOL_SIZE,
+                m.Field(
                     ge=c.Grpc.PerformanceLimits.MIN_THREAD_POOL_SIZE,
                     le=c.Grpc.PerformanceLimits.MAX_THREAD_POOL_SIZE,
                     description="Thread pool size",
                 ),
-            ]
+            ] = c.Grpc.PerformanceLimits.DEFAULT_THREAD_POOL_SIZE
 
         class StreamingConfig(m.Value):
             """Generic gRPC streaming configuration."""
 
             enabled: Annotated[
                 bool,
-                Field(
-                    default=True,
+                m.Field(
                     description="Enable streaming operations",
                 ),
-            ]
+            ] = True
             max_concurrent_streams: Annotated[
                 t.WorkerCount,
-                Field(
-                    default=c.Grpc.Streaming.DEFAULT_MAX_CONCURRENT_STREAMS,
+                m.Field(
                     description="Maximum concurrent streams",
                 ),
-            ]
+            ] = c.Grpc.Streaming.DEFAULT_MAX_CONCURRENT_STREAMS
             stream_buffer_size: Annotated[
                 int,
-                Field(
-                    default=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
+                m.Field(
                     ge=c.Grpc.Streaming.MIN_BUFFER_SIZE,
                     le=c.Grpc.Streaming.MAX_BUFFER_SIZE,
                     description="Stream buffer size",
                 ),
-            ]
+            ] = c.Grpc.Streaming.DEFAULT_BUFFER_SIZE
             max_stream_duration: Annotated[
                 int,
-                Field(
-                    default=300,
+                m.Field(
                     ge=10,
                     le=3600,
                     description="Maximum stream duration (seconds)",
                 ),
-            ]
+            ] = 300
             enable_compression: Annotated[
                 bool,
-                Field(
-                    default=True,
+                m.Field(
                     description="Enable message compression",
                 ),
-            ]
+            ] = True
 
         class ClientSettingsConfig(m.Value):
             """Generic gRPC client configuration."""
 
             timeout: Annotated[
                 t.PositiveTimeout,
-                Field(
-                    default=30.0,
+                m.Field(
                     description="RPC timeout (seconds)",
                 ),
-            ]
+            ] = 30.0
             retry_attempts: Annotated[
                 t.RetryCount,
-                Field(
-                    default=3,
+                m.Field(
                     description="Maximum retry attempts",
                 ),
-            ]
+            ] = 3
             retry_backoff: Annotated[
                 float,
-                Field(
-                    default=1.0,
+                m.Field(
                     gt=0,
                     le=60,
                     description="Retry backoff multiplier",
                 ),
-            ]
+            ] = 1.0
             load_balancing_policy: Annotated[
                 str,
-                Field(
-                    default="round_robin",
+                m.Field(
                     description="Load balancing policy",
                 ),
-            ]
+            ] = "round_robin"
             channel_options: Annotated[
                 t.HeaderMapping,
-                Field(
+                m.Field(
                     description="Additional channel options",
                 ),
-            ] = Field(default_factory=dict)
+            ] = m.Field(default_factory=dict)
 
         class MonitoringConfig(m.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: Annotated[
                 bool,
-                Field(
-                    default=True,
+                m.Field(
                     description="Enable metrics collection",
                 ),
-            ]
+            ] = True
             tracing_enabled: Annotated[
                 bool,
-                Field(
-                    default=False,
+                m.Field(
                     description="Enable distributed tracing",
                 ),
-            ]
+            ] = False
             health_check_enabled: Annotated[
                 bool,
-                Field(
-                    default=True,
+                m.Field(
                     description="Enable health checks",
                 ),
-            ]
+            ] = True
             health_check_interval: Annotated[
                 int,
-                Field(
-                    default=30,
+                m.Field(
                     ge=5,
                     le=300,
                     description="Health check interval (seconds)",
                 ),
-            ]
-            log_level: Annotated[
-                str,
-                Field(default="INFO", description="Logging level"),
-            ]
+            ] = 30
+            log_level: Annotated[str, m.Field(description="Logging level")] = "INFO"
 
         class StateTransition(m.Value):
             """State transition result model."""
 
-            state: str = Field(description="Target state after transition")
+            state: str = m.Field(description="Target state after transition")
 
         class EntityValidator(m.Value):
             """Generic entity validator using functional composition.
@@ -526,7 +499,7 @@ class FlextGrpcModels(m):
                     raise ValueError(msg)
                 return value
 
-        class StateMachine(BaseModel):
+        class StateMachine(m.BaseModel):
             """Generic state machine with functional transitions.
 
             Provides state transition logic that can be composed into
@@ -569,47 +542,45 @@ class FlextGrpcModels(m):
         class OperationSpec(m.Value):
             """Generic operation specification using Pydantic."""
 
-            name: Annotated[str, Field(min_length=1, description="Operation name")]
+            name: Annotated[str, m.Field(min_length=1, description="Operation name")]
             entity_type: Annotated[
                 t.Grpc.EntityKind,
-                Field(description="Type of entity to operate on"),
+                m.Field(description="Type of entity to operate on"),
             ]
             method_name: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Method to invoke on entity",
                 ),
-            ]
+            ] = None
             parameters: Annotated[
                 Mapping[str, t.OptionalContainerValueMapping],
-                Field(
+                m.Field(
                     description="Operation parameters",
                 ),
-            ] = Field(default_factory=dict)
+            ] = m.Field(default_factory=dict)
 
         class Request(m.Value):
             """Generic request model with validation."""
 
-            operation: FlextGrpcModels.Grpc.OperationSpec = Field(
+            operation: FlextGrpcModels.Grpc.OperationSpec = m.Field(
                 description="Operation specification to execute",
             )
             entity: Annotated[
                 BaseModel | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Associated entity",
                 ),
-            ]
+            ] = None
             data: Annotated[
                 t.OptionalContainerValueMapping | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Request data",
                 ),
-            ]
+            ] = None
 
-            @computed_field
+            @u.computed_field()
+            @property
             def valid(self) -> bool:
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
@@ -617,37 +588,36 @@ class FlextGrpcModels(m):
         class Response(m.Value):
             """Generic response model with metadata."""
 
-            success: Annotated[bool, Field(description="Operation success status")]
+            success: Annotated[bool, m.Field(description="Operation success status")]
             data: Annotated[
                 BaseModel | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Response data",
                 ),
-            ]
+            ] = None
             error: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                m.Field(
                     description="Error message if failed",
                 ),
-            ]
+            ] = None
             metadata: Annotated[
                 Mapping[str, t.OptionalContainerValueMapping],
-                Field(
+                m.Field(
                     description="Response metadata",
                 ),
-            ] = Field(default_factory=dict)
+            ] = m.Field(default_factory=dict)
 
-            @computed_field
+            @u.computed_field()
+            @property
             def has_error(self) -> bool:
                 """Check if response has error."""
                 return not self.success or self.error is not None
 
-        class Payload(BaseModel):
+        class Payload(m.BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: t.OptionalContainerValueMapping = Field(
+            values: t.OptionalContainerValueMapping = m.Field(
                 default_factory=dict, description="Key-value payload data"
             )
 
@@ -691,18 +661,22 @@ class FlextGrpcModels(m):
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
 
-            target: str = Field(default="", description="gRPC server target address")
-            state: c.Grpc.ChannelState = Field(
-                default=c.Grpc.ChannelState.IDLE,
-                description="Current channel connection state",
-            )
-            options: t.OptionalContainerValueMapping = Field(
+            target: Annotated[
+                str, m.Field(description="gRPC server target address")
+            ] = ""
+            state: Annotated[
+                c.Grpc.ChannelState,
+                m.Field(
+                    description="Current channel connection state",
+                ),
+            ] = c.Grpc.ChannelState.IDLE
+            options: t.OptionalContainerValueMapping = m.Field(
                 default_factory=dict, description="Channel configuration options"
             )
             grpc_channel: Annotated[
                 p.Grpc.GrpcChannel | None,
-                Field(default=None, description="Underlying gRPC channel instance"),
-            ]
+                m.Field(description="Underlying gRPC channel instance"),
+            ] = None
 
             def connect(self) -> p.Result[Self]:
                 """Transition to connecting."""
@@ -743,30 +717,38 @@ class FlextGrpcModels(m):
         class Server(Entity, StateMachine):
             """Generic gRPC server with state machine and validation delegation."""
 
-            host: str = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
-                description="Server bind host address",
-            )
-            port: t.PortNumber = Field(
-                default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-                description="Server listen port number",
-            )
-            state: c.Grpc.ServerState = Field(
-                default=c.Grpc.ServerState.STOPPED,
-                description="Current server lifecycle state",
-            )
-            max_workers: t.WorkerCount = Field(
-                default=c.Grpc.Service.DEFAULT_MAX_WORKERS,
-                description="Maximum worker threads for request handling",
-            )
+            host: Annotated[
+                str,
+                m.Field(
+                    description="Server bind host address",
+                ),
+            ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
+            port: Annotated[
+                t.PortNumber,
+                m.Field(
+                    description="Server listen port number",
+                ),
+            ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            state: Annotated[
+                c.Grpc.ServerState,
+                m.Field(
+                    description="Current server lifecycle state",
+                ),
+            ] = c.Grpc.ServerState.STOPPED
+            max_workers: Annotated[
+                t.WorkerCount,
+                m.Field(
+                    description="Maximum worker threads for request handling",
+                ),
+            ] = c.Grpc.Service.DEFAULT_MAX_WORKERS
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
-                Field(description="gRPC services"),
-            ] = Field(default_factory=list)
+                m.Field(description="gRPC services"),
+            ] = m.Field(default_factory=list)
             grpc_server: Annotated[
                 p.Grpc.GrpcServer | None,
-                Field(default=None, description="Underlying gRPC server instance"),
-            ]
+                m.Field(description="Underlying gRPC server instance"),
+            ] = None
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> p.Result[Self]:
                 """Add service functionally.
@@ -838,8 +820,8 @@ class FlextGrpcModels(m):
         class Service(Entity):
             """Generic gRPC service with validation delegation."""
 
-            name: str = Field(default="", description="Service name identifier")
-            methods: t.StrSequence = Field(
+            name: Annotated[str, m.Field(description="Service name identifier")] = ""
+            methods: t.StrSequence = m.Field(
                 default_factory=list, description="Registered RPC method names"
             )
 
@@ -883,16 +865,17 @@ class FlextGrpcModels(m):
         class Client(Entity):
             """Generic gRPC client with channel delegation."""
 
-            channel: FlextGrpcModels.Grpc.Channel | None = Field(
-                default=None, description="Associated gRPC channel for communication"
-            )
-            options: t.OptionalContainerValueMapping = Field(
+            channel: Annotated[
+                FlextGrpcModels.Grpc.Channel | None,
+                m.Field(description="Associated gRPC channel for communication"),
+            ] = None
+            options: t.OptionalContainerValueMapping = m.Field(
                 default_factory=dict, description="Client configuration options"
             )
             grpc_stub: Annotated[
                 p.Grpc.GrpcStub | None,
-                Field(default=None, description="gRPC client stub for RPC calls"),
-            ]
+                m.Field(description="gRPC client stub for RPC calls"),
+            ] = None
 
             def connect_to(self, target: str) -> p.Result[Self]:
                 """Connect functionally."""
@@ -916,18 +899,20 @@ class FlextGrpcModels(m):
         class GrpcStream(Entity):
             """Generic gRPC stream with validation delegation."""
 
-            id: str = Field(default="", description="Unique stream identifier")
-            method_name: str = Field(
-                default="", description="RPC method name for this stream"
-            )
-            stream_type: c.Grpc.GrpcOperations = Field(
-                default=c.Grpc.GrpcOperations.UNARY,
-                description="Stream communication pattern type",
-            )
+            id: Annotated[str, m.Field(description="Unique stream identifier")] = ""
+            method_name: Annotated[
+                str, m.Field(description="RPC method name for this stream")
+            ] = ""
+            stream_type: Annotated[
+                c.Grpc.GrpcOperations,
+                m.Field(
+                    description="Stream communication pattern type",
+                ),
+            ] = c.Grpc.GrpcOperations.UNARY
             grpc_stub: Annotated[
                 p.Grpc.GrpcStub | None,
-                Field(default=None, description="gRPC stub used by this stream"),
-            ]
+                m.Field(description="gRPC stub used by this stream"),
+            ] = None
 
             @field_validator("method_name")
             @classmethod
@@ -938,19 +923,19 @@ class FlextGrpcModels(m):
                     raise ValueError(msg)
                 return v
 
-        class CompleteSetup(BaseModel):
+        class CompleteSetup(m.BaseModel):
             """Complete gRPC setup result with server, client, and service."""
 
-            server: FlextGrpcModels.Grpc.Server = Field(
+            server: FlextGrpcModels.Grpc.Server = m.Field(
                 description="Configured gRPC server instance"
             )
-            client: FlextGrpcModels.Grpc.Client = Field(
+            client: FlextGrpcModels.Grpc.Client = m.Field(
                 description="Configured gRPC client instance"
             )
-            service: FlextGrpcModels.Grpc.Service = Field(
+            service: FlextGrpcModels.Grpc.Service = m.Field(
                 description="Configured gRPC service definition"
             )
-            target: str = Field(description="Target server address for the setup")
+            target: str = m.Field(description="Target server address for the setup")
 
 
 m = FlextGrpcModels
