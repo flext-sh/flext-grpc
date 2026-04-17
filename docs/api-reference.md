@@ -112,7 +112,7 @@ Server entity with lifecycle management and state transitions.
 
 **Methods:**
 
-##### `start() -> p.Result[FlextGrpcServer]`
+#### `start() -> p.Result[FlextGrpcServer]`
 
 Starts the server (state transition: stopped → starting).
 
@@ -125,11 +125,11 @@ if start_result.success:
     assert starting_server.state == "starting"
 ```
 
-##### `stop() -> p.Result[FlextGrpcServer]`
+#### `stop() -> p.Result[FlextGrpcServer]`
 
 Stops the server (state transition: running → stopping).
 
-##### `validate_business_rules() -> p.Result[bool]`
+#### `validate_business_rules() -> p.Result[bool]`
 
 Validates server configuration and business rules.
 
@@ -153,11 +153,11 @@ Client entity for gRPC communication.
 
 **Methods:**
 
-##### `connect() -> p.Result[FlextGrpcClient]`
+#### `connect() -> p.Result[FlextGrpcClient]`
 
 Establishes connection to the server.
 
-##### `disconnect() -> p.Result[FlextGrpcClient]`
+#### `disconnect() -> p.Result[FlextGrpcClient]`
 
 Closes connection to the server.
 
@@ -174,7 +174,7 @@ Configuration value object with validation.
 
 **Methods:**
 
-##### `validate() -> p.Result[bool]`
+#### `validate() -> p.Result[bool]`
 
 Validates configuration parameters.
 
@@ -194,7 +194,7 @@ Unified facade for all gRPC operations.
 
 **Methods:**
 
-##### `start_server(server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`
+#### `start_server(server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`
 
 Starts a gRPC server with complete lifecycle management.
 
@@ -209,11 +209,11 @@ if result.success:
     running_server = result.unwrap()
 ```
 
-##### `connect_client(client: FlextGrpcClient) -> p.Result[FlextGrpcClient]`
+#### `connect_client(client: FlextGrpcClient) -> p.Result[FlextGrpcClient]`
 
 Establishes client connection with retry logic.
 
-##### `call_service(client: FlextGrpcClient, method: str, request: dict) -> p.Result[t.Dict]`
+#### `call_service(client: FlextGrpcClient, method: str, request: dict) -> p.Result[t.Dict]`
 
 Makes a service call through the client.
 
@@ -223,7 +223,7 @@ Domain service for server operations.
 
 **Methods:**
 
-##### `execute(operation: str, server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`
+#### `execute(operation: str, server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`
 
 Executes server operations using Command pattern.
 
@@ -320,15 +320,15 @@ Streaming operations for all gRPC patterns.
 
 **Methods:**
 
-##### `send_data(data: dict) -> p.Result[bool]`
+#### `send_data(data: dict) -> p.Result[bool]`
 
 Sends data through the stream.
 
-##### `receive_data() -> p.Result[t.Dict]`
+#### `receive_data() -> p.Result[t.Dict]`
 
 Receives data from the stream.
 
-##### `close() -> p.Result[bool]`
+#### `close() -> p.Result[bool]`
 
 Closes the stream.
 
@@ -338,15 +338,15 @@ Service for managing streaming operations.
 
 **Methods:**
 
-##### `create_server_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
+#### `create_server_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
 
 Creates a server streaming operation.
 
-##### `create_client_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
+#### `create_client_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
 
 Creates a client streaming operation.
 
-##### `create_bidirectional_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
+#### `create_bidirectional_stream(method: str, settings: dict) -> p.Result[FlextGrpcStream]`
 
 Creates a bidirectional streaming operation.
 
