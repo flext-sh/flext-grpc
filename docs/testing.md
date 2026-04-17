@@ -137,9 +137,9 @@ FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with compreh
 
 ### Test Suite Overview
 
-| Metric             | Current Value         | Target            | Status               |
-| ------------------ | --------------------- | ----------------- | -------------------- |
-| **Total Tests**    | 64                    | 150+              | ⚠️ Needs expansion   |
+| Metric             | Current Value         | Target            | Status              |
+| ------------------ | --------------------- | ----------------- | ------------------- |
+| **Total Tests**    | 64                    | 150+              | ⚠️ Needs expansion  |
 | **Passing Tests**  | 36                    | 64                | ❌ Critical failures |
 | **Failing Tests**  | 28                    | 0                 | ❌ Must fix          |
 | **Code Coverage**  | 39%                   | 90%               | ❌ Major gap         |
@@ -209,7 +209,7 @@ TOTAL                                          1798    956    380     14    39%
    - **Issue**: Various API validation and operation failures
    - **Error**: API method implementation issues
    - **Impact**: gRPC API operations not fully tested
-   - **Tests**: `test_validate_target`, `test_parse_target`, `test_*_with_config`
+   - **Tests**: `test_validate_target`, `test_parse_target`, `test_*_u.with_config`
 
 ## Testing Strategy
 

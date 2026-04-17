@@ -13,13 +13,13 @@ class FlextGrpcStream:
     """Mixin providing stream processing for FlextGrpc facade."""
 
     class _StreamRuntimeState(m.Value):
-        stream: m.Grpc.GrpcStream = m.Field(
+        stream: m.Grpc.GrpcStream = u.Field(
             description="gRPC stream instance being tracked"
         )
-        created_at: float = m.Field(
+        created_at: float = u.Field(
             description="Stream creation timestamp in epoch seconds"
         )
-        buffer: deque[t.OptionalContainerValueMapping] = m.Field(
+        buffer: deque[t.OptionalContainerValueMapping] = u.Field(
             default_factory=lambda: deque[t.OptionalContainerValueMapping](
                 maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
             ),

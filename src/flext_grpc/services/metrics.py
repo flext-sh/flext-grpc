@@ -11,7 +11,7 @@ class FlextGrpcMetrics:
     """Mixin providing metrics collection for FlextGrpc facade."""
 
     class _MetricValueModel(m.Value):
-        value: t.OptionalContainerValue = m.Field(
+        value: t.OptionalContainerValue = u.Field(
             description="Normalized metric measurement value"
         )
 

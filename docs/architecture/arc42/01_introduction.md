@@ -206,9 +206,9 @@ standards compliance, risk management |
 
 | Term               | Definition                                                       |
 | ------------------ | ---------------------------------------------------------------- |
-| **r[T]** | Railway pattern implementation for functional error handling     |
+| **r[T]**           | Railway pattern implementation for functional error handling     |
 | **FlextContainer** | Dependency injection container for service management            |
-| **s**   | Base class for service implementations with lifecycle management |
+| **s**              | Base class for service implementations with lifecycle management |
 | **FlextLogger**    | Structured logging interface with correlation IDs                |
 | **FLEXT-Core**     | Foundation library providing common patterns and utilities       |
 

@@ -1,6 +1,5 @@
 # FLEXT-gRPC Documentation Maintenance User Guide
 
-
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [Quick Start](#quick-start)

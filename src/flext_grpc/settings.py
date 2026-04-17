@@ -35,48 +35,48 @@ class FlextGrpcSettings(FlextSettings):
     # Flat convenience fields (settable via constructor)
     host: Annotated[
         str,
-        m.Field(
+        u.Field(
             validation_alias=AliasChoices("host", "grpc_host"),
         ),
     ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
     port: Annotated[
         t.PortNumber,
-        m.Field(
+        u.Field(
             validation_alias=AliasChoices("port", "grpc_port"),
         ),
     ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     max_workers: Annotated[
         t.WorkerCount,
-        m.Field(
+        u.Field(
             validation_alias=AliasChoices("max_workers", "grpc_max_workers"),
         ),
     ] = c.Grpc.Service.MAX_WORKERS
     timeout: Annotated[
         t.PositiveTimeout,
-        m.Field(
+        u.Field(
             validation_alias=AliasChoices("timeout", "grpc_timeout"),
         ),
     ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
 
     # Nested configuration models
-    network: FlextGrpcModels.Grpc.NetworkConfig = m.Field(
+    network: FlextGrpcModels.Grpc.NetworkConfig = u.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.NetworkConfig.model_validate({})
     )
-    security: FlextGrpcModels.Grpc.SecurityConfig = m.Field(
+    security: FlextGrpcModels.Grpc.SecurityConfig = u.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.SecurityConfig.model_validate({})
     )
-    performance: FlextGrpcModels.Grpc.PerformanceConfig = m.Field(
+    performance: FlextGrpcModels.Grpc.PerformanceConfig = u.Field(
         default_factory=lambda: (
             FlextGrpcModels.Grpc.PerformanceConfig.model_validate({})
         )
     )
-    streaming: FlextGrpcModels.Grpc.StreamingConfig = m.Field(
+    streaming: FlextGrpcModels.Grpc.StreamingConfig = u.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.StreamingConfig.model_validate({})
     )
-    client: FlextGrpcModels.Grpc.ClientConfig = m.Field(
+    client: FlextGrpcModels.Grpc.ClientConfig = u.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.ClientConfig.model_validate({})
     )
-    monitoring: FlextGrpcModels.Grpc.MonitoringConfig = m.Field(
+    monitoring: FlextGrpcModels.Grpc.MonitoringConfig = u.Field(
         default_factory=lambda: FlextGrpcModels.Grpc.MonitoringConfig.model_validate({})
     )
 

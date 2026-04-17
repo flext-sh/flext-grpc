@@ -296,14 +296,14 @@ Rel_Back(flext_ldap, flext_grpc, "May use", "For directory service integration")
 
 ### Quality Attributes (ISO 25010)
 
-| Quality Attribute          | Description                                         | Priority | Current Status           |
-| -------------------------- | --------------------------------------------------- | -------- | ------------------------ |
+| Quality Attribute          | Description                                         | Priority | Current Status          |
+| -------------------------- | --------------------------------------------------- | -------- | ----------------------- |
 | **Functional Suitability** | Ability to provide required functions               | High     | ✅ Complete              |
 | **Performance Efficiency** | Performance relative to resources used              | High     | ✅ Designed              |
 | **Compatibility**          | Degree of interoperability                          | High     | ✅ FLEXT ecosystem       |
 | **Usability**              | Ease of use and learning                            | Medium   | ✅ Developer-focused API |
 | **Reliability**            | Ability to maintain performance under conditions    | High     | ✅ Error handling        |
-| **Security**               | Protection against unauthorized access              | High     | ⚠️ Planned               |
+| **Security**               | Protection against unauthorized access              | High     | ⚠️ Planned              |
 | **Maintainability**        | Ease of modification and evolution                  | High     | ✅ Clean architecture    |
 | **Portability**            | Ability to be transferred to different environments | Medium   | ✅ Python ecosystem      |
 

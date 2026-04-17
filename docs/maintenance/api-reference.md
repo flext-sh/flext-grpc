@@ -1,6 +1,5 @@
 # Documentation Maintenance Framework API Reference
 
-
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [📚 Overview](#overview)
