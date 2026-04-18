@@ -14,9 +14,8 @@ from collections.abc import Mapping, Sequence
 from datetime import datetime
 from typing import Annotated, Self, override
 
-from pydantic import BaseModel
+from flext_cli import m
 
-from flext_core import m
 from flext_grpc import c, p, r, t, u
 
 
