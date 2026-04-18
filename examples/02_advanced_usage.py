@@ -25,8 +25,6 @@ from flext_grpc import (
     t,
 )
 
-from .typings import CompleteSetup
-
 
 class GrpcServerManager:
     """Advanced server management example using FlextGrpc facade."""
@@ -120,7 +118,7 @@ class AdvancedGrpcOperations:
         port: int = 8080,
         service_name: str = "AdvancedService",
         methods: t.StrSequence | None = None,
-    ) -> p.Result[CompleteSetup]:
+    ) -> p.Result[FlextGrpcModels.Grpc.CompleteSetup]:
         """Create a complete gRPC setup through facade."""
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]
@@ -131,9 +129,11 @@ class AdvancedGrpcOperations:
             methods=methods,
         )
         if setup_result.failure:
-            return r[CompleteSetup].fail(setup_result.error or "Setup failed")
+            return r[FlextGrpcModels.Grpc.CompleteSetup].fail(
+                setup_result.error or "Setup failed",
+            )
         setup = setup_result.value
-        return r[CompleteSetup].ok(setup)
+        return r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
 
     def demonstrate_streaming(self) -> None:
         """Demonstrate streaming operations through facade."""

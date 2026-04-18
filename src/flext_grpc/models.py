@@ -12,11 +12,12 @@ from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
 from datetime import datetime
+from types import MappingProxyType
 from typing import Annotated, Self, override
 
-from flext_cli import m
+from flext_cli import m, u
 
-from flext_grpc import c, p, r, t, u
+from flext_grpc import c, p, r, t
 
 
 class FlextGrpcModels(m):
@@ -94,7 +95,7 @@ class FlextGrpcModels(m):
 
             service_name: Annotated[str, u.Field(description="Service name")]
             methods: t.StrSequence = u.Field(
-                default_factory=list, description="Service methods"
+                default_factory=tuple, description="Service methods"
             )
             endpoint: Annotated[str | None, u.Field(description="Service endpoint")] = (
                 None
@@ -167,10 +168,12 @@ class FlextGrpcModels(m):
                 u.Field(description="Operation name to execute"),
             ]
             arguments: t.ConfigurationMapping = u.Field(
-                default_factory=dict, description="Positional arguments as dict"
+                default_factory=lambda: MappingProxyType({}),
+                description="Positional arguments as dict",
             )
             keyword_arguments: t.ConfigurationMapping = u.Field(
-                default_factory=dict, description="Keyword arguments"
+                default_factory=lambda: MappingProxyType({}),
+                description="Keyword arguments",
             )
 
         class ServerConfig(m.Value):
@@ -420,7 +423,7 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Additional channel options",
                 ),
-            ] = u.Field(default_factory=dict)
+            ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
         class MonitoringConfig(m.Value):
             """Generic gRPC monitoring and observability configuration."""
@@ -557,7 +560,7 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Operation parameters",
                 ),
-            ] = u.Field(default_factory=dict)
+            ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
         class Request(m.Value):
             """Generic request model with validation."""
@@ -605,7 +608,7 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Response metadata",
                 ),
-            ] = u.Field(default_factory=dict)
+            ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
             @u.computed_field()
             @property
@@ -617,7 +620,8 @@ class FlextGrpcModels(m):
             """Structured payload model replacing ad-hoc dict responses."""
 
             values: t.OptionalContainerValueMapping = u.Field(
-                default_factory=dict, description="Key-value payload data"
+                default_factory=lambda: MappingProxyType({}),
+                description="Key-value payload data",
             )
 
             @classmethod
@@ -670,7 +674,8 @@ class FlextGrpcModels(m):
                 ),
             ] = c.Grpc.ChannelState.IDLE
             options: t.OptionalContainerValueMapping = u.Field(
-                default_factory=dict, description="Channel configuration options"
+                default_factory=lambda: MappingProxyType({}),
+                description="Channel configuration options",
             )
             grpc_channel: Annotated[
                 p.Grpc.GrpcChannel | None,
@@ -743,7 +748,7 @@ class FlextGrpcModels(m):
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
                 u.Field(description="gRPC services"),
-            ] = u.Field(default_factory=list)
+            ] = u.Field(default_factory=tuple)
             grpc_server: Annotated[
                 p.Grpc.GrpcServer | None,
                 u.Field(description="Underlying gRPC server instance"),
@@ -821,7 +826,8 @@ class FlextGrpcModels(m):
 
             name: Annotated[str, u.Field(description="Service name identifier")] = ""
             methods: t.StrSequence = u.Field(
-                default_factory=list, description="Registered RPC method names"
+                default_factory=tuple,
+                description="Registered RPC method names",
             )
 
             @u.field_validator("methods")
@@ -869,7 +875,8 @@ class FlextGrpcModels(m):
                 u.Field(description="Associated gRPC channel for communication"),
             ] = None
             options: t.OptionalContainerValueMapping = u.Field(
-                default_factory=dict, description="Client configuration options"
+                default_factory=lambda: MappingProxyType({}),
+                description="Client configuration options",
             )
             grpc_stub: Annotated[
                 p.Grpc.GrpcStub | None,

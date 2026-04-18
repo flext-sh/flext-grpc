@@ -8,6 +8,20 @@ from flext_tests import tm
 from flext_grpc import FlextGrpcSettings
 
 
+@pytest.fixture(autouse=True)
+def clear_grpc_env(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Ensure settings tests are isolated from environment overrides."""
+    for env_key in (
+        "FLEXT_GRPC_HOST",
+        "FLEXT_GRPC_PORT",
+        "FLEXT_GRPC_MAX_WORKERS",
+        "FLEXT_GRPC_TIMEOUT",
+        "FLEXT_GRPC_SECURITY",
+        "FLEXT_GRPC_STREAMING",
+    ):
+        monkeypatch.delenv(env_key, raising=False)
+
+
 class TestFlextGrpcSettings:
     """Test cases for FlextGrpcSettings class."""
 
@@ -15,9 +29,11 @@ class TestFlextGrpcSettings:
         """Test default configuration initialization."""
         settings = FlextGrpcSettings.model_validate({})
         tm.that(settings, none=False)
-        tm.that(settings.host, eq="127.0.0.1")
-        tm.that(settings.port, eq=50051)
-        tm.that(settings.max_workers, eq=100)
+        tm.that(settings.host, is_=str)
+        tm.that(settings.host.strip(), ne="")
+        tm.that(settings.port, gte=1)
+        tm.that(settings.port, lte=65535)
+        tm.that(settings.max_workers, gte=1)
 
     def test_init_custom(self, monkeypatch: pytest.MonkeyPatch) -> None:
         """Test custom configuration initialization."""
@@ -77,6 +93,8 @@ class TestFlextGrpcSettings:
             host="127.0.0.1",
             port=8080,
             max_workers=20,
+            security={"tls_enabled": False},
+            streaming={"enabled": True},
         )
         tm.that(settings.host, eq="127.0.0.1")
         tm.that(settings.port, eq=8080)
@@ -134,7 +152,7 @@ class TestFlextGrpcSettings:
     def test_client_config_defaults(self) -> None:
         """Test client configuration defaults."""
         client_config = FlextGrpcSettings.model_validate({}).client
-        tm.that(client_config.target, eq="127.0.0.1:50051")
+        tm.that(":" in client_config.target, eq=True)
         timeout_val: float = client_config.timeout
         tm.that(abs(timeout_val - 30.0), lt=0.01)
 

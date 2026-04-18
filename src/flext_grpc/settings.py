@@ -12,8 +12,6 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from pydantic_settings import SettingsConfigDict
-
 from flext_core import FlextSettings, m, u
 from flext_grpc import FlextGrpcModels, c, p, r, t
 
@@ -27,34 +25,26 @@ class FlextGrpcSettings(FlextSettings):
     nested configurations.
     """
 
-    model_config: ClassVar[SettingsConfigDict] = m.SettingsConfigDict(
+    model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
         env_prefix="FLEXT_GRPC_", extra="ignore"
     )
 
     # Flat convenience fields (settable via constructor)
     host: Annotated[
         str,
-        u.Field(
-            validation_alias=m.AliasChoices("host", "grpc_host"),
-        ),
+        u.Field(),
     ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
     port: Annotated[
         t.PortNumber,
-        u.Field(
-            validation_alias=m.AliasChoices("port", "grpc_port"),
-        ),
+        u.Field(),
     ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
     max_workers: Annotated[
         t.WorkerCount,
-        u.Field(
-            validation_alias=m.AliasChoices("max_workers", "grpc_max_workers"),
-        ),
+        u.Field(),
     ] = c.Grpc.Service.MAX_WORKERS
     timeout: Annotated[
         t.PositiveTimeout,
-        u.Field(
-            validation_alias=m.AliasChoices("timeout", "grpc_timeout"),
-        ),
+        u.Field(),
     ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
 
     # Nested configuration models
