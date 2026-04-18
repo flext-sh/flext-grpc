@@ -19,6 +19,23 @@ if _t.TYPE_CHECKING:
     from tests.models import TestsFlextGrpcModels, m
     from tests.protocols import TestsFlextGrpcProtocols, p
     from tests.typings import TestsFlextGrpcTypes, t
+    from tests.unit.test_api import TestFlextGrpc
+    from tests.unit.test_config import TestFlextGrpcSettings
+    from tests.unit.test_constants import TestFlextGrpcConstants
+    from tests.unit.test_entities import TestFlextGrpcEntities
+    from tests.unit.test_errors import (
+        TestErrorIntegration,
+        TestFlextGrpcConfigurationError,
+        TestFlextGrpcConnectionError,
+        TestFlextGrpcError,
+        TestFlextGrpcTimeoutError,
+        TestFlextGrpcValidationError,
+    )
+    from tests.unit.test_models import TestFlextGrpcModels
+    from tests.unit.test_protocols import Testp
+    from tests.unit.test_services import TestFlextGrpcServiceComponents
+    from tests.unit.test_typings import TestFlextGrpcTypes
+    from tests.unit.test_utilities import Testu
     from tests.utilities import TestsFlextGrpcUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
@@ -40,6 +57,23 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextGrpcTypes",
                 "t",
             ),
+            ".unit.test_api": ("TestFlextGrpc",),
+            ".unit.test_config": ("TestFlextGrpcSettings",),
+            ".unit.test_constants": ("TestFlextGrpcConstants",),
+            ".unit.test_entities": ("TestFlextGrpcEntities",),
+            ".unit.test_errors": (
+                "TestErrorIntegration",
+                "TestFlextGrpcConfigurationError",
+                "TestFlextGrpcConnectionError",
+                "TestFlextGrpcError",
+                "TestFlextGrpcTimeoutError",
+                "TestFlextGrpcValidationError",
+            ),
+            ".unit.test_models": ("TestFlextGrpcModels",),
+            ".unit.test_protocols": ("Testp",),
+            ".unit.test_services": ("TestFlextGrpcServiceComponents",),
+            ".unit.test_typings": ("TestFlextGrpcTypes",),
+            ".unit.test_utilities": ("Testu",),
             ".utilities": (
                 "TestsFlextGrpcUtilities",
                 "u",
@@ -77,11 +111,26 @@ _LAZY_IMPORTS = merge_lazy_imports(
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__: list[str] = [
+    "TestErrorIntegration",
+    "TestFlextGrpc",
+    "TestFlextGrpcConfigurationError",
+    "TestFlextGrpcConnectionError",
+    "TestFlextGrpcConstants",
+    "TestFlextGrpcEntities",
+    "TestFlextGrpcError",
+    "TestFlextGrpcModels",
+    "TestFlextGrpcServiceComponents",
+    "TestFlextGrpcSettings",
+    "TestFlextGrpcTimeoutError",
+    "TestFlextGrpcTypes",
+    "TestFlextGrpcValidationError",
+    "Testp",
     "TestsFlextGrpcConstants",
     "TestsFlextGrpcModels",
     "TestsFlextGrpcProtocols",
     "TestsFlextGrpcTypes",
     "TestsFlextGrpcUtilities",
+    "Testu",
     "c",
     "d",
     "e",
