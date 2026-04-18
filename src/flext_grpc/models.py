@@ -566,7 +566,7 @@ class FlextGrpcModels(m):
                 description="Operation specification to execute",
             )
             entity: Annotated[
-                BaseModel | None,
+                m.BaseModel | None,
                 u.Field(
                     description="Associated entity",
                 ),
@@ -589,7 +589,7 @@ class FlextGrpcModels(m):
 
             success: Annotated[bool, u.Field(description="Operation success status")]
             data: Annotated[
-                BaseModel | None,
+                m.BaseModel | None,
                 u.Field(
                     description="Response data",
                 ),
