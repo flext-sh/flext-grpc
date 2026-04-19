@@ -39,7 +39,6 @@ from __future__ import annotations
 
 from flext_tests import tm
 
-from flext_core import e
 from flext_grpc import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
@@ -47,6 +46,7 @@ from flext_grpc import (
     FlextGrpcTimeoutError,
     FlextGrpcValidationError,
 )
+from tests import e
 
 
 class TestFlextGrpcError:
