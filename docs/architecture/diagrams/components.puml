@@ -33,7 +33,7 @@ Rel(flext_grpc_api, flext_grpc_services, "Orchestrates", "Business logic coordin
 Rel(flext_grpc_api, flext_grpc_entities, "Creates", "Entity instantiation")
 Rel(flext_grpc_api, flext_grpc_config, "Reads", "Configuration data")
 
-Rel(flext_grpc_services, flext_grpc_entities, "Uses", "Domain t.RecursiveContainer manipulation")
+Rel(flext_grpc_services, flext_grpc_entities, "Uses", "Domain t.Container manipulation")
 Rel(flext_grpc_services, flext_grpc_exceptions, "Raises", "Error conditions")
 Rel(flext_grpc_services, flext_grpc_utilities, "Uses", "Helper functions")
 

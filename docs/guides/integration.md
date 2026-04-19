@@ -298,7 +298,7 @@ class FlextServiceConnector:
         self.service_name = service_name
         self.settings = FlextGrpcSettings(host=target_host, port=target_port)
 
-    def call_service(self, method: str, data: dict) -> p.Result[t.Dict]:
+    def call_service(self, method: str, data: dict) -> p.Result[m.Dict]:
         """Make gRPC call to another FLEXT service."""
 
         return (
@@ -313,7 +313,7 @@ class FlextServiceConnector:
 
     def _make_call(
         self, client: FlextGrpcClient, method: str, data: dict
-    ) -> p.Result[t.Dict]:
+    ) -> p.Result[m.Dict]:
         """Make the actual service call."""
         # gRPC call implementation
         return r.ok({"response": "data"})
@@ -521,9 +521,7 @@ class TestGrpcIntegration(FlextTestCase):
     def test_server_creation_with_flext_patterns(self):
         """Test server creation using r pattern."""
 
-        settings = FlextGrpcSettings(
-            host="localhost", port=0
-        )  # t.RecursiveContainer port
+        settings = FlextGrpcSettings(host="localhost", port=0)  # t.Container port
         server_result = create_server(settings)
 
         # Railway-oriented testing

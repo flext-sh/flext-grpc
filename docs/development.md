@@ -281,7 +281,7 @@ class GrpcService(Generic[T]):
     def __init__(self, settings: T) -> None:
         self._config = settings
 
-    def process(self, data: dict) -> p.Result[t.Dict]:
+    def process(self, data: dict) -> p.Result[m.Dict]:
         # Implementation with proper typing
         return r.ok({"processed": data})
 ```

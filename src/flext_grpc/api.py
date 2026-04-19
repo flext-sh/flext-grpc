@@ -259,7 +259,7 @@ class FlextGrpc(
         Returns:
         Response data dictionary
 
-        Note: Uses t.RecursiveContainer for gRPC message compatibility
+        Note: Uses t.Container for gRPC message compatibility
 
         """
         return self._stream_manager.send_data(stream, data)

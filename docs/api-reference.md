@@ -29,7 +29,7 @@
   - [Core API](#core-api) - [Factory Functions](#factory-functions) - [`create_server(host: str, port: int,
 max_workers: int) -> FlextGrpcServer`](#create_serverhost-str-port-int-max_workers-int---flextgrpcserver) - [`create_client(host: str,
 port: int) -> FlextGrpcClient`](#create_clienthost-str-port-int---flextgrpcclient) - [`create_config(**kwargs) -> p.Result[FlextGrpcSettings]`](#create_configkwargs---flextresultflextgrpcconfig) - [Domain Entities](#domain-entities) - [FlextGrpcServer](#flextgrpcserver) - [`start() -> p.Result[FlextGrpcServer]`](#start---flextresultflextgrpcserver) - [`stop() -> p.Result[FlextGrpcServer]`](#stop---flextresultflextgrpcserver) - [`validate_business_rules() -> p.Result[bool]`](#validate_business_rules---flextresultnone) - [FlextGrpcClient](#flextgrpcclient) - [`connect() -> p.Result[FlextGrpcClient]`](#connect---flextresultflextgrpcclient) - [`disconnect() -> p.Result[FlextGrpcClient]`](#disconnect---flextresultflextgrpcclient) - [FlextGrpcSettings](#flextgrpcconfig) - [`validate() -> p.Result[bool]`](#validate---flextresultnone) - [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform) - [`start_server(server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#start_serverserver-flextgrpcserver---flextresultflextgrpcserver) - [`connect_client(client: FlextGrpcClient) -> p.Result[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient---flextresultflextgrpcclient) - [`call_service(client: FlextGrpcClient, method: str,
-request: dict) -> p.Result[t.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict) - [FlextGrpcServerService](#flextgrpcserverservice) - [`execute(operation: str,
+request: dict) -> p.Result[m.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict---flextresultflexttypesdict) - [FlextGrpcServerService](#flextgrpcserverservice) - [`execute(operation: str,
 server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#executeoperation-str-server-flextgrpcserver---flextresultflextgrpcserver)
 - [Start server](#start-server)
   - [Type Definitions](#type-definitions)
@@ -42,7 +42,7 @@ server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#executeoperation-str-se
     - [FlextGrpcConnectionError](#flextgrpcconnectionerror)
     - [FlextGrpcTimeoutError](#flextgrpctimeouterror)
     - [FlextGrpcValidationError](#flextgrpcvalidationerror)
-  - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> p.Result[bool]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> p.Result[t.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> p.Result[bool]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
+  - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> p.Result[bool]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> p.Result[m.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> p.Result[bool]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
 settings: dict) -> p.Result[FlextGrpcStream]`](#create_server_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
 settings: dict) -> p.Result[FlextGrpcStream]`](#create_client_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
 settings: dict) -> p.Result[FlextGrpcStream]`](#create_bidirectional_streammethod-str-settings-dict---flextresultflextgrpcstream)
@@ -213,7 +213,7 @@ if result.success:
 
 Establishes client connection with retry logic.
 
-#### `call_service(client: FlextGrpcClient, method: str, request: dict) -> p.Result[t.Dict]`
+#### `call_service(client: FlextGrpcClient, method: str, request: dict) -> p.Result[m.Dict]`
 
 Makes a service call through the client.
 
@@ -324,7 +324,7 @@ Streaming operations for all gRPC patterns.
 
 Sends data through the stream.
 
-#### `receive_data() -> p.Result[t.Dict]`
+#### `receive_data() -> p.Result[m.Dict]`
 
 Receives data from the stream.
 

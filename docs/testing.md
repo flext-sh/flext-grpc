@@ -167,7 +167,7 @@ TOTAL                                          1798    956    380     14    39%
 
 1. **FlextGrpcServices Initialization** (4 failures)
    - **Issue**: Logger property setter missing
-   - **Error**: `AttributeError: property 'logger' of 'FlextGrpcServices' t.RecursiveContainer has no setter`
+   - **Error**: `AttributeError: property 'logger' of 'FlextGrpcServices' t.Container has no setter`
    - **Impact**: Core service class cannot be instantiated
    - **Tests**: `test_init`, `test_create_server`, `test_create_client`, `test_create_stream`
 
