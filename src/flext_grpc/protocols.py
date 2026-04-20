@@ -7,7 +7,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import threading
-from collections.abc import Callable, Iterable, Mapping, Sequence
+from collections.abc import (
+    Callable,
+    Iterable,
+    Mapping,
+    Sequence,
+)
 from concurrent.futures import ThreadPoolExecutor
 from typing import Protocol, runtime_checkable
 

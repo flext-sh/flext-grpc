@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import time
-from collections.abc import MutableMapping
+from collections.abc import (
+    MutableMapping,
+)
 
 from flext_grpc import (
     FlextGrpcConnectionPool,

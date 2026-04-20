@@ -16,7 +16,10 @@ from __future__ import annotations
 
 import logging
 import re
-from collections.abc import Mapping, Sequence
+from collections.abc import (
+    Mapping,
+    Sequence,
+)
 from typing import Literal
 
 from flext_cli import t

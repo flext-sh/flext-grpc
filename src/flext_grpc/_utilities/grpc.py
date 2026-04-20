@@ -6,7 +6,9 @@ import logging
 import os
 import re
 import socket
-from collections.abc import Callable
+from collections.abc import (
+    Callable,
+)
 from concurrent.futures import ThreadPoolExecutor
 from importlib import import_module
 from typing import TYPE_CHECKING

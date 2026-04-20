@@ -10,7 +10,10 @@ import argparse
 import json
 import re
 import sys
-from collections.abc import Mapping, MutableSequence
+from collections.abc import (
+    Mapping,
+    MutableSequence,
+)
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypedDict
