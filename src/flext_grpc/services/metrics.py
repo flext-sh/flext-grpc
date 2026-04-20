@@ -27,7 +27,8 @@ class FlextGrpcMetrics:
         def all_metrics(self) -> m.Grpc.Payload:
             """Get all metrics snapshot."""
             with self._lock:
-                return m.Grpc.Payload(values=dict(self._metrics.values))
+                vals = self._metrics.values
+                return m.Grpc.Payload(values=dict(vals) if vals is not None else {})
 
         def metric(self, key: str) -> t.OptionalContainerValue | None:
             """Thread-safe metric retrieval.
@@ -37,7 +38,8 @@ class FlextGrpcMetrics:
 
             """
             with self._lock:
-                return self._metrics.values.get(key)
+                vals = self._metrics.values
+                return vals.get(key) if vals is not None else None
 
         def record_metric(self, key: str, value: t.OptionalContainerValue) -> None:
             """Thread-safe metric recording.
@@ -60,8 +62,9 @@ class FlextGrpcMetrics:
             with self._lock:
                 normalized = FlextGrpcMetrics._MetricValueModel(value=value)
                 json_val = _normalize_value(normalized.value)
-                updated_values: dict[str, t.OptionalContainerValue] = dict(
-                    self._metrics.values
+                existing = self._metrics.values
+                updated_values: dict[str, t.OptionalContainerValue] = (
+                    dict(existing) if existing is not None else {}
                 )
                 updated_values[key] = json_val
                 self._metrics = m.Grpc.Payload(values=updated_values)
