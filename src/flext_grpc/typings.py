@@ -44,7 +44,7 @@ class FlextGrpcTypes(t):
         type Headers = t.StrMapping
         type ConfigDict = Mapping[
             str,
-            t.Scalar | t.ContainerValue | None,
+            t.Scalar | t.Container | None,
         ]
         type Address = t.HeaderMapping
         type Endpoint = Mapping[str, t.Scalar]
@@ -52,7 +52,7 @@ class FlextGrpcTypes(t):
         type Options = Mapping[
             str,
             t.Scalar
-            | Sequence[t.ContainerValue | None]
+            | Sequence[t.Container | None]
             | t.OptionalContainerValueMapping
             | None,
         ]

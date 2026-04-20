@@ -325,7 +325,7 @@ class FlextGrpcUtilitiesGrpc:
         return str(state)
 
     @staticmethod
-    def system_info() -> dict[str, t.ContainerValue]:
+    def system_info() -> dict[str, t.Container]:
         """Return a small typed runtime snapshot for gRPC diagnostics."""
         return {
             "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
