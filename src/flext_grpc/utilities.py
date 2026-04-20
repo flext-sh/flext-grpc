@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from flext_core import FlextUtilities
+
 from flext_grpc import FlextGrpcUtilitiesGrpc
 
 

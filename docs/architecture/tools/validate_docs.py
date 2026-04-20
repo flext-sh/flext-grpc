@@ -10,19 +10,20 @@ import argparse
 import json
 import re
 import sys
-from collections.abc import (
-    Mapping,
-    MutableSequence,
-)
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import TypedDict
+from typing import ClassVar
 
-from flext_grpc import t
+from flext_grpc import m, t
+
+type _IssueRow = dict[str, str | int | list[str]]
 
 
-class ValidationSummary(TypedDict):
+class ValidationSummary(m.Value):
     """Summary of validation results."""
+
+    _flext_enforcement_exempt: ClassVar[bool] = True
 
     quality_score: int
     status: str
@@ -32,13 +33,15 @@ class ValidationSummary(TypedDict):
     timestamp: str
 
 
-class ValidationResults(TypedDict):
+class ValidationResults(m.Value):
     """Complete validation results."""
 
+    _flext_enforcement_exempt: ClassVar[bool] = True
+
     summary: ValidationSummary
-    issues: MutableSequence[Mapping[str, str | int | t.StrSequence]]
-    warnings: MutableSequence[Mapping[str, str | int | t.StrSequence]]
-    recommendations: MutableSequence[Mapping[str, str | int | t.StrSequence]]
+    issues: Sequence[_IssueRow]
+    warnings: Sequence[_IssueRow]
+    recommendations: Sequence[_IssueRow]
 
 
 class ArchitectureValidator:
@@ -61,11 +64,9 @@ class ArchitectureValidator:
 
         """
         self.root_path = Path(root_path)
-        self.issues: MutableSequence[Mapping[str, str | int | t.StrSequence]] = []
-        self.warnings: MutableSequence[Mapping[str, str | int | t.StrSequence]] = []
-        self.recommendations: MutableSequence[
-            Mapping[str, str | int | t.StrSequence]
-        ] = []
+        self.issues: list[_IssueRow] = []
+        self.warnings: list[_IssueRow] = []
+        self.recommendations: list[_IssueRow] = []
 
     def validate_all(self) -> ValidationResults:
         """Run all validation checks."""
@@ -90,9 +91,9 @@ class ArchitectureValidator:
 
         return ValidationResults(
             summary=summary,
-            issues=self.issues,
-            warnings=self.warnings,
-            recommendations=self.recommendations,
+            issues=list(self.issues),
+            warnings=list(self.warnings),
+            recommendations=list(self.recommendations),
         )
 
     def _validate_c4_model_completeness(self) -> None:
@@ -329,14 +330,14 @@ class ArchitectureValidator:
         else:
             status = "critical"
 
-        return {
-            "quality_score": quality_score,
-            "status": status,
-            "total_issues": total_issues,
-            "total_warnings": total_warnings,
-            "total_recommendations": total_recommendations,
-            "timestamp": datetime.now(UTC).isoformat(),
-        }
+        return ValidationSummary(
+            quality_score=quality_score,
+            status=status,
+            total_issues=total_issues,
+            total_warnings=total_warnings,
+            total_recommendations=total_recommendations,
+            timestamp=datetime.now(UTC).isoformat(),
+        )
 
     def _print_results(self, summary: ValidationSummary) -> None:
         """Print validation results."""
@@ -368,7 +369,7 @@ def save_report(
         output_path = reports_dir / f"validation_{timestamp}.json"
 
     with Path(output_path).open("w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2, default=str)
+        json.dump(results.model_dump(mode="json"), f, indent=2, default=str)
 
 
 def main() -> None:
@@ -398,10 +399,10 @@ def main() -> None:
     save_report(results, output_path)
 
     # Exit with appropriate code
-    summary = results["summary"]
+    summary = results.summary
     if (
-        summary["status"] == "critical"
-        or summary["quality_score"] < ArchitectureValidator.CRITICAL_QUALITY_SCORE
+        summary.status == "critical"
+        or summary.quality_score < ArchitectureValidator.CRITICAL_QUALITY_SCORE
     ):
         sys.exit(1)
     else:

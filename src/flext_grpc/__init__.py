@@ -10,10 +10,12 @@ from flext_core.lazy import (
     install_lazy_exports,
     merge_lazy_imports,
 )
+
 from flext_grpc.__version__ import *
 
 if _t.TYPE_CHECKING:
     from flext_core import d, e, h, r, s, x
+
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
     from flext_grpc.api import FlextGrpc, grpc
     from flext_grpc.constants import FlextGrpcConstants, c
