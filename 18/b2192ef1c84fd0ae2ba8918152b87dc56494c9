@@ -1,0 +1,20 @@
+docs/maintenance/troubleshooting.md
+  h_9db9d35f50cf33 538
+docs/maintenance/user-guide.md
+  h_9db9d35f50cf33 169,548,569,585
+src/flext_grpc/api.py
+  h_9db9d35f50cf33 14-19
+docs/maintenance/api-reference.md
+  h_9db9d35f50cf33 137,221,267,300,343,402,458,704,814
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.0",
+  "base_commit_sha": "18b2192ef1c84fd0ae2ba8918152b87dc56494c9",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
