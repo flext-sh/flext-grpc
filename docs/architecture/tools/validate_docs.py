@@ -13,7 +13,6 @@ import sys
 from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import ClassVar
 
 from flext_grpc import m, t
 
@@ -22,8 +21,6 @@ type _IssueRow = dict[str, str | int | list[str]]
 
 class ValidationSummary(m.Value):
     """Summary of validation results."""
-
-    _flext_enforcement_exempt: ClassVar[bool] = True
 
     quality_score: int
     status: str
@@ -35,8 +32,6 @@ class ValidationSummary(m.Value):
 
 class ValidationResults(m.Value):
     """Complete validation results."""
-
-    _flext_enforcement_exempt: ClassVar[bool] = True
 
     summary: ValidationSummary
     issues: Sequence[_IssueRow]

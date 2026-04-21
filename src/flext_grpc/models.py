@@ -16,7 +16,7 @@ from collections.abc import (
 )
 from datetime import datetime
 from types import MappingProxyType
-from typing import Annotated, ClassVar, Self, override
+from typing import Annotated, Self, override
 
 from flext_cli import m, u
 
@@ -88,8 +88,6 @@ class FlextGrpcModels(m):
 
         class HealthCheck(m.Value):
             """gRPC health check model (immutable value model)."""
-
-            _flext_enforcement_exempt: ClassVar[bool] = True
 
             service_name: Annotated[str, u.Field(description="Service name")]
             status: Annotated[str, u.Field(description="Health status")]
@@ -211,8 +209,6 @@ class FlextGrpcModels(m):
 
         class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
-
-            _flext_enforcement_exempt: ClassVar[bool] = True
 
             target: Annotated[
                 str,
@@ -652,8 +648,6 @@ class FlextGrpcModels(m):
 
         class Entity(m.Entity):
             """Generic base entity with functional patterns."""
-
-            _flext_enforcement_exempt: ClassVar[bool] = True
 
             def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
                 """Functional copy using r.
