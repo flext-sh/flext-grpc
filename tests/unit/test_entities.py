@@ -132,4 +132,4 @@ class TestFlextGrpcEntities:
             domain_events=[],
         )
         client = m.Grpc.Client(channel=channel, options={}, domain_events=[])
-        tm.that(client.channel, eq=channel)
+        assert client.channel == channel

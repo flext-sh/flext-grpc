@@ -158,7 +158,7 @@ pytest tests/e2e/ --benchmark-only
 
 **Available Markers**:
 
-```python
+```text
 @pytest.mark.unit          # Unit tests (fast, isolated)
 @pytest.mark.integration   # Integration tests (component interaction)
 @pytest.mark.e2e           # End-to-end tests (complete workflows)

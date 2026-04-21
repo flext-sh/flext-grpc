@@ -535,7 +535,7 @@ time make docs
 # Check for bottlenecks
 PYTHONPATH=. python -c "
 import cProfile
-cProfile.run('from docs.maintenance.audit import DocumentationAuditor; a = DocumentationAuditor(); a.run_audit()')
+cProfile.run('from docs import  DocumentationAuditor; a = DocumentationAuditor(); a.run_audit()')
 "
 ```
 

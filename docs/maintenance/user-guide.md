@@ -166,7 +166,7 @@ Complete guide for using the FLEXT-gRPC Documentation Maintenance Framework.
 pip install requests beautifulsoup4 markdown python-frontmatter
 
 # Verify installation
-python -c "from docs.maintenance import audit, validation, optimization, sync,
+python -c "from docs import  audit, validation, optimization, sync,
      reporting; print('✅ Framework ready')"
 ```
 
@@ -545,7 +545,7 @@ repos:
 ### Custom Audit Rules
 
 ```python
-from docs.maintenance.audit import DocumentationAuditor
+from docs import DocumentationAuditor
 
 
 class CustomAuditor(DocumentationAuditor):
@@ -566,7 +566,7 @@ class CustomAuditor(DocumentationAuditor):
 ### Automated Fixes
 
 ```python
-from docs.maintenance.optimization import DocumentationOptimizer
+from docs import DocumentationOptimizer
 
 
 class CustomOptimizer(DocumentationOptimizer):
@@ -582,7 +582,7 @@ class CustomOptimizer(DocumentationOptimizer):
 ### Integration APIs
 
 ```python
-from docs.maintenance import audit, validation, optimization, reporting
+from docs import audit, validation, optimization, reporting
 
 # Programmatic usage
 auditor = audit.DocumentationAuditor()

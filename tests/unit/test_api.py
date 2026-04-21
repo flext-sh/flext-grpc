@@ -8,7 +8,7 @@ import pytest
 from flext_tests import tm
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests import e, m, t
+from tests import m, t
 
 
 class TestFlextGrpc:
@@ -23,7 +23,7 @@ class TestFlextGrpc:
         """Test FlextGrpc initialization with settings."""
         settings = FlextGrpcSettings.model_validate({})
         grpc = FlextGrpc(settings=settings)
-        tm.that(grpc.grpc_config, eq=settings)
+        assert grpc.grpc_config == settings
 
     def test_create_server(self) -> None:
         """Test server creation."""
@@ -187,7 +187,7 @@ class TestFlextGrpc:
         tm.that(channel_spec.entity_type, eq="channel")
         tm.that(service_spec.entity_type, eq="service")
         tm.that(stream_spec.entity_type, eq="stream")
-        with pytest.raises(e.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",
@@ -225,6 +225,6 @@ class TestFlextGrpc:
             error=None,
             metadata={},
         )
-        tm.that(response.data, eq=data)
+        assert response.data == data
         tm.that(response.success is True, eq=True)
         tm.that(response.model_dump().get("has_error") is False, eq=True)

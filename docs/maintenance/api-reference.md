@@ -134,7 +134,7 @@ The Documentation Maintenance Framework provides a comprehensive set of APIs for
 Main class for performing comprehensive documentation audits.
 
 ```python
-from docs.maintenance.audit import DocumentationAuditor
+from docs import DocumentationAuditor
 
 auditor = DocumentationAuditor(root_path=".")
 ```
@@ -218,7 +218,7 @@ Print formatted audit summary to console.
 Validate external and internal links in documentation.
 
 ```python
-from docs.maintenance.validation import LinkValidator
+from docs import LinkValidator
 
 validator = LinkValidator(timeout=10, max_retries=3)
 ```
@@ -264,7 +264,7 @@ Validate internal links within documentation.
 Validate documentation style consistency.
 
 ```python
-from docs.maintenance.validation import StyleValidator
+from docs import StyleValidator
 
 style_validator = StyleValidator()
 ```
@@ -297,7 +297,7 @@ for issue in result.issues:
 Optimize and enhance documentation content.
 
 ```python
-from docs.maintenance.optimization import DocumentationOptimizer
+from docs import DocumentationOptimizer
 
 optimizer = DocumentationOptimizer(root_path=".")
 ```
@@ -340,7 +340,7 @@ Optimize all documentation files.
 Handle version control integration and synchronization.
 
 ```python
-from docs.maintenance.sync import DocumentationSynchronizer
+from docs import DocumentationSynchronizer
 
 sync = DocumentationSynchronizer(root_path=".")
 ```
@@ -399,7 +399,7 @@ Generate changelog from recent changes.
 Generate comprehensive documentation quality reports.
 
 ```python
-from docs.maintenance.reporting import DocumentationReporter
+from docs import DocumentationReporter
 
 reporter = DocumentationReporter(root_path=".")
 ```
@@ -455,7 +455,7 @@ Generate trend analysis report.
 Handle scheduled and automated maintenance tasks.
 
 ```python
-from docs.maintenance.sync import AutomatedMaintenance
+from docs import AutomatedMaintenance
 
 automation = AutomatedMaintenance(root_path=".")
 ```
@@ -701,7 +701,7 @@ class SynchronizationError(DocumentationMaintenanceError):
 ### Error Handling Patterns
 
 ```python
-from docs.maintenance.audit import DocumentationAuditor, AuditError
+from docs import DocumentationAuditor, AuditError
 
 try:
     auditor = DocumentationAuditor()
@@ -811,7 +811,7 @@ echo "✅ Documentation quality checks passed"
 
 ```python
 # custom_integration.py
-from docs.maintenance import audit, validation, optimization, reporting
+from docs import audit, validation, optimization, reporting
 
 
 class CustomDocumentationWorkflow:
