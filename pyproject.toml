@@ -150,19 +150,7 @@ omit = [ "*/dependency_injector/providers.pyx" ]
 
 # [MANAGED] deptry
 [tool.deptry]
-known_first_party = [
-  "flext-core",
-  "flext_grpc",
-  "grpcio",
-  "grpcio-tools",
-  "prometheus-client",
-  "protobuf",
-  "psutil",
-  "pydantic",
-  "pydantic-core",
-  "pydantic-settings",
-  "sqlalchemy",
-]
+known_first_party = [ "flext_grpc" ]
 pep621_dev_dependency_groups = [ "dev" ]
 
 [tool.flext.docs]
@@ -497,19 +485,7 @@ select = [ "ALL" ]
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-single-line = false
-known-first-party = [
-  "flext-core",
-  "flext_grpc",
-  "grpcio",
-  "grpcio-tools",
-  "prometheus-client",
-  "protobuf",
-  "psutil",
-  "pydantic",
-  "pydantic-core",
-  "pydantic-settings",
-  "sqlalchemy",
-]
+known-first-party = [ "flext_grpc" ]
 split-on-trailing-comma = true
 
 [tool.ruff.lint.per-file-ignores]
