@@ -279,7 +279,7 @@ class GrpcServer(Protocol):
 # Generic service class
 class GrpcService(Generic[T]):
     def __init__(self, settings: T) -> None:
-        self._config = settings
+        self.config = settings
 
     def process(self, data: dict) -> p.Result[m.Dict]:
         # Implementation with proper typing

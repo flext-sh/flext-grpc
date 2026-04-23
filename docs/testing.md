@@ -62,7 +62,7 @@
 - [Issue: Property setter missing](#issue-property-setter-missing)
 - [Location: src/flext_grpc/services.py:77](#location-srcflext_grpcservicespy77)
 - [Current: self.logger = u.fetch_logger(**name**) # Fails](#current-selflogger--flextlogger__name__---fails)
-- [Fix: self.\_logger = u.fetch_logger(**name**)](#fix-self_logger--flextlogger__name__) - [2. Correct Exception Constructors](#2-correct-exception-constructors)
+- [Fix: self.\logger = u.fetch_logger(**name**)](#fix-self_logger--flextlogger__name__) - [2. Correct Exception Constructors](#2-correct-exception-constructors)
 - [Issue: Wrong parameter signatures](#issue-wrong-parameter-signatures)
 - [Location: src/flext_grpc/exceptions.py](#location-srcflext_grpcexceptionspy)
 - [Current: def **init**(self, message: str,
@@ -266,7 +266,7 @@ TOTAL                                          1798    956    380     14    39%
 # Issue: Property setter missing
 # Location: src/flext_grpc/services.py:77
 # Current: self.logger = u.fetch_logger(__name__)  # Fails
-# Fix: self._logger = u.fetch_logger(__name__)
+# Fix: self.logger = u.fetch_logger(__name__)
 ```
 
 #### 2. Correct Exception Constructors
@@ -315,7 +315,7 @@ TOTAL                                          1798    956    380     14    39%
 def test_service_initialization():
     """Test FlextGrpcServices proper initialization."""
     service = FlextGrpcServices()
-    assert service._logger is not None
+    assert service.logger is not None
     assert hasattr(service, "create_server")
 
 

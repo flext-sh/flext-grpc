@@ -204,7 +204,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
   self.logger = u.fetch_logger(__name__)  # AttributeError: property has no setter
 
   # Fix: Use proper property assignment or initialization
-  self._logger = u.fetch_logger(__name__)
+  self.logger = u.fetch_logger(__name__)
   ```
 
 - **Tests Affected**: 4 service initialization tests
