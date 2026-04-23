@@ -1,0 +1,18 @@
+docs/development.md
+  h_9db9d35f50cf33 282
+docs/testing.md
+  h_9db9d35f50cf33 65,269,318
+docs/guides/phase1-implementation-plan.md
+  h_9db9d35f50cf33 207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.2",
+  "base_commit_sha": "902651ca0eaf1da60ada5525596777e161d9c1da",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
