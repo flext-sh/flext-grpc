@@ -310,5 +310,51 @@ class FlextGrpcUtilitiesGrpc:
         """Validate a gRPC target string in ``host:port`` format."""
         return t.Grpc.GrpcValidation.validate_target(target)
 
+    @staticmethod
+    def validate_port(port: int) -> bool:
+        """Validate that a port is within the permitted gRPC range."""
+        return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
+
+    @staticmethod
+    def validate_host(host: str) -> bool:
+        """Validate that a host string is non-empty."""
+        return bool(host and host.strip())
+
+    @staticmethod
+    def format_address(host: str, port: int) -> str:
+        """Format a gRPC ``host:port`` address."""
+        return f"{host}:{port}"
+
+    @staticmethod
+    def channel_state_name(state: str) -> str:
+        """Return a normalized channel state name."""
+        normalized = state.lower()
+        if normalized in c.Grpc.CHANNEL_STATES:
+            return normalized
+        return "unknown"
+
+    @staticmethod
+    def server_state_name(state: str) -> str:
+        """Return a normalized server state name."""
+        normalized = state.lower()
+        if normalized in c.Grpc.SERVER_STATES:
+            return normalized
+        return "unknown"
+
+    @staticmethod
+    def system_info() -> dict[str, t.JsonValue]:
+        """Return gRPC utility system info."""
+        channel_states: list[t.JsonValue] = [s for s in c.Grpc.CHANNEL_STATES]  # noqa: C416
+        server_states: list[t.JsonValue] = [s for s in c.Grpc.SERVER_STATES]  # noqa: C416
+        info: dict[str, t.JsonValue] = {
+            "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
+            "default_port": c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+            "min_port": c.Grpc.GrpcNetwork.MIN_PORT,
+            "max_port": c.Grpc.GrpcNetwork.MAX_PORT,
+            "channel_states": channel_states,
+            "server_states": server_states,
+        }
+        return info
+
 
 __all__: list[str] = ["FlextGrpcUtilitiesGrpc"]
