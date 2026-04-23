@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import logging
-import os
-import re
-import socket
 from collections.abc import (
     Callable,
 )
 from concurrent.futures import ThreadPoolExecutor
 from importlib import import_module
+from types import ModuleType
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -33,7 +31,7 @@ class FlextGrpcUtilitiesGrpc:
         RpcError: type[Exception]
         FutureTimeoutError: type[Exception]
 
-        def __init__(self, runtime_module: t.RuntimeModule) -> None:
+        def __init__(self, runtime_module: ModuleType) -> None:
             """Store the imported grpc module."""
             self._runtime_module = runtime_module
             self.RpcError = self._exception_type(
@@ -303,52 +301,9 @@ class FlextGrpcUtilitiesGrpc:
         )
 
     @staticmethod
-    def format_address(host: str, port: int) -> str:
-        """Format host and port as a gRPC target string."""
-        return f"{host}:{port}"
-
-    @staticmethod
-    def channel_state_name(
-        state: c.Grpc.ChannelState | str,
-    ) -> str:
-        """Return the channel state name as its canonical string value."""
-        if isinstance(state, c.Grpc.ChannelState):
-            return state.value
-        return str(state)
-
-    @staticmethod
-    def server_state_name(
-        state: c.Grpc.ServerState | str,
-    ) -> str:
-        """Return the server state name as its canonical string value."""
-        if isinstance(state, c.Grpc.ServerState):
-            return state.value
-        return str(state)
-
-    @staticmethod
-    def system_info() -> dict[str, t.JsonValue]:
-        """Return a small typed runtime snapshot for gRPC diagnostics."""
-        return {
-            "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
-            "default_port": c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-            "hostname": socket.gethostname(),
-            "pid": os.getpid(),
-        }
-
-    @staticmethod
     def parse_address(address: str) -> tuple[str, int]:
         """Parse a validated gRPC address into host and port."""
         return t.Grpc.GrpcValidation.parse_target(address)
-
-    @staticmethod
-    def validate_host(host: str) -> bool:
-        """Validate a host token allowed by the gRPC target parser."""
-        return bool(host) and re.fullmatch(r"[a-zA-Z0-9.-]+", host) is not None
-
-    @staticmethod
-    def validate_port(port: int) -> bool:
-        """Validate that a port is within the canonical gRPC range."""
-        return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
 
     @staticmethod
     def validate_target(target: str) -> bool:

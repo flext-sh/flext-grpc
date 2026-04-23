@@ -170,11 +170,11 @@ class FlextGrpcModels(m):
                 str,
                 u.Field(description="Operation name to execute"),
             ]
-            arguments: t.ConfigurationMapping = u.Field(
+            arguments: t.ScalarMapping = u.Field(
                 default_factory=lambda: MappingProxyType({}),
                 description="Positional arguments as dict",
             )
-            keyword_arguments: t.ConfigurationMapping = u.Field(
+            keyword_arguments: t.ScalarMapping = u.Field(
                 default_factory=lambda: MappingProxyType({}),
                 description="Keyword arguments",
             )
@@ -622,17 +622,17 @@ class FlextGrpcModels(m):
         class Payload(m.BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: t.JsonMapping | None = u.Field(
+            values: t.JsonMapping = u.Field(
                 default_factory=lambda: MappingProxyType({}),
                 description="Key-value payload data",
             )
 
             @classmethod
-            def from_values(cls, **values: t.JsonValue | None) -> Self:
+            def from_values(cls, **values: t.JsonPayload | None) -> Self:
                 """Build payload from keyword values."""
 
                 def normalize_payload_value(
-                    value: t.JsonValue | None,
+                    value: t.JsonPayload | None,
                 ) -> t.JsonValue | None:
                     if value is None:
                         return ""
@@ -640,7 +640,7 @@ class FlextGrpcModels(m):
                         return value
                     return str(value)
 
-                normalized_values: t.JsonMapping | None = {
+                normalized_values: t.JsonMapping = {
                     metric_key: normalize_payload_value(metric_value)
                     for metric_key, metric_value in values.items()
                 }

@@ -33,6 +33,7 @@ if _t.TYPE_CHECKING:
         add_FlextGrpcServiceServicer_to_server,
     )
     from flext_grpc.protocols import FlextGrpcProtocols, p
+    from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
     from flext_grpc.services.metrics import FlextGrpcMetrics
@@ -88,6 +89,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextGrpcProtocols",
                 "p",
             ),
+            ".services.api_runtime": ("FlextGrpcApiRuntime",),
             ".services.client": ("FlextGrpcClient",),
             ".services.connection_pool": ("FlextGrpcConnectionPool",),
             ".services.metrics": ("FlextGrpcMetrics",),
@@ -129,6 +131,7 @@ install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
 
 __all__: list[str] = [
     "FlextGrpc",
+    "FlextGrpcApiRuntime",
     "FlextGrpcClient",
     "FlextGrpcConfigurationError",
     "FlextGrpcConnectionError",
