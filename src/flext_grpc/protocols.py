@@ -94,7 +94,7 @@ class FlextGrpcProtocols(p):
 
             def server_status(
                 self,
-            ) -> p.Result[t.Container | None]:
+            ) -> p.Result[t.JsonValue | None]:
                 """Get gRPC server status information."""
                 ...
 
@@ -142,7 +142,7 @@ class FlextGrpcProtocols(p):
             def client_status(
                 self,
                 channel: FlextGrpcProtocols.Grpc.GrpcChannel,
-            ) -> p.Result[t.Container | None]:
+            ) -> p.Result[t.JsonValue | None]:
                 """Get gRPC client status information."""
                 ...
 
@@ -191,7 +191,7 @@ class FlextGrpcProtocols(p):
             def handle_bidirectional_streaming(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-            ) -> p.Result[t.Container | None]:
+            ) -> p.Result[t.JsonValue | None]:
                 """Handle bidirectional streaming."""
                 ...
 
@@ -271,7 +271,7 @@ class FlextGrpcProtocols(p):
             def create_channel(
                 self,
                 target: str,
-                options: Mapping[str, t.Container | None] | None = None,
+                options: Mapping[str, t.JsonValue | None] | None = None,
             ) -> p.Result[FlextGrpcProtocols.Grpc.GrpcChannel]:
                 """Create gRPC channel."""
                 ...
@@ -343,7 +343,7 @@ class FlextGrpcProtocols(p):
             def create_client_config(
                 self,
                 target: str,
-                options: Mapping[str, t.Container | None] | None = None,
+                options: Mapping[str, t.JsonValue | None] | None = None,
             ) -> p.Result[t.ScalarMapping]:
                 """Create gRPC client configuration."""
                 ...
@@ -352,7 +352,7 @@ class FlextGrpcProtocols(p):
                 self,
                 host: str,
                 port: int,
-                options: Mapping[str, t.Container | None] | None = None,
+                options: Mapping[str, t.JsonValue | None] | None = None,
             ) -> p.Result[t.ScalarMapping]:
                 """Create gRPC server configuration."""
                 ...

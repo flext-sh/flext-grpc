@@ -10,7 +10,9 @@ import argparse
 import json
 import re
 import sys
-from collections.abc import Sequence
+from collections.abc import (
+    Sequence,
+)
 from datetime import UTC, datetime
 from pathlib import Path
 

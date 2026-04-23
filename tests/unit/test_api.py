@@ -132,7 +132,7 @@ class TestFlextGrpc:
     def test_create_channel_with_options(self) -> None:
         """Test channel creation with custom options."""
         grpc = FlextGrpc()
-        options: t.OptionalContainerValueMapping = {
+        options: t.JsonMapping | None = {
             "timeout": 30,
             "compression": "gzip",
         }

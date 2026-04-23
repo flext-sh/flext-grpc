@@ -414,8 +414,8 @@ GitCommandError: 'git commit' failed
 git status
 
 # Configure git user (if needed)
-git settings user.name "Documentation Maintenance"
-git settings user.email "docs@internal.invalid"
+git config user.name "Documentation Maintenance"
+git config user.email "docs@internal.invalid"
 
 # Check repository state
 git log --oneline -5

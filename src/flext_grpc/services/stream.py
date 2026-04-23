@@ -21,15 +21,15 @@ class FlextGrpcStream:
         created_at: float = u.Field(
             description="Stream creation timestamp in epoch seconds"
         )
-        buffer: deque[t.OptionalContainerValueMapping] = u.Field(
-            default_factory=lambda: deque[t.OptionalContainerValueMapping](
+        buffer: deque[t.JsonMapping | None] = u.Field(
+            default_factory=lambda: deque[t.JsonMapping | None](
                 maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
             ),
             description="Bounded message buffer for stream processing",
         )
 
     @staticmethod
-    def _new_stream_buffer() -> deque[t.OptionalContainerValueMapping]:
+    def _new_stream_buffer() -> deque[t.JsonMapping | None]:
         return deque(maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE)
 
     class GrpcStreamManager:
@@ -54,7 +54,7 @@ class FlextGrpcStream:
             return r[m.Grpc.GrpcStream].ok(stream)
 
         def create_stream(
-            self, **kwargs: t.OptionalContainerValue
+            self, **kwargs: t.JsonValue | None
         ) -> p.Result[m.Grpc.GrpcStream]:
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
@@ -75,7 +75,7 @@ class FlextGrpcStream:
         def send_data(
             self,
             stream: m.Grpc.GrpcStream,
-            data: t.OptionalContainerValueMapping,
+            data: t.JsonMapping | None,
         ) -> p.Result[m.Grpc.Payload]:
             """Send data with buffering strategy.
 

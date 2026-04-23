@@ -11,7 +11,7 @@ class FlextGrpcMetrics:
     """Mixin providing metrics collection for FlextGrpc facade."""
 
     class _MetricValueModel(m.Value):
-        value: t.OptionalContainerValue = u.Field(
+        value: t.JsonValue | None = u.Field(
             description="Normalized metric measurement value"
         )
 
@@ -30,7 +30,7 @@ class FlextGrpcMetrics:
                 vals = self._metrics.values
                 return m.Grpc.Payload(values=dict(vals) if vals is not None else {})
 
-        def metric(self, key: str) -> t.OptionalContainerValue | None:
+        def metric(self, key: str) -> t.JsonValue | None:
             """Thread-safe metric retrieval.
 
             Returns:
@@ -41,7 +41,7 @@ class FlextGrpcMetrics:
                 vals = self._metrics.values
                 return vals.get(key) if vals is not None else None
 
-        def record_metric(self, key: str, value: t.OptionalContainerValue) -> None:
+        def record_metric(self, key: str, value: t.JsonValue | None) -> None:
             """Thread-safe metric recording.
 
             Args:
@@ -51,8 +51,8 @@ class FlextGrpcMetrics:
             """
 
             def _normalize_value(
-                val: t.OptionalContainerValue,
-            ) -> t.OptionalContainerValue:
+                val: t.JsonValue | None,
+            ) -> t.JsonValue | None:
                 if val is None:
                     return ""
                 if u.primitive(val):
@@ -63,7 +63,7 @@ class FlextGrpcMetrics:
                 normalized = FlextGrpcMetrics._MetricValueModel(value=value)
                 json_val = _normalize_value(normalized.value)
                 existing = self._metrics.values
-                updated_values: dict[str, t.OptionalContainerValue] = (
+                updated_values: dict[str, t.JsonValue | None] = (
                     dict(existing) if existing is not None else {}
                 )
                 updated_values[key] = json_val

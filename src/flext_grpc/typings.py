@@ -44,17 +44,14 @@ class FlextGrpcTypes(t):
         type Headers = t.StrMapping
         type ConfigDict = Mapping[
             str,
-            t.Scalar | t.Container | None,
+            t.Scalar | t.JsonValue | None,
         ]
         type Address = t.HeaderMapping
         type Endpoint = Mapping[str, t.Scalar]
         type StreamMeta = Mapping[str, t.Scalar]
         type Options = Mapping[
             str,
-            t.Scalar
-            | Sequence[t.Container | None]
-            | t.OptionalContainerValueMapping
-            | None,
+            t.Scalar | Sequence[t.JsonValue | None] | t.JsonMapping | None,
         ]
 
         class Server:
@@ -62,36 +59,36 @@ class FlextGrpcTypes(t):
 
             ServerConfiguration = Mapping[
                 str,
-                t.Scalar | t.OptionalContainerValueMapping,
+                t.Scalar | t.JsonMapping | None,
             ]
             ServerLifecycle = Mapping[
                 str,
-                str | bool | int | t.OptionalContainerValueMapping,
+                str | bool | int | t.JsonMapping | None,
             ]
             ServerMetrics = Mapping[
                 str,
-                t.Numeric | bool | t.OptionalContainerValueMapping,
+                t.Numeric | bool | t.JsonMapping | None,
             ]
             ServerSecurity = Mapping[
                 str,
-                bool | str | t.OptionalContainerValueMapping,
+                bool | str | t.JsonMapping | None,
             ]
             ServiceRegistry = Mapping[
                 str,
-                t.StrSequence | t.OptionalContainerValueMapping,
+                t.StrSequence | t.JsonMapping | None,
             ]
-            type HandlerConfiguration = Sequence[t.OptionalContainerValueMapping]
+            type HandlerConfiguration = Sequence[t.JsonMapping | None]
 
         class Client:
             """gRPC client complex types."""
 
             ClientConfiguration = Mapping[
                 str,
-                t.Scalar | t.OptionalContainerValueMapping,
+                t.Scalar | t.JsonMapping | None,
             ]
             ConnectionPool = Mapping[
                 str,
-                int | bool | t.OptionalContainerValueMapping,
+                int | bool | t.JsonMapping | None,
             ]
             type RetryConfiguration = Mapping[
                 str,
@@ -99,15 +96,15 @@ class FlextGrpcTypes(t):
             ]
             type LoadBalancing = Mapping[
                 str,
-                str | bool | t.OptionalContainerValueMapping,
+                str | bool | t.JsonMapping | None,
             ]
             ClientMetrics = Mapping[
                 str,
-                t.Numeric | t.OptionalContainerValueMapping,
+                t.Numeric | t.JsonMapping | None,
             ]
             ChannelOptions = Mapping[
                 str,
-                t.Scalar | t.OptionalContainerValueMapping,
+                t.Scalar | t.JsonMapping | None,
             ]
 
         class Streaming:
@@ -115,49 +112,49 @@ class FlextGrpcTypes(t):
 
             StreamConfiguration = Mapping[
                 str,
-                bool | int | str | t.OptionalContainerValueMapping,
+                bool | int | str | t.JsonMapping | None,
             ]
             StreamingContext = Mapping[
                 str,
-                str | bool | t.OptionalContainerValueMapping,
+                str | bool | t.JsonMapping | None,
             ]
             StreamMetrics = Mapping[
                 str,
-                t.Numeric | bool | t.OptionalContainerValueMapping,
+                t.Numeric | bool | t.JsonMapping | None,
             ]
             FlowControl = Mapping[
                 str,
-                int | bool | t.OptionalContainerValueMapping,
+                int | bool | t.JsonMapping | None,
             ]
             BackpressureHandling = Mapping[
                 str,
-                t.Scalar | t.OptionalContainerValueMapping,
+                t.Scalar | t.JsonMapping | None,
             ]
-            type StreamingPipeline = Sequence[t.OptionalContainerValueMapping]
+            type StreamingPipeline = Sequence[t.JsonMapping | None]
 
         class GrpcService:
             """gRPC service complex types."""
 
             ServiceDefinition = Mapping[
                 str,
-                str | t.StrSequence | t.OptionalContainerValueMapping,
+                str | t.StrSequence | t.JsonMapping | None,
             ]
             MethodDefinition = Mapping[
                 str,
-                str | bool | t.OptionalContainerValueMapping,
+                str | bool | t.JsonMapping | None,
             ]
             ServiceMetadata = Mapping[
                 str,
-                str | int | t.OptionalContainerValueMapping,
+                str | int | t.JsonMapping | None,
             ]
-            type InterceptorChain = Sequence[t.OptionalContainerValueMapping]
+            type InterceptorChain = Sequence[t.JsonMapping | None]
             ServiceDiscovery = Mapping[
                 str,
-                str | t.StrSequence | t.OptionalContainerValueMapping,
+                str | t.StrSequence | t.JsonMapping | None,
             ]
             HealthCheck = Mapping[
                 str,
-                bool | str | int | t.OptionalContainerValueMapping,
+                bool | str | int | t.JsonMapping | None,
             ]
 
         class Security:
@@ -165,24 +162,24 @@ class FlextGrpcTypes(t):
 
             SecurityConfiguration = Mapping[
                 str,
-                bool | str | t.OptionalContainerValueMapping,
+                bool | str | t.JsonMapping | None,
             ]
             TlsConfiguration = Mapping[
                 str,
-                str | bool | t.OptionalContainerValueMapping,
+                str | bool | t.JsonMapping | None,
             ]
             type AuthenticationConfig = Mapping[
                 str,
-                str | t.OptionalContainerValueMapping,
+                str | t.JsonMapping | None,
             ]
             type AuthorizationRules = Sequence[Mapping[str, str | bool | t.StrSequence]]
             CertificateManagement = Mapping[
                 str,
-                str | bool | t.OptionalContainerValueMapping,
+                str | bool | t.JsonMapping | None,
             ]
             SecurityMetrics = Mapping[
                 str,
-                int | bool | t.OptionalContainerValueMapping,
+                int | bool | t.JsonMapping | None,
             ]
 
         class Monitoring:
@@ -190,24 +187,24 @@ class FlextGrpcTypes(t):
 
             MonitoringConfiguration = Mapping[
                 str,
-                bool | str | int | t.OptionalContainerValueMapping,
+                bool | str | int | t.JsonMapping | None,
             ]
             MetricsCollection = Mapping[
                 str,
-                str | bool | t.OptionalContainerValueMapping,
+                str | bool | t.JsonMapping | None,
             ]
             TracingConfiguration = Mapping[
                 str,
-                bool | str | t.OptionalContainerValueMapping,
+                bool | str | t.JsonMapping | None,
             ]
             LoggingSetup = Mapping[
                 str,
-                str | bool | int | t.OptionalContainerValueMapping,
+                str | bool | int | t.JsonMapping | None,
             ]
             type AlertingRules = Sequence[Mapping[str, t.Scalar]]
             PerformanceMetrics = Mapping[
                 str,
-                float | int | t.OptionalContainerValueMapping,
+                float | int | t.JsonMapping | None,
             ]
 
         class Project:
@@ -218,16 +215,16 @@ class FlextGrpcTypes(t):
             gRPC domain owns microservices-specific types.
             """
 
-            ProjectConfig = t.OptionalContainerValueMapping
+            ProjectConfig = t.JsonMapping | None
             type MicroserviceConfig = Mapping[
                 str,
                 t.Scalar | t.StrSequence,
             ]
             StreamingConfig = Mapping[
                 str,
-                bool | str | t.OptionalContainerValueMapping,
+                bool | str | t.JsonMapping | None,
             ]
-            ServiceMeshConfig = t.OptionalContainerValueMapping
+            ServiceMeshConfig = t.JsonMapping | None
 
         class GrpcValidation:
             """gRPC validation utilities."""

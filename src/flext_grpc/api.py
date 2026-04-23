@@ -84,7 +84,7 @@ class FlextGrpc(
     def create_channel(
         self,
         target: str,
-        options: t.OptionalContainerValueMapping | None = None,
+        options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         return u.Grpc.create_channel_entity(
@@ -95,7 +95,7 @@ class FlextGrpc(
     def create_client(
         self,
         target: str,
-        options: t.OptionalContainerValueMapping | None = None,
+        options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return u.Grpc.create_client_entity(target=target, options=options)
@@ -229,7 +229,7 @@ class FlextGrpc(
         self,
         client: m.Grpc.Client,
         method: str,
-        request: t.OptionalContainerValueMapping,
+        request: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
         """Delegate method calls.
 
@@ -255,7 +255,7 @@ class FlextGrpc(
     def send_data(
         self,
         stream: m.Grpc.GrpcStream,
-        data: t.OptionalContainerValueMapping,
+        data: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
         """Delegate data sending.
 
@@ -266,7 +266,7 @@ class FlextGrpc(
         Returns:
         Response data dictionary
 
-        Note: Uses t.Container for gRPC message compatibility
+        Note: Uses t.JsonValue for gRPC message compatibility
 
         """
         return self._stream_manager.send_data(stream, data)

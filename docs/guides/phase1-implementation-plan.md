@@ -537,7 +537,7 @@ make test 2>&1 | grep -E "(FAILED|ERROR)" | wc -l
 
 ```bash
 # Phase 1 completion check
-make validate                    # All quality gates pass
+make val                    # All quality gates pass
 make test | grep "100%"          # 100% test success (64/64)
 pytest --cov=flext_grpc --cov-report=term | grep "TOTAL" | grep -E "9[0-9]%"  # 90%+ coverage
 ```

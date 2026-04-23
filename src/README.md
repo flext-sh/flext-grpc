@@ -222,7 +222,7 @@ src/flext_grpc/
 **Before Committing**:
 
 ```bash
-make validate    # Complete validation pipeline
+make val    # Complete validation pipeline
 make check       # Quick health check
 make test        # Run tests with coverage
 ```

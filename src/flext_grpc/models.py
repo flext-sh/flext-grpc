@@ -104,7 +104,7 @@ class FlextGrpcModels(m):
                 None
             )
             metadata: Annotated[
-                t.OptionalContainerValueMapping | None,
+                t.JsonMapping | None,
                 u.Field(
                     description="Service metadata",
                 ),
@@ -228,7 +228,7 @@ class FlextGrpcModels(m):
 
             address: str = u.Field(description="Channel address")
             options: Annotated[
-                t.OptionalContainerValueMapping | None,
+                t.JsonMapping | None,
                 u.Field(description="Channel options"),
             ] = None
 
@@ -559,7 +559,7 @@ class FlextGrpcModels(m):
                 ),
             ] = None
             parameters: Annotated[
-                Mapping[str, t.OptionalContainerValueMapping],
+                Mapping[str, t.JsonMapping | None],
                 u.Field(
                     description="Operation parameters",
                 ),
@@ -578,7 +578,7 @@ class FlextGrpcModels(m):
                 ),
             ] = None
             data: Annotated[
-                t.OptionalContainerValueMapping | None,
+                t.JsonMapping | None,
                 u.Field(
                     description="Request data",
                 ),
@@ -607,7 +607,7 @@ class FlextGrpcModels(m):
                 ),
             ] = None
             metadata: Annotated[
-                Mapping[str, t.OptionalContainerValueMapping],
+                Mapping[str, t.JsonMapping | None],
                 u.Field(
                     description="Response metadata",
                 ),
@@ -622,25 +622,25 @@ class FlextGrpcModels(m):
         class Payload(m.BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: t.OptionalContainerValueMapping = u.Field(
+            values: t.JsonMapping | None = u.Field(
                 default_factory=lambda: MappingProxyType({}),
                 description="Key-value payload data",
             )
 
             @classmethod
-            def from_values(cls, **values: t.OptionalContainerValue) -> Self:
+            def from_values(cls, **values: t.JsonValue | None) -> Self:
                 """Build payload from keyword values."""
 
                 def normalize_payload_value(
-                    value: t.OptionalContainerValue,
-                ) -> t.OptionalContainerValue:
+                    value: t.JsonValue | None,
+                ) -> t.JsonValue | None:
                     if value is None:
                         return ""
                     if u.primitive(value):
                         return value
                     return str(value)
 
-                normalized_values: t.OptionalContainerValueMapping = {
+                normalized_values: t.JsonMapping | None = {
                     metric_key: normalize_payload_value(metric_value)
                     for metric_key, metric_value in values.items()
                 }
@@ -676,7 +676,7 @@ class FlextGrpcModels(m):
                     description="Current channel connection state",
                 ),
             ] = c.Grpc.ChannelState.IDLE
-            options: t.OptionalContainerValueMapping = u.Field(
+            options: t.JsonMapping | None = u.Field(
                 default_factory=lambda: MappingProxyType({}),
                 description="Channel configuration options",
             )
@@ -761,7 +761,7 @@ class FlextGrpcModels(m):
                 """Add service functionally.
 
                 Args:
-                service: gRPC service t.Container (dynamic type from grpc library)
+                service: gRPC service t.JsonValue (dynamic type from grpc library)
 
                 """
                 return r[Self](
@@ -877,7 +877,7 @@ class FlextGrpcModels(m):
                 FlextGrpcModels.Grpc.Channel | None,
                 u.Field(description="Associated gRPC channel for communication"),
             ] = None
-            options: t.OptionalContainerValueMapping = u.Field(
+            options: t.JsonMapping | None = u.Field(
                 default_factory=lambda: MappingProxyType({}),
                 description="Client configuration options",
             )
