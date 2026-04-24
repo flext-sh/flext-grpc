@@ -303,12 +303,12 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def parse_address(address: str) -> tuple[str, int]:
         """Parse a validated gRPC address into host and port."""
-        return t.Grpc.GrpcValidation.parse_target(address)
+        return t.Grpc.parse_target(address)
 
     @staticmethod
     def validate_target(target: str) -> bool:
         """Validate a gRPC target string in ``host:port`` format."""
-        return t.Grpc.GrpcValidation.validate_target(target)
+        return t.Grpc.validate_target(target)
 
     @staticmethod
     def validate_port(port: int) -> bool:
