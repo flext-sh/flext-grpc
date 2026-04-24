@@ -7,9 +7,9 @@ from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 _LAZY_IMPORTS = build_lazy_import_map(
     {
-        ".test_api": ("TestFlextGrpc",),
-        ".test_config": ("TestFlextGrpcSettings",),
-        ".test_constants": ("TestFlextGrpcConstants",),
+        ".test_api": ("TestsFlextGrpcApi",),
+        ".test_config": ("TestsFlextGrpcConfig",),
+        ".test_constants": ("TestsFlextGrpcConstantsUnit",),
         ".test_entities": ("TestFlextGrpcEntities",),
         ".test_errors": (
             "TestErrorIntegration",
@@ -20,9 +20,9 @@ _LAZY_IMPORTS = build_lazy_import_map(
             "TestFlextGrpcValidationError",
         ),
         ".test_models": ("TestFlextGrpcModels",),
-        ".test_protocols": ("Testp",),
+        ".test_protocols": ("TestsFlextGrpcProtocolsUnit",),
         ".test_services": ("TestFlextGrpcServiceComponents",),
-        ".test_typings": ("TestFlextGrpcTypes",),
+        ".test_typings": ("TestsFlextGrpcTypesUnit",),
         ".test_utilities": ("Testu",),
     },
 )

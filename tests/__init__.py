@@ -123,6 +123,7 @@ __all__: list[str] = [
     "TestsFlextGrpcApi",
     "TestsFlextGrpcConfig",
     "TestsFlextGrpcConstants",
+    "TestsFlextGrpcConstantsUnit",
     "TestsFlextGrpcModels",
     "TestsFlextGrpcProtocols",
     "TestsFlextGrpcProtocolsUnit",
