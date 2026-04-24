@@ -7,7 +7,7 @@ from flext_tests import tm
 from tests import c
 
 
-class TestFlextGrpcConstants:
+class TestsFlextGrpcConstantsUnit:
     """Test cases for FlextGrpcConstants class."""
 
     def test_network_constants(self) -> None:

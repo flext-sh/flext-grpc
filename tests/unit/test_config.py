@@ -22,7 +22,7 @@ def clear_grpc_env(monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv(env_key, raising=False)
 
 
-class TestFlextGrpcSettings:
+class TestsFlextGrpcConfig:
     """Test cases for FlextGrpcSettings class."""
 
     def test_init_default(self) -> None:

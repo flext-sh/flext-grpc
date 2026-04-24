@@ -14,7 +14,7 @@ from flext_tests import tm
 from tests import p
 
 
-class Testp:
+class TestsFlextGrpcProtocolsUnit:
     """Test cases for p."""
 
     def test_protocols_class_exists(self) -> None:

@@ -11,7 +11,7 @@ from flext_grpc import FlextGrpc, FlextGrpcSettings
 from tests import m, t
 
 
-class TestFlextGrpc:
+class TestsFlextGrpcApi:
     """Test cases for FlextGrpc class."""
 
     def test_init(self) -> None:

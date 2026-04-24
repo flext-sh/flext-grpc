@@ -8,7 +8,7 @@ from flext_tests import tm
 from tests import t
 
 
-class TestFlextGrpcTypes:
+class TestsFlextGrpcTypesUnit:
     """Test cases for FlextGrpcTypes class."""
 
     def test_grpc_validation(self) -> None:
