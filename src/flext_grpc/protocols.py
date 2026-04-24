@@ -37,7 +37,7 @@ class FlextGrpcProtocols(p):
 
     # Foundation protocols (inherited)
     result: p.Result[str]
-    service: p.Service[str]
+    service: p.Grpc.Service[str]
 
     # gRPC-specific protocols
     server: p.Grpc.Server

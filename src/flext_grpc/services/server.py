@@ -10,13 +10,15 @@ from concurrent.futures import ThreadPoolExecutor
 
 from flext_grpc import (
     FlextGrpcMetrics,
-    FlextGrpcServiceServicer,
-    add_FlextGrpcServiceServicer_to_server,
     c,
     m,
     p,
     r,
     u,
+)
+from flext_grpc.proto.stubs import (
+    FlextGrpcServiceServicer,
+    add_FlextGrpcServiceServicer_to_server,
 )
 
 

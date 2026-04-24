@@ -10,7 +10,6 @@ from collections.abc import (
 from flext_grpc import (
     FlextGrpcConnectionPool,
     FlextGrpcMetrics,
-    FlextGrpcServiceStub,
     c,
     m,
     p,
@@ -18,6 +17,7 @@ from flext_grpc import (
     t,
     u,
 )
+from flext_grpc.proto.stubs import FlextGrpcServiceStub
 
 EchoRequest = m.Grpc.EchoRequest
 HealthRequest = m.Grpc.HealthRequest

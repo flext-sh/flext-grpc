@@ -27,11 +27,6 @@ if _t.TYPE_CHECKING:
         FlextGrpcValidationError,
     )
     from flext_grpc.models import FlextGrpcModels, m
-    from flext_grpc.proto.stubs import (
-        FlextGrpcServiceServicer,
-        FlextGrpcServiceStub,
-        add_FlextGrpcServiceServicer_to_server,
-    )
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
@@ -45,7 +40,6 @@ if _t.TYPE_CHECKING:
 _LAZY_IMPORTS = merge_lazy_imports(
     (
         "._utilities",
-        ".proto",
         ".services",
     ),
     build_lazy_import_map(
@@ -79,11 +73,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".models": (
                 "FlextGrpcModels",
                 "m",
-            ),
-            ".proto.stubs": (
-                "FlextGrpcServiceServicer",
-                "FlextGrpcServiceStub",
-                "add_FlextGrpcServiceServicer_to_server",
             ),
             ".protocols": (
                 "FlextGrpcProtocols",
@@ -142,8 +131,6 @@ __all__: list[str] = [
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcServer",
-    "FlextGrpcServiceServicer",
-    "FlextGrpcServiceStub",
     "FlextGrpcSettings",
     "FlextGrpcStream",
     "FlextGrpcTimeoutError",
@@ -159,7 +146,6 @@ __all__: list[str] = [
     "__url__",
     "__version__",
     "__version_info__",
-    "add_FlextGrpcServiceServicer_to_server",
     "c",
     "d",
     "e",
