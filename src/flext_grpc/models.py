@@ -646,7 +646,7 @@ class FlextGrpcModels(m):
                 }
                 return cls(values=normalized_values)
 
-        class Entity(m.Grpc.Entity):
+        class Entity(m.Entity):
             """Generic base entity with functional patterns."""
 
             def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
