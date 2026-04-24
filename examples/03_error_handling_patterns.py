@@ -7,7 +7,7 @@ Clean Architecture and Domain-Driven Design principles.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
+from flext_core import r
 """
 
 from __future__ import annotations
@@ -15,7 +15,7 @@ from __future__ import annotations
 import time
 from typing import NoReturn
 
-from flext_core import FlextConstants, r
+from flext_core import r
 
 from flext_grpc import (
     FlextGrpcConfigurationError,
@@ -172,7 +172,7 @@ def error_recovery_patterns() -> p.Result[str]:
     if primary_config_result.failure:
         logger.warning("Primary settings failed, trying fallback")
         fallback_config_result = create_server_config(
-            FlextConstants.DEFAULT_HTTP_PORT,
+            FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
             2,
         )
         if fallback_config_result.success:
