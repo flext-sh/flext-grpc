@@ -124,7 +124,7 @@ class FlextGrpcSettings(FlextSettings):
             r[FlextGrpcSettings]: Development configuration instance.
 
         """
-        return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
+        return r[FlextGrpcSettings].ok(cls.model_validate({"host": c.LOOPBACK_IP}))
 
 
 __all__: list[str] = ["FlextGrpcSettings"]
