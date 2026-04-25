@@ -1,7 +1,6 @@
 # FLEXT-gRPC Documentation Maintenance Framework
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [🏗️ Architecture Overview](#architecture-overview)
 - [📊 Current Documentation Health](#current-documentation-health)
@@ -48,7 +47,6 @@
   - [Documentation](#documentation)
   - [Development](#development)
   - [Community](#community)
-
 <!-- TOC END -->
 
 ## Table of Contents

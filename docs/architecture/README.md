@@ -1,5 +1,14 @@
 # FLEXT-gRPC Architecture
 
+
+<!-- TOC START -->
+- [Structure](#structure)
+- [What To Read](#what-to-read)
+- [Diagrams](#diagrams)
+- [Validation](#validation)
+- [Maintenance Rules](#maintenance-rules)
+<!-- TOC END -->
+
 Architecture docs for `flext-grpc` are organized by view type and kept aligned with the files that currently exist in this folder.
 
 ## Structure

@@ -3,15 +3,15 @@
 # flext-grpc API Overview
 
 - Package: `flext_grpc`
-- Version: `0.12.0-dev`
+- Version: ``
 - Description: FLEXT gRPC - High-Performance gRPC Services
 - Project class: `platform`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
-- Main facades: `FlextGrpc`, `FlextGrpcConfigurationError`, `FlextGrpcConnectionError`, `FlextGrpcConstants`, `FlextGrpcError`, `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcSettings` (+4 more)
+- Main facades: `FlextGrpcUtilities`, `FlextGrpcClient`, `FlextGrpcConfigurationError`, `FlextGrpcProtocols`, `FlextGrpcServer`, `FlextGrpc`, `FlextGrpcUtilitiesGrpc`, `FlextGrpcValidationError` (+11 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpc`, `FlextGrpcConfigurationError`, `FlextGrpcConnectionError`, `FlextGrpcConstants`, `FlextGrpcError`, `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcSettings`, `FlextGrpcTimeoutError`, `FlextGrpcTypes` (+2 more)
-- Exported module shortcuts: `api`, `constants`, `errors`, `models`, `proto`, `protocols`, `services`, `settings` (+2 more)
-- Generated module pages: `10`
+- Public symbol exports: `FlextGrpcUtilities`, `FlextGrpcClient`, `FlextGrpcConfigurationError`, `FlextGrpcProtocols`, `FlextGrpcServer`, `FlextGrpc`, `FlextGrpcUtilitiesGrpc`, `FlextGrpcValidationError`, `FlextGrpcSettings`, `FlextGrpcConstants` (+10 more)
+- Exported module shortcuts: _none_
+- Generated module pages: `15`
 
 ## Next Pages
 

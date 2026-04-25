@@ -19,7 +19,7 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextGrpc`, `FlextGrpcConfigurationError`, `FlextGrpcConnectionError`, `FlextGrpcConstants`, `FlextGrpcError`, `FlextGrpcModels` (+6 more)
-- Generated module pages: `10`
+- Primary facades: `FlextGrpcUtilities`, `FlextGrpcClient`, `FlextGrpcConfigurationError`, `FlextGrpcProtocols`, `FlextGrpcServer`, `FlextGrpc` (+13 more)
+- Generated module pages: `15`
 
 - [Back to project docs](../index.md)
