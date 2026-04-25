@@ -7,7 +7,7 @@ from flext_tests import tm
 from tests import m
 
 
-class TestFlextGrpcModels:
+class TestsFlextGrpcModelsUnit:
     """Test cases for FlextGrpcModels class."""
 
     def test_server_config(self) -> None:

@@ -8,7 +8,7 @@ from flext_grpc import FlextGrpc, FlextGrpcConnectionPool, FlextGrpcMetrics
 from tests import m
 
 
-class TestFlextGrpcServiceComponents:
+class TestsFlextGrpcServices:
     """Test public gRPC service components without legacy compat shims."""
 
     def test_connect_client_invalid_target_fails(

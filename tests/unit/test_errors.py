@@ -49,7 +49,7 @@ from flext_grpc import (
 from tests import e
 
 
-class TestFlextGrpcError:
+class TestsFlextGrpcErrors:
     """Test base gRPC error class."""
 
     def test_base_error_creation(self) -> None:
@@ -64,8 +64,6 @@ class TestFlextGrpcError:
         error = FlextGrpcError("test")
         tm.that(error, is_=e.BaseError)
 
-
-class TestFlextGrpcValidationError:
     """Test gRPC validation error with field context."""
 
     def test_validation_error_with_field_name(self) -> None:
@@ -95,8 +93,6 @@ class TestFlextGrpcValidationError:
         error = FlextGrpcValidationError("test")
         tm.that(error, is_=e.BaseError)
 
-
-class TestFlextGrpcConnectionError:
     """Test gRPC connection error class."""
 
     def test_connection_error_creation(self) -> None:
@@ -110,8 +106,6 @@ class TestFlextGrpcConnectionError:
         error = FlextGrpcConnectionError("test")
         tm.that(error, is_=e.BaseError)
 
-
-class TestFlextGrpcTimeoutError:
     """Test gRPC timeout error class."""
 
     def test_timeout_error_creation(self) -> None:
@@ -125,8 +119,6 @@ class TestFlextGrpcTimeoutError:
         error = FlextGrpcTimeoutError("test")
         tm.that(error, is_=e.BaseError)
 
-
-class TestFlextGrpcConfigurationError:
     """Test gRPC configuration error with settings context."""
 
     def test_configuration_error_with_all_params(self) -> None:
@@ -157,8 +149,6 @@ class TestFlextGrpcConfigurationError:
         error = FlextGrpcConfigurationError("test")
         tm.that(error, is_=e.BaseError)
 
-
-class TestErrorIntegration:
     """Test error classes work together in realistic scenarios."""
 
     def test_all_errors_are_exceptions(self) -> None:

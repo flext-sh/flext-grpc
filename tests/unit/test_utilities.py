@@ -7,7 +7,7 @@ from flext_tests import tm
 from tests import u
 
 
-class Testu:
+class TestsFlextGrpcUtilitiesUnit:
     """Test cases for u class."""
 
     def test_init(self) -> None:

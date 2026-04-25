@@ -8,7 +8,7 @@ from flext_tests import tm
 from tests import c, m
 
 
-class TestFlextGrpcEntities:
+class TestsFlextGrpcEntities:
     """Test cases for FlextGrpcEntities class."""
 
     def test_grpc_server_creation(self) -> None:
