@@ -1,3 +1,7 @@
+<!-- TOC START -->
+- [Next Pages](#next-pages)
+<!-- TOC END -->
+
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
 
 # flext-grpc API Overview
@@ -7,9 +11,9 @@
 - Description: FLEXT gRPC - High-Performance gRPC Services
 - Project class: `platform`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
-- Main facades: `FlextGrpcUtilities`, `FlextGrpcClient`, `FlextGrpcConfigurationError`, `FlextGrpcProtocols`, `FlextGrpcServer`, `FlextGrpc`, `FlextGrpcUtilitiesGrpc`, `FlextGrpcValidationError` (+11 more)
+- Main facades: `FlextGrpcStream`, `FlextGrpcConfigurationError`, `FlextGrpcClient`, `FlextGrpcSettings`, `FlextGrpcValidationError`, `FlextGrpcProtocols`, `FlextGrpcMetrics`, `FlextGrpcConnectionPool` (+11 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpcUtilities`, `FlextGrpcClient`, `FlextGrpcConfigurationError`, `FlextGrpcProtocols`, `FlextGrpcServer`, `FlextGrpc`, `FlextGrpcUtilitiesGrpc`, `FlextGrpcValidationError`, `FlextGrpcSettings`, `FlextGrpcConstants` (+10 more)
+- Public symbol exports: `FlextGrpcStream`, `FlextGrpcConfigurationError`, `FlextGrpcClient`, `FlextGrpcSettings`, `FlextGrpcValidationError`, `FlextGrpcProtocols`, `FlextGrpcMetrics`, `FlextGrpcConnectionPool`, `FlextGrpcModels`, `FlextGrpcUtilities` (+10 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `15`
 
