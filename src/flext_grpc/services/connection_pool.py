@@ -5,7 +5,7 @@ from __future__ import annotations
 import threading
 from queue import Queue
 
-from flext_grpc import p, r
+from flext_grpc import e, p, r
 
 
 class FlextGrpcConnectionPool:
@@ -33,7 +33,7 @@ class FlextGrpcConnectionPool:
                     conn = self._pool.get_nowait()
                     self._active.add(conn)
                     return r[p.Grpc.GrpcChannel].ok(conn)
-                return r[p.Grpc.GrpcChannel].fail("No available connections")
+                return e.fail_not_found("connection", "available")
 
         def cleanup(self) -> p.Result[bool]:
             """Cleanup all connections."""

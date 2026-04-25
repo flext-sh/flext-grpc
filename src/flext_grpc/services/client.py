@@ -11,6 +11,7 @@ from flext_grpc import (
     FlextGrpcConnectionPool,
     FlextGrpcMetrics,
     c,
+    e,
     m,
     p,
     r,
@@ -99,7 +100,9 @@ class FlextGrpcClient:
             if client.channel is not None:
                 target = client.channel.target or ""
             if not target or target not in self._active_channels:
-                return r[m.Grpc.Payload].fail("Client not connected")
+                return e.fail_connection(
+                    target or "<unset>", error="client not connected"
+                )
             grpc_channel = self._active_channels[target]
             stub = FlextGrpcServiceStub(grpc_channel)
             if method == c.Grpc.ServiceMethod.ECHO.value:

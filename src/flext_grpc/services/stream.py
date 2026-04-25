@@ -8,7 +8,7 @@ from collections.abc import (
     MutableMapping,
 )
 
-from flext_grpc import FlextGrpcMetrics, c, m, p, r, t, u
+from flext_grpc import FlextGrpcMetrics, c, e, m, p, r, t, u
 
 
 class FlextGrpcStream:
@@ -86,7 +86,7 @@ class FlextGrpcStream:
             """
             stream_key = f"{stream.id}_{stream.stream_type}"
             if stream_key not in self._active_streams:
-                return r[m.Grpc.Payload].fail("Stream not found")
+                return e.fail_not_found("stream", stream.id)
             stream_info = self._active_streams[stream_key]
             try:
                 stream_state = FlextGrpcStream._StreamRuntimeState.model_validate(
@@ -101,8 +101,8 @@ class FlextGrpcStream:
                         buffer_size=len(stream_state.buffer),
                     ),
                 )
-            except c.ValidationError as e:
-                return r[m.Grpc.Payload].fail(f"Invalid stream state: {e}")
+            except c.ValidationError as exc:
+                return e.fail_validation("stream_state", error=exc)
 
 
 __all__: list[str] = ["FlextGrpcStream"]

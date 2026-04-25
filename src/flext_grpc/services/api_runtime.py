@@ -10,6 +10,7 @@ from flext_grpc import (
     FlextGrpcSettings,
     FlextGrpcStream,
     c,
+    e,
     m,
     p,
     r,
@@ -136,7 +137,7 @@ class FlextGrpcApiRuntime:
     ) -> p.Result[m.Grpc.GrpcStream]:
         """Create typed stream entity from validated inputs."""
         if not method_name.strip():
-            return r[m.Grpc.GrpcStream].fail("Stream method name cannot be empty")
+            return e.fail_validation("method_name", error="cannot be empty")
         if stream_type not in c.Grpc.STREAM_TYPES:
             return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
         return u.Grpc.create_stream_entity(
