@@ -1,0 +1,26 @@
+src/flext_grpc/_utilities/grpc.py
+  8101ec7ad65f4317 6,307-316,320-334
+tests/unit/test_typings.py
+  8101ec7ad65f4317 8,16-18,22,29,33-36,38,41-45,50,57,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "8eb1f6caab8460427b7705a6b7a55d56411f2dd1",
+  "prompts": {
+    "8101ec7ad65f4317": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "557c886b-b02d-489a-8237-05da7f2a1438",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 46,
+      "total_deletions": 51,
+      "accepted_lines": 46,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/95cd2daeee5a2b85efd2969cde28bd223b73b71cbd634547387793c305dcd46e"
+    }
+  }
+}
