@@ -12,9 +12,9 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from flext_core import FlextSettings, m, u
+from flext_core import FlextSettings, u
 
-from flext_grpc import FlextGrpcModels, c, p, r, t
+from flext_grpc import c, m, p, r, t
 
 
 @FlextSettings.auto_register("grpc")
@@ -49,25 +49,23 @@ class FlextGrpcSettings(FlextSettings):
     ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
 
     # Nested configuration models
-    network: FlextGrpcModels.Grpc.NetworkConfig = u.Field(
-        default_factory=lambda: FlextGrpcModels.Grpc.NetworkConfig.model_validate({})
+    network: m.Grpc.NetworkConfig = u.Field(
+        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})
     )
-    security: FlextGrpcModels.Grpc.SecurityConfig = u.Field(
-        default_factory=lambda: FlextGrpcModels.Grpc.SecurityConfig.model_validate({})
+    security: m.Grpc.SecurityConfig = u.Field(
+        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})
     )
-    performance: FlextGrpcModels.Grpc.PerformanceConfig = u.Field(
-        default_factory=lambda: (
-            FlextGrpcModels.Grpc.PerformanceConfig.model_validate({})
-        )
+    performance: m.Grpc.PerformanceConfig = u.Field(
+        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})
     )
-    streaming: FlextGrpcModels.Grpc.StreamingConfig = u.Field(
-        default_factory=lambda: FlextGrpcModels.Grpc.StreamingConfig.model_validate({})
+    streaming: m.Grpc.StreamingConfig = u.Field(
+        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})
     )
-    client: FlextGrpcModels.Grpc.ClientConfig = u.Field(
-        default_factory=lambda: FlextGrpcModels.Grpc.ClientConfig.model_validate({})
+    client: m.Grpc.ClientConfig = u.Field(
+        default_factory=lambda: m.Grpc.ClientConfig.model_validate({})
     )
-    monitoring: FlextGrpcModels.Grpc.MonitoringConfig = u.Field(
-        default_factory=lambda: FlextGrpcModels.Grpc.MonitoringConfig.model_validate({})
+    monitoring: m.Grpc.MonitoringConfig = u.Field(
+        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})
     )
 
     @u.computed_field()
