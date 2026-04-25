@@ -38,6 +38,6 @@ class FlextGrpc(
     pass
 
 
-grpc = FlextGrpc
+grpc = FlextGrpc()
 
 __all__: list[str] = ["FlextGrpc", "grpc"]

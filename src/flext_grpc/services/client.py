@@ -19,9 +19,6 @@ from flext_grpc import (
 )
 from flext_grpc.proto.stubs import FlextGrpcServiceStub
 
-EchoRequest = m.Grpc.EchoRequest
-HealthRequest = m.Grpc.HealthRequest
-
 
 class FlextGrpcClient:
     """Mixin providing client connection management for FlextGrpc facade."""
@@ -107,7 +104,7 @@ class FlextGrpcClient:
             stub = FlextGrpcServiceStub(grpc_channel)
             if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_result = u.Grpc.call_runtime(
-                    lambda: stub.Echo(EchoRequest(message=str(request))),
+                    lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request))),
                 )
                 if echo_result.failure:
                     return r[m.Grpc.Payload].fail(
@@ -125,7 +122,7 @@ class FlextGrpcClient:
             if method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_result = u.Grpc.call_runtime(
                     lambda: stub.HealthCheck(
-                        HealthRequest(service="FlextGrpcService"),
+                        m.Grpc.HealthRequest(service="FlextGrpcService"),
                     ),
                 )
                 if health_result.failure:
