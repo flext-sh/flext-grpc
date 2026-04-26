@@ -16,14 +16,19 @@ from flext_grpc import (
     r,
     u,
 )
+from flext_grpc.base import s
 from flext_grpc.proto.stubs import (
     FlextGrpcServiceServicer,
     add_FlextGrpcServiceServicer_to_server,
 )
 
 
-class FlextGrpcServer:
+class FlextGrpcServer(s):
     """Mixin providing server lifecycle management for FlextGrpc facade."""
+
+    _server_manager: FlextGrpcServer.GrpcServerManager = m.PrivateAttr(
+        default_factory=lambda: FlextGrpcServer.GrpcServerManager()
+    )
 
     @staticmethod
     def _create_real_servicer(_server_key: str) -> p.Grpc.GrpcServicer:
@@ -132,6 +137,18 @@ class FlextGrpcServer:
                 return stopping_server.mark_stopped()
             except (ConnectionError, TimeoutError) as e:
                 return r[m.Grpc.Server].fail(f"Server stop failed: {e}")
+
+    def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
+        """Start a server through the dedicated lifecycle manager."""
+        return self._server_manager.start_server(server)
+
+    def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
+        """Stop a server through the dedicated lifecycle manager."""
+        return self._server_manager.stop_server(server)
+
+    def server_status(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Payload]:
+        """Fetch server runtime metrics through the dedicated manager."""
+        return self._server_manager.server_metrics(server)
 
 
 __all__: list[str] = ["FlextGrpcServer"]

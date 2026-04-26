@@ -17,7 +17,6 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import Protocol, runtime_checkable
 
 from flext_core import p
-
 from flext_grpc import c, t
 
 

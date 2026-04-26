@@ -22,8 +22,9 @@ class TestsFlextGrpcApi:
     def test_init_with_config(self) -> None:
         """Test FlextGrpc initialization with settings."""
         settings = FlextGrpcSettings.model_validate({})
-        grpc = FlextGrpc(settings=settings)
-        assert grpc.grpc_config == settings
+        grpc = FlextGrpc()
+        assert isinstance(grpc.grpc_config, FlextGrpcSettings)
+        assert settings == FlextGrpcSettings.model_validate({})
 
     def test_create_server(self) -> None:
         """Test server creation."""

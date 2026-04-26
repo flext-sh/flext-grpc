@@ -2,51 +2,23 @@
 
 from __future__ import annotations
 
+from typing import override
+
 from flext_grpc import (
-    FlextGrpcClient,
-    FlextGrpcConnectionPool,
-    FlextGrpcMetrics,
-    FlextGrpcServer,
     FlextGrpcSettings,
-    FlextGrpcStream,
     c,
-    e,
     m,
     p,
     r,
     t,
     u,
 )
-from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, __all__
+from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+from flext_grpc.base import s
 
 
-class FlextGrpcApiRuntime:
+class FlextGrpcApiRuntime(s):
     """Runtime behavior composed by the public gRPC facade via MRO."""
-
-    def __init__(self, settings: FlextGrpcSettings | None = None) -> None:
-        """Initialize facade with FLEXT ecosystem integration."""
-        super().__init__()
-        self._grpc_config = (
-            settings if settings is not None else FlextGrpcSettings.model_validate({})
-        )
-        self._server_manager = FlextGrpcServer.GrpcServerManager()
-        self._client_manager = FlextGrpcClient.GrpcClientManager()
-        self._stream_manager = FlextGrpcStream.GrpcStreamManager()
-        self._metrics_collector = FlextGrpcMetrics.MetricsCollector()
-        self._resource_manager = FlextGrpcConnectionPool.ConnectionPool(max_size=20)
-
-    @property
-    def grpc_config(self) -> FlextGrpcSettings:
-        """Get gRPC-specific configuration."""
-        return self._grpc_config
-
-    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
-        """Delegate stream closing."""
-        return self._stream_manager.close_stream(stream)
-
-    def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
-        """Delegate client connection."""
-        return self._client_manager.connect(target)
 
     def create_channel(
         self,
@@ -131,25 +103,7 @@ class FlextGrpcApiRuntime:
             methods=[] if methods is None else methods,
         )
 
-    def create_stream(
-        self,
-        method_name: str = "DefaultMethod",
-        stream_type: str = "unary",
-    ) -> p.Result[m.Grpc.GrpcStream]:
-        """Create typed stream entity from validated inputs."""
-        if not method_name.strip():
-            return e.fail_validation("method_name", error="cannot be empty")
-        if stream_type not in c.Grpc.STREAM_TYPES:
-            return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
-        return u.Grpc.create_stream_entity(
-            method_name=method_name,
-            stream_type=stream_type,
-        )
-
-    def disconnect_client(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
-        """Delegate client disconnection."""
-        return self._client_manager.disconnect(client)
-
+    @override
     def execute(self) -> p.Result[FlextGrpcSettings]:
         """Execute main facade operation."""
         return r[FlextGrpcSettings].ok(self.grpc_config)
@@ -167,7 +121,7 @@ class FlextGrpcApiRuntime:
                     return r[FlextGrpcSettings].fail(
                         "connect_client requires string target",
                     )
-                result = self._client_manager.connect(target)
+                result = self.create_client(target=target)
             case _:
                 return r[FlextGrpcSettings].fail(
                     f"Unknown operation: {request.operation_name}",
@@ -176,44 +130,11 @@ class FlextGrpcApiRuntime:
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
-    def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
-        """Get client status through delegation."""
-        return self._client_manager.client_status(client)
-
-    def server_status(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Payload]:
-        """Delegate server status to specialized manager."""
-        return self._server_manager.server_metrics(server)
-
-    def make_call(
-        self,
-        client: m.Grpc.Client,
-        method: str,
-        request: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
-        """Delegate method calls."""
-        return self._client_manager.make_call(client, method, request)
-
     def parse_address(self, address: str) -> p.Result[tuple[str, int]]:
         """Parse gRPC address string."""
         if not u.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
         return r[tuple[str, int]].ok(FlextGrpcUtilitiesGrpc.parse_target(address))
-
-    def send_data(
-        self,
-        stream: m.Grpc.GrpcStream,
-        data: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
-        """Delegate data sending."""
-        return self._stream_manager.send_data(stream, data)
-
-    def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
-        """Delegate server start."""
-        return self._server_manager.start_server(server)
-
-    def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
-        """Delegate server stop."""
-        return self._server_manager.stop_server(server)
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""

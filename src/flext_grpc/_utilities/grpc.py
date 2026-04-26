@@ -14,7 +14,6 @@ from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from flext_core import u
-
 from flext_grpc import c, m, p, r, t
 
 if TYPE_CHECKING:

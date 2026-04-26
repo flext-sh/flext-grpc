@@ -18,11 +18,16 @@ from flext_grpc import (
     t,
     u,
 )
+from flext_grpc.base import s
 from flext_grpc.proto.stubs import FlextGrpcServiceStub
 
 
-class FlextGrpcClient:
+class FlextGrpcClient(s):
     """Mixin providing client connection management for FlextGrpc facade."""
+
+    _client_manager: FlextGrpcClient.GrpcClientManager = m.PrivateAttr(
+        default_factory=lambda: FlextGrpcClient.GrpcClientManager()
+    )
 
     class GrpcClientManager:
         """Dedicated client connection management."""
@@ -141,6 +146,27 @@ class FlextGrpcClient:
                     ),
                 )
             return r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
+
+    def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
+        """Establish a client connection through the dedicated manager."""
+        return self._client_manager.connect(target)
+
+    def disconnect_client(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
+        """Disconnect a client connection through the dedicated manager."""
+        return self._client_manager.disconnect(client)
+
+    def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
+        """Fetch client connection status via the dedicated manager."""
+        return self._client_manager.client_status(client)
+
+    def make_call(
+        self,
+        client: m.Grpc.Client,
+        method: str,
+        request: t.JsonMapping | None,
+    ) -> p.Result[m.Grpc.Payload]:
+        """Execute an RPC call through the dedicated client manager."""
+        return self._client_manager.make_call(client, method, request)
 
 
 __all__: list[str] = ["FlextGrpcClient"]

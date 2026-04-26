@@ -5,11 +5,16 @@ from __future__ import annotations
 import threading
 from queue import Queue
 
-from flext_grpc import e, p, r
+from flext_grpc import e, m, p, r
+from flext_grpc.base import s
 
 
-class FlextGrpcConnectionPool:
+class FlextGrpcConnectionPool(s):
     """Mixin providing connection pooling for FlextGrpc facade."""
+
+    _resource_manager: FlextGrpcConnectionPool.ConnectionPool = m.PrivateAttr(
+        default_factory=lambda: FlextGrpcConnectionPool.ConnectionPool(max_size=20)
+    )
 
     class ConnectionPool:
         """Generic connection pool with resource management."""

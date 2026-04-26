@@ -9,10 +9,15 @@ from collections.abc import (
 )
 
 from flext_grpc import FlextGrpcMetrics, c, e, m, p, r, t, u
+from flext_grpc.base import s
 
 
-class FlextGrpcStream:
+class FlextGrpcStream(s):
     """Mixin providing stream processing for FlextGrpc facade."""
+
+    _stream_manager: FlextGrpcStream.GrpcStreamManager = m.PrivateAttr(
+        default_factory=lambda: FlextGrpcStream.GrpcStreamManager()
+    )
 
     class _StreamRuntimeState(m.Value):
         stream: m.Grpc.GrpcStream = u.Field(
@@ -103,6 +108,33 @@ class FlextGrpcStream:
                 )
             except c.ValidationError as exc:
                 return e.fail_validation("stream_state", error=exc)
+
+    def create_stream(
+        self,
+        method_name: str = "DefaultMethod",
+        stream_type: str = "unary",
+    ) -> p.Result[m.Grpc.GrpcStream]:
+        """Create and register stream runtime state using the dedicated manager."""
+        if not method_name.strip():
+            return e.fail_validation("method_name", error="cannot be empty")
+        if stream_type not in c.Grpc.STREAM_TYPES:
+            return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
+        return self._stream_manager.create_stream(
+            method_name=method_name,
+            stream_type=stream_type,
+        )
+
+    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
+        """Close stream runtime state via the dedicated manager."""
+        return self._stream_manager.close_stream(stream)
+
+    def send_data(
+        self,
+        stream: m.Grpc.GrpcStream,
+        data: t.JsonMapping | None,
+    ) -> p.Result[m.Grpc.Payload]:
+        """Send stream data via the dedicated stream manager."""
+        return self._stream_manager.send_data(stream, data)
 
 
 __all__: list[str] = ["FlextGrpcStream"]

@@ -5,10 +5,15 @@ from __future__ import annotations
 import threading
 
 from flext_grpc import m, t, u
+from flext_grpc.base import s
 
 
-class FlextGrpcMetrics:
+class FlextGrpcMetrics(s):
     """Mixin providing metrics collection for FlextGrpc facade."""
+
+    _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
+        default_factory=lambda: FlextGrpcMetrics.MetricsCollector()
+    )
 
     class _MetricValueModel(m.Value):
         value: t.JsonValue | None = u.Field(
