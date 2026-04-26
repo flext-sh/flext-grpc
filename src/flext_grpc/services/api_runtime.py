@@ -17,6 +17,7 @@ from flext_grpc import (
     t,
     u,
 )
+from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc, __all__
 
 
 class FlextGrpcApiRuntime:
@@ -196,7 +197,7 @@ class FlextGrpcApiRuntime:
         """Parse gRPC address string."""
         if not u.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
-        return r[tuple[str, int]].ok(u.Grpc.parse_address(address))
+        return r[tuple[str, int]].ok(FlextGrpcUtilitiesGrpc.parse_target(address))
 
     def send_data(
         self,
