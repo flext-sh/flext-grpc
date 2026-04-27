@@ -37,7 +37,7 @@ class FlextGrpcClient(s):
             super().__init__()
             self._active_channels: MutableMapping[str, p.Grpc.GrpcChannel] = {}
             self._connection_pool = FlextGrpcConnectionPool.ConnectionPool(
-                max_size=c.Grpc.Connection.DEFAULT_POOL_SIZE,
+                max_size=c.Grpc.CONNECTION_DEFAULT_POOL_SIZE,
             )
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 

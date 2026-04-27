@@ -70,13 +70,13 @@ class FlextGrpcConstants(FlextConstants):
         SERVICE_MIN_WORKERS: Final[int] = 1
 
         # ===== Streaming configuration =====
-        STREAMING_BIDIRECTIONAL_QUEUE_SIZE: Final[int] = 1000
-        STREAMING_CLIENT_BUFFER_THRESHOLD: Final[int] = 10
+        BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
+        CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
         STREAMING_DEFAULT_BUFFER_SIZE: Final[int] = 500
         STREAMING_DEFAULT_MAX_CONCURRENT_STREAMS: Final[int] = 10
         STREAMING_MAX_BUFFER_SIZE: Final[int] = 10000
         STREAMING_MIN_BUFFER_SIZE: Final[int] = 10
-        STREAMING_SERVER_BATCH_SIZE: Final[int] = 100
+        SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
 
         # ===== Connection pool defaults =====
         CONNECTION_DEFAULT_POOL_SIZE: Final[int] = 20

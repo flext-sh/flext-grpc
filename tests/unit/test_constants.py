@@ -31,11 +31,11 @@ class TestsFlextGrpcConstantsUnit:
     def test_streaming_constants(self) -> None:
         """Test streaming constants."""
         tm.that(
-            c.Grpc.STREAMING_CLIENT_STREAMING_BUFFER_THRESHOLD,
+            c.Grpc.CLIENT_STREAMING_BUFFER_THRESHOLD,
             eq=10,
         )
-        tm.that(c.Grpc.STREAMING_SERVER_STREAMING_BATCH_SIZE, eq=100)
+        tm.that(c.Grpc.SERVER_STREAMING_BATCH_SIZE, eq=100)
         tm.that(
-            (c.Grpc.STREAMING_BIDIRECTIONAL_STREAMING_QUEUE_SIZE == 1000),
+            (c.Grpc.BIDIRECTIONAL_STREAMING_QUEUE_SIZE == 1000),
             eq=True,
         )
