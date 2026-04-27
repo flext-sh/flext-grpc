@@ -125,7 +125,7 @@ class FlextGrpcServer(s):
                 grpc_server = self._active_servers[server_key]
                 stop_result = u.Grpc.call_runtime(
                     lambda: grpc_server.stop(
-                        grace=c.Grpc.GrpcNetwork.DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT,
+                        grace=c.Grpc.NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT,
                     ),
                 )
                 if stop_result.failure:

@@ -33,19 +33,19 @@ class FlextGrpcSettings(FlextSettings):
     host: Annotated[
         str,
         u.Field(),
-    ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
+    ] = c.Grpc.NETWORK_DEFAULT_HOST
     port: Annotated[
         t.PortNumber,
         u.Field(),
-    ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+    ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
     max_workers: Annotated[
         t.WorkerCount,
         u.Field(),
-    ] = c.Grpc.Service.MAX_WORKERS
+    ] = c.Grpc.SERVICE_MAX_WORKERS
     timeout: Annotated[
         t.PositiveTimeout,
         u.Field(),
-    ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+    ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
     # Nested configuration models
     network: m.Grpc.NetworkConfig = u.Field(
@@ -105,7 +105,7 @@ class FlextGrpcSettings(FlextSettings):
         """
         return r[FlextGrpcSettings].ok(
             cls.model_validate({
-                "host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
+                "host": c.Grpc.NETWORK_DEFAULT_HOST,
                 "security": {"tls_enabled": True},
             }),
         )

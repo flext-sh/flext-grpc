@@ -167,7 +167,7 @@ class FlextGrpcUtilitiesGrpc:
     def open_insecure_channel(
         target: str,
         *,
-        timeout: float = c.Grpc.GrpcNetwork.DEFAULT_CHANNEL_READY_TIMEOUT,
+        timeout: float = c.Grpc.NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT,
     ) -> p.Result[p.Grpc.GrpcChannel]:
         """Open an insecure channel and wait until it is ready."""
         runtime_result = FlextGrpcUtilitiesGrpc.resolve_runtime()
@@ -255,9 +255,9 @@ class FlextGrpcUtilitiesGrpc:
 
     @staticmethod
     def create_server_entity(
-        host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
-        port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
+        host: str = c.Grpc.NETWORK_DEFAULT_HOST,
+        port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+        max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
     ) -> p.Result[m.Grpc.Server]:
         """Create a typed server entity from validated inputs."""
         grpc_models = FlextGrpcUtilitiesGrpc._grpc_models()
@@ -335,7 +335,7 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def validate_port(port: int) -> bool:
         """Validate that a port is within the permitted gRPC range."""
-        return c.Grpc.GrpcNetwork.MIN_PORT <= port <= c.Grpc.GrpcNetwork.MAX_PORT
+        return c.Grpc.NETWORK_MIN_PORT <= port <= c.Grpc.NETWORK_MAX_PORT
 
     @staticmethod
     def validate_host(host: str) -> bool:
@@ -369,10 +369,10 @@ class FlextGrpcUtilitiesGrpc:
         channel_states: list[t.JsonValue] = [s for s in c.Grpc.CHANNEL_STATES]  # noqa: C416
         server_states: list[t.JsonValue] = [s for s in c.Grpc.SERVER_STATES]  # noqa: C416
         info: dict[str, t.JsonValue] = {
-            "default_host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
-            "default_port": c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-            "min_port": c.Grpc.GrpcNetwork.MIN_PORT,
-            "max_port": c.Grpc.GrpcNetwork.MAX_PORT,
+            "default_host": c.Grpc.NETWORK_DEFAULT_HOST,
+            "default_port": c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+            "min_port": c.Grpc.NETWORK_MIN_PORT,
+            "max_port": c.Grpc.NETWORK_MAX_PORT,
             "channel_states": channel_states,
             "server_states": server_states,
         }

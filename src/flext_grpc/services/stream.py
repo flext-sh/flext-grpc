@@ -28,14 +28,14 @@ class FlextGrpcStream(s):
         )
         buffer: deque[t.JsonMapping | None] = u.Field(
             default_factory=lambda: deque[t.JsonMapping | None](
-                maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE,
+                maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE,
             ),
             description="Bounded message buffer for stream processing",
         )
 
     @staticmethod
     def _new_stream_buffer() -> deque[t.JsonMapping | None]:
-        return deque(maxlen=c.Grpc.Streaming.DEFAULT_BUFFER_SIZE)
+        return deque(maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE)
 
     class GrpcStreamManager:
         """Dedicated stream processing with buffering."""

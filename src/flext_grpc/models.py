@@ -187,25 +187,25 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Server host address",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
+            ] = c.Grpc.NETWORK_DEFAULT_HOST
             port: Annotated[
                 t.PortNumber,
                 u.Field(
                     description="Server port number",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             max_workers: Annotated[
                 t.WorkerCount,
                 u.Field(
                     description="Maximum worker threads",
                 ),
-            ] = c.Grpc.Service.DEFAULT_MAX_WORKERS
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
             timeout: Annotated[
                 t.PositiveTimeout,
                 u.Field(
                     description="Request timeout in seconds",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+            ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
         class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
@@ -215,13 +215,13 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Target server address",
                 ),
-            ] = f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}"
+            ] = f"{c.Grpc.NETWORK_DEFAULT_HOST}:{c.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
             timeout: Annotated[
                 t.PositiveTimeout,
                 u.Field(
                     description="Request timeout in seconds",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT
+            ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
         class ChannelConfig(m.Value):
             """Basic channel configuration (immutable value model)."""
@@ -286,31 +286,31 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="gRPC server host",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
+            ] = c.Grpc.NETWORK_DEFAULT_HOST
             port: Annotated[
                 t.PortNumber,
                 u.Field(
                     description="gRPC server port",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             max_connections: Annotated[
                 t.BatchSize,
                 u.Field(
                     description="Maximum concurrent connections",
                 ),
-            ] = c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
             keepalive_time: Annotated[
                 t.PositiveInt,
                 u.Field(
                     description="Keepalive ping interval (seconds)",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS // 1000
+            ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIME_MS // 1000
             keepalive_timeout: Annotated[
                 t.PositiveInt,
                 u.Field(
                     description="Keepalive timeout (seconds)",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
+            ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
 
         class PerformanceConfig(m.Value):
             """Generic gRPC performance configuration."""
@@ -322,37 +322,37 @@ class FlextGrpcModels(m):
                     le=1000,
                     description="Maximum worker threads",
                 ),
-            ] = c.Grpc.Service.MAX_WORKERS
+            ] = c.Grpc.SERVICE_MAX_WORKERS
             max_concurrent_rpcs: Annotated[
                 t.BatchSize,
                 u.Field(
                     description="Maximum concurrent RPCs",
                 ),
-            ] = c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
             max_receive_message_length: Annotated[
                 int,
                 u.Field(
-                    ge=c.Grpc.PerformanceLimits.MIN_MESSAGE_LENGTH,
-                    le=c.Grpc.PerformanceLimits.MAX_MESSAGE_LENGTH,
+                    ge=c.Grpc.PERFORMANCE_MIN_MESSAGE_LENGTH,
+                    le=c.Grpc.PERFORMANCE_MAX_MESSAGE_LENGTH,
                     description="Maximum receive message length (bytes)",
                 ),
-            ] = c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH
+            ] = c.Grpc.PERFORMANCE_DEFAULT_MESSAGE_LENGTH
             max_send_message_length: Annotated[
                 int,
                 u.Field(
-                    ge=c.Grpc.PerformanceLimits.MIN_MESSAGE_LENGTH,
-                    le=c.Grpc.PerformanceLimits.MAX_MESSAGE_LENGTH,
+                    ge=c.Grpc.PERFORMANCE_MIN_MESSAGE_LENGTH,
+                    le=c.Grpc.PERFORMANCE_MAX_MESSAGE_LENGTH,
                     description="Maximum send message length (bytes)",
                 ),
-            ] = c.Grpc.PerformanceLimits.DEFAULT_MESSAGE_LENGTH
+            ] = c.Grpc.PERFORMANCE_DEFAULT_MESSAGE_LENGTH
             thread_pool_size: Annotated[
                 int,
                 u.Field(
-                    ge=c.Grpc.PerformanceLimits.MIN_THREAD_POOL_SIZE,
-                    le=c.Grpc.PerformanceLimits.MAX_THREAD_POOL_SIZE,
+                    ge=c.Grpc.PERFORMANCE_MIN_THREAD_POOL_SIZE,
+                    le=c.Grpc.PERFORMANCE_MAX_THREAD_POOL_SIZE,
                     description="Thread pool size",
                 ),
-            ] = c.Grpc.PerformanceLimits.DEFAULT_THREAD_POOL_SIZE
+            ] = c.Grpc.PERFORMANCE_DEFAULT_THREAD_POOL_SIZE
 
         class StreamingConfig(m.Value):
             """Generic gRPC streaming configuration."""
@@ -368,15 +368,15 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Maximum concurrent streams",
                 ),
-            ] = c.Grpc.Streaming.DEFAULT_MAX_CONCURRENT_STREAMS
+            ] = c.Grpc.STREAMING_DEFAULT_MAX_CONCURRENT_STREAMS
             stream_buffer_size: Annotated[
                 int,
                 u.Field(
-                    ge=c.Grpc.Streaming.MIN_BUFFER_SIZE,
-                    le=c.Grpc.Streaming.MAX_BUFFER_SIZE,
+                    ge=c.Grpc.STREAMING_MIN_BUFFER_SIZE,
+                    le=c.Grpc.STREAMING_MAX_BUFFER_SIZE,
                     description="Stream buffer size",
                 ),
-            ] = c.Grpc.Streaming.DEFAULT_BUFFER_SIZE
+            ] = c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE
             max_stream_duration: Annotated[
                 int,
                 u.Field(
@@ -729,13 +729,13 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Server bind host address",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_HOST
+            ] = c.Grpc.NETWORK_DEFAULT_HOST
             port: Annotated[
                 t.PortNumber,
                 u.Field(
                     description="Server listen port number",
                 ),
-            ] = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
+            ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             state: Annotated[
                 c.Grpc.ServerState,
                 u.Field(
@@ -747,7 +747,7 @@ class FlextGrpcModels(m):
                 u.Field(
                     description="Maximum worker threads for request handling",
                 ),
-            ] = c.Grpc.Service.DEFAULT_MAX_WORKERS
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
             services: Annotated[
                 Sequence[p.Grpc.GrpcServicer],
                 u.Field(description="gRPC services"),

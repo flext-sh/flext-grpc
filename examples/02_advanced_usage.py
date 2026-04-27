@@ -48,7 +48,7 @@ class GrpcServerManager:
             server_id = f"pool-server-{i}"
             port = base_port + i
             settings = FlextGrpcSettings.model_validate({
-                "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
+                "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
                 "port": port,
                 "max_workers": 10 + i * 5,
             })

@@ -41,8 +41,8 @@ class FlextGrpcApiRuntime(s):
 
     def create_complete_setup(
         self,
-        host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
-        port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        host: str = c.Grpc.NETWORK_DEFAULT_HOST,
+        port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: t.StrSequence | None = None,
     ) -> p.Result[m.Grpc.CompleteSetup]:
@@ -81,9 +81,9 @@ class FlextGrpcApiRuntime(s):
 
     def create_server(
         self,
-        host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST,
-        port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        max_workers: int = c.Grpc.Service.DEFAULT_MAX_WORKERS,
+        host: str = c.Grpc.NETWORK_DEFAULT_HOST,
+        port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+        max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
     ) -> p.Result[m.Grpc.Server]:
         """Create typed server entity from validated inputs."""
         return u.Grpc.create_server_entity(

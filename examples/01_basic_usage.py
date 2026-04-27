@@ -19,8 +19,8 @@ def example_1_basic_entities() -> None:
     """Example 1: Creating and using basic gRPC entities through FlextGrpc facade."""
     grpc = FlextGrpc()
     server_result = grpc.create_server(
-        host=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
-        port=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
+        port=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         max_workers=10,
     )
     if server_result.success:
@@ -29,10 +29,10 @@ def example_1_basic_entities() -> None:
         if validation_result.failure:
             print(f"Server validation failed: {validation_result.error}")
     grpc.create_channel(
-        target=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
     )
     client_result = grpc.create_client(
-        target=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
     )
     if client_result.failure:
         print(f"Client creation failed: {client_result.error}")
@@ -67,7 +67,7 @@ def example_3_operations() -> None:
     """Example 3: Using gRPC operations through FlextGrpc facade."""
     grpc = FlextGrpc()
     server_result = grpc.create_server(
-        host=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
+        host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
         port=7070,
     )
     if server_result.success:
@@ -82,11 +82,11 @@ def example_3_operations() -> None:
             if stop_result.success:
                 print("Server stopped successfully")
     client_result = grpc.create_client(
-        target=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:7070",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070",
     )
     if client_result.success:
         connect_result = grpc.connect_client(
-            f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:7070",
+            f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070",
         )
         if connect_result.success:
             connected_client = connect_result.value
@@ -106,8 +106,8 @@ def example_4_validation() -> None:
     """Example 4: Domain validation through FlextGrpc facade."""
     grpc = FlextGrpc()
     valid_server_result = grpc.create_server(
-        host=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
-        port=FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
+        port=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         max_workers=5,
     )
     if valid_server_result.success:
@@ -121,7 +121,7 @@ def example_4_validation() -> None:
             f"Invalid server creation failed as expected: {invalid_server_result.error}",
         )
     valid_channel_result = grpc.create_channel(
-        target=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
     )
     if valid_channel_result.success:
         valid_channel = valid_channel_result.value
@@ -139,7 +139,7 @@ def example_5_state_transitions() -> None:
     """Example 5: State transitions through FlextGrpc facade."""
     grpc = FlextGrpc()
     channel_result = grpc.create_channel(
-        target=f"{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
     )
     if channel_result.success:
         channel = channel_result.value

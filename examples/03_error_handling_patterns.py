@@ -22,7 +22,7 @@ from flext_grpc import (
     FlextGrpcConstants,
     FlextGrpcError,
     FlextGrpcTimeoutError,
-    FlextGrpcValidationError,
+    ValidationError,
     p,
     t,
     u,
@@ -32,15 +32,15 @@ logger = u.fetch_logger(__name__)
 
 
 def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
-    """Validate user input with FlextGrpcValidationError."""
+    """Validate user input with ValidationError."""
 
     def _raise_username_error() -> NoReturn:
         msg = "Username cannot be empty"
-        raise FlextGrpcValidationError(msg, field="username")
+        raise ValidationError(msg, field="username")
 
     def _raise_email_error() -> NoReturn:
         msg = "Invalid email format"
-        raise FlextGrpcValidationError(msg, field="email")
+        raise ValidationError(msg, field="email")
 
     try:
         if not username:
@@ -48,7 +48,7 @@ def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
         if not email or "@" not in email:
             _raise_email_error()
         return r[t.Grpc.Headers].ok({"username": username, "email": email})
-    except FlextGrpcValidationError as e:
+    except ValidationError as e:
         logger.exception("Validation failed", field=e.field or "", error=str(e))
         return r[t.Grpc.Headers].fail(f"Validation error: {e}")
 
@@ -72,7 +72,7 @@ def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]
             _raise_workers_error()
         try:
             settings: t.Grpc.ConfigDict = {
-                "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
+                "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
                 "port": port,
                 "max_workers": workers,
             }
@@ -134,7 +134,7 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
         return r[str].fail(f"Pipeline failed at validation: {validation_result.error}")
     logger.info("✅ User input validation passed")
     config_result = create_server_config(
-        FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+        FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         4,
     )
     if config_result.failure:
@@ -171,7 +171,7 @@ def error_recovery_patterns() -> p.Result[str]:
     if primary_config_result.failure:
         logger.warning("Primary settings failed, trying fallback")
         fallback_config_result = create_server_config(
-            FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
+            FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
             2,
         )
         if fallback_config_result.success:
@@ -183,7 +183,7 @@ def error_recovery_patterns() -> p.Result[str]:
 def demonstrate_error_context() -> None:
     """Demonstrate how error context helps with debugging."""
     logger.info("Demonstrating error context for debugging")
-    validation_error = FlextGrpcValidationError(
+    validation_error = ValidationError(
         "Email format is invalid - missing @ symbol",
         field="user_email",
     )

@@ -16,7 +16,7 @@ class FlextGrpcError(e.BaseError):
     """Base error for all gRPC-related errors."""
 
 
-class FlextGrpcValidationError(e.BaseError):
+class ValidationError(e.BaseError):
     """Validation error for gRPC request/response validation."""
 
     def __init__(self, message: str, *, field: str | None = None) -> None:
@@ -47,5 +47,5 @@ __all__: list[str] = [
     "FlextGrpcConnectionError",
     "FlextGrpcError",
     "FlextGrpcTimeoutError",
-    "FlextGrpcValidationError",
+    "ValidationError",
 ]

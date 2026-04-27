@@ -23,7 +23,7 @@ if _t.TYPE_CHECKING:
         FlextGrpcConnectionError,
         FlextGrpcError,
         FlextGrpcTimeoutError,
-        FlextGrpcValidationError,
+        ValidationError,
     )
     from flext_grpc.models import FlextGrpcModels, m
     from flext_grpc.protocols import FlextGrpcProtocols, p
@@ -71,7 +71,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextGrpcConnectionError",
                 "FlextGrpcError",
                 "FlextGrpcTimeoutError",
-                "FlextGrpcValidationError",
+                "ValidationError",
             ),
             ".models": (
                 "FlextGrpcModels",
@@ -150,7 +150,7 @@ __all__: list[str] = [
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
     "FlextGrpcUtilitiesGrpc",
-    "FlextGrpcValidationError",
+    "ValidationError",
     "__author__",
     "__author_email__",
     "__description__",
