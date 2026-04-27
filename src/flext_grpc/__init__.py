@@ -13,9 +13,10 @@ from flext_core.lazy import (
 from flext_grpc.__version__ import *
 
 if _t.TYPE_CHECKING:
-    from flext_core import d, e, h, r, s, x
+    from flext_core import d, e, h, r, x
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
     from flext_grpc.api import FlextGrpc, grpc
+    from flext_grpc.base import FlextGrpcServiceBase, s
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import (
         FlextGrpcConfigurationError,
@@ -57,6 +58,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "FlextGrpc",
                 "grpc",
             ),
+            ".base": (
+                "FlextGrpcServiceBase",
+                "s",
+            ),
             ".constants": (
                 "FlextGrpcConstants",
                 "c",
@@ -96,7 +101,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "e",
                 "h",
                 "r",
-                "s",
                 "x",
             ),
         },
@@ -139,6 +143,7 @@ __all__: list[str] = [
     "FlextGrpcModels",
     "FlextGrpcProtocols",
     "FlextGrpcServer",
+    "FlextGrpcServiceBase",
     "FlextGrpcSettings",
     "FlextGrpcStream",
     "FlextGrpcTimeoutError",
