@@ -209,7 +209,7 @@ def test_with_debug():
 
 ```python
 # Error
-ValidationError: field required
+GrpcValidationError: field required
 ```
 
 #### Solutions
@@ -246,7 +246,7 @@ from flext_core import u
 try:
     settings = FlextSettings()
     print("Configuration valid")
-except c.ValidationError as e:
+except c.GrpcValidationError as e:
     print(f"Configuration error: {e}")
 ```
 
@@ -514,7 +514,7 @@ def safe_operation(data: dict) -> p.Result[dict]:
         # Your operation here
         result = process_data(data)
         return r.ok(result)
-    except c.ValidationError as e:
+    except c.GrpcValidationError as e:
         logger.error(f"Validation error: {e}")
         return r.fail(f"Validation failed: {e}")
     except Exception as e:

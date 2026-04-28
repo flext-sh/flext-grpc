@@ -147,7 +147,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Components**:
 
 - `FlextGrpcError` - Base exception for all gRPC errors
-- `FlextGrpcValidationError` - u.Field validation with context
+- `FlextGrpcGrpcValidationError` - u.Field validation with context
 - `FlextGrpcConnectionError` - Network communication errors
 - `FlextGrpcTimeoutError` - Operation timeout and deadline violations
 - `FlextGrpcConfigurationError` - Configuration validation with details

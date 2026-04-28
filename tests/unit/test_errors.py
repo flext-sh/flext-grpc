@@ -44,7 +44,7 @@ from flext_grpc import (
     FlextGrpcConnectionError,
     FlextGrpcError,
     FlextGrpcTimeoutError,
-    ValidationError,
+    GrpcValidationError,
 )
 from tests import e
 
@@ -70,27 +70,27 @@ class TestsFlextGrpcErrors:
         """Test validation error stores field_name attribute."""
         message = "Invalid field value"
         field_name = "username"
-        error = ValidationError(message, field=field_name)
+        error = GrpcValidationError(message, field=field_name)
         tm.that(str(error), has=message)
         tm.that(error.field, eq=field_name)
 
     def test_validation_error_without_field_name(self) -> None:
         """Test validation error with None field_name."""
         message = "General validation error"
-        error = ValidationError(message, field=None)
+        error = GrpcValidationError(message, field=None)
         tm.that(str(error), has=message)
         tm.that(error.field, none=True)
 
     def test_validation_error_default_field_name(self) -> None:
         """Test validation error with default field_name parameter."""
         message = "Default validation error"
-        error = ValidationError(message)
+        error = GrpcValidationError(message)
         tm.that(str(error), has=message)
         tm.that(error.field, none=True)
 
     def test_validation_error_inheritance(self) -> None:
-        """Test ValidationError inherits correctly."""
-        error = ValidationError("test")
+        """Test GrpcValidationError inherits correctly."""
+        error = GrpcValidationError("test")
         tm.that(error, is_=e.BaseError)
 
     """Test gRPC connection error class."""
@@ -155,7 +155,7 @@ class TestsFlextGrpcErrors:
         """Test all error classes can be raised as exceptions."""
         errors = [
             FlextGrpcError("base error"),
-            ValidationError("validation error", field="field"),
+            GrpcValidationError("validation error", field="field"),
             FlextGrpcConnectionError("connection error"),
             FlextGrpcTimeoutError("timeout error"),
             FlextGrpcConfigurationError("settings error", config_key="key"),
@@ -168,13 +168,13 @@ class TestsFlextGrpcErrors:
         """Test error hierarchy follows flext-core patterns."""
         errors = [
             FlextGrpcError("test"),
-            ValidationError("test"),
+            GrpcValidationError("test"),
             FlextGrpcConnectionError("test"),
             FlextGrpcTimeoutError("test"),
             FlextGrpcConfigurationError("test"),
         ]
         tm.that(FlextGrpcError("test"), is_=e.BaseError)
-        tm.that(ValidationError("test"), is_=e.BaseError)
+        tm.that(GrpcValidationError("test"), is_=e.BaseError)
         tm.that(FlextGrpcConnectionError("test"), is_=e.BaseError)
         tm.that(FlextGrpcTimeoutError("test"), is_=e.BaseError)
         tm.that(FlextGrpcConfigurationError("test"), is_=e.BaseError)
@@ -183,7 +183,7 @@ class TestsFlextGrpcErrors:
 
     def test_error_with_complex_scenarios(self) -> None:
         """Test errors in complex real-world scenarios."""
-        unicode_error = ValidationError(
+        unicode_error = GrpcValidationError(
             "Invalid value for field 'データ'",
             field="データ",
         )

@@ -413,7 +413,7 @@ def process_data(data: t.JsonMapping) -> p.Result[ProcessedData]:
         r containing processed data or error
 
     Raises:
-        ValidationError: If data validation fails
+        GrpcValidationError: If data validation fails
 
     Example:
         >>> result = process_data({"key": "value"})

@@ -251,9 +251,9 @@ from flext_core import u
 
 try:
     settings = FlextSettings(
-        log_level="INVALID_LEVEL"  # This will raise ValidationError
+        log_level="INVALID_LEVEL"  # This will raise GrpcValidationError
     )
-except c.ValidationError as e:
+except c.GrpcValidationError as e:
     print(f"Configuration error: {e}")
 ```
 

@@ -188,7 +188,7 @@ class TestsFlextGrpcApi:
         tm.that(channel_spec.entity_type, eq="channel")
         tm.that(service_spec.entity_type, eq="service")
         tm.that(stream_spec.entity_type, eq="stream")
-        with pytest.raises(m.ValidationError):
+        with pytest.raises(m.GrpcValidationError):
             m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",

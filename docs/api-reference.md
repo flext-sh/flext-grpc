@@ -41,7 +41,7 @@ server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#executeoperation-str-se
     - [FlextGrpcConfigurationError](#flextgrpcconfigurationerror)
     - [FlextGrpcConnectionError](#flextgrpcconnectionerror)
     - [FlextGrpcTimeoutError](#flextgrpctimeouterror)
-    - [FlextGrpcValidationError](#flextgrpcvalidationerror)
+    - [FlextGrpcGrpcValidationError](#flextgrpcvalidationerror)
   - [Streaming API](#streaming-api) - [FlextGrpcStream](#flextgrpcstream) - [`send_data(data: dict) -> p.Result[bool]`](#send_datadata-dict---flextresultnone) - [`receive_data() -> p.Result[m.Dict]`](#receive_data---flextresultflexttypesdict) - [`close() -> p.Result[bool]`](#close---flextresultnone) - [FlextGrpcStreamService](#flextgrpcstreamservice) - [`create_server_stream(method: str,
 settings: dict) -> p.Result[FlextGrpcStream]`](#create_server_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_client_stream(method: str,
 settings: dict) -> p.Result[FlextGrpcStream]`](#create_client_streammethod-str-settings-dict---flextresultflextgrpcstream) - [`create_bidirectional_stream(method: str,
@@ -302,7 +302,7 @@ Connection-related errors.
 
 Timeout-related errors.
 
-#### FlextGrpcValidationError
+#### FlextGrpcGrpcValidationError
 
 Validation-related errors.
 

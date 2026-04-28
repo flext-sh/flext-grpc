@@ -22,7 +22,7 @@ from flext_grpc import (
     FlextGrpcConstants,
     FlextGrpcError,
     FlextGrpcTimeoutError,
-    ValidationError,
+    GrpcValidationError,
     p,
     t,
     u,
@@ -32,15 +32,15 @@ logger = u.fetch_logger(__name__)
 
 
 def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
-    """Validate user input with ValidationError."""
+    """Validate user input with GrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
         msg = "Username cannot be empty"
-        raise ValidationError(msg, field="username")
+        raise GrpcValidationError(msg, field="username")
 
     def _raise_email_error() -> NoReturn:
         msg = "Invalid email format"
-        raise ValidationError(msg, field="email")
+        raise GrpcValidationError(msg, field="email")
 
     try:
         if not username:
@@ -48,7 +48,7 @@ def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
         if not email or "@" not in email:
             _raise_email_error()
         return r[t.Grpc.Headers].ok({"username": username, "email": email})
-    except ValidationError as e:
+    except GrpcValidationError as e:
         logger.exception("Validation failed", field=e.field or "", error=str(e))
         return r[t.Grpc.Headers].fail(f"Validation error: {e}")
 
@@ -183,7 +183,7 @@ def error_recovery_patterns() -> p.Result[str]:
 def demonstrate_error_context() -> None:
     """Demonstrate how error context helps with debugging."""
     logger.info("Demonstrating error context for debugging")
-    validation_error = ValidationError(
+    validation_error = GrpcValidationError(
         "Email format is invalid - missing @ symbol",
         field="user_email",
     )

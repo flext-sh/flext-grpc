@@ -680,7 +680,7 @@ class AuditError(DocumentationMaintenanceError):
     pass
 
 
-class ValidationError(DocumentationMaintenanceError):
+class GrpcValidationError(DocumentationMaintenanceError):
     """Raised when validation operations fail."""
 
     pass
