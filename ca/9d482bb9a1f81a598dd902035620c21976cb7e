@@ -1,0 +1,36 @@
+src/flext_grpc/README.md
+  h_9db9d35f50cf33 150
+src/flext_grpc/__init__.py
+  h_9db9d35f50cf33 26,74,153
+src/flext_grpc/services/stream.py
+  h_9db9d35f50cf33 109
+docs/guides/development.md
+  h_9db9d35f50cf33 416
+examples/03_error_handling_patterns.py
+  h_9db9d35f50cf33 25,35,39,43,51,186
+docs/api-reference.md
+  h_9db9d35f50cf33 44,305
+docs/maintenance/api-reference.md
+  h_9db9d35f50cf33 683
+src/flext_grpc/errors.py
+  h_9db9d35f50cf33 19,50
+tests/unit/test_errors.py
+  h_9db9d35f50cf33 47,73,80,87,92-93,158,171,177,186
+docs/guides/troubleshooting.md
+  h_9db9d35f50cf33 212,249,517
+docs/guides/configuration.md
+  h_9db9d35f50cf33 254,256
+tests/unit/test_api.py
+  h_9db9d35f50cf33 191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "ca9d482bb9a1f81a598dd902035620c21976cb7e",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
