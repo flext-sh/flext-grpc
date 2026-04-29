@@ -33,6 +33,7 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
         """Return runtime gRPC configuration bound to this facade instance."""
         return self._grpc_config
 
+    @override
     def execute(self) -> p.Result[FlextGrpcSettings]:
         """Default service execution surface."""
         return r[FlextGrpcSettings].ok(self.grpc_config)
