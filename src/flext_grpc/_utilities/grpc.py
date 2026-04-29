@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import logging
 import re
 from collections.abc import (
     Callable,
@@ -19,7 +18,7 @@ from flext_grpc import c, m, p, r, t
 if TYPE_CHECKING:
     from flext_grpc import FlextGrpcModels
 
-logger = logging.getLogger(__name__)
+logger = u.create_module_logger(__name__)
 
 
 class FlextGrpcUtilitiesGrpc:

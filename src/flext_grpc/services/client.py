@@ -106,46 +106,52 @@ class FlextGrpcClient(s):
                 target = client.channel.target or ""
             if not target or target not in self._active_channels:
                 return e.fail_connection(
-                    target or "<unset>", error="client not connected"
+                    target or "<unset>",
+                    options=m.ExceptionFactoryOptions(error="client not connected"),
                 )
             grpc_channel = self._active_channels[target]
             stub = FlextGrpcServiceStub(grpc_channel)
+            result: p.Result[m.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_result = u.Grpc.call_runtime(
                     lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request))),
                 )
                 if echo_result.failure:
-                    return r[m.Grpc.Payload].fail(
+                    result = r[m.Grpc.Payload].fail(
                         f"gRPC call failed: {u.Grpc.runtime_failure_message(echo_result)}",
                     )
-                echo_response = echo_result.value
-                return r[m.Grpc.Payload].ok(
-                    m.Grpc.Payload.from_values(
-                        method="Echo",
-                        message=echo_response.message,
-                        server_id=echo_response.server_id,
-                        timestamp=echo_response.timestamp,
-                    ),
-                )
-            if method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
+                else:
+                    echo_response = echo_result.value
+                    result = r[m.Grpc.Payload].ok(
+                        m.Grpc.Payload.from_values(
+                            method="Echo",
+                            message=echo_response.message,
+                            server_id=echo_response.server_id,
+                            timestamp=echo_response.timestamp,
+                        ),
+                    )
+            elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_result = u.Grpc.call_runtime(
                     lambda: stub.HealthCheck(
                         m.Grpc.HealthRequest(service="FlextGrpcService"),
                     ),
                 )
                 if health_result.failure:
-                    return r[m.Grpc.Payload].fail(
+                    result = r[m.Grpc.Payload].fail(
                         f"gRPC call failed: {u.Grpc.runtime_failure_message(health_result)}",
                     )
-                health_response = health_result.value
-                return r[m.Grpc.Payload].ok(
-                    m.Grpc.Payload.from_values(
-                        method="HealthCheck",
-                        status=health_response.status,
-                        message=health_response.message,
-                    ),
-                )
-            return r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
+                else:
+                    health_response = health_result.value
+                    result = r[m.Grpc.Payload].ok(
+                        m.Grpc.Payload.from_values(
+                            method="HealthCheck",
+                            status=health_response.status,
+                            message=health_response.message,
+                        ),
+                    )
+            else:
+                result = r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
+            return result
 
     def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
         """Establish a client connection through the dedicated manager."""
