@@ -10,7 +10,6 @@ from __future__ import annotations
 
 from collections.abc import (
     Callable,
-    Mapping,
 )
 
 import pytest
@@ -62,7 +61,7 @@ def sample_grpc_config() -> t.ConfigValueMapping:
 
 
 @pytest.fixture
-def test_addresses() -> Mapping[str, t.StrSequence]:
+def test_addresses() -> t.MappingKV[str, t.StrSequence]:
     """Test addresses for validation."""
     return {
         "valid": [

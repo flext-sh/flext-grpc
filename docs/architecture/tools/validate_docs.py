@@ -10,9 +10,6 @@ import argparse
 import json
 import re
 import sys
-from collections.abc import (
-    Sequence,
-)
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -36,9 +33,9 @@ class ValidationResults(m.Value):
     """Complete validation results."""
 
     summary: ValidationSummary
-    issues: Sequence[_IssueRow]
-    warnings: Sequence[_IssueRow]
-    recommendations: Sequence[_IssueRow]
+    issues: t.SequenceOf[_IssueRow]
+    warnings: t.SequenceOf[_IssueRow]
+    recommendations: t.SequenceOf[_IssueRow]
 
 
 class ArchitectureValidator:

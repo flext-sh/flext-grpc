@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import Literal
 
 from flext_cli import t
@@ -21,7 +20,7 @@ class FlextGrpcTypes(t):
 
         type EntityKind = Literal["server", "client", "channel", "service", "stream"]
         type Headers = t.StrMapping
-        type ConfigDict = Mapping[str, t.Scalar | t.JsonValue | None]
+        type ConfigDict = t.MappingKV[str, t.Scalar | t.JsonValue | None]
 
 
 t = FlextGrpcTypes

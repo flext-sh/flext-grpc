@@ -101,7 +101,8 @@ class FlextGrpcProtocols(p):
                 self,
                 host: str,
                 port: int,
-                services: Sequence[FlextGrpcProtocols.Grpc.GrpcServicer] | None = None,
+                services: t.SequenceOf[FlextGrpcProtocols.Grpc.GrpcServicer]
+                | None = None,
             ) -> p.Result[FlextGrpcProtocols.Grpc.GrpcServer]:
                 """Start gRPC server."""
                 ...
@@ -197,7 +198,7 @@ class FlextGrpcProtocols(p):
             def handle_client_streaming(
                 self,
                 stream: FlextGrpcProtocols.Grpc.GrpcStream,
-                data_list: Sequence[FlextGrpcProtocols.Grpc.GrpcMessage],
+                data_list: t.SequenceOf[FlextGrpcProtocols.Grpc.GrpcMessage],
             ) -> p.Result[FlextGrpcProtocols.Grpc.GrpcMessage]:
                 """Handle client-side streaming."""
                 ...
@@ -229,7 +230,7 @@ class FlextGrpcProtocols(p):
             def create_service(
                 self,
                 service_name: str,
-                methods: Mapping[str, FlextGrpcProtocols.Grpc.GrpcMethodHandler],
+                methods: t.MappingKV[str, FlextGrpcProtocols.Grpc.GrpcMethodHandler],
             ) -> p.Result[FlextGrpcProtocols.Grpc.GrpcServicer]:
                 """Create gRPC service definition."""
                 ...
@@ -270,7 +271,7 @@ class FlextGrpcProtocols(p):
             def create_channel(
                 self,
                 target: str,
-                options: Mapping[str, t.JsonValue | None] | None = None,
+                options: t.MappingKV[str, t.JsonValue | None] | None = None,
             ) -> p.Result[FlextGrpcProtocols.Grpc.GrpcChannel]:
                 """Create gRPC channel."""
                 ...
@@ -342,7 +343,7 @@ class FlextGrpcProtocols(p):
             def create_client_config(
                 self,
                 target: str,
-                options: Mapping[str, t.JsonValue | None] | None = None,
+                options: t.MappingKV[str, t.JsonValue | None] | None = None,
             ) -> p.Result[t.ScalarMapping]:
                 """Create gRPC client configuration."""
                 ...
@@ -351,7 +352,7 @@ class FlextGrpcProtocols(p):
                 self,
                 host: str,
                 port: int,
-                options: Mapping[str, t.JsonValue | None] | None = None,
+                options: t.MappingKV[str, t.JsonValue | None] | None = None,
             ) -> p.Result[t.ScalarMapping]:
                 """Create gRPC server configuration."""
                 ...

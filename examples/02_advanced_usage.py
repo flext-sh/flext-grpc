@@ -13,10 +13,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Sequence,
-)
-
 from flext_core import p, r
 from flext_grpc import (
     FlextGrpc,
@@ -139,7 +135,7 @@ class AdvancedGrpcOperations:
 
     def demonstrate_streaming(self) -> None:
         """Demonstrate streaming operations through facade."""
-        stream_configs: Sequence[tuple[str, str]] = [
+        stream_configs: t.SequenceOf[tuple[str, str]] = [
             ("UnaryMethod", "unary"),
             ("ServerStreamingMethod", "server_streaming"),
             ("ClientStreamingMethod", "client_streaming"),
@@ -216,7 +212,7 @@ def example_3_service_creation() -> None:
 def example_4_streaming() -> None:
     """Example 4: Streaming operations through facade."""
     grpc = FlextGrpc()
-    stream_configs: Sequence[tuple[str, str]] = [
+    stream_configs: t.SequenceOf[tuple[str, str]] = [
         ("GetUser", "unary"),
         ("StreamMessages", "server_streaming"),
         ("UploadData", "client_streaming"),

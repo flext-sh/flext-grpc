@@ -10,10 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Mapping,
-    Sequence,
-)
 from datetime import datetime
 from types import MappingProxyType
 from typing import Annotated, Self, override
@@ -487,9 +483,9 @@ class FlextGrpcModels(m):
             @classmethod
             def validate_list_not_empty[T](
                 cls,
-                value: Sequence[T],
+                value: t.SequenceOf[T],
                 field_name: str,
-            ) -> Sequence[T]:
+            ) -> t.SequenceOf[T]:
                 """Generic list validation with type preservation."""
                 if not value:
                     msg = f"{field_name} cannot be empty"
@@ -520,7 +516,7 @@ class FlextGrpcModels(m):
                 self,
                 current: str,
                 target: str,
-                allowed_transitions: Mapping[str, set[str]],
+                allowed_transitions: t.MappingKV[str, set[str]],
             ) -> p.Result[FlextGrpcModels.Grpc.StateTransition]:
                 """Generic state transition with validation.
 
@@ -559,7 +555,7 @@ class FlextGrpcModels(m):
                 ),
             ] = None
             parameters: Annotated[
-                Mapping[str, t.JsonMapping | None],
+                t.MappingKV[str, t.JsonMapping | None],
                 u.Field(
                     description="Operation parameters",
                 ),
@@ -607,7 +603,7 @@ class FlextGrpcModels(m):
                 ),
             ] = None
             metadata: Annotated[
-                Mapping[str, t.JsonMapping | None],
+                t.MappingKV[str, t.JsonMapping | None],
                 u.Field(
                     description="Response metadata",
                 ),
@@ -749,7 +745,7 @@ class FlextGrpcModels(m):
                 ),
             ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
             services: Annotated[
-                Sequence[p.Grpc.GrpcServicer],
+                t.SequenceOf[p.Grpc.GrpcServicer],
                 u.Field(description="gRPC services"),
             ] = u.Field(default_factory=tuple)
             grpc_server: Annotated[
