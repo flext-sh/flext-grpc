@@ -365,8 +365,8 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def system_info() -> dict[str, t.JsonValue]:
         """Return gRPC utility system info."""
-        channel_states: list[t.JsonValue] = [s for s in c.Grpc.CHANNEL_STATES]  # noqa: C416
-        server_states: list[t.JsonValue] = [s for s in c.Grpc.SERVER_STATES]  # noqa: C416
+        channel_states: list[t.JsonValue] = list(c.Grpc.CHANNEL_STATES)
+        server_states: list[t.JsonValue] = list(c.Grpc.SERVER_STATES)
         info: dict[str, t.JsonValue] = {
             "default_host": c.Grpc.NETWORK_DEFAULT_HOST,
             "default_port": c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
