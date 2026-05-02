@@ -6,8 +6,9 @@ from datetime import UTC, datetime
 
 import pytest
 from flext_tests import tm
+from pydantic import ValidationError
 
-from flext_grpc import FlextGrpc, FlextGrpcSettings, GrpcValidationError
+from flext_grpc import FlextGrpc, FlextGrpcSettings
 from tests import m, t
 
 
@@ -188,7 +189,7 @@ class TestsFlextGrpcApi:
         tm.that(channel_spec.entity_type, eq="channel")
         tm.that(service_spec.entity_type, eq="service")
         tm.that(stream_spec.entity_type, eq="stream")
-        with pytest.raises(GrpcValidationError):
+        with pytest.raises(ValidationError):
             m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",
