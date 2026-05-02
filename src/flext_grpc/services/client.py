@@ -47,8 +47,9 @@ class FlextGrpcClient(s):
                 return u.Grpc.create_client_entity(target=target)
             channel_result = u.Grpc.open_insecure_channel(target)
             if channel_result.failure:
-                return r[m.Grpc.Client].fail(
-                    f"Connection failed: {u.Grpc.runtime_failure_message(channel_result)}",
+                return r[m.Grpc.Client].fail_op(
+                    "Connection",
+                    u.Grpc.runtime_failure_message(channel_result),
                 )
             grpc_channel = channel_result.value
             self._active_channels[target] = grpc_channel
@@ -71,8 +72,9 @@ class FlextGrpcClient(s):
                 grpc_channel = self._active_channels[target]
                 closing_result = u.Grpc.run_runtime(grpc_channel.close)
                 if closing_result.failure:
-                    return r[m.Grpc.Client].fail(
-                        f"Disconnect failed: {u.Grpc.runtime_failure_message(closing_result)}",
+                    return r[m.Grpc.Client].fail_op(
+                        "Disconnect",
+                        u.Grpc.runtime_failure_message(closing_result),
                     )
                 del self._active_channels[target]
             return r[m.Grpc.Client].ok(client)
@@ -117,8 +119,9 @@ class FlextGrpcClient(s):
                     lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request))),
                 )
                 if echo_result.failure:
-                    result = r[m.Grpc.Payload].fail(
-                        f"gRPC call failed: {u.Grpc.runtime_failure_message(echo_result)}",
+                    result = r[m.Grpc.Payload].fail_op(
+                        "gRPC call",
+                        u.Grpc.runtime_failure_message(echo_result),
                     )
                 else:
                     echo_response = echo_result.value
@@ -137,8 +140,9 @@ class FlextGrpcClient(s):
                     ),
                 )
                 if health_result.failure:
-                    result = r[m.Grpc.Payload].fail(
-                        f"gRPC call failed: {u.Grpc.runtime_failure_message(health_result)}",
+                    result = r[m.Grpc.Payload].fail_op(
+                        "gRPC call",
+                        u.Grpc.runtime_failure_message(health_result),
                     )
                 else:
                     health_response = health_result.value
