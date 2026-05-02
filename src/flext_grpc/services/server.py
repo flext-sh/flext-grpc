@@ -103,14 +103,14 @@ class FlextGrpcServer(s):
                     )
                 start_result = u.Grpc.run_runtime(grpc_server.start)
                 if start_result.failure:
-                    return r[m.Grpc.Server].fail(
-                        f"Server start failed: {u.Grpc.runtime_failure_message(start_result)}",
+                    return r[m.Grpc.Server].fail_op(
+                        "Server start", u.Grpc.runtime_failure_message(start_result),
                     )
                 self._active_servers[server_key] = grpc_server
                 self._metrics.record_metric(f"{server_key}_started_at", time.time())
                 return starting_server.mark_running()
             except (ConnectionError, TimeoutError) as e:
-                return r[m.Grpc.Server].fail(f"Server start failed: {e}")
+                return r[m.Grpc.Server].fail_op("Server start", e)
 
         def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
             """Stop gRPC server gracefully."""
@@ -129,14 +129,14 @@ class FlextGrpcServer(s):
                     ),
                 )
                 if stop_result.failure:
-                    return r[m.Grpc.Server].fail(
-                        f"Server stop failed: {u.Grpc.runtime_failure_message(stop_result)}",
+                    return r[m.Grpc.Server].fail_op(
+                        "Server stop", u.Grpc.runtime_failure_message(stop_result),
                     )
                 del self._active_servers[server_key]
                 self._metrics.record_metric(f"{server_key}_stopped_at", time.time())
                 return stopping_server.mark_stopped()
             except (ConnectionError, TimeoutError) as e:
-                return r[m.Grpc.Server].fail(f"Server stop failed: {e}")
+                return r[m.Grpc.Server].fail_op("Server stop", e)
 
     def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
         """Start a server through the dedicated lifecycle manager."""
