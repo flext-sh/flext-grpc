@@ -105,34 +105,6 @@ class FlextGrpcModels(m):
                 description="Keyword arguments",
             )
 
-        class ServerConfig(m.Value):
-            """Basic server configuration (immutable value model)."""
-
-            host: Annotated[
-                str,
-                u.Field(
-                    description="Server host address",
-                ),
-            ] = c.Grpc.NETWORK_DEFAULT_HOST
-            port: Annotated[
-                t.PortNumber,
-                u.Field(
-                    description="Server port number",
-                ),
-            ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
-            max_workers: Annotated[
-                t.WorkerCount,
-                u.Field(
-                    description="Maximum worker threads",
-                ),
-            ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
-            timeout: Annotated[
-                t.PositiveTimeout,
-                u.Field(
-                    description="Request timeout in seconds",
-                ),
-            ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
-
         class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
 

@@ -10,18 +10,6 @@ from tests import m
 class TestsFlextGrpcModelsUnit:
     """Test cases for FlextGrpcModels class."""
 
-    def test_server_config(self) -> None:
-        """Test server settings model."""
-        settings = m.Grpc.ServerConfig(
-            host="127.0.0.1",
-            port=50051,
-            max_workers=10,
-            timeout=30.0,
-        )
-        tm.that(settings.host, eq="127.0.0.1")
-        tm.that(settings.port, eq=50051)
-        tm.that(settings.max_workers, eq=10)
-
     def test_client_config(self) -> None:
         """Test client settings model."""
         settings = m.Grpc.ClientConfig(
