@@ -89,76 +89,6 @@ class FlextGrpcModels(m):
             status: Annotated[str, u.Field(description="Health status")]
             timestamp: Annotated[datetime, u.Field(description="Check timestamp")]
 
-        class ServiceDefinition(m.Value):
-            """gRPC service definition model (immutable value model)."""
-
-            service_name: Annotated[str, u.Field(description="Service name")]
-            methods: t.StrSequence = u.Field(
-                default_factory=tuple, description="Service methods"
-            )
-            endpoint: Annotated[str | None, u.Field(description="Service endpoint")] = (
-                None
-            )
-            metadata: Annotated[
-                t.JsonMapping | None,
-                u.Field(
-                    description="Service metadata",
-                ),
-            ] = None
-
-        class StreamMetrics(m.Value):
-            """gRPC stream metrics model (immutable value model)."""
-
-            stream_id: Annotated[str, u.Field(description="Stream ID")]
-            throughput_rps: Annotated[
-                t.NonNegativeFloat,
-                u.Field(
-                    description="Throughput in requests per second",
-                ),
-            ]
-            latency_p50: Annotated[
-                t.NonNegativeFloat,
-                u.Field(description="50th percentile latency"),
-            ]
-            latency_p95: Annotated[
-                t.NonNegativeFloat,
-                u.Field(description="95th percentile latency"),
-            ]
-            latency_p99: Annotated[
-                t.NonNegativeFloat,
-                u.Field(description="99th percentile latency"),
-            ]
-            error_rate: Annotated[t.NonNegativeFloat, u.Field(description="Error rate")]
-            memory_usage_bytes: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Memory usage in bytes"),
-            ]
-
-        class ServiceMetrics(m.Value):
-            """gRPC service metrics model (immutable value model)."""
-
-            service_name: Annotated[str, u.Field(description="Service name")]
-            total_requests: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Total requests"),
-            ]
-            successful_requests: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Successful requests"),
-            ]
-            failed_requests: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Failed requests"),
-            ]
-            avg_response_time: Annotated[
-                t.NonNegativeFloat,
-                u.Field(description="Average response time"),
-            ]
-            active_connections: Annotated[
-                t.NonNegativeInt,
-                u.Field(description="Active connections"),
-            ]
-
         class OperationExecutionRequest(m.Value):
             """Operation execution request for gRPC service operations."""
 
@@ -387,42 +317,6 @@ class FlextGrpcModels(m):
                     description="Enable message compression",
                 ),
             ] = True
-
-        class ClientSettingsConfig(m.Value):
-            """Generic gRPC client configuration."""
-
-            timeout: Annotated[
-                t.PositiveTimeout,
-                u.Field(
-                    description="RPC timeout (seconds)",
-                ),
-            ] = 30.0
-            retry_attempts: Annotated[
-                t.RetryCount,
-                u.Field(
-                    description="Maximum retry attempts",
-                ),
-            ] = 3
-            retry_backoff: Annotated[
-                float,
-                u.Field(
-                    gt=0,
-                    le=60,
-                    description="Retry backoff multiplier",
-                ),
-            ] = 1.0
-            load_balancing_policy: Annotated[
-                str,
-                u.Field(
-                    description="Load balancing policy",
-                ),
-            ] = "round_robin"
-            channel_options: Annotated[
-                t.HeaderMapping,
-                u.Field(
-                    description="Additional channel options",
-                ),
-            ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
         class MonitoringConfig(m.Value):
             """Generic gRPC monitoring and observability configuration."""
