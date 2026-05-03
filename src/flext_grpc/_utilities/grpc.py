@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from collections.abc import (
     Callable,
 )
@@ -322,7 +321,10 @@ class FlextGrpcUtilitiesGrpc:
             host, port_str = target.split(":", 1)
             if not host or not port_str:
                 return False
-            if not re.match(r"^[a-zA-Z0-9.-]+$", host):
+            if not all(
+                ch.isalnum() or ch in c.Grpc.NETWORK_HOST_ALLOWED_PUNCTUATION
+                for ch in host
+            ):
                 return False
             port = int(port_str)
             max_port = 65535

@@ -54,6 +54,7 @@ class FlextGrpcConstants(FlextConstants):
         )
         NETWORK_MAX_PORT: Final[int] = 65535
         NETWORK_MIN_PORT: Final[int] = 1
+        NETWORK_HOST_ALLOWED_PUNCTUATION: Final[frozenset[str]] = frozenset({"-", "."})
 
         # ===== Performance limits =====
         PERFORMANCE_DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
