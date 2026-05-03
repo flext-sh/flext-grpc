@@ -104,10 +104,7 @@ class FlextGrpcConstants(FlextConstants):
             """
 
             IDLE = "idle"
-            CONNECTING = "connecting"
             READY = "ready"
-            TRANSIENT_FAILURE = "transient_failure"
-            SHUTDOWN = "shutdown"
 
         @unique
         class ServerState(StrEnum):
@@ -133,9 +130,6 @@ class FlextGrpcConstants(FlextConstants):
             """
 
             UNARY = "unary"
-            SERVER_STREAMING = "server_streaming"
-            CLIENT_STREAMING = "client_streaming"
-            BIDIRECTIONAL = "bidirectional"
 
         @unique
         class ServiceMethod(StrEnum):
@@ -159,8 +153,6 @@ class FlextGrpcConstants(FlextConstants):
             """
 
             NONE = "none"
-            GZIP = "gzip"
-            DEFLATE = "deflate"
 
         @unique
         class LoadBalancingPolicies(StrEnum):
@@ -170,11 +162,6 @@ class FlextGrpcConstants(FlextConstants):
                 StrEnum is the single source of truth. Use LoadBalancingPolicies.ROUND_ROBIN.value
                 or LoadBalancingPolicies.ROUND_ROBIN directly - no base strings needed.
             """
-
-            ROUND_ROBIN = "round_robin"
-            PICK_FIRST = "pick_first"
-            GRPCLB = "grpclb"
-            XDS_CLUSTER_RESOLVER = "xds_cluster_resolver"
 
         # ===== Enum-derived frozensets (immutable collections) =====
         CHANNEL_STATES: Final[frozenset[str]] = frozenset(
