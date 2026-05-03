@@ -80,30 +80,18 @@ class FlextGrpcConstants(FlextConstants):
 
         # ===== Connection pool defaults =====
         CONNECTION_DEFAULT_POOL_SIZE: Final[int] = 20
-        CONNECTION_DEFAULT_TIMEOUT: Final[float] = float(
-            FlextConstants.DEFAULT_TIMEOUT_SECONDS,
-        )
 
         # ===== Production validation =====
-        PRODUCTION_MIN_PORT: Final[int] = 1024
-        PRODUCTION_RETRY_ATTEMPTS: Final[int] = FlextConstants.MAX_RETRY_ATTEMPTS
-        PRODUCTION_MAX_RETRY_ATTEMPTS: Final[int] = 5
 
         # ===== Validation constants =====
         VALIDATION_ADDRESS_PARTS_COUNT: Final[int] = 2
         VALIDATION_MAX_PORT_NUMBER: Final[int] = 65535
 
         # ===== Error messages =====
-        MESSAGE_TIMEOUT_ERROR: Final[str] = "gRPC operation timed out after {timeout}s"
 
         # ===== Error codes =====
-        ERROR_CONNECTION: Final[str] = "GRPC_CONNECTION_ERROR"
-        ERROR_TIMEOUT: Final[str] = "GRPC_TIMEOUT_ERROR"
-        ERROR_VALIDATION: Final[str] = "GRPC_VALIDATION_ERROR"
-        ERROR_SERVER: Final[str] = "GRPC_SERVER_ERROR"
 
         # ===== Timeout validation =====
-        TIMEOUT_MAX_SECONDS: Final[float] = 300.0
 
         # ===== Enums (single source of truth) =====
         @unique
@@ -193,16 +181,6 @@ class FlextGrpcConstants(FlextConstants):
             member.value for member in ChannelState.__members__.values()
         )
         """Channel states frozenset - generated from ChannelState StrEnum."""
-
-        COMPRESSION_TYPES: Final[frozenset[str]] = frozenset(
-            member.value for member in CompressionTypes.__members__.values()
-        )
-        """Compression types frozenset - generated from CompressionTypes StrEnum."""
-
-        LOAD_BALANCING_POLICIES: Final[frozenset[str]] = frozenset(
-            member.value for member in LoadBalancingPolicies.__members__.values()
-        )
-        """Load balancing policies frozenset - generated from LoadBalancingPolicies StrEnum."""
 
         SERVER_STATES: Final[frozenset[str]] = frozenset(
             member.value for member in ServerState.__members__.values()
