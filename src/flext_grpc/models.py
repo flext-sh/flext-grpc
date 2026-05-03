@@ -354,46 +354,6 @@ class FlextGrpcModels(m):
 
             state: str = u.Field(description="Target state after transition")
 
-        class EntityValidator(m.Value):
-            """Generic entity validator using functional composition.
-
-            Provides validation methods that can be composed and delegated
-            to entity classes for their field validation.
-            """
-
-            @classmethod
-            def validate_enum(
-                cls,
-                value: str,
-                allowed: set[str],
-                field_name: str,
-            ) -> str:
-                """Generic enum validation."""
-                if value not in allowed:
-                    msg = f"{field_name} must be one of {allowed}, got {value}"
-                    raise ValueError(msg)
-                return value
-
-            @classmethod
-            def validate_list_not_empty[T](
-                cls,
-                value: t.SequenceOf[T],
-                field_name: str,
-            ) -> t.SequenceOf[T]:
-                """Generic list validation with type preservation."""
-                if not value:
-                    msg = f"{field_name} cannot be empty"
-                    raise ValueError(msg)
-                return value
-
-            @classmethod
-            def validate_required_string(cls, value: str, field_name: str) -> str:
-                """Generic string validation."""
-                if not value or not value.strip():
-                    msg = f"{field_name} cannot be empty"
-                    raise ValueError(msg)
-                return value
-
         class StateMachine(m.BaseModel):
             """Generic state machine with functional transitions.
 
