@@ -70,50 +70,61 @@ class FlextGrpcServer(s):
         def start_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
             """Start gRPC server with proper lifecycle."""
             server_key = f"{server.host}:{server.port}"
+            result: p.Result[m.Grpc.Server]
             if server_key in self._active_servers:
-                return r[m.Grpc.Server].fail(
+                result = r[m.Grpc.Server].fail(
                     f"Server already running: {server_key}",
                 )
-            try:
-                starting_result = server.start()
-                if starting_result.failure:
-                    return starting_result
-                starting_server = starting_result.value
-                server_result = u.Grpc.create_runtime_server(self._thread_pool)
-                if server_result.failure:
-                    return r[m.Grpc.Server].fail_op(
-                        "Server start",
-                        u.Grpc.runtime_failure_message(server_result),
-                    )
-                grpc_server = server_result.value
-                bind_result = u.Grpc.bind_insecure_port(
-                    grpc_server,
-                    f"{starting_server.host}:{starting_server.port}",
-                )
-                if bind_result.failure:
-                    return r[m.Grpc.Server].fail_op(
-                        "Server start",
-                        u.Grpc.runtime_failure_message(bind_result),
-                    )
-                for _service in starting_server.services:
-                    real_servicer = FlextGrpcServer._create_real_servicer(
-                        server_key,
-                    )
-                    add_FlextGrpcServiceServicer_to_server(
-                        real_servicer,
-                        grpc_server,
-                    )
-                start_result = u.Grpc.run_runtime(grpc_server.start)
-                if start_result.failure:
-                    return r[m.Grpc.Server].fail_op(
-                        "Server start",
-                        u.Grpc.runtime_failure_message(start_result),
-                    )
-                self._active_servers[server_key] = grpc_server
-                self._metrics.record_metric(f"{server_key}_started_at", time.time())
-                return starting_server.mark_running()
-            except (ConnectionError, TimeoutError) as e:
-                return r[m.Grpc.Server].fail_op("Server start", e)
+            else:
+                try:
+                    starting_result = server.start()
+                    if starting_result.failure:
+                        result = starting_result
+                    else:
+                        starting_server = starting_result.value
+                        server_result = u.Grpc.create_runtime_server(self._thread_pool)
+                        if server_result.failure:
+                            result = r[m.Grpc.Server].fail_op(
+                                "Server start",
+                                u.Grpc.runtime_failure_message(server_result),
+                            )
+                        else:
+                            grpc_server = server_result.value
+                            bind_result = u.Grpc.bind_insecure_port(
+                                grpc_server,
+                                f"{starting_server.host}:{starting_server.port}",
+                            )
+                            if bind_result.failure:
+                                result = r[m.Grpc.Server].fail_op(
+                                    "Server start",
+                                    u.Grpc.runtime_failure_message(bind_result),
+                                )
+                            else:
+                                for _service in starting_server.services:
+                                    real_servicer = (
+                                        FlextGrpcServer._create_real_servicer(
+                                            server_key,
+                                        )
+                                    )
+                                    add_FlextGrpcServiceServicer_to_server(
+                                        real_servicer,
+                                        grpc_server,
+                                    )
+                                start_result = u.Grpc.run_runtime(grpc_server.start)
+                                if start_result.failure:
+                                    result = r[m.Grpc.Server].fail_op(
+                                        "Server start",
+                                        u.Grpc.runtime_failure_message(start_result),
+                                    )
+                                else:
+                                    self._active_servers[server_key] = grpc_server
+                                    self._metrics.record_metric(
+                                        f"{server_key}_started_at", time.time()
+                                    )
+                                    result = starting_server.mark_running()
+                except (ConnectionError, TimeoutError) as e:
+                    result = r[m.Grpc.Server].fail_op("Server start", e)
+            return result
 
         def stop_server(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Server]:
             """Stop gRPC server gracefully."""
