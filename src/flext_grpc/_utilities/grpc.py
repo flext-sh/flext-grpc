@@ -321,10 +321,7 @@ class FlextGrpcUtilitiesGrpc:
             host, port_str = target.split(":", 1)
             if not host or not port_str:
                 return False
-            if not all(
-                ch.isalnum() or ch in c.Grpc.NETWORK_HOST_ALLOWED_PUNCTUATION
-                for ch in host
-            ):
+            if not c.Grpc.NETWORK_HOST_RE.match(host):
                 return False
             port = int(port_str)
             max_port = 65535

@@ -1,8 +1,10 @@
 """FLEXT gRPC Constants.
 
 gRPC-specific constants including network settings, service configuration,
-validation rules, and configuration defaults. Designed for consistent
-configuration management and enterprise deployment standards.
+validation rules, and configuration defaults. Owns every compiled
+``re.Pattern`` for the gRPC domain — consumer modules import the
+pre-compiled ``*_RE`` constants directly; ``import re`` outside this
+module is forbidden.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -11,8 +13,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import re
 from enum import StrEnum, unique
-from typing import Final
+from typing import ClassVar, Final
 
 from flext_core import FlextConstants
 
@@ -54,7 +57,8 @@ class FlextGrpcConstants(FlextConstants):
         )
         NETWORK_MAX_PORT: Final[int] = 65535
         NETWORK_MIN_PORT: Final[int] = 1
-        NETWORK_HOST_ALLOWED_PUNCTUATION: Final[frozenset[str]] = frozenset({"-", "."})
+        NETWORK_HOST_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
+        NETWORK_HOST_RE: ClassVar[re.Pattern[str]] = re.compile(NETWORK_HOST_PATTERN)
 
         # ===== Performance limits =====
         PERFORMANCE_DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
