@@ -91,6 +91,11 @@ class FlextGrpcConstants(FlextConstants):
         # ===== Validation constants =====
         VALIDATION_ADDRESS_PARTS_COUNT: Final[int] = 2
         VALIDATION_MAX_PORT_NUMBER: Final[int] = 65535
+        VALIDATION_VERSION_PATTERN: Final[str] = r"Version.*(\d+\.\d+\.\d+)"
+        VALIDATION_VERSION_RE: ClassVar[re.Pattern[str]] = re.compile(
+            VALIDATION_VERSION_PATTERN,
+            re.IGNORECASE,
+        )
 
         # ===== Error messages =====
 

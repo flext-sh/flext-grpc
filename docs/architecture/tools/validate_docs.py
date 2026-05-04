@@ -8,12 +8,11 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
-from flext_grpc import m, t
+from flext_grpc import c, m, t
 
 type _IssueRow = dict[str, str | int | list[str]]
 
@@ -263,8 +262,6 @@ class ArchitectureValidator:
     def _validate_technical_accuracy(self) -> None:
         """Validate technical accuracy of documentation."""
         # Check version consistency
-        version_pattern = r"Version.*(\d+\.\d+\.\d+)"
-
         files_to_check = [
             "docs/architecture.md",
             "docs/architecture/c4-model/context.md",
@@ -276,7 +273,7 @@ class ArchitectureValidator:
             full_path = self.root_path / file_path
             if full_path.exists():
                 content = full_path.read_text()
-                match = re.search(version_pattern, content, re.IGNORECASE)
+                match = c.Grpc.VALIDATION_VERSION_RE.search(content)
                 if match:
                     versions[file_path] = match.group(1)
 
