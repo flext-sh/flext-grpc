@@ -13,7 +13,7 @@ from __future__ import annotations
 from abc import ABC
 from typing import override
 
-from flext_core import FlextSettings, s
+from flext_core import s
 from flext_grpc import FlextGrpcSettings, m, p, r, t
 
 
@@ -41,8 +41,8 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
     @property
     @override
     def settings(self) -> FlextGrpcSettings:
-        """Return the typed gRPC settings namespace."""
-        return FlextSettings.fetch_global().fetch_namespace("grpc", FlextGrpcSettings)
+        """Return the typed gRPC settings singleton (rule 1, propagating)."""
+        return FlextGrpcSettings.fetch_global()
 
 
 s = FlextGrpcServiceBase
