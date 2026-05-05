@@ -1,0 +1,35 @@
+src/flext_grpc/settings.py
+  31ee9137f8909d3e 75-76,82-83
+src/flext_grpc/services/server.py
+  31ee9137f8909d3e 135,152-153
+src/flext_grpc/services/api_runtime.py
+  31ee9137f8909d3e 17,20
+src/flext_grpc/_utilities/grpc.py
+  31ee9137f8909d3e 105-106,115
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "e1ca94ff469d8c378de29e2ac3164e49a4e78590",
+  "prompts": {
+    "31ee9137f8909d3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cbeb61c6-cd2e-4000-9bed-dcd82a916aec",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 16,
+      "total_deletions": 12,
+      "accepted_lines": 12,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/9d63c0b72523e99453b68dde01a762cc5ad11f80fdc58609fa70168296a76790"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
