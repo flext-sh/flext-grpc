@@ -1,11 +1,15 @@
+<!-- TOC START -->
+- No sections found
+<!-- TOC END -->
+
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
 
 # flext-grpc Module Index
 
 These pages are generated from public modules and their docstrings.
 
-- [flext_grpc](flext_grpc.md)
 - [flext_grpc.api](api.md)
+- [flext_grpc.base](base.md)
 - [flext_grpc.constants](constants.md)
 - [flext_grpc.errors](errors.md)
 - [flext_grpc.models](models.md)
