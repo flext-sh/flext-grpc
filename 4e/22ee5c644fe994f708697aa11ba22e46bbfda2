@@ -1,0 +1,71 @@
+docs/api-reference/README.md
+  31ee9137f8909d3e 1-6,28
+docs/guides/README.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/services/client.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/base.md
+  31ee9137f8909d3e 1-13
+docs/api-reference/generated/overview.md
+  31ee9137f8909d3e 1-4,10,14,16
+docs/api-reference/generated/modules/services/api_runtime.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/services/server.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/services/metrics.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/services/stream.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/settings.md
+  31ee9137f8909d3e 1-4
+docs/index.md
+  31ee9137f8909d3e 1-8,13
+docs/api-reference/generated/modules/index.md
+  31ee9137f8909d3e 1-4,12
+docs/api-reference/generated/modules/errors.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/typings.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/public-api.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/constants.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/services/connection_pool.md
+  31ee9137f8909d3e 1-4
+README.md
+  31ee9137f8909d3e 5,33
+docs/api-reference/generated/modules/protocols.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/utilities.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/api.md
+  31ee9137f8909d3e 1-4
+docs/api-reference/generated/modules/models.md
+  31ee9137f8909d3e 1-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.3.4",
+  "base_commit_sha": "4e22ee5c644fe994f708697aa11ba22e46bbfda2",
+  "prompts": {
+    "31ee9137f8909d3e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cbeb61c6-cd2e-4000-9bed-dcd82a916aec",
+        "model": "claude-opus-4-7"
+      },
+      "human_author": "FLEXT Bot",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 192,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/498b831f27c91c43a60169f41f11d5b05789e8f61ae5d1c228df2ce5e7d6704b"
+    }
+  },
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  }
+}
