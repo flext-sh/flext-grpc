@@ -72,13 +72,15 @@ class FlextGrpcSettings(FlextSettingsBase, BaseSettings):
     @property
     def tls_enabled(self) -> bool:
         """Computed property indicating if TLS is enabled."""
-        return self.security.tls_enabled
+        value: bool = self.security.tls_enabled
+        return value
 
     @u.computed_field()
     @property
     def streaming_enabled(self) -> bool:
         """Computed property indicating if streaming is enabled."""
-        return self.streaming.enabled
+        value: bool = self.streaming.enabled
+        return value
 
     def validate_configuration(self) -> p.Result[bool]:
         """Validate configuration consistency.

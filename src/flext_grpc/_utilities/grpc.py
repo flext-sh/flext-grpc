@@ -102,7 +102,8 @@ class FlextGrpcUtilitiesGrpc:
     def _grpc_models() -> type[FlextGrpcModels]:
         """Resolve the local models facade after package initialization."""
         models_module = import_module("flext_grpc.models")
-        return models_module.FlextGrpcModels
+        models_cls: type[FlextGrpcModels] = models_module.FlextGrpcModels
+        return models_cls
 
     @staticmethod
     def runtime_error_message(exception: BaseException | None) -> str:
@@ -111,7 +112,7 @@ class FlextGrpcUtilitiesGrpc:
             return "Unknown gRPC error"
         if isinstance(exception, p.Grpc.GrpcCallFailure):
             code_value = exception.code()
-            details_value = exception.details()
+            details_value: str = exception.details()
             if code_value is None:
                 return details_value
             return f"{code_value} - {details_value}"

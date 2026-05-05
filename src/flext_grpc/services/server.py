@@ -132,7 +132,7 @@ class FlextGrpcServer(s):
             if server_key not in self._active_servers:
                 return r[m.Grpc.Server].fail(f"No active server: {server_key}")
             try:
-                stopping_result = server.stop()
+                stopping_result: p.Result[m.Grpc.Server] = server.stop()
                 if stopping_result.failure:
                     return stopping_result
                 stopping_server = stopping_result.value
@@ -149,7 +149,8 @@ class FlextGrpcServer(s):
                     )
                 del self._active_servers[server_key]
                 self._metrics.record_metric(f"{server_key}_stopped_at", time.time())
-                return stopping_server.mark_stopped()
+                marked: p.Result[m.Grpc.Server] = stopping_server.mark_stopped()
+                return marked
             except (ConnectionError, TimeoutError) as e:
                 return r[m.Grpc.Server].fail_op("Server stop", e)
 

@@ -14,10 +14,10 @@ from flext_grpc import (
     u,
 )
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
-from flext_grpc.base import s
+from flext_grpc.base import FlextGrpcServiceBase
 
 
-class FlextGrpcApiRuntime(s):
+class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     """Runtime behavior composed by the public gRPC facade via MRO."""
 
     def create_channel(
