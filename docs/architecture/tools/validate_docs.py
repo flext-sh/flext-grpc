@@ -13,7 +13,7 @@ from pathlib import Path
 
 from flext_cli import cli
 
-from flext_grpc import c, m, t
+from flext_grpc import c, m, p, t
 
 
 class _ValidationParams(m.Value):
@@ -373,8 +373,10 @@ def save_report(
         json.dump(results.model_dump(mode="json"), f, indent=2, default=str)
 
 
-def _run_validation(params: _ValidationParams) -> int:
-    """Run the validation flow and return the canonical exit code."""
+def _run_validation(params: _ValidationParams) -> p.Result[bool]:
+    """Run the validation flow as a railway-style ``r[bool]`` result."""
+    from flext_core import r as core_r
+
     validator = ArchitectureValidator(params.path)
     results = validator.validate_all()
     output_path = Path(params.output) if params.output else None
@@ -384,7 +386,12 @@ def _run_validation(params: _ValidationParams) -> int:
         summary.status == "critical"
         or summary.quality_score < ArchitectureValidator.CRITICAL_QUALITY_SCORE
     )
-    return 1 if is_critical else 0
+    if is_critical:
+        return core_r[bool].fail(
+            f"Architecture documentation validation FAILED — quality "
+            f"score {summary.quality_score} (status={summary.status})",
+        )
+    return core_r[bool].ok(value=True)
 
 
 def main() -> int:
@@ -400,7 +407,8 @@ def main() -> int:
         model_cls=_ValidationParams,
         handler=_run_validation,
     )
-    return cli.execute_app(app)
+    result = cli.execute_app(app, prog_name="flext-grpc-validate-docs")
+    return 0 if result.success else 1
 
 
 if __name__ == "__main__":
