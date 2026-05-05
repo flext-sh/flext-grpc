@@ -10,19 +10,19 @@ from flext_core.lazy import (
     install_lazy_exports,
     merge_lazy_imports,
 )
+from flext_grpc.__version__ import (
+    __author__,
+    __author_email__,
+    __description__,
+    __license__,
+    __title__,
+    __url__,
+    __version__,
+    __version_info__,
+)
 
 if _t.TYPE_CHECKING:
     from flext_core import d, e, h, r, x
-    from flext_grpc.__version__ import (
-        __author__,
-        __author_email__,
-        __description__,
-        __license__,
-        __title__,
-        __url__,
-        __version__,
-        __version_info__,
-    )
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
     from flext_grpc.api import FlextGrpc, grpc
     from flext_grpc.base import FlextGrpcServiceBase, s
@@ -52,16 +52,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
     ),
     build_lazy_import_map(
         {
-            ".__version__": (
-                "__author__",
-                "__author_email__",
-                "__description__",
-                "__license__",
-                "__title__",
-                "__url__",
-                "__version__",
-                "__version_info__",
-            ),
             "._utilities.grpc": ("FlextGrpcUtilitiesGrpc",),
             ".api": (
                 "FlextGrpc",
@@ -137,7 +127,21 @@ _LAZY_IMPORTS = merge_lazy_imports(
 )
 
 
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS)
+install_lazy_exports(
+    __name__,
+    globals(),
+    _LAZY_IMPORTS,
+    [
+        "__author__",
+        "__author_email__",
+        "__description__",
+        "__license__",
+        "__title__",
+        "__url__",
+        "__version__",
+        "__version_info__",
+    ],
+)
 
 __all__: list[str] = [
     "FlextGrpc",
