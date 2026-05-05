@@ -6,13 +6,23 @@ Validates architecture documentation for completeness, consistency, and accuracy
 
 from __future__ import annotations
 
-import argparse
 import json
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
+from flext_cli import cli
+
 from flext_grpc import c, m, t
+
+
+class _ValidationParams(m.Value):
+    """CLI parameters for the architecture documentation validator."""
+
+    path: str = "."
+    output: str | None = None
+    quiet: bool = False
+
 
 type _IssueRow = dict[str, str | int | list[str]]
 
@@ -363,42 +373,35 @@ def save_report(
         json.dump(results.model_dump(mode="json"), f, indent=2, default=str)
 
 
-def main() -> None:
-    """Main entry point for documentation validation."""
-    parser = argparse.ArgumentParser(
-        description="FLEXT-gRPC Architecture Documentation Validation",
-    )
-    _ = parser.add_argument("--path", default=".", help="Root path to validate")
-    _ = parser.add_argument("--output", help="Output path for report")
-    _ = parser.add_argument(
-        "--quiet",
-        action="store_true",
-        help="Suppress detailed output",
-    )
-
-    args = parser.parse_args()
-
-    # Create validator
-    validator = ArchitectureValidator(args.path)
-
-    # Run validation
+def _run_validation(params: _ValidationParams) -> int:
+    """Run the validation flow and return the canonical exit code."""
+    validator = ArchitectureValidator(params.path)
     results = validator.validate_all()
-
-    # Save report
-    output_path = Path(args.output) if args.output else None
-
+    output_path = Path(params.output) if params.output else None
     save_report(results, output_path)
-
-    # Exit with appropriate code
     summary = results.summary
-    if (
+    is_critical = (
         summary.status == "critical"
         or summary.quality_score < ArchitectureValidator.CRITICAL_QUALITY_SCORE
-    ):
-        sys.exit(1)
-    else:
-        sys.exit(0)
+    )
+    return 1 if is_critical else 0
+
+
+def main() -> int:
+    """Main entry point for documentation validation."""
+    app = cli.create_app_with_common_params(
+        name="flext-grpc-validate-docs",
+        help_text="FLEXT-gRPC Architecture Documentation Validation",
+    )
+    cli.register_result_command(
+        app,
+        name="run",
+        help_text="Run architecture documentation validation",
+        model_cls=_ValidationParams,
+        handler=_run_validation,
+    )
+    return cli.execute_app(app)
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
