@@ -12,13 +12,11 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from pydantic_settings import BaseSettings
-
 from flext_core import FlextSettingsBase, u
 from flext_grpc import c, m, p, r, t
 
 
-class FlextGrpcSettings(FlextSettingsBase, BaseSettings):
+class FlextGrpcSettings(FlextSettingsBase):
     """gRPC runtime settings with flat convenience fields and nested configurations.
 
     Provides both flat fields for simple configuration and nested settings models
