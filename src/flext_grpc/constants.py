@@ -15,9 +15,12 @@ from __future__ import annotations
 
 import re
 from enum import StrEnum, unique
-from typing import ClassVar, Final
+from typing import TYPE_CHECKING, ClassVar, Final
 
 from flext_core import FlextConstants
+
+if TYPE_CHECKING:
+    from flext_grpc import t
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -58,7 +61,7 @@ class FlextGrpcConstants(FlextConstants):
         NETWORK_MAX_PORT: Final[int] = 65535
         NETWORK_MIN_PORT: Final[int] = 1
         NETWORK_HOST_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
-        NETWORK_HOST_RE: ClassVar[re.Pattern[str]] = re.compile(NETWORK_HOST_PATTERN)
+        NETWORK_HOST_RE: ClassVar[t.RegexPattern] = re.compile(NETWORK_HOST_PATTERN)
 
         # ===== Performance limits =====
         PERFORMANCE_DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
@@ -92,7 +95,7 @@ class FlextGrpcConstants(FlextConstants):
         VALIDATION_ADDRESS_PARTS_COUNT: Final[int] = 2
         VALIDATION_MAX_PORT_NUMBER: Final[int] = 65535
         VALIDATION_VERSION_PATTERN: Final[str] = r"Version.*(\d+\.\d+\.\d+)"
-        VALIDATION_VERSION_RE: ClassVar[re.Pattern[str]] = re.compile(
+        VALIDATION_VERSION_RE: ClassVar[t.RegexPattern] = re.compile(
             VALIDATION_VERSION_PATTERN,
             re.IGNORECASE,
         )
