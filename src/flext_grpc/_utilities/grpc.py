@@ -363,11 +363,11 @@ class FlextGrpcUtilitiesGrpc:
         return "unknown"
 
     @staticmethod
-    def system_info() -> dict[str, t.JsonValue]:
+    def system_info() -> t.JsonDict:
         """Return gRPC utility system info."""
         channel_states: list[t.JsonValue] = list(c.Grpc.CHANNEL_STATES)
         server_states: list[t.JsonValue] = list(c.Grpc.SERVER_STATES)
-        info: dict[str, t.JsonValue] = {
+        info: t.JsonDict = {
             "default_host": c.Grpc.NETWORK_DEFAULT_HOST,
             "default_port": c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
             "min_port": c.Grpc.NETWORK_MIN_PORT,
