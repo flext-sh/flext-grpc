@@ -12,7 +12,6 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from flext_cli import cli
-
 from flext_grpc import c, m, p, r, t
 
 

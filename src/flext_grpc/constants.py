@@ -195,4 +195,4 @@ class FlextGrpcConstants(FlextConstants):
 
 c = FlextGrpcConstants
 
-__all__: tuple[str, ...] = ("FlextGrpcConstants", "c")
+__all__: t.StrSequence = ("FlextGrpcConstants", "c")

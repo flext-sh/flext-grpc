@@ -15,7 +15,6 @@ from types import MappingProxyType
 from typing import Annotated, Self, override
 
 from flext_cli import m, u
-
 from flext_grpc import c, p, r, t
 
 
@@ -513,7 +512,7 @@ class FlextGrpcModels(m):
                     self.state,
                     "connecting",
                     {"idle": {"connecting"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def disconnect(self) -> p.Result[Self]:
                 """Transition to idle."""
@@ -534,7 +533,7 @@ class FlextGrpcModels(m):
                     self.state,
                     "ready",
                     {"connecting": {"ready"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
             def validate_business_rules(self) -> p.Result[bool]:
@@ -599,7 +598,7 @@ class FlextGrpcModels(m):
                     self.state,
                     "running",
                     {"starting": {"running"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def mark_stopped(self) -> p.Result[Self]:
                 """Transition to stopped."""
@@ -622,7 +621,7 @@ class FlextGrpcModels(m):
                     self.state,
                     "starting",
                     {"stopped": {"starting"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def stop(self) -> p.Result[Self]:
                 """Transition to stopping."""
@@ -630,7 +629,7 @@ class FlextGrpcModels(m):
                     self.state,
                     "stopping",
                     {"running": {"stopping"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
             def validate_business_rules(self) -> p.Result[bool]:
