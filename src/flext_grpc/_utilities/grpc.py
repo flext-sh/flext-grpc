@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections.abc import (
     Callable,
 )
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Executor
 from importlib import import_module
 from types import ModuleType
 from typing import TYPE_CHECKING
@@ -73,7 +73,7 @@ class FlextGrpcUtilitiesGrpc:
 
         def server(
             self,
-            thread_pool: ThreadPoolExecutor,
+            thread_pool: Executor,
         ) -> p.Grpc.GrpcServer:
             """Create a typed gRPC server from the runtime module."""
             grpc_server = self._runtime_module.server(thread_pool)
@@ -189,7 +189,7 @@ class FlextGrpcUtilitiesGrpc:
 
     @staticmethod
     def create_runtime_server(
-        thread_pool: ThreadPoolExecutor,
+        thread_pool: Executor,
     ) -> p.Result[p.Grpc.GrpcServer]:
         """Create a runtime grpc server using the canonical adapter."""
         runtime_result = FlextGrpcUtilitiesGrpc.resolve_runtime()

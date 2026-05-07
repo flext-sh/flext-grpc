@@ -13,7 +13,7 @@ from collections.abc import (
     Mapping,
     Sequence,
 )
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import Executor
 from typing import Protocol, runtime_checkable
 
 from flext_core import p
@@ -501,7 +501,7 @@ class FlextGrpcProtocols(p):
 
             def server(
                 self,
-                thread_pool: ThreadPoolExecutor,
+                thread_pool: Executor,
             ) -> FlextGrpcProtocols.Grpc.GrpcServer:
                 """Create a gRPC server using the given thread pool."""
                 ...
