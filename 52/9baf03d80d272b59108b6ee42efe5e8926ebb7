@@ -1,0 +1,26 @@
+src/flext_grpc/_utilities/grpc.py
+  s_0290f35b98ef0c::t_fbe8fd48c3b190 8,76,192
+src/flext_grpc/protocols.py
+  s_0290f35b98ef0c::t_fbe8fd48c3b190 16,504
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.4.1",
+  "base_commit_sha": "529baf03d80d272b59108b6ee42efe5e8926ebb7",
+  "prompts": {},
+  "humans": {
+    "h_9db9d35f50cf33": {
+      "author": "FLEXT Bot"
+    }
+  },
+  "sessions": {
+    "s_0290f35b98ef0c": {
+      "agent_id": {
+        "tool": "github-copilot",
+        "id": "0c4cc853-563f-48ad-a39a-f49b587090b8",
+        "model": "unknown"
+      },
+      "human_author": "FLEXT Bot <team@flext.sh>"
+    }
+  }
+}
