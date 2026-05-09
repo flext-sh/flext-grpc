@@ -14,10 +14,12 @@ from flext_core.lazy import (
 if _t.TYPE_CHECKING:
     from flext_tests import td, tf, tk, tm, tv
 
-    from flext_grpc import d, e, h, r, s, x
+    from flext_grpc import d, e, h, r, x
+    from tests.base import TestsFlextGrpcServiceBase, s
     from tests.constants import TestsFlextGrpcConstants, c
     from tests.models import TestsFlextGrpcModels, m
     from tests.protocols import TestsFlextGrpcProtocols, p
+    from tests.settings import TestsFlextGrpcSettings
     from tests.typings import TestsFlextGrpcTypes, t
     from tests.unit.test_api import TestsFlextGrpcApi
     from tests.unit.test_config import TestsFlextGrpcConfig
@@ -34,6 +36,10 @@ _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
     build_lazy_import_map(
         {
+            ".base": (
+                "TestsFlextGrpcServiceBase",
+                "s",
+            ),
             ".constants": (
                 "TestsFlextGrpcConstants",
                 "c",
@@ -46,6 +52,7 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "TestsFlextGrpcProtocols",
                 "p",
             ),
+            ".settings": ("TestsFlextGrpcSettings",),
             ".typings": (
                 "TestsFlextGrpcTypes",
                 "t",
@@ -69,7 +76,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
                 "e",
                 "h",
                 "r",
-                "s",
                 "x",
             ),
             "flext_tests": (
@@ -117,7 +123,9 @@ __all__: list[str] = [
     "TestsFlextGrpcModelsUnit",
     "TestsFlextGrpcProtocols",
     "TestsFlextGrpcProtocolsUnit",
+    "TestsFlextGrpcServiceBase",
     "TestsFlextGrpcServices",
+    "TestsFlextGrpcSettings",
     "TestsFlextGrpcTypes",
     "TestsFlextGrpcTypesUnit",
     "TestsFlextGrpcUtilities",
