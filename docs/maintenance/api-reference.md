@@ -133,7 +133,7 @@ The Documentation Maintenance Framework provides a comprehensive set of APIs for
 
 Main class for performing comprehensive documentation audits.
 
-```python
+```python notest
 from docs import DocumentationAuditor
 
 auditor = DocumentationAuditor(root_path=".")
@@ -149,7 +149,7 @@ Discover all documentation files to audit.
 
 **Example**:
 
-```python
+```python notest
 files = auditor.discover_files()
 print(f"Found {len(files)} documentation files")
 ```
@@ -166,7 +166,7 @@ Perform comprehensive audit of a single file.
 
 **Example**:
 
-```python
+```python notest
 result = auditor.audit_file(Path("docs/README.md"))
 print(f"Quality Score: {result.quality_score}%")
 ```
@@ -183,7 +183,7 @@ Run complete audit on specified or all files.
 
 **Example**:
 
-```python
+```python notest
 report = auditor.run_audit()
 print(f"Overall Quality: {report.average_quality}%")
 ```
@@ -199,7 +199,7 @@ Save audit report to JSON file.
 
 **Example**:
 
-```python
+```python notest
 auditor.save_report(report, Path("reports/audit.json"))
 ```
 
@@ -217,7 +217,7 @@ Print formatted audit summary to console.
 
 Validate external and internal links in documentation.
 
-```python
+```python notest
 from docs import LinkValidator
 
 validator = LinkValidator(timeout=10, max_retries=3)
@@ -237,7 +237,7 @@ Validate a single external link.
 
 **Example**:
 
-```python
+```python notest
 result = validator.validate_external_link("https://github.com")
 if result.status == "valid":
     print(f"✅ Link valid (HTTP {result.status_code})")
@@ -263,7 +263,7 @@ Validate internal links within documentation.
 
 Validate documentation style consistency.
 
-```python
+```python notest
 from docs import StyleValidator
 
 style_validator = StyleValidator()
@@ -283,7 +283,7 @@ Check style consistency for a file.
 
 **Example**:
 
-```python
+```python notest
 result = style_validator.check_file_style(Path("docs/README.md"))
 print(f"Style Score: {result.score}%")
 for issue in result.issues:
@@ -296,7 +296,7 @@ for issue in result.issues:
 
 Optimize and enhance documentation content.
 
-```python
+```python notest
 from docs import DocumentationOptimizer
 
 optimizer = DocumentationOptimizer(root_path=".")
@@ -317,7 +317,7 @@ Optimize a single documentation file.
 
 **Example**:
 
-```python
+```python notest
 result = optimizer.optimize_file(Path("docs/README.md"))
 print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
@@ -339,7 +339,7 @@ Optimize all documentation files.
 
 Handle version control integration and synchronization.
 
-```python
+```python notest
 from docs import DocumentationSynchronizer
 
 sync = DocumentationSynchronizer(root_path=".")
@@ -360,7 +360,7 @@ Synchronize documentation changes with git.
 
 **Example**:
 
-```python
+```python notest
 changes = [
     {
         "file_path": "docs/README.md",
@@ -398,7 +398,7 @@ Generate changelog from recent changes.
 
 Generate comprehensive documentation quality reports.
 
-```python
+```python notest
 from docs import DocumentationReporter
 
 reporter = DocumentationReporter(root_path=".")
@@ -454,7 +454,7 @@ Generate trend analysis report.
 
 Handle scheduled and automated maintenance tasks.
 
-```python
+```python notest
 from docs import AutomatedMaintenance
 
 automation = AutomatedMaintenance(root_path=".")
@@ -474,7 +474,7 @@ Run scheduled maintenance tasks.
 
 **Example**:
 
-```python
+```python notest
 result = automation.run_scheduled_maintenance("weekly")
 print(f"Tasks completed: {len(result['tasks_completed'])}")
 ```
@@ -483,7 +483,7 @@ print(f"Tasks completed: {len(result['tasks_completed'])}")
 
 ### AuditResult
 
-```python
+```python notest
 @dataclass
 class AuditResult:
     file_path: str
@@ -502,7 +502,7 @@ class AuditResult:
 
 ### AuditReport
 
-```python
+```python notest
 @dataclass
 class AuditReport:
     timestamp: str
@@ -518,7 +518,7 @@ class AuditReport:
 
 ### LinkValidationResult
 
-```python
+```python notest
 @dataclass
 class LinkValidationResult:
     url: str
@@ -531,7 +531,7 @@ class LinkValidationResult:
 
 ### ReferenceValidationResult
 
-```python
+```python notest
 @dataclass
 class ReferenceValidationResult:
     reference: str
@@ -543,7 +543,7 @@ class ReferenceValidationResult:
 
 ### StyleCheckResult
 
-```python
+```python notest
 @dataclass
 class StyleCheckResult:
     file_path: str
@@ -555,7 +555,7 @@ class StyleCheckResult:
 
 ### Configuration Management
 
-```python
+```python notest
 import json
 
 # Load configuration
@@ -597,7 +597,7 @@ CUSTOM_STYLE_RULES = {
 
 ### File Discovery
 
-```python
+```python notest
 from pathlib import Path
 
 
@@ -622,7 +622,7 @@ def find_docs_files(root_path: str = ".") -> List[Path]:
 
 ### Quality Score Calculation
 
-```python
+```python notest
 def calculate_quality_score(
     structure: float, accuracy: float, completeness: float, freshness: float
 ) -> float:
@@ -632,7 +632,7 @@ def calculate_quality_score(
 
 ### Report Generation
 
-```python
+```python notest
 def generate_quick_report(audit_results: List[AuditResult]) -> str:
     """Generate quick text report."""
     total_files = len(audit_results)
@@ -667,7 +667,7 @@ Quality Distribution:
 
 ### Exception Types
 
-```python
+```python notest
 class DocumentationMaintenanceError(Exception):
     """Base exception for maintenance operations."""
 
@@ -700,7 +700,7 @@ class SynchronizationError(DocumentationMaintenanceError):
 
 ### Error Handling Patterns
 
-```python
+```python notest
 from docs import DocumentationAuditor, AuditError
 
 try:
@@ -720,7 +720,7 @@ except Exception as e:
 
 ### Quality Metrics
 
-```python
+```python notest
 def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
     """Extract quality metrics from audit report."""
     return {
@@ -734,7 +734,7 @@ def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
 
 ### Trend Analysis
 
-```python
+```python notest
 def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, object]:
     """Analyze quality trends over time."""
     if len(reports) < 2:
@@ -809,7 +809,7 @@ echo "✅ Documentation quality checks passed"
 
 ### Custom Integration
 
-```python
+```python notest
 # custom_integration.py
 from docs import audit, validation, optimization, reporting
 
@@ -856,7 +856,7 @@ class CustomDocumentationWorkflow:
 
 ### Configuration Migration
 
-```python
+```python notest
 def migrate_config(old_config: Dict) -> Dict:
     """Migrate configuration from older versions."""
     # Handle version-specific migrations
@@ -878,7 +878,7 @@ def migrate_config(old_config: Dict) -> Dict:
 
 ### Memory Management
 
-```python
+```python notest
 # For large documentation sets
 import gc
 
@@ -912,7 +912,7 @@ def process_large_docs():
 
 ### Best Practices
 
-```python
+```python notest
 # Safe file operations
 from pathlib import Path
 

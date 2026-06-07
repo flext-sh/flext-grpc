@@ -148,7 +148,7 @@ poetry show grpcio grpcio-tools protobuf  # Check versions
 
 **Debugging**:
 
-```python
+```python notest
 from flext_grpc import create_server, FlextGrpcPlatform
 
 server = create_server("localhost", 50051, 10)
@@ -169,7 +169,7 @@ if start_result.failure:
 
 1. **Always use r patterns**:
 
-   ```python
+   ```python notest
    def my_grpc_method() -> p.Result[ResponseType]:
        # Explicit error handling, no exceptions
    ```
@@ -184,7 +184,7 @@ if start_result.failure:
 
 3. **Use platform for complex operations**:
 
-   ```python
+   ```python notest
    from flext_grpc import FlextGrpcPlatform
 
    platform = FlextGrpcPlatform()

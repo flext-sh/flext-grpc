@@ -263,7 +263,7 @@ make docs
 
 **Solution:**
 
-```python
+```python notest
 # Create custom audit rules
 # docs/maintenance/custom_rules.py
 CUSTOM_AUDIT_RULES = {

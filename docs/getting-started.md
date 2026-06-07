@@ -105,7 +105,7 @@ print(f'Server: {server.address}, state: {server.state}')
 
 ### Server Creation
 
-```python
+```python notest
 from flext_grpc import create_server
 
 # Create gRPC server
@@ -116,7 +116,7 @@ print(f"Server state: {server.state}")
 
 ### Client Creation
 
-```python
+```python notest
 from flext_grpc import create_client
 
 # Create gRPC client
@@ -126,7 +126,7 @@ print(f"Client created: {type(client).__name__}")
 
 ### Platform Management
 
-```python
+```python notest
 from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations

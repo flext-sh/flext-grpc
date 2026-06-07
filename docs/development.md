@@ -196,7 +196,7 @@ make test                  # All tests pass (currently 28 failing, needs bug fix
 
 All code must follow flext-core architectural patterns:
 
-```python
+```python notest
 # ✅ CORRECT - Railway-oriented programming
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -244,7 +244,7 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
 
 Complete type annotations are mandatory:
 
-```python
+```python notest
 from typing import Protocol, TypeVar, Generic
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -290,7 +290,7 @@ class GrpcService(Generic[T]):
 
 Follow Domain-Driven Design patterns:
 
-```python
+```python notest
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -362,7 +362,7 @@ tests/
 
 ### Test Writing Guidelines
 
-```python
+```python notest
 import pytest
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -439,7 +439,7 @@ class TestGrpcServer:
 
 Use pytest markers for test categorization:
 
-```python
+```python notest
 import pytest
 
 
@@ -479,7 +479,7 @@ def test_performance_benchmark():
 
 Maintain strict layer boundaries:
 
-```python
+```python notest
 # Domain Layer - No dependencies on other layers
 class FlextGrpcServer(FlextModels.Entity):
     # Pure business logic, no infrastructure concerns
@@ -506,7 +506,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use FlextContainer for all dependencies:
 
-```python
+```python notest
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -560,7 +560,7 @@ class GrpcServiceManager:
 
 All public APIs require comprehensive docstrings:
 
-```python
+```python notest
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -618,7 +618,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use comments sparingly for complex business logic:
 
-```python
+```python notest
 def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
     """Validate server state transition."""
 

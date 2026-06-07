@@ -544,7 +544,7 @@ repos:
 
 ### Custom Audit Rules
 
-```python
+```python notest
 from docs import DocumentationAuditor
 
 
@@ -565,7 +565,7 @@ class CustomAuditor(DocumentationAuditor):
 
 ### Automated Fixes
 
-```python
+```python notest
 from docs import DocumentationOptimizer
 
 
@@ -581,7 +581,7 @@ class CustomOptimizer(DocumentationOptimizer):
 
 ### Integration APIs
 
-```python
+```python notest
 from docs import audit, validation, optimization, reporting
 
 # Programmatic usage

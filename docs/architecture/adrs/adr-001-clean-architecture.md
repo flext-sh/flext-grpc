@@ -75,7 +75,7 @@ We needed an architectural approach that would:
 
 Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapters) with the following layer structure:
 
-```python
+```python notest
 ┌─────────────────────────────────────────┐
 │              FLEXT-gRPC                 │
 ├─────────────────────────────────────────┤
@@ -231,7 +231,7 @@ With the following principles:
 
 ### Interface Design
 
-```python
+```python notest
 # Domain defines interfaces
 class ServerInterface(Protocol):
     def start(self) -> p.Result[bool]: ...

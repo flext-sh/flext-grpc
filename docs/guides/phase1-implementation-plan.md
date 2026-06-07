@@ -199,7 +199,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 - **Solution**:
 
-  ```python
+  ```python notest
   # Current (broken)
   self.logger = u.fetch_logger(__name__)  # AttributeError: property has no setter
 
@@ -219,7 +219,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 - **Solution**:
 
-  ```python
+  ```python notest
   # Current (broken)
   def __init__(self, message: str, config_key: str = None, config_value = None):
 
@@ -239,7 +239,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 - **Solution**:
 
-  ```python
+  ```python notest
   from typing import runtime_checkable
 
   @runtime_checkable

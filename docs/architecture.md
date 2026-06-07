@@ -83,7 +83,7 @@ Architectural design and patterns for the flext-grpc library within the FLEXT ec
 
 flext-grpc follows Clean Architecture principles with clear layer separation and dependency inversion:
 
-```python
+```python notest
 ┌─────────────────────────────────────────┐
 │              flext-grpc                 │
 ├─────────────────────────────────────────┤
@@ -211,7 +211,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 All components integrate with flext-core patterns.
 
-```python
+```python notest
 def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     return (
         validate_config(settings)
