@@ -1,0 +1,55 @@
+docs/guides/phase1-implementation-plan.md
+  s_fec2050ea607c1::t_1d81362ea24b20 202,222,242
+docs/getting-started.md
+  s_fec2050ea607c1::t_1d81362ea24b20 108,119,129
+docs/api-reference.md
+  s_fec2050ea607c1::t_1d81362ea24b20 73,84,94,119,136,181,201,230,248,256,264,276,289,361,374,388,428
+docs/configuration.md
+  s_fec2050ea607c1::t_1d81362ea24b20 96,118,135,147,159,173,185,204,220,261,302,319,342,376,418,446,458,468,481,490,503,537,579,587
+docs/guides/testing.md
+  s_fec2050ea607c1::t_1d81362ea24b20 76,128,176,219,292,333,357,396,439,471,517,588,611,638,658,700
+docs/development.md
+  s_fec2050ea607c1::t_1d81362ea24b20 199,247,293,365,442,482,509,563,621
+docs/maintenance/user-guide.md
+  s_fec2050ea607c1::t_1d81362ea24b20 547,568,584
+docs/architecture/adrs/adr-001-clean-architecture.md
+  s_fec2050ea607c1::t_1d81362ea24b20 78,234
+docs/guides/getting-started.md
+  s_fec2050ea607c1::t_1d81362ea24b20 101,133,154,207,278
+docs/guides/troubleshooting.md
+  s_fec2050ea607c1::t_1d81362ea24b20 88,139,148,175,196,210,225,255,291,300,325,348,372,380,408,442,453,490,527,558,619,642,722,733,771,784,795
+docs/architecture.md
+  s_fec2050ea607c1::t_1d81362ea24b20 86,214
+docs/testing.md
+  s_fec2050ea607c1::t_1d81362ea24b20 413,435,519,540,582,595
+docs/guides/integration.md
+  s_fec2050ea607c1::t_1d81362ea24b20 102,138,171,203,234,271,326,380,440,493,549,577,636,665
+docs/troubleshooting.md
+  s_fec2050ea607c1::t_1d81362ea24b20 151,172,187
+docs/maintenance/troubleshooting.md
+  s_fec2050ea607c1::t_b0cde198595c01 266
+docs/guides/configuration.md
+  s_fec2050ea607c1::t_1d81362ea24b20 106,178,231,264,308,344,380,417,455
+docs/maintenance/api-reference.md
+  s_fec2050ea607c1::t_1d81362ea24b20 136,152,169,186,202,220,240,266,286,299,320,342,363,401,457,477,486,505,521,534,546,558,600,625,635,670,703,723,737,812,859
+docs/guides/development.md
+  s_fec2050ea607c1::t_1d81362ea24b20 152,169,189,228,313,404,432
+examples/README.md
+  s_fec2050ea607c1::t_1d81362ea24b20 182,216,301,325,341,434
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.3",
+  "base_commit_sha": "ff16b8dda66baa1b33f40cb4a55db1e7c23b9118",
+  "prompts": {},
+  "sessions": {
+    "s_fec2050ea607c1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ea2cd-580d-7e50-9f28-e9adbe7acc8a",
+        "model": "gpt-5.5"
+      },
+      "human_author": "Zed <hi@zed.dev>"
+    }
+  }
+}
