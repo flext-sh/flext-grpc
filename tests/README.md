@@ -231,7 +231,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Entity Testing Pattern
 
-```python
+```python notest
 def test_entity_creation_and_validation():
     """Test entity creation with domain validation."""
     # Arrange
@@ -248,7 +248,7 @@ def test_entity_creation_and_validation():
 
 ### Service Testing Pattern
 
-```python
+```python notest
 def test_service_operation_success():
     """Test service operation with successful execution."""
     # Arrange
@@ -265,7 +265,7 @@ def test_service_operation_success():
 
 ### Error Testing Pattern
 
-```python
+```python notest
 def test_operation_failure_handling():
     """Test proper error handling for invalid operations."""
     # Arrange
