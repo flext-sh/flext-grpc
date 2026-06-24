@@ -1,36 +1,5 @@
 # flext-grpc FLEXT Ecosystem Integration
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Integration Overview](#integration-overview)
-  - [FLEXT Ecosystem Position](#flext-ecosystem-position)
-- [Core Integration Patterns](#core-integration-patterns)
-  - [flext-core Foundation](#flext-core-foundation)
-  - [Dependency Injection Integration](#dependency-injection-integration)
-- [FLEXT Service Integration](#flext-service-integration)
-  - [flext-auth Integration](#flext-auth-integration)
-  - [flext-observability Integration](#flext-observability-integration)
-  - [flext-cli Integration](#flext-cli-integration)
-- [Data Integration Patterns](#data-integration-patterns)
-  - [Service-to-Service Communication](#service-to-service-communication)
-  - [Data Pipeline Integration](#data-pipeline-integration)
-- [Configuration Integration](#configuration-integration)
-  - [Environment-Specific Configuration](#environment-specific-configuration)
-  - [Service Discovery Integration](#service-discovery-integration)
-- [Testing Integration](#testing-integration)
-  - [Test Framework Integration](#test-framework-integration)
-  - [Mock Integration](#mock-integration)
-- [Production Integration](#production-integration)
-  - [Deployment Patterns](#deployment-patterns)
-  - [Monitoring Integration](#monitoring-integration)
-- [Migration and Upgrade Patterns](#migration-and-upgrade-patterns)
-  - [Version Compatibility](#version-compatibility)
-- [Current Integration Status](#current-integration-status)
-  - [Working Integrations](#working-integrations)
-  - [Planned Integrations](#planned-integrations)
-  - [Integration Priorities](#integration-priorities)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [flext-grpc FLEXT Ecosystem Integration](#flext-grpc-flext-ecosystem-integration)
@@ -99,7 +68,7 @@ graph TB
 
 flext-grpc components use flext-core patterns (see flext-core documentation for details):
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -135,7 +104,7 @@ class GrpcServiceManager:
 
 flext-grpc services can be registered with FlextContainer:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -168,7 +137,7 @@ container.bind("grpc_platform", platform)
 
 Authentication and authorization for gRPC services:
 
-```python notest
+```python
 # Planned integration (requires protobuf fix)
 from flext_auth import FlextAuthService
 from flext_grpc import FlextGrpcServer
@@ -200,7 +169,7 @@ class AuthenticatedGrpcService:
 
 Monitoring and metrics for gRPC services:
 
-```python notest
+```python
 # Planned integration
 from flext_observability import MetricsCollector, HealthChecker
 from flext_grpc import FlextGrpcPlatform
@@ -231,7 +200,7 @@ class ObservableGrpcService:
 
 Command-line management for gRPC services:
 
-```python notest
+```python
 # Planned integration
 from flext_cli import FlextCliApp
 from flext_grpc import FlextGrpcPlatform
@@ -268,7 +237,7 @@ def create_grpc_cli() -> FlextCliApp:
 
 gRPC communication between FLEXT services:
 
-```python notest
+```python
 from flext_grpc import FlextGrpcClient, FlextGrpcSettings
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -323,7 +292,7 @@ class FlextServiceConnector:
 
 gRPC in data processing pipelines:
 
-```python notest
+```python
 from flext_grpc import FlextGrpcStream
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -377,7 +346,7 @@ class DataStreamProcessor:
 
 Integration with FLEXT configuration patterns:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -437,7 +406,7 @@ class FlextGrpcEnvironmentSettings(FlextSettings):
 
 Integration with FLEXT service discovery:
 
-```python notest
+```python
 # Planned integration
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -490,7 +459,7 @@ class FlextServiceDiscovery:
 
 Integration with FLEXT testing patterns:
 
-```python notest
+```python
 import pytest
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -546,7 +515,7 @@ class TestGrpcIntegration(FlextTestCase):
 
 Testing with FLEXT mock patterns:
 
-```python notest
+```python
 from unittest.mock import Mock
 from flext_grpc import FlextGrpcPlatform
 from flext_tests import FlextMockFactory
@@ -574,7 +543,7 @@ class TestGrpcMockIntegration:
 
 Integration with FLEXT deployment infrastructure:
 
-```python notest
+```python
 from flext_grpc import FlextGrpcPlatform, FlextGrpcSettings
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -633,7 +602,7 @@ class FlextGrpcProductionService:
 
 Integration with FLEXT monitoring systems:
 
-```python notest
+```python
 # Planned integration
 from flext_observability import MetricsCollector
 from flext_grpc import FlextGrpcServer
@@ -662,7 +631,7 @@ class MonitoredGrpcService:
 
 Maintaining compatibility during ecosystem upgrades:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants

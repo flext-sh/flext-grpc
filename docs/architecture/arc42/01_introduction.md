@@ -1,35 +1,5 @@
 # 1. Introduction and Goals
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [1.1 Purpose and Scope](#11-purpose-and-scope)
-  - [Purpose](#purpose)
-  - [Scope](#scope)
-- [1.2 Business Goals](#12-business-goals)
-  - [Primary Business Goals](#primary-business-goals)
-  - [Secondary Business Goals](#secondary-business-goals)
-- [1.3 Stakeholders](#13-stakeholders)
-  - [Primary Stakeholders](#primary-stakeholders)
-  - [Secondary Stakeholders](#secondary-stakeholders)
-- [1.4 Quality Goals](#14-quality-goals)
-  - [Functional Quality Goals](#functional-quality-goals)
-  - [Non-Functional Quality Goals](#non-functional-quality-goals)
-  - [Quality Priorities](#quality-priorities)
-- [1.5 Notation and Glossary](#15-notation-and-glossary)
-  - [Architectural Notation](#architectural-notation)
-  - [Technical Terms](#technical-terms)
-  - [FLEXT Ecosystem Terms](#flext-ecosystem-terms)
-  - [Business Terms](#business-terms)
-- [1.6 Constraints](#16-constraints)
-  - [Technical Constraints](#technical-constraints)
-  - [Business Constraints](#business-constraints)
-  - [Organizational Constraints](#organizational-constraints)
-- [1.7 Assumptions](#17-assumptions)
-  - [Technical Assumptions](#technical-assumptions)
-  - [Business Assumptions](#business-assumptions)
-  - [Environmental Assumptions](#environmental-assumptions)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [1. Introduction and Goals](#1-introduction-and-goals)

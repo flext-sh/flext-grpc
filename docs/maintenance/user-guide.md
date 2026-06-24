@@ -1,48 +1,5 @@
 # FLEXT-gRPC Documentation Maintenance User Guide
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Quick Start](#quick-start)
-  - [Installation](#installation)
-  - [Basic Usage](#basic-usage)
-- [Maintenance Workflow](#maintenance-workflow)
-  - [Daily Maintenance (5 minutes)](#daily-maintenance-5-minutes)
-  - [Weekly Maintenance (15 minutes)](#weekly-maintenance-15-minutes)
-  - [Monthly Maintenance (30 minutes)](#monthly-maintenance-30-minutes)
-- [Command Reference](#command-reference)
-  - [Audit Commands](#audit-commands)
-  - [Validation Commands](#validation-commands)
-  - [Optimization Commands](#optimization-commands)
-  - [Synchronization Commands](#synchronization-commands)
-  - [Reporting Commands](#reporting-commands)
-- [Quality Metrics Understanding](#quality-metrics-understanding)
-  - [Quality Score Components](#quality-score-components)
-  - [Interpreting Results](#interpreting-results)
-- [Troubleshooting](#troubleshooting)
-  - [Common Issues](#common-issues)
-  - [Getting Help](#getting-help)
-- [Configuration](#configuration)
-  - [Main Configuration File](#main-configuration-file)
-  - [Custom Rules](#custom-rules)
-- [Integration Examples](#integration-examples)
-  - [CI/CD Integration](#cicd-integration)
-  - [Pre-commit Hooks](#pre-commit-hooks)
-  - [Slack Notifications](#slack-notifications)
-- [Advanced Usage](#advanced-usage)
-  - [Custom Audit Rules](#custom-audit-rules)
-  - [Automated Fixes](#automated-fixes)
-  - [Integration APIs](#integration-apis)
-- [Best Practices](#best-practices)
-  - [Maintenance Frequency](#maintenance-frequency)
-  - [Quality Gates](#quality-gates)
-  - [Team Collaboration](#team-collaboration)
-  - [Performance Optimization](#performance-optimization)
-- [Support and Resources](#support-and-resources)
-  - [Documentation](#documentation)
-  - [Community Resources](#community-resources)
-  - [Professional Services](#professional-services)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - FLEXT-gRPC Documentation Maintenance User Guide
@@ -544,7 +501,7 @@ repos:
 
 ### Custom Audit Rules
 
-```python notest
+```python
 from docs import DocumentationAuditor
 
 
@@ -565,7 +522,7 @@ class CustomAuditor(DocumentationAuditor):
 
 ### Automated Fixes
 
-```python notest
+```python
 from docs import DocumentationOptimizer
 
 
@@ -581,7 +538,7 @@ class CustomOptimizer(DocumentationOptimizer):
 
 ### Integration APIs
 
-```python notest
+```python
 from docs import audit, validation, optimization, reporting
 
 # Programmatic usage

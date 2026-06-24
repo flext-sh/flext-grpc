@@ -1,42 +1,5 @@
 # flext-grpc Architecture
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Architectural Principles](#architectural-principles)
-  - [Clean Architecture Implementation](#clean-architecture-implementation)
-  - [Domain-Driven Design Patterns](#domain-driven-design-patterns)
-- [Core Components](#core-components)
-  - [Domain Entities (entities.py - 1,163 lines)](#domain-entities-entitiespy-1163-lines)
-  - [Service Layer (services.py - 1,635 lines)](#service-layer-servicespy-1635-lines)
-  - [Infrastructure Layer](#infrastructure-layer)
-- [FLEXT Ecosystem Integration](#flext-ecosystem-integration)
-  - [flext-core Foundation](#flext-core-foundation)
-  - [Service Architecture](#service-architecture)
-  - [Type Safety](#type-safety)
-- [State Management](#state-management)
-  - [Server State Machine](#server-state-machine)
-  - [Client State Machine](#client-state-machine)
-  - [Channel State Management](#channel-state-management)
-- [Memory Management](#memory-management)
-  - [Adaptive Buffers](#adaptive-buffers)
-  - [Resource Cleanup](#resource-cleanup)
-- [Performance Considerations](#performance-considerations)
-  - [Connection Pooling](#connection-pooling)
-  - [Streaming Optimizations](#streaming-optimizations)
-- [Quality Attributes](#quality-attributes)
-  - [Reliability](#reliability)
-  - [Maintainability](#maintainability)
-  - [Testability](#testability)
-- [Current Limitations](#current-limitations)
-  - [Deployment Issues](#deployment-issues)
-  - [Missing Features](#missing-features)
-- [Future Architecture Enhancements](#future-architecture-enhancements)
-  - [OpenTelemetry Integration](#opentelemetry-integration)
-  - [Security Architecture](#security-architecture)
-  - [Service Discovery](#service-discovery)
-- [Related Documentation](#related-documentation)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [flext-grpc Architecture](#flext-grpc-architecture)
@@ -83,7 +46,7 @@ Architectural design and patterns for the flext-grpc library within the FLEXT ec
 
 flext-grpc follows Clean Architecture principles with clear layer separation and dependency inversion:
 
-```python notest
+```python
 ┌─────────────────────────────────────────┐
 │              flext-grpc                 │
 ├─────────────────────────────────────────┤
@@ -211,7 +174,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 All components integrate with flext-core patterns.
 
-```python notest
+```python
 def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     return (
         validate_config(settings)

@@ -1,37 +1,5 @@
 # flext-grpc Configuration
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Configuration Overview](#configuration-overview)
-  - [Basic Configuration](#basic-configuration)
-  - [Environment Variables](#environment-variables)
-- [Configuration Parameters](#configuration-parameters)
-  - [Server Configuration](#server-configuration)
-  - [Client Configuration](#client-configuration)
-  - [Advanced Configuration](#advanced-configuration)
-- [Configuration Validation](#configuration-validation)
-  - [Built-in Validation](#built-in-validation)
-  - [Business Rules](#business-rules)
-  - [Custom Validation](#custom-validation)
-- [Environment-Specific Configurations](#environment-specific-configurations)
-  - [Development Configuration](#development-configuration)
-  - [Production Configuration](#production-configuration)
-  - [Testing Configuration](#testing-configuration)
-- [Configuration from Files](#configuration-from-files)
-  - [YAML Configuration](#yaml-configuration)
-  - [JSON Configuration](#json-configuration)
-- [Configuration Best Practices](#configuration-best-practices)
-  - [Security](#security)
-  - [Performance](#performance)
-  - [Monitoring](#monitoring)
-- [Integration with FLEXT Patterns](#integration-with-flext-patterns)
-  - [r Usage](#r-usage)
-  - [Container Integration](#container-integration)
-- [Troubleshooting Configuration](#troubleshooting-configuration)
-  - [Common Issues](#common-issues)
-  - [Debugging Configuration](#debugging-configuration)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [flext-grpc Configuration](#flext-grpc-configuration)
@@ -93,7 +61,7 @@ flext-grpc provides flexible configuration through `FlextGrpcSettings` class wit
 
 ### Basic Configuration
 
-```python notest
+```python
 from flext_grpc import FlextGrpcSettings
 
 # Simple configuration
@@ -115,7 +83,7 @@ export GRPC_MAX_WORKERS="20"
 export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"
 ```
 
-```python notest
+```python
 # Automatically loads from environment
 settings = FlextGrpcSettings()
 ```
@@ -132,7 +100,7 @@ Server bind address. Common values:
 - `FlextConstants.LOCALHOST_IP` - Local IPv4 only
 - `FlextConstants.PRODUCTION_HOST` - All interfaces (production)
 
-```python notest
+```python
 # Development
 settings = FlextGrpcSettings(host=FlextGrpcConstants.Network.DEFAULT_HOST)
 
@@ -144,7 +112,7 @@ settings = FlextGrpcSettings(host=FlextConstants.PRODUCTION_HOST)
 
 Server port number. Valid range: 1024-65535
 
-```python notest
+```python
 # Standard gRPC port
 settings = FlextGrpcSettings(port=FlextGrpcConstants.Network.DEFAULT_PORT)
 
@@ -156,7 +124,7 @@ settings = FlextGrpcSettings(port=FlextConstants.DEFAULT_HTTP_PORT)
 
 Maximum number of worker threads for request processing.
 
-```python notest
+```python
 # Development (low concurrency)
 settings = FlextGrpcSettings(max_workers=4)
 
@@ -170,7 +138,7 @@ settings = FlextGrpcSettings(max_workers=50)
 
 Request timeout in seconds.
 
-```python notest
+```python
 # Quick timeout
 settings = FlextGrpcSettings(timeout=5.0)
 
@@ -182,7 +150,7 @@ settings = FlextGrpcSettings(timeout=120.0)
 
 #### Connection Settings
 
-```python notest
+```python
 from flext_grpc import FlextGrpcSettings
 
 settings = FlextGrpcSettings(
@@ -201,7 +169,7 @@ settings = FlextGrpcSettings(
 
 #### TLS Configuration
 
-```python notest
+```python
 settings = FlextGrpcSettings(
     # TLS settings
     use_tls=True,
@@ -217,7 +185,7 @@ settings = FlextGrpcSettings(
 
 All configuration is validated on creation:
 
-```python notest
+```python
 from flext_grpc import FlextGrpcSettings
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -258,7 +226,7 @@ Configuration validation enforces these rules:
 
 ### Custom Validation
 
-```python notest
+```python
 from flext_grpc import FlextGrpcSettings
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -299,7 +267,7 @@ def validate_production_config(settings: FlextGrpcSettings) -> p.Result[bool]:
 
 ### Development Configuration
 
-```python notest
+```python
 from flext_grpc import FlextGrpcSettings
 
 
@@ -316,7 +284,7 @@ def create_dev_config() -> FlextGrpcSettings:
 
 ### Production Configuration
 
-```python notest
+```python
 def create_prod_config() -> FlextGrpcSettings:
     return FlextGrpcSettings(
         host=FlextConstants["Platform.PRODUCTION_HOST"],
@@ -339,7 +307,7 @@ def create_prod_config() -> FlextGrpcSettings:
 
 ### Testing Configuration
 
-```python notest
+```python
 def create_test_config() -> FlextGrpcSettings:
     return FlextGrpcSettings(
         host=FlextGrpcConstants.Network.DEFAULT_HOST,
@@ -373,7 +341,7 @@ grpc:
     max_message_size: 4194304 # 4MB
 ```
 
-```python notest
+```python
 import yaml
 from flext_grpc import FlextGrpcSettings
 
@@ -500,7 +468,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
 
 Configuration operations return `r` for error handling:
 
-```python notest
+```python
 from flext_grpc import create_config
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -534,7 +502,7 @@ def setup_configuration() -> p.Result[FlextGrpcSettings]:
 
 Register configuration with FlextContainer:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -576,7 +544,7 @@ if config_result.success:
 
 **Invalid Port Numbers**
 
-```python notest
+```python
 # Error: Port out of range
 settings = FlextGrpcSettings(port=70000)  # Too high
 settings = FlextGrpcSettings(port=80)  # Too low (reserved)
@@ -584,7 +552,7 @@ settings = FlextGrpcSettings(port=80)  # Too low (reserved)
 
 **TLS Certificate Issues**
 
-```python notest
+```python
 # Error: File not found
 settings = FlextGrpcSettings(
     use_tls=True,
@@ -602,7 +570,7 @@ export GRPC_PORT=${FlextConstants.DEFAULT_HTTP_PORT}  # Overwrites previous valu
 
 ### Debugging Configuration
 
-```python notest
+```python
 import os
 from flext_grpc import FlextGrpcSettings
 

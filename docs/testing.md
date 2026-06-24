@@ -1,41 +1,5 @@
 # FLEXT-gRPC Testing Plan
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Executive Summary](#executive-summary)
-- [Current Testing Status](#current-testing-status)
-  - [Test Suite Overview](#test-suite-overview)
-  - [Test Coverage by Module](#test-coverage-by-module)
-  - [Critical Test Failures (28/64)](#critical-test-failures-2864)
-- [Testing Strategy](#testing-strategy)
-  - [Test Categories](#test-categories)
-  - [Testing Priorities](#testing-priorities)
-- [Test Implementation Plan](#test-implementation-plan)
-  - [Immediate Actions (Fix Critical Failures)](#immediate-actions-fix-critical-failures)
-  - [Coverage Improvement Targets](#coverage-improvement-targets)
-  - [Integration Testing Implementation](#integration-testing-implementation)
-- [Testing Procedures](#testing-procedures)
-  - [Daily Development Testing](#daily-development-testing)
-  - [Continuous Integration Testing](#continuous-integration-testing)
-  - [Integration Testing Setup](#integration-testing-setup)
-- [Test Organization](#test-organization)
-  - [Directory Structure](#directory-structure)
-  - [Test Naming Conventions](#test-naming-conventions)
-  - [Test Categories and Markers](#test-categories-and-markers)
-- [Success Metrics](#success-metrics)
-  - [Phase 1 Success Criteria](#phase-1-success-criteria)
-  - [Coverage Targets by Module](#coverage-targets-by-module)
-  - [Test Quality Metrics](#test-quality-metrics)
-- [Risk Assessment](#risk-assessment)
-  - [High Risk](#high-risk)
-  - [Medium Risk](#medium-risk)
-  - [Low Risk](#low-risk)
-- [Future Testing Enhancements](#future-testing-enhancements)
-  - [Performance Testing](#performance-testing)
-  - [Load Testing](#load-testing)
-  - [Chaos Testing](#chaos-testing)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [FLEXT-gRPC Testing Plan](#flext-grpc-testing-plan)
@@ -311,7 +275,7 @@ TOTAL                                          1798    956    380     14    39%
 
 **Test Structure**:
 
-```python notest
+```python
 def test_service_initialization():
     """Test FlextGrpcServices proper initialization."""
     service = FlextGrpcServices()
@@ -343,7 +307,7 @@ def test_service_lifecycle():
 
 **Test Structure**:
 
-```python notest
+```python
 def test_create_server_valid_config():
     """Test server creation with valid configuration."""
     server = create_server("localhost", 50051, 10)
@@ -371,7 +335,7 @@ def test_create_client_target_validation():
 
 **Test Structure**:
 
-```python notest
+```python
 def test_server_entity_lifecycle():
     """Test server entity state management."""
     server = FlextGrpcEntities.Server(
@@ -410,7 +374,7 @@ def test_server_entity_lifecycle():
 
 #### Real gRPC Server Testing
 
-```python notest
+```python
 import pytest
 import grpc
 from flext_grpc import create_server
@@ -432,7 +396,7 @@ async def test_real_grpc_server_operations(grpc_server):
 
 #### Streaming Operations Testing
 
-```python notest
+```python
 @pytest.mark.asyncio
 async def test_server_streaming():
     """Test server streaming operations."""
@@ -516,7 +480,7 @@ PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
 
 #### gRPC Test Server
 
-```python notest
+```python
 # conftest.py
 @pytest.fixture
 async def grpc_server():
@@ -537,7 +501,7 @@ async def grpc_server():
 
 #### Test Client Setup
 
-```python notest
+```python
 @pytest.fixture
 async def grpc_client(grpc_server):
     """gRPC client connected to test server."""
@@ -579,7 +543,7 @@ tests/
 
 ### Test Naming Conventions
 
-```python notest
+```python
 def test_{module}_{operation}_{condition}():
     """Test {module} {operation} under {condition}."""
 
@@ -592,7 +556,7 @@ def test_{operation}_with_{configuration}():
 
 ### Test Categories and Markers
 
-```python notest
+```python
 @pytest.mark.unit
 def test_unit_functionality():
     """Fast unit tests."""
@@ -659,7 +623,7 @@ def test_known_issue():
 
 ### Performance Testing
 
-```python notest
+```python
 def test_grpc_performance_under_load():
     """Test gRPC operations under high load."""
     # Concurrent client connections
@@ -670,7 +634,7 @@ def test_grpc_performance_under_load():
 
 ### Load Testing
 
-```python notest
+```python
 def test_grpc_scalability_limits():
     """Test gRPC system scalability limits."""
     # Maximum concurrent connections
@@ -681,7 +645,7 @@ def test_grpc_scalability_limits():
 
 ### Chaos Testing
 
-```python notest
+```python
 def test_grpc_fault_tolerance():
     """Test gRPC system fault tolerance."""
     # Network interruptions

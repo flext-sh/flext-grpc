@@ -1,41 +1,5 @@
 # flext-grpc Development Guide
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Development Setup](#development-setup)
-  - [Prerequisites](#prerequisites)
-  - [Initial Setup](#initial-setup)
-  - [Development Environment](#development-environment)
-- [Development Workflow](#development-workflow)
-  - [Essential Commands](#essential-commands)
-  - [Quality Gates](#quality-gates)
-- [Code Standards](#code-standards)
-  - [FLEXT-Core Compliance](#flext-core-compliance)
-  - [Type Annotations](#type-annotations)
-  - [Domain Patterns](#domain-patterns)
-- [Testing Standards](#testing-standards)
-  - [Test Structure](#test-structure)
-  - [Test Writing Guidelines](#test-writing-guidelines)
-  - [Test Markers](#test-markers)
-- [Architecture Guidelines](#architecture-guidelines)
-  - [Layer Separation](#layer-separation)
-  - [Dependency Injection](#dependency-injection)
-- [Documentation Standards](#documentation-standards)
-  - [Docstring Requirements](#docstring-requirements)
-  - [Code Comments](#code-comments)
-- [Contributing Process](#contributing-process)
-  - [Development Workflow](#development-workflow)
-  - [Code Review Guidelines](#code-review-guidelines)
-  - [Commit Message Standards](#commit-message-standards)
-- [Current Development Priorities](#current-development-priorities)
-  - [Critical Issues](#critical-issues)
-  - [Short-term Enhancements](#short-term-enhancements)
-  - [Medium-term Features](#medium-term-features)
-- [Troubleshooting Development Issues](#troubleshooting-development-issues)
-  - [Common Issues](#common-issues)
-  - [Development Tools](#development-tools)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [flext-grpc Development Guide](#flext-grpc-development-guide)
@@ -196,7 +160,7 @@ make test                  # All tests pass (currently 28 failing, needs bug fix
 
 All code must follow flext-core architectural patterns:
 
-```python notest
+```python
 # ✅ CORRECT - Railway-oriented programming
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -244,7 +208,7 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
 
 Complete type annotations are mandatory:
 
-```python notest
+```python
 from typing import Protocol, TypeVar, Generic
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -290,7 +254,7 @@ class GrpcService(Generic[T]):
 
 Follow Domain-Driven Design patterns:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -362,7 +326,7 @@ tests/
 
 ### Test Writing Guidelines
 
-```python notest
+```python
 import pytest
 from flext_core import FlextBus
 from flext_core import FlextSettings
@@ -439,7 +403,7 @@ class TestGrpcServer:
 
 Use pytest markers for test categorization:
 
-```python notest
+```python
 import pytest
 
 
@@ -479,7 +443,7 @@ def test_performance_benchmark():
 
 Maintain strict layer boundaries:
 
-```python notest
+```python
 # Domain Layer - No dependencies on other layers
 class FlextGrpcServer(FlextModels.Entity):
     # Pure business logic, no infrastructure concerns
@@ -506,7 +470,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use FlextContainer for all dependencies:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -560,7 +524,7 @@ class GrpcServiceManager:
 
 All public APIs require comprehensive docstrings:
 
-```python notest
+```python
 from flext_core import FlextBus
 from flext_core import FlextSettings
 from flext_core import FlextConstants
@@ -618,7 +582,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use comments sparingly for complex business logic:
 
-```python notest
+```python
 def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
     """Validate server state transition."""
 

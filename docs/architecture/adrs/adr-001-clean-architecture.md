@@ -1,26 +1,5 @@
 # ADR-001: Clean Architecture Adoption
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Status](#status)
-- [Context](#context)
-- [Decision](#decision)
-- [Consequences](#consequences)
-  - [Positive Consequences](#positive-consequences)
-  - [Negative Consequences](#negative-consequences)
-- [Alternatives Considered](#alternatives-considered)
-  - [Traditional Layered Architecture](#traditional-layered-architecture)
-  - [Hexagonal Architecture](#hexagonal-architecture)
-  - [Onion Architecture](#onion-architecture)
-  - [Microservices Architecture](#microservices-architecture)
-- [Implementation Details](#implementation-details)
-  - [Layer Boundaries](#layer-boundaries)
-  - [Dependency Rules](#dependency-rules)
-  - [Interface Design](#interface-design)
-- [References](#references)
-- [Notes](#notes)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [ADR-001: Clean Architecture Adoption](#adr-001-clean-architecture-adoption)
@@ -75,7 +54,7 @@ We needed an architectural approach that would:
 
 Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapters) with the following layer structure:
 
-```python notest
+```python
 ┌─────────────────────────────────────────┐
 │              FLEXT-gRPC                 │
 ├─────────────────────────────────────────┤
@@ -231,7 +210,7 @@ With the following principles:
 
 ### Interface Design
 
-```python notest
+```python
 # Domain defines interfaces
 class ServerInterface(Protocol):
     def start(self) -> p.Result[bool]: ...

@@ -1,42 +1,5 @@
 # ADR-003: Protocol Buffer Generation Strategy
 
-<!-- TOC START -->
-- [Table of Contents](#table-of-contents)
-- [Status](#status)
-- [Context](#context)
-- [Decision](#decision)
-  - [Version Management](#version-management)
-  - [Generation Process](#generation-process)
-  - [Code Organization](#code-organization)
-  - [Maintenance Strategy](#maintenance-strategy)
-- [Consequences](#consequences)
-  - [Positive Consequences](#positive-consequences)
-  - [Negative Consequences](#negative-consequences)
-- [Alternatives Considered](#alternatives-considered)
-  - [Dynamic Version Resolution](#dynamic-version-resolution)
-  - [Manual Code Generation](#manual-code-generation)
-  - [Monorepo with Shared Versions](#monorepo-with-shared-versions)
-  - [Protobuf as Separate Package](#protobuf-as-separate-package)
-- [Implementation Plan](#implementation-plan)
-  - [Phase 1: Immediate Fix (Current)](#phase-1-immediate-fix-current)
-  - [Phase 2: Automation (Next Sprint)](#phase-2-automation-next-sprint)
-  - [Phase 3: Optimization (Future)](#phase-3-optimization-future)
-- [Technical Details](#technical-details)
-  - [Version Pinning Strategy](#version-pinning-strategy)
-  - [Docker Generation Environment](#docker-generation-environment)
-  - [CI/CD Integration](#cicd-integration)
-- [Risks and Mitigations](#risks-and-mitigations)
-  - [Version Lock-in Risk](#version-lock-in-risk)
-  - [Docker Complexity Risk](#docker-complexity-risk)
-  - [Ecosystem Compatibility Risk](#ecosystem-compatibility-risk)
-- [Success Criteria](#success-criteria)
-  - [Technical Success](#technical-success)
-  - [Quality Success](#quality-success)
-  - [Process Success](#process-success)
-- [References](#references)
-- [Notes](#notes)
-<!-- TOC END -->
-
 ## Table of Contents
 
 - [ADR-003: Protocol Buffer Generation Strategy](#adr-003-protocol-buffer-generation-strategy)
