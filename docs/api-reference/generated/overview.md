@@ -9,7 +9,7 @@
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
 - Main facades: _none_
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpcUtilities`, `FlextGrpcTimeoutError`, `FlextGrpcServer`, `FlextGrpcConstants`, `FlextGrpc`, `FlextGrpcConnectionError`, `grpc`, `FlextGrpcError`, `FlextGrpcTypes`, `FlextGrpcModels` (+11 more)
+- Public symbol exports: `GrpcValidationError`, `FlextGrpcConstants`, `FlextGrpcError`, `FlextGrpcUtilitiesGrpc`, `FlextGrpcConnectionError`, `FlextGrpcTimeoutError`, `FlextGrpcApiRuntime`, `FlextGrpc`, `FlextGrpcClient`, `FlextGrpcConnectionPool` (+11 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `15`
 
