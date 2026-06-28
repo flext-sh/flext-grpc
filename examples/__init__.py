@@ -8,8 +8,23 @@ import typing as _t
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if _t.TYPE_CHECKING:
-    from examples.typings import CompleteSetup, ExamplesFlextGrpcTypes, t
-    from flext_grpc import c, d, e, h, m, p, r, s, u, x
+    from examples.typings import (
+        CompleteSetup as CompleteSetup,
+        ExamplesFlextGrpcTypes as ExamplesFlextGrpcTypes,
+        t as t,
+    )
+    from flext_grpc import (
+        c as c,
+        d as d,
+        e as e,
+        h as h,
+        m as m,
+        p as p,
+        r as r,
+        s as s,
+        u as u,
+        x as x,
+    )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
         ".typings": (
