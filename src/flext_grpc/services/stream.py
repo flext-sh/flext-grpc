@@ -8,8 +8,10 @@ from collections.abc import (
     MutableMapping,
 )
 
-from flext_grpc import FlextGrpcMetrics, GrpcValidationError, c, e, m, p, r, t, u
+from flext_grpc import c, e, m, p, r, t, u
 from flext_grpc.base import s
+from flext_grpc.errors import GrpcValidationError
+from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class FlextGrpcStream(s):

@@ -17,15 +17,17 @@ from typing import NoReturn
 
 from flext_core import r
 from flext_grpc import (
-    FlextGrpcConfigurationError,
-    FlextGrpcConnectionError,
     FlextGrpcConstants,
-    FlextGrpcError,
-    FlextGrpcTimeoutError,
-    GrpcValidationError,
     p,
     t,
     u,
+)
+from flext_grpc.errors import (
+    FlextGrpcConfigurationError,
+    FlextGrpcConnectionError,
+    FlextGrpcError,
+    FlextGrpcTimeoutError,
+    GrpcValidationError,
 )
 
 logger = u.fetch_logger(__name__)

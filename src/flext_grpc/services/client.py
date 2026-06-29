@@ -7,19 +7,11 @@ from collections.abc import (
     MutableMapping,
 )
 
-from flext_grpc import (
-    FlextGrpcConnectionPool,
-    FlextGrpcMetrics,
-    c,
-    e,
-    m,
-    p,
-    r,
-    t,
-    u,
-)
+from flext_grpc import c, e, m, p, r, t, u
 from flext_grpc.base import s
 from flext_grpc.proto.stubs import FlextGrpcServiceStub
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class FlextGrpcClient(s):

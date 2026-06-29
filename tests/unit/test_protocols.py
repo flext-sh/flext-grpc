@@ -11,7 +11,7 @@ from typing import is_protocol
 
 from flext_tests import tm
 
-from tests import p
+from tests.protocols import p
 
 
 class TestsFlextGrpcProtocolsUnit:

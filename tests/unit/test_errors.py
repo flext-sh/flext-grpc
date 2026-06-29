@@ -37,16 +37,15 @@ SPDX-License-Identifier: MIT.
 
 from __future__ import annotations
 
-from flext_tests import tm
+from flext_tests import e, tm
 
-from flext_grpc import (
+from flext_grpc.errors import (
     FlextGrpcConfigurationError,
     FlextGrpcConnectionError,
     FlextGrpcError,
     FlextGrpcTimeoutError,
     GrpcValidationError,
 )
-from tests import e
 
 
 class TestsFlextGrpcErrors:

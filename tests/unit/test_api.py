@@ -9,7 +9,8 @@ from flext_tests import tm
 from pydantic import ValidationError
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests import m, t
+from tests.models import m
+from tests.typings import t
 
 
 class TestsFlextGrpcApi:

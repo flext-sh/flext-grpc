@@ -10,9 +10,9 @@ import pytest
 
 from flext_grpc import (
     FlextGrpc,
-    FlextGrpcConnectionPool,
-    FlextGrpcMetrics,
 )
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 @pytest.fixture(name="grpc_facade")

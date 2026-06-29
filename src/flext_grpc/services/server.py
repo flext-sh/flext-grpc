@@ -8,19 +8,13 @@ from collections.abc import (
 )
 from concurrent.futures import ThreadPoolExecutor
 
-from flext_grpc import (
-    FlextGrpcMetrics,
-    c,
-    m,
-    p,
-    r,
-    u,
-)
+from flext_grpc import c, m, p, r, u
 from flext_grpc.base import s
 from flext_grpc.proto.stubs import (
     FlextGrpcServiceServicer,
     add_FlextGrpcServiceServicer_to_server,
 )
+from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class FlextGrpcServer(s):

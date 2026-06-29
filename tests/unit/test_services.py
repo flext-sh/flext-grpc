@@ -4,8 +4,10 @@ from __future__ import annotations
 
 from flext_tests import tm
 
-from flext_grpc import FlextGrpc, FlextGrpcConnectionPool, FlextGrpcMetrics
-from tests import m
+from flext_grpc import FlextGrpc
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
+from tests.models import m
 
 
 class TestsFlextGrpcServices:
