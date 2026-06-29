@@ -172,8 +172,8 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Key Integration Points**:
 
-- FlexCore (Go) service communication (port ${FlextConstants.DEFAULT_HTTP_PORT})
-- FLEXT Service (Go/Python) integration (port 8081)
+- FLEXT service communication (port ${FlextConstants.DEFAULT_HTTP_PORT})
+- Python service integration (port 8081)
 - flext-core foundation pattern usage
 - flext-observability monitoring integration
 
@@ -188,16 +188,16 @@ from datetime import datetime, timezone
 container = FlextContainer.get_global()
 platform = FlextGrpcPlatform(container=container)
 
-# Client for FlexCore service
-flexcore_client = FlextGrpcClient(
-    id="flexcore-client",
+# Client for a FLEXT service
+service_client = FlextGrpcClient(
+    id="service-client",
     host=FlextConstants["Platform.DEFAULT_HOST"],
-    port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
+    port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],
     created_at=datetime.now(timezone.utc),
 )
 
 # Service operations (when Protocol Buffers are implemented)
-# result = platform.service.execute("connect", flexcore_client)
+# result = platform.service.execute("connect", service_client)
 ```
 
 ### Configuration Management
