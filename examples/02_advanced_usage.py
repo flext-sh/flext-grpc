@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_cli import u as cli_u
 from flext_core import p, r
 from flext_grpc import (
     FlextGrpc,
@@ -22,6 +23,11 @@ from flext_grpc import (
     c,
     t,
 )
+
+
+def _emit(message: str) -> None:
+    """Emit example output through the canonical CLI facade."""
+    cli_u.Cli.formatters_print(message)
 
 
 class GrpcServerManager:
@@ -148,9 +154,9 @@ class AdvancedGrpcOperations:
             )
             if stream_result.success:
                 stream = stream_result.value
-                print(f"Created {stream_type} stream: {stream.id}")
+                _emit(f"Created {stream_type} stream: {stream.id}")
             else:
-                print(f"Failed to create {stream_type} stream: {stream_result.error}")
+                _emit(f"Failed to create {stream_type} stream: {stream_result.error}")
 
 
 def example_1_server_pool() -> None:
@@ -158,16 +164,16 @@ def example_1_server_pool() -> None:
     manager = GrpcServerManager()
     server_results = manager.create_server_pool(base_port=8000, count=3)
     successful_creations = sum(1 for result in server_results if result.success)
-    print(f"Created {successful_creations}/{len(server_results)} servers")
+    _emit(f"Created {successful_creations}/{len(server_results)} servers")
     start_results = manager.start_all_servers()
     successful_starts = sum(1 for success in start_results.values() if success)
-    print(f"Started {successful_starts}/{len(start_results)} servers")
+    _emit(f"Started {successful_starts}/{len(start_results)} servers")
     status = manager.server_status()
     for server_id, info in status.items():
-        print(f"Server {server_id}: {info['state']}, running: {info['is_running']}")
+        _emit(f"Server {server_id}: {info['state']}, running: {info['is_running']}")
     stop_results = manager.stop_all_servers()
     successful_stops = sum(1 for success in stop_results.values() if success)
-    print(f"Stopped {successful_stops}/{len(stop_results)} servers")
+    _emit(f"Stopped {successful_stops}/{len(stop_results)} servers")
 
 
 def example_2_client_pool() -> None:
@@ -181,9 +187,9 @@ def example_2_client_pool() -> None:
     )
     if setup_result.success:
         setup = setup_result.value
-        print(f"Created setup for target: {setup.target}")
+        _emit(f"Created setup for target: {setup.target}")
     else:
-        print(f"Setup creation failed: {setup_result.error}")
+        _emit(f"Setup creation failed: {setup_result.error}")
     ops.demonstrate_streaming()
 
 
@@ -201,12 +207,12 @@ def example_3_service_creation() -> None:
         if service_result.success:
             service = service_result.value
             created_services.append(service)
-            print(
+            _emit(
                 f"Created service: {service.name} with {len(service.methods)} methods",
             )
         else:
-            print(f"Failed to create {service_name}: {service_result.error}")
-    print(f"Successfully created {len(created_services)} services")
+            _emit(f"Failed to create {service_name}: {service_result.error}")
+    _emit(f"Successfully created {len(created_services)} services")
 
 
 def example_4_streaming() -> None:
@@ -227,42 +233,36 @@ def example_4_streaming() -> None:
         if stream_result.success:
             stream = stream_result.value
             created_streams.append(stream)
-            print(f"Created {stream_type} stream for method: {method_name}")
+            _emit(f"Created {stream_type} stream for method: {method_name}")
         else:
-            print(f"Failed to create {stream_type} stream: {stream_result.error}")
-    print(f"Successfully created {len(created_streams)} streaming operations")
+            _emit(f"Failed to create {stream_type} stream: {stream_result.error}")
+    _emit(f"Successfully created {len(created_streams)} streaming operations")
 
 
 def example_5_error_handling() -> None:
     """Example 5: Comprehensive error handling through facade."""
     grpc = FlextGrpc()
-    print("Testing various error scenarios through FlextGrpc facade...")
+    _emit("Testing various error scenarios through FlextGrpc facade...")
     invalid_server_result = grpc.create_server(host="", port=0)
     if invalid_server_result.failure:
-        print(
-            f"✓ Invalid server creation properly failed: {invalid_server_result.error}",
-        )
+        _emit(f"Invalid server creation properly failed: {invalid_server_result.error}")
     invalid_client_result = grpc.create_client(target="")
     if invalid_client_result.failure:
-        print(
-            f"✓ Invalid client creation properly failed: {invalid_client_result.error}",
-        )
+        _emit(f"Invalid client creation properly failed: {invalid_client_result.error}")
     invalid_channel_result = grpc.create_channel(target="")
     if invalid_channel_result.failure:
-        print(
-            f"✓ Invalid channel creation properly failed: {invalid_channel_result.error}",
+        _emit(
+            f"Invalid channel creation properly failed: {invalid_channel_result.error}"
         )
     invalid_service_result = grpc.create_service(name="", methods=[])
     if invalid_service_result.failure:
-        print(
-            f"✓ Invalid service creation properly failed: {invalid_service_result.error}",
+        _emit(
+            f"Invalid service creation properly failed: {invalid_service_result.error}"
         )
     invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.failure:
-        print(
-            f"✓ Invalid stream creation properly failed: {invalid_stream_result.error}",
-        )
-    print("Error handling validation completed - all invalid inputs properly rejected")
+        _emit(f"Invalid stream creation properly failed: {invalid_stream_result.error}")
+    _emit("Error handling validation completed - all invalid inputs properly rejected")
 
 
 def main() -> None:

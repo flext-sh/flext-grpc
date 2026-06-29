@@ -12,7 +12,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from flext_cli import u as cli_u
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
+
+
+def _emit(message: str) -> None:
+    """Emit example output through the canonical CLI facade."""
+    cli_u.Cli.formatters_print(message)
 
 
 def example_1_basic_entities() -> None:
@@ -27,7 +33,7 @@ def example_1_basic_entities() -> None:
         server = server_result.value
         validation_result = server.validate_business_rules()
         if validation_result.failure:
-            print(f"Server validation failed: {validation_result.error}")
+            _emit(f"Server validation failed: {validation_result.error}")
     grpc.create_channel(
         target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
     )
@@ -35,32 +41,32 @@ def example_1_basic_entities() -> None:
         target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
     )
     if client_result.failure:
-        print(f"Client creation failed: {client_result.error}")
+        _emit(f"Client creation failed: {client_result.error}")
     service_result = grpc.create_service(
         name="UserService",
         methods=["GetUser", "CreateUser", "UpdateUser", "DeleteUser"],
     )
     if service_result.failure:
-        print(f"Service creation failed: {service_result.error}")
+        _emit(f"Service creation failed: {service_result.error}")
 
 
 def example_2_configuration() -> None:
     """Example 2: Using configuration through FlextGrpc facade."""
     grpc = FlextGrpc()
     default_config = FlextGrpcSettings()
-    print(
+    _emit(
         f"Created settings with host: {default_config.network.host}, port: {default_config.network.port}",
     )
     custom_config = FlextGrpcSettings.model_validate({
         "network": {"host": "example.com", "port": 9090},
         "performance": {"max_workers": 20},
     })
-    print(
+    _emit(
         f"Created custom settings: {custom_config.network.host}:{custom_config.network.port}",
     )
     invalid_server_result = grpc.create_server(host="", port=0)
     if invalid_server_result.failure:
-        print(f"Expected validation failure: {invalid_server_result.error}")
+        _emit(f"Expected validation failure: {invalid_server_result.error}")
 
 
 def example_3_operations() -> None:
@@ -77,10 +83,10 @@ def example_3_operations() -> None:
             started_server = start_result.value
             validation_result = started_server.validate_business_rules()
             if validation_result.success:
-                print(f"Server status: {started_server.state}")
+                _emit(f"Server status: {started_server.state}")
             stop_result = grpc.stop_server(started_server)
             if stop_result.success:
-                print("Server stopped successfully")
+                _emit("Server stopped successfully")
     client_result = grpc.create_client(
         target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070",
     )
@@ -96,10 +102,10 @@ def example_3_operations() -> None:
                 {"request_id": "12345"},
             )
             if call_result.success:
-                print(f"Call result: {call_result.value}")
+                _emit(f"Call result: {call_result.value}")
             disconnect_result = grpc.disconnect_client(connected_client)
             if disconnect_result.success:
-                print("Client disconnected successfully")
+                _emit("Client disconnected successfully")
 
 
 def example_4_validation() -> None:
@@ -114,10 +120,10 @@ def example_4_validation() -> None:
         valid_server = valid_server_result.value
         validation = valid_server.validate_business_rules()
         if validation.success:
-            print("Valid server passed validation")
+            _emit("Valid server passed validation")
     invalid_server_result = grpc.create_server(host="", port=0, max_workers=0)
     if invalid_server_result.failure:
-        print(
+        _emit(
             f"Invalid server creation failed as expected: {invalid_server_result.error}",
         )
     valid_channel_result = grpc.create_channel(
@@ -127,10 +133,10 @@ def example_4_validation() -> None:
         valid_channel = valid_channel_result.value
         validation = valid_channel.validate_business_rules()
         if validation.success:
-            print("Valid channel passed validation")
+            _emit("Valid channel passed validation")
     invalid_channel_result = grpc.create_channel(target="")
     if invalid_channel_result.failure:
-        print(
+        _emit(
             f"Invalid channel creation failed as expected: {invalid_channel_result.error}",
         )
 
@@ -143,18 +149,18 @@ def example_5_state_transitions() -> None:
     )
     if channel_result.success:
         channel = channel_result.value
-        print(f"Channel created with state: {channel.state}")
+        _emit(f"Channel created with state: {channel.state}")
     server_result = grpc.create_server()
     if server_result.success:
         server = server_result.value
         start_result = grpc.start_server(server)
         if start_result.success:
             started_server = start_result.value
-            print(f"Server started with state: {started_server.state}")
+            _emit(f"Server started with state: {started_server.state}")
             stop_result = grpc.stop_server(started_server)
             if stop_result.success:
                 stopped_server = stop_result.value
-                print(f"Server stopped with state: {stopped_server.state}")
+                _emit(f"Server stopped with state: {stopped_server.state}")
 
 
 def main() -> None:
