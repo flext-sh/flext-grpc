@@ -11,10 +11,7 @@ _LOCAL_LAZY_IMPORTS = {
 }
 
 FLEXT_GRPC_LAZY_IMPORTS = merge_lazy_imports(
-    (
-        "._utilities",
-        ".services",
-    ),
+    (".services",),
     _LOCAL_LAZY_IMPORTS,
     exclude_names=(
         "cleanup_submodule_namespace",
