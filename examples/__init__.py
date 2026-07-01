@@ -9,7 +9,6 @@ from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
     from examples.typings import (
-        CompleteSetup as CompleteSetup,
         ExamplesFlextGrpcTypes as ExamplesFlextGrpcTypes,
         t as t,
     )
@@ -28,7 +27,6 @@ if TYPE_CHECKING:
 _LAZY_IMPORTS = build_lazy_import_map(
     {
         ".typings": (
-            "CompleteSetup",
             "ExamplesFlextGrpcTypes",
             "t",
         ),
