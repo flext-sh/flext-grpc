@@ -6,7 +6,7 @@ from flext_core import FlextUtilities
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
-class FlextGrpcUtilities(FlextUtilities):
+class FlextGrpcUtilities(FlextUtilities, FlextGrpcUtilitiesGrpc):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(FlextGrpcUtilitiesGrpc):
