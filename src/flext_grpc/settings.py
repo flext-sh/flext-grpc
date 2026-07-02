@@ -12,8 +12,8 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from flext_core import FlextSettingsBase, u
-from flext_grpc import c, m, p, r, t
+from flext_core import FlextSettingsBase
+from flext_grpc import c, m, p, r, t, u
 
 
 class FlextGrpcSettings(FlextSettingsBase):
