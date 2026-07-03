@@ -11,8 +11,8 @@ from types import ModuleType
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from flext_core import u
 from flext_grpc import c, m, p, r, t
+from flext_grpc.utilities import u
 
 if TYPE_CHECKING:
     from flext_grpc import FlextGrpcModels
