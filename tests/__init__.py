@@ -25,58 +25,46 @@ if TYPE_CHECKING:
         x as x,
     )
 
-    from flext_grpc.tests.base import (
+    from tests.base import (
         TestsFlextGrpcServiceBase as TestsFlextGrpcServiceBase,
         s as s,
     )
-    from flext_grpc.tests.constants import (
+    from tests.constants import (
         TestsFlextGrpcConstants as TestsFlextGrpcConstants,
         c as c,
     )
-    from flext_grpc.tests.models import (
-        TestsFlextGrpcModels as TestsFlextGrpcModels,
-        m as m,
-    )
-    from flext_grpc.tests.protocols import (
+    from tests.models import TestsFlextGrpcModels as TestsFlextGrpcModels, m as m
+    from tests.protocols import (
         TestsFlextGrpcProtocols as TestsFlextGrpcProtocols,
         p as p,
     )
-    from flext_grpc.tests.settings import (
-        TestsFlextGrpcSettings as TestsFlextGrpcSettings,
-    )
-    from flext_grpc.tests.typings import (
-        TestsFlextGrpcTypes as TestsFlextGrpcTypes,
-        t as t,
-    )
-    from flext_grpc.tests.unit.test_api import TestsFlextGrpcApi as TestsFlextGrpcApi
-    from flext_grpc.tests.unit.test_config import (
-        TestsFlextGrpcConfig as TestsFlextGrpcConfig,
-    )
-    from flext_grpc.tests.unit.test_constants import (
+    from tests.settings import TestsFlextGrpcSettings as TestsFlextGrpcSettings
+    from tests.typings import TestsFlextGrpcTypes as TestsFlextGrpcTypes, t as t
+    from tests.unit.test_api import TestsFlextGrpcApi as TestsFlextGrpcApi
+    from tests.unit.test_config import TestsFlextGrpcConfig as TestsFlextGrpcConfig
+    from tests.unit.test_constants import (
         TestsFlextGrpcConstantsUnit as TestsFlextGrpcConstantsUnit,
     )
-    from flext_grpc.tests.unit.test_entities import (
+    from tests.unit.test_entities import (
         TestsFlextGrpcEntities as TestsFlextGrpcEntities,
     )
-    from flext_grpc.tests.unit.test_errors import (
-        TestsFlextGrpcErrors as TestsFlextGrpcErrors,
-    )
-    from flext_grpc.tests.unit.test_models import (
+    from tests.unit.test_errors import TestsFlextGrpcErrors as TestsFlextGrpcErrors
+    from tests.unit.test_models import (
         TestsFlextGrpcModelsUnit as TestsFlextGrpcModelsUnit,
     )
-    from flext_grpc.tests.unit.test_protocols import (
+    from tests.unit.test_protocols import (
         TestsFlextGrpcProtocolsUnit as TestsFlextGrpcProtocolsUnit,
     )
-    from flext_grpc.tests.unit.test_services import (
+    from tests.unit.test_services import (
         TestsFlextGrpcServices as TestsFlextGrpcServices,
     )
-    from flext_grpc.tests.unit.test_typings import (
+    from tests.unit.test_typings import (
         TestsFlextGrpcTypesUnit as TestsFlextGrpcTypesUnit,
     )
-    from flext_grpc.tests.unit.test_utilities import (
+    from tests.unit.test_utilities import (
         TestsFlextGrpcUtilitiesUnit as TestsFlextGrpcUtilitiesUnit,
     )
-    from flext_grpc.tests.utilities import (
+    from tests.utilities import (
         TestsFlextGrpcUtilities as TestsFlextGrpcUtilities,
         u as u,
     )

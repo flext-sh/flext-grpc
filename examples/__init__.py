@@ -8,15 +8,39 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc.examples.typings import (
+    from examples.typings import (
         ExamplesFlextGrpcTypes as ExamplesFlextGrpcTypes,
         t as t,
+    )
+    from flext_core import (
+        c as c,
+        d as d,
+        e as e,
+        h as h,
+        m as m,
+        p as p,
+        r as r,
+        s as s,
+        u as u,
+        x as x,
     )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
         ".typings": (
             "ExamplesFlextGrpcTypes",
             "t",
+        ),
+        "flext_core": (
+            "c",
+            "d",
+            "e",
+            "h",
+            "m",
+            "p",
+            "r",
+            "s",
+            "u",
+            "x",
         ),
     },
 )
