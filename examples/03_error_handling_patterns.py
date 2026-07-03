@@ -7,7 +7,7 @@ Clean Architecture and Domain-Driven Design principles.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
+from flext_core import r
 """
 
 from __future__ import annotations
@@ -15,31 +15,34 @@ from __future__ import annotations
 import time
 from typing import NoReturn
 
-from flext_core import FlextConstants, FlextLogger, r
-
+from flext_core import r
 from flext_grpc import (
-    FlextGrpcConnectionError,
     FlextGrpcConstants,
-    FlextGrpcError,
-    FlextGrpcSettingsurationError,
-    FlextGrpcTimeoutError,
-    FlextGrpcValidationError,
+    p,
     t,
+    u,
+)
+from flext_grpc.errors import (
+    FlextGrpcConfigurationError,
+    FlextGrpcConnectionError,
+    FlextGrpcError,
+    FlextGrpcTimeoutError,
+    GrpcValidationError,
 )
 
-logger = FlextLogger(__name__)
+logger = u.fetch_logger(__name__)
 
 
-def validate_user_input(username: str, email: str) -> r[t.Grpc.Headers]:
-    """Validate user input with FlextGrpcValidationError."""
+def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
+    """Validate user input with GrpcValidationError."""
 
     def _raise_username_error() -> NoReturn:
         msg = "Username cannot be empty"
-        raise FlextGrpcValidationError(msg, field="username")
+        raise GrpcValidationError(msg, field="username")
 
     def _raise_email_error() -> NoReturn:
         msg = "Invalid email format"
-        raise FlextGrpcValidationError(msg, field="email")
+        raise GrpcValidationError(msg, field="email")
 
     try:
         if not username:
@@ -47,25 +50,21 @@ def validate_user_input(username: str, email: str) -> r[t.Grpc.Headers]:
         if not email or "@" not in email:
             _raise_email_error()
         return r[t.Grpc.Headers].ok({"username": username, "email": email})
-    except FlextGrpcValidationError as e:
-        logger.exception("Validation failed", field=e.field, error=str(e))
+    except GrpcValidationError as e:
+        logger.exception("Validation failed", field=e.field or "", error=str(e))
         return r[t.Grpc.Headers].fail(f"Validation error: {e}")
 
 
-def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
+def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]:
     """Create server configuration with proper error handling."""
 
     def _raise_port_error() -> NoReturn:
         msg = "Port must be between 1 and 65535"
-        raise FlextGrpcSettingsurationError(msg, config_key="port")
+        raise FlextGrpcConfigurationError(msg, config_key="port")
 
     def _raise_workers_error() -> NoReturn:
         msg = "Workers must be positive"
-        raise FlextGrpcSettingsurationError(msg, config_key="max_workers")
-
-    def _raise_config_error(error_msg: str) -> NoReturn:
-        msg: str = f"Failed to create config: {error_msg}"
-        raise FlextGrpcSettingsurationError(msg)
+        raise FlextGrpcConfigurationError(msg, config_key="max_workers")
 
     try:
         max_port = 65535
@@ -74,20 +73,20 @@ def create_server_config(port: int, workers: int) -> r[t.Grpc.ConfigDict]:
         if workers < 1:
             _raise_workers_error()
         try:
-            config: t.Grpc.ConfigDict = {
-                "host": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_HOST,
+            settings: t.Grpc.ConfigDict = {
+                "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
                 "port": port,
                 "max_workers": workers,
             }
-            return r[t.Grpc.ConfigDict].ok(config)
+            return r[t.Grpc.ConfigDict].ok(settings)
         except Exception as e:
             return r[t.Grpc.ConfigDict].fail(str(e))
-    except FlextGrpcSettingsurationError as e:
-        logger.exception("Configuration error", key=e.config_key, error=str(e))
+    except FlextGrpcConfigurationError as e:
+        logger.exception("Configuration error", key=e.config_key or "", error=str(e))
         return r[t.Grpc.ConfigDict].fail(f"Configuration error: {e}")
 
 
-def simulate_connection_error() -> r[str]:
+def simulate_connection_error() -> p.Result[str]:
     """Simulate a connection error scenario."""
 
     def _raise_connection_error() -> NoReturn:
@@ -101,7 +100,7 @@ def simulate_connection_error() -> r[str]:
         return r[str].fail(f"Connection error: {e}")
 
 
-def simulate_timeout_error() -> r[str]:
+def simulate_timeout_error() -> p.Result[str]:
     """Simulate a timeout error scenario."""
 
     def _raise_timeout_error() -> NoReturn:
@@ -115,7 +114,7 @@ def simulate_timeout_error() -> r[str]:
         return r[str].fail(f"Timeout error: {e}")
 
 
-def handle_generic_grpc_error() -> r[str]:
+def handle_generic_grpc_error() -> p.Result[str]:
     """Handle generic gRPC errors."""
 
     def _raise_generic_error() -> NoReturn:
@@ -129,17 +128,18 @@ def handle_generic_grpc_error() -> r[str]:
         return r[str].fail(f"gRPC error: {e}")
 
 
-def comprehensive_error_handling_pipeline() -> r[str]:
+def comprehensive_error_handling_pipeline() -> p.Result[str]:
     """Demonstrate comprehensive error handling in a realistic pipeline."""
     logger.info("Starting comprehensive error handling pipeline")
     validation_result = validate_user_input("john_doe", "john@example.com")
-    if validation_result.is_failure:
+    if validation_result.failure:
         return r[str].fail(f"Pipeline failed at validation: {validation_result.error}")
     logger.info("✅ User input validation passed")
     config_result = create_server_config(
-        FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT, 4
+        FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+        4,
     )
-    if config_result.is_failure:
+    if config_result.failure:
         return r[str].fail(f"Pipeline failed at configuration: {config_result.error}")
     logger.info("✅ Server configuration created")
     scenarios = [
@@ -149,19 +149,19 @@ def comprehensive_error_handling_pipeline() -> r[str]:
     ]
     for scenario_name, scenario_func in scenarios:
         result = scenario_func()
-        if result.is_failure:
+        if result.failure:
             logger.warning(
-                f"⚠️ {scenario_name} scenario failed as expected: {result.error}"
+                f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
             )
     return r[str].ok("Pipeline completed with graceful error handling")
 
 
-def error_recovery_patterns() -> r[str]:
+def error_recovery_patterns() -> p.Result[str]:
     """Demonstrate error recovery patterns."""
     logger.info("Testing error recovery patterns")
     for attempt in range(3):
         connection_result = simulate_connection_error()
-        if connection_result.is_success:
+        if connection_result.success:
             logger.info(f"✅ Connection succeeded on attempt {attempt + 1}")
             break
         logger.warning(f"⚠️ Connection attempt {attempt + 1} failed, retrying...")
@@ -170,24 +170,26 @@ def error_recovery_patterns() -> r[str]:
             logger.error("❌ All connection attempts failed")
             return r[str].fail("Connection recovery failed after 3 attempts")
     primary_config_result = create_server_config(-1, 4)
-    if primary_config_result.is_failure:
-        logger.warning("Primary config failed, trying fallback")
+    if primary_config_result.failure:
+        logger.warning("Primary settings failed, trying fallback")
         fallback_config_result = create_server_config(
-            FlextConstants.Platform.DEFAULT_HTTP_PORT, 2
+            FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+            2,
         )
-        if fallback_config_result.is_success:
+        if fallback_config_result.success:
             logger.info("✅ Fallback configuration successful")
-            return r[str].ok("Recovery successful with fallback config")
+            return r[str].ok("Recovery successful with fallback settings")
     return r[str].fail("All recovery attempts failed")
 
 
 def demonstrate_error_context() -> None:
     """Demonstrate how error context helps with debugging."""
     logger.info("Demonstrating error context for debugging")
-    validation_error = FlextGrpcValidationError(
-        "Email format is invalid - missing @ symbol", field="user_email"
+    validation_error = GrpcValidationError(
+        "Email format is invalid - missing @ symbol",
+        field="user_email",
     )
-    config_error = FlextGrpcSettingsurationError(
+    config_error = FlextGrpcConfigurationError(
         "Invalid port configuration for production environment",
         config_key="server_port",
     )
@@ -195,19 +197,19 @@ def demonstrate_error_context() -> None:
         "Validation error with field context",
         error_type=type(validation_error).__name__,
         error_message=str(validation_error),
-        field_name=validation_error.field,
+        field_name=validation_error.field or "",
         error_category="validation",
     )
     logger.error(
-        "Configuration error with config context",
+        "Configuration error with settings context",
         error_type=type(config_error).__name__,
         error_message=str(config_error),
-        config_key=config_error.config_key,
+        config_key=config_error.config_key or "",
         error_category="configuration",
     )
 
 
-def error_handling() -> r[str]:
+def error_handling() -> p.Result[str]:
     """Demonstrate error handling in contexts."""
     logger.info("Testing error handling patterns")
 
@@ -236,30 +238,30 @@ def main() -> None:
     demonstrate_error_context()
     logger.info("\n🔄 2. Comprehensive Error Handling Pipeline")
     pipeline_result = comprehensive_error_handling_pipeline()
-    if pipeline_result.is_success:
+    if pipeline_result.success:
         logger.info(f"✅ Pipeline result: {pipeline_result.value}")
     else:
         logger.error(f"❌ Pipeline failed: {pipeline_result.error}")
     logger.info("\n🔧 3. Error Recovery Patterns")
     recovery_result = error_recovery_patterns()
-    if recovery_result.is_success:
+    if recovery_result.success:
         logger.info(f"✅ Recovery result: {recovery_result.value}")
     else:
         logger.error(f"❌ Recovery failed: {recovery_result.error}")
     logger.info("\n⚡ 4. Error Handling")
     try:
         result = error_handling()
-        if result.is_success:
+        if result.success:
             logger.info(f"✅ result: {result.value}")
         else:
             logger.error(f"❌ failed: {result.error}")
-    except Exception:
+    except (ValueError, RuntimeError, OSError):
         logger.exception("❌ exception occurred")
     logger.info("\n🎉 Error handling examples completed!")
     logger.info("Key takeaways:")
     logger.info("  • Use specific error types for better debugging")
     logger.info("  • Always use r for error handling")
-    logger.info("  • Include context (field names, config keys) in errors")
+    logger.info("  • Include context (field names, settings keys) in errors")
     logger.info("  • Implement retry and fallback patterns")
     logger.info("  • Log errors with structured context")
 

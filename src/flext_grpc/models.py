@@ -10,19 +10,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from datetime import datetime
-from typing import Annotated, Literal, Self, override
+from types import MappingProxyType
+from typing import Annotated, Self, override
 
-import grpc
-from flext_core import FlextModels, r
-from pydantic import BaseModel, Field, computed_field, field_validator
-
-from flext_grpc import FlextGrpcProtocols as p, c, t
+from flext_cli import m, u
+from flext_grpc import c, p, r, t
 
 
-class FlextGrpcModels(FlextModels):
-    """gRPC domain models extending flext-core FlextModels.
+class FlextGrpcModels(m):
+    """gRPC domain models extending flext-core m.
 
     Consolidated namespace class containing all gRPC domain models as nested classes.
     Follows FLEXT principles with clean separation of concerns and SOLID design.
@@ -35,453 +32,306 @@ class FlextGrpcModels(FlextModels):
     class Grpc:
         """Domain models for gRPC core business entities."""
 
-        class StreamInfo(FlextModels.Value):
+        # =========================================================================
+        # PROTO MESSAGE MODELS - RPC request/response messages
+        # =========================================================================
+
+        class EchoRequest(m.Value):
+            """Echo request message (immutable value model)."""
+
+            message: Annotated[str, u.Field(description="Echo message")]
+
+        class EchoResponse(m.Value):
+            """Echo response message (immutable value model)."""
+
+            message: Annotated[str, u.Field(description="Echo message")]
+            server_id: Annotated[str, u.Field(description="Server identifier")] = ""
+            timestamp: datetime = u.Field(
+                default_factory=datetime.now, description="Response timestamp"
+            )
+
+        class HealthRequest(m.Value):
+            """Health check request message (immutable value model)."""
+
+            service: Annotated[str, u.Field(description="Service name")] = ""
+
+        class HealthResponse(m.Value):
+            """Health check response message (immutable value model)."""
+
+            status: Annotated[str, u.Field(description="Health status")]
+            message: Annotated[str, u.Field(description="Health check message")] = ""
+
+        class StreamInfo(m.Value):
             """Basic stream information (immutable value model)."""
 
-            stream_id: str
-            stream_type: str
-            target: str
-            created_at: Annotated[datetime, Field(default_factory=datetime.now)]
-            total_requests_sent: Annotated[int, Field(default=0)]
-            average_latency_ms: Annotated[float, Field(default=0.0)]
-            error_count: Annotated[int, Field(default=0)]
+            stream_id: str = u.Field(description="Unique stream identifier")
+            stream_type: str = u.Field(description="Stream communication type")
+            target: str = u.Field(description="Target endpoint address")
+            created_at: datetime = u.Field(
+                default_factory=datetime.now, description="Stream creation timestamp"
+            )
+            total_requests_sent: Annotated[
+                t.NonNegativeInt, u.Field(description="Total requests sent on stream")
+            ] = 0
+            average_latency_ms: Annotated[
+                t.NonNegativeFloat,
+                u.Field(description="Average latency in milliseconds"),
+            ] = 0.0
+            error_count: Annotated[
+                t.NonNegativeInt, u.Field(description="Number of errors on stream")
+            ] = 0
 
-        class HealthCheck(FlextModels.Value):
+        class HealthCheck(m.Value):
             """gRPC health check model (immutable value model)."""
 
-            service_name: Annotated[str, Field(description="Service name")]
-            status: Annotated[str, Field(description="Health status")]
-            timestamp: Annotated[datetime, Field(description="Check timestamp")]
+            service_name: Annotated[str, u.Field(description="Service name")]
+            status: Annotated[str, u.Field(description="Health status")]
+            timestamp: Annotated[datetime, u.Field(description="Check timestamp")]
 
-        class ServiceDefinition(FlextModels.Value):
-            """gRPC service definition model (immutable value model)."""
-
-            service_name: Annotated[str, Field(description="Service name")]
-            methods: Annotated[
-                list[str],
-                Field(
-                    default_factory=list,
-                    description="Service methods",
-                ),
-            ]
-            endpoint: Annotated[
-                str | None, Field(default=None, description="Service endpoint")
-            ]
-            metadata: Annotated[
-                t.Grpc.Metadata | None,
-                Field(
-                    default=None,
-                    description="Service metadata",
-                ),
-            ]
-
-        class StreamMetrics(FlextModels.Value):
-            """gRPC stream metrics model (immutable value model)."""
-
-            stream_id: Annotated[str, Field(description="Stream ID")]
-            throughput_rps: Annotated[
-                float,
-                Field(
-                    description="Throughput in requests per second",
-                ),
-            ]
-            latency_p50: Annotated[float, Field(description="50th percentile latency")]
-            latency_p95: Annotated[float, Field(description="95th percentile latency")]
-            latency_p99: Annotated[float, Field(description="99th percentile latency")]
-            error_rate: Annotated[float, Field(description="Error rate")]
-            memory_usage_bytes: Annotated[
-                int, Field(description="Memory usage in bytes")
-            ]
-
-        class ServiceMetrics(FlextModels.Value):
-            """gRPC service metrics model (immutable value model)."""
-
-            service_name: Annotated[str, Field(description="Service name")]
-            total_requests: Annotated[int, Field(description="Total requests")]
-            successful_requests: Annotated[
-                int, Field(description="Successful requests")
-            ]
-            failed_requests: Annotated[int, Field(description="Failed requests")]
-            avg_response_time: Annotated[
-                float, Field(description="Average response time")
-            ]
-            active_connections: Annotated[int, Field(description="Active connections")]
-
-        class OperationExecutionRequest(FlextModels.Value):
+        class OperationExecutionRequest(m.Value):
             """Operation execution request for gRPC service operations."""
 
             operation_name: Annotated[
-                str, Field(description="Operation name to execute")
+                str,
+                u.Field(description="Operation name to execute"),
             ]
-            arguments: Annotated[
-                Mapping[str, t.Scalar],
-                Field(
-                    default_factory=dict,
-                    description="Positional arguments as dict",
-                ),
-            ]
-            keyword_arguments: Annotated[
-                Mapping[str, t.Scalar],
-                Field(
-                    default_factory=dict,
-                    description="Keyword arguments",
-                ),
-            ]
+            arguments: t.ScalarMapping = u.Field(
+                default_factory=lambda: MappingProxyType({}),
+                description="Positional arguments as dict",
+            )
+            keyword_arguments: t.ScalarMapping = u.Field(
+                default_factory=lambda: MappingProxyType({}),
+                description="Keyword arguments",
+            )
 
-        class ServerConfig(FlextModels.Value):
-            """Basic server configuration (immutable value model)."""
-
-            host: Annotated[str, Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST)]
-            port: Annotated[int, Field(default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT)]
-            max_workers: Annotated[
-                int, Field(default=c.Grpc.Service.DEFAULT_MAX_WORKERS)
-            ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
-
-        class ClientConfig(FlextModels.Value):
+        class ClientConfig(m.Value):
             """Basic client configuration (immutable value model)."""
 
             target: Annotated[
                 str,
-                Field(
-                    default=f"{c.Grpc.GrpcNetwork.DEFAULT_HOST}:{c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
+                u.Field(
+                    description="Target server address",
                 ),
-            ]
-            timeout: Annotated[float, Field(default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT)]
+            ] = f"{c.Grpc.NETWORK_DEFAULT_HOST}:{c.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
+            timeout: Annotated[
+                t.PositiveTimeout,
+                u.Field(
+                    description="Request timeout in seconds",
+                ),
+            ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
-        class ChannelConfig(FlextModels.Value):
+        class ChannelConfig(m.Value):
             """Basic channel configuration (immutable value model)."""
 
-            address: str
-            options: Mapping[str, t.ConfigValue] | None = None
+            address: str = u.Field(description="Channel address")
+            options: Annotated[
+                t.JsonMapping | None,
+                u.Field(description="Channel options"),
+            ] = None
 
-        class SecurityConfig(FlextModels.Value):
+        class SecurityConfig(m.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: Annotated[
                 bool,
-                Field(
-                    default=False,
+                u.Field(
                     description="Enable TLS encryption",
                 ),
-            ]
+            ] = False
             tls_cert_file: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                u.Field(
                     description="TLS certificate file path",
                 ),
-            ]
+            ] = None
             tls_key_file: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                u.Field(
                     description="TLS private key file path",
                 ),
-            ]
+            ] = None
             tls_ca_file: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                u.Field(
                     description="TLS CA certificate file path",
                 ),
-            ]
+            ] = None
             auth_enabled: Annotated[
                 bool,
-                Field(
-                    default=False,
+                u.Field(
                     description="Enable authentication",
                 ),
-            ]
+            ] = False
             auth_token: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                u.Field(
                     description="Authentication token",
                 ),
-            ]
+            ] = None
             client_cert_required: Annotated[
                 bool,
-                Field(
-                    default=False,
+                u.Field(
                     description="Require client certificates",
                 ),
-            ]
+            ] = False
 
-        class NetworkConfig(FlextModels.Value):
+        class NetworkConfig(m.Value):
             """Generic gRPC network configuration with validation."""
 
             host: Annotated[
-                str,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_HOST,
-                    min_length=1,
+                t.NonEmptyStr,
+                u.Field(
                     description="gRPC server host",
                 ),
-            ]
+            ] = c.Grpc.NETWORK_DEFAULT_HOST
             port: Annotated[
-                int,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-                    ge=1,
-                    le=65535,
+                t.PortNumber,
+                u.Field(
                     description="gRPC server port",
                 ),
-            ]
+            ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             max_connections: Annotated[
-                int,
-                Field(
-                    default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
-                    ge=1,
-                    le=10000,
+                t.BatchSize,
+                u.Field(
                     description="Maximum concurrent connections",
                 ),
-            ]
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
             keepalive_time: Annotated[
-                int,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIME_MS // 1000,
-                    ge=1,
+                t.PositiveInt,
+                u.Field(
                     description="Keepalive ping interval (seconds)",
                 ),
-            ]
+            ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIME_MS // 1000
             keepalive_timeout: Annotated[
-                int,
-                Field(
-                    default=c.Grpc.GrpcNetwork.DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000,
-                    ge=1,
+                t.PositiveInt,
+                u.Field(
                     description="Keepalive timeout (seconds)",
                 ),
-            ]
+            ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
 
-        class PerformanceConfig(FlextModels.Value):
+        class PerformanceConfig(m.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: Annotated[
                 int,
-                Field(
-                    default=c.Grpc.Service.MAX_WORKERS,
+                u.Field(
                     ge=1,
                     le=1000,
                     description="Maximum worker threads",
                 ),
-            ]
+            ] = c.Grpc.SERVICE_MAX_WORKERS
             max_concurrent_rpcs: Annotated[
-                int,
-                Field(
-                    default=c.Grpc.Service.DEFAULT_MAX_CONCURRENT_RPCS,
-                    ge=1,
-                    le=10000,
+                t.BatchSize,
+                u.Field(
                     description="Maximum concurrent RPCs",
                 ),
-            ]
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
             max_receive_message_length: Annotated[
                 int,
-                Field(
-                    default=4 * 1024 * 1024,
-                    ge=1024,
-                    le=100 * 1024 * 1024,
+                u.Field(
+                    ge=c.Grpc.PERFORMANCE_MIN_MESSAGE_LENGTH,
+                    le=c.Grpc.PERFORMANCE_MAX_MESSAGE_LENGTH,
                     description="Maximum receive message length (bytes)",
                 ),
-            ]
+            ] = c.Grpc.PERFORMANCE_DEFAULT_MESSAGE_LENGTH
             max_send_message_length: Annotated[
                 int,
-                Field(
-                    default=4 * 1024 * 1024,
-                    ge=1024,
-                    le=100 * 1024 * 1024,
+                u.Field(
+                    ge=c.Grpc.PERFORMANCE_MIN_MESSAGE_LENGTH,
+                    le=c.Grpc.PERFORMANCE_MAX_MESSAGE_LENGTH,
                     description="Maximum send message length (bytes)",
                 ),
-            ]
+            ] = c.Grpc.PERFORMANCE_DEFAULT_MESSAGE_LENGTH
             thread_pool_size: Annotated[
                 int,
-                Field(
-                    default=50,
-                    ge=1,
-                    le=200,
+                u.Field(
+                    ge=c.Grpc.PERFORMANCE_MIN_THREAD_POOL_SIZE,
+                    le=c.Grpc.PERFORMANCE_MAX_THREAD_POOL_SIZE,
                     description="Thread pool size",
                 ),
-            ]
+            ] = c.Grpc.PERFORMANCE_DEFAULT_THREAD_POOL_SIZE
 
-        class StreamingConfig(FlextModels.Value):
+        class StreamingConfig(m.Value):
             """Generic gRPC streaming configuration."""
 
             enabled: Annotated[
                 bool,
-                Field(
-                    default=True,
+                u.Field(
                     description="Enable streaming operations",
                 ),
-            ]
+            ] = True
             max_concurrent_streams: Annotated[
-                int,
-                Field(
-                    default=10,
-                    ge=1,
-                    le=100,
+                t.WorkerCount,
+                u.Field(
                     description="Maximum concurrent streams",
                 ),
-            ]
+            ] = c.Grpc.STREAMING_DEFAULT_MAX_CONCURRENT_STREAMS
             stream_buffer_size: Annotated[
                 int,
-                Field(
-                    default=500,
-                    ge=10,
-                    le=10000,
+                u.Field(
+                    ge=c.Grpc.STREAMING_MIN_BUFFER_SIZE,
+                    le=c.Grpc.STREAMING_MAX_BUFFER_SIZE,
                     description="Stream buffer size",
                 ),
-            ]
+            ] = c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE
             max_stream_duration: Annotated[
                 int,
-                Field(
-                    default=300,
+                u.Field(
                     ge=10,
                     le=3600,
                     description="Maximum stream duration (seconds)",
                 ),
-            ]
+            ] = 300
             enable_compression: Annotated[
                 bool,
-                Field(
-                    default=True,
+                u.Field(
                     description="Enable message compression",
                 ),
-            ]
+            ] = True
 
-        class ClientSettingsConfig(FlextModels.Value):
-            """Generic gRPC client configuration."""
-
-            timeout: Annotated[
-                float,
-                Field(
-                    default=30.0,
-                    gt=0,
-                    le=300,
-                    description="RPC timeout (seconds)",
-                ),
-            ]
-            retry_attempts: Annotated[
-                int,
-                Field(
-                    default=3,
-                    ge=0,
-                    le=10,
-                    description="Maximum retry attempts",
-                ),
-            ]
-            retry_backoff: Annotated[
-                float,
-                Field(
-                    default=1.0,
-                    gt=0,
-                    le=60,
-                    description="Retry backoff multiplier",
-                ),
-            ]
-            load_balancing_policy: Annotated[
-                str,
-                Field(
-                    default="round_robin",
-                    description="Load balancing policy",
-                ),
-            ]
-            channel_options: Annotated[
-                Mapping[str, str | int],
-                Field(
-                    default_factory=dict,
-                    description="Additional channel options",
-                ),
-            ]
-
-        class MonitoringConfig(FlextModels.Value):
+        class MonitoringConfig(m.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: Annotated[
                 bool,
-                Field(
-                    default=True,
+                u.Field(
                     description="Enable metrics collection",
                 ),
-            ]
+            ] = True
             tracing_enabled: Annotated[
                 bool,
-                Field(
-                    default=False,
+                u.Field(
                     description="Enable distributed tracing",
                 ),
-            ]
+            ] = False
             health_check_enabled: Annotated[
                 bool,
-                Field(
-                    default=True,
+                u.Field(
                     description="Enable health checks",
                 ),
-            ]
+            ] = True
             health_check_interval: Annotated[
                 int,
-                Field(
-                    default=30,
+                u.Field(
                     ge=5,
                     le=300,
                     description="Health check interval (seconds)",
                 ),
-            ]
-            log_level: Annotated[
-                str, Field(default="INFO", description="Logging level")
-            ]
+            ] = 30
+            log_level: Annotated[str, u.Field(description="Logging level")] = "INFO"
 
-        class StateTransition(FlextModels.Value):
+        class StateTransition(m.Value):
             """State transition result model."""
 
-            state: str
+            state: str = u.Field(description="Target state after transition")
 
-        class EntityValidator(FlextModels.Value):
-            """Generic entity validator using functional composition.
-
-            Provides validation methods that can be composed and delegated
-            to entity classes for their field validation.
-            """
-
-            @classmethod
-            def validate_enum(
-                cls,
-                value: str,
-                allowed: set[str],
-                field_name: str,
-            ) -> str:
-                """Generic enum validation."""
-                if value not in allowed:
-                    msg = f"{field_name} must be one of {allowed}, got {value}"
-                    raise ValueError(msg)
-                return value
-
-            @classmethod
-            def validate_list_not_empty[T](
-                cls,
-                value: list[T],
-                field_name: str,
-            ) -> list[T]:
-                """Generic list validation with type preservation."""
-                if not value:
-                    msg = f"{field_name} cannot be empty"
-                    raise ValueError(msg)
-                return value
-
-            @classmethod
-            def validate_required_string(cls, value: str, field_name: str) -> str:
-                """Generic string validation."""
-                if not value or not value.strip():
-                    msg = f"{field_name} cannot be empty"
-                    raise ValueError(msg)
-                return value
-
-        class StateMachine(BaseModel):
+        class StateMachine(m.BaseModel):
             """Generic state machine with functional transitions.
 
             Provides state transition logic that can be composed into
             entity classes for state management.
 
-            Note: Uses BaseModel (not Value/FrozenStrictModel) because
+            Note: Uses BaseModel (not Value/ContractModel) because
             StateMachine is composed with Entity via multiple inheritance.
             Entity's model_post_init sets updated_at which requires
             the model to NOT be frozen.
@@ -491,8 +341,8 @@ class FlextGrpcModels(FlextModels):
                 self,
                 current: str,
                 target: str,
-                allowed_transitions: Mapping[str, set[str]],
-            ) -> r[FlextGrpcModels.Grpc.StateTransition]:
+                allowed_transitions: t.MappingKV[str, set[str]],
+            ) -> p.Result[FlextGrpcModels.Grpc.StateTransition]:
                 """Generic state transition with validation.
 
                 Args:
@@ -515,161 +365,178 @@ class FlextGrpcModels(FlextModels):
                     FlextGrpcModels.Grpc.StateTransition(state=target),
                 )
 
-        class OperationSpec(FlextModels.Value):
+        class OperationSpec(m.Value):
             """Generic operation specification using Pydantic."""
 
-            name: Annotated[str, Field(min_length=1, description="Operation name")]
+            name: Annotated[str, u.Field(min_length=1, description="Operation name")]
             entity_type: Annotated[
-                Literal["server", "client", "channel", "service", "stream"],
-                Field(description="Type of entity to operate on"),
+                t.Grpc.EntityKind,
+                u.Field(description="Type of entity to operate on"),
             ]
             method_name: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                u.Field(
                     description="Method to invoke on entity",
                 ),
-            ]
+            ] = None
             parameters: Annotated[
-                Mapping[str, t.ConfigValue],
-                Field(
-                    default_factory=dict,
+                t.MappingKV[str, t.JsonMapping | None],
+                u.Field(
                     description="Operation parameters",
                 ),
-            ]
+            ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
-        class Request(FlextModels.Value):
+        class Request(m.Value):
             """Generic request model with validation."""
 
-            operation: FlextGrpcModels.Grpc.OperationSpec
+            operation: FlextGrpcModels.Grpc.OperationSpec = u.Field(
+                description="Operation specification to execute",
+            )
             entity: Annotated[
-                BaseModel | None,
-                Field(
-                    default=None,
+                m.BaseModel | None,
+                u.Field(
                     description="Associated entity",
                 ),
-            ]
+            ] = None
             data: Annotated[
-                t.ConfigValue | None,
-                Field(
-                    default=None,
+                t.JsonMapping | None,
+                u.Field(
                     description="Request data",
                 ),
-            ]
+            ] = None
 
-            @computed_field
-            def is_valid(self) -> bool:
+            @u.computed_field()
+            @property
+            def valid(self) -> bool:
                 """Check if request is valid."""
                 return bool(self.operation.name.strip())
 
-        class Response(FlextModels.Value):
+        class Response(m.Value):
             """Generic response model with metadata."""
 
-            success: Annotated[bool, Field(description="Operation success status")]
+            success: Annotated[bool, u.Field(description="Operation success status")]
             data: Annotated[
-                BaseModel | None,
-                Field(
-                    default=None,
+                m.BaseModel | None,
+                u.Field(
                     description="Response data",
                 ),
-            ]
+            ] = None
             error: Annotated[
                 str | None,
-                Field(
-                    default=None,
+                u.Field(
                     description="Error message if failed",
                 ),
-            ]
+            ] = None
             metadata: Annotated[
-                Mapping[str, t.ConfigValue],
-                Field(
-                    default_factory=dict,
+                t.MappingKV[str, t.JsonMapping | None],
+                u.Field(
                     description="Response metadata",
                 ),
-            ]
+            ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
-            @computed_field
+            @u.computed_field()
+            @property
             def has_error(self) -> bool:
                 """Check if response has error."""
                 return not self.success or self.error is not None
 
-        class Payload(BaseModel):
+        class Payload(m.BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
-            values: Annotated[t.Grpc.GrpcDict, Field(default_factory=dict)]
+            values: t.JsonMapping = u.Field(
+                default_factory=lambda: MappingProxyType({}),
+                description="Key-value payload data",
+            )
 
             @classmethod
-            def from_values(cls, **values: t.ConfigValue) -> Self:
+            def from_values(cls, **values: t.JsonPayload | None) -> Self:
                 """Build payload from keyword values."""
 
-                def normalize_payload_value(value: t.ConfigValue) -> t.ConfigValue:
+                def normalize_payload_value(
+                    value: t.JsonPayload | None,
+                ) -> t.JsonValue | None:
                     if value is None:
                         return ""
-                    if isinstance(value, (str, int, float, bool)):
+                    if u.primitive(value):
                         return value
                     return str(value)
 
-                normalized_values: t.Grpc.GrpcDict = {
+                normalized_values: t.JsonMapping = {
                     metric_key: normalize_payload_value(metric_value)
                     for metric_key, metric_value in values.items()
                 }
                 return cls(values=normalized_values)
 
-        class Entity(FlextModels.Entity):
+        class Entity(m.Entity):
             """Generic base entity with functional patterns."""
 
-            def copy_with(self, **kwargs: str | int | bool | None) -> r[Self]:
+            def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
                 """Functional copy using r.
 
                 Args:
-                **kwargs: Field updates for the entity
+                **kwargs: u.Field updates for the entity
 
                 """
-                try:
-                    return r[Self].ok(self.model_copy(update=kwargs))
-                except (grpc.RpcError, ConnectionError, TimeoutError) as e:
-                    return r[Self].fail(str(e)).map(lambda _unused: self)
+                return r[Self].create_from_callable(
+                    lambda: self.model_copy(update=kwargs),
+                )
 
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation."""
                 return r[bool].ok(True)
 
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
 
-            target: str = ""
-            state: c.Grpc.ChannelStateLiteral = "idle"
-            options: Annotated[dict[str, t.ConfigValue], Field(default_factory=dict)]
-            grpc_channel: p.Grpc.GrpcChannel | None = None
+            target: Annotated[
+                str, u.Field(description="gRPC server target address")
+            ] = ""
+            state: Annotated[
+                c.Grpc.ChannelState,
+                u.Field(
+                    description="Current channel connection state",
+                ),
+            ] = c.Grpc.ChannelState.IDLE
+            options: t.JsonMapping | None = u.Field(
+                default_factory=lambda: MappingProxyType({}),
+                description="Channel configuration options",
+            )
+            grpc_channel: Annotated[
+                p.Grpc.GrpcChannel | None,
+                u.Field(description="Underlying gRPC channel instance"),
+            ] = None
 
-            def connect(self) -> r[Self]:
+            def connect(self) -> p.Result[Self]:
                 """Transition to connecting."""
                 return self.transition(
                     self.state,
                     "connecting",
                     {"idle": {"connecting"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
-            def disconnect(self) -> r[Self]:
+            def disconnect(self) -> p.Result[Self]:
                 """Transition to idle."""
-                return r[Self].ok(
-                    self.model_copy(update={"state": c.Grpc.ChannelState.IDLE.value}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"state": c.Grpc.ChannelState.IDLE.value}
+                    ),
+                    success=True,
                 )
 
-            def is_ready(self) -> bool:
+            def ready(self) -> bool:
                 """Check readiness."""
                 return self.state == "ready"
 
-            def mark_ready(self) -> r[Self]:
+            def mark_ready(self) -> p.Result[Self]:
                 """Transition to ready."""
                 return self.transition(
                     self.state,
                     "ready",
                     {"connecting": {"ready"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Functional validation composition."""
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
@@ -678,36 +545,62 @@ class FlextGrpcModels(FlextModels):
         class Server(Entity, StateMachine):
             """Generic gRPC server with state machine and validation delegation."""
 
-            host: str = c.Grpc.GrpcNetwork.DEFAULT_HOST
-            port: int = c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT
-            state: c.Grpc.ServerStateLiteral = "stopped"
-            max_workers: int = 10
+            host: Annotated[
+                str,
+                u.Field(
+                    description="Server bind host address",
+                ),
+            ] = c.Grpc.NETWORK_DEFAULT_HOST
+            port: Annotated[
+                t.PortNumber,
+                u.Field(
+                    description="Server listen port number",
+                ),
+            ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
+            state: Annotated[
+                c.Grpc.ServerState,
+                u.Field(
+                    description="Current server lifecycle state",
+                ),
+            ] = c.Grpc.ServerState.STOPPED
+            max_workers: Annotated[
+                t.WorkerCount,
+                u.Field(
+                    description="Maximum worker threads for request handling",
+                ),
+            ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
             services: Annotated[
-                list[p.Grpc.GrpcServicer],
-                Field(default_factory=list, description="gRPC services"),
-            ]
-            grpc_server: p.Grpc.GrpcServer | None = None
+                t.SequenceOf[p.Grpc.GrpcServicer],
+                u.Field(description="gRPC services"),
+            ] = u.Field(default_factory=tuple)
+            grpc_server: Annotated[
+                p.Grpc.GrpcServer | None,
+                u.Field(description="Underlying gRPC server instance"),
+            ] = None
 
-            def add_service(self, service: p.Grpc.GrpcServicer) -> r[Self]:
+            def add_service(self, service: p.Grpc.GrpcServicer) -> p.Result[Self]:
                 """Add service functionally.
 
                 Args:
-                service: gRPC service object (dynamic type from grpc library)
+                service: gRPC service t.JsonValue (dynamic type from grpc library)
 
                 """
-                return r[Self].ok(
-                    self.model_copy(update={"services": [*self.services, service]}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"services": [*self.services, service]}
+                    ),
+                    success=True,
                 )
 
-            def mark_running(self) -> r[Self]:
+            def mark_running(self) -> p.Result[Self]:
                 """Transition to running."""
                 return self.transition(
                     self.state,
                     "running",
                     {"starting": {"running"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
-            def mark_stopped(self) -> r[Self]:
+            def mark_stopped(self) -> p.Result[Self]:
                 """Transition to stopped."""
                 if self.state not in {"stopping", "running"}:
                     return (
@@ -715,28 +608,31 @@ class FlextGrpcModels(FlextModels):
                         .fail(f"Cannot mark stopped from {self.state}")
                         .map(lambda _unused: self)
                     )
-                return r[Self].ok(
-                    self.model_copy(update={"state": c.Grpc.ServerState.STOPPED.value}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"state": c.Grpc.ServerState.STOPPED.value}
+                    ),
+                    success=True,
                 )
 
-            def start(self) -> r[Self]:
+            def start(self) -> p.Result[Self]:
                 """Transition to starting."""
                 return self.transition(
                     self.state,
                     "starting",
                     {"stopped": {"starting"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
-            def stop(self) -> r[Self]:
+            def stop(self) -> p.Result[Self]:
                 """Transition to stopping."""
                 return self.transition(
                     self.state,
                     "stopping",
                     {"running": {"stopping"}},
-                ).map(lambda update: self.model_copy(update=update.model_dump()))
+                ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Delegate validation to generic validators."""
                 if not self.host.strip():
                     return r[bool].fail("Server host cannot be empty")
@@ -752,12 +648,15 @@ class FlextGrpcModels(FlextModels):
         class Service(Entity):
             """Generic gRPC service with validation delegation."""
 
-            name: str = ""
-            methods: Annotated[list[str], Field(default_factory=list)]
+            name: Annotated[str, u.Field(description="Service name identifier")] = ""
+            methods: t.StrSequence = u.Field(
+                default_factory=tuple,
+                description="Registered RPC method names",
+            )
 
-            @field_validator("methods")
+            @u.field_validator("methods")
             @classmethod
-            def validate_methods(cls, v: list[str]) -> list[str]:
+            def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
                 """Validate methods list is not empty with valid items."""
                 if not v:
                     msg = "methods cannot be empty"
@@ -768,7 +667,7 @@ class FlextGrpcModels(FlextModels):
                         raise ValueError(msg)
                 return v
 
-            @field_validator("name")
+            @u.field_validator("name")
             @classmethod
             def validate_name(cls, v: str) -> str:
                 """Validate name is not empty or whitespace."""
@@ -777,12 +676,15 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return v
 
-            def add_method(self, method_name: str) -> r[Self]:
+            def add_method(self, method_name: str) -> p.Result[Self]:
                 """Add method functionally."""
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
-                return r[Self].ok(
-                    self.model_copy(update={"methods": [*self.methods, method_name]}),
+                return r[Self](
+                    value=self.model_copy(
+                        update={"methods": [*self.methods, method_name]}
+                    ),
+                    success=True,
                 )
 
             def has_method(self, method_name: str) -> bool:
@@ -792,36 +694,57 @@ class FlextGrpcModels(FlextModels):
         class Client(Entity):
             """Generic gRPC client with channel delegation."""
 
-            channel: FlextGrpcModels.Grpc.Channel | None = None
-            options: Annotated[t.GrpcOptions, Field(default_factory=dict)]
-            grpc_stub: p.Grpc.GrpcStub | None = None
+            channel: Annotated[
+                FlextGrpcModels.Grpc.Channel | None,
+                u.Field(description="Associated gRPC channel for communication"),
+            ] = None
+            options: t.JsonMapping | None = u.Field(
+                default_factory=lambda: MappingProxyType({}),
+                description="Client configuration options",
+            )
+            grpc_stub: Annotated[
+                p.Grpc.GrpcStub | None,
+                u.Field(description="gRPC client stub for RPC calls"),
+            ] = None
 
-            def connect_to(self, target: str) -> r[Self]:
+            def connect_to(self, target: str) -> p.Result[Self]:
                 """Connect functionally."""
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
-                    state="idle",
+                    state=c.Grpc.ChannelState.IDLE,
                     options={},
                     domain_events=[],
                 )
-                return r[Self].ok(self.model_copy(update={"channel": channel}))
+                return r[Self](
+                    value=self.model_copy(update={"channel": channel}), success=True
+                )
 
             @override
-            def validate_business_rules(self) -> r[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Delegate validation."""
-                if self.channel and self.channel.validate_business_rules().is_failure:
+                if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")
                 return r[bool].ok(True)
 
         class GrpcStream(Entity):
             """Generic gRPC stream with validation delegation."""
 
-            id: str = ""
-            method_name: str = ""
-            stream_type: c.Grpc.StreamTypeLiteral = "unary"
-            grpc_stub: p.Grpc.GrpcStub | None = None
+            id: Annotated[str, u.Field(description="Unique stream identifier")] = ""
+            method_name: Annotated[
+                str, u.Field(description="RPC method name for this stream")
+            ] = ""
+            stream_type: Annotated[
+                c.Grpc.GrpcOperations,
+                u.Field(
+                    description="Stream communication pattern type",
+                ),
+            ] = c.Grpc.GrpcOperations.UNARY
+            grpc_stub: Annotated[
+                p.Grpc.GrpcStub | None,
+                u.Field(description="gRPC stub used by this stream"),
+            ] = None
 
-            @field_validator("method_name")
+            @u.field_validator("method_name")
             @classmethod
             def validate_method_name(cls, v: str) -> str:
                 """Validate method_name is not empty or whitespace."""
@@ -830,35 +753,21 @@ class FlextGrpcModels(FlextModels):
                     raise ValueError(msg)
                 return v
 
-    # Class-level aliases at facade root (flat namespace: m.StreamInfo, m.Request, etc.)
-    StreamInfo: type[Grpc.StreamInfo] = Grpc.StreamInfo
-    HealthCheck: type[Grpc.HealthCheck] = Grpc.HealthCheck
-    ServiceDefinition: type[Grpc.ServiceDefinition] = Grpc.ServiceDefinition
-    StreamMetrics: type[Grpc.StreamMetrics] = Grpc.StreamMetrics
-    ServiceMetrics: type[Grpc.ServiceMetrics] = Grpc.ServiceMetrics
-    ServerConfig: type[Grpc.ServerConfig] = Grpc.ServerConfig
-    ClientConfig: type[Grpc.ClientConfig] = Grpc.ClientConfig
-    ChannelConfig: type[Grpc.ChannelConfig] = Grpc.ChannelConfig
-    SecurityConfig: type[Grpc.SecurityConfig] = Grpc.SecurityConfig
-    NetworkConfig: type[Grpc.NetworkConfig] = Grpc.NetworkConfig
-    PerformanceConfig: type[Grpc.PerformanceConfig] = Grpc.PerformanceConfig
-    StreamingConfig: type[Grpc.StreamingConfig] = Grpc.StreamingConfig
-    ClientSettingsConfig: type[Grpc.ClientSettingsConfig] = Grpc.ClientSettingsConfig
-    MonitoringConfig: type[Grpc.MonitoringConfig] = Grpc.MonitoringConfig
-    StateTransition: type[Grpc.StateTransition] = Grpc.StateTransition
-    EntityValidator: type[Grpc.EntityValidator] = Grpc.EntityValidator
-    OperationSpec: type[Grpc.OperationSpec] = Grpc.OperationSpec
-    Request: type[Grpc.Request] = Grpc.Request
-    Response: type[Grpc.Response] = Grpc.Response
-    Payload: type[Grpc.Payload] = Grpc.Payload
-    GrpcEntity: type[Grpc.Entity] = Grpc.Entity
-    Channel: type[Grpc.Channel] = Grpc.Channel
-    Server: type[Grpc.Server] = Grpc.Server
-    Client: type[Grpc.Client] = Grpc.Client
-    GrpcStream: type[Grpc.GrpcStream] = Grpc.GrpcStream
-    StateMachine: type[Grpc.StateMachine] = Grpc.StateMachine
+        class CompleteSetup(m.BaseModel):
+            """Complete gRPC setup result with server, client, and service."""
+
+            server: FlextGrpcModels.Grpc.Server = u.Field(
+                description="Configured gRPC server instance"
+            )
+            client: FlextGrpcModels.Grpc.Client = u.Field(
+                description="Configured gRPC client instance"
+            )
+            service: FlextGrpcModels.Grpc.Service = u.Field(
+                description="Configured gRPC service definition"
+            )
+            target: str = u.Field(description="Target server address for the setup")
 
 
-m: type[FlextGrpcModels] = FlextGrpcModels
+m = FlextGrpcModels
 
-__all__ = ["FlextGrpcModels", "m"]
+__all__: list[str] = ["FlextGrpcModels", "m"]

@@ -43,7 +43,7 @@ src/flext_grpc/
 ├── services.py              # Domain services (business logic layer)
 ├── platform.py              # Application service (unified facade)
 ├── api.py                   # Public API functions and utilities
-├── config.py                # Configuration management and validation
+├── settings.py                # Configuration management and validation
 ├── types.py
 ├── errors.py                # Domain-specific error classes
 └── constants.py             # Domain constants and enumerations
@@ -80,7 +80,7 @@ src/flext_grpc/
 
 ### Infrastructure Layer (External System Integration)
 
-**Files**: `api.py`, `config.py`, `errors.py`\
+**Files**: `api.py`, `settings.py`, `errors.py`\
 **Purpose**: External system integration and technical concerns\
 **Dependencies**: Application and domain layers
 
@@ -222,7 +222,7 @@ src/flext_grpc/
 **Before Committing**:
 
 ```bash
-make validate    # Complete validation pipeline
+make val    # Complete validation pipeline
 make check       # Quick health check
 make test        # Run tests with coverage
 ```

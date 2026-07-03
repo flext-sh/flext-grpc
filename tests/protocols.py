@@ -1,7 +1,4 @@
-"""Test protocol definitions for flext-grpc.
-
-Provides TestsFlextGrpcProtocols, combining FlextTestsProtocols with
-FlextGrpcProtocols for test-specific protocol definitions.
+"""Test protocols for flext-grpc.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -15,14 +12,14 @@ from flext_grpc import FlextGrpcProtocols
 
 
 class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
-    """Test protocols combining FlextTestsProtocols and FlextGrpcProtocols.
+    """Test protocols for flext-grpc."""
 
-    Provides access to:
-    - p.Tests.Docker.* (from FlextTestsProtocols)
-    - p.Tests.Factory.* (from FlextTestsProtocols)
-    - p.Grpc.* (from FlextGrpcProtocols)
-    """
+    class Grpc(FlextGrpcProtocols.Grpc):
+        """Grpc domain test protocols."""
+
+        class Tests:
+            """Test-specific protocols."""
 
 
 p = TestsFlextGrpcProtocols
-__all__ = ["TestsFlextGrpcProtocols", "p"]
+__all__: list[str] = ["TestsFlextGrpcProtocols", "p"]

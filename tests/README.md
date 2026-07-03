@@ -158,7 +158,7 @@ pytest tests/e2e/ --benchmark-only
 
 **Available Markers**:
 
-```python
+```text
 @pytest.mark.unit          # Unit tests (fast, isolated)
 @pytest.mark.integration   # Integration tests (component interaction)
 @pytest.mark.e2e           # End-to-end tests (complete workflows)
@@ -178,7 +178,7 @@ pytest tests/e2e/ --benchmark-only
 - `entities.py`: 76% (needs significant improvement)
 - `services.py`: 72% (critical gaps in service operations)
 - `platform.py`: 68% (major coverage gaps in platform facade)
-- `config.py`: 78% (validation testing coverage needed)
+- `settings.py`: 78% (validation testing coverage needed)
 - `api.py`: 82% (good coverage, minor improvements needed)
 - `types.py`: 100% (excellent - complete coverage)
 - `errors.py`: 100% (excellent - complete coverage)
@@ -231,7 +231,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Entity Testing Pattern
 
-```python
+```python notest
 def test_entity_creation_and_validation():
     """Test entity creation with domain validation."""
     # Arrange
@@ -248,7 +248,7 @@ def test_entity_creation_and_validation():
 
 ### Service Testing Pattern
 
-```python
+```python notest
 def test_service_operation_success():
     """Test service operation with successful execution."""
     # Arrange
@@ -265,7 +265,7 @@ def test_service_operation_success():
 
 ### Error Testing Pattern
 
-```python
+```python notest
 def test_operation_failure_handling():
     """Test proper error handling for invalid operations."""
     # Arrange
@@ -311,7 +311,7 @@ def test_operation_failure_handling():
 
 ```bash
 # Complete validation pipeline
-make validate
+make val
 
 # Quick validation for development
 make check

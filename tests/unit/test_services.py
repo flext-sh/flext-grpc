@@ -1,53 +1,42 @@
-"""Tests for flext_grpc.services module."""
+"""Tests for public gRPC service components."""
 
-from flext_grpc import ConnectionPool, FlextGrpcServices, MetricsCollector
+from __future__ import annotations
+
+from flext_tests import tm
+
+from flext_grpc import FlextGrpc
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
+from tests.models import m
 
 
-class TestFlextGrpcServices:
-    """Test cases for FlextGrpcServices class."""
+class TestsFlextGrpcServices:
+    """Test public gRPC service components without legacy compat shims."""
 
-    def test_init(self) -> None:
-        """Test FlextGrpcServices initialization."""
-        services = FlextGrpcServices()
-        assert services is not None
+    def test_connect_client_invalid_target_fails(self, grpc_facade: FlextGrpc) -> None:
+        """Client connection should fail fast for an unreachable target."""
+        tm.fail(grpc_facade.connect_client("127.0.0.1:1"))
 
-    def test_connect_client(self) -> None:
-        """Test client connection."""
-        services = FlextGrpcServices()
-        result = services.connect_client("localhost:50051")
-        assert result.is_success or not result.is_success
+    def test_create_stream(self, grpc_facade: FlextGrpc) -> None:
+        """Stream creation uses the public facade contract."""
+        tm.ok(grpc_facade.create_stream(method_name="test_method"))
 
-    def test_create_stream(self) -> None:
-        """Test stream creation."""
-        services = FlextGrpcServices()
-        result = services.create_stream("test_method")
-        assert result.is_success
+    def test_execute_returns_settings(self, grpc_facade: FlextGrpc) -> None:
+        """Execute returns the configured facade settings."""
+        tm.ok(grpc_facade.execute())
 
-    def test_execute_method(self) -> None:
-        """Test execute method."""
-        services = FlextGrpcServices()
-        result = services.execute()
-        assert result.is_success
+    def test_connection_pool_cleanup(
+        self, connection_pool: FlextGrpcConnectionPool.ConnectionPool
+    ) -> None:
+        """Connection pool cleanup succeeds even with no active channels."""
+        tm.ok(connection_pool.cleanup())
 
-    def test_connection_pool_release(self) -> None:
-        """Test connection pool release."""
-        pool = ConnectionPool(max_size=5)
-        mock_connection = "mock_connection_123"
-        release_result = pool.release(mock_connection)
-        assert release_result.is_success
-
-    def test_connection_pool_cleanup(self) -> None:
-        """Test connection pool cleanup."""
-        pool = ConnectionPool(max_size=5)
-        result = pool.cleanup()
-        assert result.is_success
-
-    def test_metrics_collector(self) -> None:
-        """Test metrics collector directly."""
-        collector = MetricsCollector()
-        collector.record_metric("test_key", "test_value")
-        value = collector.get_metric("test_key")
-        assert value == "test_value"
-        metrics_payload = collector.get_all_metrics()
-        assert "test_key" in metrics_payload.values
-        assert metrics_payload.values["test_key"] == "test_value"
+    def test_metrics_collector(
+        self, metrics_collector: FlextGrpcMetrics.MetricsCollector
+    ) -> None:
+        """Metrics collector records and exposes normalized payload values."""
+        metrics_collector.record_metric("test_key", "test_value")
+        tm.that(metrics_collector.metric("test_key"), eq="test_value")
+        payload: m.Grpc.Payload = metrics_collector.all_metrics()
+        tm.that(payload.values, has="test_key")
+        tm.that(payload.values["test_key"], eq="test_value")

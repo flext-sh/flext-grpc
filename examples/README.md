@@ -172,14 +172,14 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Key Integration Points**:
 
-- FlexCore (Go) service communication (port ${FlextConstants.Platform.DEFAULT_HTTP_PORT})
-- FLEXT Service (Go/Python) integration (port 8081)
+- FLEXT service communication (port ${FlextConstants.DEFAULT_HTTP_PORT})
+- Python service integration (port 8081)
 - flext-core foundation pattern usage
 - flext-observability monitoring integration
 
 **Example Usage**:
 
-```python
+```python notest
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
 from datetime import datetime, timezone
@@ -188,16 +188,16 @@ from datetime import datetime, timezone
 container = FlextContainer.get_global()
 platform = FlextGrpcPlatform(container=container)
 
-# Client for FlexCore service
-flexcore_client = FlextGrpcClient(
-    id="flexcore-client",
+# Client for a FLEXT service
+service_client = FlextGrpcClient(
+    id="service-client",
     host=FlextConstants["Platform.DEFAULT_HOST"],
-    port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],  # FlexCore gRPC port
+    port=FlextConstants["Platform.DEFAULT_HTTP_PORT"],
     created_at=datetime.now(timezone.utc),
 )
 
 # Service operations (when Protocol Buffers are implemented)
-# result = platform.service.execute("connect", flexcore_client)
+# result = platform.service.execute("connect", service_client)
 ```
 
 ### Configuration Management
@@ -213,7 +213,7 @@ flexcore_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python
+```python notest
 from flext_grpc import FlextGrpcSettings
 
 # Production configuration
@@ -298,7 +298,7 @@ poetry run python examples/advanced_usage.py
 
 ### Entity Creation Pattern
 
-```python
+```python notest
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
 
@@ -322,7 +322,7 @@ print(f"Server created: {server.id}")
 
 ### Service Operation Pattern
 
-```python
+```python notest
 from flext_grpc import FlextGrpcServerService
 
 # Service operations with r handling
@@ -338,7 +338,7 @@ else:
 
 ### Platform Usage Pattern
 
-```python
+```python notest
 from flext_grpc import FlextGrpcPlatform
 
 # Platform operations for unified management
@@ -431,7 +431,7 @@ For current development gaps and realistic timelines, see [../docs/TODO.md](../d
 
 ### Example Template
 
-```python
+```python notest
 """
 Example: [Brief Description]
 
@@ -446,7 +446,7 @@ Usage:
     poetry run python examples/[filename].py
 
 Author: FLEXT Development Team
-Version: 0.9.9
+Version: 0.12.0-dev
 """
 
 from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
@@ -455,19 +455,18 @@ from flext_core import FlextSettings
 from flext_core import FlextConstants
 from flext_core import FlextContainer
 from flext_core import FlextContext
-from flext_core import FlextDecorators
+from flext_core import d
 from flext_core import FlextDispatcher
-from flext_core import FlextExceptions
+from flext_core import e
 from flext_core import h
-from flext_core import FlextLogger
 from flext_core import x
 from flext_core import FlextModels
 from flext_core import FlextProcessors
 from flext_core import p
 from flext_core import FlextRegistry
-from flext_core import r
-from flext_core import FlextRuntime
-from flext_core import FlextService
+from flext_core import r, p
+from flext_core import u
+from flext_core import s
 from flext_core import t
 from flext_core import u
 from datetime import datetime, timezone

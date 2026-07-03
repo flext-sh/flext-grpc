@@ -1,54 +1,69 @@
 """Tests for flext_grpc.typings module."""
 
+from __future__ import annotations
+
 import pytest
+from flext_tests import tm
 
-from flext_grpc import t
+from tests.utilities import u
 
 
-class TestFlextGrpcTypes:
+class TestsFlextGrpcTypesUnit:
     """Test cases for FlextGrpcTypes class."""
 
     def test_grpc_validation(self) -> None:
         """Test gRPC validation."""
-        assert t.Grpc.GrpcValidation.validate_target("localhost:50051")
-        assert not t.Grpc.GrpcValidation.validate_target("invalid")
-        assert not t.Grpc.GrpcValidation.validate_target("localhost:99999")
+        tm.that(u.Grpc.validate_target("localhost:50051"), eq=True)
+        tm.that(not u.Grpc.validate_target("invalid"), eq=True)
+        tm.that(not u.Grpc.validate_target("localhost:99999"), eq=True)
 
     def test_parse_target(self) -> None:
         """Test target parsing."""
-        host, port = t.Grpc.GrpcValidation.parse_target("localhost:50051")
-        assert host == "localhost"
-        assert port == 50051
+        host, port = u.Grpc.parse_target("localhost:50051")
+        tm.that(host, eq="localhost")
+        tm.that(port, eq=50051)
 
     def test_parse_target_invalid(self) -> None:
         """Test invalid target parsing."""
         with pytest.raises(ValueError):
-            t.Grpc.GrpcValidation.parse_target("invalid")
+            u.Grpc.parse_target("invalid")
 
     def test_validate_target_edge_cases(self) -> None:
         """Test edge cases for target validation."""
-        assert not t.Grpc.GrpcValidation.validate_target("")
-        assert not t.Grpc.GrpcValidation.validate_target("localhost")
-        assert not t.Grpc.GrpcValidation.validate_target(":50051")
-        assert not t.Grpc.GrpcValidation.validate_target("localhost:")
-        assert not t.Grpc.GrpcValidation.validate_target("invalid@host:50051")
-        assert not t.Grpc.GrpcValidation.validate_target("localhost:0")
-        assert not t.Grpc.GrpcValidation.validate_target("localhost:65536")
-        assert t.Grpc.GrpcValidation.validate_target("localhost:50051")
-        assert t.Grpc.GrpcValidation.validate_target("127.0.0.1:8080")
-        assert t.Grpc.GrpcValidation.validate_target("my-service.com:443")
+        tm.that(not u.Grpc.validate_target(""), eq=True)
+        tm.that(not u.Grpc.validate_target("localhost"), eq=True)
+        tm.that(not u.Grpc.validate_target(":50051"), eq=True)
+        tm.that(not u.Grpc.validate_target("localhost:"), eq=True)
+        tm.that(
+            not u.Grpc.validate_target("invalid@host:50051"),
+            eq=True,
+        )
+        tm.that(not u.Grpc.validate_target("localhost:0"), eq=True)
+        tm.that(not u.Grpc.validate_target("localhost:65536"), eq=True)
+        tm.that(u.Grpc.validate_target("localhost:50051"), eq=True)
+        tm.that(u.Grpc.validate_target("127.0.0.1:8080"), eq=True)
+        tm.that(u.Grpc.validate_target("my-service.com:443"), eq=True)
 
     def test_parse_target_edge_cases(self) -> None:
         """Test edge cases for target parsing."""
-        assert t.Grpc.GrpcValidation.parse_target("localhost:50051") == (
-            "localhost",
-            50051,
+        tm.that(
+            u.Grpc.parse_target("localhost:50051"),
+            eq=(
+                "localhost",
+                50051,
+            ),
         )
-        assert t.Grpc.GrpcValidation.parse_target("127.0.0.1:8080") == (
-            "127.0.0.1",
-            8080,
+        tm.that(
+            u.Grpc.parse_target("127.0.0.1:8080"),
+            eq=(
+                "127.0.0.1",
+                8080,
+            ),
         )
-        assert t.Grpc.GrpcValidation.parse_target("service.domain.com:443") == (
-            "service.domain.com",
-            443,
+        tm.that(
+            u.Grpc.parse_target("service.domain.com:443"),
+            eq=(
+                "service.domain.com",
+                443,
+            ),
         )

@@ -1,7 +1,5 @@
 """Test configuration and fixtures for flext-grpc.
 
-Test isolation patterns following enterprise testing standards.
-
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT.
 """
@@ -9,46 +7,27 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import pytest
-from flext_core import FlextConstants, FlextContainer
 
-from flext_grpc import FlextGrpcConstants, FlextGrpcSettings
-
-
-@pytest.fixture(autouse=True)
-def clean_container() -> object:
-    """Clean global container and settings before each test."""
-    FlextGrpcSettings._instances.clear()
-    return FlextContainer.get_global()
+from flext_grpc import (
+    FlextGrpc,
+)
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
-@pytest.fixture
-def sample_grpc_config() -> dict[str, object]:
-    """Sample gRPC configuration for tests."""
-    return {
-        "host": FlextConstants.Platform.DEFAULT_HOST,
-        "port": FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-        "max_workers": FlextGrpcConstants.Grpc.Service.DEFAULT_MAX_WORKERS,
-        "timeout": FlextConstants.Network.DEFAULT_TIMEOUT,
-    }
+@pytest.fixture(name="grpc_facade")
+def fixture_grpc_facade() -> FlextGrpc:
+    """Build the canonical public gRPC facade."""
+    return FlextGrpc()
 
 
-@pytest.fixture
-def test_addresses() -> dict[str, list[str]]:
-    """Test addresses for validation."""
-    return {
-        "valid": [
-            f"{FlextConstants.Platform.DEFAULT_HOST}:{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
-            "127.0.0.1:8080",
-            "example.com:443",
-            "api-server:9000",
-        ],
-        "invalid": [
-            "",
-            "localhost",
-            f":{FlextGrpcConstants.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT}",
-            "localhost:",
-            "localhost:abc",
-            "localhost:-1",
-            "localhost:70000",
-        ],
-    }
+@pytest.fixture(name="connection_pool")
+def fixture_connection_pool() -> FlextGrpcConnectionPool.ConnectionPool:
+    """Build a connection pool service component."""
+    return FlextGrpcConnectionPool.ConnectionPool(max_size=5)
+
+
+@pytest.fixture(name="metrics_collector")
+def fixture_metrics_collector() -> FlextGrpcMetrics.MetricsCollector:
+    """Build a metrics collector service component."""
+    return FlextGrpcMetrics.MetricsCollector()

@@ -93,13 +93,13 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 ### **Configuration and Validation**
 
-#### **`config.py`** - Configuration Management
+#### **`settings.py`** - Configuration Management
 
 **Purpose**: Type-safe configuration with validation
 **Components**:
 
 - `FlextGrpcSettings` - Main configuration class extending `FlextSettings`
-- Field validators for host, port, workers, timeout
+- u.Field validators for host, port, workers, timeout
 - Environment variable integration
 - Address formatting and validation utilities
 
@@ -147,14 +147,14 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Components**:
 
 - `FlextGrpcError` - Base exception for all gRPC errors
-- `FlextGrpcValidationError` - Field validation with context
+- `FlextGrpcGrpcValidationError` - u.Field validation with context
 - `FlextGrpcConnectionError` - Network communication errors
 - `FlextGrpcTimeoutError` - Operation timeout and deadline violations
-- `FlextGrpcSettingsurationError` - Configuration validation with details
+- `FlextGrpcConfigurationError` - Configuration validation with details
 
 **Error Context**:
 
-- Field names and validation rules for debugging
+- u.Field names and validation rules for debugging
 - Configuration keys and invalid values
 - Network and channel state information
 - Operation timing and deadline details
@@ -248,7 +248,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 ### **Configuration Development**
 
 1. Add constants to `constants.py` with business context
-1. Implement validation in `config.py` with field validators
+1. Implement validation in `settings.py` with field validators
 1. Define types in `types.py` for type safety
 1. Create corresponding errors in `errors.py`
 

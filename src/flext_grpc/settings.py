@@ -10,89 +10,77 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Annotated, TypeAlias
+from typing import Annotated, ClassVar
 
-from flext_core import FlextSettings, r
-from pydantic import Field, computed_field
-
-from flext_grpc import c
-from flext_grpc.models import FlextGrpcModels
-
-GrpcNetworkConfig: TypeAlias = FlextGrpcModels.Grpc.NetworkConfig
-GrpcSecurityConfig: TypeAlias = FlextGrpcModels.Grpc.SecurityConfig
-GrpcPerformanceConfig: TypeAlias = FlextGrpcModels.Grpc.PerformanceConfig
-GrpcStreamingConfig: TypeAlias = FlextGrpcModels.Grpc.StreamingConfig
-GrpcClientConfig: TypeAlias = FlextGrpcModels.Grpc.ClientSettingsConfig
-GrpcMonitoringConfig: TypeAlias = FlextGrpcModels.Grpc.MonitoringConfig
+from flext_core import FlextSettingsBase
+from flext_grpc import c, m, p, r, t, u
 
 
-class FlextGrpcSettings(FlextSettings):
+class FlextGrpcSettings(FlextSettingsBase):
     """gRPC runtime settings with flat convenience fields and nested configurations.
 
-    Provides both flat fields for simple configuration and nested config models
+    Provides both flat fields for simple configuration and nested settings models
     for advanced settings. Flat fields are convenience accessors that sync with
     nested configurations.
     """
 
+    model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
+        env_prefix="FLEXT_GRPC_", extra="ignore"
+    )
+
     # Flat convenience fields (settable via constructor)
     host: Annotated[
         str,
-        Field(default=c.Grpc.GrpcNetwork.DEFAULT_HOST, validation_alias="grpc_host"),
-    ]
+        u.Field(),
+    ] = c.Grpc.NETWORK_DEFAULT_HOST
     port: Annotated[
-        int,
-        Field(
-            default=c.Grpc.GrpcNetwork.DEFAULT_GRPC_PORT,
-            ge=1,
-            le=65535,
-            validation_alias="grpc_port",
-        ),
-    ]
+        t.PortNumber,
+        u.Field(),
+    ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
     max_workers: Annotated[
-        int,
-        Field(
-            default=c.Grpc.Service.MAX_WORKERS,
-            ge=1,
-            le=100,
-            validation_alias="grpc_max_workers",
-        ),
-    ]
+        t.WorkerCount,
+        u.Field(),
+    ] = c.Grpc.SERVICE_MAX_WORKERS
     timeout: Annotated[
-        float,
-        Field(
-            default=c.Grpc.GrpcNetwork.DEFAULT_TIMEOUT,
-            gt=0,
-            validation_alias="grpc_timeout",
-        ),
-    ]
+        t.PositiveTimeout,
+        u.Field(),
+    ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
     # Nested configuration models
-    network: Annotated[GrpcNetworkConfig, Field(default_factory=GrpcNetworkConfig)]
-    security: Annotated[GrpcSecurityConfig, Field(default_factory=GrpcSecurityConfig)]
-    performance: Annotated[
-        GrpcPerformanceConfig, Field(default_factory=GrpcPerformanceConfig)
-    ]
-    streaming: Annotated[
-        GrpcStreamingConfig, Field(default_factory=GrpcStreamingConfig)
-    ]
-    client: Annotated[GrpcClientConfig, Field(default_factory=GrpcClientConfig)]
-    monitoring: Annotated[
-        GrpcMonitoringConfig, Field(default_factory=GrpcMonitoringConfig)
-    ]
+    network: m.Grpc.NetworkConfig = u.Field(
+        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})
+    )
+    security: m.Grpc.SecurityConfig = u.Field(
+        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})
+    )
+    performance: m.Grpc.PerformanceConfig = u.Field(
+        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})
+    )
+    streaming: m.Grpc.StreamingConfig = u.Field(
+        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})
+    )
+    client: m.Grpc.ClientConfig = u.Field(
+        default_factory=lambda: m.Grpc.ClientConfig.model_validate({})
+    )
+    monitoring: m.Grpc.MonitoringConfig = u.Field(
+        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})
+    )
 
-    @computed_field
+    @u.computed_field()
     @property
     def tls_enabled(self) -> bool:
         """Computed property indicating if TLS is enabled."""
-        return self.security.tls_enabled
+        value: bool = self.security.tls_enabled
+        return value
 
-    @computed_field
+    @u.computed_field()
     @property
     def streaming_enabled(self) -> bool:
         """Computed property indicating if streaming is enabled."""
-        return self.streaming.enabled
+        value: bool = self.streaming.enabled
+        return value
 
-    def validate_configuration(self) -> r[bool]:
+    def validate_configuration(self) -> p.Result[bool]:
         """Validate configuration consistency.
 
         Checks that security configuration is valid, particularly that
@@ -107,7 +95,7 @@ class FlextGrpcSettings(FlextSettings):
         return r[bool].ok(True)
 
     @classmethod
-    def create_production_config(cls) -> r[FlextGrpcSettings]:
+    def create_production_config(cls) -> p.Result[FlextGrpcSettings]:
         """Create a production-ready gRPC configuration.
 
         Production configuration enables TLS and uses secure defaults.
@@ -118,13 +106,13 @@ class FlextGrpcSettings(FlextSettings):
         """
         return r[FlextGrpcSettings].ok(
             cls.model_validate({
-                "host": c.Grpc.GrpcNetwork.DEFAULT_HOST,
+                "host": c.Grpc.NETWORK_DEFAULT_HOST,
                 "security": {"tls_enabled": True},
-            })
+            }),
         )
 
     @classmethod
-    def create_development_config(cls) -> r[FlextGrpcSettings]:
+    def create_development_config(cls) -> p.Result[FlextGrpcSettings]:
         """Create a development gRPC configuration.
 
         Development configuration uses localhost and insecure defaults
@@ -134,7 +122,7 @@ class FlextGrpcSettings(FlextSettings):
             r[FlextGrpcSettings]: Development configuration instance.
 
         """
-        return r[FlextGrpcSettings].ok(cls.model_validate({"host": "127.0.0.1"}))
+        return r[FlextGrpcSettings].ok(cls.model_validate({"host": c.LOOPBACK_IP}))
 
 
-__all__ = ["FlextGrpcModels", "FlextGrpcSettings"]
+__all__: list[str] = ["FlextGrpcSettings"]
