@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from flext_core import FlextUtilities
+from flext_cli import u
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
-class FlextGrpcUtilities(FlextUtilities, FlextGrpcUtilitiesGrpc):
+class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(FlextGrpcUtilitiesGrpc):
