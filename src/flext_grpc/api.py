@@ -37,5 +37,6 @@ class FlextGrpc(
 
 
 grpc = FlextGrpc.fetch_global()
+"""Shared FlextGrpc facade instance."""
 
 __all__: list[str] = ["FlextGrpc", "grpc"]
