@@ -19,10 +19,6 @@ if TYPE_CHECKING:
 class FlextGrpcStream(s):
     """Mixin providing stream processing for FlextGrpc facade."""
 
-    _stream_manager: FlextGrpcStream.GrpcStreamManager = m.PrivateAttr(
-        default_factory=FlextGrpcStream.GrpcStreamManager,
-    )
-
     class _StreamRuntimeState(m.Value):
         stream: m.Grpc.GrpcStream = u.Field(
             description="gRPC stream instance being tracked",
@@ -141,6 +137,10 @@ class FlextGrpcStream(s):
     ) -> p.Result[m.Grpc.Payload]:
         """Send stream data via the dedicated stream manager."""
         return self._stream_manager.send_data(stream, data)
+
+    _stream_manager: FlextGrpcStream.GrpcStreamManager = m.PrivateAttr(
+        default_factory=GrpcStreamManager,
+    )
 
 
 __all__: list[str] = ["FlextGrpcStream"]

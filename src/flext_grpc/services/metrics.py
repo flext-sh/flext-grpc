@@ -10,10 +10,6 @@ from flext_grpc import m, s, t, u
 class FlextGrpcMetrics(s):
     """Mixin providing metrics collection for FlextGrpc facade."""
 
-    _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
-        default_factory=FlextGrpcMetrics.MetricsCollector,
-    )
-
     class _MetricValueModel(m.Value):
         value: t.JsonValue | None = u.Field(
             description="Normalized metric measurement value",
@@ -72,6 +68,10 @@ class FlextGrpcMetrics(s):
                 )
                 updated_values[key] = json_val
                 self._metrics = m.Grpc.Payload(values=updated_values)
+
+    _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
+        default_factory=MetricsCollector,
+    )
 
 
 __all__: list[str] = ["FlextGrpcMetrics"]

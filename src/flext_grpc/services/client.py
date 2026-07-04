@@ -19,10 +19,6 @@ if TYPE_CHECKING:
 class FlextGrpcClient(s):
     """Mixin providing client connection management for FlextGrpc facade."""
 
-    _client_manager: FlextGrpcClient.GrpcClientManager = m.PrivateAttr(
-        default_factory=FlextGrpcClient.GrpcClientManager,
-    )
-
     class GrpcClientManager:
         """Dedicated client connection management."""
 
@@ -150,6 +146,10 @@ class FlextGrpcClient(s):
             else:
                 result = r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
             return result
+
+    _client_manager: FlextGrpcClient.GrpcClientManager = m.PrivateAttr(
+        default_factory=GrpcClientManager,
+    )
 
     def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
         """Establish a client connection through the dedicated manager."""

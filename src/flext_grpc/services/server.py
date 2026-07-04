@@ -22,10 +22,6 @@ if TYPE_CHECKING:
 class FlextGrpcServer(s):
     """Mixin providing server lifecycle management for FlextGrpc facade."""
 
-    _server_manager: FlextGrpcServer.GrpcServerManager = m.PrivateAttr(
-        default_factory=FlextGrpcServer.GrpcServerManager,
-    )
-
     @staticmethod
     def _create_real_servicer(_server_key: str) -> p.Grpc.GrpcServicer:
         """Create runtime gRPC servicer instance for server registration."""
@@ -202,6 +198,10 @@ class FlextGrpcServer(s):
     def server_status(self, server: m.Grpc.Server) -> p.Result[m.Grpc.Payload]:
         """Fetch server runtime metrics through the dedicated manager."""
         return self._server_manager.server_metrics(server)
+
+    _server_manager: FlextGrpcServer.GrpcServerManager = m.PrivateAttr(
+        default_factory=GrpcServerManager,
+    )
 
 
 __all__: list[str] = ["FlextGrpcServer"]
