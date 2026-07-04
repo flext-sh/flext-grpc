@@ -25,7 +25,8 @@ class FlextGrpcSettings(FlextSettingsBase):
     """
 
     model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
-        env_prefix="FLEXT_GRPC_", extra="ignore"
+        env_prefix="FLEXT_GRPC_",
+        extra="ignore",
     )
 
     # Flat convenience fields (settable via constructor)
@@ -48,22 +49,22 @@ class FlextGrpcSettings(FlextSettingsBase):
 
     # Nested configuration models
     network: m.Grpc.NetworkConfig = u.Field(
-        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({})
+        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({}),
     )
     security: m.Grpc.SecurityConfig = u.Field(
-        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({})
+        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({}),
     )
     performance: m.Grpc.PerformanceConfig = u.Field(
-        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({})
+        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({}),
     )
     streaming: m.Grpc.StreamingConfig = u.Field(
-        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({})
+        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({}),
     )
     client: m.Grpc.ClientConfig = u.Field(
-        default_factory=lambda: m.Grpc.ClientConfig.model_validate({})
+        default_factory=lambda: m.Grpc.ClientConfig.model_validate({}),
     )
     monitoring: m.Grpc.MonitoringConfig = u.Field(
-        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({})
+        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({}),
     )
 
     @u.computed_field()

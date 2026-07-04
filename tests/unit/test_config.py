@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings, p
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 
 @pytest.fixture(autouse=True)
@@ -56,7 +59,8 @@ class TestsFlextGrpcConfig:
         ids=["production", "development"],
     )
     def test_create_environment_config(
-        self, factory: Callable[[], p.Result[FlextGrpcSettings]]
+        self,
+        factory: Callable[[], p.Result[FlextGrpcSettings]],
     ) -> None:
         """Production/development factories return validated FlextGrpcSettings."""
         tm.ok(factory(), is_=FlextGrpcSettings)
@@ -95,7 +99,7 @@ class TestsFlextGrpcConfig:
         tm.ok(
             FlextGrpcSettings.model_validate({
                 "security": {"tls_enabled": True, "client_cert_required": True},
-            }).validate_configuration()
+            }).validate_configuration(),
         )
 
     def test_performance_config_defaults(self) -> None:

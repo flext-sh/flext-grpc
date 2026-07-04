@@ -11,12 +11,12 @@ class FlextGrpcMetrics(s):
     """Mixin providing metrics collection for FlextGrpc facade."""
 
     _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcMetrics.MetricsCollector()
+        default_factory=FlextGrpcMetrics.MetricsCollector,
     )
 
     class _MetricValueModel(m.Value):
         value: t.JsonValue | None = u.Field(
-            description="Normalized metric measurement value"
+            description="Normalized metric measurement value",
         )
 
     class MetricsCollector:

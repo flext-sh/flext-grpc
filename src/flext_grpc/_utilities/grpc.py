@@ -2,12 +2,7 @@
 
 from __future__ import annotations
 
-from collections.abc import (
-    Callable,
-)
-from concurrent.futures import Executor
 from importlib import import_module
-from types import ModuleType
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
@@ -15,6 +10,12 @@ from flext_core import u
 from flext_grpc import c, m, p, r, t
 
 if TYPE_CHECKING:
+    from collections.abc import (
+        Callable,
+    )
+    from concurrent.futures import Executor
+    from types import ModuleType
+
     from flext_grpc import FlextGrpcModels
 
 

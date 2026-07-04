@@ -47,7 +47,8 @@ class FlextGrpcModels(m):
             message: Annotated[str, u.Field(description="Echo message")]
             server_id: Annotated[str, u.Field(description="Server identifier")] = ""
             timestamp: datetime = u.Field(
-                default_factory=datetime.now, description="Response timestamp"
+                default_factory=datetime.now,
+                description="Response timestamp",
             )
 
         class HealthRequest(m.Value):
@@ -68,17 +69,20 @@ class FlextGrpcModels(m):
             stream_type: str = u.Field(description="Stream communication type")
             target: str = u.Field(description="Target endpoint address")
             created_at: datetime = u.Field(
-                default_factory=datetime.now, description="Stream creation timestamp"
+                default_factory=datetime.now,
+                description="Stream creation timestamp",
             )
             total_requests_sent: Annotated[
-                t.NonNegativeInt, u.Field(description="Total requests sent on stream")
+                t.NonNegativeInt,
+                u.Field(description="Total requests sent on stream"),
             ] = 0
             average_latency_ms: Annotated[
                 t.NonNegativeFloat,
                 u.Field(description="Average latency in milliseconds"),
             ] = 0.0
             error_count: Annotated[
-                t.NonNegativeInt, u.Field(description="Number of errors on stream")
+                t.NonNegativeInt,
+                u.Field(description="Number of errors on stream"),
             ] = 0
 
         class HealthCheck(m.Value):
@@ -489,7 +493,8 @@ class FlextGrpcModels(m):
             """Generic gRPC channel with state machine delegation."""
 
             target: Annotated[
-                str, u.Field(description="gRPC server target address")
+                str,
+                u.Field(description="gRPC server target address"),
             ] = ""
             state: Annotated[
                 c.Grpc.ChannelState,
@@ -518,7 +523,7 @@ class FlextGrpcModels(m):
                 """Transition to idle."""
                 return r[Self](
                     value=self.model_copy(
-                        update={"state": c.Grpc.ChannelState.IDLE.value}
+                        update={"state": c.Grpc.ChannelState.IDLE.value},
                     ),
                     success=True,
                 )
@@ -587,7 +592,7 @@ class FlextGrpcModels(m):
                 """
                 return r[Self](
                     value=self.model_copy(
-                        update={"services": [*self.services, service]}
+                        update={"services": [*self.services, service]},
                     ),
                     success=True,
                 )
@@ -610,7 +615,7 @@ class FlextGrpcModels(m):
                     )
                 return r[Self](
                     value=self.model_copy(
-                        update={"state": c.Grpc.ServerState.STOPPED.value}
+                        update={"state": c.Grpc.ServerState.STOPPED.value},
                     ),
                     success=True,
                 )
@@ -682,7 +687,7 @@ class FlextGrpcModels(m):
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
                 return r[Self](
                     value=self.model_copy(
-                        update={"methods": [*self.methods, method_name]}
+                        update={"methods": [*self.methods, method_name]},
                     ),
                     success=True,
                 )
@@ -716,7 +721,8 @@ class FlextGrpcModels(m):
                     domain_events=[],
                 )
                 return r[Self](
-                    value=self.model_copy(update={"channel": channel}), success=True
+                    value=self.model_copy(update={"channel": channel}),
+                    success=True,
                 )
 
             @override
@@ -731,7 +737,8 @@ class FlextGrpcModels(m):
 
             id: Annotated[str, u.Field(description="Unique stream identifier")] = ""
             method_name: Annotated[
-                str, u.Field(description="RPC method name for this stream")
+                str,
+                u.Field(description="RPC method name for this stream"),
             ] = ""
             stream_type: Annotated[
                 c.Grpc.GrpcOperations,
@@ -757,13 +764,13 @@ class FlextGrpcModels(m):
             """Complete gRPC setup result with server, client, and service."""
 
             server: FlextGrpcModels.Grpc.Server = u.Field(
-                description="Configured gRPC server instance"
+                description="Configured gRPC server instance",
             )
             client: FlextGrpcModels.Grpc.Client = u.Field(
-                description="Configured gRPC client instance"
+                description="Configured gRPC client instance",
             )
             service: FlextGrpcModels.Grpc.Service = u.Field(
-                description="Configured gRPC service definition"
+                description="Configured gRPC service definition",
             )
             target: str = u.Field(description="Target server address for the setup")
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
@@ -10,7 +11,9 @@ from pydantic import ValidationError
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
 from tests.models import m
-from tests.typings import t
+
+if TYPE_CHECKING:
+    from tests.typings import t
 
 
 class TestsFlextGrpcApi:
@@ -29,7 +32,8 @@ class TestsFlextGrpcApi:
         )
 
     @pytest.mark.parametrize(
-        ("host", "port"), [("localhost", 50051), ("127.0.0.1", 8080)]
+        ("host", "port"),
+        [("localhost", 50051), ("127.0.0.1", 8080)],
     )
     def test_create_server(self, host: str, port: int) -> None:
         """Test server creation across canonical address shapes."""
@@ -47,7 +51,7 @@ class TestsFlextGrpcApi:
     def test_create_stream(self) -> None:
         """Test stream creation."""
         stream = tm.ok(
-            FlextGrpc().create_stream(method_name="test_method", stream_type="unary")
+            FlextGrpc().create_stream(method_name="test_method", stream_type="unary"),
         )
         tm.that(stream.method_name, eq="test_method")
         tm.that(stream.stream_type, eq="unary")
@@ -89,7 +93,7 @@ class TestsFlextGrpcApi:
         """Test channel creation with custom options."""
         options: t.JsonMapping | None = {"timeout": 30, "compression": "gzip"}
         channel = tm.ok(
-            FlextGrpc().create_channel(target="localhost:50051", options=options)
+            FlextGrpc().create_channel(target="localhost:50051", options=options),
         )
         tm.that(channel.options, eq=options)
 
@@ -103,7 +107,7 @@ class TestsFlextGrpcApi:
             ["method1", "method2"] if name == "TestService" else ["default_method"]
         )
         service: m.Grpc.Service = tm.ok(
-            FlextGrpc().create_service(name=name, methods=methods)
+            FlextGrpc().create_service(name=name, methods=methods),
         )
         tm.that(service.name, eq=name)
         tm.that(service.methods, eq=methods)

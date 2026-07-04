@@ -253,12 +253,12 @@ def example_5_error_handling() -> None:
     invalid_channel_result = grpc.create_channel(target="")
     if invalid_channel_result.failure:
         _emit(
-            f"Invalid channel creation properly failed: {invalid_channel_result.error}"
+            f"Invalid channel creation properly failed: {invalid_channel_result.error}",
         )
     invalid_service_result = grpc.create_service(name="", methods=[])
     if invalid_service_result.failure:
         _emit(
-            f"Invalid service creation properly failed: {invalid_service_result.error}"
+            f"Invalid service creation properly failed: {invalid_service_result.error}",
         )
     invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.failure:

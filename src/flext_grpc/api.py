@@ -33,8 +33,6 @@ class FlextGrpc(
     full functionality with Python 3.13+ features.
     """
 
-    pass
-
 
 grpc = FlextGrpc.fetch_global()
 """Shared FlextGrpc facade instance."""

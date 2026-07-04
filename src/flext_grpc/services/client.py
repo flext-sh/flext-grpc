@@ -3,21 +3,24 @@
 from __future__ import annotations
 
 import time
-from collections.abc import (
-    MutableMapping,
-)
+from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, s, t, u
 from flext_grpc.proto.stubs import FlextGrpcServiceStub
 from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
+
 
 class FlextGrpcClient(s):
     """Mixin providing client connection management for FlextGrpc facade."""
 
     _client_manager: FlextGrpcClient.GrpcClientManager = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcClient.GrpcClientManager()
+        default_factory=FlextGrpcClient.GrpcClientManager,
     )
 
     class GrpcClientManager:

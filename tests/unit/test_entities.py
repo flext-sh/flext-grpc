@@ -28,7 +28,10 @@ class TestsFlextGrpcEntities:
     def test_server_creation_defaults(self) -> None:
         """Test server creation defaults max_workers to 10."""
         server = m.Grpc.Server(
-            host="localhost", port=50051, services=[], domain_events=[]
+            host="localhost",
+            port=50051,
+            services=[],
+            domain_events=[],
         )
         tm.that(server.max_workers, eq=10)
 
@@ -75,7 +78,9 @@ class TestsFlextGrpcEntities:
         ids=["empty-methods", "empty-name"],
     )
     def test_service_validation_rejects_empty(
-        self, name: str, methods: list[str]
+        self,
+        name: str,
+        methods: list[str],
     ) -> None:
         """Service rejects empty name OR empty methods."""
         with pytest.raises(ValueError):

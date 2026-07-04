@@ -3,10 +3,8 @@
 from __future__ import annotations
 
 import time
-from collections.abc import (
-    MutableMapping,
-)
 from concurrent.futures import ThreadPoolExecutor
+from typing import TYPE_CHECKING
 
 from flext_grpc import c, m, p, r, s, u
 from flext_grpc.proto.stubs import (
@@ -15,12 +13,17 @@ from flext_grpc.proto.stubs import (
 )
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
+
 
 class FlextGrpcServer(s):
     """Mixin providing server lifecycle management for FlextGrpc facade."""
 
     _server_manager: FlextGrpcServer.GrpcServerManager = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcServer.GrpcServerManager()
+        default_factory=FlextGrpcServer.GrpcServerManager,
     )
 
     @staticmethod

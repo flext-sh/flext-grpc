@@ -4,28 +4,31 @@ from __future__ import annotations
 
 import time
 from collections import deque
-from collections.abc import (
-    MutableMapping,
-)
+from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, s, t, u
 from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services.metrics import FlextGrpcMetrics
+
+if TYPE_CHECKING:
+    from collections.abc import (
+        MutableMapping,
+    )
 
 
 class FlextGrpcStream(s):
     """Mixin providing stream processing for FlextGrpc facade."""
 
     _stream_manager: FlextGrpcStream.GrpcStreamManager = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcStream.GrpcStreamManager()
+        default_factory=FlextGrpcStream.GrpcStreamManager,
     )
 
     class _StreamRuntimeState(m.Value):
         stream: m.Grpc.GrpcStream = u.Field(
-            description="gRPC stream instance being tracked"
+            description="gRPC stream instance being tracked",
         )
         created_at: float = u.Field(
-            description="Stream creation timestamp in epoch seconds"
+            description="Stream creation timestamp in epoch seconds",
         )
         buffer: deque[t.JsonMapping | None] = u.Field(
             default_factory=lambda: deque[t.JsonMapping | None](
@@ -51,7 +54,8 @@ class FlextGrpcStream(s):
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
         def close_stream(
-            self, stream: m.Grpc.GrpcStream
+            self,
+            stream: m.Grpc.GrpcStream,
         ) -> p.Result[m.Grpc.GrpcStream]:
             """Close stream and cleanup."""
             stream_key = f"{stream.id}_{stream.stream_type}"
@@ -60,7 +64,8 @@ class FlextGrpcStream(s):
             return r[m.Grpc.GrpcStream].ok(stream)
 
         def create_stream(
-            self, **kwargs: t.JsonValue | None
+            self,
+            **kwargs: t.JsonValue | None,
         ) -> p.Result[m.Grpc.GrpcStream]:
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))

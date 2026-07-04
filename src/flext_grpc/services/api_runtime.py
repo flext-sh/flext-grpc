@@ -53,21 +53,22 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         server_result = self.create_server(host=host, port=port)
         if server_result.failure:
             return r[m.Grpc.CompleteSetup].fail(
-                server_result.error or "Server creation failed"
+                server_result.error or "Server creation failed",
             )
 
         client_result = self.create_client(target=target)
         if client_result.failure:
             return r[m.Grpc.CompleteSetup].fail(
-                client_result.error or "Client creation failed"
+                client_result.error or "Client creation failed",
             )
 
         service_result = self.create_service(
-            name=service_name, methods=resolved_methods
+            name=service_name,
+            methods=resolved_methods,
         )
         if service_result.failure:
             return r[m.Grpc.CompleteSetup].fail(
-                service_result.error or "Service creation failed"
+                service_result.error or "Service creation failed",
             )
 
         return r[m.Grpc.CompleteSetup].ok(

@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from flext_tests import tm
 
-from flext_grpc import FlextGrpc
-from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-from flext_grpc.services.metrics import FlextGrpcMetrics
-from tests.models import m
+if TYPE_CHECKING:
+    from flext_grpc import FlextGrpc
+    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from tests.models import m
 
 
 class TestsFlextGrpcServices:
@@ -26,13 +29,15 @@ class TestsFlextGrpcServices:
         tm.ok(grpc_facade.execute())
 
     def test_connection_pool_cleanup(
-        self, connection_pool: FlextGrpcConnectionPool.ConnectionPool
+        self,
+        connection_pool: FlextGrpcConnectionPool.ConnectionPool,
     ) -> None:
         """Connection pool cleanup succeeds even with no active channels."""
         tm.ok(connection_pool.cleanup())
 
     def test_metrics_collector(
-        self, metrics_collector: FlextGrpcMetrics.MetricsCollector
+        self,
+        metrics_collector: FlextGrpcMetrics.MetricsCollector,
     ) -> None:
         """Metrics collector records and exposes normalized payload values."""
         metrics_collector.record_metric("test_key", "test_value")
