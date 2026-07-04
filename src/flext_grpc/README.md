@@ -146,11 +146,11 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 **Purpose**: Comprehensive error handling with detailed context
 **Components**:
 
-- `FlextGrpcError` - Base exception for all gRPC errors
-- `FlextGrpcGrpcValidationError` - u.Field validation with context
-- `FlextGrpcConnectionError` - Network communication errors
-- `FlextGrpcTimeoutError` - Operation timeout and deadline violations
-- `FlextGrpcConfigurationError` - Configuration validation with details
+- `FlextGrpcErrors.Error` - Base exception for all gRPC errors
+- `FlextGrpcErrors.ValidationError` - Field validation with context
+- `FlextGrpcErrors.GrpcConnectionError` - Network communication errors
+- `FlextGrpcErrors.GrpcTimeoutError` - Operation timeout and deadline violations
+- `FlextGrpcErrors.ConfigurationError` - Configuration validation with details
 
 **Error Context**:
 

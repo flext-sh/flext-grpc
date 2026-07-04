@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import threading
 
-from flext_grpc import m, t, u
-from flext_grpc.base import s
+from flext_grpc import m, s, t, u
 
 
 class FlextGrpcMetrics(s):
@@ -68,7 +67,7 @@ class FlextGrpcMetrics(s):
                 normalized = FlextGrpcMetrics._MetricValueModel(value=value)
                 json_val = _normalize_value(normalized.value)
                 existing = self._metrics.values
-                updated_values: dict[str, t.JsonValue | None] = (
+                updated_values: t.MutableMappingKV[str, t.JsonValue | None] = (
                     dict(existing) if existing is not None else {}
                 )
                 updated_values[key] = json_val

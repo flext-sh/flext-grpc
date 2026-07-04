@@ -14,13 +14,14 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_cli import u as cli_u
-from flext_core import p, r
 from flext_grpc import (
     FlextGrpc,
     FlextGrpcConstants,
     FlextGrpcModels,
     FlextGrpcSettings,
     c,
+    p,
+    r,
     t,
 )
 
@@ -36,8 +37,8 @@ class GrpcServerManager:
     def __init__(self) -> None:
         """Initialize the gRPC server manager with facade."""
         self.grpc = FlextGrpc()
-        self.servers: dict[str, FlextGrpcModels.Grpc.Server] = {}
-        self.server_configs: dict[str, FlextGrpcSettings] = {}
+        self.servers: t.MutableMappingKV[str, FlextGrpcModels.Grpc.Server] = {}
+        self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
 
     def create_server_pool(
         self,
@@ -66,9 +67,9 @@ class GrpcServerManager:
             server_results.append(server_result)
         return server_results
 
-    def server_status(self) -> dict[str, dict[str, str]]:
+    def server_status(self) -> t.MappingKV[str, t.MappingKV[str, str]]:
         """Get status of all servers through facade."""
-        status: dict[str, dict[str, str]] = {}
+        status: t.MutableMappingKV[str, t.MappingKV[str, str]] = {}
         for server_id, server in self.servers.items():
             settings = self.server_configs[server_id]
             status[server_id] = {
@@ -81,9 +82,9 @@ class GrpcServerManager:
             }
         return status
 
-    def start_all_servers(self) -> dict[str, bool]:
+    def start_all_servers(self) -> t.MappingKV[str, bool]:
         """Start all servers in the pool through facade."""
-        results: dict[str, bool] = {}
+        results: t.MutableMappingKV[str, bool] = {}
         for server_id, server in self.servers.items():
             start_result = self.grpc.start_server(server)
             if start_result.success:
@@ -93,9 +94,9 @@ class GrpcServerManager:
                 results[server_id] = False
         return results
 
-    def stop_all_servers(self) -> dict[str, bool]:
+    def stop_all_servers(self) -> t.MappingKV[str, bool]:
         """Stop all servers in the pool through facade."""
-        results: dict[str, bool] = {}
+        results: t.MutableMappingKV[str, bool] = {}
         for server_id, server in self.servers.items():
             if server.state == "running":
                 stop_result = self.grpc.stop_server(server)

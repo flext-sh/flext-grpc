@@ -5,8 +5,7 @@ from __future__ import annotations
 import threading
 from queue import Queue
 
-from flext_grpc import e, m, p, r
-from flext_grpc.base import s
+from flext_grpc import e, m, p, r, s
 
 
 class FlextGrpcConnectionPool(s):

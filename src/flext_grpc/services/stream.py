@@ -8,9 +8,8 @@ from collections.abc import (
     MutableMapping,
 )
 
-from flext_grpc import c, e, m, p, r, t, u
-from flext_grpc.base import s
-from flext_grpc.errors import GrpcValidationError
+from flext_grpc import c, e, m, p, r, s, t, u
+from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
@@ -108,7 +107,7 @@ class FlextGrpcStream(s):
                         buffer_size=len(stream_state.buffer),
                     ),
                 )
-            except GrpcValidationError as exc:
+            except FlextGrpcErrors.ValidationError as exc:
                 return e.fail_validation("stream_state", error=exc)
 
     def create_stream(

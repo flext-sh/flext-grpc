@@ -37,6 +37,7 @@ _PUBLIC_EXPORTS: tuple[str, ...] = (
     "FlextGrpcClient",
     "FlextGrpcConnectionPool",
     "FlextGrpcConstants",
+    "FlextGrpcErrors",
     "FlextGrpcMetrics",
     "FlextGrpcModels",
     "FlextGrpcProtocols",

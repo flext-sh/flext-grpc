@@ -14,6 +14,7 @@ from flext_grpc.__version__ import (
 from flext_grpc.api import FlextGrpc as FlextGrpc, grpc as grpc
 from flext_grpc.base import FlextGrpcServiceBase as FlextGrpcServiceBase, s as s
 from flext_grpc.constants import FlextGrpcConstants as FlextGrpcConstants, c as c
+from flext_grpc.errors import FlextGrpcErrors as FlextGrpcErrors
 from flext_grpc.models import FlextGrpcModels as FlextGrpcModels, m as m
 from flext_grpc.protocols import FlextGrpcProtocols as FlextGrpcProtocols, p as p
 from flext_grpc.services.api_runtime import FlextGrpcApiRuntime as FlextGrpcApiRuntime
@@ -34,6 +35,7 @@ __all__ = (
     "FlextGrpcClient",
     "FlextGrpcConnectionPool",
     "FlextGrpcConstants",
+    "FlextGrpcErrors",
     "FlextGrpcMetrics",
     "FlextGrpcModels",
     "FlextGrpcProtocols",

@@ -20,6 +20,7 @@ FLEXT_GRPC_LAZY_IMPORTS_PART_01 = build_lazy_import_map(
             "FlextGrpcConstants",
             "c",
         ),
+        ".errors": ("FlextGrpcErrors",),
         ".models": (
             "FlextGrpcModels",
             "m",

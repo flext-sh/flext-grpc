@@ -11,17 +11,17 @@ from types import ModuleType
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
+from flext_core import u
 from flext_grpc import c, m, p, r, t
-from flext_grpc.utilities import u
 
 if TYPE_CHECKING:
     from flext_grpc import FlextGrpcModels
 
-logger = u.create_module_logger(__name__)
-
 
 class FlextGrpcUtilitiesGrpc:
     """gRPC utility namespace composed into ``FlextGrpcUtilities.Grpc``."""
+
+    _logger = u.fetch_logger(__name__)
 
     class _GrpcRuntimeAdapter:
         """Typed adapter that isolates the untyped grpc runtime module."""
@@ -328,7 +328,7 @@ class FlextGrpcUtilitiesGrpc:
             max_port = 65535
             return 1 <= port <= max_port
         except (ValueError, AttributeError):
-            logger.debug("Invalid gRPC target: %s", target)
+            FlextGrpcUtilitiesGrpc._logger.debug("Invalid gRPC target: %s", target)
             return False
 
     @staticmethod
