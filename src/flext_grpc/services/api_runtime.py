@@ -37,7 +37,9 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
-        return FlextGrpcUtilities.Grpc.create_client_entity(target=target, options=options)
+        return FlextGrpcUtilities.Grpc.create_client_entity(
+            target=target, options=options
+        )
 
     def create_complete_setup(
         self,

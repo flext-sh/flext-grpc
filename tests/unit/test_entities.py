@@ -49,7 +49,9 @@ class TestsFlextGrpcEntities:
 
     def test_server_defaults_max_workers_when_omitted(self) -> None:
         """Omitting max_workers yields the documented default of 10."""
-        server = m.Grpc.Server(host="localhost", port=50051, services=[], domain_events=[])
+        server = m.Grpc.Server(
+            host="localhost", port=50051, services=[], domain_events=[]
+        )
         tm.that(server.max_workers, eq=10)
 
     def test_server_lifecycle_transitions_through_running_and_stopped(
@@ -166,7 +168,10 @@ class TestsFlextGrpcEntities:
         channel: m.Grpc.Channel,
     ) -> None:
         """copy_with returns a new channel carrying the overridden target."""
-        tm.that(tm.ok(channel.copy_with(target="127.0.0.1:8080")).target, eq="127.0.0.1:8080")
+        tm.that(
+            tm.ok(channel.copy_with(target="127.0.0.1:8080")).target,
+            eq="127.0.0.1:8080",
+        )
 
     # ---- Client -----------------------------------------------------------
 
@@ -208,7 +213,9 @@ class TestsFlextGrpcEntities:
 
     def test_service_exposes_name_and_methods(self) -> None:
         """Service surfaces its name and registered methods."""
-        service = m.Grpc.Service(name="TestService", methods=["m1", "m2"], domain_events=[])
+        service = m.Grpc.Service(
+            name="TestService", methods=["m1", "m2"], domain_events=[]
+        )
         tm.that(service.name, eq="TestService")
         tm.that(list(service.methods), eq=["m1", "m2"])
 

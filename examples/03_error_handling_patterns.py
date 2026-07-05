@@ -16,12 +16,12 @@ from typing import NoReturn
 
 from flext_grpc import (
     FlextGrpcConstants,
-    FlextGrpcErrors,
     p,
     r,
     t,
     u,
 )
+from flext_grpc.errors import FlextGrpcErrors
 
 logger = u.fetch_logger(__name__)
 

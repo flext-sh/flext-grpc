@@ -86,9 +86,7 @@ def _build_conforming_instance(members: tuple[str, ...]) -> object:
 
 def _build_partial_instance(members: tuple[str, ...], *, omit: str) -> object:
     """Create an object exposing every member except ``omit``."""
-    namespace = {
-        name: (lambda self, *a, **k: None) for name in members if name != omit
-    }
+    namespace = {name: (lambda self, *a, **k: None) for name in members if name != omit}
     return type("Partial", (), namespace)()
 
 
@@ -103,9 +101,7 @@ class TestsFlextGrpcProtocolsUnit:
         assert is_protocol(protocol) is True
 
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
-    def test_conforming_object_satisfies_protocol(
-        self, protocol_name: str
-    ) -> None:
+    def test_conforming_object_satisfies_protocol(self, protocol_name: str) -> None:
         """An object exposing all required members passes isinstance."""
         members = _PROTOCOL_CONTRACTS[protocol_name]
         protocol = getattr(p.Grpc, protocol_name)
@@ -174,8 +170,6 @@ class TestsFlextGrpcProtocolsUnit:
 
         # Sanity guard that our conforming builder yields real callables the
         # protocol machinery accepts, independent of the source definitions.
-        instance = _build_conforming_instance(
-            _PROTOCOL_CONTRACTS["Server"]
-        )
+        instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
 
         assert isinstance(instance, _Marker) is True

@@ -104,7 +104,14 @@ class TestsFlextGrpcUtilitiesUnit:
 
     @pytest.mark.parametrize(
         ("port", "expected"),
-        [(1, True), (50051, True), (65535, True), (0, False), (65536, False), (-1, False)],
+        [
+            (1, True),
+            (50051, True),
+            (65535, True),
+            (0, False),
+            (65536, False),
+            (-1, False),
+        ],
     )
     def test_validate_port_enforces_inclusive_range(
         self,
@@ -140,7 +147,12 @@ class TestsFlextGrpcUtilitiesUnit:
 
     @pytest.mark.parametrize(
         ("state", "expected"),
-        [("ready", "ready"), ("IDLE", "idle"), ("Ready", "ready"), ("bogus", "unknown")],
+        [
+            ("ready", "ready"),
+            ("IDLE", "idle"),
+            ("Ready", "ready"),
+            ("bogus", "unknown"),
+        ],
     )
     def test_channel_state_name_normalizes_known_states(
         self,

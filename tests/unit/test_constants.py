@@ -35,9 +35,7 @@ class TestsFlextGrpcConstantsUnit:
             ("BIDIRECTIONAL_STREAMING_QUEUE_SIZE", 1000),
         ],
     )
-    def test_published_constant_values(
-        self, name: str, expected: str | int
-    ) -> None:
+    def test_published_constant_values(self, name: str, expected: str | int) -> None:
         """Each published constant exposes its contracted value."""
         assert getattr(Grpc, name) == expected
 
@@ -48,8 +46,14 @@ class TestsFlextGrpcConstantsUnit:
             ("SERVICE_MIN_WORKERS", "SERVICE_MAX_WORKERS"),
             ("PERFORMANCE_MIN_MESSAGE_LENGTH", "PERFORMANCE_DEFAULT_MESSAGE_LENGTH"),
             ("PERFORMANCE_DEFAULT_MESSAGE_LENGTH", "PERFORMANCE_MAX_MESSAGE_LENGTH"),
-            ("PERFORMANCE_MIN_THREAD_POOL_SIZE", "PERFORMANCE_DEFAULT_THREAD_POOL_SIZE"),
-            ("PERFORMANCE_DEFAULT_THREAD_POOL_SIZE", "PERFORMANCE_MAX_THREAD_POOL_SIZE"),
+            (
+                "PERFORMANCE_MIN_THREAD_POOL_SIZE",
+                "PERFORMANCE_DEFAULT_THREAD_POOL_SIZE",
+            ),
+            (
+                "PERFORMANCE_DEFAULT_THREAD_POOL_SIZE",
+                "PERFORMANCE_MAX_THREAD_POOL_SIZE",
+            ),
             ("STREAMING_MIN_BUFFER_SIZE", "STREAMING_DEFAULT_BUFFER_SIZE"),
             ("STREAMING_DEFAULT_BUFFER_SIZE", "STREAMING_MAX_BUFFER_SIZE"),
         ],
@@ -120,9 +124,7 @@ class TestsFlextGrpcConstantsUnit:
             (Grpc.CompressionTypes.NONE, "none"),
         ],
     )
-    def test_enum_members_expose_string_values(
-        self, member: str, value: str
-    ) -> None:
+    def test_enum_members_expose_string_values(self, member: str, value: str) -> None:
         """Each StrEnum member equals its contracted string value."""
         assert member == value
         assert isinstance(member, str)
