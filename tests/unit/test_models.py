@@ -49,7 +49,7 @@ class TestsFlextGrpcModelsUnit:
         request = m.Grpc.EchoRequest(message="x")
 
         with pytest.raises(pydantic.ValidationError):
-            request.message = "y"
+            setattr(request, "message", "y")
 
     # ------------------------------------------------------------------
     # StreamInfo: validation via model_validate and numeric constraints
