@@ -6,7 +6,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
-from flext_core.result import r
+from flext_core import r
 from flext_grpc import c, m, p, s
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.proto.stubs import (

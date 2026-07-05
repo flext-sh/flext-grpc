@@ -17,13 +17,13 @@ from typing import Protocol, is_protocol, runtime_checkable
 
 import pytest
 
-from flext_grpc import FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols, t
 from tests.protocols import p
 
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
 # satisfy the runtime-checkable protocol (verified via isinstance below).
-_PROTOCOL_CONTRACTS: dict[str, tuple[str, ...]] = {
+_PROTOCOL_CONTRACTS: t.MappingKV[str, tuple[str, ...]] = {
     "Server": (
         "add_service",
         "configure_port",
