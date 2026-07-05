@@ -37,20 +37,22 @@ class TestsFlextGrpcApi:
     )
     def test_create_server(self, host: str, port: int) -> None:
         """Test server creation across canonical address shapes."""
-        server = tm.ok(FlextGrpc().create_server(host=host, port=port))
+        server: m.Grpc.Server = tm.ok(
+            FlextGrpc().create_server(host=host, port=port),
+        )
         tm.that(server.host, eq=host)
         tm.that(server.port, eq=port)
 
     @pytest.mark.parametrize("target", ["localhost:50051", "127.0.0.1:8080"])
     def test_create_client(self, target: str) -> None:
         """Test client creation across canonical address shapes."""
-        client = tm.ok(FlextGrpc().create_client(target=target))
+        client: m.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
         assert client.channel is not None
         tm.that(client.channel.target, eq=target)
 
     def test_create_stream(self) -> None:
         """Test stream creation."""
-        stream = tm.ok(
+        stream: m.Grpc.GrpcStream = tm.ok(
             FlextGrpc().create_stream(method_name="test_method", stream_type="unary"),
         )
         tm.that(stream.method_name, eq="test_method")
@@ -75,7 +77,8 @@ class TestsFlextGrpcApi:
 
     def test_parse_address(self) -> None:
         """Test address parsing."""
-        host, port = tm.ok(FlextGrpc().parse_address("localhost:50051"))
+        parsed: tuple[str, int] = tm.ok(FlextGrpc().parse_address("localhost:50051"))
+        host, port = parsed
         tm.that(host, eq="localhost")
         tm.that(port, eq=50051)
 
@@ -85,14 +88,16 @@ class TestsFlextGrpcApi:
 
     def test_create_channel(self) -> None:
         """Test channel creation."""
-        channel = tm.ok(FlextGrpc().create_channel(target="localhost:50051"))
+        channel: m.Grpc.Channel = tm.ok(
+            FlextGrpc().create_channel(target="localhost:50051"),
+        )
         tm.that(channel.target, eq="localhost:50051")
         tm.that(channel.state, eq="idle")
 
     def test_create_channel_with_options(self) -> None:
         """Test channel creation with custom options."""
         options: t.JsonMapping | None = {"timeout": 30, "compression": "gzip"}
-        channel = tm.ok(
+        channel: m.Grpc.Channel = tm.ok(
             FlextGrpc().create_channel(target="localhost:50051", options=options),
         )
         tm.that(channel.options, eq=options)
