@@ -17,7 +17,7 @@ from flext_tests import tm
 from tests.models import m
 
 
-class TestsFlextGrpcModels:
+class TestsFlextGrpcModelsUnit:
     """Behavioral contract tests for FlextGrpcModels.Grpc models."""
 
     # ------------------------------------------------------------------

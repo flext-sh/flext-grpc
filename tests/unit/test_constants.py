@@ -15,7 +15,7 @@ from tests.constants import c
 Grpc = c.Grpc
 
 
-class TestsFlextGrpcConstants:
+class TestsFlextGrpcConstantsUnit:
     """Public-contract tests for FlextGrpcConstants."""
 
     @pytest.mark.parametrize(

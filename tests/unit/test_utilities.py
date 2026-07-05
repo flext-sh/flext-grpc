@@ -16,7 +16,7 @@ from tests.models import m
 from tests.utilities import u
 
 
-class TestsFlextGrpcUtilities:
+class TestsFlextGrpcUtilitiesUnit:
     """Public-contract behavior of the gRPC utility namespace."""
 
     # ------------------------------------------------------------------

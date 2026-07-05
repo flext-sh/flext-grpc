@@ -13,7 +13,7 @@ from flext_tests import tm
 from tests.utilities import u
 
 
-class TestsFlextGrpcTypings:
+class TestsFlextGrpcTypesUnit:
     """Behavioral contract for the gRPC ``host:port`` target helpers."""
 
     @pytest.mark.parametrize(

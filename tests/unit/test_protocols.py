@@ -92,7 +92,7 @@ def _build_partial_instance(members: tuple[str, ...], *, omit: str) -> object:
     return type("Partial", (), namespace)()
 
 
-class TestsFlextGrpcProtocols:
+class TestsFlextGrpcProtocolsUnit:
     """Behavioral contract tests for the ``p.Grpc.*`` protocols."""
 
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
