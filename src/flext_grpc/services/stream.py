@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from flext_grpc import c, e, m, p, r, s, t, u
 from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services.metrics import FlextGrpcMetrics
+from flext_grpc.utilities import FlextGrpcUtilities
 
 if TYPE_CHECKING:
     from collections.abc import (
@@ -66,7 +67,7 @@ class FlextGrpcStream(s):
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             stream_type = str(kwargs.get("stream_type", "unary"))
-            stream_result = u.Grpc.create_stream_entity(method_name, stream_type)
+            stream_result = FlextGrpcUtilities.Grpc.create_stream_entity(method_name, stream_type)
             if stream_result.failure:
                 return stream_result
             stream = stream_result.value

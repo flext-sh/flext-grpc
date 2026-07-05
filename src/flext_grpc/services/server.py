@@ -6,12 +6,14 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
-from flext_grpc import c, m, p, r, s, u
+from flext_core.result import r
+from flext_grpc import c, m, p, s
 from flext_grpc.proto.stubs import (
     FlextGrpcServiceServicer,
     add_FlextGrpcServiceServicer_to_server,
 )
 from flext_grpc.services.metrics import FlextGrpcMetrics
+from flext_grpc.utilities import FlextGrpcUtilities
 
 if TYPE_CHECKING:
     from collections.abc import (
@@ -96,9 +98,8 @@ class FlextGrpcServer(s):
             starting_server = starting_result.value
             bound_result = self._create_bound_runtime_server(starting_server)
             if bound_result.failure:
-                return r[m.Grpc.Server].fail_op(
-                    "Server start",
-                    u.Grpc.runtime_failure_message(bound_result),
+                return r[m.Grpc.Server].fail(
+                    f"Server start failed: {FlextGrpcUtilities.Grpc.runtime_failure_message(bound_result)}",
                 )
             grpc_server = bound_result.value
             self._register_services(server_key, starting_server, grpc_server)
@@ -113,20 +114,20 @@ class FlextGrpcServer(s):
             starting_server: m.Grpc.Server,
         ) -> p.Result[p.Grpc.GrpcServer]:
             """Create a runtime server and bind it to the configured address."""
-            server_result = u.Grpc.create_runtime_server(self._thread_pool)
+            server_result = FlextGrpcUtilities.Grpc.create_runtime_server(self._thread_pool)
             if server_result.failure:
                 return r[p.Grpc.GrpcServer].fail(
-                    u.Grpc.runtime_failure_message(server_result),
+                    FlextGrpcUtilities.Grpc.runtime_failure_message(server_result),
                     exception=server_result.exception,
                 )
             grpc_server = server_result.value
-            bind_result = u.Grpc.bind_insecure_port(
+            bind_result = FlextGrpcUtilities.Grpc.bind_insecure_port(
                 grpc_server,
                 f"{starting_server.host}:{starting_server.port}",
             )
             if bind_result.failure:
                 return r[p.Grpc.GrpcServer].fail(
-                    u.Grpc.runtime_failure_message(bind_result),
+                    FlextGrpcUtilities.Grpc.runtime_failure_message(bind_result),
                     exception=bind_result.exception,
                 )
             return r[p.Grpc.GrpcServer].ok(grpc_server)
@@ -152,11 +153,10 @@ class FlextGrpcServer(s):
             grpc_server: p.Grpc.GrpcServer,
         ) -> p.Result[m.Grpc.Server]:
             """Start the runtime server and mark the domain server as running."""
-            start_result = u.Grpc.run_runtime(grpc_server.start)
+            start_result = FlextGrpcUtilities.Grpc.run_runtime(grpc_server.start)
             if start_result.failure:
-                return r[m.Grpc.Server].fail_op(
-                    "Server start",
-                    u.Grpc.runtime_failure_message(start_result),
+                return r[m.Grpc.Server].fail(
+                    f"Server start failed: {FlextGrpcUtilities.Grpc.runtime_failure_message(start_result)}",
                 )
             self._active_servers[server_key] = grpc_server
             self._metrics.record_metric(f"{server_key}_started_at", time.time())
@@ -173,15 +173,14 @@ class FlextGrpcServer(s):
                 return stopping_result
             stopping_server = stopping_result.value
             grpc_server = self._active_servers[server_key]
-            stop_result = u.Grpc.call_runtime(
+            stop_result = FlextGrpcUtilities.Grpc.call_runtime(
                 lambda: grpc_server.stop(
                     grace=c.Grpc.NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT,
                 ),
             )
             if stop_result.failure:
-                return r[m.Grpc.Server].fail_op(
-                    "Server stop",
-                    u.Grpc.runtime_failure_message(stop_result),
+                return r[m.Grpc.Server].fail(
+                    f"Server stop failed: {FlextGrpcUtilities.Grpc.runtime_failure_message(stop_result)}",
                 )
             del self._active_servers[server_key]
             self._metrics.record_metric(f"{server_key}_stopped_at", time.time())

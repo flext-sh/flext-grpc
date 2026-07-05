@@ -11,10 +11,10 @@ from flext_grpc import (
     p,
     r,
     t,
-    u,
 )
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
 from flext_grpc.base import FlextGrpcServiceBase
+from flext_grpc.utilities import FlextGrpcUtilities
 
 
 class FlextGrpcApiRuntime(FlextGrpcServiceBase):
@@ -26,7 +26,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
-        return u.Grpc.create_channel_entity(
+        return FlextGrpcUtilities.Grpc.create_channel_entity(
             target=target,
             options={} if options is None else options,
         )
@@ -37,7 +37,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Client]:
         """Create typed client entity from validated inputs."""
-        return u.Grpc.create_client_entity(target=target, options=options)
+        return FlextGrpcUtilities.Grpc.create_client_entity(target=target, options=options)
 
     def create_complete_setup(
         self,
@@ -87,7 +87,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
     ) -> p.Result[m.Grpc.Server]:
         """Create typed server entity from validated inputs."""
-        return u.Grpc.create_server_entity(
+        return FlextGrpcUtilities.Grpc.create_server_entity(
             host=host,
             port=port,
             max_workers=max_workers,
@@ -99,7 +99,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         methods: t.StrSequence | None = None,
     ) -> p.Result[m.Grpc.Service]:
         """Create typed service entity from validated inputs."""
-        return u.Grpc.create_service_entity(
+        return FlextGrpcUtilities.Grpc.create_service_entity(
             name=name,
             methods=[] if methods is None else methods,
         )
@@ -133,13 +133,13 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
     def parse_address(self, address: str) -> p.Result[tuple[str, int]]:
         """Parse gRPC address string."""
-        if not u.Grpc.validate_target(address):
+        if not FlextGrpcUtilities.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
         return r[tuple[str, int]].ok(FlextGrpcUtilitiesGrpc.parse_target(address))
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
-        return u.Grpc.validate_target(target)
+        return FlextGrpcUtilities.Grpc.validate_target(target)
 
 
 __all__: list[str] = ["FlextGrpcApiRuntime"]
