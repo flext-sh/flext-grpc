@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from collections.abc import Callable
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture
 def clear_grpc_env(monkeypatch: pytest.MonkeyPatch) -> None:
     """Ensure settings tests are isolated from environment overrides."""
     for env_key in (
