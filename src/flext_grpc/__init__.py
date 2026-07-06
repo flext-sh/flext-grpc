@@ -19,7 +19,13 @@ from flext_grpc.__version__ import (
 from flext_grpc._exports import FLEXT_GRPC_LAZY_IMPORTS
 
 if TYPE_CHECKING:
-    from flext_core._root_typing_parts import d as d, e as e, h as h, r as r, x as x
+    from flext_core._root_typing_parts.facades import (
+        d as d,
+        e as e,
+        h as h,
+        r as r,
+        x as x,
+    )
     from flext_grpc.api import FlextGrpc as FlextGrpc, grpc as grpc
     from flext_grpc.base import FlextGrpcServiceBase as FlextGrpcServiceBase, s as s
     from flext_grpc.constants import FlextGrpcConstants as FlextGrpcConstants, c as c

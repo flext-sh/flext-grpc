@@ -3,12 +3,56 @@
 
 from __future__ import annotations
 
-from flext_core.lazy import merge_lazy_imports
-from flext_grpc._exports_lazy_part_01 import FLEXT_GRPC_LAZY_IMPORTS_PART_01
+from flext_core.lazy import build_lazy_import_map, merge_lazy_imports
 
-_LOCAL_LAZY_IMPORTS = {
-    **FLEXT_GRPC_LAZY_IMPORTS_PART_01,
-}
+_LOCAL_LAZY_IMPORTS = build_lazy_import_map(
+    {
+        "._utilities": ("_utilities",),
+        ".api": (
+            "FlextGrpc",
+            "grpc",
+        ),
+        ".base": (
+            "FlextGrpcServiceBase",
+            "s",
+        ),
+        ".constants": (
+            "FlextGrpcConstants",
+            "c",
+        ),
+        ".models": (
+            "FlextGrpcModels",
+            "m",
+        ),
+        ".protocols": (
+            "FlextGrpcProtocols",
+            "p",
+        ),
+        ".services": ("services",),
+        ".services.api_runtime": ("FlextGrpcApiRuntime",),
+        ".services.client": ("FlextGrpcClient",),
+        ".services.connection_pool": ("FlextGrpcConnectionPool",),
+        ".services.metrics": ("FlextGrpcMetrics",),
+        ".services.server": ("FlextGrpcServer",),
+        ".services.stream": ("FlextGrpcStream",),
+        ".settings": ("FlextGrpcSettings",),
+        ".typings": (
+            "FlextGrpcTypes",
+            "t",
+        ),
+        ".utilities": (
+            "FlextGrpcUtilities",
+            "u",
+        ),
+        "flext_core._root_typing_parts.facades": (
+            "d",
+            "e",
+            "h",
+            "r",
+            "x",
+        ),
+    },
+)
 
 FLEXT_GRPC_LAZY_IMPORTS = merge_lazy_imports(
     (".services",),

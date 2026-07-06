@@ -12,7 +12,7 @@ if TYPE_CHECKING:
         ExamplesFlextGrpcTypes as ExamplesFlextGrpcTypes,
         t as t,
     )
-    from flext_core._root_typing_parts import (
+    from flext_core._root_typing_parts.facades import (
         c as c,
         d as d,
         e as e,
@@ -30,7 +30,7 @@ _LAZY_IMPORTS = build_lazy_import_map(
             "ExamplesFlextGrpcTypes",
             "t",
         ),
-        "flext_core._root_typing_parts": (
+        "flext_core._root_typing_parts.facades": (
             "c",
             "d",
             "e",
