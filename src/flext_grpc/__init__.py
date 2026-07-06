@@ -23,7 +23,7 @@ from flext_grpc.__version__ import (
 
 if TYPE_CHECKING:
     from flext_core._root_typing_parts.facades import d, e, h, r, x
-    from flext_grpc.api import FlextGrpc
+    from flext_grpc.api import FlextGrpc, grpc
     from flext_grpc.base import FlextGrpcServiceBase, s
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.models import FlextGrpcModels, m
