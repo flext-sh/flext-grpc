@@ -8,12 +8,16 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
-    from flext_grpc.services.client import FlextGrpcClient
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
-    from flext_grpc.services.server import FlextGrpcServer
-    from flext_grpc.services.stream import FlextGrpcStream
+    from flext_grpc.services.api_runtime import (
+        FlextGrpcApiRuntime as FlextGrpcApiRuntime,
+    )
+    from flext_grpc.services.client import FlextGrpcClient as FlextGrpcClient
+    from flext_grpc.services.connection_pool import (
+        FlextGrpcConnectionPool as FlextGrpcConnectionPool,
+    )
+    from flext_grpc.services.metrics import FlextGrpcMetrics as FlextGrpcMetrics
+    from flext_grpc.services.server import FlextGrpcServer as FlextGrpcServer
+    from flext_grpc.services.stream import FlextGrpcStream as FlextGrpcStream
 _LAZY_IMPORTS = build_lazy_import_map(
     {
         ".api_runtime": ("FlextGrpcApiRuntime",),

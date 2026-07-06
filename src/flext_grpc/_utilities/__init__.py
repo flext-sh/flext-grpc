@@ -8,7 +8,9 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+    from flext_grpc._utilities.grpc import (
+        FlextGrpcUtilitiesGrpc as FlextGrpcUtilitiesGrpc,
+    )
 _LAZY_IMPORTS = build_lazy_import_map(
     {
         ".grpc": ("FlextGrpcUtilitiesGrpc",),

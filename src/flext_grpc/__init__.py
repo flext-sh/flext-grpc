@@ -22,21 +22,31 @@ from flext_grpc.__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_core._root_typing_parts.facades import d, e, h, r, x
-    from flext_grpc.api import FlextGrpc, grpc
-    from flext_grpc.base import FlextGrpcServiceBase, s
-    from flext_grpc.constants import FlextGrpcConstants, c
-    from flext_grpc.models import FlextGrpcModels, m
-    from flext_grpc.protocols import FlextGrpcProtocols, p
-    from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
-    from flext_grpc.services.client import FlextGrpcClient
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
-    from flext_grpc.services.server import FlextGrpcServer
-    from flext_grpc.services.stream import FlextGrpcStream
-    from flext_grpc.settings import FlextGrpcSettings
-    from flext_grpc.typings import FlextGrpcTypes, t
-    from flext_grpc.utilities import FlextGrpcUtilities, u
+    from flext_core._root_typing_parts.facades import (
+        d as d,
+        e as e,
+        h as h,
+        r as r,
+        x as x,
+    )
+    from flext_grpc.api import FlextGrpc as FlextGrpc, grpc as grpc
+    from flext_grpc.base import FlextGrpcServiceBase as FlextGrpcServiceBase, s as s
+    from flext_grpc.constants import FlextGrpcConstants as FlextGrpcConstants, c as c
+    from flext_grpc.models import FlextGrpcModels as FlextGrpcModels, m as m
+    from flext_grpc.protocols import FlextGrpcProtocols as FlextGrpcProtocols, p as p
+    from flext_grpc.services.api_runtime import (
+        FlextGrpcApiRuntime as FlextGrpcApiRuntime,
+    )
+    from flext_grpc.services.client import FlextGrpcClient as FlextGrpcClient
+    from flext_grpc.services.connection_pool import (
+        FlextGrpcConnectionPool as FlextGrpcConnectionPool,
+    )
+    from flext_grpc.services.metrics import FlextGrpcMetrics as FlextGrpcMetrics
+    from flext_grpc.services.server import FlextGrpcServer as FlextGrpcServer
+    from flext_grpc.services.stream import FlextGrpcStream as FlextGrpcStream
+    from flext_grpc.settings import FlextGrpcSettings as FlextGrpcSettings
+    from flext_grpc.typings import FlextGrpcTypes as FlextGrpcTypes, t as t
+    from flext_grpc.utilities import FlextGrpcUtilities as FlextGrpcUtilities, u as u
 _LAZY_IMPORTS = merge_lazy_imports(
     (".services",),
     build_lazy_import_map(
