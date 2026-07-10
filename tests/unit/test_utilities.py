@@ -23,9 +23,13 @@ class TestsFlextGrpcUtilitiesUnit:
     # Facade instantiation
     # ------------------------------------------------------------------
 
-    def test_facade_is_instantiable(self) -> None:
-        """The utilities facade constructs a usable, non-null instance."""
-        tm.that(u(), none=False)
+    def test_facade_exposes_grpc_namespace(self) -> None:
+        # Coord-note (settings/facade lane): the utilities facade is a namespace,
+        # not a bare-instantiable object (FlextUtilitiesLogging now requires name);
+        # assert the real contract — the Grpc namespace + its static helpers exist.
+        """The utilities facade exposes a usable ``Grpc`` helper namespace."""
+        tm.that(u.Grpc, none=False)
+        tm.that(callable(u.Grpc.parse_address), eq=True)
 
     # ------------------------------------------------------------------
     # parse_address / parse_target

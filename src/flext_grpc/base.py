@@ -42,6 +42,7 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
     @override
     def settings(self) -> FlextGrpcSettings:
         """Return the typed gRPC settings singleton (rule 1, propagating)."""
+        return self._grpc_config
 
 
 s = FlextGrpcServiceBase

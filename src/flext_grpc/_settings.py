@@ -31,14 +31,22 @@ class FlextGrpcSettings(FlextSettings):
         """Namespaced gRPC runtime settings."""
 
         host: Annotated[str, Field(default="127.0.0.1", description="gRPC bind host")]
-        port: Annotated[int, Field(default=50051, ge=1, le=65535, description="gRPC bind port")]
-        max_workers: Annotated[int, Field(default=100, ge=1, description="Max worker threads")]
-        timeout: Annotated[float, Field(default=30.0, gt=0, description="Request timeout (s)")]
+        port: Annotated[
+            int, Field(default=50051, ge=1, le=65535, description="gRPC bind port")
+        ]
+        max_workers: Annotated[
+            int, Field(default=100, ge=1, description="Max worker threads")
+        ]
+        timeout: Annotated[
+            float, Field(default=30.0, gt=0, description="Request timeout (s)")
+        ]
 
     if TYPE_CHECKING:
         Grpc: _Grpc
     else:
-        Grpc: _Grpc = Field(default_factory=_Grpc, description="Namespaced gRPC settings.")
+        Grpc: _Grpc = Field(
+            default_factory=_Grpc, description="Namespaced gRPC settings."
+        )
 
 
 settings: FlextGrpcSettings = FlextGrpcSettings.fetch_global()

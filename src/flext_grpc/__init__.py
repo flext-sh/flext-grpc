@@ -29,6 +29,10 @@ if TYPE_CHECKING:
         r as r,
         x as x,
     )
+    from flext_grpc._settings import (
+        FlextGrpcSettings as FlextGrpcSettings,
+        settings as settings,
+    )
     from flext_grpc.api import FlextGrpc as FlextGrpc, grpc as grpc
     from flext_grpc.base import FlextGrpcServiceBase as FlextGrpcServiceBase, s as s
     from flext_grpc.constants import FlextGrpcConstants as FlextGrpcConstants, c as c
