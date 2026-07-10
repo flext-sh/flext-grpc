@@ -118,8 +118,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
 
 
 __all__: tuple[str, ...] = (
-    "FlextGrpcSettings",
-    "settings",
     "FlextGrpc",
     "FlextGrpcApiRuntime",
     "FlextGrpcClient",
@@ -130,6 +128,7 @@ __all__: tuple[str, ...] = (
     "FlextGrpcProtocols",
     "FlextGrpcServer",
     "FlextGrpcServiceBase",
+    "FlextGrpcSettings",
     "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
@@ -150,6 +149,7 @@ __all__: tuple[str, ...] = (
     "p",
     "r",
     "s",
+    "settings",
     "t",
     "u",
     "x",

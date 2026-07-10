@@ -1,130 +1,44 @@
-"""FLEXT gRPC Configuration - Generic Configuration System with Patterns.
+"""FLEXT gRPC settings — namespaced under ``settings.Grpc``.
 
-Extensive Pydantic models, generic patterns, and FLEXT ecosystem integration
-for complete gRPC configuration management.
+Universal fields via MRO; project fields in the ``Grpc`` group with simple
+scalar types (env-settable). Advanced per-domain gRPC configuration objects are
+built by consumers from these scalars, not stored as complex settings fields.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
 
-from typing import Annotated, ClassVar
+from typing import TYPE_CHECKING, Annotated
+
+from pydantic import BaseModel, Field
+from pydantic_settings import SettingsConfigDict
 
 from flext_core import FlextSettings
-from flext_grpc import c, m, p, r, t, u
 
 
 class FlextGrpcSettings(FlextSettings):
-    """gRPC runtime settings with flat convenience fields and nested configurations.
+    """gRPC runtime settings; fields under ``settings.Grpc.*``."""
 
-    Provides both flat fields for simple configuration and nested settings models
-    for advanced settings. Flat fields are convenience accessors that sync with
-    nested configurations.
-    """
-
-    model_config: ClassVar[m.SettingsConfigDict] = m.SettingsConfigDict(
+    model_config = SettingsConfigDict(
         env_prefix="FLEXT_GRPC_",
+        env_nested_delimiter="__",
         extra="ignore",
     )
 
-    # Flat convenience fields (settable via constructor)
-    host: Annotated[
-        str,
-        u.Field(),
-    ] = c.Grpc.NETWORK_DEFAULT_HOST
-    port: Annotated[
-        t.PortNumber,
-        u.Field(),
-    ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
-    max_workers: Annotated[
-        t.WorkerCount,
-        u.Field(),
-    ] = c.Grpc.SERVICE_MAX_WORKERS
-    timeout: Annotated[
-        t.PositiveTimeout,
-        u.Field(),
-    ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
+    class _Grpc(BaseModel):
+        """Namespaced gRPC runtime settings."""
 
-    # Nested configuration models
-    network: m.Grpc.NetworkConfig = u.Field(
-        default_factory=lambda: m.Grpc.NetworkConfig.model_validate({}),
-    )
-    security: m.Grpc.SecurityConfig = u.Field(
-        default_factory=lambda: m.Grpc.SecurityConfig.model_validate({}),
-    )
-    performance: m.Grpc.PerformanceConfig = u.Field(
-        default_factory=lambda: m.Grpc.PerformanceConfig.model_validate({}),
-    )
-    streaming: m.Grpc.StreamingConfig = u.Field(
-        default_factory=lambda: m.Grpc.StreamingConfig.model_validate({}),
-    )
-    client: m.Grpc.ClientConfig = u.Field(
-        default_factory=lambda: m.Grpc.ClientConfig.model_validate({}),
-    )
-    monitoring: m.Grpc.MonitoringConfig = u.Field(
-        default_factory=lambda: m.Grpc.MonitoringConfig.model_validate({}),
-    )
+        host: Annotated[str, Field(default="127.0.0.1", description="gRPC bind host")]
+        port: Annotated[int, Field(default=50051, ge=1, le=65535, description="gRPC bind port")]
+        max_workers: Annotated[int, Field(default=100, ge=1, description="Max worker threads")]
+        timeout: Annotated[float, Field(default=30.0, gt=0, description="Request timeout (s)")]
 
-    @u.computed_field()
-    @property
-    def tls_enabled(self) -> bool:
-        """Computed property indicating if TLS is enabled."""
-        value: bool = self.security.tls_enabled
-        return value
-
-    @u.computed_field()
-    @property
-    def streaming_enabled(self) -> bool:
-        """Computed property indicating if streaming is enabled."""
-        value: bool = self.streaming.enabled
-        return value
-
-    def validate_configuration(self) -> p.Result[bool]:
-        """Validate configuration consistency.
-
-        Checks that security configuration is valid, particularly that
-        client certificates are not required without TLS enabled.
-
-        Returns:
-            r[bool]: Success if configuration is valid, failure with error message otherwise.
-
-        """
-        if not self.security.tls_enabled and self.security.client_cert_required:
-            return r[bool].fail("Client certificates require TLS to be enabled")
-        return r[bool].ok(True)
-
-    @classmethod
-    def create_production_config(cls) -> p.Result[FlextGrpcSettings]:
-        """Create a production-ready gRPC configuration.
-
-        Production configuration enables TLS and uses secure defaults.
-
-        Returns:
-            r[FlextGrpcSettings]: Production configuration instance.
-
-        """
-        return r[FlextGrpcSettings].ok(
-            cls.model_validate({
-                "host": c.Grpc.NETWORK_DEFAULT_HOST,
-                "security": {"tls_enabled": True},
-            }),
-        )
-
-    @classmethod
-    def create_development_config(cls) -> p.Result[FlextGrpcSettings]:
-        """Create a development gRPC configuration.
-
-        Development configuration uses localhost and insecure defaults
-        for ease of testing.
-
-        Returns:
-            r[FlextGrpcSettings]: Development configuration instance.
-
-        """
-        return r[FlextGrpcSettings].ok(cls.model_validate({"host": c.LOOPBACK_IP}))
-
+    if TYPE_CHECKING:
+        Grpc: _Grpc
+    else:
+        Grpc: _Grpc = Field(default_factory=_Grpc, description="Namespaced gRPC settings.")
 
 
 settings: FlextGrpcSettings = FlextGrpcSettings.fetch_global()
