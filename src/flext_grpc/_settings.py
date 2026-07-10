@@ -12,11 +12,11 @@ from __future__ import annotations
 
 from typing import Annotated, ClassVar
 
-from flext_core import FlextSettingsBase
+from flext_core import FlextSettings
 from flext_grpc import c, m, p, r, t, u
 
 
-class FlextGrpcSettings(FlextSettingsBase):
+class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings with flat convenience fields and nested configurations.
 
     Provides both flat fields for simple configuration and nested settings models
@@ -126,4 +126,8 @@ class FlextGrpcSettings(FlextSettingsBase):
         return r[FlextGrpcSettings].ok(cls.model_validate({"host": c.LOOPBACK_IP}))
 
 
-__all__: list[str] = ["FlextGrpcSettings"]
+
+settings: FlextGrpcSettings = FlextGrpcSettings.fetch_global()
+"""Pre-instantiated project settings singleton — ``from flext_grpc import settings``."""
+
+__all__: list[str] = ["FlextGrpcSettings", "settings"]

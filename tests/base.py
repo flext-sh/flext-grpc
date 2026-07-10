@@ -17,7 +17,6 @@ class TestsFlextGrpcServiceBase(tests_s):
     @override
     def fetch_settings(cls) -> TestsFlextGrpcSettings:
         """Return the typed gRPC+Tests settings singleton."""
-        return TestsFlextGrpcSettings.fetch_global()
 
     @classmethod
     @override

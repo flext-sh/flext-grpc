@@ -44,13 +44,13 @@ if TYPE_CHECKING:
     from flext_grpc.services.metrics import FlextGrpcMetrics as FlextGrpcMetrics
     from flext_grpc.services.server import FlextGrpcServer as FlextGrpcServer
     from flext_grpc.services.stream import FlextGrpcStream as FlextGrpcStream
-    from flext_grpc.settings import FlextGrpcSettings as FlextGrpcSettings
     from flext_grpc.typings import FlextGrpcTypes as FlextGrpcTypes, t as t
     from flext_grpc.utilities import FlextGrpcUtilities as FlextGrpcUtilities, u as u
 _LAZY_IMPORTS = merge_lazy_imports(
     (".services",),
     build_lazy_import_map(
         {
+            "._settings": ("FlextGrpcSettings", "settings"),
             ".api": (
                 "FlextGrpc",
                 "grpc",
@@ -77,7 +77,6 @@ _LAZY_IMPORTS = merge_lazy_imports(
             ".services.metrics": ("FlextGrpcMetrics",),
             ".services.server": ("FlextGrpcServer",),
             ".services.stream": ("FlextGrpcStream",),
-            ".settings": ("FlextGrpcSettings",),
             ".typings": (
                 "FlextGrpcTypes",
                 "t",
@@ -119,6 +118,8 @@ _LAZY_IMPORTS = merge_lazy_imports(
 
 
 __all__: tuple[str, ...] = (
+    "FlextGrpcSettings",
+    "settings",
     "FlextGrpc",
     "FlextGrpcApiRuntime",
     "FlextGrpcClient",
@@ -129,7 +130,6 @@ __all__: tuple[str, ...] = (
     "FlextGrpcProtocols",
     "FlextGrpcServer",
     "FlextGrpcServiceBase",
-    "FlextGrpcSettings",
     "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
