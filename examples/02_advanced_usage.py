@@ -51,15 +51,17 @@ class GrpcServerManager:
             server_id = f"pool-server-{i}"
             port = base_port + i
             settings = FlextGrpcSettings.model_validate({
-                "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
-                "port": port,
-                "max_workers": 10 + i * 5,
+                "Grpc": {
+                    "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
+                    "port": port,
+                    "max_workers": 10 + i * 5,
+                },
             })
             self.server_configs[server_id] = settings
             server_result = self.grpc.create_server(
-                host=settings.network.host,
-                port=settings.network.port,
-                max_workers=settings.performance.max_workers,
+                host=settings.Grpc.host,
+                port=settings.Grpc.port,
+                max_workers=settings.Grpc.max_workers,
             )
             if server_result.success:
                 server = server_result.value
@@ -76,7 +78,7 @@ class GrpcServerManager:
                 "address": f"{server.host}:{server.port}",
                 "state": server.state,
                 "max_workers": str(server.max_workers),
-                "timeout": f"{settings.timeout}s",
+                "timeout": f"{settings.Grpc.timeout}s",
                 "is_running": str(server.state == "running"),
                 "valid": str(server.validate_business_rules().success),
             }
