@@ -5,11 +5,13 @@
 - Package: `flext_grpc`
 - Version: `0.12.0-dev`
 - Description: FLEXT gRPC - High-Performance gRPC Services
+- Doc summary: Flext Grpc package.
+- Classifiers: `Development Status :: 4 - Beta`, `Development Status :: 5 - Production/Stable`, `Intended Audience :: Developers`, `Operating System :: OS Independent`, `Programming Language :: Python :: 3 :: Only`, `Programming Language :: Python :: 3.13` (+3 more)
 - Project class: `platform`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
 - Main facades: _none_
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpcStream`, `settings`, `FlextGrpcConnectionPool`, `FlextGrpcProtocols`, `FlextGrpcMetrics`, `FlextGrpc`, `FlextGrpcServer`, `FlextGrpcTypes`, `grpc`, `FlextGrpcClient` (+6 more)
+- Public symbol exports: `FlextGrpcApiRuntime`, `FlextGrpcServer`, `FlextGrpcModels`, `grpc`, `FlextGrpcServiceBase`, `FlextGrpcProtocols`, `FlextGrpcConstants`, `FlextGrpcTypes`, `FlextGrpcUtilities`, `FlextGrpcStream` (+6 more)
 - Exported module shortcuts: _none_
 - Generated module pages: `13`
 
