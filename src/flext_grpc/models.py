@@ -347,7 +347,7 @@ class FlextGrpcModels(m):
                 target: str,
                 allowed_transitions: t.MappingKV[str, set[str]],
             ) -> p.Result[FlextGrpcModels.Grpc.StateTransition]:
-                """Generic state transition with validation.
+                """Perform a generic state transition with validation.
 
                 Args:
                     current: Current state
