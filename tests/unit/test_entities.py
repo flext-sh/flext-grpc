@@ -24,7 +24,7 @@ class TestsFlextGrpcEntities:
 
     @pytest.fixture
     def server(self) -> m.Grpc.Server:
-        """Stopped server with no registered services."""
+        """Return a stopped server with no registered services."""
         return m.Grpc.Server(
             host="localhost",
             port=50051,
