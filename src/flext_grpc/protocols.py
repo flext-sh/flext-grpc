@@ -6,21 +6,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, runtime_checkable
+import threading
+from collections.abc import (
+    Callable,
+    Iterable,
+    Mapping,
+    Sequence,
+)
+from concurrent.futures import Executor
+from typing import Protocol, runtime_checkable
 
-from flext_core import p
-
-if TYPE_CHECKING:
-    import threading
-    from collections.abc import (
-        Callable,
-        Iterable,
-        Mapping,
-        Sequence,
-    )
-    from concurrent.futures import Executor
-
-    from flext_grpc import c, t
+from flext_cli import p
+from flext_grpc import c, t
 
 
 class FlextGrpcProtocols(p):
