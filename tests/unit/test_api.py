@@ -10,10 +10,10 @@ from flext_tests import tm
 from pydantic import ValidationError
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests.models import m
+from tests import m
 
 if TYPE_CHECKING:
-    from tests.typings import t
+    from tests import t
 
 
 class TestsFlextGrpcApi:

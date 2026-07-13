@@ -10,7 +10,7 @@ from __future__ import annotations
 import pytest
 from flext_tests import tm
 
-from tests.utilities import u
+from tests import u
 
 
 class TestsFlextGrpcTypesUnit:

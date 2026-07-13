@@ -6,6 +6,7 @@ from typing import override
 
 from flext_grpc import (
     FlextGrpcSettings,
+    FlextGrpcUtilities,
     c,
     m,
     p,
@@ -14,7 +15,6 @@ from flext_grpc import (
 )
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
 from flext_grpc.base import FlextGrpcServiceBase
-from flext_grpc.utilities import FlextGrpcUtilities
 
 
 class FlextGrpcApiRuntime(FlextGrpcServiceBase):

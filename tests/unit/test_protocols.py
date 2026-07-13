@@ -18,7 +18,7 @@ from typing import Protocol, is_protocol, runtime_checkable
 import pytest
 
 from flext_grpc import FlextGrpcProtocols, t
-from tests.protocols import p
+from tests import p
 
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to

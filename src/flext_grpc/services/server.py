@@ -7,14 +7,12 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 from flext_core import r
-from flext_grpc import c, m, p, s
-from flext_grpc.models import FlextGrpcModels
+from flext_grpc import FlextGrpcModels, FlextGrpcUtilities, c, m, p, s
 from flext_grpc.proto.stubs import (
     FlextGrpcServiceServicer,
     add_FlextGrpcServiceServicer_to_server,
 )
 from flext_grpc.services.metrics import FlextGrpcMetrics
-from flext_grpc.utilities import FlextGrpcUtilities
 
 GrpcServer = FlextGrpcModels.Grpc.Server
 GrpcPayload = FlextGrpcModels.Grpc.Payload

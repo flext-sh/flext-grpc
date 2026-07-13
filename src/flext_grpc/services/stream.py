@@ -6,10 +6,9 @@ import time
 from collections import deque
 from typing import TYPE_CHECKING
 
-from flext_grpc import c, e, m, p, r, s, t, u
+from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, s, t, u
 from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services.metrics import FlextGrpcMetrics
-from flext_grpc.utilities import FlextGrpcUtilities
 
 if TYPE_CHECKING:
     from collections.abc import (
