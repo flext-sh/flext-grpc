@@ -222,7 +222,7 @@ def error_handling() -> p.Result[str]:
 
 
 def main() -> None:
-    """Main function demonstrating all error handling patterns."""
+    """Demonstrate all error handling patterns."""
     logger.info("🚀 Starting FLEXT gRPC Error Handling Examples")
     logger.info("\n📋 1. Basic Error Scenarios")
     demonstrate_error_context()

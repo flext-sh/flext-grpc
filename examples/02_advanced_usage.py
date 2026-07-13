@@ -163,7 +163,7 @@ class AdvancedGrpcOperations:
 
 
 def example_1_server_pool() -> None:
-    """Example 1: Server pool management through facade."""
+    """Manage a server pool through the facade."""
     manager = GrpcServerManager()
     server_results = manager.create_server_pool(base_port=8000, count=3)
     successful_creations = sum(1 for result in server_results if result.success)
@@ -180,7 +180,7 @@ def example_1_server_pool() -> None:
 
 
 def example_2_client_pool() -> None:
-    """Example 2: Advanced operations through facade."""
+    """Run advanced operations through the facade."""
     ops = AdvancedGrpcOperations()
     setup_result = ops.create_complete_setup(
         host="localhost",
@@ -197,7 +197,7 @@ def example_2_client_pool() -> None:
 
 
 def example_3_service_creation() -> None:
-    """Example 3: Service creation patterns through facade."""
+    """Demonstrate service creation patterns through the facade."""
     grpc = FlextGrpc()
     services = [
         ("UserService", ["GetUser", "CreateUser", "UpdateUser"]),
@@ -219,7 +219,7 @@ def example_3_service_creation() -> None:
 
 
 def example_4_streaming() -> None:
-    """Example 4: Streaming operations through facade."""
+    """Run streaming operations through the facade."""
     grpc = FlextGrpc()
     stream_configs: t.SequenceOf[tuple[str, str]] = [
         ("GetUser", "unary"),
@@ -243,7 +243,7 @@ def example_4_streaming() -> None:
 
 
 def example_5_error_handling() -> None:
-    """Example 5: Comprehensive error handling through facade."""
+    """Demonstrate comprehensive error handling through the facade."""
     grpc = FlextGrpc()
     _emit("Testing various error scenarios through FlextGrpc facade...")
     invalid_server_result = grpc.create_server(host="", port=0)

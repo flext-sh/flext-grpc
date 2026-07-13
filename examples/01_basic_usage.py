@@ -22,7 +22,7 @@ def _emit(message: str) -> None:
 
 
 def example_1_basic_entities() -> None:
-    """Example 1: Creating and using basic gRPC entities through FlextGrpc facade."""
+    """Create and use basic gRPC entities through the FlextGrpc facade."""
     grpc = FlextGrpc()
     server_result = grpc.create_server(
         host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
@@ -51,7 +51,7 @@ def example_1_basic_entities() -> None:
 
 
 def example_2_configuration() -> None:
-    """Example 2: Using configuration through FlextGrpc facade."""
+    """Use configuration through the FlextGrpc facade."""
     grpc = FlextGrpc()
     default_config = FlextGrpcSettings()
     _emit(
@@ -69,7 +69,7 @@ def example_2_configuration() -> None:
 
 
 def example_3_operations() -> None:
-    """Example 3: Using gRPC operations through FlextGrpc facade."""
+    """Use gRPC operations through the FlextGrpc facade."""
     grpc = FlextGrpc()
     server_result = grpc.create_server(
         host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
@@ -108,7 +108,7 @@ def example_3_operations() -> None:
 
 
 def example_4_validation() -> None:
-    """Example 4: Domain validation through FlextGrpc facade."""
+    """Validate domains through the FlextGrpc facade."""
     grpc = FlextGrpc()
     valid_server_result = grpc.create_server(
         host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
@@ -141,7 +141,7 @@ def example_4_validation() -> None:
 
 
 def example_5_state_transitions() -> None:
-    """Example 5: State transitions through FlextGrpc facade."""
+    """Exercise state transitions through the FlextGrpc facade."""
     grpc = FlextGrpc()
     channel_result = grpc.create_channel(
         target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
