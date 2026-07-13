@@ -16,6 +16,7 @@ from __future__ import annotations
 from typing import Protocol, is_protocol, runtime_checkable
 
 import pytest
+from flext_tests import tm
 
 from flext_grpc import FlextGrpcProtocols, t
 from tests import p
@@ -98,7 +99,7 @@ class TestsFlextGrpcProtocolsUnit:
         """Each Grpc member is reported as a typing Protocol."""
         protocol = getattr(p.Grpc, protocol_name)
 
-        assert is_protocol(protocol) is True
+        tm.that(is_protocol(protocol), eq=True)
 
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_conforming_object_satisfies_protocol(self, protocol_name: str) -> None:
@@ -108,7 +109,7 @@ class TestsFlextGrpcProtocolsUnit:
 
         instance = _build_conforming_instance(members)
 
-        assert isinstance(instance, protocol) is True
+        tm.that(isinstance(instance, protocol), eq=True)
 
     @pytest.mark.parametrize(
         ("protocol_name", "missing_member"),
@@ -127,14 +128,14 @@ class TestsFlextGrpcProtocolsUnit:
 
         instance = _build_partial_instance(members, omit=missing_member)
 
-        assert isinstance(instance, protocol) is False
+        tm.that(isinstance(instance, protocol), eq=False)
 
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_unrelated_object_fails_protocol(self, protocol_name: str) -> None:
         """A plain object with none of the members fails isinstance."""
         protocol = getattr(p.Grpc, protocol_name)
 
-        assert isinstance(object(), protocol) is False
+        tm.that(isinstance(object(), protocol), eq=False)
 
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_protocol_is_runtime_checkable(self, protocol_name: str) -> None:
@@ -146,11 +147,11 @@ class TestsFlextGrpcProtocolsUnit:
         # the observable runtime-checkability contract.
         result = isinstance(object(), protocol)
 
-        assert result is False
+        tm.that(result, eq=False)
 
     def test_test_protocol_namespace_composes_source_namespace(self) -> None:
         """The tests Grpc namespace inherits the source Grpc protocols."""
-        assert FlextGrpcProtocols.Grpc in p.Grpc.__mro__
+        tm.that(p.Grpc.__mro__, has=FlextGrpcProtocols.Grpc)
 
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_test_namespace_exposes_same_protocol_object(
@@ -172,4 +173,4 @@ class TestsFlextGrpcProtocolsUnit:
         # protocol machinery accepts, independent of the source definitions.
         instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
 
-        assert isinstance(instance, _Marker) is True
+        tm.that(isinstance(instance, _Marker), eq=True)

@@ -9,6 +9,7 @@ regex patterns' match behavior.
 from __future__ import annotations
 
 import pytest
+from flext_tests import tm
 
 from tests import c
 
@@ -37,7 +38,7 @@ class TestsFlextGrpcConstantsUnit:
     )
     def test_published_constant_values(self, name: str, expected: str | int) -> None:
         """Each published constant exposes its contracted value."""
-        assert getattr(Grpc, name) == expected
+        tm.that(getattr(Grpc, name), eq=expected)
 
     @pytest.mark.parametrize(
         ("lower", "upper"),
@@ -74,7 +75,7 @@ class TestsFlextGrpcConstantsUnit:
 
     def test_max_port_matches_validation_max(self) -> None:
         """Network max port and validation max port express the same limit."""
-        assert Grpc.NETWORK_MAX_PORT == Grpc.VALIDATION_MAX_PORT_NUMBER
+        tm.that(Grpc.NETWORK_MAX_PORT, eq=Grpc.VALIDATION_MAX_PORT_NUMBER)
 
     @pytest.mark.parametrize(
         "host",
@@ -82,7 +83,7 @@ class TestsFlextGrpcConstantsUnit:
     )
     def test_host_pattern_accepts_valid_hosts(self, host: str) -> None:
         """The compiled host pattern matches syntactically valid hosts."""
-        assert Grpc.NETWORK_HOST_RE.match(host) is not None
+        tm.that(Grpc.NETWORK_HOST_RE.match(host), none=False)
 
     @pytest.mark.parametrize(
         "host",
@@ -90,7 +91,7 @@ class TestsFlextGrpcConstantsUnit:
     )
     def test_host_pattern_rejects_invalid_hosts(self, host: str) -> None:
         """The compiled host pattern rejects hosts with illegal characters."""
-        assert Grpc.NETWORK_HOST_RE.match(host) is None
+        tm.that(Grpc.NETWORK_HOST_RE.match(host), none=True)
 
     @pytest.mark.parametrize(
         ("text", "expected_group"),
@@ -104,12 +105,12 @@ class TestsFlextGrpcConstantsUnit:
     ) -> None:
         """The version pattern extracts the semantic version, case-insensitively."""
         match = Grpc.VALIDATION_VERSION_RE.search(text)
-        assert match is not None
-        assert match.group(1) == expected_group
+        tm.that(match, none=False)
+        tm.that(match.group(1), eq=expected_group)
 
     def test_version_pattern_returns_none_without_version(self) -> None:
         """The version pattern yields no match when no version is present."""
-        assert Grpc.VALIDATION_VERSION_RE.search("no digits here") is None
+        tm.that(Grpc.VALIDATION_VERSION_RE.search("no digits here"), none=True)
 
     @pytest.mark.parametrize(
         ("member", "value"),
@@ -126,8 +127,8 @@ class TestsFlextGrpcConstantsUnit:
     )
     def test_enum_members_expose_string_values(self, member: str, value: str) -> None:
         """Each StrEnum member equals its contracted string value."""
-        assert member == value
-        assert isinstance(member, str)
+        tm.that(member, eq=value)
+        tm.that(member, is_=str)
 
     @pytest.mark.parametrize(
         ("frozenset_attr", "enum_attr"),
@@ -143,12 +144,12 @@ class TestsFlextGrpcConstantsUnit:
         """Each published frozenset equals the value set of its source enum."""
         collection = getattr(Grpc, frozenset_attr)
         enum = getattr(Grpc, enum_attr)
-        assert isinstance(collection, frozenset)
-        assert collection == {member.value for member in enum}
+        tm.that(collection, is_=frozenset)
+        tm.that(collection, eq={member.value for member in enum})
 
     def test_enum_values_are_unique(self) -> None:
         """@unique enums never expose duplicate values across their members."""
         for enum_name in ("ChannelState", "ServerState", "ServiceMethod"):
             enum = getattr(Grpc, enum_name)
             values = [member.value for member in enum]
-            assert len(values) == len(set(values))
+            tm.that(len(values), eq=len(set(values)))

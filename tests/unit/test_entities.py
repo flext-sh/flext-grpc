@@ -191,7 +191,7 @@ class TestsFlextGrpcEntities:
         client = m.Grpc.Client(options={}, domain_events=[])
         connected = tm.ok(client.connect_to("localhost:50051"))
         attached = connected.channel
-        assert attached is not None
+        tm.that(attached, none=False)
         tm.that(attached.target, eq="localhost:50051")
 
     def test_client_business_rules_pass_with_valid_channel(
