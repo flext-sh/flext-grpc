@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import time
 from concurrent.futures import ThreadPoolExecutor
-from typing import TYPE_CHECKING
 
 from flext_core import r
 from flext_grpc import FlextGrpcModels, FlextGrpcUtilities, c, m, p, s
@@ -17,10 +16,9 @@ from flext_grpc.services.metrics import FlextGrpcMetrics
 GrpcServer = FlextGrpcModels.Grpc.Server
 GrpcPayload = FlextGrpcModels.Grpc.Payload
 
-if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
+from collections.abc import (
+    MutableMapping,
+)
 
 
 class FlextGrpcServer(s):

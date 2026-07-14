@@ -4,16 +4,13 @@ from __future__ import annotations
 
 import time
 from collections import deque
-from typing import TYPE_CHECKING
+from collections.abc import (
+    MutableMapping,
+)
 
 from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, s, t, u
 from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services.metrics import FlextGrpcMetrics
-
-if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
 
 
 class FlextGrpcStream(s):

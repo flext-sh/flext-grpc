@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Utilities package."""
+"""Protos package."""
 
 from __future__ import annotations
 

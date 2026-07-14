@@ -43,7 +43,6 @@ class FlextGrpcErrors(e):
         ) -> None:
             """Initialize with optional settings key."""
             super().__init__(message)
-            self.config_key = config_key
 
 
 e = FlextGrpcErrors

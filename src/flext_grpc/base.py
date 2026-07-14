@@ -38,12 +38,6 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
         """Default service execution surface."""
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
-    @property
-    @override
-    def settings(self) -> FlextGrpcSettings:
-        """The typed gRPC settings singleton (rule 1, propagating)."""
-        return self._grpc_config
-
 
 s = FlextGrpcServiceBase
 

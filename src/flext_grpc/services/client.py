@@ -3,17 +3,14 @@
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING
+from collections.abc import (
+    MutableMapping,
+)
 
 from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, s, t
 from flext_grpc.proto.stubs import FlextGrpcServiceStub
 from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
 from flext_grpc.services.metrics import FlextGrpcMetrics
-
-if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
 
 
 class FlextGrpcClient(s):

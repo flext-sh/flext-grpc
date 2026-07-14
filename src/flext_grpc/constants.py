@@ -15,12 +15,10 @@ from __future__ import annotations
 
 import re
 from enum import StrEnum, unique
-from typing import TYPE_CHECKING, ClassVar, Final
+from typing import ClassVar, Final
 
 from flext_core import FlextConstants
-
-if TYPE_CHECKING:
-    from flext_grpc import t
+from flext_grpc import t
 
 
 class FlextGrpcConstants(FlextConstants):

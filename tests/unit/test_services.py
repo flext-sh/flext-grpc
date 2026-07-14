@@ -7,15 +7,12 @@ internal-collaborator spying, no line-coverage pokes.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import pytest
 from flext_tests import tm
 
-if TYPE_CHECKING:
-    from flext_grpc import FlextGrpc, t
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
+from flext_grpc import FlextGrpc, t
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class TestsFlextGrpcServices:

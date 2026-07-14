@@ -2,21 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import (
+    Callable,
+)
+from concurrent.futures import Executor
 from importlib import import_module
-from typing import TYPE_CHECKING
+from types import ModuleType
 from uuid import uuid4
 
 from flext_core import u
-from flext_grpc import c, m, p, r, t
-
-if TYPE_CHECKING:
-    from collections.abc import (
-        Callable,
-    )
-    from concurrent.futures import Executor
-    from types import ModuleType
-
-    from flext_grpc import FlextGrpcModels
+from flext_grpc import FlextGrpcModels, c, m, p, r, t
 
 
 class FlextGrpcUtilitiesGrpc:
