@@ -36,7 +36,7 @@ if TYPE_CHECKING:
     from tests.models import TestsFlextGrpcModels as TestsFlextGrpcModels, m as m
     from tests.protocols import (
         TestsFlextGrpcProtocols as TestsFlextGrpcProtocols,
-        p as p,
+        p,
     )
     from tests.settings import TestsFlextGrpcSettings as TestsFlextGrpcSettings
     from tests.typings import TestsFlextGrpcTypes as TestsFlextGrpcTypes, t as t
@@ -66,7 +66,7 @@ if TYPE_CHECKING:
     )
     from tests.utilities import (
         TestsFlextGrpcUtilities as TestsFlextGrpcUtilities,
-        u as u,
+        u,
     )
 _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
