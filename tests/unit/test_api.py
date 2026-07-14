@@ -47,7 +47,7 @@ class TestsFlextGrpcApi:
     def test_create_client(self, target: str) -> None:
         """Test client creation across canonical address shapes."""
         client: m.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
-        assert client.channel is not None
+        tm.that(client.channel, none=False)
         tm.that(client.channel.target, eq=target)
 
     def test_create_stream(self) -> None:

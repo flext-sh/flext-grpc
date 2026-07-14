@@ -185,8 +185,8 @@ class TestsFlextGrpcModelsUnit:
         result = machine.transition("idle", "running", {"idle": {"ready"}})
 
         tm.that(result.success, eq=False)
-        assert result.error is not None
-        assert "running" in result.error
+        tm.that(result.error, none=False)
+        tm.that(result.error, has="running")
 
     # ------------------------------------------------------------------
     # Channel: lifecycle transitions and business-rule validation
@@ -277,7 +277,7 @@ class TestsFlextGrpcModelsUnit:
 
         added = service.add_method("b")
         tm.that(added.success, eq=True)
-        assert "b" in added.unwrap().methods
+        tm.that(added.unwrap().methods, has="b")
 
         tm.that(service.add_method("a").success, eq=False)
 
@@ -298,7 +298,7 @@ class TestsFlextGrpcModelsUnit:
 
         tm.that(result.success, eq=True)
         client = result.unwrap()
-        assert client.channel is not None
+        tm.that(client.channel, none=False)
         tm.that(client.channel.target, eq="localhost:50051")
 
     def test_grpc_stream_rejects_blank_method_name(self) -> None:

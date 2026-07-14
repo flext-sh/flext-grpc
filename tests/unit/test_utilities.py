@@ -222,7 +222,7 @@ class TestsFlextGrpcUtilitiesUnit:
         )
         channel = client.channel
         tm.that(channel, none=False)
-        assert channel is not None
+        tm.that(channel, none=False)
         tm.that(channel.target, eq="localhost:50051")
 
     def test_create_server_entity_carries_host_and_port(self) -> None:

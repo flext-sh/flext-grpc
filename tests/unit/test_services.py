@@ -10,6 +10,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import pytest
+from flext_tests import tm
 
 if TYPE_CHECKING:
     from flext_grpc import FlextGrpc, t
@@ -29,9 +30,9 @@ class TestsFlextGrpcServices:
         """create_stream returns a success carrying the requested method name."""
         result = grpc_facade.create_stream(method_name="test_method")
 
-        assert result.success
+        tm.ok(result)
         stream = result.unwrap()
-        assert stream.method_name == "test_method"
+        tm.that(stream.method_name, eq="test_method")
 
     def test_create_stream_defaults_are_applied(
         self,
@@ -40,8 +41,8 @@ class TestsFlextGrpcServices:
         """create_stream applies documented defaults when no args are passed."""
         stream = grpc_facade.create_stream().unwrap()
 
-        assert stream.method_name == "DefaultMethod"
-        assert stream.stream_type.value == "unary"
+        tm.that(stream.method_name, eq="DefaultMethod")
+        tm.that(stream.stream_type.value, eq="unary")
 
     def test_close_stream_returns_same_stream_identity(
         self,
@@ -52,8 +53,8 @@ class TestsFlextGrpcServices:
 
         closed = grpc_facade.close_stream(stream)
 
-        assert closed.success
-        assert closed.unwrap().method_name == "to_close"
+        tm.ok(closed)
+        tm.that(closed.unwrap().method_name, eq="to_close")
 
     # -- Facade: execute --------------------------------------------------
 
@@ -64,8 +65,8 @@ class TestsFlextGrpcServices:
         """Execute succeeds and yields the facade's settings object."""
         result = grpc_facade.execute()
 
-        assert result.success
-        assert result.unwrap() is not None
+        tm.ok(result)
+        tm.that(result.unwrap(), none=False)
 
     # -- Facade: connect_client ------------------------------------------
 
@@ -76,7 +77,7 @@ class TestsFlextGrpcServices:
         """Connecting to an unreachable target yields a failure with an error."""
         result = grpc_facade.connect_client("127.0.0.1:1")
 
-        assert result.failure
+        tm.fail(result)
         assert result.error
 
     # -- Facade: validate_target -----------------------------------------
@@ -111,8 +112,8 @@ class TestsFlextGrpcServices:
         """parse_address returns the (host, port) tuple for a valid address."""
         result = grpc_facade.parse_address("localhost:50051")
 
-        assert result.success
-        assert result.unwrap() == ("localhost", 50051)
+        tm.ok(result)
+        tm.that(result.unwrap(), eq=("localhost", 50051))
 
     @pytest.mark.parametrize("address", ["host", "bad:x", ""])
     def test_parse_address_fails_for_malformed_input(
@@ -123,8 +124,8 @@ class TestsFlextGrpcServices:
         """parse_address fails with a descriptive error for malformed input."""
         result = grpc_facade.parse_address(address)
 
-        assert result.failure
-        assert "Invalid address" in (result.error or "")
+        tm.fail(result)
+        tm.that((result.error or ""), has="Invalid address")
 
     # -- ConnectionPool ---------------------------------------------------
 
@@ -135,8 +136,8 @@ class TestsFlextGrpcServices:
         """Cleanup succeeds and reports True even with no active channels."""
         result = connection_pool.cleanup()
 
-        assert result.success
-        assert result.unwrap() is True
+        tm.ok(result)
+        tm.that(result.unwrap(), eq=True)
 
     def test_connection_pool_acquire_on_empty_pool_fails_not_found(
         self,
@@ -145,16 +146,16 @@ class TestsFlextGrpcServices:
         """Acquire on an empty pool fails with a not-found error code."""
         result = connection_pool.acquire()
 
-        assert result.failure
-        assert result.error_code == "NOT_FOUND_ERROR"
+        tm.fail(result)
+        tm.that(result.error_code, eq="NOT_FOUND_ERROR")
 
     def test_connection_pool_cleanup_is_idempotent(
         self,
         connection_pool: FlextGrpcConnectionPool.ConnectionPool,
     ) -> None:
         """Repeated cleanup calls keep succeeding (idempotent invariant)."""
-        assert connection_pool.cleanup().success
-        assert connection_pool.cleanup().success
+        tm.ok(connection_pool.cleanup())
+        tm.ok(connection_pool.cleanup())
 
     # -- MetricsCollector -------------------------------------------------
 
@@ -165,16 +166,16 @@ class TestsFlextGrpcServices:
         """A recorded metric is retrievable by key and exposed in the payload."""
         metrics_collector.record_metric("test_key", "test_value")
 
-        assert metrics_collector.metric("test_key") == "test_value"
+        tm.that(metrics_collector.metric("test_key"), eq="test_value")
         payload = metrics_collector.all_metrics()
-        assert payload.values["test_key"] == "test_value"
+        tm.that(payload.values["test_key"], eq="test_value")
 
     def test_metrics_unknown_key_returns_none(
         self,
         metrics_collector: FlextGrpcMetrics.MetricsCollector,
     ) -> None:
         """Retrieving an unrecorded key returns None."""
-        assert metrics_collector.metric("absent") is None
+        tm.that(metrics_collector.metric("absent"), none=True)
 
     @pytest.mark.parametrize(
         ("value", "expected"),
@@ -195,7 +196,7 @@ class TestsFlextGrpcServices:
         """record_metric normalizes: None -> '', primitives pass, else str()."""
         metrics_collector.record_metric("k", value)
 
-        assert metrics_collector.metric("k") == expected
+        tm.that(metrics_collector.metric("k"), eq=expected)
 
     def test_metrics_all_metrics_returns_independent_snapshot(
         self,
@@ -207,5 +208,5 @@ class TestsFlextGrpcServices:
 
         metrics_collector.record_metric("second", "2")
 
-        assert "second" not in snapshot.values
-        assert snapshot.values["first"] == "1"
+        tm.that(snapshot.values, lacks="second")
+        tm.that(snapshot.values["first"], eq="1")

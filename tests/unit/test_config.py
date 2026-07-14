@@ -9,6 +9,7 @@ no internal-collaborator spying.
 from __future__ import annotations
 
 import pytest
+from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings, settings
 
@@ -20,8 +21,8 @@ class TestsFlextGrpcConfig:
         """An empty configuration yields sane, in-range namespaced field values."""
         cfg = FlextGrpcSettings()
         tm_grpc = cfg.Grpc
-        assert isinstance(tm_grpc.host, str)
-        assert tm_grpc.host.strip() != ""
+        tm.that(tm_grpc.host, is_=str)
+        tm.that(tm_grpc.host.strip(), ne="")
         assert 1 <= tm_grpc.port <= 65535
         assert tm_grpc.max_workers >= 1
         assert abs(tm_grpc.timeout - 30.0) < 0.01
@@ -29,9 +30,9 @@ class TestsFlextGrpcConfig:
     def test_default_namespace_values(self) -> None:
         """Documented default namespace values are exposed verbatim."""
         grpc = FlextGrpcSettings().Grpc
-        assert grpc.host == "127.0.0.1"
-        assert grpc.port == 50051
-        assert grpc.max_workers == 100
+        tm.that(grpc.host, eq="127.0.0.1")
+        tm.that(grpc.port, eq=50051)
+        tm.that(grpc.max_workers, eq=100)
         assert abs(grpc.timeout - 30.0) < 0.01
 
     def test_constructor_sets_namespaced_fields(self) -> None:
@@ -39,9 +40,9 @@ class TestsFlextGrpcConfig:
         cfg = FlextGrpcSettings(
             Grpc={"host": "0.0.0.0", "port": 8080, "max_workers": 5}
         )
-        assert cfg.Grpc.host == "0.0.0.0"
-        assert cfg.Grpc.port == 8080
-        assert cfg.Grpc.max_workers == 5
+        tm.that(cfg.Grpc.host, eq="0.0.0.0")
+        tm.that(cfg.Grpc.port, eq=8080)
+        tm.that(cfg.Grpc.max_workers, eq=5)
 
     @pytest.mark.parametrize(
         ("host", "port"),
@@ -54,8 +55,8 @@ class TestsFlextGrpcConfig:
     def test_network_fields_round_trip(self, host: str, port: int) -> None:
         """Network host/port provided at construction are preserved."""
         cfg = FlextGrpcSettings(Grpc={"host": host, "port": port})
-        assert cfg.Grpc.host == host
-        assert cfg.Grpc.port == port
+        tm.that(cfg.Grpc.host, eq=host)
+        tm.that(cfg.Grpc.port, eq=port)
 
     @pytest.mark.parametrize("bad_port", [0, -1, 65536, 70000])
     def test_out_of_range_port_is_rejected(self, bad_port: int) -> None:
@@ -75,14 +76,14 @@ class TestsFlextGrpcConfig:
             Grpc={"host": "10.0.0.5", "port": 6000, "max_workers": 7},
         )
         restored = FlextGrpcSettings.model_validate(original.model_dump())
-        assert restored.Grpc.host == "10.0.0.5"
-        assert restored.Grpc.port == 6000
-        assert restored.Grpc.max_workers == 7
+        tm.that(restored.Grpc.host, eq="10.0.0.5")
+        tm.that(restored.Grpc.port, eq=6000)
+        tm.that(restored.Grpc.max_workers, eq=7)
 
     def test_module_singleton_is_usable(self) -> None:
         """The exported singleton exposes the namespaced surface directly."""
-        assert isinstance(settings, FlextGrpcSettings)
-        assert isinstance(settings.Grpc.port, int)
+        tm.that(settings, is_=FlextGrpcSettings)
+        tm.that(settings.Grpc.port, is_=int)
 
     def test_singleton_lifecycle_helpers(self) -> None:
         """fetch_global returns the shared instance; reset recreates it."""
