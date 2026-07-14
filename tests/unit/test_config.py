@@ -37,8 +37,8 @@ class TestsFlextGrpcConfig:
 
     def test_constructor_sets_namespaced_fields(self) -> None:
         """Nested namespace values are surfaced through settings.Grpc.*."""
-        cfg = FlextGrpcSettings(
-            Grpc={"host": "0.0.0.0", "port": 8080, "max_workers": 5}
+        cfg = FlextGrpcSettings.model_validate(
+            {"Grpc": {"host": "0.0.0.0", "port": 8080, "max_workers": 5}},
         )
         tm.that(cfg.Grpc.host, eq="0.0.0.0")
         tm.that(cfg.Grpc.port, eq=8080)
@@ -54,7 +54,9 @@ class TestsFlextGrpcConfig:
     )
     def test_network_fields_round_trip(self, host: str, port: int) -> None:
         """Network host/port provided at construction are preserved."""
-        cfg = FlextGrpcSettings(Grpc={"host": host, "port": port})
+        cfg = FlextGrpcSettings.model_validate(
+            {"Grpc": {"host": host, "port": port}},
+        )
         tm.that(cfg.Grpc.host, eq=host)
         tm.that(cfg.Grpc.port, eq=port)
 
@@ -62,18 +64,18 @@ class TestsFlextGrpcConfig:
     def test_out_of_range_port_is_rejected(self, bad_port: int) -> None:
         """Ports outside 1..65535 fail validation (ValidationError <: ValueError)."""
         with pytest.raises(ValueError, match=r".*"):
-            FlextGrpcSettings(Grpc={"port": bad_port})
+            FlextGrpcSettings.model_validate({"Grpc": {"port": bad_port}})
 
     @pytest.mark.parametrize("bad_workers", [0, -1])
     def test_non_positive_max_workers_is_rejected(self, bad_workers: int) -> None:
         """max_workers below 1 fails validation."""
         with pytest.raises(ValueError, match=r".*"):
-            FlextGrpcSettings(Grpc={"max_workers": bad_workers})
+            FlextGrpcSettings.model_validate({"Grpc": {"max_workers": bad_workers}})
 
     def test_model_dump_round_trips_through_model_validate(self) -> None:
         """Dumping and re-validating reproduces the same namespaced state."""
-        original = FlextGrpcSettings(
-            Grpc={"host": "10.0.0.5", "port": 6000, "max_workers": 7},
+        original = FlextGrpcSettings.model_validate(
+            {"Grpc": {"host": "10.0.0.5", "port": 6000, "max_workers": 7}},
         )
         restored = FlextGrpcSettings.model_validate(original.model_dump())
         tm.that(restored.Grpc.host, eq="10.0.0.5")

@@ -220,9 +220,7 @@ class TestsFlextGrpcUtilitiesUnit:
         client: m.Grpc.Client = tm.ok(
             u.Grpc.create_client_entity("localhost:50051"),
         )
-        channel = client.channel
-        tm.that(channel, none=False)
-        tm.that(channel, none=False)
+        channel = tm.not_none(client.channel)
         tm.that(channel.target, eq="localhost:50051")
 
     def test_create_server_entity_carries_host_and_port(self) -> None:

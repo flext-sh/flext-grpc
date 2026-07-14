@@ -104,8 +104,7 @@ class TestsFlextGrpcConstantsUnit:
         self, text: str, expected_group: str
     ) -> None:
         """The version pattern extracts the semantic version, case-insensitively."""
-        match = Grpc.VALIDATION_VERSION_RE.search(text)
-        tm.that(match, none=False)
+        match = tm.not_none(Grpc.VALIDATION_VERSION_RE.search(text))
         tm.that(match.group(1), eq=expected_group)
 
     def test_version_pattern_returns_none_without_version(self) -> None:
