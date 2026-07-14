@@ -222,7 +222,6 @@ project-excludes = [
   "vendor/**",
 ]
 project-includes = [
-  "architecture/**/*.py*",
   "examples/**/*.py*",
   "src/**/*.py*",
   "tests/**/*.py*",
@@ -231,13 +230,9 @@ python-interpreter-path = "../.venv/bin/python"
 python-version = "3.13"
 search-path = [
   ".",
-  # mro-f1fe (agent: kimi-sweep): removed stale search-path to migrated examples (legado/)
   "../flext-cli/src",
-  "../flext-core/examples",
-  "../flext-core/scripts",
   "../flext-core/src",
   "../flext-infra/src",
-  "../flext-infra/tmp_flow_test",
   "../flext-tests/src",
   "src",
 ]
@@ -414,21 +409,11 @@ addopts = [
   "--cov-report=term-missing:skip-covered",
   "--cov=.",
   "--durations=10",
-  "--ignore-glob=*/tests/_constants/*",
-  "--ignore-glob=*/tests/_models/*",
-  "--ignore-glob=*/tests/_protocols/*",
-  "--ignore-glob=*/tests/_typings/*",
-  "--ignore-glob=*/tests/_utilities/*",
-  "--ignore-glob=*/tests/constants.py",
-  "--ignore-glob=*/tests/models.py",
-  "--ignore-glob=*/tests/protocols.py",
-  "--ignore-glob=*/tests/typings.py",
-  "--ignore-glob=*/tests/utilities.py",
   "--markdown-docs",
   "--strict-markers",
 ]
 filterwarnings = [
-  "ignore:.*cannot collect test class.*because it has a __init__ constructor.*:pytest.PytestCollectionWarning",
+  "error",
 ]
 markers = [
   "docker: tests requiring Docker",
@@ -444,6 +429,7 @@ markers = [
 minversion = "8.0"
 python_classes = [ "Test*" ]
 python_files = [ "*_test.py", "*_tests.py", "test_*.py" ]
+testpaths = [ "README.md", "docs", "examples", "tests" ]
 
 # [MANAGED] ruff
 [tool.ruff]

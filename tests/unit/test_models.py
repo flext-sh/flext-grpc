@@ -83,11 +83,13 @@ class TestsFlextGrpcModelsUnit:
     def test_stream_info_rejects_negative_counters(self, field: str) -> None:
         """Non-negative counter constraints reject negative values."""
         with pytest.raises(pydantic.ValidationError):
-            m.Grpc.StreamInfo(
-                stream_id="s",
-                stream_type="unary",
-                target="t",
-                **{field: -1},
+            m.Grpc.StreamInfo.model_validate(
+                {
+                    "stream_id": "s",
+                    "stream_type": "unary",
+                    "target": "t",
+                    field: -1,
+                },
             )
 
     # ------------------------------------------------------------------
@@ -298,8 +300,8 @@ class TestsFlextGrpcModelsUnit:
 
         tm.that(result.success, eq=True)
         client = result.unwrap()
-        tm.that(client.channel, none=False)
-        tm.that(client.channel.target, eq="localhost:50051")
+        channel = tm.not_none(client.channel)
+        tm.that(channel.target, eq="localhost:50051")
 
     def test_grpc_stream_rejects_blank_method_name(self) -> None:
         """GrpcStream method_name validator rejects whitespace-only names."""
