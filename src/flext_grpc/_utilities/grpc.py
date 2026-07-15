@@ -10,14 +10,52 @@ from importlib import import_module
 from types import ModuleType
 from uuid import uuid4
 
+from google.protobuf.message_factory import GetMessageClass
+
 from flext_core import u
 from flext_grpc import FlextGrpcModels, c, m, p, r, t
+from flext_grpc.protos import flext_pb2
 
 
 class FlextGrpcUtilitiesGrpc:
     """gRPC utility namespace composed into ``FlextGrpcUtilities.Grpc``."""
 
     _logger = u.fetch_logger(__name__)
+
+    @staticmethod
+    def create_protobuf_message(
+        method: c.Grpc.ServiceMethod,
+        payload: t.JsonMapping,
+        *,
+        response: bool,
+    ) -> p.Result[p.Grpc.GrpcMessage]:
+        """Create one schema-owned protobuf message from validated payload data."""
+
+        def _create() -> p.Grpc.GrpcMessage:
+            services = tuple(flext_pb2.DESCRIPTOR.services_by_name.values())
+            if len(services) != 1:
+                msg = f"Expected one protobuf service, found {len(services)}"
+                raise ValueError(msg)
+            method_descriptor = services[0].methods_by_name.get(method.value)
+            if method_descriptor is None:
+                msg = f"Unknown protobuf service method: {method.value}"
+                raise ValueError(msg)
+            message_descriptor = (
+                method_descriptor.output_type
+                if response
+                else method_descriptor.input_type
+            )
+            message_type = GetMessageClass(message_descriptor)
+            message = message_type(**payload)
+            if message.DESCRIPTOR.full_name != message_descriptor.full_name:
+                msg = (
+                    f"Generated protobuf type mismatch: {message.DESCRIPTOR.full_name} "
+                    f"!= {message_descriptor.full_name}"
+                )
+                raise TypeError(msg)
+            return message
+
+        return r[p.Grpc.GrpcMessage].create_from_callable(_create)
 
     class _GrpcRuntimeAdapter:
         """Typed adapter that isolates the untyped grpc runtime module."""

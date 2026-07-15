@@ -7,16 +7,61 @@ internal-collaborator spying, no line-coverage pokes.
 
 from __future__ import annotations
 
+from socket import AF_INET, SOCK_STREAM, socket
+
 import pytest
 from flext_tests import tm
 
-from flext_grpc import FlextGrpc, t
+from flext_grpc import FlextGrpc, c, t
 from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class TestsFlextGrpcServices:
     """Public contract of FlextGrpc facade and its service components."""
+
+    class TestsRuntimeRoundTrip:
+        """Real grpcio round trips through the public facade."""
+
+        def test_echo_and_health_round_trip(self, grpc_facade: FlextGrpc) -> None:
+            """Serve and call both generated RPCs over a loopback channel."""
+            with socket(AF_INET, SOCK_STREAM) as available_port:
+                available_port.bind(("127.0.0.1", 0))
+                port = available_port.getsockname()[1]
+
+            server_result = grpc_facade.create_server(host="127.0.0.1", port=port)
+            tm.ok(server_result)
+            server = server_result.unwrap()
+            start_result = grpc_facade.start_server(server)
+            tm.ok(start_result)
+            started_server = start_result.unwrap()
+            try:
+                client_result = grpc_facade.connect_client(f"127.0.0.1:{port}")
+                tm.ok(client_result)
+                client = client_result.unwrap()
+                try:
+                    echo_result = grpc_facade.make_call(
+                        client,
+                        c.Grpc.ServiceMethod.ECHO.value,
+                        {"message": "flext-round-trip"},
+                    )
+                    tm.ok(echo_result)
+                    echo = echo_result.unwrap()
+                    tm.that(echo.values["message"], eq="flext-round-trip")
+                    tm.that(echo.values["server_id"], eq=f"127.0.0.1:{port}")
+
+                    health_result = grpc_facade.make_call(
+                        client,
+                        c.Grpc.ServiceMethod.HEALTH_CHECK.value,
+                        {"service": "FlextGrpcService"},
+                    )
+                    tm.ok(health_result)
+                    health = health_result.unwrap()
+                    tm.that(health.values["status"], eq="SERVING")
+                finally:
+                    tm.ok(grpc_facade.disconnect_client(client))
+            finally:
+                tm.ok(grpc_facade.stop_server(started_server))
 
     # -- Facade: create_stream -------------------------------------------
 

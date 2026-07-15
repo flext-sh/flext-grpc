@@ -8,7 +8,7 @@ from collections.abc import (
 )
 
 from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, s, t
-from flext_grpc.proto.stubs import FlextGrpcServiceStub
+from flext_grpc.protos import flext_pb2_grpc
 from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
@@ -99,11 +99,32 @@ class FlextGrpcClient(s):
                     options=m.ExceptionFactoryOptions(error="client not connected"),
                 )
             grpc_channel = self._active_channels[target]
-            stub = FlextGrpcServiceStub(grpc_channel)
+            generated_stub = flext_pb2_grpc.FlextGrpcServiceStub(grpc_channel)
             result: p.Result[m.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
-                echo_result = FlextGrpcUtilities.Grpc.call_runtime(
-                    lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request))),
+                echo_request_result = r[m.Grpc.EchoRequest].create_from_callable(
+                    lambda: m.Grpc.EchoRequest.model_validate(request),
+                )
+                if echo_request_result.failure:
+                    return r[m.Grpc.Payload].fail(
+                        echo_request_result.error or "Invalid echo request",
+                        exception=echo_request_result.exception,
+                    )
+                echo_message_result = FlextGrpcUtilities.Grpc.create_protobuf_message(
+                    c.Grpc.ServiceMethod.ECHO,
+                    {"message": echo_request_result.value.message},
+                    response=False,
+                )
+                if echo_message_result.failure:
+                    return r[m.Grpc.Payload].fail(
+                        echo_message_result.error or "Echo message creation failed",
+                        exception=echo_message_result.exception,
+                    )
+                echo_rpc: p.Grpc.EchoRpc = generated_stub.Echo
+                echo_result: p.Result[p.Grpc.EchoResponseMessage] = (
+                    FlextGrpcUtilities.Grpc.call_runtime(
+                        lambda: echo_rpc(echo_message_result.value),
+                    )
                 )
                 if echo_result.failure:
                     result = r[m.Grpc.Payload].fail_op(
@@ -121,10 +142,29 @@ class FlextGrpcClient(s):
                         ),
                     )
             elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
-                health_result = FlextGrpcUtilities.Grpc.call_runtime(
-                    lambda: stub.HealthCheck(
-                        m.Grpc.HealthRequest(service="FlextGrpcService"),
-                    ),
+                health_request_result = r[m.Grpc.HealthRequest].create_from_callable(
+                    lambda: m.Grpc.HealthRequest.model_validate(request),
+                )
+                if health_request_result.failure:
+                    return r[m.Grpc.Payload].fail(
+                        health_request_result.error or "Invalid health request",
+                        exception=health_request_result.exception,
+                    )
+                health_message_result = FlextGrpcUtilities.Grpc.create_protobuf_message(
+                    c.Grpc.ServiceMethod.HEALTH_CHECK,
+                    {"service": health_request_result.value.service},
+                    response=False,
+                )
+                if health_message_result.failure:
+                    return r[m.Grpc.Payload].fail(
+                        health_message_result.error or "Health message creation failed",
+                        exception=health_message_result.exception,
+                    )
+                health_rpc: p.Grpc.HealthCheckRpc = generated_stub.HealthCheck
+                health_result: p.Result[p.Grpc.HealthResponseMessage] = (
+                    FlextGrpcUtilities.Grpc.call_runtime(
+                        lambda: health_rpc(health_message_result.value),
+                    )
                 )
                 if health_result.failure:
                     result = r[m.Grpc.Payload].fail_op(

@@ -115,9 +115,66 @@ class FlextGrpcProtocols(p):
                 """Stop gRPC server."""
                 ...
 
-        @runtime_checkable
         class GrpcMessage(Protocol):
-            """Protocol for gRPC message objects (duck typing for protobuf messages)."""
+            """Typed boundary shared by generated protobuf messages."""
+
+            def __deepcopy__(
+                self,
+                memo: t.MutableMappingKV[
+                    int,
+                    FlextGrpcProtocols.Grpc.GrpcMessage,
+                ]
+                | None = None,
+            ) -> FlextGrpcProtocols.Grpc.GrpcMessage:
+                """Create an independent message preserving its schema type."""
+                ...
+
+        class EchoRequestMessage(GrpcMessage, Protocol):
+            """Typed protobuf boundary for an echo request."""
+
+            message: str
+
+        class EchoResponseMessage(GrpcMessage, Protocol):
+            """Typed protobuf boundary for an echo response."""
+
+            message: str
+            server_id: str
+            timestamp: str
+
+        class HealthRequestMessage(GrpcMessage, Protocol):
+            """Typed protobuf boundary for a health request."""
+
+            service: str
+
+        class HealthResponseMessage(GrpcMessage, Protocol):
+            """Typed protobuf boundary for a health response."""
+
+            status: str
+            message: str
+
+        @runtime_checkable
+        class GrpcServicerContext(Protocol):
+            """Opaque runtime context supplied by grpcio to a servicer."""
+
+        class EchoRpc(Protocol):
+            """Typed callable for the generated Echo RPC."""
+
+            def __call__(
+                self,
+                request: FlextGrpcProtocols.Grpc.GrpcMessage,
+            ) -> FlextGrpcProtocols.Grpc.EchoResponseMessage:
+                """Invoke Echo with a generated request message."""
+                ...
+
+        class HealthCheckRpc(Protocol):
+            """Typed callable for the generated HealthCheck RPC."""
+
+            def __call__(
+                self,
+                request: FlextGrpcProtocols.Grpc.GrpcMessage,
+            ) -> FlextGrpcProtocols.Grpc.HealthResponseMessage:
+                """Invoke HealthCheck with a generated request message."""
+                ...
 
         @runtime_checkable
         class Client(Protocol):
