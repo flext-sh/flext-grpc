@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import threading
 
-from flext_grpc import m, s, t, u
+from flext_grpc import m, p, s, t, u
 
 
 class FlextGrpcMetrics(s):
