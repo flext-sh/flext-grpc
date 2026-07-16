@@ -55,7 +55,7 @@ class TestsFlextGrpcEntities:
 
     def test_server_lifecycle_transitions_through_running_and_stopped(
         self,
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """Start -> mark_running -> stop -> mark_stopped walks the full lifecycle."""
         starting = tm.ok(server.start())
@@ -66,21 +66,21 @@ class TestsFlextGrpcEntities:
         tm.that(stopping.state, eq="stopping")
         tm.that(tm.ok(stopping.mark_stopped()).state, eq="stopped")
 
-    def test_server_start_does_not_mutate_original(self, server: m.Grpc.Server) -> None:
+    def test_server_start_does_not_mutate_original(self, server: p.Grpc.Server) -> None:
         """Transitions return a new entity, leaving the source stopped (immutability)."""
         tm.ok(server.start())
         tm.that(server.state, eq="stopped")
 
     def test_server_mark_stopped_rejected_from_stopped(
         self,
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """mark_stopped from an already-stopped state fails with an explanatory error."""
         tm.fail(server.mark_stopped(), has="Cannot mark stopped")
 
     def test_server_add_service_appends_to_public_services(
         self,
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """add_service returns a server whose services include the added entry."""
         service = object()
@@ -115,27 +115,27 @@ class TestsFlextGrpcEntities:
 
     def test_server_business_rules_pass_for_valid_config(
         self,
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """A well-formed server validates successfully."""
         tm.ok(server.validate_business_rules())
 
     # ---- Channel ----------------------------------------------------------
 
-    def test_channel_exposes_target(self, channel: m.Grpc.Channel) -> None:
+    def test_channel_exposes_target(self, channel: p.Grpc.Channel) -> None:
         """Channel surfaces its configured target address."""
         tm.that(channel.target, eq="localhost:50051")
 
     def test_channel_connect_transitions_idle_to_connecting(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """Connect moves an idle channel to the connecting state."""
         tm.that(tm.ok(channel.connect()).state, eq="connecting")
 
     def test_channel_reaches_ready_then_returns_to_idle(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """Connect -> mark_ready -> disconnect drives the readiness cycle."""
         ready = tm.ok(tm.ok(channel.connect()).mark_ready())
@@ -145,14 +145,14 @@ class TestsFlextGrpcEntities:
 
     def test_channel_mark_ready_rejected_from_idle(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """mark_ready requires a connecting channel; idle input fails."""
         tm.fail(channel.mark_ready())
 
     def test_channel_business_rules_pass_with_target(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """A channel with a non-empty target validates successfully."""
         tm.ok(channel.validate_business_rules())
@@ -164,7 +164,7 @@ class TestsFlextGrpcEntities:
 
     def test_channel_copy_with_overrides_target(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """copy_with returns a new channel carrying the overridden target."""
         tm.that(
@@ -180,7 +180,7 @@ class TestsFlextGrpcEntities:
 
     def test_client_retains_attached_channel(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """A channel passed at construction is exposed via the public field."""
         client = m.Grpc.Client(channel=channel, options={}, domain_events=[])
@@ -195,7 +195,7 @@ class TestsFlextGrpcEntities:
 
     def test_client_business_rules_pass_with_valid_channel(
         self,
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """A client holding a valid channel validates successfully."""
         client = m.Grpc.Client(channel=channel, options={}, domain_events=[])

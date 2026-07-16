@@ -90,7 +90,7 @@ class FlextGrpcServer(s):
 
         def server_metrics(
             self,
-            server: m.Grpc.Server,
+            server: p.Grpc.Server,
         ) -> p.Result[p.Grpc.Payload]:
             """Get server metrics."""
             server_key = f"{server.host}:{server.port}"
@@ -110,7 +110,7 @@ class FlextGrpcServer(s):
                 ),
             )
 
-        def start_server(self, server: m.Grpc.Server) -> p.Result[p.Grpc.Server]:
+        def start_server(self, server: p.Grpc.Server) -> p.Result[p.Grpc.Server]:
             """Start gRPC server with proper lifecycle."""
             server_key = f"{server.host}:{server.port}"
             result: p.Result[p.Grpc.Server]
@@ -125,7 +125,7 @@ class FlextGrpcServer(s):
                     result = r[p.Grpc.Server].fail_op("Server start", e)
             return result
 
-        def stop_server(self, server: m.Grpc.Server) -> p.Result[p.Grpc.Server]:
+        def stop_server(self, server: p.Grpc.Server) -> p.Result[p.Grpc.Server]:
             """Stop gRPC server gracefully."""
             server_key = f"{server.host}:{server.port}"
             if server_key not in self._active_servers:
@@ -138,7 +138,7 @@ class FlextGrpcServer(s):
         def _start_new_server(
             self,
             server_key: str,
-            server: m.Grpc.Server,
+            server: p.Grpc.Server,
         ) -> p.Result[p.Grpc.Server]:
             """Start a server that is not already registered as active."""
             starting_result = server.start()
@@ -160,7 +160,7 @@ class FlextGrpcServer(s):
 
         def _create_bound_runtime_server(
             self,
-            starting_server: m.Grpc.Server,
+            starting_server: p.Grpc.Server,
         ) -> p.Result[p.Grpc.GrpcServer]:
             """Create a runtime server and bind it to the configured address."""
             server_result = FlextGrpcUtilities.Grpc.create_runtime_server(
@@ -198,7 +198,7 @@ class FlextGrpcServer(s):
         def _activate_runtime_server(
             self,
             server_key: str,
-            starting_server: m.Grpc.Server,
+            starting_server: p.Grpc.Server,
             grpc_server: p.Grpc.GrpcServer,
         ) -> p.Result[p.Grpc.Server]:
             """Start the runtime server and mark the domain server as running."""
@@ -214,7 +214,7 @@ class FlextGrpcServer(s):
         def _stop_active_server(
             self,
             server_key: str,
-            server: m.Grpc.Server,
+            server: p.Grpc.Server,
         ) -> p.Result[p.Grpc.Server]:
             """Stop a registered active server and record stop metrics."""
             stopping_result: p.Result[p.Grpc.Server] = server.stop()
@@ -235,15 +235,15 @@ class FlextGrpcServer(s):
             self._metrics.record_metric(f"{server_key}_stopped_at", time.time())
             return stopping_server.mark_stopped()
 
-    def start_server(self, server: m.Grpc.Server) -> p.Result[p.Grpc.Server]:
+    def start_server(self, server: p.Grpc.Server) -> p.Result[p.Grpc.Server]:
         """Start a server through the dedicated lifecycle manager."""
         return self._server_manager.start_server(server)
 
-    def stop_server(self, server: m.Grpc.Server) -> p.Result[p.Grpc.Server]:
+    def stop_server(self, server: p.Grpc.Server) -> p.Result[p.Grpc.Server]:
         """Stop a server through the dedicated lifecycle manager."""
         return self._server_manager.stop_server(server)
 
-    def server_status(self, server: m.Grpc.Server) -> p.Result[p.Grpc.Payload]:
+    def server_status(self, server: p.Grpc.Server) -> p.Result[p.Grpc.Payload]:
         """Fetch server runtime metrics through the dedicated manager."""
         return self._server_manager.server_metrics(server)
 

@@ -113,7 +113,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
     def execute_operation(
         self,
-        request: m.Grpc.OperationExecutionRequest,
+        request: p.Grpc.OperationExecutionRequest,
     ) -> p.Result[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring."""
         kwargs = request.keyword_arguments

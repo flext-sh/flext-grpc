@@ -9,8 +9,7 @@ from collections.abc import (
 
 from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, s, t
 from flext_grpc.protos import flext_pb2_grpc
-from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-from flext_grpc.services.metrics import FlextGrpcMetrics
+from flext_grpc.services import FlextGrpcConnectionPool, FlextGrpcMetrics
 
 
 class FlextGrpcClient(s):
@@ -50,7 +49,7 @@ class FlextGrpcClient(s):
                 )
             return client_result
 
-        def disconnect(self, client: m.Grpc.Client) -> p.Result[p.Grpc.Client]:
+        def disconnect(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Client]:
             """Disconnect client and cleanup resources."""
             target = ""
             if client.channel is not None:
@@ -66,7 +65,7 @@ class FlextGrpcClient(s):
                 del self._active_channels[target]
             return r[p.Grpc.Client].ok(client)
 
-        def client_status(self, client: m.Grpc.Client) -> p.Result[p.Grpc.Payload]:
+        def client_status(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Payload]:
             """Get client connection status."""
             target = ""
             if client.channel is not None:
@@ -78,7 +77,7 @@ class FlextGrpcClient(s):
 
         def make_call(
             self,
-            client: m.Grpc.Client,
+            client: p.Grpc.Client,
             method: str,
             request: t.JsonMapping | None,
         ) -> p.Result[p.Grpc.Payload]:
@@ -103,7 +102,7 @@ class FlextGrpcClient(s):
             result: p.Result[p.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_request_result = r[p.Grpc.EchoRequest].create_from_callable(
-                    lambda: m.Grpc.EchoRequest.model_validate(request),
+                    lambda: p.Grpc.EchoRequest.model_validate(request),
                 )
                 if echo_request_result.failure:
                     return r[p.Grpc.Payload].fail(
@@ -143,7 +142,7 @@ class FlextGrpcClient(s):
                     )
             elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_request_result = r[p.Grpc.HealthRequest].create_from_callable(
-                    lambda: m.Grpc.HealthRequest.model_validate(request),
+                    lambda: p.Grpc.HealthRequest.model_validate(request),
                 )
                 if health_request_result.failure:
                     return r[p.Grpc.Payload].fail(
@@ -192,17 +191,17 @@ class FlextGrpcClient(s):
         """Establish a client connection through the dedicated manager."""
         return self._client_manager.connect(target)
 
-    def disconnect_client(self, client: m.Grpc.Client) -> p.Result[p.Grpc.Client]:
+    def disconnect_client(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Client]:
         """Disconnect a client connection through the dedicated manager."""
         return self._client_manager.disconnect(client)
 
-    def client_status(self, client: m.Grpc.Client) -> p.Result[p.Grpc.Payload]:
+    def client_status(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Payload]:
         """Fetch client connection status via the dedicated manager."""
         return self._client_manager.client_status(client)
 
     def make_call(
         self,
-        client: m.Grpc.Client,
+        client: p.Grpc.Client,
         method: str,
         request: t.JsonMapping | None,
     ) -> p.Result[p.Grpc.Payload]:

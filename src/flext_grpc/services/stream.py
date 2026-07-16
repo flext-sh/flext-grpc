@@ -17,7 +17,7 @@ class FlextGrpcStream(s):
     """Mixin providing stream processing for FlextGrpc facade."""
 
     class _StreamRuntimeState(m.Value):
-        stream: m.Grpc.GrpcStream = u.Field(
+        stream: p.Grpc.GrpcStream = u.Field(
             description="gRPC stream instance being tracked",
         )
         created_at: float = u.Field(
@@ -48,7 +48,7 @@ class FlextGrpcStream(s):
 
         def close_stream(
             self,
-            stream: m.Grpc.GrpcStream,
+            stream: p.Grpc.GrpcStream,
         ) -> p.Result[p.Grpc.GrpcStream]:
             """Close stream and cleanup."""
             stream_key = f"{stream.id}_{stream.stream_type}"
@@ -80,7 +80,7 @@ class FlextGrpcStream(s):
 
         def send_data(
             self,
-            stream: m.Grpc.GrpcStream,
+            stream: p.Grpc.GrpcStream,
             data: t.JsonMapping | None,
         ) -> p.Result[p.Grpc.Payload]:
             """Send data with buffering strategy.
@@ -125,13 +125,13 @@ class FlextGrpcStream(s):
             stream_type=stream_type,
         )
 
-    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[p.Grpc.GrpcStream]:
+    def close_stream(self, stream: p.Grpc.GrpcStream) -> p.Result[p.Grpc.GrpcStream]:
         """Close stream runtime state via the dedicated manager."""
         return self._stream_manager.close_stream(stream)
 
     def send_data(
         self,
-        stream: m.Grpc.GrpcStream,
+        stream: p.Grpc.GrpcStream,
         data: t.JsonMapping | None,
     ) -> p.Result[p.Grpc.Payload]:
         """Send stream data via the dedicated stream manager."""

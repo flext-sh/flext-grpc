@@ -33,7 +33,7 @@ class TestsFlextGrpcApi:
     )
     def test_create_server(self, host: str, port: int) -> None:
         """Test server creation across canonical address shapes."""
-        server: m.Grpc.Server = tm.ok(
+        server: p.Grpc.Server = tm.ok(
             FlextGrpc().create_server(host=host, port=port),
         )
         tm.that(server.host, eq=host)
@@ -42,13 +42,13 @@ class TestsFlextGrpcApi:
     @pytest.mark.parametrize("target", ["localhost:50051", "127.0.0.1:8080"])
     def test_create_client(self, target: str) -> None:
         """Test client creation across canonical address shapes."""
-        client: m.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
+        client: p.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq=target)
 
     def test_create_stream(self) -> None:
         """Test stream creation."""
-        stream: m.Grpc.GrpcStream = tm.ok(
+        stream: p.Grpc.GrpcStream = tm.ok(
             FlextGrpc().create_stream(method_name="test_method", stream_type="unary"),
         )
         tm.that(stream.method_name, eq="test_method")
@@ -84,7 +84,7 @@ class TestsFlextGrpcApi:
 
     def test_create_channel(self) -> None:
         """Test channel creation."""
-        channel: m.Grpc.Channel = tm.ok(
+        channel: p.Grpc.Channel = tm.ok(
             FlextGrpc().create_channel(target="localhost:50051"),
         )
         tm.that(channel.target, eq="localhost:50051")
@@ -93,7 +93,7 @@ class TestsFlextGrpcApi:
     def test_create_channel_with_options(self) -> None:
         """Test channel creation with custom options."""
         options: t.JsonMapping | None = {"timeout": 30, "compression": "gzip"}
-        channel: m.Grpc.Channel = tm.ok(
+        channel: p.Grpc.Channel = tm.ok(
             FlextGrpc().create_channel(target="localhost:50051", options=options),
         )
         tm.that(channel.options, eq=options)
@@ -107,7 +107,7 @@ class TestsFlextGrpcApi:
         methods = (
             ["method1", "method2"] if name == "TestService" else ["default_method"]
         )
-        service: m.Grpc.Service = tm.ok(
+        service: p.Grpc.Service = tm.ok(
             FlextGrpc().create_service(name=name, methods=methods),
         )
         tm.that(service.name, eq=name)
