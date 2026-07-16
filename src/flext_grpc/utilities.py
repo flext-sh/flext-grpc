@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import override
 
 from flext_cli import u
-from flext_grpc import c, m, p, t
+from flext_grpc import c, p, t
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
@@ -25,7 +25,7 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
         def create_channel_entity(
             target: str,
             options: t.JsonMapping | None = None,
-        ) -> p.Result[m.Grpc.Channel]:
+        ) -> p.Result[p.Grpc.Channel]:
             """Create a typed channel entity from validated inputs."""
             return FlextGrpcUtilitiesGrpc.create_channel_entity(
                 target=target,
@@ -37,7 +37,7 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
         def create_client_entity(
             target: str,
             options: t.JsonMapping | None = None,
-        ) -> p.Result[m.Grpc.Client]:
+        ) -> p.Result[p.Grpc.Client]:
             """Create a typed client entity backed by a typed channel entity."""
             return FlextGrpcUtilitiesGrpc.create_client_entity(
                 target=target,
@@ -50,7 +50,7 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
             host: str = c.Grpc.NETWORK_DEFAULT_HOST,
             port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
             max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
-        ) -> p.Result[m.Grpc.Server]:
+        ) -> p.Result[p.Grpc.Server]:
             """Create a typed server entity from validated inputs."""
             return FlextGrpcUtilitiesGrpc.create_server_entity(
                 host=host,
@@ -63,7 +63,7 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
         def create_service_entity(
             name: str,
             methods: t.StrSequence | None = None,
-        ) -> p.Result[m.Grpc.Service]:
+        ) -> p.Result[p.Grpc.Service]:
             """Create a typed service entity with a minimal valid method set."""
             return FlextGrpcUtilitiesGrpc.create_service_entity(
                 name=name,
@@ -75,7 +75,7 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
         def create_stream_entity(
             method_name: str,
             stream_type: c.Grpc.GrpcOperations | str,
-        ) -> p.Result[m.Grpc.GrpcStream]:
+        ) -> p.Result[p.Grpc.GrpcStream]:
             """Create a typed stream entity from validated inputs."""
             return FlextGrpcUtilitiesGrpc.create_stream_entity(
                 method_name=method_name,

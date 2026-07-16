@@ -24,7 +24,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         self,
         target: str,
         options: t.JsonMapping | None = None,
-    ) -> p.Result[m.Grpc.Channel]:
+    ) -> p.Result[p.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_channel_entity(
             target=target,
@@ -35,7 +35,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         self,
         target: str,
         options: t.JsonMapping | None = None,
-    ) -> p.Result[m.Grpc.Client]:
+    ) -> p.Result[p.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_client_entity(
             target=target, options=options
@@ -47,20 +47,20 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
         methods: t.StrSequence | None = None,
-    ) -> p.Result[m.Grpc.CompleteSetup]:
+    ) -> p.Result[p.Grpc.CompleteSetup]:
         """Complete setup using functional composition."""
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
 
         server_result = self.create_server(host=host, port=port)
         if server_result.failure:
-            return r[m.Grpc.CompleteSetup].fail(
+            return r[p.Grpc.CompleteSetup].fail(
                 server_result.error or "Server creation failed",
             )
 
         client_result = self.create_client(target=target)
         if client_result.failure:
-            return r[m.Grpc.CompleteSetup].fail(
+            return r[p.Grpc.CompleteSetup].fail(
                 client_result.error or "Client creation failed",
             )
 
@@ -69,11 +69,11 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             methods=resolved_methods,
         )
         if service_result.failure:
-            return r[m.Grpc.CompleteSetup].fail(
+            return r[p.Grpc.CompleteSetup].fail(
                 service_result.error or "Service creation failed",
             )
 
-        return r[m.Grpc.CompleteSetup].ok(
+        return r[p.Grpc.CompleteSetup].ok(
             m.Grpc.CompleteSetup(
                 server=server_result.value,
                 client=client_result.value,
@@ -87,7 +87,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         host: str = c.Grpc.NETWORK_DEFAULT_HOST,
         port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
-    ) -> p.Result[m.Grpc.Server]:
+    ) -> p.Result[p.Grpc.Server]:
         """Create typed server entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_server_entity(
             host=host,
@@ -99,7 +99,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         self,
         name: str,
         methods: t.StrSequence | None = None,
-    ) -> p.Result[m.Grpc.Service]:
+    ) -> p.Result[p.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_service_entity(
             name=name,

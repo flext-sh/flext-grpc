@@ -12,7 +12,7 @@ class TestsFlextGrpcEntities:
     """Public-contract behavior of the gRPC entity models."""
 
     @pytest.fixture
-    def channel(self) -> m.Grpc.Channel:
+    def channel(self) -> p.Grpc.Channel:
         """Idle channel bound to a concrete target."""
         return m.Grpc.Channel(
             target="localhost:50051",
@@ -22,7 +22,7 @@ class TestsFlextGrpcEntities:
         )
 
     @pytest.fixture
-    def server(self) -> m.Grpc.Server:
+    def server(self) -> p.Grpc.Server:
         """Return a stopped server with no registered services."""
         return m.Grpc.Server(
             host="localhost",
