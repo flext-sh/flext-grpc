@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import time
-from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
-from typing import override
+from typing import TYPE_CHECKING, override
 
 from flext_core import r
 from flext_grpc import FlextGrpcUtilities, c, m, p, s
 from flext_grpc.protos import flext_pb2_grpc
 from flext_grpc.services.metrics import FlextGrpcMetrics
+
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
 
 
 class FlextGrpcServer(s):

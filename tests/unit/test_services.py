@@ -8,13 +8,16 @@ internal-collaborator spying, no line-coverage pokes.
 from __future__ import annotations
 
 from socket import AF_INET, SOCK_STREAM, socket
+from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
 
 from flext_grpc import FlextGrpc, c, t
-from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-from flext_grpc.services.metrics import FlextGrpcMetrics
+
+if TYPE_CHECKING:
+    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+    from flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class TestsFlextGrpcServices:

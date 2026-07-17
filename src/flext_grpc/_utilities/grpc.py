@@ -2,12 +2,8 @@
 
 from __future__ import annotations
 
-from collections.abc import (
-    Callable,
-)
-from concurrent.futures import Executor
 from importlib import import_module
-from types import ModuleType
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from google.protobuf.message_factory import GetMessageClass
@@ -15,6 +11,13 @@ from google.protobuf.message_factory import GetMessageClass
 from flext_core import u
 from flext_grpc import FlextGrpcModels, c, m, p, r, t
 from flext_grpc.protos import flext_pb2
+
+if TYPE_CHECKING:
+    from collections.abc import (
+        Callable,
+    )
+    from concurrent.futures import Executor
+    from types import ModuleType
 
 
 class FlextGrpcUtilitiesGrpc:
