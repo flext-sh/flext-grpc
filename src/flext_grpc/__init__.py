@@ -20,6 +20,7 @@ from flext_grpc.__version__ import (
 if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
 
+    from ._config import FlextGrpcConfig, config
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
     from .base import FlextGrpcServiceBase, s
@@ -55,6 +56,10 @@ if TYPE_CHECKING:
 
 
 _LAZY_MODULES: dict[str, tuple[str, ...]] = {
+    "._config": (
+        "FlextGrpcConfig",
+        "config",
+    ),
     "._settings": (
         "FlextGrpcSettings",
         "settings",
@@ -108,6 +113,7 @@ _LAZY_IMPORTS = build_lazy_import_map(
 
 _DIRECT_IMPORTS: tuple[str, ...] = (
     "FlextGrpc",
+    "FlextGrpcConfig",
     "FlextGrpcConstants",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
@@ -142,6 +148,7 @@ _DIRECT_IMPORTS: tuple[str, ...] = (
 
 __all__: tuple[str, ...] = (
     "FlextGrpc",
+    "FlextGrpcConfig",
     "FlextGrpcConstants",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
@@ -158,6 +165,7 @@ __all__: tuple[str, ...] = (
     "__version__",
     "__version_info__",
     "c",
+    "config",
     "d",
     "e",
     "grpc",

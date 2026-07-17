@@ -35,9 +35,7 @@ class FlextGrpcConfigModels:
         default_keepalive_timeout_ms: int = Field(
             ge=0, description="Keepalive probe timeout in milliseconds."
         )
-        default_port: int = Field(
-            ge=1, le=65535, description="Default gRPC port."
-        )
+        default_port: int = Field(ge=1, le=65535, description="Default gRPC port.")
         default_timeout: float = Field(
             ge=0, description="Default request timeout in seconds."
         )
@@ -77,9 +75,7 @@ class FlextGrpcConfigModels:
         default_max_concurrent_rpcs: int = Field(
             ge=1, description="Default RPC concurrency limit."
         )
-        default_max_workers: int = Field(
-            ge=1, description="Default worker pool size."
-        )
+        default_max_workers: int = Field(ge=1, description="Default worker pool size.")
         max_workers: int = Field(ge=1, description="Maximum worker pool size.")
         min_workers: int = Field(ge=1, description="Minimum worker pool size.")
 
@@ -100,15 +96,9 @@ class FlextGrpcConfigModels:
         default_max_concurrent_streams: int = Field(
             ge=1, description="Default concurrent stream limit."
         )
-        max_buffer_size: int = Field(
-            ge=1, description="Absolute maximum buffer size."
-        )
-        min_buffer_size: int = Field(
-            ge=1, description="Absolute minimum buffer size."
-        )
-        server_batch_size: int = Field(
-            ge=1, description="Server-stream batch size."
-        )
+        max_buffer_size: int = Field(ge=1, description="Absolute maximum buffer size.")
+        min_buffer_size: int = Field(ge=1, description="Absolute minimum buffer size.")
+        server_batch_size: int = Field(ge=1, description="Server-stream batch size.")
 
     class ConnectionPool(BaseModel):
         """gRPC connection-pool defaults."""
