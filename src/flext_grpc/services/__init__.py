@@ -3,4 +3,7 @@
 
 from __future__ import annotations
 
-__all__: tuple[str, ...] = ()
+from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+from flext_grpc.services.metrics import FlextGrpcMetrics
+
+__all__: tuple[str, ...] = ("FlextGrpcConnectionPool", "FlextGrpcMetrics")

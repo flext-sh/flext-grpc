@@ -101,8 +101,8 @@ class FlextGrpcClient(s):
             generated_stub = flext_pb2_grpc.FlextGrpcServiceStub(grpc_channel)
             result: p.Result[p.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
-                echo_request_result = r[p.Grpc.EchoRequest].create_from_callable(
-                    lambda: p.Grpc.EchoRequest.model_validate(request),
+                echo_request_result = r[m.Grpc.EchoRequest].create_from_callable(
+                    lambda: m.Grpc.EchoRequest.model_validate(request),
                 )
                 if echo_request_result.failure:
                     return r[p.Grpc.Payload].fail(
