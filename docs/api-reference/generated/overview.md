@@ -3,7 +3,7 @@
 # flext-grpc API Overview
 
 - Package: `flext_grpc`
-- Version: `0.12.0`
+- Version: `0.20.0`
 - Description: FLEXT gRPC - High-Performance gRPC Services
 - Doc summary: Flext Grpc package.
 - Classifiers: `Development Status :: 3 - Alpha`, `Intended Audience :: Developers`, `Operating System :: OS Independent`, `Programming Language :: Python :: 3 :: Only`, `Programming Language :: Python :: 3.13`, `Topic :: Internet :: WWW/HTTP :: HTTP Servers` (+2 more)

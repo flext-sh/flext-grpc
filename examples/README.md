@@ -446,7 +446,7 @@ Usage:
     poetry run python examples/[filename].py
 
 Author: FLEXT Development Team
-Version: 0.12.0-dev
+Version: 0.20.0-dev
 """
 
 from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
