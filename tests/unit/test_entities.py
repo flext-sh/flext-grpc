@@ -85,7 +85,9 @@ class TestsFlextGrpcEntities:
         """add_service returns a server whose services include the added entry."""
         service = object()
         updated = tm.ok(server.add_service(service))
-        tm.that(list(updated.services), eq=[service])
+        updated_services = list(updated.services)
+        tm.that(len(updated_services), eq=1)
+        assert updated_services[0] is service
         tm.that(list(server.services), eq=[])
 
     def test_server_business_rules_reject_empty_host(self) -> None:

@@ -27,6 +27,7 @@
 !pyproject.toml
 !poetry.lock
 !Makefile
+!custom.mk
 !README.md
 !AGENTS.md
 !LICENSE
