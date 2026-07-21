@@ -1,0 +1,87 @@
+@startuml FLEXT-gRPC Security Architecture
+
+title FLEXT-gRPC Security Architecture and Threat Model
+
+skinparam backgroundColor #FEFEFE
+skinparam sequenceParticipant underline
+
+actor "Client Application" as client
+participant "FLEXT-gRPC Client" as grpc_client
+participant "mTLS Layer" as mtls
+participant "Authentication" as auth
+participant "Authorization" as authz
+participant "FLEXT-gRPC Server" as grpc_server
+participant "Business Logic" as business
+database "Audit Log" as audit
+
+== Authentication Flow ==
+client -> grpc_client: Request with credentials
+grpc_client -> mtls: Establish mTLS connection
+mtls -> grpc_client: Mutual certificate validation
+
+grpc_client -> auth: Validate client identity
+auth -> grpc_client: Authentication result
+
+alt Authentication successful
+    grpc_client -> authz: Check permissions
+    authz -> grpc_client: Authorization result
+else Authentication failed
+    grpc_client -> audit: Log authentication failure
+    grpc_client --> client: UNAUTHENTICATED error
+end
+
+== Authorized Request Processing ==
+grpc_client -> grpc_server: Forward authenticated request
+grpc_server -> business: Process business logic
+business -> grpc_server: Business result
+
+grpc_server -> audit: Log successful operation
+grpc_server --> grpc_client: Response with data
+
+== Threat Mitigation Layers ==
+
+note right of mtls
+    **Transport Security**
+    - Mutual TLS authentication
+    - Certificate validation
+    - Encrypted communication
+    - Perfect forward secrecy
+end note
+
+note right of auth
+    **Authentication Layer**
+    - JWT token validation
+    - Certificate-based auth
+    - Multi-factor support
+    - Session management
+end note
+
+note right of authz
+    **Authorization Layer**
+    - Role-based access control
+    - Attribute-based permissions
+    - Policy enforcement
+    - Resource-level security
+end note
+
+note right of audit
+    **Audit & Compliance**
+    - Security event logging
+    - Compliance reporting
+    - Forensic analysis
+    - Regulatory requirements
+end note
+
+== Security Controls Matrix ==
+
+legend right
+    |= Control Type |= Implementation |= Status |
+    | Authentication | mTLS + JWT | ✅ Implemented |
+    | Authorization | RBAC + ABAC | ⚠️ Planned |
+    | Encryption | TLS 1.3 | ✅ Implemented |
+    | Auditing | Structured logging | ✅ Implemented |
+    | Input Validation | Pydantic models | ✅ Implemented |
+    | Rate Limiting | Configurable limits | ⚠️ Planned |
+endlegend
+
+@enduml

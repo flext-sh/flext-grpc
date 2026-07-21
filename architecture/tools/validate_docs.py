@@ -1,0 +1,452 @@
+#!/usr/bin/env python3
+"""FLEXT-gRPC Architecture Documentation Validation.
+
+Validates architecture documentation for completeness, consistency, and accuracy.
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Annotated
+
+from flext_cli import cli
+from flext_grpc import c, m, p, r, t
+
+
+class _ValidationParams(m.Value):
+    """CLI parameters for the architecture documentation validator."""
+
+    path: Annotated[
+        str,
+        m.Field(description="Root path containing architecture documentation."),
+    ] = "."
+    output: Annotated[
+        str | None,
+        m.Field(description="Optional path for the generated validation report."),
+    ] = None
+    quiet: Annotated[
+        bool,
+        m.Field(description="Whether to suppress nonessential console output."),
+    ] = False
+
+
+type _IssueRow = dict[str, str | int | list[str]]
+
+
+class ValidationSummary(m.Value):
+    """Summary of validation results."""
+
+    quality_score: Annotated[
+        int,
+        m.Field(description="Computed documentation quality score."),
+    ]
+    status: Annotated[
+        str,
+        m.Field(description="Human-readable documentation quality status."),
+    ]
+    total_issues: Annotated[
+        int,
+        m.Field(description="Total number of validation issues."),
+    ]
+    total_warnings: Annotated[
+        int,
+        m.Field(description="Total number of validation warnings."),
+    ]
+    total_recommendations: Annotated[
+        int,
+        m.Field(description="Total number of validation recommendations."),
+    ]
+    timestamp: Annotated[
+        str,
+        m.Field(description="UTC timestamp when validation completed."),
+    ]
+
+
+class ValidationResults(m.Value):
+    """Complete validation results."""
+
+    summary: Annotated[
+        ValidationSummary,
+        m.Field(description="Aggregate documentation validation summary."),
+    ]
+    issues: Annotated[
+        t.SequenceOf[_IssueRow],
+        m.Field(description="Validation issues requiring correction."),
+    ]
+    warnings: Annotated[
+        t.SequenceOf[_IssueRow],
+        m.Field(description="Validation warnings requiring review."),
+    ]
+    recommendations: Annotated[
+        t.SequenceOf[_IssueRow],
+        m.Field(description="Recommended documentation improvements."),
+    ]
+
+
+class ArchitectureValidator:
+    """Validates architecture documentation completeness and consistency."""
+
+    # Quality score thresholds
+    EXCELLENT_QUALITY_SCORE = 95
+    GOOD_QUALITY_SCORE = 80
+    ACCEPTABLE_QUALITY_SCORE = 60
+    CRITICAL_QUALITY_SCORE = 40
+
+    # Validation constants
+    MIN_ADR_FILES = 3
+
+    def __init__(self, root_path: str = ".") -> None:
+        """Initialize the architecture documentation validator.
+
+        Args:
+            root_path: Root path for documentation validation.
+
+        """
+        self.root_path = Path(root_path)
+        self.issues: list[_IssueRow] = []
+        self.warnings: list[_IssueRow] = []
+        self.recommendations: list[_IssueRow] = []
+
+    def validate_all(self) -> ValidationResults:
+        """Run all validation checks."""
+        # Reset collections
+        self.issues = []
+        self.warnings = []
+        self.recommendations = []
+
+        # Run validation checks
+        self._validate_c4_model_completeness()
+        self._validate_adr_completeness()
+        self._validate_diagram_consistency()
+        self._validate_cross_references()
+        self._validate_content_freshness()
+        self._validate_technical_accuracy()
+
+        # Generate summary
+        summary = self._generate_summary()
+
+        # Print results
+        self._print_results(summary)
+
+        return ValidationResults(
+            summary=summary,
+            issues=list(self.issues),
+            warnings=list(self.warnings),
+            recommendations=list(self.recommendations),
+        )
+
+    def _validate_c4_model_completeness(self) -> None:
+        """Validate C4 model documentation completeness."""
+        c4_dir = self.root_path / "docs" / "architecture" / "c4-model"
+
+        required_files = ["context.md", "containers.md", "components.md", "code.md"]
+
+        missing_files = [
+            file for file in required_files if not (c4_dir / file).exists()
+        ]
+
+        if missing_files:
+            self.issues.append({
+                "type": "c4_model_incomplete",
+                "severity": "high",
+                "message": f"C4 model missing required views: {', '.join(missing_files)}",
+                "files": missing_files,
+            })
+
+        # Check content completeness
+        context_file = c4_dir / "context.md"
+        if context_file.exists():
+            content = context_file.read_text()
+
+            required_sections = [
+                "System Context Diagram",
+                "System Scope and Boundaries",
+                "External Interfaces",
+                "Stakeholders and User Personas",
+            ]
+
+            for section in required_sections:
+                if section not in content:
+                    self.warnings.append({
+                        "type": "c4_context_incomplete",
+                        "severity": "medium",
+                        "message": f"C4 context view missing section: {section}",
+                        "file": str(context_file),
+                    })
+
+    def _validate_adr_completeness(self) -> None:
+        """Validate ADR documentation completeness."""
+        adr_dir = self.root_path / "docs" / "architecture" / "adrs"
+
+        if not adr_dir.exists():
+            self.issues.append({
+                "type": "adr_system_missing",
+                "severity": "high",
+                "message": "Architecture Decision Records system not found",
+            })
+            return
+
+        readme_file = adr_dir / "README.md"
+        if not readme_file.exists():
+            self.issues.append({
+                "type": "adr_readme_missing",
+                "severity": "high",
+                "message": "ADR README documentation missing",
+            })
+
+        # Check for ADR files
+        adr_files = list(adr_dir.glob("adr-*.md"))
+
+        # Check for ADR files
+        adr_files = list(adr_dir.glob("adr-*.md"))
+        if len(adr_files) < self.MIN_ADR_FILES:
+            self.warnings.append({
+                "type": "few_adrs",
+                "severity": "medium",
+                "message": f"Only {len(adr_files)} ADRs found, recommend at least 3 for major architectural decisions",
+            })
+
+        # Validate ADR format
+        for adr_file in adr_files:
+            content = adr_file.read_text()
+
+            required_fields = [
+                "## Status",
+                "## Context",
+                "## Decision",
+                "## Consequences",
+            ]
+
+            missing_fields = [
+                field for field in required_fields if field not in content
+            ]
+
+            if missing_fields:
+                self.warnings.append({
+                    "type": "adr_format_incomplete",
+                    "severity": "medium",
+                    "message": f"ADR {adr_file.name} missing required fields: {', '.join(missing_fields)}",
+                    "file": str(adr_file),
+                })
+
+    def _validate_diagram_consistency(self) -> None:
+        """Validate diagram consistency and completeness."""
+        diagrams_dir = self.root_path / "docs" / "architecture" / "diagrams"
+
+        required_diagrams = [
+            "context.puml",
+            "containers.puml",
+            "components.puml",
+            "deployment.puml",
+        ]
+
+        missing_diagrams = [
+            diagram
+            for diagram in required_diagrams
+            if not (diagrams_dir / diagram).exists()
+        ]
+
+        if missing_diagrams:
+            self.issues.append({
+                "type": "diagrams_missing",
+                "severity": "high",
+                "message": f"Required architecture diagrams missing: {', '.join(missing_diagrams)}",
+            })
+
+        # Check if generation script exists
+        gen_script = (
+            self.root_path / "docs" / "architecture" / "tools" / "generate-diagrams.sh"
+        )
+        if not gen_script.exists():
+            self.warnings.append({
+                "type": "generation_script_missing",
+                "severity": "medium",
+                "message": "Diagram generation automation script missing",
+            })
+
+    def _validate_cross_references(self) -> None:
+        """Validate cross-references between documentation."""
+        # Check if documentation properly references other sections
+        architecture_md = self.root_path / "docs" / "architecture.md"
+        if architecture_md.exists():
+            content = architecture_md.read_text()
+
+            # Should reference the new architecture documentation
+            if "c4-model" not in content or "adrs" not in content:
+                self.warnings.append({
+                    "type": "cross_references_missing",
+                    "severity": "low",
+                    "message": "Architecture documentation should reference C4 model and ADRs",
+                })
+
+    def _validate_content_freshness(self) -> None:
+        """Validate documentation freshness."""
+        # Check how old the documentation is
+        architecture_files = [
+            "docs/architecture.md",
+            "docs/architecture/c4-model/context.md",
+            "docs/architecture/adrs/README.md",
+        ]
+
+        max_age_days = 90  # Documentation should be reviewed every 3 months
+
+        for file_path in architecture_files:
+            full_path = self.root_path / file_path
+            if full_path.exists():
+                mtime = datetime.fromtimestamp(full_path.stat().st_mtime, tz=UTC)
+                age_days = (datetime.now(UTC) - mtime).days
+
+                if age_days > max_age_days:
+                    self.warnings.append({
+                        "type": "documentation_stale",
+                        "severity": "low",
+                        "message": f"Documentation file {file_path} is {age_days} days old (review recommended)",
+                        "file": file_path,
+                        "age_days": age_days,
+                    })
+
+    def _validate_technical_accuracy(self) -> None:
+        """Validate technical accuracy of documentation."""
+        # Check version consistency
+        files_to_check = [
+            "docs/architecture.md",
+            "docs/architecture/c4-model/context.md",
+            "README.md",
+        ]
+
+        versions: t.MutableStrMapping = {}
+        for file_path in files_to_check:
+            full_path = self.root_path / file_path
+            if full_path.exists():
+                content = full_path.read_text()
+                match = c.Grpc.VALIDATION_VERSION_RE.search(content)
+                if match:
+                    versions[file_path] = match.group(1)
+
+        # Check if versions are consistent
+        if len(set(versions.values())) > 1:
+            self.warnings.append({
+                "type": "version_inconsistency",
+                "severity": "medium",
+                "message": f"Version numbers inconsistent across files: {versions}",
+            })
+
+        # Check for known technical inaccuracies
+        architecture_md = self.root_path / "docs" / "architecture.md"
+        if architecture_md.exists():
+            content = architecture_md.read_text()
+
+            # Check if current technical details are accurate
+            if "Test Coverage: 35%" in content:
+                self.warnings.append({
+                    "type": "outdated_metrics",
+                    "severity": "medium",
+                    "message": "Architecture documentation contains outdated test coverage metrics",
+                })
+
+    def _generate_summary(self) -> ValidationSummary:
+        """Generate validation summary."""
+        total_issues = len(self.issues)
+        total_warnings = len(self.warnings)
+        total_recommendations = len(self.recommendations)
+
+        # Calculate quality score
+        base_score = 100
+        issue_penalty = total_issues * 15
+        warning_penalty = total_warnings * 5
+
+        quality_score = max(0, base_score - issue_penalty - warning_penalty)
+
+        # Determine overall status
+        if quality_score >= ArchitectureValidator.EXCELLENT_QUALITY_SCORE:
+            status = "excellent"
+        elif quality_score >= ArchitectureValidator.GOOD_QUALITY_SCORE:
+            status = "good"
+        elif quality_score >= ArchitectureValidator.ACCEPTABLE_QUALITY_SCORE:
+            status = "needs_work"
+        else:
+            status = "critical"
+
+        return ValidationSummary(
+            quality_score=quality_score,
+            status=status,
+            total_issues=total_issues,
+            total_warnings=total_warnings,
+            total_recommendations=total_recommendations,
+            timestamp=datetime.now(UTC).isoformat(),
+        )
+
+    def _print_results(self, summary: ValidationSummary) -> None:
+        """Print validation results."""
+        # Reserved for future summary display functionality
+        _ = summary  # Reserved for future use
+
+        if self.issues:
+            for _issue in self.issues[:3]:  # Show first 3
+                pass
+
+        if self.warnings:
+            for _warning in self.warnings[:3]:  # Show first 3
+                pass
+
+        if self.recommendations:
+            for _rec in self.recommendations[:3]:  # Show first 3
+                pass
+
+
+def save_report(
+    results: ValidationResults,
+    output_path: Path | None = None,
+) -> None:
+    """Save validation report to file."""
+    if output_path is None:
+        timestamp: str = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
+        reports_dir: Path = Path("docs/architecture/tools/reports")
+        reports_dir.mkdir(parents=True, exist_ok=True)
+        output_path = reports_dir / f"validation_{timestamp}.json"
+
+    with Path(output_path).open("w", encoding="utf-8") as f:
+        json.dump(results.model_dump(mode="json"), f, indent=2, default=str)
+
+
+def _run_validation(params: _ValidationParams) -> p.Result[bool]:
+    """Run the validation flow as a railway-style ``r[bool]`` result."""
+    validator = ArchitectureValidator(params.path)
+    results = validator.validate_all()
+    output_path = Path(params.output) if params.output else None
+    save_report(results, output_path)
+    summary = results.summary
+    is_critical = (
+        summary.status == "critical"
+        or summary.quality_score < ArchitectureValidator.CRITICAL_QUALITY_SCORE
+    )
+    if is_critical:
+        return r[bool].fail(
+            f"Architecture documentation validation FAILED — quality "
+            f"score {summary.quality_score} (status={summary.status})",
+        )
+    return r[bool].ok(value=True)
+
+
+def main() -> int:
+    """Validate architecture documentation from the command line."""
+    app = cli.create_app_with_common_params(
+        name="flext-grpc-validate-docs",
+        help_text="FLEXT-gRPC Architecture Documentation Validation",
+    )
+    cli.register_result_command(
+        app,
+        name="run",
+        help_text="Run architecture documentation validation",
+        model_cls=_ValidationParams,
+        handler=_run_validation,
+    )
+    result = cli.execute_app(app, prog_name="flext-grpc-validate-docs")
+    return 0 if result.success else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())
