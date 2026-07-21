@@ -10,9 +10,7 @@ from flext_grpc.protos import flext_pb2_grpc
 from flext_grpc.services import FlextGrpcConnectionPool, FlextGrpcMetrics
 
 if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
+    from collections.abc import MutableMapping
 
 
 class FlextGrpcClient(s):

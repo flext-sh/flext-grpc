@@ -14,13 +14,7 @@ from __future__ import annotations
 import time
 from typing import NoReturn
 
-from flext_grpc import (
-    FlextGrpcConstants,
-    p,
-    r,
-    t,
-    u,
-)
+from flext_grpc import FlextGrpcConstants, p, r, t, u
 from flext_grpc.errors import FlextGrpcErrors
 
 logger = u.fetch_logger(__name__)

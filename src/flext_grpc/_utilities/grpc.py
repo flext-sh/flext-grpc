@@ -13,9 +13,7 @@ from flext_grpc import FlextGrpcModels, c, m, p, r, t
 from flext_grpc.protos import flext_pb2
 
 if TYPE_CHECKING:
-    from collections.abc import (
-        Callable,
-    )
+    from collections.abc import Callable
     from concurrent.futures import Executor
     from types import ModuleType
 

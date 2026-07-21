@@ -12,12 +12,7 @@ from flext_cli import p
 
 if TYPE_CHECKING:
     import threading
-    from collections.abc import (
-        Callable,
-        Iterable,
-        Mapping,
-        Sequence,
-    )
+    from collections.abc import Callable, Iterable, Mapping, Sequence
     from concurrent.futures import Executor
 
     from flext_grpc import c, t

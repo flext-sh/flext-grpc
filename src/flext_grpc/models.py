@@ -14,7 +14,7 @@ from datetime import datetime
 from types import MappingProxyType
 from typing import Annotated, Self, override
 
-from flext_cli import m, p, u
+from flext_cli import m, u
 from flext_grpc import c, p, r, t
 
 
