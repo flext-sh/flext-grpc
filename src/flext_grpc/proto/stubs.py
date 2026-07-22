@@ -28,13 +28,19 @@ class FlextGrpcServiceStub:
         """Initialize stub with channel."""
         self.channel = channel
 
-    def Echo(self, request: FlextGrpcModels.Grpc.EchoRequest) -> FlextGrpcModels.Grpc.EchoResponse:
+    def Echo(
+        self, request: FlextGrpcModels.Grpc.EchoRequest
+    ) -> FlextGrpcModels.Grpc.EchoResponse:
         """Echo RPC method."""
         return FlextGrpcModels.Grpc.EchoResponse(message=request.message, server_id="")
 
-    def HealthCheck(self, request: FlextGrpcModels.Grpc.HealthRequest) -> FlextGrpcModels.Grpc.HealthResponse:
+    def HealthCheck(
+        self, request: FlextGrpcModels.Grpc.HealthRequest
+    ) -> FlextGrpcModels.Grpc.HealthResponse:
         """Health check RPC method."""
-        return FlextGrpcModels.Grpc.HealthResponse(status=c.HealthStatus.HEALTHY.value, message="")
+        return FlextGrpcModels.Grpc.HealthResponse(
+            status=c.HealthStatus.HEALTHY.value, message=""
+        )
 
 
 def add_FlextGrpcServiceServicer_to_server(

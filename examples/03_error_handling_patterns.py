@@ -14,13 +14,7 @@ from __future__ import annotations
 import time
 from typing import NoReturn
 
-from flext_grpc import (
-    FlextGrpcConstants,
-    p,
-    r,
-    t,
-    u,
-)
+from flext_grpc import FlextGrpcConstants, p, r, t, u
 from flext_grpc.errors import FlextGrpcErrors
 
 logger = u.fetch_logger(__name__)
@@ -129,8 +123,7 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
         return r[str].fail(f"Pipeline failed at validation: {validation_result.error}")
     logger.info("✅ User input validation passed")
     config_result = create_server_config(
-        FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
-        4,
+        FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT, 4
     )
     if config_result.failure:
         return r[str].fail(f"Pipeline failed at configuration: {config_result.error}")
@@ -144,7 +137,7 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
         result = scenario_func()
         if result.failure:
             logger.warning(
-                f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
+                f"⚠️ {scenario_name} scenario failed as expected: {result.error}"
             )
     return r[str].ok("Pipeline completed with graceful error handling")
 
@@ -166,8 +159,7 @@ def error_recovery_patterns() -> p.Result[str]:
     if primary_config_result.failure:
         logger.warning("Invalid primary settings rejected; trying corrected settings")
         corrected_config_result = create_server_config(
-            FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT,
-            2,
+            FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT, 2
         )
         if corrected_config_result.success:
             logger.info("✅ Corrected configuration successful")
@@ -179,8 +171,7 @@ def demonstrate_error_context() -> None:
     """Demonstrate how error context helps with debugging."""
     logger.info("Demonstrating error context for debugging")
     validation_error = FlextGrpcErrors.ValidationError(
-        "Email format is invalid - missing @ symbol",
-        field="user_email",
+        "Email format is invalid - missing @ symbol", field="user_email"
     )
     config_error = FlextGrpcErrors.ConfigurationError(
         "Invalid port configuration for production environment",

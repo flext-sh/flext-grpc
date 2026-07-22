@@ -359,9 +359,10 @@ from __future__ import annotations
 
 from flext_ldif import m
 
-settings = m.Ldif.ProcessConfig.model_validate(
-    {"source_server": "oid", "target_server": "oud"}
-)
+settings = m.Ldif.ProcessConfig.model_validate({
+    "source_server": "oid",
+    "target_server": "oud",
+})
 
 print(f"Config: {settings.model_dump()}")
 ```
@@ -373,9 +374,10 @@ from __future__ import annotations
 
 from flext_ldif import m
 
-settings = m.Ldif.ProcessConfig.model_validate(
-    {"source_server": "oid", "target_server": "oud"}
-)
+settings = m.Ldif.ProcessConfig.model_validate({
+    "source_server": "oid",
+    "target_server": "oud",
+})
 
 print(f"Servers: {settings.source_server} -> {settings.target_server}")
 ```

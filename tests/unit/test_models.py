@@ -12,8 +12,8 @@ from __future__ import annotations
 
 import pydantic
 import pytest
-from flext_tests import tm
 
+from flext_tests import tm
 from tests import m
 
 
@@ -69,11 +69,7 @@ class TestsFlextGrpcModelsUnit:
 
     def test_stream_info_defaults_counters_to_zero(self) -> None:
         """StreamInfo defaults its counters and latency to zero."""
-        info = m.Grpc.StreamInfo(
-            stream_id="s",
-            stream_type="unary",
-            target="t",
-        )
+        info = m.Grpc.StreamInfo(stream_id="s", stream_type="unary", target="t")
 
         tm.that(info.total_requests_sent, eq=0)
         tm.that(info.error_count, eq=0)
@@ -83,14 +79,12 @@ class TestsFlextGrpcModelsUnit:
     def test_stream_info_rejects_negative_counters(self, field: str) -> None:
         """Non-negative counter constraints reject negative values."""
         with pytest.raises(pydantic.ValidationError):
-            m.Grpc.StreamInfo.model_validate(
-                {
-                    "stream_id": "s",
-                    "stream_type": "unary",
-                    "target": "t",
-                    field: -1,
-                },
-            )
+            m.Grpc.StreamInfo.model_validate({
+                "stream_id": "s",
+                "stream_type": "unary",
+                "target": "t",
+                field: -1,
+            })
 
     # ------------------------------------------------------------------
     # Config models: default contract
@@ -128,7 +122,7 @@ class TestsFlextGrpcModelsUnit:
     def test_request_valid_true_for_named_operation(self) -> None:
         """Request.valid computed field is True when the operation is named."""
         request = m.Grpc.Request(
-            operation=m.Grpc.OperationSpec(name="op", entity_type="server"),
+            operation=m.Grpc.OperationSpec(name="op", entity_type="server")
         )
 
         tm.that(request.valid, eq=True)
@@ -143,11 +137,7 @@ class TestsFlextGrpcModelsUnit:
         ],
     )
     def test_response_has_error_reflects_success_and_error(
-        self,
-        *,
-        success: bool,
-        error: str | None,
-        expected: bool,
+        self, *, success: bool, error: str | None, expected: bool
     ) -> None:
         """Response.has_error is True on failure or whenever an error is set."""
         response = m.Grpc.Response(success=success, error=error)

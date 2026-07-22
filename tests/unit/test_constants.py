@@ -9,8 +9,8 @@ regex patterns' match behavior.
 from __future__ import annotations
 
 import pytest
-from flext_tests import tm
 
+from flext_tests import tm
 from tests import c
 
 Grpc = c.Grpc
@@ -78,16 +78,14 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.NETWORK_MAX_PORT, eq=Grpc.VALIDATION_MAX_PORT_NUMBER)
 
     @pytest.mark.parametrize(
-        "host",
-        ["127.0.0.1", "localhost", "grpc-server", "example.com"],
+        "host", ["127.0.0.1", "localhost", "grpc-server", "example.com"]
     )
     def test_host_pattern_accepts_valid_hosts(self, host: str) -> None:
         """The compiled host pattern matches syntactically valid hosts."""
         tm.that(Grpc.NETWORK_HOST_RE.match(host), none=False)
 
     @pytest.mark.parametrize(
-        "host",
-        ["bad host", "under_score!", "with/slash", "colon:port"],
+        "host", ["bad host", "under_score!", "with/slash", "colon:port"]
     )
     def test_host_pattern_rejects_invalid_hosts(self, host: str) -> None:
         """The compiled host pattern rejects hosts with illegal characters."""
@@ -95,10 +93,7 @@ class TestsFlextGrpcConstantsUnit:
 
     @pytest.mark.parametrize(
         ("text", "expected_group"),
-        [
-            ("Version 1.2.3", "1.2.3"),
-            ("version 4.5.6 build", "4.5.6"),
-        ],
+        [("Version 1.2.3", "1.2.3"), ("version 4.5.6 build", "4.5.6")],
     )
     def test_version_pattern_captures_semver(
         self, text: str, expected_group: str

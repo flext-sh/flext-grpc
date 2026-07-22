@@ -20,16 +20,14 @@ class _ValidationParams(m.Value):
     """CLI parameters for the architecture documentation validator."""
 
     path: Annotated[
-        str,
-        m.Field(description="Root path containing architecture documentation."),
+        str, m.Field(description="Root path containing architecture documentation.")
     ] = "."
     output: Annotated[
         str | None,
         m.Field(description="Optional path for the generated validation report."),
     ] = None
     quiet: Annotated[
-        bool,
-        m.Field(description="Whether to suppress nonessential console output."),
+        bool, m.Field(description="Whether to suppress nonessential console output.")
     ] = False
 
 
@@ -40,28 +38,22 @@ class ValidationSummary(m.Value):
     """Summary of validation results."""
 
     quality_score: Annotated[
-        int,
-        m.Field(description="Computed documentation quality score."),
+        int, m.Field(description="Computed documentation quality score.")
     ]
     status: Annotated[
-        str,
-        m.Field(description="Human-readable documentation quality status."),
+        str, m.Field(description="Human-readable documentation quality status.")
     ]
     total_issues: Annotated[
-        int,
-        m.Field(description="Total number of validation issues."),
+        int, m.Field(description="Total number of validation issues.")
     ]
     total_warnings: Annotated[
-        int,
-        m.Field(description="Total number of validation warnings."),
+        int, m.Field(description="Total number of validation warnings.")
     ]
     total_recommendations: Annotated[
-        int,
-        m.Field(description="Total number of validation recommendations."),
+        int, m.Field(description="Total number of validation recommendations.")
     ]
     timestamp: Annotated[
-        str,
-        m.Field(description="UTC timestamp when validation completed."),
+        str, m.Field(description="UTC timestamp when validation completed.")
     ]
 
 
@@ -397,10 +389,7 @@ class ArchitectureValidator:
                 pass
 
 
-def save_report(
-    results: ValidationResults,
-    output_path: Path | None = None,
-) -> None:
+def save_report(results: ValidationResults, output_path: Path | None = None) -> None:
     """Save validation report to file."""
     if output_path is None:
         timestamp: str = datetime.now(UTC).strftime("%Y%m%d_%H%M%S")
@@ -426,7 +415,7 @@ def _run_validation(params: _ValidationParams) -> p.Result[bool]:
     if is_critical:
         return r[bool].fail(
             f"Architecture documentation validation FAILED — quality "
-            f"score {summary.quality_score} (status={summary.status})",
+            f"score {summary.quality_score} (status={summary.status})"
         )
     return r[bool].ok(value=True)
 

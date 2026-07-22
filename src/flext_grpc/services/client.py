@@ -11,9 +11,7 @@ from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
 if TYPE_CHECKING:
-    from collections.abc import (
-        MutableMapping,
-    )
+    from collections.abc import MutableMapping
 
 
 class FlextGrpcClient(s):
@@ -27,7 +25,7 @@ class FlextGrpcClient(s):
             super().__init__()
             self._active_channels: MutableMapping[str, p.Grpc.GrpcChannel] = {}
             self._connection_pool = FlextGrpcConnectionPool.ConnectionPool(
-                max_size=c.Grpc.CONNECTION_DEFAULT_POOL_SIZE,
+                max_size=c.Grpc.CONNECTION_DEFAULT_POOL_SIZE
             )
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
@@ -48,9 +46,7 @@ class FlextGrpcClient(s):
             if client_result.failure:
                 _ = FlextGrpcUtilities.Grpc.run_runtime(grpc_channel.close)
                 del self._active_channels[target]
-                return r[m.Grpc.Client].fail(
-                    client_result.error or "Connection failed",
-                )
+                return r[m.Grpc.Client].fail(client_result.error or "Connection failed")
             return client_result
 
         def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
@@ -76,14 +72,11 @@ class FlextGrpcClient(s):
                 target = client.channel.target or ""
             is_connected = bool(target and target in self._active_channels)
             return r[m.Grpc.Payload].ok(
-                m.Grpc.Payload.from_values(connected=is_connected, target=target),
+                m.Grpc.Payload.from_values(connected=is_connected, target=target)
             )
 
         def make_call(
-            self,
-            client: m.Grpc.Client,
-            method: str,
-            request: t.JsonMapping | None,
+            self, client: m.Grpc.Client, method: str, request: t.JsonMapping | None
         ) -> p.Result[m.Grpc.Payload]:
             """Execute gRPC call through client.
 
@@ -106,7 +99,7 @@ class FlextGrpcClient(s):
             result: p.Result[m.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_result = FlextGrpcUtilities.Grpc.call_runtime(
-                    lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request))),
+                    lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request)))
                 )
                 if echo_result.failure:
                     result = r[m.Grpc.Payload].fail_op(
@@ -121,13 +114,13 @@ class FlextGrpcClient(s):
                             message=echo_response.message,
                             server_id=echo_response.server_id,
                             timestamp=echo_response.timestamp,
-                        ),
+                        )
                     )
             elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_result = FlextGrpcUtilities.Grpc.call_runtime(
                     lambda: stub.HealthCheck(
-                        m.Grpc.HealthRequest(service="FlextGrpcService"),
-                    ),
+                        m.Grpc.HealthRequest(service="FlextGrpcService")
+                    )
                 )
                 if health_result.failure:
                     result = r[m.Grpc.Payload].fail_op(
@@ -141,14 +134,14 @@ class FlextGrpcClient(s):
                             method="HealthCheck",
                             status=health_response.status,
                             message=health_response.message,
-                        ),
+                        )
                     )
             else:
                 result = r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
             return result
 
     _client_manager: FlextGrpcClient.GrpcClientManager = m.PrivateAttr(
-        default_factory=GrpcClientManager,
+        default_factory=GrpcClientManager
     )
 
     def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
@@ -164,10 +157,7 @@ class FlextGrpcClient(s):
         return self._client_manager.client_status(client)
 
     def make_call(
-        self,
-        client: m.Grpc.Client,
-        method: str,
-        request: t.JsonMapping | None,
+        self, client: m.Grpc.Client, method: str, request: t.JsonMapping | None
     ) -> p.Result[m.Grpc.Payload]:
         """Execute an RPC call through the dedicated client manager."""
         return self._client_manager.make_call(client, method, request)

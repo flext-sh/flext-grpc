@@ -74,57 +74,24 @@ if TYPE_CHECKING:
 
 
 _LAZY_MODULES: dict[str, tuple[str, ...]] = {
-    "._config": (
-        "FlextGrpcConfig",
-        "config",
-    ),
-    "._settings": (
-        "FlextGrpcSettings",
-        "settings",
-    ),
+    "._config": ("FlextGrpcConfig", "config"),
+    "._settings": ("FlextGrpcSettings", "settings"),
     "._utilities.grpc": ("FlextGrpcUtilitiesGrpc",),
-    ".api": (
-        "FlextGrpc",
-        "grpc",
-    ),
-    ".base": (
-        "FlextGrpcServiceBase",
-        "s",
-    ),
-    ".constants": (
-        "FlextGrpcConstants",
-        "c",
-    ),
+    ".api": ("FlextGrpc", "grpc"),
+    ".base": ("FlextGrpcServiceBase", "s"),
+    ".constants": ("FlextGrpcConstants", "c"),
     ".errors": ("FlextGrpcErrors",),
-    ".models": (
-        "FlextGrpcModels",
-        "m",
-    ),
-    ".protocols": (
-        "FlextGrpcProtocols",
-        "p",
-    ),
+    ".models": ("FlextGrpcModels", "m"),
+    ".protocols": ("FlextGrpcProtocols", "p"),
     ".services.api_runtime": ("FlextGrpcApiRuntime",),
     ".services.client": ("FlextGrpcClient",),
     ".services.connection_pool": ("FlextGrpcConnectionPool",),
     ".services.metrics": ("FlextGrpcMetrics",),
     ".services.server": ("FlextGrpcServer",),
     ".services.stream": ("FlextGrpcStream",),
-    ".typings": (
-        "FlextGrpcTypes",
-        "t",
-    ),
-    ".utilities": (
-        "FlextGrpcUtilities",
-        "u",
-    ),
-    "flext_core": (
-        "d",
-        "e",
-        "h",
-        "r",
-        "x",
-    ),
+    ".typings": ("FlextGrpcTypes", "t"),
+    ".utilities": ("FlextGrpcUtilities", "u"),
+    "flext_core": ("d", "e", "h", "r", "x"),
 }
 
 
@@ -132,9 +99,7 @@ _LAZY_ALIAS_GROUPS: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
 _LAZY_IMPORTS = build_lazy_import_map(
-    _LAZY_MODULES,
-    alias_groups=_LAZY_ALIAS_GROUPS,
-    sort_keys=False,
+    _LAZY_MODULES, alias_groups=_LAZY_ALIAS_GROUPS, sort_keys=False
 )
 
 _DIRECT_IMPORTS: tuple[str, ...] = (
@@ -220,9 +185,4 @@ __all__: tuple[str, ...] = (
 )
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    public_exports=__all__,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

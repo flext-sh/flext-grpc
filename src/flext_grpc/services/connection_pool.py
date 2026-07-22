@@ -12,7 +12,7 @@ class FlextGrpcConnectionPool(s):
     """Mixin providing connection pooling for FlextGrpc facade."""
 
     _resource_manager: FlextGrpcConnectionPool.ConnectionPool = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcConnectionPool.ConnectionPool(max_size=20),
+        default_factory=lambda: FlextGrpcConnectionPool.ConnectionPool(max_size=20)
     )
 
     class ConnectionPool:
