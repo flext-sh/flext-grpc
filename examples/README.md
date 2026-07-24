@@ -179,7 +179,8 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Example Usage**:
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
 from datetime import datetime, timezone
@@ -213,7 +214,8 @@ service_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
 # Production configuration
@@ -298,7 +300,8 @@ poetry run python examples/advanced_usage.py
 
 ### Entity Creation Pattern
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
 
@@ -314,15 +317,17 @@ server = FlextGrpcServer(
 # Always validate before use
 validation = server.validate_business_rules()
 if validation.is_failure:
-    u.Cli.print(f"Validation failed: {validation.error}")
+    print(f"Validation failed: {validation.error}")
     exit(1)
 
-u.Cli.print(f"Server created: {server.id}")
+print(f"Server created: {server.id}")
 ```
 
 ### Service Operation Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import FlextGrpcServerService
 
 # Service operations with r handling
@@ -331,14 +336,16 @@ result = service.execute("start", server)
 
 if result.success:
     started_server = result.data
-    u.Cli.print(f"Server started: {started_server.state}")
+    print(f"Server started: {started_server.state}")
 else:
-    u.Cli.print(f"Start failed: {result.error}")
+    print(f"Start failed: {result.error}")
 ```
 
 ### Platform Usage Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import FlextGrpcPlatform
 
 # Platform operations for unified management
@@ -347,7 +354,7 @@ platform = FlextGrpcPlatform()
 # High-level operations through platform
 server_result = platform.service.execute("create_server", server)
 if server_result.success:
-    u.Cli.print(f"Platform operation successful")
+    print(f"Platform operation successful")
 ```
 
 ## Current Status and Limitations
@@ -431,7 +438,9 @@ For current development gaps and realistic timelines, see [../docs/TODO.md](../d
 
 ### Example Template
 
-```python notest
+```python
+from __future__ import annotations
+
 """
 Example: [Brief Description]
 
@@ -450,18 +459,17 @@ Version: 0.12.0-dev
 """
 
 from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
-from flext_cli import u
 from flext_core import FlextSettings
 from datetime import datetime, timezone
 
 
 def main() -> None:
     """Main example execution function."""
-    u.Cli.print("Starting FLEXT gRPC example...")
+    print("Starting FLEXT gRPC example...")
 
     # Example implementation here
 
-    u.Cli.print("Example completed successfully")
+    print("Example completed successfully")
 
 
 if __name__ == "__main__":

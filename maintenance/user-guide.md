@@ -167,7 +167,7 @@ pip install requests beautifulsoup4 markdown python-frontmatter
 
 # Verify installation
 python -c "from docs import  audit, validation, optimization, sync,
-     reporting; u.Cli.print('✅ Framework ready')"
+     reporting; print('✅ Framework ready')"
 ```
 
 ### Basic Usage
@@ -453,6 +453,8 @@ make docs
 ### Custom Rules
 
 ```python
+from __future__ import annotations
+
 # docs/maintenance/custom_rules.py
 CUSTOM_AUDIT_RULES = {
     "required_frontmatter": ["title", "last_updated"],
@@ -544,7 +546,9 @@ repos:
 
 ### Custom Audit Rules
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from docs import DocumentationAuditor
 
 
@@ -565,7 +569,9 @@ class CustomAuditor(DocumentationAuditor):
 
 ### Automated Fixes
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from docs import DocumentationOptimizer
 
 
@@ -581,7 +587,9 @@ class CustomOptimizer(DocumentationOptimizer):
 
 ### Integration APIs
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from docs import audit, validation, optimization, reporting
 
 # Programmatic usage

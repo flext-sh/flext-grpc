@@ -91,13 +91,13 @@ poetry install
 
 ```bash
 # Test core imports
-poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; u.Cli.print('Import successful')"
+poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; print('Import successful')"
 
 # Test functionality
 poetry run python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
-u.Cli.print(f'Server: {server.address}, state: {server.state}')
+print(f'Server: {server.address}, state: {server.state}')
 "
 ```
 
@@ -105,45 +105,49 @@ u.Cli.print(f'Server: {server.address}, state: {server.state}')
 
 ### Server Creation
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import create_server
 
 # Create gRPC server
 server = create_server("localhost", 50051, 10)
-u.Cli.print(f"Server address: {server.address}")
-u.Cli.print(f"Server state: {server.state}")
+print(f"Server address: {server.address}")
+print(f"Server state: {server.state}")
 ```
 
 ### Client Creation
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import create_client
 
 # Create gRPC client
 client = create_client("localhost:50051")
-u.Cli.print(f"Client created: {type(client).__name__}")
+print(f"Client created: {type(client).__name__}")
 ```
 
 ### Platform Management
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations
 platform = FlextGrpcPlatform()
-u.Cli.print(f"Platform ready: {type(platform).__name__}")
+print(f"Platform ready: {type(platform).__name__}")
 ```
 
 ### Configuration
 
 ```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
 settings = FlextGrpcSettings.model_validate({
     "Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}
 })
-u.Cli.print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
+print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
 
 ## Development Setup
@@ -174,14 +178,14 @@ poetry run python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
 from flext_grpc import FlextGrpcSettings
-u.Cli.print('✅ All imports successful')
+print('✅ All imports successful')
 "
 
 # Test basic functionality
 poetry run python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
-u.Cli.print(f'✅ Server creation: {server.address}')
+print(f'✅ Server creation: {server.address}')
 "
 ```
 

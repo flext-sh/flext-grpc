@@ -149,7 +149,12 @@ git push origin feature/amazing-feature
 
 ### Type Safety (ZERO TOLERANCE)
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import t
+
+
 # ✅ CORRECT - Complete type annotations
 def process_data(data: t.JsonMapping) -> p.Result[ProcessedData]:
     """Process data with type safety."""
@@ -166,7 +171,11 @@ def process_data(data):
 
 ### Railway-Oriented Programming
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+
+
 # ✅ CORRECT - Use r for all operations
 def validate_and_process(data: dict) -> p.Result[ProcessedData]:
     return (
@@ -186,7 +195,12 @@ def validate_and_process(data: dict) -> ProcessedData:
 
 ### Unified Models Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import t
+
+
 # ✅ CORRECT - Use [Project]Models pattern
 class FlextApiModels:
     class Request(m.BaseModel):
@@ -225,9 +239,10 @@ pytest --cov=src --cov-report=html
 
 ### Writing Tests
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 import pytest
-from flext_cli import u
 from flext_core import FlextSettings
 
 
@@ -293,9 +308,12 @@ cd flext-newlib
 
 ### 2. Implement Core Patterns
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import t
+
 # src/flext_newlib/__init__.py
-from flext_cli import u
 from flext_core import FlextSettings
 
 
@@ -357,7 +375,7 @@ pytest tests/unit/test_module.py --pdb
 ```bash
 # Verify PYTHONPATH
 export PYTHONPATH=src
-python -c "import flext_core; u.Cli.print(flext_core.__file__)"
+python -c "import flext_core; print(flext_core.__file__)"
 
 # Check poetry environment
 poetry env info
@@ -367,7 +385,12 @@ poetry env info
 
 ### Code Documentation
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import t
+
+
 def process_data(data: t.JsonMapping) -> p.Result[ProcessedData]:
     """
     Process data using the FLEXT pipeline.
@@ -395,7 +418,8 @@ Update project README.md files when adding new features:
 
 - Add a "New Feature" section with usage and configuration examples.
 
-```python notest
+```python
+from __future__ import annotations
 from flext_newlib import FlextNewlib
 from flext_newlib import FlextNewlibSettings
 

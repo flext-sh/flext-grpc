@@ -196,9 +196,11 @@ make test                  # All tests pass (currently 28 failing, needs bug fix
 
 All code must follow flext-core architectural patterns:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+
 # ✅ CORRECT - Railway-oriented programming
-from flext_cli import u
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcSettings
 
@@ -227,9 +229,12 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
 
 Complete type annotations are mandatory:
 
-```python notest
-from typing import Protocol, TypeVar, Generic
-from flext_cli import u
+```python
+from __future__ import annotations
+from flext_core import t
+from flext_core import p
+from flext_core import r
+
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcServer
 
@@ -247,7 +252,7 @@ class GrpcService(Generic[T]):
     def __init__(self, settings: T) -> None:
         self.config = settings
 
-    def process(self, data: dict) -> p.Result[m.Dict]:
+    def process(self, data: dict) -> p.Result[m.t.Dict]:
         # Implementation with proper typing
         return r.ok({"processed": data})
 ```
@@ -256,10 +261,13 @@ class GrpcService(Generic[T]):
 
 Follow Domain-Driven Design patterns:
 
-```python notest
-from flext_cli import u
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import r
 from flext_core import FlextSettings
 from flext_grpc import TGrpcServerState
+
 
 class FlextGrpcServer(FlextModels.Entity):
     """Domain entity with business logic."""
@@ -286,7 +294,7 @@ class FlextGrpcServer(FlextModels.Entity):
         if self.port < 1024 or self.port > 65535:
             return r.fail(f"Invalid port: {self.port}")
 
-        return r.| ok(value=True)
+        return r.ok(value=True)
 ```
 
 ## Testing Standards
@@ -311,9 +319,10 @@ tests/
 
 ### Test Writing Guidelines
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 import pytest
-from flext_cli import u
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcSettings, create_server
 
@@ -371,7 +380,9 @@ class TestGrpcServer:
 
 Use pytest markers for test categorization:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 import pytest
 
 
@@ -411,7 +422,11 @@ def test_performance_benchmark():
 
 Maintain strict layer boundaries:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+
+
 # Domain Layer - No dependencies on other layers
 class FlextGrpcServer(FlextModels.Entity):
     # Pure business logic, no infrastructure concerns
@@ -438,10 +453,15 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use FlextContainer for all dependencies:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import r
+from flext_core import t
 from flext_cli import u
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcPlatform
+
 
 class GrpcServiceManager:
     """Service manager using dependency injection."""
@@ -457,7 +477,7 @@ class GrpcServiceManager:
         platform = FlextGrpcPlatform()
         self._container.bind("grpc_platform", platform)
 
-        return r.| ok(value=True)
+        return r.ok(value=True)
 
     def get_platform(self) -> p.Result[FlextGrpcPlatform]:
         """Retrieve platform from container."""
@@ -475,8 +495,10 @@ class GrpcServiceManager:
 
 All public APIs require comprehensive docstrings:
 
-```python notest
-from flext_cli import u
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import t
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcSettings, FlextGrpcServer
 
@@ -499,7 +521,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
         >>> result = create_server(settings)
         >>> if result.success:
         ...     server = result.unwrap()
-        ...     u.Cli.print(f"Server: {server.host}:{server.port}")
+        ...     print(f"Server: {server.host}:{server.port}")
 
     Integration:
         Integrates with FlextContainer for dependency injection and
@@ -516,7 +538,12 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use comments sparingly for complex business logic:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import r
+
+
 def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
     """Validate server state transition."""
 
@@ -525,15 +552,13 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
         "stopped": ["starting"],
         "starting": ["running", "stopped"],  # Can fail to start
         "running": ["stopping"],
-        "stopping": ["stopped"]
+        "stopping": ["stopped"],
     }
 
     if new_state not in valid_transitions.get(self.state, []):
-        return r.fail(
-            f"Invalid state transition: {self.state} → {new_state}"
-        )
+        return r.fail(f"Invalid state transition: {self.state} → {new_state}")
 
-    return r.| ok(value=True)
+    return r.ok(value=True)
 ```
 
 ## Contributing Process

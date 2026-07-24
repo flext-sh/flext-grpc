@@ -199,7 +199,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 - **Solution**:
 
-  ```python notest
+  ```python
   # Current (broken)
   self.logger = u.fetch_logger(__name__)  # AttributeError: property has no setter
 
@@ -219,7 +219,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 - **Solution**:
 
-  ```python notest
+  ```python
   # Current (broken)
   def __init__(self, message: str, config_key: str = None, config_value = None):
 
@@ -239,7 +239,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 - **Solution**:
 
-  ```python notest
+  ```python
   from typing import runtime_checkable
 
   @runtime_checkable
@@ -553,13 +553,13 @@ import asyncio
 async def test_integration():
     # Test real server creation
     server = create_server('localhost', 50051, 10)
-    u.Cli.print(f'Server created: {server}')
+    print(f'Server created: {server}')
 
     # Test real client creation
     client = create_client('localhost:50051')
-    u.Cli.print(f'Client created: {client}')
+    print(f'Client created: {client}')
 
-u.Cli.print('✅ Integration test completed')
+print('✅ Integration test completed')
 "
 ```
 

@@ -70,18 +70,20 @@ Intended API reference for **flext-grpc** - gRPC communication library for the F
 
 Creates a gRPC server with the specified parameters.
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import create_server
 
 server = create_server("localhost", 50051, 10)
-u.Cli.print(f"Server created: {server.host}:{server.port}")
+print(f"Server created: {server.host}:{server.port}")
 ```
 
 #### `create_client(host: str, port: int) -> FlextGrpcClient`
 
 Creates a gRPC client with the specified parameters.
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import create_client
 
 client = create_client("localhost", 50051)
@@ -91,7 +93,8 @@ client = create_client("localhost", 50051)
 
 Creates and validates a gRPC configuration.
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import create_config
 
 config_result = create_config(host="localhost", port=50051, max_workers=10)
@@ -116,7 +119,10 @@ Server entity with lifecycle management and state transitions.
 
 Starts the server (state transition: stopped → starting).
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 server = FlextGrpcServer(host="localhost", port=50051)
 start_result = server.start()
 
@@ -133,12 +139,14 @@ Stops the server (state transition: running → stopping).
 
 Validates server configuration and business rules.
 
-```python notest
+```python
+from __future__ import annotations
+
 server = FlextGrpcServer(host="", port=80)  # Invalid
 validation = server.validate_business_rules()
 
 if validation.failure:
-    u.Cli.print(f"Validation failed: {validation.error}")
+    print(f"Validation failed: {validation.error}")
 ```
 
 #### FlextGrpcClient
@@ -178,12 +186,14 @@ Configuration value object with validation.
 
 Validates configuration parameters.
 
-```python notest
+```python
+from __future__ import annotations
+
 settings = FlextGrpcSettings(host="localhost", port=99999)
 validation = settings.validate()
 
 if validation.failure:
-    u.Cli.print(f"Invalid settings: {validation.error}")
+    print(f"Invalid settings: {validation.error}")
 ```
 
 ### Service Classes
@@ -198,7 +208,9 @@ Unified facade for all gRPC operations.
 
 Starts a gRPC server with complete lifecycle management.
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import FlextGrpcPlatform, FlextGrpcServer
 
 platform = FlextGrpcPlatform()
@@ -227,7 +239,9 @@ Domain service for server operations.
 
 Executes server operations using Command pattern.
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import FlextGrpcServerService
 
 service = FlextGrpcServerService()
@@ -245,7 +259,9 @@ if result.success:
 
 Server state type definition.
 
-```python notest
+```python
+from __future__ import annotations
+
 TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
 ```
 
@@ -253,7 +269,9 @@ TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
 
 Client state type definition.
 
-```python notest
+```python
+from __future__ import annotations
+
 TGrpcClientState = Literal["disconnected", "connecting", "connected", "disconnecting"]
 ```
 
@@ -261,7 +279,9 @@ TGrpcClientState = Literal["disconnected", "connecting", "connected", "disconnec
 
 Streaming pattern types.
 
-```python notest
+```python
+from __future__ import annotations
+
 TGrpcStreamType = Literal[
     "unary", "server_streaming", "client_streaming", "bidirectional"
 ]
@@ -273,7 +293,10 @@ TGrpcStreamType = Literal[
 
 Base exception for all gRPC-related errors.
 
-```python notest
+```python
+from __future__ import annotations
+
+
 class FlextGrpcError(Exception):
     """Base gRPC error."""
 
@@ -286,12 +309,14 @@ class FlextGrpcError(Exception):
 
 Configuration-related errors.
 
-```python notest
+```python
+from __future__ import annotations
+
 try:
     settings = FlextGrpcSettings(port=-1)  # Invalid port
     settings.validate().unwrap()
 except FlextGrpcConfigurationError as e:
-    u.Cli.print(f"Configuration error: {e}")
+    print(f"Configuration error: {e}")
 ```
 
 #### FlextGrpcConnectionError
@@ -358,25 +383,28 @@ Creates a bidirectional streaming operation.
 
 Parses a gRPC address string into host and port components.
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import parse_address
 
 result = parse_address("localhost:50051")
 if result.success:
     host, port = result.unwrap()
-    u.Cli.print(f"Host: {host}, Port: {port}")
+    print(f"Host: {host}, Port: {port}")
 ```
 
 #### `validate_address(address: str) -> p.Result[bool]`
 
 Validates a gRPC address string.
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import validate_address
 
 validation = validate_address("invalid:port")
 if validation.failure:
-    u.Cli.print(f"Invalid address: {validation.error}")
+    print(f"Invalid address: {validation.error}")
 ```
 
 ## Integration with FLEXT Patterns
@@ -385,9 +413,11 @@ if validation.failure:
 
 All fallible operations return `r[T]` for composable error handling:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import t
 from flext_grpc import create_config, create_server
-from flext_cli import u
 from flext_core import FlextSettings
 
 
@@ -401,15 +431,15 @@ def setup_grpc_server(host: str, port: int) -> p.Result[str]:
 
 result = setup_grpc_server("localhost", 50051)
 if result.success:
-    u.Cli.print(result.unwrap())
+    print(result.unwrap())
 ```
 
 ### Dependency Injection
 
 Integration with FlextContainer:
 
-```python notest
-from flext_cli import u
+```python
+from __future__ import annotations
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcPlatform
 

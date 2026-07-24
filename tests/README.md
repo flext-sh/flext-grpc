@@ -36,7 +36,7 @@ Testing suite for the FLEXT gRPC communication platform with quality standards.
 
 ### Test Organization
 
-```
+```text
 tests/
 ├── unit/                    # Unit tests (isolated component testing)
 │   ├── test_entities.py     # Domain entity testing
@@ -158,7 +158,9 @@ pytest tests/e2e/ --benchmark-only
 
 **Available Markers**:
 
-```text
+```python
+from __future__ import annotations
+from flext_core import t
 @pytest.mark.unit          # Unit tests (fast, isolated)
 @pytest.mark.integration   # Integration tests (component interaction)
 @pytest.mark.e2e           # End-to-end tests (complete workflows)
@@ -231,7 +233,11 @@ pytest --cov=src --cov-report=term-missing
 
 ### Entity Testing Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_entity_creation_and_validation():
     """Test entity creation with domain validation."""
     # Arrange
@@ -248,7 +254,11 @@ def test_entity_creation_and_validation():
 
 ### Service Testing Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_service_operation_success():
     """Test service operation with successful execution."""
     # Arrange
@@ -265,7 +275,11 @@ def test_service_operation_success():
 
 ### Error Testing Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_operation_failure_handling():
     """Test proper error handling for invalid operations."""
     # Arrange

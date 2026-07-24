@@ -262,7 +262,7 @@ TOTAL                                          1798    956    380     14    39%
 
 #### 1. Fix FlextGrpcServices Logger Property
 
-```python
+```text
 # Issue: Property setter missing
 # Location: src/flext_grpc/services.py:77
 # Current: self.logger = u.fetch_logger(__name__)  # Fails
@@ -271,7 +271,7 @@ TOTAL                                          1798    956    380     14    39%
 
 #### 2. Correct Exception Constructors
 
-```python
+```text
 # Issue: Wrong parameter signatures
 # Location: src/flext_grpc/exceptions.py
 # Current: def __init__(self, message: str, ...):  # Wrong signature
@@ -280,7 +280,7 @@ TOTAL                                          1798    956    380     14    39%
 
 #### 3. Add Protocol Decorators
 
-```python
+```text
 # Issue: @runtime_checkable missing
 # Location: src/flext_grpc/protocols.py
 # Fix: @runtime_checkable
@@ -289,7 +289,7 @@ TOTAL                                          1798    956    380     14    39%
 
 #### 4. Update Configuration Tests
 
-```python
+```text
 # Issue: Default host changed
 # Location: tests/unit/test_config.py
 # Fix: assert settings.host == "localhost"  # Update expectation
@@ -311,7 +311,11 @@ TOTAL                                          1798    956    380     14    39%
 
 **Test Structure**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_service_initialization():
     """Test FlextGrpcServices proper initialization."""
     service = FlextGrpcServices()
@@ -343,7 +347,11 @@ def test_service_lifecycle():
 
 **Test Structure**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_create_server_valid_config():
     """Test server creation with valid configuration."""
     server = create_server("localhost", 50051, 10)
@@ -371,7 +379,11 @@ def test_create_client_target_validation():
 
 **Test Structure**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_server_entity_lifecycle():
     """Test server entity state management."""
     server = FlextGrpcEntities.Server(
@@ -410,7 +422,9 @@ def test_server_entity_lifecycle():
 
 #### Real gRPC Server Testing
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 import pytest
 import grpc
 from flext_grpc import create_server
@@ -432,7 +446,11 @@ async def test_real_grpc_server_operations(grpc_server):
 
 #### Streaming Operations Testing
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @pytest.mark.asyncio
 async def test_server_streaming():
     """Test server streaming operations."""
@@ -516,7 +534,11 @@ PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
 
 #### gRPC Test Server
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 # conftest.py
 @pytest.fixture
 async def grpc_server():
@@ -537,7 +559,11 @@ async def grpc_server():
 
 #### Test Client Setup
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @pytest.fixture
 async def grpc_client(grpc_server):
     """gRPC client connected to test server."""
@@ -579,7 +605,8 @@ tests/
 
 ### Test Naming Conventions
 
-```python notest
+```python
+from __future__ import annotations
 def test_{module}_{operation}_{condition}():
     """Test {module} {operation} under {condition}."""
 
@@ -592,7 +619,11 @@ def test_{operation}_with_{configuration}():
 
 ### Test Categories and Markers
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @pytest.mark.unit
 def test_unit_functionality():
     """Fast unit tests."""
@@ -659,7 +690,10 @@ def test_known_issue():
 
 ### Performance Testing
 
-```python notest
+```python
+from __future__ import annotations
+
+
 def test_grpc_performance_under_load():
     """Test gRPC operations under high load."""
     # Concurrent client connections
@@ -670,7 +704,10 @@ def test_grpc_performance_under_load():
 
 ### Load Testing
 
-```python notest
+```python
+from __future__ import annotations
+
+
 def test_grpc_scalability_limits():
     """Test gRPC system scalability limits."""
     # Maximum concurrent connections
@@ -681,7 +718,10 @@ def test_grpc_scalability_limits():
 
 ### Chaos Testing
 
-```python notest
+```python
+from __future__ import annotations
+
+
 def test_grpc_fault_tolerance():
     """Test gRPC system fault tolerance."""
     # Network interruptions

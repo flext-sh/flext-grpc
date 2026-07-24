@@ -85,7 +85,7 @@ git status
 
 #### Problem: ModuleNotFoundError
 
-```python notest
+```text
 # Error
 ModuleNotFoundError: No module named 'flext_core'
 ```
@@ -96,7 +96,7 @@ ModuleNotFoundError: No module named 'flext_core'
 
 ```bash
 export PYTHONPATH=src
-python -c "import flext_core; u.Cli.print(flext_core.__file__)"
+python -c "import flext_core; print(flext_core.__file__)"
 ```
 
 **Reinstall dependencies:**
@@ -116,27 +116,29 @@ poetry install
 ### r
 
 ```python
+from __future__ import annotations
+
 # Debug import issues
 import sys
 
-u.Cli.print("Python path:")
+print("Python path:")
 for path in sys.path:
-    u.Cli.print(f"  {path}")
+    print(f"  {path}")
 
-u.Cli.print("\nTrying to import flext_core...")
+print("\nTrying to import flext_core...")
 try:
     import flext_core
 
-    u.Cli.print(f"Success: {flext_core.__file__}")
+    print(f"Success: {flext_core.__file__}")
 except ImportError as e:
-    u.Cli.print(f"Failed: {e}")
+    print(f"Failed: {e}")
 ```
 
 ### 2. Type Checking Errors
 
 #### Problem: MyPy errors
 
-```python notest
+```text
 # Error
 error: Argument 1 to "process" has incompatible type "str"; expected "t.JsonMapping"
 ```
@@ -145,7 +147,13 @@ error: Argument 1 to "process" has incompatible type "str"; expected "t.JsonMapp
 
 **Fix type annotations:**
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import r
+from flext_core import t
+
+
 # ❌ WRONG
 def process(data):
     return data
@@ -172,7 +180,7 @@ mypy src/ --show-error-codes | grep "error-code"
 
 #### Problem: Tests failing
 
-```python notest
+```text
 # Error
 AssertionError: Expected success but got failure
 ```
@@ -193,13 +201,17 @@ pytest tests/unit/test_module.py::TestClass::test_method -v --pdb
 
 **Check test data:**
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def test_with_debug():
     result = my_function()
-    u.Cli.print(f"Result: {result}")
-    u.Cli.print(f"Success: {result.success}")
+    print(f"Result: {result}")
+    print(f"Success: {result.success}")
     if result.failure:
-        u.Cli.print(f"Error: {result.failure()}")
+        print(f"Error: {result.failure()}")
     assert result.success
 ```
 
@@ -207,7 +219,7 @@ def test_with_debug():
 
 #### Problem: Configuration not loading
 
-```python notest
+```text
 # Error
 GrpcValidationError: field required
 ```
@@ -222,39 +234,39 @@ env | grep FLEXT_
 
 **Validate configuration:**
 
-```python notest
-from flext_cli import u
+```python
+from __future__ import annotations
 from flext_core import FlextSettings
 
 try:
     settings = FlextSettings()
-    u.Cli.print("Configuration valid")
+    print("Configuration valid")
 except c.GrpcValidationError as e:
-    u.Cli.print(f"Configuration error: {e}")
+    print(f"Configuration error: {e}")
 ```
 
 **Debug configuration loading:**
 
-```python notest
+```python
+from __future__ import annotations
 import os
-from flext_cli import u
 from flext_core import FlextSettings
 
 # Print all FLEXT environment variables
 for key, value in os.environ.items():
     if key.startswith("FLEXT_"):
-        u.Cli.print(f"{key}={value}")
+        print(f"{key}={value}")
 
 # Load and print configuration
 settings = FlextSettings()
-u.Cli.print(f"Config: {settings.dict()}")
+print(f"Config: {settings.dict()}")
 ```
 
 ### 5. LDIF Processing Issues
 
 #### Problem: LDIF parsing fails
 
-```python notest
+```text
 # Error
 LdifParsingException: Invalid LDIF format
 ```
@@ -263,7 +275,9 @@ LdifParsingException: Invalid LDIF format
 
 **Check LDIF content:**
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_ldif import ldif
 
 content = """dn: cn=test,dc=example,dc=com
@@ -272,13 +286,14 @@ objectClass: inetOrgPerson"""
 
 result = ldif.parse(content)
 if result.failure:
-    u.Cli.print(f"Parse error: {result.failure()}")
-    u.Cli.print(f"Content: {repr(content)}")
+    print(f"Parse error: {result.failure()}")
+    print(f"Content: {repr(content)}")
 ```
 
 **Enable debug logging:**
 
 ```python
+from __future__ import annotations
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -288,7 +303,11 @@ logging.basicConfig(level=logging.DEBUG)
 
 **Validate LDIF format:**
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 # Check for common LDIF issues
 def validate_ldif_content(content: str) -> t.StringList:
     issues = []
@@ -311,7 +330,7 @@ def validate_ldif_content(content: str) -> t.StringList:
 
 #### Problem: Migration fails
 
-```python notest
+```text
 # Error
 LdifMigrationException: Server compatibility error
 ```
@@ -330,7 +349,7 @@ settings = m.Ldif.ProcessConfig.model_validate({
     "target_server": "oud",
 })
 
-u.Cli.print(f"Config: {settings.model_dump()}")
+print(f"Config: {settings.model_dump()}")
 ```
 
 **Enable server servers:**
@@ -345,12 +364,15 @@ settings = m.Ldif.ProcessConfig.model_validate({
     "target_server": "oud",
 })
 
-u.Cli.print(f"Servers: {settings.source_server} -> {settings.target_server}")
+print(f"Servers: {settings.source_server} -> {settings.target_server}")
 ```
 
 **Test with sample data:**
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 # Test migration with small sample
 sample_ldif = """dn: cn=test,dc=example,dc=com
 cn: test
@@ -358,16 +380,16 @@ objectClass: inetOrgPerson"""
 
 result = ldif.parse(sample_ldif)
 if result.success:
-    u.Cli.print("Sample parsing successful")
+    print("Sample parsing successful")
 else:
-    u.Cli.print(f"Sample parsing failed: {result.failure()}")
+    print(f"Sample parsing failed: {result.failure()}")
 ```
 
 ### 7. Performance Issues
 
 #### Problem: Slow processing
 
-```python
+```text
 # Symptoms
 # - High memory usage
 # - Slow response times
@@ -378,7 +400,8 @@ else:
 
 **Profile memory usage:**
 
-```python notest
+```python
+from __future__ import annotations
 import psutil
 import os
 
@@ -392,7 +415,7 @@ def profile_memory():
     final_memory = process.memory_info().rss
     memory_used = final_memory - initial_memory
 
-    u.Cli.print(f"Memory used: {memory_used / 1024 / 1024:.2f} MB")
+    print(f"Memory used: {memory_used / 1024 / 1024:.2f} MB")
 
 
 profile_memory()
@@ -401,6 +424,7 @@ profile_memory()
 **Optimize batch size:**
 
 ```python
+from __future__ import annotations
 from flext_ldif import FlextLdifSettings
 
 # Reduce batch size for memory-constrained environments
@@ -412,7 +436,9 @@ settings = FlextLdifSettings(
 
 **Enable parallel processing:**
 
-```python notest
+```python
+from __future__ import annotations
+
 settings = FlextLdifSettings(
     parallel_processing=True,
     max_workers=4,  # Adjust based on CPU cores
@@ -423,9 +449,9 @@ settings = FlextLdifSettings(
 
 ### 1. Logging Configuration
 
-```python notest
+```python
+from __future__ import annotations
 import logging
-from flext_cli import u
 from flext_core import FlextSettings
 
 # Configure logging
@@ -443,8 +469,10 @@ logger.error("Error message")
 
 ### 2. Exception Handling
 
-```python notest
-from flext_cli import u
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import r
 from flext_core import FlextSettings
 
 
@@ -463,38 +491,42 @@ def safe_operation(data: dict) -> p.Result[dict]:
 
 ### 3. Debug Mode
 
-```python notest
-from flext_cli import u
+```python
+from __future__ import annotations
 from flext_core import FlextSettings
 
 # Enable debug mode
 settings = FlextSettings(debug=True)
 
 # Debug information will be printed
-u.Cli.print(f"Debug mode: {settings.debug}")
-u.Cli.print(f"Log level: {settings.log_level}")
+print(f"Debug mode: {settings.debug}")
+print(f"Log level: {settings.log_level}")
 ```
 
 ### 4. Step-by-Step Debugging
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 def debug_ldif_processing(content: str):
     """Debug LDIF processing step by step."""
-    u.Cli.print(f"Input content length: {len(content)}")
-    u.Cli.print(f"First 100 chars: {repr(content[:100])}")
+    print(f"Input content length: {len(content)}")
+    print(f"First 100 chars: {repr(content[:100])}")
 
     # Step 1: Basic validation
     if not content.strip():
-        u.Cli.print("ERROR: Empty content")
+        print("ERROR: Empty content")
         return
 
     # Step 2: Check DN format
     lines = content.split("\n")
     dn_line = lines[0] if lines else ""
-    u.Cli.print(f"DN line: {repr(dn_line)}")
+    print(f"DN line: {repr(dn_line)}")
 
     if not dn_line.startswith("dn:"):
-        u.Cli.print("ERROR: Missing or invalid DN line")
+        print("ERROR: Missing or invalid DN line")
         return
 
     # Step 3: Try parsing
@@ -503,9 +535,9 @@ def debug_ldif_processing(content: str):
     result = ldif.parse(content)
     if result.success:
         entries = result.unwrap()
-        u.Cli.print(f"SUCCESS: Parsed {len(entries)} entries")
+        print(f"SUCCESS: Parsed {len(entries)} entries")
     else:
-        u.Cli.print(f"ERROR: Parse failed: {result.failure()}")
+        print(f"ERROR: Parse failed: {result.failure()}")
 ```
 
 ## Error Codes Reference
@@ -538,7 +570,9 @@ def debug_ldif_processing(content: str):
 
 ### Memory Issues
 
-```python notest
+```python
+from __future__ import annotations
+
 # Monitor memory usage
 import psutil
 import os
@@ -548,12 +582,12 @@ def monitor_memory():
     process = psutil.Process(os.getpid())
     memory_info = process.memory_info()
 
-    u.Cli.print(f"RSS: {memory_info.rss / 1024 / 1024:.2f} MB")
-    u.Cli.print(f"VMS: {memory_info.vms / 1024 / 1024:.2f} MB")
+    print(f"RSS: {memory_info.rss / 1024 / 1024:.2f} MB")
+    print(f"VMS: {memory_info.vms / 1024 / 1024:.2f} MB")
 
     # Check for memory leaks
     if memory_info.rss > 500 * 1024 * 1024:  # 500MB
-        u.Cli.print("WARNING: High memory usage detected")
+        print("WARNING: High memory usage detected")
 
 
 monitor_memory()
@@ -561,7 +595,9 @@ monitor_memory()
 
 ### CPU Issues
 
-```python notest
+```python
+from __future__ import annotations
+
 # Monitor CPU usage
 import psutil
 import time
@@ -573,7 +609,7 @@ def monitor_cpu():
     # Get CPU usage over time
     for i in range(10):
         cpu_percent = process.cpu_percent()
-        u.Cli.print(f"CPU usage: {cpu_percent}%")
+        print(f"CPU usage: {cpu_percent}%")
         time.sleep(1)
 
 
@@ -641,7 +677,7 @@ When reporting issues, include:
 
 1. **Error Details**
 
-   ```python notest
+   ```python
    # Full error traceback
    import traceback
    try:
@@ -652,7 +688,7 @@ When reporting issues, include:
 
 1. **Minimal Reproduction**
 
-   ```python notest
+   ```python
    # Minimal code that reproduces the issue
    from flext_core import FlextBus
    ```
@@ -690,7 +726,12 @@ from flext_core import u
 
 1. **Always Use r**
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import p
+from flext_core import r
+
+
 # ✅ GOOD
 def process(data: dict) -> p.Result[ProcessedData]:
     return r.ok(ProcessedData(**data))
@@ -703,7 +744,7 @@ def process(data: dict) -> ProcessedData:
 
 1. **Validate Input Early**
 
-   ```python notest
+   ```python
    def process_data(data: dict) -> p.Result[dict]:
        if not data:
            return r.fail("Data required")
@@ -714,7 +755,7 @@ def process(data: dict) -> ProcessedData:
 
 1. **Use Type Hints**
 
-   ```python notest
+   ```python
    # ✅ GOOD
    def process(items: t.SequenceOf[Item]) -> p.Result[Sequence[ProcessedItem]]:
        pass

@@ -196,7 +196,7 @@ sys.path.insert(0, 'docs/maintenance')
 from audit import DocumentationAuditor
 from validation import DocumentationValidator
 from optimization import DocumentationOptimizer
-u.Cli.print('✅ All components importable')
+print('✅ All components importable')
 "
 ```
 
@@ -222,7 +222,7 @@ pip install -r docs/maintenance/requirements.txt
 pip install python-frontmatter requests beautifulsoup4 markdown
 
 ### Verify Installation
-python -c "import frontmatter, requests, markdown; u.Cli.print('✅ Dependencies installed')"
+python -c "import frontmatter, requests, markdown; print('✅ Dependencies installed')"
 ```
 
 ### Symptom: Audit reports low quality scores
@@ -263,7 +263,9 @@ make docs
 
 **Solution:**
 
-```python notest
+```python
+from __future__ import annotations
+
 # Create custom audit rules
 # docs/maintenance/custom_rules.py
 CUSTOM_AUDIT_RULES = {
@@ -646,7 +648,7 @@ Logs: [Relevant log excerpts]
 python -c "
 import json
 settings = json.load(open('docs/maintenance/settings.JSON'))
-u.Cli.print('✅ Configuration valid')
+print('✅ Configuration valid')
 "
 
 # Check for deprecated settings

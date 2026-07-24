@@ -387,6 +387,8 @@ Metric: **Overall** - Score: **93%** - Target: **90%** - Status: ✅ Excellent
 ### Maintenance Configuration
 
 ```python
+from __future__ import annotations
+
 # docs/maintenance/settings.py
 MAINTENANCE_CONFIG = {
     "audit": {
@@ -410,6 +412,8 @@ MAINTENANCE_CONFIG = {
 ### Custom Rules
 
 ```python
+from __future__ import annotations
+
 # Custom quality rules
 CUSTOM_RULES = {
     "required_sections": ["Overview", "Installation", "Usage", "API"],

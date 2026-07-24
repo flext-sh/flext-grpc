@@ -133,7 +133,8 @@ The Documentation Maintenance Framework provides a comprehensive set of APIs for
 
 Main class for performing comprehensive documentation audits.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import DocumentationAuditor
 
 auditor = DocumentationAuditor(root_path=".")
@@ -149,9 +150,11 @@ Discover all documentation files to audit.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+
 files = auditor.discover_files()
-u.Cli.print(f"Found {len(files)} documentation files")
+print(f"Found {len(files)} documentation files")
 ```
 
 ##### `audit_file(file_path: Path) -> AuditResult`
@@ -166,9 +169,12 @@ Perform comprehensive audit of a single file.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 result = auditor.audit_file(Path("docs/README.md"))
-u.Cli.print(f"Quality Score: {result.quality_score}%")
+print(f"Quality Score: {result.quality_score}%")
 ```
 
 ##### `run_audit(files: Optional[List[Path]] = None) -> AuditReport`
@@ -183,9 +189,12 @@ Run complete audit on specified or all files.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 report = auditor.run_audit()
-u.Cli.print(f"Overall Quality: {report.average_quality}%")
+print(f"Overall Quality: {report.average_quality}%")
 ```
 
 ##### `save_report(report: AuditReport, output_path: Optional[Path] = None)`
@@ -199,7 +208,10 @@ Save audit report to JSON file.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 auditor.save_report(report, Path("reports/audit.json"))
 ```
 
@@ -217,7 +229,8 @@ Print formatted audit summary to console.
 
 Validate external and internal links in documentation.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import LinkValidator
 
 validator = LinkValidator(timeout=10, max_retries=3)
@@ -237,12 +250,15 @@ Validate a single external link.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 result = validator.validate_external_link("https://github.com")
 if result.status == "valid":
-    u.Cli.print(f"✅ Link valid (HTTP {result.status_code})")
+    print(f"✅ Link valid (HTTP {result.status_code})")
 else:
-    u.Cli.print(f"❌ Link broken: {result.error_message}")
+    print(f"❌ Link broken: {result.error_message}")
 ```
 
 ##### `validate_internal_links(content: str, file_path: Path
@@ -263,7 +279,8 @@ Validate internal links within documentation.
 
 Validate documentation style consistency.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import StyleValidator
 
 style_validator = StyleValidator()
@@ -283,11 +300,14 @@ Check style consistency for a file.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 result = style_validator.check_file_style(Path("docs/README.md"))
-u.Cli.print(f"Style Score: {result.score}%")
+print(f"Style Score: {result.score}%")
 for issue in result.issues:
-    u.Cli.print(f"  • {issue['message']}")
+    print(f"  • {issue['message']}")
 ```
 
 ## 🔧 Optimization API
@@ -296,7 +316,8 @@ for issue in result.issues:
 
 Optimize and enhance documentation content.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import DocumentationOptimizer
 
 optimizer = DocumentationOptimizer(root_path=".")
@@ -317,9 +338,11 @@ Optimize a single documentation file.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+
 result = optimizer.optimize_file(Path("docs/README.md"))
-u.Cli.print(f"Applied {len(result['optimizations_applied'])} optimizations")
+print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
 
 ##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`
@@ -339,7 +362,8 @@ Optimize all documentation files.
 
 Handle version control integration and synchronization.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import DocumentationSynchronizer
 
 sync = DocumentationSynchronizer(root_path=".")
@@ -360,7 +384,9 @@ Synchronize documentation changes with git.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+
 changes = [
     {
         "file_path": "docs/README.md",
@@ -369,7 +395,7 @@ changes = [
     }
 ]
 result = sync.sync_changes(changes, "optimization")
-u.Cli.print(f"Committed: {result['commit_created']}")
+print(f"Committed: {result['commit_created']}")
 ```
 
 ##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`
@@ -398,7 +424,8 @@ Generate changelog from recent changes.
 
 Generate comprehensive documentation quality reports.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import DocumentationReporter
 
 reporter = DocumentationReporter(root_path=".")
@@ -454,7 +481,8 @@ Generate trend analysis report.
 
 Handle scheduled and automated maintenance tasks.
 
-```python notest
+```python
+from __future__ import annotations
 from docs import AutomatedMaintenance
 
 automation = AutomatedMaintenance(root_path=".")
@@ -474,16 +502,22 @@ Run scheduled maintenance tasks.
 
 **Example**:
 
-```python notest
+```python
+from __future__ import annotations
+
 result = automation.run_scheduled_maintenance("weekly")
-u.Cli.print(f"Tasks completed: {len(result['tasks_completed'])}")
+print(f"Tasks completed: {len(result['tasks_completed'])}")
 ```
 
 ## 📋 Data Structures
 
 ### AuditResult
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @dataclass
 class AuditResult:
     file_path: str
@@ -494,60 +528,76 @@ class AuditResult:
     structure_score: float
     completeness_score: float
     freshness_score: float
-    issues: List[Dict[str, object]]
-    warnings: List[Dict[str, object]]
-    suggestions: List[Dict[str, object]]
-    metadata: Dict[str, object]
+    issues: t.List[t.Dict[str, t.JsonValue]]
+    warnings: t.List[t.Dict[str, t.JsonValue]]
+    suggestions: t.List[t.Dict[str, t.JsonValue]]
+    metadata: t.Dict[str, t.JsonValue]
 ```
 
 ### AuditReport
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @dataclass
 class AuditReport:
     timestamp: str
     total_files: int
     total_size: int
     average_quality: float
-    quality_distribution: Dict[str, int]
-    critical_issues: List[Dict[str, object]]
-    recommendations: List[Dict[str, object]]
-    file_results: List[AuditResult]
-    summary: Dict[str, object]
+    quality_distribution: t.Dict[str, int]
+    critical_issues: t.List[t.Dict[str, t.JsonValue]]
+    recommendations: t.List[t.Dict[str, t.JsonValue]]
+    file_results: t.List[AuditResult]
+    summary: t.Dict[str, t.JsonValue]
 ```
 
 ### LinkValidationResult
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @dataclass
 class LinkValidationResult:
     url: str
     status: str  # "valid", "broken", "timeout", "error"
-    status_code: Optional[int]
+    status_code: t.Optional[int]
     response_time: float
-    error_message: Optional[str]
-    redirect_url: Optional[str]
+    error_message: t.Optional[str]
+    redirect_url: t.Optional[str]
 ```
 
 ### ReferenceValidationResult
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @dataclass
 class ReferenceValidationResult:
     reference: str
     type: str  # "heading", "file", "anchor"
     found: bool
-    target_file: Optional[str]
-    line_number: Optional[int]
+    target_file: t.Optional[str]
+    line_number: t.Optional[int]
 ```
 
 ### StyleCheckResult
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
+
 @dataclass
 class StyleCheckResult:
     file_path: str
-    issues: List[Dict[str, object]]
+    issues: t.List[t.Dict[str, t.JsonValue]]
     score: float
 ```
 
@@ -555,7 +605,8 @@ class StyleCheckResult:
 
 ### Configuration Management
 
-```python notest
+```python
+from __future__ import annotations
 import json
 
 # Load configuration
@@ -577,6 +628,8 @@ with open("docs/maintenance/settings.json", "w") as f:
 ### Custom Rules
 
 ```python
+from __future__ import annotations
+
 # docs/maintenance/custom_rules.py
 CUSTOM_AUDIT_RULES = {
     "required_sections": ["Overview", "Installation", "Usage", "API"],
@@ -597,11 +650,13 @@ CUSTOM_STYLE_RULES = {
 
 ### File Discovery
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from pathlib import Path
 
 
-def find_docs_files(root_path: str = ".") -> List[Path]:
+def find_docs_files(root_path: str = ".") -> t.List[Path]:
     """Find all documentation files."""
     root = Path(root_path)
     files = []
@@ -622,7 +677,10 @@ def find_docs_files(root_path: str = ".") -> List[Path]:
 
 ### Quality Score Calculation
 
-```python notest
+```python
+from __future__ import annotations
+
+
 def calculate_quality_score(
     structure: float, accuracy: float, completeness: float, freshness: float
 ) -> float:
@@ -632,8 +690,12 @@ def calculate_quality_score(
 
 ### Report Generation
 
-```python notest
-def generate_quick_report(audit_results: List[AuditResult]) -> str:
+```python
+from __future__ import annotations
+from flext_core import t
+
+
+def generate_quick_report(audit_results: t.List[AuditResult]) -> str:
     """Generate quick text report."""
     total_files = len(audit_results)
     avg_quality = sum(r.quality_score for r in audit_results) / total_files
@@ -667,7 +729,10 @@ Quality Distribution:
 
 ### Exception Types
 
-```python notest
+```python
+from __future__ import annotations
+
+
 class DocumentationMaintenanceError(Exception):
     """Base exception for maintenance operations."""
 
@@ -700,7 +765,8 @@ class SynchronizationError(DocumentationMaintenanceError):
 
 ### Error Handling Patterns
 
-```python notest
+```python
+from __future__ import annotations
 from docs import DocumentationAuditor, AuditError
 
 try:
@@ -708,11 +774,11 @@ try:
     report = auditor.run_audit()
 
 except AuditError as e:
-    u.Cli.print(f"Audit failed: {e}")
+    print(f"Audit failed: {e}")
     # Handle audit-specific errors
 
 except Exception as e:
-    u.Cli.print(f"Unexpected error: {e}")
+    print(f"Unexpected error: {e}")
     # Handle general errors
 ```
 
@@ -720,8 +786,12 @@ except Exception as e:
 
 ### Quality Metrics
 
-```python notest
-def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
+```python
+from __future__ import annotations
+from flext_core import t
+
+
+def get_quality_metrics(audit_report: AuditReport) -> t.Dict[str, t.JsonValue]:
     """Extract quality metrics from audit report."""
     return {
         "overall_score": audit_report.average_quality,
@@ -734,8 +804,12 @@ def get_quality_metrics(audit_report: AuditReport) -> Dict[str, object]:
 
 ### Trend Analysis
 
-```python notest
-def analyze_quality_trends(reports: List[AuditReport]) -> Dict[str, object]:
+```python
+from __future__ import annotations
+from flext_core import t
+
+
+def analyze_quality_trends(reports: t.List[AuditReport]) -> t.Dict[str, t.JsonValue]:
     """Analyze quality trends over time."""
     if len(reports) < 2:
         return {"error": "Need at least 2 reports for trend analysis"}
@@ -809,7 +883,10 @@ echo "✅ Documentation quality checks passed"
 
 ### Custom Integration
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
+
 # custom_integration.py
 from docs import audit, validation, optimization, reporting
 
@@ -856,8 +933,12 @@ class CustomDocumentationWorkflow:
 
 ### Configuration Migration
 
-```python notest
-def migrate_config(old_config: Dict) -> Dict:
+```python
+from __future__ import annotations
+from flext_core import t
+
+
+def migrate_config(old_config: t.Dict) -> t.Dict:
     """Migrate configuration from older versions."""
     # Handle version-specific migrations
     if "version" not in old_config:
@@ -878,7 +959,9 @@ def migrate_config(old_config: Dict) -> Dict:
 
 ### Memory Management
 
-```python notest
+```python
+from __future__ import annotations
+
 # For large documentation sets
 import gc
 
@@ -912,7 +995,9 @@ def process_large_docs():
 
 ### Best Practices
 
-```python notest
+```python
+from __future__ import annotations
+
 # Safe file operations
 from pathlib import Path
 
