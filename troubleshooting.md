@@ -90,7 +90,7 @@ python -m grpc_tools.protoc --python_out=. --grpc_python_out=. -I. flext_grpc.pr
 **Verification**:
 
 ```bash
-python -c "from flext_grpc import FlextGrpcPlatform; print('Import successful')"
+python -c "from flext_grpc import FlextGrpcPlatform; u.Cli.print('Import successful')"
 ```
 
 ## Current Issues
@@ -155,12 +155,12 @@ server = create_server("localhost", 50051, 10)
 platform = FlextGrpcPlatform()
 
 # Check server state
-print(f"Server state: {server.state}")
+u.Cli.print(f"Server state: {server.state}")
 
 # Attempt startup with error handling
 start_result = platform.start_server(server)
 if start_result.failure:
-    print(f"Startup failed: {start_result.error}")
+    u.Cli.print(f"Startup failed: {start_result.error}")
 ```
 
 ## Development Best Practices
@@ -212,7 +212,7 @@ Based on 2025 gRPC Python best practices:
 
 ```bash
 poetry show flext-grpc
-poetry run python -c "import flext_grpc; print('Installation OK')"
+poetry run python -c "import flext_grpc; u.Cli.print('Installation OK')"
 ```
 
 ### Verify Dependencies
@@ -221,8 +221,8 @@ poetry run python -c "import flext_grpc; print('Installation OK')"
 poetry run python -c "
 import grpc
 import google.protobuf
-print(f'gRPC: {grpc.__version__}')
-print(f'Protobuf: {google.protobuf.__version__}')
+u.Cli.print(f'gRPC: {grpc.__version__}')
+u.Cli.print(f'Protobuf: {google.protobuf.__version__}')
 "
 ```
 
@@ -233,9 +233,9 @@ poetry run python -c "
 from flext_grpc import create_server, FlextGrpcPlatform
 server = create_server('localhost', 50051, 10)
 platform = FlextGrpcPlatform()
-print(f'Server: {server.address}')
-print(f'Platform: {platform is not None}')
-print('Core functionality verified')
+u.Cli.print(f'Server: {server.address}')
+u.Cli.print(f'Platform: {platform is not None}')
+u.Cli.print('Core functionality verified')
 "
 ```
 

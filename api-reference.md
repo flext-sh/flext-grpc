@@ -74,7 +74,7 @@ Creates a gRPC server with the specified parameters.
 from flext_grpc import create_server
 
 server = create_server("localhost", 50051, 10)
-print(f"Server created: {server.host}:{server.port}")
+u.Cli.print(f"Server created: {server.host}:{server.port}")
 ```
 
 #### `create_client(host: str, port: int) -> FlextGrpcClient`
@@ -138,7 +138,7 @@ server = FlextGrpcServer(host="", port=80)  # Invalid
 validation = server.validate_business_rules()
 
 if validation.failure:
-    print(f"Validation failed: {validation.error}")
+    u.Cli.print(f"Validation failed: {validation.error}")
 ```
 
 #### FlextGrpcClient
@@ -183,7 +183,7 @@ settings = FlextGrpcSettings(host="localhost", port=99999)
 validation = settings.validate()
 
 if validation.failure:
-    print(f"Invalid settings: {validation.error}")
+    u.Cli.print(f"Invalid settings: {validation.error}")
 ```
 
 ### Service Classes
@@ -291,7 +291,7 @@ try:
     settings = FlextGrpcSettings(port=-1)  # Invalid port
     settings.validate().unwrap()
 except FlextGrpcConfigurationError as e:
-    print(f"Configuration error: {e}")
+    u.Cli.print(f"Configuration error: {e}")
 ```
 
 #### FlextGrpcConnectionError
@@ -364,7 +364,7 @@ from flext_grpc import parse_address
 result = parse_address("localhost:50051")
 if result.success:
     host, port = result.unwrap()
-    print(f"Host: {host}, Port: {port}")
+    u.Cli.print(f"Host: {host}, Port: {port}")
 ```
 
 #### `validate_address(address: str) -> p.Result[bool]`
@@ -376,7 +376,7 @@ from flext_grpc import validate_address
 
 validation = validate_address("invalid:port")
 if validation.failure:
-    print(f"Invalid address: {validation.error}")
+    u.Cli.print(f"Invalid address: {validation.error}")
 ```
 
 ## Integration with FLEXT Patterns
@@ -418,7 +418,7 @@ def setup_grpc_server(host: str, port: int) -> p.Result[str]:
 
 result = setup_grpc_server("localhost", 50051)
 if result.success:
-    print(result.unwrap())
+    u.Cli.print(result.unwrap())
 ```
 
 ### Dependency Injection

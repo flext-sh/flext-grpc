@@ -314,10 +314,10 @@ server = FlextGrpcServer(
 # Always validate before use
 validation = server.validate_business_rules()
 if validation.is_failure:
-    print(f"Validation failed: {validation.error}")
+    u.Cli.print(f"Validation failed: {validation.error}")
     exit(1)
 
-print(f"Server created: {server.id}")
+u.Cli.print(f"Server created: {server.id}")
 ```
 
 ### Service Operation Pattern
@@ -331,9 +331,9 @@ result = service.execute("start", server)
 
 if result.success:
     started_server = result.data
-    print(f"Server started: {started_server.state}")
+    u.Cli.print(f"Server started: {started_server.state}")
 else:
-    print(f"Start failed: {result.error}")
+    u.Cli.print(f"Start failed: {result.error}")
 ```
 
 ### Platform Usage Pattern
@@ -347,7 +347,7 @@ platform = FlextGrpcPlatform()
 # High-level operations through platform
 server_result = platform.service.execute("create_server", server)
 if server_result.success:
-    print(f"Platform operation successful")
+    u.Cli.print(f"Platform operation successful")
 ```
 
 ## Current Status and Limitations
@@ -474,11 +474,11 @@ from datetime import datetime, timezone
 
 def main() -> None:
     """Main example execution function."""
-    print("Starting FLEXT gRPC example...")
+    u.Cli.print("Starting FLEXT gRPC example...")
 
     # Example implementation here
 
-    print("Example completed successfully")
+    u.Cli.print("Example completed successfully")
 
 
 if __name__ == "__main__":

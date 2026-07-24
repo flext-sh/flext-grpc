@@ -151,7 +151,7 @@ Discover all documentation files to audit.
 
 ```python notest
 files = auditor.discover_files()
-print(f"Found {len(files)} documentation files")
+u.Cli.print(f"Found {len(files)} documentation files")
 ```
 
 ##### `audit_file(file_path: Path) -> AuditResult`
@@ -168,7 +168,7 @@ Perform comprehensive audit of a single file.
 
 ```python notest
 result = auditor.audit_file(Path("docs/README.md"))
-print(f"Quality Score: {result.quality_score}%")
+u.Cli.print(f"Quality Score: {result.quality_score}%")
 ```
 
 ##### `run_audit(files: Optional[List[Path]] = None) -> AuditReport`
@@ -185,7 +185,7 @@ Run complete audit on specified or all files.
 
 ```python notest
 report = auditor.run_audit()
-print(f"Overall Quality: {report.average_quality}%")
+u.Cli.print(f"Overall Quality: {report.average_quality}%")
 ```
 
 ##### `save_report(report: AuditReport, output_path: Optional[Path] = None)`
@@ -240,9 +240,9 @@ Validate a single external link.
 ```python notest
 result = validator.validate_external_link("https://github.com")
 if result.status == "valid":
-    print(f"✅ Link valid (HTTP {result.status_code})")
+    u.Cli.print(f"✅ Link valid (HTTP {result.status_code})")
 else:
-    print(f"❌ Link broken: {result.error_message}")
+    u.Cli.print(f"❌ Link broken: {result.error_message}")
 ```
 
 ##### `validate_internal_links(content: str, file_path: Path
@@ -285,9 +285,9 @@ Check style consistency for a file.
 
 ```python notest
 result = style_validator.check_file_style(Path("docs/README.md"))
-print(f"Style Score: {result.score}%")
+u.Cli.print(f"Style Score: {result.score}%")
 for issue in result.issues:
-    print(f"  • {issue['message']}")
+    u.Cli.print(f"  • {issue['message']}")
 ```
 
 ## 🔧 Optimization API
@@ -319,7 +319,7 @@ Optimize a single documentation file.
 
 ```python notest
 result = optimizer.optimize_file(Path("docs/README.md"))
-print(f"Applied {len(result['optimizations_applied'])} optimizations")
+u.Cli.print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
 
 ##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`
@@ -369,7 +369,7 @@ changes = [
     }
 ]
 result = sync.sync_changes(changes, "optimization")
-print(f"Committed: {result['commit_created']}")
+u.Cli.print(f"Committed: {result['commit_created']}")
 ```
 
 ##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`
@@ -476,7 +476,7 @@ Run scheduled maintenance tasks.
 
 ```python notest
 result = automation.run_scheduled_maintenance("weekly")
-print(f"Tasks completed: {len(result['tasks_completed'])}")
+u.Cli.print(f"Tasks completed: {len(result['tasks_completed'])}")
 ```
 
 ## 📋 Data Structures
@@ -708,11 +708,11 @@ try:
     report = auditor.run_audit()
 
 except AuditError as e:
-    print(f"Audit failed: {e}")
+    u.Cli.print(f"Audit failed: {e}")
     # Handle audit-specific errors
 
 except Exception as e:
-    print(f"Unexpected error: {e}")
+    u.Cli.print(f"Unexpected error: {e}")
     # Handle general errors
 ```
 

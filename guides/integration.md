@@ -251,7 +251,7 @@ def create_grpc_cli() -> FlextCliApp:
         server_result = create_server(settings)
         if server_result.success:
             server = server_result.unwrap()
-            print(f"Server started: {server.host}:{server.port}")
+            u.Cli.print(f"Server started: {server.host}:{server.port}")
 
     @cli.command("health")
     def check_health(address: str):

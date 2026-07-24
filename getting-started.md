@@ -91,13 +91,13 @@ poetry install
 
 ```bash
 # Test core imports
-poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; print('Import successful')"
+poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; u.Cli.print('Import successful')"
 
 # Test functionality
 poetry run python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
-print(f'Server: {server.address}, state: {server.state}')
+u.Cli.print(f'Server: {server.address}, state: {server.state}')
 "
 ```
 
@@ -110,8 +110,8 @@ from flext_grpc import create_server
 
 # Create gRPC server
 server = create_server("localhost", 50051, 10)
-print(f"Server address: {server.address}")
-print(f"Server state: {server.state}")
+u.Cli.print(f"Server address: {server.address}")
+u.Cli.print(f"Server state: {server.state}")
 ```
 
 ### Client Creation
@@ -121,7 +121,7 @@ from flext_grpc import create_client
 
 # Create gRPC client
 client = create_client("localhost:50051")
-print(f"Client created: {type(client).__name__}")
+u.Cli.print(f"Client created: {type(client).__name__}")
 ```
 
 ### Platform Management
@@ -131,7 +131,7 @@ from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations
 platform = FlextGrpcPlatform()
-print(f"Platform ready: {type(platform).__name__}")
+u.Cli.print(f"Platform ready: {type(platform).__name__}")
 ```
 
 ### Configuration
@@ -143,7 +143,7 @@ from flext_grpc import FlextGrpcSettings
 settings = FlextGrpcSettings.model_validate({
     "Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}
 })
-print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
+u.Cli.print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
 
 ## Development Setup
@@ -174,14 +174,14 @@ poetry run python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
 from flext_grpc import FlextGrpcSettings
-print('✅ All imports successful')
+u.Cli.print('✅ All imports successful')
 "
 
 # Test basic functionality
 poetry run python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
-print(f'✅ Server creation: {server.address}')
+u.Cli.print(f'✅ Server creation: {server.address}')
 "
 ```
 

@@ -553,13 +553,13 @@ import asyncio
 async def test_integration():
     # Test real server creation
     server = create_server('localhost', 50051, 10)
-    print(f'Server created: {server}')
+    u.Cli.print(f'Server created: {server}')
 
     # Test real client creation
     client = create_client('localhost:50051')
-    print(f'Client created: {client}')
+    u.Cli.print(f'Client created: {client}')
 
-print('✅ Integration test completed')
+u.Cli.print('✅ Integration test completed')
 "
 ```
 

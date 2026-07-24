@@ -243,7 +243,7 @@ settings = FlextGrpcSettings(host="", port=99999)  # Invalid
 validation = settings.validate()
 
 if validation.failure:
-    print(f"Configuration error: {validation.error}")
+    u.Cli.print(f"Configuration error: {validation.error}")
 ```
 
 ### Business Rules
@@ -608,17 +608,17 @@ from flext_grpc import FlextGrpcSettings
 
 
 def debug_config():
-    print("Environment variables:")
+    u.Cli.print("Environment variables:")
     for key, value in os.environ.items():
         if key.startswith("GRPC_"):
-            print(f"  {key}={value}")
+            u.Cli.print(f"  {key}={value}")
 
     settings = FlextGrpcSettings()
-    print(f"\nActual configuration:")
-    print(f"  Host: {settings.host}")
-    print(f"  Port: {settings.port}")
-    print(f"  Workers: {settings.max_workers}")
-    print(f"  Timeout: {settings.timeout}")
+    u.Cli.print(f"\nActual configuration:")
+    u.Cli.print(f"  Host: {settings.host}")
+    u.Cli.print(f"  Port: {settings.port}")
+    u.Cli.print(f"  Workers: {settings.max_workers}")
+    u.Cli.print(f"  Timeout: {settings.timeout}")
 ```
 
 ---

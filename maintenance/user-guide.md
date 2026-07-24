@@ -167,7 +167,7 @@ pip install requests beautifulsoup4 markdown python-frontmatter
 
 # Verify installation
 python -c "from docs import  audit, validation, optimization, sync,
-     reporting; print('✅ Framework ready')"
+     reporting; u.Cli.print('✅ Framework ready')"
 ```
 
 ### Basic Usage

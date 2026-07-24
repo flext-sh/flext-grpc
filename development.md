@@ -601,7 +601,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
         >>> result = create_server(settings)
         >>> if result.success:
         ...     server = result.unwrap()
-        ...     print(f"Server: {server.host}:{server.port}")
+        ...     u.Cli.print(f"Server: {server.host}:{server.port}")
 
     Integration:
         Integrates with FlextContainer for dependency injection and
