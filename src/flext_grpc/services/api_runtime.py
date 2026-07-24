@@ -13,20 +13,15 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     """Runtime behavior composed by the public gRPC facade via MRO."""
 
     def create_channel(
-        self,
-        target: str,
-        options: t.JsonMapping | None = None,
+        self, target: str, options: t.JsonMapping | None = None
     ) -> p.Result[p.Grpc.Channel]:
         """Create typed channel entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_channel_entity(
-            target=target,
-            options={} if options is None else options,
+            target=target, options={} if options is None else options
         )
 
     def create_client(
-        self,
-        target: str,
-        options: t.JsonMapping | None = None,
+        self, target: str, options: t.JsonMapping | None = None
     ) -> p.Result[p.Grpc.Client]:
         """Create typed client entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_client_entity(
@@ -47,22 +42,21 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         server_result = self.create_server(host=host, port=port)
         if server_result.failure:
             return r[p.Grpc.CompleteSetup].fail(
-                server_result.error or "Server creation failed",
+                server_result.error or "Server creation failed"
             )
 
         client_result = self.create_client(target=target)
         if client_result.failure:
             return r[p.Grpc.CompleteSetup].fail(
-                client_result.error or "Client creation failed",
+                client_result.error or "Client creation failed"
             )
 
         service_result = self.create_service(
-            name=service_name,
-            methods=resolved_methods,
+            name=service_name, methods=resolved_methods
         )
         if service_result.failure:
             return r[p.Grpc.CompleteSetup].fail(
-                service_result.error or "Service creation failed",
+                service_result.error or "Service creation failed"
             )
 
         return r[p.Grpc.CompleteSetup].ok(
@@ -71,7 +65,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
                 client=client_result.value,
                 service=service_result.value,
                 target=target,
-            ),
+            )
         )
 
     def create_server(
@@ -82,20 +76,15 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     ) -> p.Result[p.Grpc.Server]:
         """Create typed server entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_server_entity(
-            host=host,
-            port=port,
-            max_workers=max_workers,
+            host=host, port=port, max_workers=max_workers
         )
 
     def create_service(
-        self,
-        name: str,
-        methods: t.StrSequence | None = None,
+        self, name: str, methods: t.StrSequence | None = None
     ) -> p.Result[p.Grpc.Service]:
         """Create typed service entity from validated inputs."""
         return FlextGrpcUtilities.Grpc.create_service_entity(
-            name=name,
-            methods=[] if methods is None else methods,
+            name=name, methods=[] if methods is None else methods
         )
 
     @override
@@ -104,8 +93,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def execute_operation(
-        self,
-        request: p.Grpc.OperationExecutionRequest,
+        self, request: p.Grpc.OperationExecutionRequest
     ) -> p.Result[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring."""
         kwargs = request.keyword_arguments
@@ -114,12 +102,12 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
                 target = kwargs.get("target")
                 if not isinstance(target, str):
                     return r[FlextGrpcSettings].fail(
-                        "connect_client requires string target",
+                        "connect_client requires string target"
                     )
                 result = self.create_client(target=target)
             case _:
                 return r[FlextGrpcSettings].fail(
-                    f"Unknown operation: {request.operation_name}",
+                    f"Unknown operation: {request.operation_name}"
                 )
         if result.failure:
             return r[FlextGrpcSettings].fail(result.error or "Unknown error")

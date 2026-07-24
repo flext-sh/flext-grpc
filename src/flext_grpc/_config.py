@@ -36,9 +36,7 @@ class FlextGrpcConfig(FlextConfig):
     @cached_property
     def Grpc(self) -> FlextGrpcProtocolsConfig.Grpc:
         """Validated ``Grpc`` business-rule config namespace."""
-        root = FlextGrpcConfigModels.Root.model_validate(
-            dict(self.model_extra or {}),
-        )
+        root = FlextGrpcConfigModels.Root.model_validate(dict(self.model_extra or {}))
         return root.Grpc
 
 

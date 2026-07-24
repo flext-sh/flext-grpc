@@ -12,7 +12,7 @@ class FlextGrpcMetrics(s):
 
     class _MetricValueModel(m.Value):
         value: t.JsonValue | None = u.Field(
-            description="Normalized metric measurement value",
+            description="Normalized metric measurement value"
         )
 
     class MetricsCollector:
@@ -50,9 +50,7 @@ class FlextGrpcMetrics(s):
 
             """
 
-            def _normalize_value(
-                val: t.JsonValue | None,
-            ) -> t.JsonValue | None:
+            def _normalize_value(val: t.JsonValue | None) -> t.JsonValue | None:
                 if val is None:
                     return ""
                 if u.primitive(val):
@@ -70,7 +68,7 @@ class FlextGrpcMetrics(s):
                 self._metrics = m.Grpc.Payload(values=updated_values)
 
     _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
-        default_factory=MetricsCollector,
+        default_factory=MetricsCollector
     )
 
 

@@ -25,7 +25,7 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
     """
 
     _grpc_config: FlextGrpcSettings = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcSettings.model_validate({}),
+        default_factory=lambda: FlextGrpcSettings.model_validate({})
     )
 
     @property

@@ -25,10 +25,7 @@ class FlextGrpcUtilitiesGrpc:
 
     @staticmethod
     def create_protobuf_message(
-        method: c.Grpc.ServiceMethod,
-        payload: t.JsonMapping,
-        *,
-        response: bool,
+        method: c.Grpc.ServiceMethod, payload: t.JsonMapping, *, response: bool
     ) -> p.Result[p.Grpc.GrpcMessage]:
         """Create one schema-owned protobuf message from validated payload data."""
 
@@ -68,19 +65,14 @@ class FlextGrpcUtilitiesGrpc:
             """Store the imported grpc module."""
             self._runtime_module = runtime_module
             self.RpcError = self._exception_type(
-                self._runtime_module.RpcError,
-                "RpcError",
+                self._runtime_module.RpcError, "RpcError"
             )
             self.FutureTimeoutError = self._exception_type(
-                self._runtime_module.FutureTimeoutError,
-                "FutureTimeoutError",
+                self._runtime_module.FutureTimeoutError, "FutureTimeoutError"
             )
 
         @staticmethod
-        def _exception_type(
-            value: type[BaseException],
-            name: str,
-        ) -> type[Exception]:
+        def _exception_type(value: type[BaseException], name: str) -> type[Exception]:
             """Validate that the runtime exposes an Exception subtype."""
             if issubclass(value, Exception):
                 return value
@@ -96,8 +88,7 @@ class FlextGrpcUtilitiesGrpc:
             return channel
 
         def channel_ready_future(
-            self,
-            channel: p.Grpc.GrpcChannel,
+            self, channel: p.Grpc.GrpcChannel
         ) -> p.Grpc.GrpcReadyFuture:
             """Create a typed ready future for the given channel."""
             ready_future = self._runtime_module.channel_ready_future(channel)
@@ -106,10 +97,7 @@ class FlextGrpcUtilitiesGrpc:
                 raise TypeError(msg)
             return ready_future
 
-        def server(
-            self,
-            thread_pool: Executor,
-        ) -> p.Grpc.GrpcServer:
+        def server(self, thread_pool: Executor) -> p.Grpc.GrpcServer:
             """Create a typed gRPC server from the runtime module."""
             grpc_server = self._runtime_module.server(thread_pool)
             if not isinstance(grpc_server, p.Grpc.GrpcServer):
@@ -121,8 +109,7 @@ class FlextGrpcUtilitiesGrpc:
     def resolve_runtime() -> p.Result[p.Grpc.GrpcRuntime]:
         """Load the grpc runtime through the typed adapter boundary."""
         runtime_result = u.try_(
-            lambda: import_module("grpc"),
-            catch=(ImportError, ModuleNotFoundError),
+            lambda: import_module("grpc"), catch=(ImportError, ModuleNotFoundError)
         )
         if runtime_result.failure:
             return r[p.Grpc.GrpcRuntime].fail(
@@ -130,7 +117,7 @@ class FlextGrpcUtilitiesGrpc:
                 exception=runtime_result.exception,
             )
         return r[p.Grpc.GrpcRuntime].ok(
-            FlextGrpcUtilitiesGrpc._GrpcRuntimeAdapter(runtime_result.value),
+            FlextGrpcUtilitiesGrpc._GrpcRuntimeAdapter(runtime_result.value)
         )
 
     @staticmethod
@@ -183,8 +170,7 @@ class FlextGrpcUtilitiesGrpc:
             )
         runtime = runtime_result.value
         return u.try_(
-            operation,
-            catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime),
+            operation, catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime)
         )
 
     @staticmethod
@@ -199,9 +185,7 @@ class FlextGrpcUtilitiesGrpc:
 
     @staticmethod
     def open_insecure_channel(
-        target: str,
-        *,
-        timeout: float = c.Grpc.NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT,
+        target: str, *, timeout: float = c.Grpc.NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT
     ) -> p.Result[p.Grpc.GrpcChannel]:
         """Open an insecure channel and wait until it is ready."""
         runtime_result = FlextGrpcUtilitiesGrpc.resolve_runtime()
@@ -218,14 +202,11 @@ class FlextGrpcUtilitiesGrpc:
             return grpc_channel
 
         return u.try_(
-            _open,
-            catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime),
+            _open, catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime)
         )
 
     @staticmethod
-    def create_runtime_server(
-        thread_pool: Executor,
-    ) -> p.Result[p.Grpc.GrpcServer]:
+    def create_runtime_server(thread_pool: Executor) -> p.Result[p.Grpc.GrpcServer]:
         """Create a runtime grpc server using the canonical adapter."""
         runtime_result = FlextGrpcUtilitiesGrpc.resolve_runtime()
         if runtime_result.failure:
@@ -240,52 +221,40 @@ class FlextGrpcUtilitiesGrpc:
         )
 
     @staticmethod
-    def bind_insecure_port(
-        server: p.Grpc.GrpcServer,
-        address: str,
-    ) -> p.Result[int]:
+    def bind_insecure_port(server: p.Grpc.GrpcServer, address: str) -> p.Result[int]:
         """Bind an address to a runtime grpc server."""
         return FlextGrpcUtilitiesGrpc.call_runtime(
-            lambda: server.add_insecure_port(address),
+            lambda: server.add_insecure_port(address)
         )
 
     @staticmethod
     def create_channel_entity(
-        target: str,
-        options: t.JsonMapping | None = None,
+        target: str, options: t.JsonMapping | None = None
     ) -> p.Result[p.Grpc.Channel]:
         """Create a typed channel entity from validated inputs."""
         resolved_options = {} if options is None else dict(options)
 
         def _build_channel() -> p.Grpc.Channel:
-            return m.Grpc.Channel(
-                target=target,
-                options=resolved_options,
-            )
+            return m.Grpc.Channel(target=target, options=resolved_options)
 
         return r[p.Grpc.Channel].create_from_callable(_build_channel)
 
     @staticmethod
     def create_client_entity(
-        target: str,
-        options: t.JsonMapping | None = None,
+        target: str, options: t.JsonMapping | None = None
     ) -> p.Result[p.Grpc.Client]:
         """Create a typed client entity backed by a typed channel entity."""
         resolved_options = {} if options is None else dict(options)
         channel_result = FlextGrpcUtilitiesGrpc.create_channel_entity(
-            target=target,
-            options=resolved_options,
+            target=target, options=resolved_options
         )
         if channel_result.failure:
             return r[p.Grpc.Client].fail(
-                channel_result.error or "Client channel creation failed",
+                channel_result.error or "Client channel creation failed"
             )
 
         def _build_client() -> p.Grpc.Client:
-            return m.Grpc.Client(
-                channel=channel_result.value,
-                options=resolved_options,
-            )
+            return m.Grpc.Client(channel=channel_result.value, options=resolved_options)
 
         return r[p.Grpc.Client].create_from_callable(_build_client)
 
@@ -298,34 +267,25 @@ class FlextGrpcUtilitiesGrpc:
         """Create a typed server entity from validated inputs."""
 
         def _build_server() -> p.Grpc.Server:
-            return m.Grpc.Server(
-                host=host,
-                port=port,
-                max_workers=max_workers,
-            )
+            return m.Grpc.Server(host=host, port=port, max_workers=max_workers)
 
         return r[p.Grpc.Server].create_from_callable(_build_server)
 
     @staticmethod
     def create_service_entity(
-        name: str,
-        methods: t.StrSequence | None = None,
+        name: str, methods: t.StrSequence | None = None
     ) -> p.Result[p.Grpc.Service]:
         """Create a typed service entity with a minimal valid method set."""
         resolved_methods = ["HealthCheck"] if methods is None else list(methods)
 
         def _build_service() -> p.Grpc.Service:
-            return m.Grpc.Service(
-                name=name,
-                methods=resolved_methods,
-            )
+            return m.Grpc.Service(name=name, methods=resolved_methods)
 
         return r[p.Grpc.Service].create_from_callable(_build_service)
 
     @staticmethod
     def create_stream_entity(
-        method_name: str,
-        stream_type: c.Grpc.GrpcOperations | str,
+        method_name: str, stream_type: c.Grpc.GrpcOperations | str
     ) -> p.Result[p.Grpc.GrpcStream]:
         """Create a typed stream entity from validated inputs."""
         resolved_stream_type = c.Grpc.GrpcOperations(stream_type)

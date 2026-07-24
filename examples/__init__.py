@@ -24,31 +24,10 @@ if TYPE_CHECKING:
         u,
         x as x,
     )
-_LAZY_IMPORTS = build_lazy_import_map(
-    {
-        ".typings": (
-            "ExamplesFlextGrpcTypes",
-            "t",
-        ),
-        "flext_grpc": (
-            "c",
-            "d",
-            "e",
-            "h",
-            "m",
-            "p",
-            "r",
-            "s",
-            "u",
-            "x",
-        ),
-    },
-)
+_LAZY_IMPORTS = build_lazy_import_map({
+    ".typings": ("ExamplesFlextGrpcTypes", "t"),
+    "flext_grpc": ("c", "d", "e", "h", "m", "p", "r", "s", "u", "x"),
+})
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    publish_all=False,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)

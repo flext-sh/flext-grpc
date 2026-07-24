@@ -24,7 +24,7 @@ class FlextGrpcClient(s):
             super().__init__()
             self._active_channels: MutableMapping[str, p.Grpc.GrpcChannel] = {}
             self._connection_pool = FlextGrpcConnectionPool.ConnectionPool(
-                max_size=c.Grpc.CONNECTION_DEFAULT_POOL_SIZE,
+                max_size=c.Grpc.CONNECTION_DEFAULT_POOL_SIZE
             )
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
@@ -45,9 +45,7 @@ class FlextGrpcClient(s):
             if client_result.failure:
                 _ = FlextGrpcUtilities.Grpc.run_runtime(grpc_channel.close)
                 del self._active_channels[target]
-                return r[p.Grpc.Client].fail(
-                    client_result.error or "Connection failed",
-                )
+                return r[p.Grpc.Client].fail(client_result.error or "Connection failed")
             return client_result
 
         def disconnect(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Client]:
@@ -73,14 +71,11 @@ class FlextGrpcClient(s):
                 target = client.channel.target or ""
             is_connected = bool(target and target in self._active_channels)
             return r[m.Grpc.Payload].ok(
-                m.Grpc.Payload.from_values(connected=is_connected, target=target),
+                m.Grpc.Payload.from_values(connected=is_connected, target=target)
             )
 
         def make_call(
-            self,
-            client: p.Grpc.Client,
-            method: str,
-            request: t.JsonMapping | None,
+            self, client: p.Grpc.Client, method: str, request: t.JsonMapping | None
         ) -> p.Result[m.Grpc.Payload]:
             """Execute gRPC call through client.
 
@@ -103,7 +98,7 @@ class FlextGrpcClient(s):
             result: p.Result[m.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_request_result = r[m.Grpc.EchoRequest].create_from_callable(
-                    lambda: m.Grpc.EchoRequest.model_validate(request),
+                    lambda: m.Grpc.EchoRequest.model_validate(request)
                 )
                 if echo_request_result.failure:
                     return r[m.Grpc.Payload].fail(
@@ -123,7 +118,7 @@ class FlextGrpcClient(s):
                 echo_rpc: p.Grpc.EchoRpc = generated_stub.Echo
                 echo_result: p.Result[p.Grpc.EchoResponseMessage] = (
                     FlextGrpcUtilities.Grpc.call_runtime(
-                        lambda: echo_rpc(echo_message_result.value),
+                        lambda: echo_rpc(echo_message_result.value)
                     )
                 )
                 if echo_result.failure:
@@ -139,11 +134,11 @@ class FlextGrpcClient(s):
                             message=echo_response.message,
                             server_id=echo_response.server_id,
                             timestamp=echo_response.timestamp,
-                        ),
+                        )
                     )
             elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_request_result = r[m.Grpc.HealthRequest].create_from_callable(
-                    lambda: m.Grpc.HealthRequest.model_validate(request),
+                    lambda: m.Grpc.HealthRequest.model_validate(request)
                 )
                 if health_request_result.failure:
                     return r[m.Grpc.Payload].fail(
@@ -163,7 +158,7 @@ class FlextGrpcClient(s):
                 health_rpc: p.Grpc.HealthCheckRpc = generated_stub.HealthCheck
                 health_result: p.Result[p.Grpc.HealthResponseMessage] = (
                     FlextGrpcUtilities.Grpc.call_runtime(
-                        lambda: health_rpc(health_message_result.value),
+                        lambda: health_rpc(health_message_result.value)
                     )
                 )
                 if health_result.failure:
@@ -178,14 +173,14 @@ class FlextGrpcClient(s):
                             method="HealthCheck",
                             status=health_response.status,
                             message=health_response.message,
-                        ),
+                        )
                     )
             else:
                 result = r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
             return result
 
     _client_manager: FlextGrpcClient.GrpcClientManager = m.PrivateAttr(
-        default_factory=GrpcClientManager,
+        default_factory=GrpcClientManager
     )
 
     def connect_client(self, target: str) -> p.Result[p.Grpc.Client]:
@@ -201,10 +196,7 @@ class FlextGrpcClient(s):
         return self._client_manager.client_status(client)
 
     def make_call(
-        self,
-        client: p.Grpc.Client,
-        method: str,
-        request: t.JsonMapping | None,
+        self, client: p.Grpc.Client, method: str, request: t.JsonMapping | None
     ) -> p.Result[m.Grpc.Payload]:
         """Execute an RPC call through the dedicated client manager."""
         return self._client_manager.make_call(client, method, request)

@@ -41,9 +41,7 @@ class GrpcServerManager:
         self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
 
     def create_server_pool(
-        self,
-        base_port: int = 8000,
-        count: int = 3,
+        self, base_port: int = 8000, count: int = 3
     ) -> list[p.Result[FlextGrpcModels.Grpc.Server]]:
         """Create a pool of servers on consecutive ports through facade."""
         server_results: list[p.Result[FlextGrpcModels.Grpc.Server]] = []
@@ -55,7 +53,7 @@ class GrpcServerManager:
                     "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
                     "port": port,
                     "max_workers": 10 + i * 5,
-                },
+                }
             })
             self.server_configs[server_id] = settings
             server_result = self.grpc.create_server(
@@ -130,14 +128,11 @@ class AdvancedGrpcOperations:
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]
         setup_result = self.grpc.create_complete_setup(
-            host=host,
-            port=port,
-            service_name=service_name,
-            methods=methods,
+            host=host, port=port, service_name=service_name, methods=methods
         )
         if setup_result.failure:
             return r[FlextGrpcModels.Grpc.CompleteSetup].fail(
-                setup_result.error or "Setup failed",
+                setup_result.error or "Setup failed"
             )
         setup = setup_result.value
         return r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
@@ -152,8 +147,7 @@ class AdvancedGrpcOperations:
         ]
         for method_name, stream_type in stream_configs:
             stream_result = self.grpc.create_stream(
-                method_name=method_name,
-                stream_type=stream_type,
+                method_name=method_name, stream_type=stream_type
             )
             if stream_result.success:
                 stream = stream_result.value
@@ -211,7 +205,7 @@ def example_3_service_creation() -> None:
             service = service_result.value
             created_services.append(service)
             _emit(
-                f"Created service: {service.name} with {len(service.methods)} methods",
+                f"Created service: {service.name} with {len(service.methods)} methods"
             )
         else:
             _emit(f"Failed to create {service_name}: {service_result.error}")
@@ -230,8 +224,7 @@ def example_4_streaming() -> None:
     created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
-            method_name=method_name,
-            stream_type=stream_type,
+            method_name=method_name, stream_type=stream_type
         )
         if stream_result.success:
             stream = stream_result.value
@@ -255,12 +248,12 @@ def example_5_error_handling() -> None:
     invalid_channel_result = grpc.create_channel(target="")
     if invalid_channel_result.failure:
         _emit(
-            f"Invalid channel creation properly failed: {invalid_channel_result.error}",
+            f"Invalid channel creation properly failed: {invalid_channel_result.error}"
         )
     invalid_service_result = grpc.create_service(name="", methods=[])
     if invalid_service_result.failure:
         _emit(
-            f"Invalid service creation properly failed: {invalid_service_result.error}",
+            f"Invalid service creation properly failed: {invalid_service_result.error}"
         )
     invalid_stream_result = grpc.create_stream(method_name="", stream_type="invalid")
     if invalid_stream_result.failure:

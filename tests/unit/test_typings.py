@@ -44,8 +44,7 @@ class TestsFlextGrpcTypesUnit:
         ],
     )
     def test_validate_target_rejects_malformed_or_out_of_range(
-        self,
-        target: str,
+        self, target: str
     ) -> None:
         """Missing host/port, bad host chars, or out-of-range ports validate false."""
         tm.that(u.Grpc.validate_target(target), eq=False)
@@ -59,16 +58,13 @@ class TestsFlextGrpcTypesUnit:
         ],
     )
     def test_parse_target_splits_into_host_and_int_port(
-        self,
-        target: str,
-        expected: tuple[str, int],
+        self, target: str, expected: tuple[str, int]
     ) -> None:
         """Parsing a valid target yields the host string and integer port."""
         tm.that(u.Grpc.parse_target(target), eq=expected)
 
     @pytest.mark.parametrize(
-        "target",
-        ["invalid", "", "localhost", ":50051", "localhost:99999"],
+        "target", ["invalid", "", "localhost", ":50051", "localhost:99999"]
     )
     def test_parse_target_raises_value_error_on_invalid(self, target: str) -> None:
         """Parsing a target that fails validation raises ``ValueError``."""
@@ -77,13 +73,7 @@ class TestsFlextGrpcTypesUnit:
 
     @pytest.mark.parametrize(
         "target",
-        [
-            "localhost:50051",
-            "127.0.0.1:8080",
-            "invalid",
-            "localhost:99999",
-            "",
-        ],
+        ["localhost:50051", "127.0.0.1:8080", "invalid", "localhost:99999", ""],
     )
     def test_parse_target_succeeds_iff_validate_target_true(self, target: str) -> None:
         """Invariant: ``parse_target`` returns cleanly exactly when validation passes."""

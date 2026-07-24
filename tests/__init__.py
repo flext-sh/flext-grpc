@@ -64,59 +64,28 @@ if TYPE_CHECKING:
     from tests.utilities import TestsFlextGrpcUtilities as TestsFlextGrpcUtilities, u
 _LAZY_IMPORTS = merge_lazy_imports(
     (".unit",),
-    build_lazy_import_map(
-        {
-            ".base": (
-                "TestsFlextGrpcServiceBase",
-                "s",
-            ),
-            ".conftest": ("conftest",),
-            ".constants": (
-                "TestsFlextGrpcConstants",
-                "c",
-            ),
-            ".models": (
-                "TestsFlextGrpcModels",
-                "m",
-            ),
-            ".protocols": (
-                "TestsFlextGrpcProtocols",
-                "p",
-            ),
-            ".settings": ("TestsFlextGrpcSettings",),
-            ".typings": (
-                "TestsFlextGrpcTypes",
-                "t",
-            ),
-            ".unit": ("unit",),
-            ".unit.test_api": ("TestsFlextGrpcApi",),
-            ".unit.test_config": ("TestsFlextGrpcConfig",),
-            ".unit.test_constants": ("TestsFlextGrpcConstantsUnit",),
-            ".unit.test_entities": ("TestsFlextGrpcEntities",),
-            ".unit.test_errors": ("TestsFlextGrpcErrors",),
-            ".unit.test_models": ("TestsFlextGrpcModelsUnit",),
-            ".unit.test_protocols": ("TestsFlextGrpcProtocolsUnit",),
-            ".unit.test_services": ("TestsFlextGrpcServices",),
-            ".unit.test_typings": ("TestsFlextGrpcTypesUnit",),
-            ".unit.test_utilities": ("TestsFlextGrpcUtilitiesUnit",),
-            ".utilities": (
-                "TestsFlextGrpcUtilities",
-                "u",
-            ),
-            "flext_tests": (
-                "d",
-                "e",
-                "h",
-                "r",
-                "td",
-                "tf",
-                "tk",
-                "tm",
-                "tv",
-                "x",
-            ),
-        },
-    ),
+    build_lazy_import_map({
+        ".base": ("TestsFlextGrpcServiceBase", "s"),
+        ".conftest": ("conftest",),
+        ".constants": ("TestsFlextGrpcConstants", "c"),
+        ".models": ("TestsFlextGrpcModels", "m"),
+        ".protocols": ("TestsFlextGrpcProtocols", "p"),
+        ".settings": ("TestsFlextGrpcSettings",),
+        ".typings": ("TestsFlextGrpcTypes", "t"),
+        ".unit": ("unit",),
+        ".unit.test_api": ("TestsFlextGrpcApi",),
+        ".unit.test_config": ("TestsFlextGrpcConfig",),
+        ".unit.test_constants": ("TestsFlextGrpcConstantsUnit",),
+        ".unit.test_entities": ("TestsFlextGrpcEntities",),
+        ".unit.test_errors": ("TestsFlextGrpcErrors",),
+        ".unit.test_models": ("TestsFlextGrpcModelsUnit",),
+        ".unit.test_protocols": ("TestsFlextGrpcProtocolsUnit",),
+        ".unit.test_services": ("TestsFlextGrpcServices",),
+        ".unit.test_typings": ("TestsFlextGrpcTypesUnit",),
+        ".unit.test_utilities": ("TestsFlextGrpcUtilitiesUnit",),
+        ".utilities": ("TestsFlextGrpcUtilities", "u"),
+        "flext_tests": ("d", "e", "h", "r", "td", "tf", "tk", "tm", "tv", "x"),
+    }),
     exclude_names=(
         "cleanup_submodule_namespace",
         "install_lazy_exports",
@@ -140,9 +109,4 @@ _LAZY_IMPORTS = merge_lazy_imports(
 )
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    publish_all=False,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)

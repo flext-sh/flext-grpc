@@ -22,9 +22,7 @@ class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings; fields under ``settings.Grpc.*``."""
 
     model_config = SettingsConfigDict(
-        env_prefix="FLEXT_GRPC_",
-        env_nested_delimiter="__",
-        extra="ignore",
+        env_prefix="FLEXT_GRPC_", env_nested_delimiter="__", extra="ignore"
     )
 
     class _Grpc(BaseModel):
