@@ -38,15 +38,15 @@ class TestsFlextGrpcConfig:
     def test_constructor_sets_namespaced_fields(self) -> None:
         """Nested namespace values are surfaced through settings.Grpc.*."""
         cfg = FlextGrpcSettings.model_validate({
-            "Grpc": {"host": "0.0.0.0", "port": 8080, "max_workers": 5}
+            "Grpc": {"host": "10.0.0.1", "port": 8080, "max_workers": 5}
         })
-        tm.that(cfg.Grpc.host, eq="0.0.0.0")
+        tm.that(cfg.Grpc.host, eq="10.0.0.1")
         tm.that(cfg.Grpc.port, eq=8080)
         tm.that(cfg.Grpc.max_workers, eq=5)
 
     @pytest.mark.parametrize(
         ("host", "port"),
-        [("127.0.0.1", 9090), ("192.168.1.100", 9090), ("0.0.0.0", 50051)],
+        [("127.0.0.1", 9090), ("192.168.1.100", 9090), ("10.0.0.1", 50051)],
     )
     def test_network_fields_round_trip(self, host: str, port: int) -> None:
         """Network host/port provided at construction are preserved."""

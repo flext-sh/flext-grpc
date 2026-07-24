@@ -10,7 +10,7 @@ from flext_core import r
 from flext_grpc import FlextGrpcModels, FlextGrpcUtilities, c, m, p, s
 from flext_grpc.proto.stubs import (
     FlextGrpcServiceServicer,
-    add_FlextGrpcServiceServicer_to_server,
+    add_flext_grpc_service_servicer_to_server,
 )
 from flext_grpc.services.metrics import FlextGrpcMetrics
 
@@ -132,7 +132,7 @@ class FlextGrpcServer(s):
             """Register configured services on the runtime server."""
             for _service in starting_server.services:
                 real_servicer = FlextGrpcServer._create_real_servicer(server_key)
-                add_FlextGrpcServiceServicer_to_server(real_servicer, grpc_server)
+                add_flext_grpc_service_servicer_to_server(real_servicer, grpc_server)
 
         def _activate_runtime_server(
             self,

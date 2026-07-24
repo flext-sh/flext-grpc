@@ -81,13 +81,13 @@ _PROTOCOL_NAMES: tuple[str, ...] = tuple(_PROTOCOL_CONTRACTS)
 
 def _build_conforming_instance(members: tuple[str, ...]) -> object:
     """Create an object exposing exactly ``members`` as callables."""
-    namespace = {name: (lambda self, *a, **k: None) for name in members}
+    namespace = {name: (lambda: None) for name in members}
     return type("Conforming", (), namespace)()
 
 
 def _build_partial_instance(members: tuple[str, ...], *, omit: str) -> object:
     """Create an object exposing every member except ``omit``."""
-    namespace = {name: (lambda self, *a, **k: None) for name in members if name != omit}
+    namespace = {name: (lambda: None) for name in members if name != omit}
     return type("Partial", (), namespace)()
 
 

@@ -86,15 +86,15 @@ class TestsFlextGrpcEntities:
         tm.fail(server.validate_business_rules(), has="host cannot be empty")
 
     @pytest.mark.parametrize(
-        ("port", "max_workers"),
-        [(70000, 10), (50051, 0)],
+        ("port", "max_workers", "match"),
+        [(70000, 10, "less_than_equal"), (50051, 0, "greater_than_equal")],
         ids=["out-of-range-port", "zero-workers"],
     )
     def test_server_construction_rejects_out_of_range_numeric_fields(
-        self, port: int, max_workers: int
+        self, port: int, max_workers: int, match: str
     ) -> None:
         """Port and worker-count bounds are enforced at construction time."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=match):
             m.Grpc.Server(
                 host="localhost",
                 port=port,
@@ -196,15 +196,20 @@ class TestsFlextGrpcEntities:
         tm.that(list(service.methods), eq=["m1", "m2"])
 
     @pytest.mark.parametrize(
-        ("name", "methods"),
-        [("TestService", []), ("", ["m1"]), ("  ", ["m1"]), ("S", [" "])],
+        ("name", "methods", "match"),
+        [
+            ("TestService", [], "methods cannot be empty"),
+            ("", ["m1"], "name cannot be empty"),
+            ("  ", ["m1"], "name cannot be empty"),
+            ("S", [" "], "method cannot be empty"),
+        ],
         ids=["empty-methods", "empty-name", "blank-name", "blank-method"],
     )
     def test_service_construction_rejects_invalid_name_or_methods(
-        self, name: str, methods: list[str]
+        self, name: str, methods: list[str], match: str
     ) -> None:
         """Service construction raises on empty/blank name or method entries."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match=match):
             m.Grpc.Service(name=name, methods=methods, domain_events=[])
 
     def test_service_add_method_appends_and_is_queryable(self) -> None:
@@ -238,7 +243,7 @@ class TestsFlextGrpcEntities:
         self, method_name: str
     ) -> None:
         """GrpcStream requires a non-empty method_name."""
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="method_name cannot be empty"):
             m.Grpc.GrpcStream(
                 unique_id="s",
                 method_name=method_name,

@@ -99,7 +99,7 @@ class FlextGrpcClient(s):
             result: p.Result[m.Grpc.Payload]
             if method == c.Grpc.ServiceMethod.ECHO.value:
                 echo_result = FlextGrpcUtilities.Grpc.call_runtime(
-                    lambda: stub.Echo(m.Grpc.EchoRequest(message=str(request)))
+                    lambda: stub.echo(m.Grpc.EchoRequest(message=str(request)))
                 )
                 if echo_result.failure:
                     result = r[m.Grpc.Payload].fail_op(
@@ -118,7 +118,7 @@ class FlextGrpcClient(s):
                     )
             elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
                 health_result = FlextGrpcUtilities.Grpc.call_runtime(
-                    lambda: stub.HealthCheck(
+                    lambda: stub.health_check(
                         m.Grpc.HealthRequest(service="FlextGrpcService")
                     )
                 )

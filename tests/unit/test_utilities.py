@@ -90,7 +90,7 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_validate_target_reflects_host_port_validity(
-        self, target: str, expected: bool
+        self, target: str, *, expected: bool
     ) -> None:
         """validate_target accepts only well-formed host:port strings."""
         tm.that(u.Grpc.validate_target(target), eq=expected)
@@ -111,7 +111,7 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_validate_port_enforces_inclusive_range(
-        self, port: int, expected: bool
+        self, port: int, *, expected: bool
     ) -> None:
         """Ports are valid only within the inclusive 1..65535 range."""
         tm.that(u.Grpc.validate_port(port), eq=expected)
@@ -120,7 +120,9 @@ class TestsFlextGrpcUtilitiesUnit:
         ("host", "expected"),
         [("localhost", True), ("127.0.0.1", True), ("", False), ("   ", False)],
     )
-    def test_validate_host_requires_non_blank(self, host: str, expected: bool) -> None:
+    def test_validate_host_requires_non_blank(
+        self, host: str, *, expected: bool
+    ) -> None:
         """A host is valid only when it is non-empty after stripping."""
         tm.that(u.Grpc.validate_host(host), eq=expected)
 
