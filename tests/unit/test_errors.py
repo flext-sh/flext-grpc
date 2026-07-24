@@ -50,8 +50,8 @@ class TestsFlextGrpcErrors:
         ("factory", "semantic_parent"),
         [
             (FlextGrpcErrors.ValidationError, e.ValidationError),
-            (FlextGrpcErrors.GrpcConnectionError, e.ConnectionError),
-            (FlextGrpcErrors.GrpcTimeoutError, e.TimeoutError),
+            (FlextGrpcErrors.GrpcConnectionError, e.FlextConnectionError),
+            (FlextGrpcErrors.GrpcTimeoutError, e.FlextTimeoutError),
             (FlextGrpcErrors.ConfigurationError, e.ConfigurationError),
         ],
     )
@@ -65,7 +65,7 @@ class TestsFlextGrpcErrors:
     def test_connection_error_is_not_a_validation_error(self) -> None:
         """Distinct categories do not collapse: a connection error is not validation."""
         message = "channel down"
-        with pytest.raises(e.ConnectionError) as caught:
+        with pytest.raises(e.FlextConnectionError) as caught:
             raise FlextGrpcErrors.GrpcConnectionError(message)
         assert not isinstance(caught.value, e.ValidationError)
 

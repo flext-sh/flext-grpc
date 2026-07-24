@@ -26,10 +26,10 @@ class FlextGrpcErrors(e):
             super().__init__(message)
             self.field = field
 
-    class GrpcConnectionError(e.ConnectionError):
+    class GrpcConnectionError(e.FlextConnectionError):
         """Connection error for gRPC channel failures."""
 
-    class GrpcTimeoutError(e.TimeoutError):
+    class GrpcTimeoutError(e.FlextTimeoutError):
         """Timeout error for gRPC operations that exceed time limits."""
 
     class ConfigurationError(e.ConfigurationError):
