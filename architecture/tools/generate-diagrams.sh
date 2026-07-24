@@ -78,13 +78,13 @@ generate_diagrams() {
 	local success_count=0
 
 	for puml_file in "${DIAGRAMS_DIR}"/*.puml; do
-		if [[ -f $puml_file ]]; then
-			local base_name=$(basename "$puml_file" .puml)
-			local output_file="${OUTPUT_DIR}/${output_subdir}/${base_name}.${format}"
+		if [[ -f ${puml_file} ]]; then
+			local base_name
+			base_name=$(basename "${puml_file}" .puml)
 
 			log_info "  Processing: ${base_name}.puml → ${base_name}.${format}"
 
-			if plantuml "${plantuml_option}" -o "${OUTPUT_DIR}/${output_subdir}" "$puml_file" 2>/dev/null; then
+			if plantuml "${plantuml_option}" -o "${OUTPUT_DIR}/${output_subdir}" "${puml_file}" 2>/dev/null; then
 				log_success "    ✓ Generated: ${base_name}.${format}"
 				((success_count++))
 			else
@@ -112,15 +112,18 @@ generate_ascii_diagrams() {
 validate_diagrams() {
 	log_info "Validating generated diagrams..."
 
-	local total_png=$(find "${OUTPUT_DIR}/png" -name "*.png" 2>/dev/null | wc -l)
-	local total_svg=$(find "${OUTPUT_DIR}/svg" -name "*.svg" 2>/dev/null | wc -l)
+	local total_png
+	total_png=$(find "${OUTPUT_DIR}/png" -name "*.png" 2>/dev/null | wc -l) || true
+	local total_svg
+	total_svg=$(find "${OUTPUT_DIR}/svg" -name "*.svg" 2>/dev/null | wc -l) || true
 
 	log_info "Found ${total_png} PNG files, ${total_svg} SVG files"
 
 	# Check file sizes (basic validation)
-	local empty_files=$(find "${OUTPUT_DIR}" -name "*.png" -o -name "*.svg" -size 0 2>/dev/null | wc -l)
+	local empty_files
+	empty_files=$(find "${OUTPUT_DIR}" -name "*.png" -o -name "*.svg" -size 0 2>/dev/null | wc -l) || true
 
-	if [[ $empty_files -gt 0 ]]; then
+	if [[ ${empty_files} -gt 0 ]]; then
 		log_warning "Found ${empty_files} empty diagram files"
 	else
 		log_success "All diagram files have content"
@@ -132,8 +135,15 @@ generate_index() {
 	log_info "Generating diagram index..."
 
 	local index_file="${OUTPUT_DIR}/README.md"
+	local generated_date
+	generated_date=$(date) || true
+	local plantuml_version
+	plantuml_version=$(plantuml -version 2>/dev/null | head -1) || true
+	if [[ -z ${plantuml_version} ]]; then
+		plantuml_version="version unknown"
+	fi
 
-	cat >"$index_file" <<'EOF'
+	cat >"${index_file}" <<'EOF'
 # Generated Architecture Diagrams
 
 This directory contains automatically generated architecture diagrams from PlantUML sources.
@@ -144,40 +154,42 @@ EOF
 
 	# Add PNG diagrams
 	if [[ -d "${OUTPUT_DIR}/png" ]]; then
-		echo "### PNG Diagrams" >>"$index_file"
-		echo "" >>"$index_file"
+		echo "### PNG Diagrams" >>"${index_file}"
+		echo "" >>"${index_file}"
 
 		for png_file in "${OUTPUT_DIR}/png"/*.png; do
-			if [[ -f $png_file ]]; then
-				local base_name=$(basename "$png_file" .png)
-				echo "- [${base_name}](${png_file}) - PNG format" >>"$index_file"
+			if [[ -f ${png_file} ]]; then
+				local base_name
+				base_name=$(basename "${png_file}" .png)
+				echo "- [${base_name}](${png_file}) - PNG format" >>"${index_file}"
 			fi
 		done
-		echo "" >>"$index_file"
+		echo "" >>"${index_file}"
 	fi
 
 	# Add SVG diagrams
 	if [[ -d "${OUTPUT_DIR}/svg" ]]; then
-		echo "### SVG Diagrams" >>"$index_file"
-		echo "" >>"$index_file"
+		echo "### SVG Diagrams" >>"${index_file}"
+		echo "" >>"${index_file}"
 
 		for svg_file in "${OUTPUT_DIR}/svg"/*.svg; do
-			if [[ -f $svg_file ]]; then
-				local base_name=$(basename "$svg_file" .svg)
-				echo "- [${base_name}](${svg_file}) - SVG format" >>"$index_file"
+			if [[ -f ${svg_file} ]]; then
+				local base_name
+				base_name=$(basename "${svg_file}" .svg)
+				echo "- [${base_name}](${svg_file}) - SVG format" >>"${index_file}"
 			fi
 		done
-		echo "" >>"$index_file"
+		echo "" >>"${index_file}"
 	fi
 
 	# Add generation info
-	cat >>"$index_file" <<EOF
+	cat >>"${index_file}" <<EOF
 
 ## Generation Information
 
-- **Generated**: $(date)
+- **Generated**: ${generated_date}
 - **Source**: PlantUML files in \`docs/architecture/diagrams/\`
-- **Tool**: PlantUML $(plantuml -version 2>/dev/null | head -1 || echo "version unknown")
+- **Tool**: PlantUML ${plantuml_version}
 - **Script**: \`docs/architecture/tools/generate-diagrams.sh\`
 
 ## Usage
@@ -255,20 +267,20 @@ main() {
 	setup_directories
 
 	# Generate diagrams
-	if [[ $generate_png == "true" ]]; then
+	if [[ ${generate_png} == "true" ]]; then
 		generate_diagrams "png" "png" ""
 	fi
 
-	if [[ $generate_svg == "true" ]]; then
+	if [[ ${generate_svg} == "true" ]]; then
 		generate_diagrams "svg" "svg" "-tsvg"
 	fi
 
-	if [[ $generate_ascii == "true" ]]; then
+	if [[ ${generate_ascii} == "true" ]]; then
 		generate_ascii_diagrams
 	fi
 
 	# Validate and create index
-	if [[ $skip_validation != "true" ]]; then
+	if [[ ${skip_validation} != "true" ]]; then
 		validate_diagrams
 	fi
 
