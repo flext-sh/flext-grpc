@@ -1,4 +1,4 @@
-# AUTO-GENERATED FILE — Regenerate with: make gen
+# @generated AUTO-GENERATED FILE — Regenerate with: make gen
 """Flext Grpc package."""
 
 from __future__ import annotations
@@ -6,89 +6,56 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
-from flext_grpc.__version__ import (
-    __author__ as __author__,
-    __author_email__ as __author_email__,
-    __description__ as __description__,
-    __license__ as __license__,
-    __title__ as __title__,
-    __url__ as __url__,
-    __version__ as __version__,
-    __version_info__ as __version_info__,
-)
+
+from .__version__ import __author__ as __author__
+from .__version__ import __author_email__ as __author_email__
+from .__version__ import __description__ as __description__
+from .__version__ import __license__ as __license__
+from .__version__ import __title__ as __title__
+from .__version__ import __url__ as __url__
+from .__version__ import __version__ as __version__
+from .__version__ import __version_info__ as __version_info__
 
 if TYPE_CHECKING:
-    from flext_core import d, e, h, r, x
+    from flext_core import d as d
+    from flext_core import e as e
+    from flext_core import h as h
+    from flext_core import r as r
+    from flext_core import x as x
 
-    from ._config import FlextGrpcConfig, config
-    from ._settings import FlextGrpcSettings, settings
-    from ._utilities.grpc import FlextGrpcUtilitiesGrpc
-    from .api import FlextGrpc, grpc
-    from .base import FlextGrpcServiceBase, s
-    from .constants import FlextGrpcConstants, FlextGrpcConstants as c
-    from .errors import FlextGrpcErrors
-    from .models import FlextGrpcModels, FlextGrpcModels as m
-    from .protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
-    from .services.api_runtime import FlextGrpcApiRuntime
-    from .services.client import FlextGrpcClient
-    from .services.connection_pool import FlextGrpcConnectionPool
-    from .services.metrics import FlextGrpcMetrics
-    from .services.server import FlextGrpcServer
-    from .services.stream import FlextGrpcStream
-    from .typings import FlextGrpcTypes, FlextGrpcTypes as t
-    from .utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
+    from ._config import FlextGrpcConfig as FlextGrpcConfig
+    from ._config import config as config
+    from ._settings import FlextGrpcSettings as FlextGrpcSettings
+    from ._settings import settings as settings
+    from .api import FlextGrpc as FlextGrpc
+    from .api import grpc as grpc
+    from .base import FlextGrpcServiceBase as FlextGrpcServiceBase
 
-    _ = (
-        c,
-        FlextGrpcConstants,
-        t,
-        FlextGrpcTypes,
-        p,
-        FlextGrpcProtocols,
-        m,
-        FlextGrpcModels,
-        u,
-        FlextGrpcUtilities,
-        d,
-        e,
-        h,
-        r,
-        x,
-        s,
-        FlextGrpcServiceBase,
-        FlextGrpcConfig,
-        config,
-        FlextGrpcSettings,
-        settings,
-        FlextGrpcUtilitiesGrpc,
-        FlextGrpc,
-        grpc,
-        FlextGrpcErrors,
-        FlextGrpcApiRuntime,
-        FlextGrpcClient,
-        FlextGrpcConnectionPool,
-        FlextGrpcMetrics,
-        FlextGrpcServer,
-        FlextGrpcStream,
-    )
+    s: type[FlextGrpcServiceBase]
+    from .constants import FlextGrpcConstants as FlextGrpcConstants
 
+    c: type[FlextGrpcConstants]
+    from .models import FlextGrpcModels as FlextGrpcModels
+
+    m: type[FlextGrpcModels]
+    from .protocols import FlextGrpcProtocols as FlextGrpcProtocols
+
+    p: type[FlextGrpcProtocols]
+    from .typings import FlextGrpcTypes as FlextGrpcTypes
+
+    t: type[FlextGrpcTypes]
+    from .utilities import FlextGrpcUtilities as FlextGrpcUtilities
+
+    u: type[FlextGrpcUtilities]
 
 _LAZY_MODULES: dict[str, tuple[str, ...]] = {
     "._config": ("FlextGrpcConfig", "config"),
     "._settings": ("FlextGrpcSettings", "settings"),
-    "._utilities.grpc": ("FlextGrpcUtilitiesGrpc",),
     ".api": ("FlextGrpc", "grpc"),
     ".base": ("FlextGrpcServiceBase", "s"),
     ".constants": ("FlextGrpcConstants", "c"),
-    ".errors": ("FlextGrpcErrors",),
     ".models": ("FlextGrpcModels", "m"),
     ".protocols": ("FlextGrpcProtocols", "p"),
-    ".services.api_runtime": ("FlextGrpcApiRuntime",),
-    ".services.client": ("FlextGrpcClient",),
-    ".services.connection_pool": ("FlextGrpcConnectionPool",),
-    ".services.metrics": ("FlextGrpcMetrics",),
-    ".services.server": ("FlextGrpcServer",),
-    ".services.stream": ("FlextGrpcStream",),
     ".typings": ("FlextGrpcTypes", "t"),
     ".utilities": ("FlextGrpcUtilities", "u"),
     "flext_core": ("d", "e", "h", "r", "x"),
@@ -102,24 +69,16 @@ _LAZY_IMPORTS = build_lazy_import_map(
     _LAZY_MODULES, alias_groups=_LAZY_ALIAS_GROUPS, sort_keys=False
 )
 
-_DIRECT_IMPORTS: tuple[str, ...] = (
+_PUBLIC_EXPORTS: tuple[str, ...] = (
     "FlextGrpc",
-    "FlextGrpcApiRuntime",
-    "FlextGrpcClient",
     "FlextGrpcConfig",
-    "FlextGrpcConnectionPool",
     "FlextGrpcConstants",
-    "FlextGrpcErrors",
-    "FlextGrpcMetrics",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
-    "FlextGrpcServer",
     "FlextGrpcServiceBase",
     "FlextGrpcSettings",
-    "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
-    "FlextGrpcUtilitiesGrpc",
     "__author__",
     "__author_email__",
     "__description__",
@@ -128,14 +87,12 @@ _DIRECT_IMPORTS: tuple[str, ...] = (
     "__url__",
     "__version__",
     "__version_info__",
-    "build_lazy_import_map",
     "c",
     "config",
     "d",
     "e",
     "grpc",
     "h",
-    "install_lazy_exports",
     "m",
     "p",
     "r",
@@ -146,43 +103,6 @@ _DIRECT_IMPORTS: tuple[str, ...] = (
     "x",
 )
 
-__all__: tuple[str, ...] = (
-    "FlextGrpc",
-    "FlextGrpcApiRuntime",
-    "FlextGrpcClient",
-    "FlextGrpcConnectionPool",
-    "FlextGrpcConstants",
-    "FlextGrpcMetrics",
-    "FlextGrpcModels",
-    "FlextGrpcProtocols",
-    "FlextGrpcServer",
-    "FlextGrpcServiceBase",
-    "FlextGrpcSettings",
-    "FlextGrpcStream",
-    "FlextGrpcTypes",
-    "FlextGrpcUtilities",
-    "__author__",
-    "__author_email__",
-    "__description__",
-    "__license__",
-    "__title__",
-    "__url__",
-    "__version__",
-    "__version_info__",
-    "c",
-    "d",
-    "e",
-    "grpc",
-    "h",
-    "m",
-    "p",
-    "r",
-    "s",
-    "settings",
-    "t",
-    "u",
-    "x",
-)
-
+__all__: tuple[str, ...] = tuple(_PUBLIC_EXPORTS)
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

@@ -1,8 +1,27 @@
-# AUTO-GENERATED FILE — Regenerate with: make gen
-"""Utilities package."""
+# @generated AUTO-GENERATED FILE — Regenerate with: make gen
+"""Flext Grpc. Utilities package."""
 
 from __future__ import annotations
 
-from .grpc import FlextGrpcUtilitiesGrpc as FlextGrpcUtilitiesGrpc
+from typing import TYPE_CHECKING
 
-__all__: tuple[str, ...] = ("FlextGrpcUtilitiesGrpc",)
+from flext_core.lazy import build_lazy_import_map, install_lazy_exports
+
+if TYPE_CHECKING:
+    from .grpc import FlextGrpcUtilitiesGrpc as FlextGrpcUtilitiesGrpc
+
+_LAZY_MODULES: dict[str, tuple[str, ...]] = {".grpc": ("FlextGrpcUtilitiesGrpc",)}
+
+
+_LAZY_ALIAS_GROUPS: dict[str, tuple[tuple[str, str], ...]] = {}
+
+
+_LAZY_IMPORTS = build_lazy_import_map(
+    _LAZY_MODULES, alias_groups=_LAZY_ALIAS_GROUPS, sort_keys=False
+)
+
+_PUBLIC_EXPORTS: tuple[str, ...] = ("FlextGrpcUtilitiesGrpc",)
+
+__all__: tuple[str, ...] = tuple(_PUBLIC_EXPORTS)
+
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)
