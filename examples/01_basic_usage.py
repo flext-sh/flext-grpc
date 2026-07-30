@@ -12,13 +12,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import u as cli_u
+from flext_cli import cli
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
 
 
 def _emit(message: str) -> None:
     """Emit example output through the canonical CLI facade."""
-    cli_u.Cli.formatters_u.Cli.print(message)
+    cli.print(message)
 
 
 def example_1_basic_entities() -> None:
