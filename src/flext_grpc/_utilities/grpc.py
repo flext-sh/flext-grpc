@@ -108,7 +108,7 @@ class FlextGrpcUtilitiesGrpc:
         return str(exception)
 
     @staticmethod
-    def runtime_failure_message[TValue](result: p.ResultLike[TValue]) -> str:
+    def runtime_failure_message[TValue](result: p.Result[TValue]) -> str:
         """Return the most useful error message from a grpc runtime result."""
         if result.exception is not None:
             return FlextGrpcUtilitiesGrpc.runtime_error_message(result.exception)
