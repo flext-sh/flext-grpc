@@ -317,7 +317,7 @@ class FlextGrpcModels(m):
                 t.JsonMapping | None, u.Field(description="Request data")
             ] = None
 
-            @u.computed_field()
+            @u.computed_field
             @property
             def valid(self) -> bool:
                 """Check if request is valid."""
@@ -338,7 +338,7 @@ class FlextGrpcModels(m):
                 u.Field(description="Response metadata"),
             ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
-            @u.computed_field()
+            @u.computed_field
             @property
             def has_error(self) -> bool:
                 """Check if response has error."""
