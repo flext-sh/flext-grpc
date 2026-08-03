@@ -12,10 +12,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
-from pydantic import BaseModel, Field
 from pydantic_settings import SettingsConfigDict
 
-from flext_core import FlextSettings
+from flext_core import FlextSettings, m
 
 
 class FlextGrpcSettings(FlextSettings):
@@ -25,24 +24,24 @@ class FlextGrpcSettings(FlextSettings):
         env_prefix="FLEXT_GRPC_", env_nested_delimiter="__", extra="ignore"
     )
 
-    class _Grpc(BaseModel):
+    class _Grpc(m.BaseModel):
         """Namespaced gRPC runtime settings."""
 
-        host: Annotated[str, Field(default="127.0.0.1", description="gRPC bind host")]
+        host: Annotated[str, m.Field(default="127.0.0.1", description="gRPC bind host")]
         port: Annotated[
-            int, Field(default=50051, ge=1, le=65535, description="gRPC bind port")
+            int, m.Field(default=50051, ge=1, le=65535, description="gRPC bind port")
         ]
         max_workers: Annotated[
-            int, Field(default=100, ge=1, description="Max worker threads")
+            int, m.Field(default=100, ge=1, description="Max worker threads")
         ]
         timeout: Annotated[
-            float, Field(default=30.0, gt=0, description="Request timeout (s)")
+            float, m.Field(default=30.0, gt=0, description="Request timeout (s)")
         ]
 
     if TYPE_CHECKING:
         Grpc: _Grpc
     else:
-        Grpc: _Grpc = Field(
+        Grpc: _Grpc = m.Field(
             default_factory=_Grpc, description="Namespaced gRPC settings."
         )
 
