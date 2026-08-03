@@ -12,43 +12,22 @@ if TYPE_CHECKING:
         ExamplesFlextGrpcTypes as ExamplesFlextGrpcTypes,
         t as t,
     )
-    from flext_core import (
+    from flext_grpc import (
         c as c,
         d as d,
         e as e,
         h as h,
         m as m,
-        p as p,
+        p,
         r as r,
         s as s,
-        u as u,
+        u,
         x as x,
     )
-_LAZY_IMPORTS = build_lazy_import_map(
-    {
-        ".typings": (
-            "ExamplesFlextGrpcTypes",
-            "t",
-        ),
-        "flext_core": (
-            "c",
-            "d",
-            "e",
-            "h",
-            "m",
-            "p",
-            "r",
-            "s",
-            "u",
-            "x",
-        ),
-    },
-)
+_LAZY_IMPORTS = build_lazy_import_map({
+    ".typings": ("ExamplesFlextGrpcTypes", "t"),
+    "flext_grpc": ("c", "d", "e", "h", "m", "p", "r", "s", "u", "x"),
+})
 
 
-install_lazy_exports(
-    __name__,
-    globals(),
-    _LAZY_IMPORTS,
-    publish_all=False,
-)
+install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, publish_all=False)

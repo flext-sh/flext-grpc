@@ -13,21 +13,22 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import u as cli_u
-from flext_core import p, r
+from flext_cli import cli
 from flext_grpc import (
     FlextGrpc,
     FlextGrpcConstants,
     FlextGrpcModels,
     FlextGrpcSettings,
     c,
+    p,
+    r,
     t,
 )
 
 
 def _emit(message: str) -> None:
     """Emit example output through the canonical CLI facade."""
-    cli_u.Cli.formatters_print(message)
+    cli.print(message)
 
 
 class GrpcServerManager:
@@ -36,13 +37,11 @@ class GrpcServerManager:
     def __init__(self) -> None:
         """Initialize the gRPC server manager with facade."""
         self.grpc = FlextGrpc()
-        self.servers: dict[str, FlextGrpcModels.Grpc.Server] = {}
-        self.server_configs: dict[str, FlextGrpcSettings] = {}
+        self.servers: t.MutableMappingKV[str, FlextGrpcModels.Grpc.Server] = {}
+        self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
 
     def create_server_pool(
-        self,
-        base_port: int = 8000,
-        count: int = 3,
+        self, base_port: int = 8000, count: int = 3
     ) -> list[p.Result[FlextGrpcModels.Grpc.Server]]:
         """Create a pool of servers on consecutive ports through facade."""
         server_results: list[p.Result[FlextGrpcModels.Grpc.Server]] = []
@@ -50,15 +49,17 @@ class GrpcServerManager:
             server_id = f"pool-server-{i}"
             port = base_port + i
             settings = FlextGrpcSettings.model_validate({
-                "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
-                "port": port,
-                "max_workers": 10 + i * 5,
+                "Grpc": {
+                    "host": FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
+                    "port": port,
+                    "max_workers": 10 + i * 5,
+                }
             })
             self.server_configs[server_id] = settings
             server_result = self.grpc.create_server(
-                host=settings.network.host,
-                port=settings.network.port,
-                max_workers=settings.performance.max_workers,
+                host=settings.Grpc.host,
+                port=settings.Grpc.port,
+                max_workers=settings.Grpc.max_workers,
             )
             if server_result.success:
                 server = server_result.value
@@ -66,24 +67,24 @@ class GrpcServerManager:
             server_results.append(server_result)
         return server_results
 
-    def server_status(self) -> dict[str, dict[str, str]]:
+    def server_status(self) -> t.MappingKV[str, t.MappingKV[str, str]]:
         """Get status of all servers through facade."""
-        status: dict[str, dict[str, str]] = {}
+        status: t.MutableMappingKV[str, t.MappingKV[str, str]] = {}
         for server_id, server in self.servers.items():
             settings = self.server_configs[server_id]
             status[server_id] = {
                 "address": f"{server.host}:{server.port}",
                 "state": server.state,
                 "max_workers": str(server.max_workers),
-                "timeout": f"{settings.timeout}s",
+                "timeout": f"{settings.Grpc.timeout}s",
                 "is_running": str(server.state == "running"),
                 "valid": str(server.validate_business_rules().success),
             }
         return status
 
-    def start_all_servers(self) -> dict[str, bool]:
+    def start_all_servers(self) -> t.MappingKV[str, bool]:
         """Start all servers in the pool through facade."""
-        results: dict[str, bool] = {}
+        results: t.MutableMappingKV[str, bool] = {}
         for server_id, server in self.servers.items():
             start_result = self.grpc.start_server(server)
             if start_result.success:
@@ -93,9 +94,9 @@ class GrpcServerManager:
                 results[server_id] = False
         return results
 
-    def stop_all_servers(self) -> dict[str, bool]:
+    def stop_all_servers(self) -> t.MappingKV[str, bool]:
         """Stop all servers in the pool through facade."""
-        results: dict[str, bool] = {}
+        results: t.MutableMappingKV[str, bool] = {}
         for server_id, server in self.servers.items():
             if server.state == "running":
                 stop_result = self.grpc.stop_server(server)
@@ -127,14 +128,11 @@ class AdvancedGrpcOperations:
         if methods is None:
             methods = ["ProcessData", "GetStatus", "StreamResults"]
         setup_result = self.grpc.create_complete_setup(
-            host=host,
-            port=port,
-            service_name=service_name,
-            methods=methods,
+            host=host, port=port, service_name=service_name, methods=methods
         )
         if setup_result.failure:
             return r[FlextGrpcModels.Grpc.CompleteSetup].fail(
-                setup_result.error or "Setup failed",
+                setup_result.error or "Setup failed"
             )
         setup = setup_result.value
         return r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
@@ -149,8 +147,7 @@ class AdvancedGrpcOperations:
         ]
         for method_name, stream_type in stream_configs:
             stream_result = self.grpc.create_stream(
-                method_name=method_name,
-                stream_type=stream_type,
+                method_name=method_name, stream_type=stream_type
             )
             if stream_result.success:
                 stream = stream_result.value
@@ -160,7 +157,7 @@ class AdvancedGrpcOperations:
 
 
 def example_1_server_pool() -> None:
-    """Example 1: Server pool management through facade."""
+    """Manage a server pool through the facade."""
     manager = GrpcServerManager()
     server_results = manager.create_server_pool(base_port=8000, count=3)
     successful_creations = sum(1 for result in server_results if result.success)
@@ -177,7 +174,7 @@ def example_1_server_pool() -> None:
 
 
 def example_2_client_pool() -> None:
-    """Example 2: Advanced operations through facade."""
+    """Run advanced operations through the facade."""
     ops = AdvancedGrpcOperations()
     setup_result = ops.create_complete_setup(
         host="localhost",
@@ -194,7 +191,7 @@ def example_2_client_pool() -> None:
 
 
 def example_3_service_creation() -> None:
-    """Example 3: Service creation patterns through facade."""
+    """Demonstrate service creation patterns through the facade."""
     grpc = FlextGrpc()
     services = [
         ("UserService", ["GetUser", "CreateUser", "UpdateUser"]),
@@ -208,7 +205,7 @@ def example_3_service_creation() -> None:
             service = service_result.value
             created_services.append(service)
             _emit(
-                f"Created service: {service.name} with {len(service.methods)} methods",
+                f"Created service: {service.name} with {len(service.methods)} methods"
             )
         else:
             _emit(f"Failed to create {service_name}: {service_result.error}")
@@ -216,7 +213,7 @@ def example_3_service_creation() -> None:
 
 
 def example_4_streaming() -> None:
-    """Example 4: Streaming operations through facade."""
+    """Run streaming operations through the facade."""
     grpc = FlextGrpc()
     stream_configs: t.SequenceOf[tuple[str, str]] = [
         ("GetUser", "unary"),
@@ -227,8 +224,7 @@ def example_4_streaming() -> None:
     created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
     for method_name, stream_type in stream_configs:
         stream_result = grpc.create_stream(
-            method_name=method_name,
-            stream_type=stream_type,
+            method_name=method_name, stream_type=stream_type
         )
         if stream_result.success:
             stream = stream_result.value
@@ -240,7 +236,7 @@ def example_4_streaming() -> None:
 
 
 def example_5_error_handling() -> None:
-    """Example 5: Comprehensive error handling through facade."""
+    """Demonstrate comprehensive error handling through the facade."""
     grpc = FlextGrpc()
     _emit("Testing various error scenarios through FlextGrpc facade...")
     invalid_server_result = grpc.create_server(host="", port=0)

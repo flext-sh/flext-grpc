@@ -6,9 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_tests import FlextTestsProtocols
-
 from flext_grpc import FlextGrpcProtocols
+from flext_tests import FlextTestsProtocols
 
 
 class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):

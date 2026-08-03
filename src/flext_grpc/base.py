@@ -30,19 +30,13 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
 
     @property
     def grpc_config(self) -> FlextGrpcSettings:
-        """Return runtime gRPC configuration bound to this facade instance."""
+        """Runtime gRPC configuration bound to this facade instance."""
         return self._grpc_config
 
     @override
     def execute(self) -> p.Result[FlextGrpcSettings]:
         """Default service execution surface."""
         return r[FlextGrpcSettings].ok(self.grpc_config)
-
-    @property
-    @override
-    def settings(self) -> FlextGrpcSettings:
-        """Return the typed gRPC settings singleton (rule 1, propagating)."""
-        return FlextGrpcSettings.fetch_global()
 
 
 s = FlextGrpcServiceBase

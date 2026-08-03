@@ -1,0 +1,58 @@
+@startuml FLEXT-gRPC Deployment Diagram
+!include <C4/C4_Deployment>
+
+title FLEXT-gRPC Deployment Diagram
+
+Deployment_Node(docker_host, "Docker Host", "Linux Container Runtime") {
+    Deployment_Node(flext_app, "FLEXT Application", "Python 3.13 Application") {
+        Container(flext_grpc_lib, "FLEXT-gRPC Library", "Python Library", "gRPC communication patterns")
+        Container(application_code, "Application Code", "Python", "Business logic using FLEXT-gRPC")
+    }
+}
+
+Deployment_Node(kubernetes, "Kubernetes Cluster", "Container Orchestration") {
+    Deployment_Node(pod, "Application Pod", "Kubernetes Pod") {
+        Container(app_container, "Application Container", "Python App", "Main application with FLEXT-gRPC")
+        Container(sidecar, "Envoy Proxy", "Service Mesh", "Traffic management and security")
+    }
+
+    Deployment_Node(services, "Service Mesh") {
+        Container(istio_pilot, "Istio Pilot", "Service Discovery", "Service registration and discovery")
+        Container(istio_mixer, "Istio Mixer", "Policy Enforcement", "Security and telemetry policies")
+    }
+}
+
+Deployment_Node(monitoring, "Monitoring Infrastructure") {
+    Container(prometheus, "Prometheus", "Metrics Collection", "Time-series metrics database")
+    Container(grafana, "Grafana", "Visualization", "Metrics dashboards and alerting")
+    Container(jaeger, "Jaeger", "Distributed Tracing", "Request tracing and visualization")
+}
+
+Deployment_Node(security, "Security Infrastructure") {
+    Container(vault, "HashiCorp Vault", "Secrets Management", "Secure credential storage")
+    Container(cert_manager, "cert-manager", "Certificate Management", "TLS certificate lifecycle")
+    Container(oauth_server, "OAuth Server", "Identity Provider", "Authentication and authorization")
+}
+
+System_Ext(user_client, "Client Applications", "Web, Mobile, CLI clients")
+System_Ext(external_services, "External Services", "Third-party APIs, databases")
+
+Rel(user_client, flext_app, "Uses", "HTTP/gRPC requests")
+Rel(flext_app, external_services, "Communicates with", "API calls, database queries")
+
+Rel(flext_grpc_lib, services, "Registers with", "Service discovery")
+Rel(flext_grpc_lib, monitoring, "Exports metrics to", "Prometheus format")
+Rel(flext_grpc_lib, security, "Authenticates via", "mTLS certificates")
+
+Rel(pod, istio_pilot, "Registers", "Service discovery")
+Rel(pod, istio_mixer, "Enforces", "Security policies")
+Rel(sidecar, external_services, "Routes traffic to", "Load balancing")
+
+Rel(app_container, prometheus, "Pushes metrics", "HTTP POST")
+Rel(app_container, jaeger, "Sends traces", "UDP/gRPC")
+
+Rel(flext_grpc_lib, vault, "Retrieves secrets", "API calls")
+Rel(flext_grpc_lib, cert_manager, "Requests certificates", "Kubernetes API")
+Rel(flext_grpc_lib, oauth_server, "Validates tokens", "JWT validation")
+
+@enduml

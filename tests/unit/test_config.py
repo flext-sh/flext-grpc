@@ -1,129 +1,91 @@
-"""Tests for flext_grpc.settings module."""
+"""Behavioral tests for the flext_grpc._settings public contract.
+
+Exercises FlextGrpcSettings through its public API only: the namespaced
+``settings.Grpc.*`` scalar fields, constructor/model_validate inputs, field
+range validation, and the singleton lifecycle helpers. No private attributes,
+no internal-collaborator spying.
+"""
 
 from __future__ import annotations
 
-from collections.abc import Callable
-
 import pytest
+
+from flext_grpc import FlextGrpcSettings, settings
 from flext_tests import tm
-
-from flext_grpc import FlextGrpcSettings, p
-
-
-@pytest.fixture(autouse=True)
-def clear_grpc_env(monkeypatch: pytest.MonkeyPatch) -> None:
-    """Ensure settings tests are isolated from environment overrides."""
-    for env_key in (
-        "FLEXT_GRPC_HOST",
-        "FLEXT_GRPC_PORT",
-        "FLEXT_GRPC_MAX_WORKERS",
-        "FLEXT_GRPC_TIMEOUT",
-        "FLEXT_GRPC_SECURITY",
-        "FLEXT_GRPC_STREAMING",
-    ):
-        monkeypatch.delenv(env_key, raising=False)
 
 
 class TestsFlextGrpcConfig:
-    """Test cases for FlextGrpcSettings class."""
+    """Behavioral contract for FlextGrpcSettings."""
 
-    def test_init_default(self) -> None:
-        """Test default configuration initialization."""
-        settings = FlextGrpcSettings.model_validate({})
-        tm.that(settings, none=False)
-        tm.that(settings.host, is_=str)
-        tm.that(settings.host.strip(), ne="")
-        tm.that(settings.port, gte=1, lte=65535)
-        tm.that(settings.max_workers, gte=1, lte=100)
+    def test_defaults_satisfy_public_invariants(self) -> None:
+        """An empty configuration yields sane, in-range namespaced field values."""
+        cfg = FlextGrpcSettings()
+        tm_grpc = cfg.Grpc
+        tm.that(tm_grpc.host, is_=str)
+        tm.that(tm_grpc.host.strip(), ne="")
+        assert 1 <= tm_grpc.port <= 65535
+        assert tm_grpc.max_workers >= 1
+        assert abs(tm_grpc.timeout - 30.0) < 0.01
 
-    def test_init_custom(self) -> None:
-        """Test custom configuration initialization."""
-        settings = FlextGrpcSettings(host="0.0.0.0", port=8080, max_workers=5)
-        tm.that(settings.host, eq="0.0.0.0")
-        tm.that(settings.port, eq=8080)
-        tm.that(settings.max_workers, eq=5)
+    def test_default_namespace_values(self) -> None:
+        """Documented default namespace values are exposed verbatim."""
+        grpc = FlextGrpcSettings().Grpc
+        tm.that(grpc.host, eq="127.0.0.1")
+        tm.that(grpc.port, eq=50051)
+        tm.that(grpc.max_workers, eq=100)
+        assert abs(grpc.timeout - 30.0) < 0.01
 
-    def test_validate_configuration(self) -> None:
-        """Test configuration validation method."""
-        tm.ok(FlextGrpcSettings.model_validate({}).validate_configuration())
+    def test_constructor_sets_namespaced_fields(self) -> None:
+        """Nested namespace values are surfaced through settings.Grpc.*."""
+        cfg = FlextGrpcSettings.model_validate({
+            "Grpc": {"host": "10.0.0.1", "port": 8080, "max_workers": 5}
+        })
+        tm.that(cfg.Grpc.host, eq="10.0.0.1")
+        tm.that(cfg.Grpc.port, eq=8080)
+        tm.that(cfg.Grpc.max_workers, eq=5)
 
     @pytest.mark.parametrize(
-        "factory",
-        [
-            FlextGrpcSettings.create_production_config,
-            FlextGrpcSettings.create_development_config,
-        ],
-        ids=["production", "development"],
+        ("host", "port"),
+        [("127.0.0.1", 9090), ("192.168.1.100", 9090), ("10.0.0.1", 50051)],
     )
-    def test_create_environment_config(
-        self, factory: Callable[[], p.Result[FlextGrpcSettings]]
-    ) -> None:
-        """Production/development factories return validated FlextGrpcSettings."""
-        tm.ok(factory(), is_=FlextGrpcSettings)
+    def test_network_fields_round_trip(self, host: str, port: int) -> None:
+        """Network host/port provided at construction are preserved."""
+        cfg = FlextGrpcSettings.model_validate({"Grpc": {"host": host, "port": port}})
+        tm.that(cfg.Grpc.host, eq=host)
+        tm.that(cfg.Grpc.port, eq=port)
 
-    def test_properties(self) -> None:
-        """Test configuration properties."""
-        settings = FlextGrpcSettings(
-            host="127.0.0.1",
-            port=8080,
-            max_workers=20,
-            security={"tls_enabled": False},
-            streaming={"enabled": True},
-        )
-        tm.that(settings.host, eq="127.0.0.1")
-        tm.that(settings.port, eq=8080)
-        tm.that(settings.max_workers, eq=20)
-        tm.that(abs(settings.timeout - 30.0), lt=0.01)
-        tm.that(settings.tls_enabled, eq=False)
-        tm.that(settings.streaming_enabled, eq=True)
+    @pytest.mark.parametrize("bad_port", [0, -1, 65536, 70000])
+    def test_out_of_range_port_is_rejected(self, bad_port: int) -> None:
+        """Ports outside 1..65535 fail validation (ValidationError <: ValueError)."""
+        with pytest.raises(ValueError, match=r".*"):
+            FlextGrpcSettings.model_validate({"Grpc": {"port": bad_port}})
 
-    def test_config_with_custom_network(self) -> None:
-        """Test configuration with custom network settings."""
-        settings = FlextGrpcSettings(host="192.168.1.100", port=9090)
-        tm.that(settings.host, eq="192.168.1.100")
-        tm.that(settings.port, eq=9090)
+    @pytest.mark.parametrize("bad_workers", [0, -1])
+    def test_non_positive_max_workers_is_rejected(self, bad_workers: int) -> None:
+        """max_workers below 1 fails validation."""
+        with pytest.raises(ValueError, match=r".*"):
+            FlextGrpcSettings.model_validate({"Grpc": {"max_workers": bad_workers}})
 
-    def test_security_config_validation_insecure(self) -> None:
-        """Client certificates without TLS must fail configuration validation."""
-        result = FlextGrpcSettings.model_validate({
-            "security": {"tls_enabled": False, "client_cert_required": True},
-        }).validate_configuration()
-        tm.fail(result, has="Client certificates require TLS to be enabled")
+    def test_model_dump_round_trips_through_model_validate(self) -> None:
+        """Dumping and re-validating reproduces the same namespaced state."""
+        original = FlextGrpcSettings.model_validate({
+            "Grpc": {"host": "10.0.0.5", "port": 6000, "max_workers": 7}
+        })
+        restored = FlextGrpcSettings.model_validate(original.model_dump())
+        tm.that(restored.Grpc.host, eq="10.0.0.5")
+        tm.that(restored.Grpc.port, eq=6000)
+        tm.that(restored.Grpc.max_workers, eq=7)
 
-    def test_security_config_validation_secure(self) -> None:
-        """Client certificates with TLS must pass configuration validation."""
-        tm.ok(
-            FlextGrpcSettings.model_validate({
-                "security": {"tls_enabled": True, "client_cert_required": True},
-            }).validate_configuration()
-        )
+    def test_module_singleton_is_usable(self) -> None:
+        """The exported singleton exposes the namespaced surface directly."""
+        tm.that(settings, is_=FlextGrpcSettings)
+        tm.that(settings.Grpc.port, is_=int)
 
-    def test_performance_config_defaults(self) -> None:
-        """Test performance configuration defaults."""
-        perf = FlextGrpcSettings.model_validate({}).performance
-        tm.that(perf.max_workers, eq=100)
-        tm.that(perf.max_concurrent_rpcs, eq=1000)
-        tm.that(perf.max_receive_message_length, eq=4 * 1024 * 1024)
-
-    def test_streaming_config_defaults(self) -> None:
-        """Test streaming configuration defaults."""
-        stream = FlextGrpcSettings.model_validate({}).streaming
-        tm.that(stream.enabled, eq=True)
-        tm.that(stream.max_concurrent_streams, eq=10)
-        tm.that(stream.stream_buffer_size, eq=500)
-        tm.that(stream.max_stream_duration, eq=300)
-
-    def test_client_config_defaults(self) -> None:
-        """Test client configuration defaults."""
-        client = FlextGrpcSettings.model_validate({}).client
-        tm.that(client.target, has=":")
-        tm.that(abs(client.timeout - 30.0), lt=0.01)
-
-    def test_monitoring_config_defaults(self) -> None:
-        """Test monitoring configuration defaults."""
-        monitoring = FlextGrpcSettings.model_validate({}).monitoring
-        tm.that(monitoring.metrics_enabled, eq=True)
-        tm.that(monitoring.tracing_enabled, eq=False)
-        tm.that(monitoring.health_check_enabled, eq=True)
-        tm.that(monitoring.health_check_interval, eq=30)
-        tm.that(monitoring.log_level, eq="INFO")
+    def test_singleton_lifecycle_helpers(self) -> None:
+        """fetch_global returns the shared instance; reset recreates it."""
+        first = FlextGrpcSettings.fetch_global()
+        second = FlextGrpcSettings.fetch_global()
+        assert first is second
+        FlextGrpcSettings.reset_for_testing()
+        third = FlextGrpcSettings.fetch_global()
+        assert third is not first

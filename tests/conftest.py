@@ -8,9 +8,7 @@ from __future__ import annotations
 
 import pytest
 
-from flext_grpc import (
-    FlextGrpc,
-)
+from flext_grpc import FlextGrpc
 from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
 from flext_grpc.services.metrics import FlextGrpcMetrics
 

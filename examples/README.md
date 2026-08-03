@@ -179,7 +179,8 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Example Usage**:
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
 from datetime import datetime, timezone
@@ -213,7 +214,8 @@ service_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
 # Production configuration
@@ -298,7 +300,8 @@ poetry run python examples/advanced_usage.py
 
 ### Entity Creation Pattern
 
-```python notest
+```python
+from __future__ import annotations
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
 
@@ -322,7 +325,9 @@ print(f"Server created: {server.id}")
 
 ### Service Operation Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import FlextGrpcServerService
 
 # Service operations with r handling
@@ -338,7 +343,9 @@ else:
 
 ### Platform Usage Pattern
 
-```python notest
+```python
+from __future__ import annotations
+from flext_core import t
 from flext_grpc import FlextGrpcPlatform
 
 # Platform operations for unified management
@@ -431,7 +438,9 @@ For current development gaps and realistic timelines, see [../docs/TODO.md](../d
 
 ### Example Template
 
-```python notest
+```python
+from __future__ import annotations
+
 """
 Example: [Brief Description]
 
@@ -450,25 +459,7 @@ Version: 0.12.0-dev
 """
 
 from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
-from flext_core import FlextBus
 from flext_core import FlextSettings
-from flext_core import FlextConstants
-from flext_core import FlextContainer
-from flext_core import FlextContext
-from flext_core import d
-from flext_core import FlextDispatcher
-from flext_core import e
-from flext_core import h
-from flext_core import x
-from flext_core import FlextModels
-from flext_core import FlextProcessors
-from flext_core import p
-from flext_core import FlextRegistry
-from flext_core import r, p
-from flext_core import u
-from flext_core import s
-from flext_core import t
-from flext_core import u
 from datetime import datetime, timezone
 
 

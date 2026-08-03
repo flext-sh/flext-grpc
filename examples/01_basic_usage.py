@@ -12,17 +12,17 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import u as cli_u
+from flext_cli import cli
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
 
 
 def _emit(message: str) -> None:
     """Emit example output through the canonical CLI facade."""
-    cli_u.Cli.formatters_print(message)
+    cli.print(message)
 
 
 def example_1_basic_entities() -> None:
-    """Example 1: Creating and using basic gRPC entities through FlextGrpc facade."""
+    """Create and use basic gRPC entities through the FlextGrpc facade."""
     grpc = FlextGrpc()
     server_result = grpc.create_server(
         host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
@@ -35,10 +35,10 @@ def example_1_basic_entities() -> None:
         if validation_result.failure:
             _emit(f"Server validation failed: {validation_result.error}")
     grpc.create_channel(
-        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
     )
     client_result = grpc.create_client(
-        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
     )
     if client_result.failure:
         _emit(f"Client creation failed: {client_result.error}")
@@ -51,18 +51,17 @@ def example_1_basic_entities() -> None:
 
 
 def example_2_configuration() -> None:
-    """Example 2: Using configuration through FlextGrpc facade."""
+    """Use configuration through the FlextGrpc facade."""
     grpc = FlextGrpc()
     default_config = FlextGrpcSettings()
     _emit(
-        f"Created settings with host: {default_config.network.host}, port: {default_config.network.port}",
+        f"Created settings with host: {default_config.Grpc.host}, port: {default_config.Grpc.port}"
     )
     custom_config = FlextGrpcSettings.model_validate({
-        "network": {"host": "example.com", "port": 9090},
-        "performance": {"max_workers": 20},
+        "Grpc": {"host": "example.com", "port": 9090, "max_workers": 20}
     })
     _emit(
-        f"Created custom settings: {custom_config.network.host}:{custom_config.network.port}",
+        f"Created custom settings: {custom_config.Grpc.host}:{custom_config.Grpc.port}"
     )
     invalid_server_result = grpc.create_server(host="", port=0)
     if invalid_server_result.failure:
@@ -70,11 +69,10 @@ def example_2_configuration() -> None:
 
 
 def example_3_operations() -> None:
-    """Example 3: Using gRPC operations through FlextGrpc facade."""
+    """Use gRPC operations through the FlextGrpc facade."""
     grpc = FlextGrpc()
     server_result = grpc.create_server(
-        host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
-        port=7070,
+        host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST, port=7070
     )
     if server_result.success:
         server = server_result.value
@@ -88,18 +86,16 @@ def example_3_operations() -> None:
             if stop_result.success:
                 _emit("Server stopped successfully")
     client_result = grpc.create_client(
-        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070"
     )
     if client_result.success:
         connect_result = grpc.connect_client(
-            f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070",
+            f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:7070"
         )
         if connect_result.success:
             connected_client = connect_result.value
             call_result = grpc.make_call(
-                connected_client,
-                "GetServerInfo",
-                {"request_id": "12345"},
+                connected_client, "GetServerInfo", {"request_id": "12345"}
             )
             if call_result.success:
                 _emit(f"Call result: {call_result.value}")
@@ -109,7 +105,7 @@ def example_3_operations() -> None:
 
 
 def example_4_validation() -> None:
-    """Example 4: Domain validation through FlextGrpc facade."""
+    """Validate domains through the FlextGrpc facade."""
     grpc = FlextGrpc()
     valid_server_result = grpc.create_server(
         host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST,
@@ -124,10 +120,10 @@ def example_4_validation() -> None:
     invalid_server_result = grpc.create_server(host="", port=0, max_workers=0)
     if invalid_server_result.failure:
         _emit(
-            f"Invalid server creation failed as expected: {invalid_server_result.error}",
+            f"Invalid server creation failed as expected: {invalid_server_result.error}"
         )
     valid_channel_result = grpc.create_channel(
-        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
     )
     if valid_channel_result.success:
         valid_channel = valid_channel_result.value
@@ -137,15 +133,15 @@ def example_4_validation() -> None:
     invalid_channel_result = grpc.create_channel(target="")
     if invalid_channel_result.failure:
         _emit(
-            f"Invalid channel creation failed as expected: {invalid_channel_result.error}",
+            f"Invalid channel creation failed as expected: {invalid_channel_result.error}"
         )
 
 
 def example_5_state_transitions() -> None:
-    """Example 5: State transitions through FlextGrpc facade."""
+    """Exercise state transitions through the FlextGrpc facade."""
     grpc = FlextGrpc()
     channel_result = grpc.create_channel(
-        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
+        target=f"{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST}:{FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
     )
     if channel_result.success:
         channel = channel_result.value

@@ -1,0 +1,3 @@
+Grpc:
+  name: flext-grpc
+  version: "0.12.0-dev"

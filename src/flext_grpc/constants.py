@@ -56,7 +56,7 @@ class FlextGrpcConstants(FlextConstants):
         NETWORK_DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000
         NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000
         NETWORK_DEFAULT_TIMEOUT: Final[float] = float(
-            FlextConstants.DEFAULT_TIMEOUT_SECONDS,
+            FlextConstants.DEFAULT_TIMEOUT_SECONDS
         )
         NETWORK_MAX_PORT: Final[int] = 65535
         NETWORK_MIN_PORT: Final[int] = 1
@@ -96,8 +96,7 @@ class FlextGrpcConstants(FlextConstants):
         VALIDATION_MAX_PORT_NUMBER: Final[int] = 65535
         VALIDATION_VERSION_PATTERN: Final[str] = r"Version.*(\d+\.\d+\.\d+)"
         VALIDATION_VERSION_RE: ClassVar[t.RegexPattern] = re.compile(
-            VALIDATION_VERSION_PATTERN,
-            re.IGNORECASE,
+            VALIDATION_VERSION_PATTERN, re.IGNORECASE
         )
 
         # ===== Error messages =====

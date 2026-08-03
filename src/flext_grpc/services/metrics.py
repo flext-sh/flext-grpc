@@ -4,16 +4,11 @@ from __future__ import annotations
 
 import threading
 
-from flext_grpc import m, t, u
-from flext_grpc.base import s
+from flext_grpc import m, s, t, u
 
 
 class FlextGrpcMetrics(s):
     """Mixin providing metrics collection for FlextGrpc facade."""
-
-    _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcMetrics.MetricsCollector()
-    )
 
     class _MetricValueModel(m.Value):
         value: t.JsonValue | None = u.Field(
@@ -33,7 +28,7 @@ class FlextGrpcMetrics(s):
             """Get all metrics snapshot."""
             with self._lock:
                 vals = self._metrics.values
-                return m.Grpc.Payload(values=dict(vals) if vals is not None else {})
+                return m.Grpc.Payload(values=dict(vals))
 
         def metric(self, key: str) -> t.JsonValue | None:
             """Thread-safe metric retrieval.
@@ -44,7 +39,7 @@ class FlextGrpcMetrics(s):
             """
             with self._lock:
                 vals = self._metrics.values
-                return vals.get(key) if vals is not None else None
+                return vals.get(key)
 
         def record_metric(self, key: str, value: t.JsonValue | None) -> None:
             """Thread-safe metric recording.
@@ -55,9 +50,7 @@ class FlextGrpcMetrics(s):
 
             """
 
-            def _normalize_value(
-                val: t.JsonValue | None,
-            ) -> t.JsonValue | None:
+            def _normalize_value(val: t.JsonValue | None) -> t.JsonValue | None:
                 if val is None:
                     return ""
                 if u.primitive(val):
@@ -68,11 +61,15 @@ class FlextGrpcMetrics(s):
                 normalized = FlextGrpcMetrics._MetricValueModel(value=value)
                 json_val = _normalize_value(normalized.value)
                 existing = self._metrics.values
-                updated_values: dict[str, t.JsonValue | None] = (
-                    dict(existing) if existing is not None else {}
+                updated_values: t.MutableMappingKV[str, t.JsonValue | None] = dict(
+                    existing
                 )
                 updated_values[key] = json_val
                 self._metrics = m.Grpc.Payload(values=updated_values)
+
+    _metrics_collector: FlextGrpcMetrics.MetricsCollector = m.PrivateAttr(
+        default_factory=MetricsCollector
+    )
 
 
 __all__: list[str] = ["FlextGrpcMetrics"]

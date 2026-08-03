@@ -4,22 +4,18 @@ from __future__ import annotations
 
 import time
 from collections import deque
-from collections.abc import (
-    MutableMapping,
-)
+from typing import TYPE_CHECKING
 
-from flext_grpc import c, e, m, p, r, t, u
-from flext_grpc.base import s
-from flext_grpc.errors import GrpcValidationError
+from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, s, t, u
+from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services.metrics import FlextGrpcMetrics
+
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
 
 
 class FlextGrpcStream(s):
     """Mixin providing stream processing for FlextGrpc facade."""
-
-    _stream_manager: FlextGrpcStream.GrpcStreamManager = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcStream.GrpcStreamManager()
-    )
 
     class _StreamRuntimeState(m.Value):
         stream: m.Grpc.GrpcStream = u.Field(
@@ -30,7 +26,7 @@ class FlextGrpcStream(s):
         )
         buffer: deque[t.JsonMapping | None] = u.Field(
             default_factory=lambda: deque[t.JsonMapping | None](
-                maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE,
+                maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE
             ),
             description="Bounded message buffer for stream processing",
         )
@@ -46,8 +42,7 @@ class FlextGrpcStream(s):
             """Initialize stream manager with metrics tracking."""
             super().__init__()
             self._active_streams: MutableMapping[
-                str,
-                FlextGrpcStream._StreamRuntimeState,
+                str, FlextGrpcStream._StreamRuntimeState
             ] = {}
             self._metrics = FlextGrpcMetrics.MetricsCollector()
 
@@ -66,7 +61,9 @@ class FlextGrpcStream(s):
             """Create stream with proper setup."""
             method_name = str(kwargs.get("method_name", "DefaultMethod"))
             stream_type = str(kwargs.get("stream_type", "unary"))
-            stream_result = u.Grpc.create_stream_entity(method_name, stream_type)
+            stream_result = FlextGrpcUtilities.Grpc.create_stream_entity(
+                method_name, stream_type
+            )
             if stream_result.failure:
                 return stream_result
             stream = stream_result.value
@@ -80,9 +77,7 @@ class FlextGrpcStream(s):
             return r[m.Grpc.GrpcStream].ok(stream)
 
         def send_data(
-            self,
-            stream: m.Grpc.GrpcStream,
-            data: t.JsonMapping | None,
+            self, stream: m.Grpc.GrpcStream, data: t.JsonMapping | None
         ) -> p.Result[m.Grpc.Payload]:
             """Send data with buffering strategy.
 
@@ -97,7 +92,7 @@ class FlextGrpcStream(s):
             stream_info = self._active_streams[stream_key]
             try:
                 stream_state = FlextGrpcStream._StreamRuntimeState.model_validate(
-                    stream_info,
+                    stream_info
                 )
                 stream_state.buffer.append(data)
                 self._active_streams[stream_key] = stream_state
@@ -106,15 +101,13 @@ class FlextGrpcStream(s):
                         stream_id=stream.id,
                         data_sent=str(data),
                         buffer_size=len(stream_state.buffer),
-                    ),
+                    )
                 )
-            except GrpcValidationError as exc:
+            except FlextGrpcErrors.ValidationError as exc:
                 return e.fail_validation("stream_state", error=exc)
 
     def create_stream(
-        self,
-        method_name: str = "DefaultMethod",
-        stream_type: str = "unary",
+        self, method_name: str = "DefaultMethod", stream_type: str = "unary"
     ) -> p.Result[m.Grpc.GrpcStream]:
         """Create and register stream runtime state using the dedicated manager."""
         if not method_name.strip():
@@ -122,8 +115,7 @@ class FlextGrpcStream(s):
         if stream_type not in c.Grpc.STREAM_TYPES:
             return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
         return self._stream_manager.create_stream(
-            method_name=method_name,
-            stream_type=stream_type,
+            method_name=method_name, stream_type=stream_type
         )
 
     def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
@@ -131,12 +123,14 @@ class FlextGrpcStream(s):
         return self._stream_manager.close_stream(stream)
 
     def send_data(
-        self,
-        stream: m.Grpc.GrpcStream,
-        data: t.JsonMapping | None,
+        self, stream: m.Grpc.GrpcStream, data: t.JsonMapping | None
     ) -> p.Result[m.Grpc.Payload]:
         """Send stream data via the dedicated stream manager."""
         return self._stream_manager.send_data(stream, data)
+
+    _stream_manager: FlextGrpcStream.GrpcStreamManager = m.PrivateAttr(
+        default_factory=GrpcStreamManager
+    )
 
 
 __all__: list[str] = ["FlextGrpcStream"]
