@@ -1,10 +1,10 @@
+# flext_grpc.api
+
 <!-- TOC START -->
 - No sections found
 <!-- TOC END -->
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
-
-# flext_grpc.api
 
 ::: flext_grpc.api
     options:
