@@ -1,10 +1,10 @@
+# flext_grpc.typings
+
 <!-- TOC START -->
 - No sections found
 <!-- TOC END -->
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
-
-# flext_grpc.typings
 
 ::: flext_grpc.typings
     options:
