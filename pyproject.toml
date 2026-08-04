@@ -37,7 +37,7 @@ license = "MIT"
 name = "flext-grpc"
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
-version = "0.12.0rc0"
+version = "0.12.0"
 
 [[project.authors]]
 email = "team@flext.sh"
@@ -133,7 +133,14 @@ extra_checks = true
 follow_imports = "normal"
 ignore_missing_imports = true
 local_partial_types = true
-mypy_path = ["src", "."]
+mypy_path = [
+  "src",
+  ".",
+  "../flext-cli/src",
+  "../flext-core/src",
+  "../flext-infra/src",
+  "../flext-tests/src",
+]
 namespace_packages = true
 no_implicit_reexport = true
 plugins = ["pydantic.mypy"]
@@ -180,7 +187,14 @@ project-excludes = [
 ]
 project-includes = ["examples/**/*.py*", "src/**/*.py*", "tests/**/*.py*"]
 python-version = "3.13"
-search-path = ["src", "."]
+search-path = [
+  "src",
+  ".",
+  "../flext-cli/src",
+  "../flext-core/src",
+  "../flext-infra/src",
+  "../flext-tests/src",
+]
 use-ignore-files = false
 
 [tool.pyrefly.errors]
