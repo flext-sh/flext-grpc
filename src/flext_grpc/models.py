@@ -425,7 +425,7 @@ class FlextGrpcModels(m):
 
             def ready(self) -> bool:
                 """Check readiness."""
-                return self.state == "ready"
+                return bool(self.state is c.Grpc.ChannelState.READY)
 
             def mark_ready(self) -> p.Result[Self]:
                 """Transition to ready."""
