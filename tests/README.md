@@ -164,10 +164,11 @@ from __future__ import annotations
 import pytest
 from flext_core import t
 
-@pytest.mark.unit          # Unit tests (fast, isolated)
-@pytest.mark.integration   # Integration tests (component interaction)
-@pytest.mark.e2e           # End-to-end tests (complete workflows)
-@pytest.mark.slow          # Slower tests (can be skipped for quick feedback)
+
+@pytest.mark.unit  # Unit tests (fast, isolated)
+@pytest.mark.integration  # Integration tests (component interaction)
+@pytest.mark.e2e  # End-to-end tests (complete workflows)
+@pytest.mark.slow  # Slower tests (can be skipped for quick feedback)
 def _example_markers() -> None:
     """Illustrative marker usage for gRPC tests."""
 ```
