@@ -33,6 +33,8 @@ src/flext_grpc/
 ## Conventions (specific to this package)
 
 - **Protobuf contracts (`proto/`) are the source of transport shape** — avoid placing RPC-specific behavior directly in `api.py`.
+- Config/settings canonical pattern: ADR-012.
+- Codemod governance (ast-grep + make mod): ADR-014.
 
 ## Anti-Patterns / Gotchas
 
