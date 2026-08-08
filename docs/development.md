@@ -301,9 +301,7 @@ tests/
 ├── e2e/                    # End-to-end tests (complete workflows)
 │   ├── test_grpc.py        # Complete gRPC workflows
 │   └── test_streaming.py   # Streaming operations
-└── conftest.py             # Shared fixtures and utilities
-```
-
+└── conftest.py             # Shared fixtures and utilities```
 ### Test Writing Guidelines
 
 ```python
@@ -590,9 +588,7 @@ git commit -m "docs: update API reference for new methods"
 git commit -m "refactor: simplify server state machine logic"
 
 # Tests
-git commit -m "test: add comprehensive streaming operation tests"
-```
-
+git commit -m "test: add comprehensive streaming operation tests"```
 ## Current Development Priorities
 
 ### Critical Issues
@@ -640,9 +636,7 @@ git commit -m "test: add comprehensive streaming operation tests"
 ```bash
 # Current blocker - protobuf version mismatch
 python -c "from flext_grpc import FlextGrpcSettings"
-# Error: Detected mismatched Protobuf versions
-```
-
+# Error: Detected mismatched Protobuf versions```
 **Type Checking Issues**
 
 ```bash
@@ -652,9 +646,7 @@ make type-check
 # Common fixes:
 # - Add missing return type annotations
 # - Import proper types from typing module
-# - Use r for all fallible operations
-```
-
+# - Use r for all fallible operations```
 **Test Failures**
 
 ```bash
@@ -662,9 +654,7 @@ make type-check
 pytest tests/unit/test_config.py -v
 
 # Debug test with print statements
-pytest tests/unit/test_config.py::test_validation -s
-```
-
+pytest tests/unit/test_config.py::test_validation -s```
 ### Development Tools
 
 **Code Quality**
@@ -675,9 +665,7 @@ make format
 
 # Check specific file
 ruff check src/flext_grpc/settings.py
-mypy src/flext_grpc/settings.py --strict
-```
-
+mypy src/flext_grpc/settings.py --strict```
 **Debugging**
 
 ```bash
@@ -687,9 +675,7 @@ import pdb; pdb.set_trace()
 # REPL with project loaded
 make shell
 >>> from flext_grpc import FlextGrpcSettings
->>> settings = FlextGrpcSettings()
-```
-
+>>> settings = FlextGrpcSettings()```
 ---
 
 This development guide provides comprehensive standards and workflows for contributing to flext-grpc while maintaining high quality and FLEXT ecosystem integration.

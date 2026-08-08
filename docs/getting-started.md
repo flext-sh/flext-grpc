@@ -157,9 +157,7 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 poetry run mypy src/
 
 # Code linting
-poetry run ruff check src/
-```
-
+poetry run ruff check src/```
 ### Quality Status Check
 
 Current status verification:
@@ -178,9 +176,7 @@ poetry run python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
 print(f'✅ Server creation: {server.address}')
-"
-```
-
+"```
 ## Current Limitations
 
 ### Test Coverage

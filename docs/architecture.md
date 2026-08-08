@@ -14,9 +14,9 @@
   - [Service Architecture](#service-architecture)
   - [Type Safety](#type-safety)
 - [State Management](#state-management)
-  - [Server State Machine](#server-state-machine)
-  - [Client State Machine](#client-state-machine)
-  - [Channel State Management](#channel-state-management)
+  - [Server State Machine```](#server-state-machine)
+  - [Client State Machine```](#client-state-machine)
+  - [Channel State Management```](#channel-state-management)
 - [Memory Management](#memory-management)
   - [Adaptive Buffers](#adaptive-buffers)
   - [Resource Cleanup](#resource-cleanup)
@@ -236,28 +236,16 @@ Complete integration with Python 3.13+ type system:
 
 ## State Management
 
-### Server State Machine
-
-```
+### Server State Machine```
 stopped ──start()──> starting ──started()──> running
    ↑                                           │
-   └───stopped()───< stopping <──stop()───────┘
-```
-
-### Client State Machine
-
-```
+   └───stopped()───< stopping <──stop()───────┘```
+### Client State Machine```
 disconnected ──connect()──> connecting ──connected()──> connected
       ↑                                                      │
-      └───disconnected()───< disconnecting <──disconnect()──┘
-```
-
-### Channel State Management
-
-```
-idle ──open()──> connecting ──ready()──> ready ──close()──> shutdown
-```
-
+      └───disconnected()───< disconnecting <──disconnect()──┘```
+### Channel State Management```
+idle ──open()──> connecting ──ready()──> ready ──close()──> shutdown```
 ## Memory Management
 
 ### Adaptive Buffers

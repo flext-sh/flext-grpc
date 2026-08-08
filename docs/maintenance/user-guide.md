@@ -493,9 +493,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: docs-reports
-          path: docs/maintenance/reports/
-```
-
+          path: docs/maintenance/reports/```
 #### GitLab CI
 
 ```yaml
@@ -508,9 +506,7 @@ documentation_maintenance:
     expire_in: 1 week
   only:
     - schedules # Daily
-    - merge_requests # On MR
-```
-
+    - merge_requests # On MR```
 ### Pre-commit Hooks
 
 ```bash
@@ -523,9 +519,7 @@ repos:
         entry: make docs
         language: system
         files: \.(md|mdx)$
-        pass_filenames: false
-```
-
+        pass_filenames: false```
 ### Slack Notifications
 
 ```bash
@@ -537,9 +531,7 @@ repos:
     "notify_on_score_drop": true,
     "channels": ["#docs", "#devops"]
   }
-}
-```
-
+}```
 ## Advanced Usage
 
 ### Custom Audit Rules
@@ -617,9 +609,7 @@ make docs  # Must pass before commit
 make docs  # Must pass before merge
 
 # Release quality gate
-make docs  # Must pass before release
-```
-
+make docs  # Must pass before release```
 ### Team Collaboration
 
 1. **Assign Maintenance Roles**
@@ -648,9 +638,7 @@ python docs/maintenance/audit.py --since yesterday
 
 # Cached results
 export DOCS_CACHE_DIR=/tmp/docs_cache
-python docs/maintenance/audit.py --use-cache
-```
-
+python docs/maintenance/audit.py --use-cache```
 ## Support and Resources
 
 ### Documentation

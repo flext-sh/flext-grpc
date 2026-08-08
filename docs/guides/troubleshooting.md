@@ -138,9 +138,7 @@ except ImportError as e:
 
 ```text
 # Error
-error: Argument 1 to "process" has incompatible type "str"; expected "t.JsonMapping"
-```
-
+error: Argument 1 to "process" has incompatible type "str"; expected "t.JsonMapping"```
 #### Solutions
 
 **Fix type annotations:**
@@ -163,38 +161,28 @@ def process(data: t.JsonMapping) -> p.Result[ProcessedData]:
 **Run MyPy with details:**
 
 ```bash
-mypy src/module.py --show-error-codes --show-traceback
-```
-
+mypy src/module.py --show-error-codes --show-traceback```
 **Check specific error:**
 
 ```bash
-mypy src/ --show-error-codes | grep "error-code"
-```
-
+mypy src/ --show-error-codes | grep "error-code"```
 ### 3. Test Failures
 
 #### Problem: Tests failing
 
 ```text
 # Error
-AssertionError: Expected success but got failure
-```
-
+AssertionError: Expected success but got failure```
 #### Solutions
 
 **Run with verbose output:**
 
 ```bash
-pytest tests/unit/test_module.py -vv --tb=long
-```
-
+pytest tests/unit/test_module.py -vv --tb=long```
 **Debug specific test:**
 
 ```bash
-pytest tests/unit/test_module.py::TestClass::test_method -v --pdb
-```
-
+pytest tests/unit/test_module.py::TestClass::test_method -v --pdb```
 **Check test data:**
 
 ```python
@@ -214,17 +202,13 @@ def test_with_debug():
 
 ```text
 # Error
-GrpcValidationError: field required
-```
-
+GrpcValidationError: field required```
 #### Solutions
 
 **Check environment variables:**
 
 ```bash
-env | grep FLEXT_
-```
-
+env | grep FLEXT_```
 **Validate configuration:**
 
 ```python
@@ -257,9 +241,7 @@ print(f"Config: {settings.dict()}")```
 
 ```text
 # Error
-LdifParsingException: Invalid LDIF format
-```
-
+LdifParsingException: Invalid LDIF format```
 #### Solutions
 
 **Check LDIF content:**
@@ -314,9 +296,7 @@ def validate_ldif_content(content: str) -> t.StringList:
 
 ```text
 # Error
-LdifMigrationException: Server compatibility error
-```
-
+LdifMigrationException: Server compatibility error```
 #### Solutions
 
 **Check server configuration:**
@@ -368,9 +348,7 @@ else:
 # Symptoms
 # - High memory usage
 # - Slow response times
-# - Timeout errors
-```
-
+# - Timeout errors```
 #### Solutions
 
 **Profile memory usage:**

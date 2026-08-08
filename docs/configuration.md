@@ -111,9 +111,7 @@ Configuration values can be set via environment variables with `GRPC_` prefix:
 export GRPC_HOST="${FlextConstants.PRODUCTION_HOST}"
 export GRPC_PORT="${FlextGrpcConstants.Network.DEFAULT_PORT}"
 export GRPC_MAX_WORKERS="20"
-export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"
-```
-
+export GRPC_TIMEOUT="${FlextGrpcConstants.Service.DEFAULT_TIMEOUT}"```
 ```python
 from __future__ import annotations
 
@@ -331,9 +329,7 @@ grpc:
 
   performance:
     keepalive_time_ms: ${FlextConstants.Network.KEEPALIVE_TIME_MS}
-    max_message_size: 4194304 # 4MB
-```
-
+    max_message_size: 4194304 # 4MB```
 ```python
 from __future__ import annotations
 import yaml
@@ -367,9 +363,7 @@ def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
     "timeout": ${FlextGrpcConstants.Service.DEFAULT_TIMEOUT},
     "use_tls": false
   }
-}
-```
-
+}```
 ## Configuration Best Practices
 
 ### Security
@@ -519,9 +513,7 @@ settings = FlextGrpcSettings(
 ```bash
 # Multiple ways to set the same value can conflict
 export GRPC_PORT=${FlextGrpcConstants.Network.DEFAULT_PORT}
-export GRPC_PORT=${FlextConstants.DEFAULT_HTTP_PORT}  # Overwrites previous value
-```
-
+export GRPC_PORT=${FlextConstants.DEFAULT_HTTP_PORT}  # Overwrites previous value```
 ### Debugging Configuration
 
 ```python

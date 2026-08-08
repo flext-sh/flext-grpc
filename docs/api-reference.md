@@ -431,9 +431,7 @@ service FlextGrpcService {
   rpc ClientStream(stream StreamRequest) returns (StreamResponse);
   rpc BidirectionalStream(stream StreamRequest) returns (stream StreamResponse);
   rpc HealthCheck(HealthRequest) returns (HealthResponse);
-}
-```
-
+}```
 ### Message Types
 
 Standard message types for testing and health checking:

@@ -178,7 +178,12 @@ project-excludes = [
   "typings/**",
   "vendor/**",
 ]
-project-includes = ["examples/**/*.py*", "src/**/*.py*", "tests/**/*.py*"]
+project-includes = [
+  "docs/**/*.py*",
+  "examples/**/*.py*",
+  "src/**/*.py*",
+  "tests/**/*.py*",
+]
 python-version = "3.13"
 search-path = ["src", "."]
 use-ignore-files = false
@@ -298,7 +303,7 @@ exclude = [
   "vendor",
 ]
 extraPaths = ["src", "."]
-include = ["examples", "src", "tests"]
+include = ["docs", "examples", "src", "tests"]
 pythonPlatform = "Linux"
 pythonVersion = "3.13"
 reportArgumentType = "none"
@@ -464,41 +469,21 @@ ignore = [
   "ambiguous-unicode-character-comment",
   "ambiguous-unicode-character-docstring",
   "ambiguous-unicode-character-string",
-  "assert-raises-exception",
-  "bad-dunder-method-name",
-  "bad-quotes-inline-string",
-  "blank-line-with-whitespace",
-  "blind-except",
   "boolean-positional-value-in-call",
   "camelcase-imported-as-lowercase",
-  "collection-literal-concatenation",
-  "commented-out-code",
   "complex-structure",
-  "docstring-extraneous-exception",
-  "docstring-extraneous-returns",
   "docstring-missing-exception",
   "docstring-missing-returns",
   "docstring-missing-yields",
-  "get-attr-with-constant",
-  "hardcoded-sql-expression",
   "import-outside-top-level",
   "incorrect-blank-line-before-class",
-  "invalid-first-argument-name-for-method",
   "line-too-long",
   "logging-f-string",
   "missing-copyright-notice",
-  "missing-return-type-private-function",
   "missing-trailing-comma",
-  "mixed-case-variable-in-global-scope",
   "multi-line-summary-second-line",
   "no-self-use",
   "non-imperative-mood",
-  "non-pep695-type-alias",
-  "raise-vanilla-args",
-  "raise-within-try",
-  "redefined-loop-name",
-  "set-attr-with-constant",
-  "snake-case-type-alias",
   "too-many-arguments",
   "too-many-branches",
   "too-many-locals",
@@ -507,13 +492,9 @@ ignore = [
   "too-many-public-methods",
   "too-many-return-statements",
   "too-many-statements",
-  "try-consider-else",
   "typing-only-first-party-import",
   "typing-only-standard-library-import",
   "typing-only-third-party-import",
-  "undocumented-param",
-  "unnecessary-lambda",
-  "unnecessary-placeholder",
   "unsorted-imports",
 ]
 select = ["ALL"]
@@ -599,6 +580,7 @@ split-on-trailing-comma = false
 ]
 "scripts/cmd/**/*.py" = ["invalid-module-name", "shebang-not-executable"]
 "**/examples/**/*.py" = ["invalid-module-name", "shebang-not-executable"]
+"src/flext_infra/_utilities/_rope/**/*.py" = ["private-member-access"]
 
 # [MANAGED] tomlsort
 [tool.tomlsort]

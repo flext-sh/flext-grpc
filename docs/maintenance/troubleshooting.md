@@ -280,9 +280,7 @@ CUSTOM_AUDIT_RULES = {
 **Error:**
 
 ```yaml
-TimeoutError: Request timed out
-```
-
+TimeoutError: Request timed out```
 **Solution:**
 
 ```bash
@@ -304,9 +302,7 @@ TimeoutError: Request timed out
       "*.internal.company.com"
     ]
   }
-}
-```
-
+}```
 ### Symptom: False broken link reports
 
 **Cause:** Dynamic URLs or authentication requirements
@@ -324,17 +320,11 @@ TimeoutError: Request timed out
       "https://internal.docs.company.com/*"
     ]
   }
-}
-```
-
+}```
 ### Symptom: Style validation too strict
 
-**Error:**
-
-```
-Line too long (120 > 88 characters)
-```
-
+**Error:**```
+Line too long (120 > 88 characters)```
 **Solution:**
 
 ```bash
@@ -345,9 +335,7 @@ Line too long (120 > 88 characters)
     "max_line_length": 120,  // Increased from 88
     "list_consistency": false  // Disabled if causing issues
   }
-}
-```
-
+}```
 ## 🔧 Optimization Issues
 
 ### Symptom: Optimization doesn't apply changes

@@ -138,9 +138,7 @@ sys.path.insert(0, "src")  # For development
 
 ```bash
 poetry install --all-extras
-poetry show grpcio grpcio-tools protobuf  # Check versions
-```
-
+poetry show grpcio grpcio-tools protobuf  # Check versions```
 ### Server Startup Issues
 
 **Symptom**: Server creation succeeds but startup fails.
@@ -210,9 +208,7 @@ Based on 2025 gRPC Python best practices:
 
 ```bash
 poetry show flext-grpc
-poetry run python -c "import flext_grpc; print('Installation OK')"
-```
-
+poetry run python -c "import flext_grpc; print('Installation OK')"```
 ### Verify Dependencies
 
 ```bash
@@ -221,9 +217,7 @@ import grpc
 import google.protobuf
 print(f'gRPC: {grpc.__version__}')
 print(f'Protobuf: {google.protobuf.__version__}')
-"
-```
-
+"```
 ### Test Core Functionality
 
 ```bash
@@ -234,9 +228,7 @@ platform = FlextGrpcPlatform()
 print(f'Server: {server.address}')
 print(f'Platform: {platform is not None}')
 print('Core functionality verified')
-"
-```
-
+"```
 ## Getting Help
 
 1. **Check this troubleshooting guide** for common issues

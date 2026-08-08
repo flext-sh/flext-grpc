@@ -123,8 +123,8 @@
     - [Load Testing](#load-testing)
     - [Chaos Testing](#chaos-testing)
 
-**Version**: 0.9.0 | **Updated**: 2026-04-14
-**Current Coverage**: 39% | **Test Status**: 28 failed, 36 passed (64 total tests)
+**Version**: 0.9.0 — **Updated**: 2026-04-14
+**Current Coverage**: 39% — **Test Status**: 28 failed, 36 passed (64 total tests)
 
 ## Executive Summary
 
@@ -466,9 +466,7 @@ make test
 PYTHONPATH=src poetry run pytest tests/unit/test_config.py -v
 
 # Run with coverage
-PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
-```
-
+PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term```
 #### Test Debugging
 
 ```bash
@@ -479,9 +477,7 @@ PYTHONPATH=src poetry run pytest tests/unit/test_services.py::TestFlextGrpcServi
 PYTHONPATH=src poetry run pytest tests/unit/test_services.py -v --tb=long
 
 # Debug mode
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb
-```
-
+PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb```
 ### Continuous Integration Testing
 
 #### Quality Gates
@@ -494,9 +490,7 @@ make val
 make lint          # Code quality
 make type-check    # Type safety
 make security      # Security scanning
-make test         # Test execution
-```
-
+make test         # Test execution```
 #### Coverage Validation
 
 ```bash
@@ -508,9 +502,7 @@ PYTHONPATH=src poetry run pytest --cov --cov-report=html
 open htmlcov/index.html
 
 # Coverage by module
-PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
-```
-
+PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing```
 > Coverage thresholds are configured in `pyproject.toml` under `[tool.coverage.report]`.
 
 ### Integration Testing Setup
@@ -577,9 +569,7 @@ tests/
 ├── fixtures/                    # Shared test fixtures
 │   ├── grpc_server.py          # gRPC server fixture
 │   └── grpc_client.py           # gRPC client fixture
-└── conftest.py                  # pytest configuration
-```
-
+└── conftest.py                  # pytest configuration```
 ### Test Naming Conventions
 
 ```python

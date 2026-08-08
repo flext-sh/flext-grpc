@@ -71,8 +71,8 @@
     - [Phase 2 Success (Production Hardening)](#phase-2-success-production-hardening)
     - [Phase 3 Success (Feature Complete)](#phase-3-success-feature-complete)
 
-**Version**: 0.9.0 | **Updated**: 2026-04-14
-**Test Coverage**: 39% | **Test Status**: 28 failed, 36 passed (64 total tests)
+**Version**: 0.9.0 — **Updated**: 2026-04-14
+**Test Coverage**: 39% — **Test Status**: 28 failed, 36 passed (64 total tests)
 
 ## Executive Summary
 

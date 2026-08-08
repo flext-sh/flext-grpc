@@ -438,9 +438,7 @@ make docs
 make docs
 make docs DOCS_PHASE=audit
 make docs
-make docs
-```
-
+make docs```
 ### Dashboard Integration
 
 ```bash
@@ -451,9 +449,7 @@ make docs
 make docs
 
 # Integration with monitoring systems
-make docs
-```
-
+make docs```
 ## 🔧 Troubleshooting
 
 ### Common Issues
@@ -468,9 +464,7 @@ tail -f docs/maintenance/logs/link_validation.log
 python docs/maintenance/validation.py --check-url "https://example.com"
 
 # Update link timeout
-edit docs/maintenance/settings.py  # Increase link_timeout
-```
-
+edit docs/maintenance/settings.py  # Increase link_timeout```
 #### Content Not Optimizing
 
 ```bash
@@ -481,9 +475,7 @@ tail -f docs/maintenance/logs/optimization.log
 python docs/maintenance/optimization.py --file docs/README.md
 
 # Reset optimization rules
-make docs
-```
-
+make docs```
 #### Reports Not Generating
 
 ```bash
@@ -494,9 +486,7 @@ tail -f docs/maintenance/logs/reporting.log
 python docs/maintenance/reporting.py --type health
 
 # Clear report cache
-make docs
-```
-
+make docs```
 ### Emergency Procedures
 
 ```bash
@@ -510,9 +500,7 @@ make docs
 make docs
 
 # Restore from backup
-make docs
-```
-
+make docs```
 ## 🤝 Team Integration
 
 ### Workflow Integration

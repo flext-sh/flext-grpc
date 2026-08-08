@@ -798,9 +798,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: docs-reports
-          path: docs/maintenance/reports/
-```
-
+          path: docs/maintenance/reports/```
 ### Pre-commit Hook Integration
 
 ```bash
@@ -814,9 +812,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo "✅ Documentation quality checks passed"
-```
-
+echo "✅ Documentation quality checks passed"```
 ### Custom Integration
 
 ```python
