@@ -42,40 +42,20 @@
   - [Development Setup](#development-setup)
     - [Prerequisites](#prerequisites)
     - [Initial Setup](#initial-setup)
-- [Clone the repository](#clone-the-repository)
-- [Complete development setup](#complete-development-setup)
-- [Verify setup](#verify-setup)
   - [Development Environment](#development-environment)
   - [Development Workflow](#development-workflow)
     - [Essential Commands](#essential-commands)
-- [Development lifecycle](#development-lifecycle)
-- [Code quality](#code-quality)
-- [Testing](#testing)
-- [Development utilities](#development-utilities)
   - [Quality Gates](#quality-gates)
-- [MANDATORY before any commit](#mandatory-before-any-commit)
-- [Individual checks](#individual-checks)
   - [Code Standards](#code-standards)
     - [FLEXT-Core Compliance](#flext-core-compliance)
-- [✅ CORRECT - Railway-oriented programming](#-correct---railway-oriented-programming)
-- [❌ FORBIDDEN - Exception-based error handling](#-forbidden---exception-based-error-handling)
   - [Type Annotations](#type-annotations)
-- [for dependency injection](#protocol-for-dependency-injection)
-- [Generic service class](#generic-service-class)
   - [Domain Patterns](#domain-patterns)
   - [Testing Standards](#testing-standards)
     - [Test Structure](#test-structure)
     - [Test Writing Guidelines](#test-writing-guidelines)
     - [Test Markers](#test-markers)
-- [Run specific test categories](#run-specific-test-categories)
-- [pytest -m unit # Unit tests only](#pytest--m-unit---------------unit-tests-only)
-- [pytest -m "not slow" # Exclude slow tests](#pytest--m-not-slow---------exclude-slow-tests)
-- [pytest -m "integration" # Integration tests only](#pytest--m-integration------integration-tests-only)
   - [Architecture Guidelines](#architecture-guidelines)
     - [Layer Separation](#layer-separation)
-- [Domain Layer - No dependencies on other layers](#domain-layer---no-dependencies-on-other-layers)
-- [Service Layer - Depends only on Domain](#service-layer---depends-only-on-domain)
-- [Infrastructure Layer - Depends on Domain + Service](#infrastructure-layer---depends-on-domain--service)
   - [Dependency Injection](#dependency-injection)
   - [Documentation Standards](#documentation-standards)
     - [Docstring Requirements](#docstring-requirements)
@@ -84,31 +64,13 @@
     - [Development Workflow](#development-workflow)
     - [Code Review Guidelines](#code-review-guidelines)
     - [Commit Message Standards](#commit-message-standards)
-- [Feature additions](#feature-additions)
-- [Bug fixes](#bug-fixes)
-- [Documentation](#documentation)
-- [Refactoring](#refactoring)
-- [Tests](#tests)
   - [Current Development Priorities](#current-development-priorities)
     - [Critical Issues](#critical-issues)
     - [Short-term Enhancements](#short-term-enhancements)
     - [Medium-term Features](#medium-term-features)
   - [Troubleshooting Development Issues](#troubleshooting-development-issues)
     - [Common Issues](#common-issues)
-- [Current blocker - protobuf version mismatch](#current-blocker---protobuf-version-mismatch)
-- [Error: Detected mismatched Protobuf versions](#error-detected-mismatched-protobuf-versions)
-- [Check type annotations](#check-type-annotations)
-- [Common fixes:](#common-fixes)
-- [- Add missing return type annotations](#--add-missing-return-type-annotations)
-- [- Import proper types from typing module](#--import-proper-types-from-typing-module)
-- [- Use r for all fallible operations](#--use-flextresult-for-all-fallible-operations)
-- [Run specific test file](#run-specific-test-file)
-- [Debug test with print statements](#debug-test-with-print-statements)
   - [Development Tools](#development-tools)
-- [Auto-format code](#auto-format-code)
-- [Check specific file](#check-specific-file)
-- [Python debugger](#python-debugger)
-- [REPL with project loaded](#repl-with-project-loaded)
 
 **Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
@@ -220,7 +182,8 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
             raise ValueError("Host required")
         return FlextGrpcSettings(host=host, port=port)
     except Exception:
-        return None  # Loses error information```
+        return None  # Loses error information
+```
 ### Type Annotations
 
 Complete type annotations are mandatory:
@@ -248,7 +211,8 @@ class GrpcService(Generic[T]):
 
     def process(self, data: dict) -> p.Result[m.t.Dict]:
         # Implementation with proper typing
-        return r.ok({"processed": data})```
+        return r.ok({"processed": data})
+```
 ### Domain Patterns
 
 Follow Domain-Driven Design patterns:
@@ -283,7 +247,8 @@ class FlextGrpcServer(FlextModels.Entity):
         if self.port < 1024 or self.port > 65535:
             return r.fail(f"Invalid port: {self.port}")
 
-        return r.ok(value=True)```
+        return r.ok(value=True)
+```
 ## Testing Standards
 
 ### Test Structure
@@ -301,7 +266,8 @@ tests/
 ├── e2e/                    # End-to-end tests (complete workflows)
 │   ├── test_grpc.py        # Complete gRPC workflows
 │   └── test_streaming.py   # Streaming operations
-└── conftest.py             # Shared fixtures and utilities```
+└── conftest.py             # Shared fixtures and utilities
+```
 ### Test Writing Guidelines
 
 ```python
@@ -353,7 +319,8 @@ class TestGrpcServer:
         validation = settings.validate()
 
         assert validation.failure
-        assert expected_error in validation.error```
+        assert expected_error in validation.error
+```
 ### Test Markers
 
 Use pytest markers for test categorization:
@@ -390,7 +357,8 @@ def test_performance_benchmark():
 # Run specific test categories
 # pytest -m unit              # Unit tests only
 # pytest -m "not slow"        # Exclude slow tests
-# pytest -m "integration"     # Integration tests only```
+# pytest -m "integration"     # Integration tests only
+```
 ## Architecture Guidelines
 
 ### Layer Separation
@@ -420,7 +388,8 @@ from flext_grpc import FlextGrpcServer
 
 def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
-    pass```
+    pass
+```
 ### Dependency Injection
 
 Use FlextContainer for all dependencies:
@@ -454,7 +423,8 @@ class GrpcServiceManager:
         if platform_result.success:
             return r.ok(platform_result.unwrap())
 
-        return r.fail("Platform not initialized")```
+        return r.fail("Platform not initialized")
+```
 ## Documentation Standards
 
 ### Docstring Requirements
@@ -496,7 +466,8 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
     """
     # Implementation
-    pass```
+    pass
+```
 ### Code Comments
 
 Use comments sparingly for complex business logic:
@@ -520,7 +491,8 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
     if new_state not in valid_transitions.get(self.state, []):
         return r.fail(f"Invalid state transition: {self.state} → {new_state}")
 
-    return r.ok(value=True)```
+    return r.ok(value=True)
+```
 ## Contributing Process
 
 ### Development Workflow
@@ -588,7 +560,8 @@ git commit -m "docs: update API reference for new methods"
 git commit -m "refactor: simplify server state machine logic"
 
 # Tests
-git commit -m "test: add comprehensive streaming operation tests"```
+git commit -m "test: add comprehensive streaming operation tests"
+```
 ## Current Development Priorities
 
 ### Critical Issues
@@ -636,7 +609,8 @@ git commit -m "test: add comprehensive streaming operation tests"```
 ```bash
 # Current blocker - protobuf version mismatch
 python -c "from flext_grpc import FlextGrpcSettings"
-# Error: Detected mismatched Protobuf versions```
+# Error: Detected mismatched Protobuf versions
+```
 **Type Checking Issues**
 
 ```bash
@@ -646,7 +620,8 @@ make type-check
 # Common fixes:
 # - Add missing return type annotations
 # - Import proper types from typing module
-# - Use r for all fallible operations```
+# - Use r for all fallible operations
+```
 **Test Failures**
 
 ```bash
@@ -654,7 +629,8 @@ make type-check
 pytest tests/unit/test_config.py -v
 
 # Debug test with print statements
-pytest tests/unit/test_config.py::test_validation -s```
+pytest tests/unit/test_config.py::test_validation -s
+```
 ### Development Tools
 
 **Code Quality**
@@ -665,7 +641,8 @@ make format
 
 # Check specific file
 ruff check src/flext_grpc/settings.py
-mypy src/flext_grpc/settings.py --strict```
+mypy src/flext_grpc/settings.py --strict
+```
 **Debugging**
 
 ```bash
@@ -675,7 +652,8 @@ import pdb; pdb.set_trace()
 # REPL with project loaded
 make shell
 >>> from flext_grpc import FlextGrpcSettings
->>> settings = FlextGrpcSettings()```
+>>> settings = FlextGrpcSettings()
+```
 ---
 
 This development guide provides comprehensive standards and workflows for contributing to flext-grpc while maintaining high quality and FLEXT ecosystem integration.

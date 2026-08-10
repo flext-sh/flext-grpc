@@ -41,25 +41,20 @@
     - [Dependency Injection Integration](#dependency-injection-integration)
   - [FLEXT Service Integration](#flext-service-integration)
     - [flext-auth Integration](#flext-auth-integration)
-- [Planned integration (requires protobuf fix)](#planned-integration-requires-protobuf-fix)
   - [flext-observability Integration](#flext-observability-integration)
-- [Planned integration](#planned-integration)
   - [flext-cli Integration](#flext-cli-integration)
-- [Planned integration](#planned-integration)
   - [Data Integration Patterns](#data-integration-patterns)
     - [Service-to-Service Communication](#service-to-service-communication)
     - [Data Pipeline Integration](#data-pipeline-integration)
   - [Configuration Integration](#configuration-integration)
     - [Environment-Specific Configuration](#environment-specific-configuration)
     - [Service Discovery Integration](#service-discovery-integration)
-- [Planned integration](#planned-integration)
   - [Testing Integration](#testing-integration)
     - [Test Framework Integration](#test-framework-integration)
     - [Mock Integration](#mock-integration)
   - [Production Integration](#production-integration)
     - [Deployment Patterns](#deployment-patterns)
     - [Monitoring Integration](#monitoring-integration)
-- [Planned integration](#planned-integration)
   - [Migration and Upgrade Patterns](#migration-and-upgrade-patterns)
     - [Version Compatibility](#version-compatibility)
   - [Current Integration Status](#current-integration-status)
@@ -112,7 +107,8 @@ class GrpcServiceManager:
     def start_grpc_services(self) -> p.Result[t.StringList]:
         container = FlextContainer.get_global()
         # Implementation uses flext-core patterns
-        return r.ok(["service1", "service2"])```
+        return r.ok(["service1", "service2"])
+```
 ### Dependency Injection Integration
 
 flext-grpc services can be registered with FlextContainer:
@@ -123,7 +119,8 @@ from flext_grpc import FlextGrpcPlatform
 
 container = FlextContainer.get_global()
 platform = FlextGrpcPlatform()
-container.bind("grpc_platform", platform)```
+container.bind("grpc_platform", platform)
+```
 ## FLEXT Service Integration
 
 ### flext-auth Integration
@@ -156,7 +153,8 @@ class AuthenticatedGrpcService:
                 port=50051,
                 interceptors=[auth_interceptor],  # Future feature
             )
-        )```
+        )
+```
 ### flext-observability Integration
 
 Monitoring and metrics for gRPC services:
@@ -185,7 +183,8 @@ class ObservableGrpcService:
                 enable_health_checking=True,
                 enable_metrics=True,
             )
-        )```
+        )
+```
 ### flext-cli Integration
 
 Command-line management for gRPC services:
@@ -219,7 +218,8 @@ def create_grpc_cli() -> FlextCliApp:
         # Health check implementation
         pass
 
-    return cli```
+    return cli
+```
 ## Data Integration Patterns
 
 ### Service-to-Service Communication
@@ -257,7 +257,8 @@ class FlextServiceConnector:
     ) -> p.Result[m.t.Dict]:
         """Make the actual service call."""
         # gRPC call implementation
-        return r.ok({"response": "data"})```
+        return r.ok({"response": "data"})
+```
 ### Data Pipeline Integration
 
 gRPC in data processing pipelines:
@@ -294,7 +295,8 @@ class DataStreamProcessor:
     ) -> p.Result[bool]:
         """Process incoming stream data."""
         # Stream processing logic
-        return r.ok(value=True)```
+        return r.ok(value=True)
+```
 ## Configuration Integration
 
 ### Environment-Specific Configuration
@@ -335,7 +337,8 @@ class FlextGrpcEnvironmentSettings(FlextSettings):
                 max_workers=self.prod_grpc_workers,
                 use_tls=True,
             )
-        raise ValueError(f"Unknown environment: {environment}")```
+        raise ValueError(f"Unknown environment: {environment}")
+```
 ### Service Discovery Integration
 
 Integration with FLEXT service discovery:
@@ -368,7 +371,8 @@ class FlextServiceDiscovery:
     def _lookup_service(self, service_name: str) -> p.Result[tuple[str, int]]:
         """Look up service address in registry."""
         # Service registry lookup
-        return r.ok(("localhost", 50051))```
+        return r.ok(("localhost", 50051))
+```
 ## Testing Integration
 
 ### Test Framework Integration
@@ -403,7 +407,8 @@ class TestGrpcIntegration(FlextTestCase):
 
         # Verify r error handling
         assert server_result.failure
-        assert "Invalid configuration" in server_result.error```
+        assert "Invalid configuration" in server_result.error
+```
 ### Mock Integration
 
 Testing with FLEXT mock patterns:
@@ -427,7 +432,8 @@ class TestGrpcMockIntegration:
         mock_container.bind("server_service", mock_server_service)
 
         platform = FlextGrpcPlatform()
-        # Platform uses mocked dependencies```
+        # Platform uses mocked dependencies
+```
 ## Production Integration
 
 ### Deployment Patterns
@@ -470,7 +476,8 @@ class FlextGrpcProductionService:
                 use_tls=True,
                 enable_health_checking=True,
             )
-        )```
+        )
+```
 ### Monitoring Integration
 
 Integration with FLEXT monitoring systems:
@@ -497,7 +504,8 @@ class MonitoredGrpcService:
         self._metrics.register_histogram("grpc_request_duration")
         self._metrics.register_gauge("grpc_active_connections")
 
-        return self._platform.start_server(server)```
+        return self._platform.start_server(server)
+```
 ## Migration and Upgrade Patterns
 
 ### Version Compatibility
@@ -527,7 +535,8 @@ class GrpcVersionManager:
 
     def _update_configuration(self) -> p.Result[bool]:
         """Update to new configuration format."""
-        return r.ok(value=True)```
+        return r.ok(value=True)
+```
 ## Current Integration Status
 
 ### Working Integrations

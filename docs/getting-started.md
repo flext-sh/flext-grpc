@@ -32,26 +32,14 @@
   - [Installation](#installation)
     - [1. Clone and Setup](#1-clone-and-setup)
     - [2. Verify Installation](#2-verify-installation)
-- [Test core imports](#test-core-imports)
-- [Test functionality](#test-functionality)
   - [Basic Usage](#basic-usage)
     - [Server Creation](#server-creation)
-- [Create gRPC server](#create-grpc-server)
   - [Client Creation](#client-creation)
-- [Create gRPC client](#create-grpc-client)
   - [Platform Management](#platform-management)
-- [Create platform for advanced operations](#create-platform-for-advanced-operations)
   - [Configuration](#configuration)
-- [Create configuration with validation](#create-configuration-with-validation)
   - [Development Setup](#development-setup)
     - [Development Commands](#development-commands)
-- [Run a basic test](#run-a-basic-test)
-- [Check test coverage (currently 39%)](#check-test-coverage-currently-39)
-- [Type checking](#type-checking)
-- [Code linting](#code-linting)
   - [Quality Status Check](#quality-status-check)
-- [Verify imports work](#verify-imports-work)
-- [Test basic functionality](#test-basic-functionality)
   - [Current Limitations](#current-limitations)
     - [Test Coverage](#test-coverage)
     - [Known Issues](#known-issues)
@@ -112,7 +100,8 @@ from flext_grpc import create_server
 # Create gRPC server
 server = create_server("localhost", 50051, 10)
 print(f"Server address: {server.address}")
-print(f"Server state: {server.state}")```
+print(f"Server state: {server.state}")
+```
 ### Client Creation
 
 ```python
@@ -121,7 +110,8 @@ from flext_grpc import create_client
 
 # Create gRPC client
 client = create_client("localhost:50051")
-print(f"Client created: {type(client).__name__}")```
+print(f"Client created: {type(client).__name__}")
+```
 ### Platform Management
 
 ```python
@@ -130,7 +120,8 @@ from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations
 platform = FlextGrpcPlatform()
-print(f"Platform ready: {type(platform).__name__}")```
+print(f"Platform ready: {type(platform).__name__}")
+```
 ### Configuration
 
 ```python
@@ -141,7 +132,8 @@ from flext_grpc import FlextGrpcSettings
 settings = FlextGrpcSettings.model_validate({
     "Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}
 })
-print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")```
+print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
+```
 ## Development Setup
 
 ### Development Commands
@@ -157,7 +149,8 @@ poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=te
 poetry run mypy src/
 
 # Code linting
-poetry run ruff check src/```
+poetry run ruff check src/
+```
 ### Quality Status Check
 
 Current status verification:
@@ -176,7 +169,8 @@ poetry run python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
 print(f'✅ Server creation: {server.address}')
-"```
+"
+```
 ## Current Limitations
 
 ### Test Coverage

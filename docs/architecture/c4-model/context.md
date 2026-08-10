@@ -45,7 +45,7 @@
 
 ## Table of Contents
 
-- [C4 Model - Context View (Level 1)](#c4-model---context-view-level-1)
+- [C4 Model - Context View (Level 1)](#c4-model-context-view-level-1)
   - [Overview](#overview)
   - [System Purpose](#system-purpose)
     - [Key Responsibilities](#key-responsibilities)
