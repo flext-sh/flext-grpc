@@ -466,7 +466,8 @@ CUSTOM_STYLE_RULES = {
     "heading_style": "atx",  # # or ===
     "list_marker": "-",  # -, *, +
     "emphasis_style": "*",  # * or _
-}```
+}
+```
 ## Integration Examples
 
 ### CI/CD Integration
@@ -495,7 +496,6 @@ jobs:
           name: docs-reports
           path: docs/maintenance/reports/
 ```
-
 #### GitLab CI
 
 ```yaml
@@ -510,7 +510,6 @@ documentation_maintenance:
     - schedules # Daily
     - merge_requests # On MR
 ```
-
 ### Pre-commit Hooks
 
 ```bash
@@ -525,7 +524,6 @@ repos:
         files: \.(md|mdx)$
         pass_filenames: false
 ```
-
 ### Slack Notifications
 
 ```bash
@@ -539,7 +537,6 @@ repos:
   }
 }
 ```
-
 ## Advanced Usage
 
 ### Custom Audit Rules
@@ -561,7 +558,8 @@ class CustomAuditor(DocumentationAuditor):
         if len(content.split()) < 100:
             score -= 20
 
-        return score```
+        return score
+```
 ### Automated Fixes
 
 ```python
@@ -576,7 +574,8 @@ class CustomOptimizer(DocumentationOptimizer):
         if not content.endswith("---"):
             content += "\n\n---\n*Last updated: Auto-generated*"
 
-        return content```
+        return content
+```
 ### Integration APIs
 
 ```python
@@ -597,7 +596,8 @@ optimization_summary = optimizer.optimize_all_files(files)
 reporter = reporting.DocumentationReporter()
 comprehensive_report = reporter.generate_comprehensive_report(
     audit_report, validation_report, optimization_summary
-)```
+)
+```
 ## Best Practices
 
 ### Maintenance Frequency
@@ -619,7 +619,6 @@ make docs  # Must pass before merge
 # Release quality gate
 make docs  # Must pass before release
 ```
-
 ### Team Collaboration
 
 1. **Assign Maintenance Roles**
@@ -650,7 +649,6 @@ python docs/maintenance/audit.py --since yesterday
 export DOCS_CACHE_DIR=/tmp/docs_cache
 python docs/maintenance/audit.py --use-cache
 ```
-
 ## Support and Resources
 
 ### Documentation

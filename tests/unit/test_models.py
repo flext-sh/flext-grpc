@@ -48,8 +48,9 @@ class TestsFlextGrpcModelsUnit:
         """Value models are frozen: assigning a field raises ValidationError."""
         request = m.Grpc.EchoRequest(message="x")
 
-        with pytest.raises(pydantic.ValidationError):
-            setattr(request, "message", "y")
+        tm.rejects_assignment(
+            request, "message", "y", expected=pydantic.ValidationError
+        )
 
     # ------------------------------------------------------------------
     # StreamInfo: validation via model_validate and numeric constraints
