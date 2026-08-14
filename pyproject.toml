@@ -390,6 +390,22 @@ reportUnknownVariableType = "none"
 reportUnusedImport = "none"
 root = "examples"
 
+[[tool.pyright.executionEnvironments]]
+extraPaths = [".", "src"]
+reportAssignmentType = "none"
+reportAttributeAccessIssue = "none"
+reportGeneralTypeIssues = "none"
+reportInvalidTypeForm = "none"
+reportPrivateImportUsage = "none"
+reportPrivateUsage = "none"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
+reportUnknownVariableType = "none"
+reportUnusedImport = "none"
+root = "docs"
+
 # [MANAGED] pytest
 [tool.pytest.ini_options]
 addopts = [
@@ -397,7 +413,7 @@ addopts = [
   "--durations=10",
   "--markdown-docs",
   "--strict-markers",
-  "--timeout=90",
+  "--timeout=10",
 ]
 filterwarnings = [
   "error",
