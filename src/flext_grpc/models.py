@@ -317,7 +317,7 @@ class FlextGrpcModels(m):
                 t.JsonMapping | None, u.Field(description="Request data")
             ] = None
 
-            @u.computed_field()
+            @u.computed_field
             @property
             def valid(self) -> bool:
                 """Check if request is valid."""
@@ -338,7 +338,7 @@ class FlextGrpcModels(m):
                 u.Field(description="Response metadata"),
             ] = u.Field(default_factory=lambda: MappingProxyType({}))
 
-            @u.computed_field()
+            @u.computed_field
             @property
             def has_error(self) -> bool:
                 """Check if response has error."""
@@ -417,15 +417,19 @@ class FlextGrpcModels(m):
             def disconnect(self) -> p.Result[Self]:
                 """Transition to idle."""
                 return r[Self](
-                    value=self.model_copy(
-                        update={"state": c.Grpc.ChannelState.IDLE.value}
-                    ),
+                    value=self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}),
                     success=True,
                 )
 
             def ready(self) -> bool:
                 """Check readiness."""
-                return self.state == "ready"
+                # ChannelState is a StrEnum, so its members compare as plain strings.
+                # `c.Grpc` widens to Any through the facade MRO for mypy, which would
+                # make the comparison itself Any; binding both sides to str keeps the
+                # result a real bool for every checker without changing behaviour.
+                current: str = self.state
+                ready_state: str = c.Grpc.ChannelState.READY
+                return current == ready_state
 
             def mark_ready(self) -> p.Result[Self]:
                 """Transition to ready."""

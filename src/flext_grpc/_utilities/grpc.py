@@ -293,10 +293,11 @@ class FlextGrpcUtilitiesGrpc:
                 return False
             port = int(port_str)
             max_port = 65535
-            return 1 <= port <= max_port
         except (ValueError, AttributeError):
             FlextGrpcUtilitiesGrpc._logger.debug("Invalid gRPC target: %s", target)
             return False
+        else:
+            return 1 <= port <= max_port
 
     @staticmethod
     def validate_port(port: int) -> bool:
