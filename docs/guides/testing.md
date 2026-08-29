@@ -6,45 +6,9 @@
 
 > Project profile: `flext-grpc`
 
-<!-- TOC START -->
-- [Overview](#overview)
-- [Test Structure](#test-structure)
-- [Test Categories](#test-categories)
-  - [Unit Tests](#unit-tests)
-  - [Integration Tests](#integration-tests)
-  - [End-to-End Tests](#end-to-end-tests)
-- [Test Markers](#test-markers)
-- [Running Tests](#running-tests)
-  - [Basic Test Execution](#basic-test-execution)
-  - [Coverage Analysis](#coverage-analysis)
-  - [Parallel Test Execution](#parallel-test-execution)
-- [Test Fixtures](#test-fixtures)
-  - [Pytest Fixtures](#pytest-fixtures)
-  - [Using Fixtures](#using-fixtures)
-- [Mocking and Stubbing](#mocking-and-stubbing)
-  - [Unit Test Mocking](#unit-test-mocking)
-  - [Integration Test Stubbing](#integration-test-stubbing)
-- [Performance Testing](#performance-testing)
-  - [Load Testing](#load-testing)
-  - [Memory Testing](#memory-testing)
-- [Test Data Management](#test-data-management)
-  - [Test Fixtures Directory](#test-fixtures-directory)
-  - [Loading Test Data](#loading-test-data)
-- [Continuous Integration](#continuous-integration)
-  - [GitHub Actions Workflow](#github-actions-workflow)
-- [Best Practices](#best-practices)
-  - [1. Test Naming](#1-test-naming)
-  - [2. Test Organization](#2-test-organization)
-  - [3. Assertion Quality](#3-assertion-quality)
-  - [4. Test Independence](#4-test-independence)
-- [Troubleshooting](#troubleshooting)
-  - [Common Test Issues](#common-test-issues)
-- [Resources](#resources)
-<!-- TOC END -->
-
 This guide covers testing strategies, best practices, and procedures for FLEXT applications and libraries.
 
-## Overview
+# Overview
 
 FLEXT maintains comprehensive test coverage across all **33 projects** with the following standards:
 
@@ -54,7 +18,7 @@ FLEXT maintains comprehensive test coverage across all **33 projects** with the 
 - **Zero Pyrefly errors** in strict mode (successor to MyPy)
 - **Zero Ruff violations** in production code
 
-## Test Structure
+# Test Structure
 
 FLEXT uses a hierarchical test structure:
 
@@ -67,9 +31,9 @@ tests/
 └── conftest.py    # Pytest configuration
 ```
 
-## Test Categories
+# Test Categories
 
-### Unit Tests
+# Unit Tests
 
 Test individual functions and classes in isolation:
 
@@ -102,8 +66,9 @@ objectClass: inetOrgPerson"""
         result = ldif.parse(content)
 
         assert result.failure
-        assert "parsing" in str(result.failure()).lower()```
-### Integration Tests
+        assert "parsing" in str(result.failure()).lower()
+```
+# Integration Tests
 
 Test component interactions and workflows:
 
@@ -129,8 +94,9 @@ class TestLdifIntegration:
         ldif_service = ldif_result.unwrap()
         # Test LDIF operations
         result = ldif_service.parse("dn: test")
-        assert result.success```
-### End-to-End Tests
+        assert result.success
+```
+# End-to-End Tests
 
 Test complete workflows and user scenarios:
 
@@ -169,8 +135,9 @@ objectClass: inetOrgPerson"""
         assert result.success
         report = result.unwrap()
         assert report.successful_entries > 0
-        assert (output_dir / "test.ldif").exists()```
-## Test Markers
+        assert (output_dir / "test.ldif").exists()
+```
+# Test Markers
 
 FLEXT uses pytest markers to categorize tests:
 
@@ -200,10 +167,11 @@ def test_end_to_end_scenario():
 @pytest.mark.slow
 def test_performance_benchmark():
     """Slow test - performance or load testing."""
-    pass```
-## Running Tests
+    pass
+```
+# Running Tests
 
-### Basic Test Execution
+# Basic Test Execution
 
 ```bash
 # Run all tests
@@ -219,8 +187,7 @@ pytest -m unit           # Unit tests
 pytest -m integration    # Integration tests
 pytest -m "not slow"     # Skip slow tests
 ```
-
-### Coverage Analysis
+# Coverage Analysis
 
 Coverage thresholds and source directories are configured in each project's `pyproject.toml` under `[tool.coverage]`. Use `make test` which reads these automatically.
 
@@ -231,8 +198,7 @@ make test
 # HTML coverage report
 pytest --cov --cov-report=html
 ```
-
-### Parallel Test Execution
+# Parallel Test Execution
 
 ```bash
 # Run tests in parallel
@@ -241,10 +207,9 @@ pytest -n auto
 # Specific number of workers
 pytest -n 4
 ```
+# Test Fixtures
 
-## Test Fixtures
-
-### Pytest Fixtures
+# Pytest Fixtures
 
 ```python
 from __future__ import annotations
@@ -282,8 +247,9 @@ def temp_directories(tmp_path):
     input_dir.mkdir()
     output_dir.mkdir()
 
-    return input_dir, output_dir```
-### Using Fixtures
+    return input_dir, output_dir
+```
+# Using Fixtures
 
 ```python
 from __future__ import annotations
@@ -305,10 +271,11 @@ def test_file_migration(ldif_service, temp_directories):
 
     # Run migration
     result = ldif_service.migrate(input_dir, output_dir, "oid", "oud")
-    assert result.success```
-## Mocking and Stubbing
+    assert result.success
+```
+# Mocking and Stubbing
 
-### Unit Test Mocking
+# Unit Test Mocking
 
 ```python
 from __future__ import annotations
@@ -327,8 +294,9 @@ def test_with_mocked_dependency():
 
         # Verify mock was called
         mock_service.process.assert_called_once()
-        assert result.success```
-### Integration Test Stubbing
+        assert result.success
+```
+# Integration Test Stubbing
 
 ```python
 from __future__ import annotations
@@ -349,10 +317,11 @@ def test_with_stubbed_service():
 
     # Test integration
     result = integration_function()
-    assert result.success```
-## Performance Testing
+    assert result.success
+```
+# Performance Testing
 
-### Load Testing
+# Load Testing
 
 ```python
 from __future__ import annotations
@@ -383,8 +352,9 @@ def test_concurrent_processing():
     assert all(result.success for result in results)
 
     # Verify performance (should complete in < 1 second)
-    assert (end_time - start_time) < 1.0```
-### Memory Testing
+    assert (end_time - start_time) < 1.0
+```
+# Memory Testing
 
 ```python
 from __future__ import annotations
@@ -410,11 +380,11 @@ def test_memory_usage():
     current_memory = process.memory_info().rss
     memory_used = current_memory - initial_memory
 
-    assert memory_used < 100 * 1024 * 1024  # 100MB```
-## Test Data Management
+    assert memory_used < 100 * 1024 * 1024  # 100MB
+```
+# Test Data Management
 
-### Test Fixtures Directory
-
+# Test Fixtures Directory
 ```
 tests/
 ├── fixtures/
@@ -429,8 +399,7 @@ tests/
 │       ├── users.json
 │       └── schema.json
 ```
-
-### Loading Test Data
+# Loading Test Data
 
 ```python
 from __future__ import annotations
@@ -459,10 +428,11 @@ def test_with_fixture():
 
     # Use fixture data in test
     result = process_ldif(ldif_content, config_data)
-    assert result.success```
-## Continuous Integration
+    assert result.success
+```
+# Continuous Integration
 
-### GitHub Actions Workflow
+# GitHub Actions Workflow
 
 ```yaml
 name: Test Suite
@@ -498,10 +468,9 @@ jobs:
         with:
           file: ./coverage.xml
 ```
+# Best Practices
 
-## Best Practices
-
-### 1. Test Naming
+# 1. Test Naming
 
 ```python
 from __future__ import annotations
@@ -524,8 +493,9 @@ def test_parse():
 
 
 def test_ldif():
-    pass```
-### 2. Test Organization
+    pass
+```
+# 2. Test Organization
 
 ```python
 from __future__ import annotations
@@ -552,8 +522,9 @@ class TestLdifMigration:
 
     def test_migrate_oid_to_oud(self):
         """Test OID to OUD migration."""
-        pass```
-### 3. Assertion Quality
+        pass
+```
+# 3. Assertion Quality
 
 ```python
 from __future__ import annotations
@@ -573,8 +544,9 @@ def test_parse_result():
 # ❌ BAD - Vague assertions
 def test_parse_result():
     result = ldif.parse(content)
-    assert result  # Too vague```
-### 4. Test Independence
+    assert result  # Too vague
+```
+# 4. Test Independence
 
 ```python
 from __future__ import annotations
@@ -604,10 +576,11 @@ def test_parse_valid_ldif():
 
 def test_parse_invalid_ldif():
     result = ldif.parse("invalid")
-    assert result.failure```
-## Troubleshooting
+    assert result.failure
+```
+# Troubleshooting
 
-### Common Test Issues
+# Common Test Issues
 
 1. **Import Errors**
 
@@ -640,7 +613,7 @@ def test_parse_invalid_ldif():
    pytest --cov=src --cov-report=term-missing
    ```
 
-## Resources
+# Resources
 
 - [Pytest Documentation](https://docs.pytest.org/)
 - [Coverage.py Documentation](https://coverage.readthedocs.io/)
