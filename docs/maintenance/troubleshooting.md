@@ -4,20 +4,10 @@
 - [Table of Contents](#table-of-contents)
 - [Quick Diagnosis](#quick-diagnosis)
   - [System Health Check](#system-health-check)
-  - [Quick Health Assessment](#quick-health-assessment)
-  - [Check for Critical Issues](#check-for-critical-issues)
-  - [Verify System Components](#verify-system-components)
   - [Common Symptoms and Solutions](#common-symptoms-and-solutions)
 - [🔍 Audit Issues](#audit-issues)
   - [Symptom: Audit fails with import errors](#symptom-audit-fails-with-import-errors)
-  - [Install Missing Dependencies](#install-missing-dependencies)
-  - [Or Install Individually](#or-install-individually)
-  - [Verify Installation](#verify-installation)
   - [Symptom: Audit reports low quality scores](#symptom-audit-reports-low-quality-scores)
-  - [Check Current Configuration](#check-current-configuration)
-  - [Run Detailed Audit](#run-detailed-audit)
-  - [Adjust Quality Thresholds if Needed](#adjust-quality-thresholds-if-needed)
-  - [Or Fix Content Issues](#or-fix-content-issues)
   - [Symptom: Audit finds false positives](#symptom-audit-finds-false-positives)
 - [🔗 Validation Issues](#validation-issues)
   - [Symptom: Link validation times out](#symptom-link-validation-times-out)
@@ -183,13 +173,13 @@ Comprehensive troubleshooting guide for the FLEXT-gRPC Documentation Maintenance
 ### System Health Check
 
 ```bash
-### Quick Health Assessment
+# Quick Health Assessment
 make docs DOCS_PHASE=audit
 
-### Check for Critical Issues
+# Check for Critical Issues
 make docs
 
-### Verify System Components
+# Verify System Components
 python -c "
 import sys
 sys.path.insert(0, 'docs/maintenance')
@@ -215,13 +205,13 @@ ModuleNotFoundError: No module named 'frontmatter'
 **Solution:**
 
 ```bash
-### Install Missing Dependencies
+# Install Missing Dependencies
 pip install -r docs/maintenance/requirements.txt
 
-### Or Install Individually
+# Or Install Individually
 pip install python-frontmatter requests beautifulsoup4 markdown
 
-### Verify Installation
+# Verify Installation
 python -c "import frontmatter, requests, markdown; print('✅ Dependencies installed')"
 ```
 
@@ -232,17 +222,17 @@ python -c "import frontmatter, requests, markdown; print('✅ Dependencies insta
 **Diagnosis:**
 
 ```bash
-### Check Current Configuration
+# Check Current Configuration
 cat docs/maintenance/settings.JSON | jq '.audit.quality_thresholds'
 
-### Run Detailed Audit
+# Run Detailed Audit
 PYTHONPATH=. python docs/maintenance/audit.py --verbose
 ```
 
 **Solution:**
 
 ```bash
-### Adjust Quality Thresholds if Needed
+# Adjust Quality Thresholds if Needed
 # Edit docs/maintenance/settings.JSON
 {
   "audit": {
@@ -253,7 +243,7 @@ PYTHONPATH=. python docs/maintenance/audit.py --verbose
   }
 }
 
-### Or Fix Content Issues
+# Or Fix Content Issues
 make docs
 ```
 
@@ -272,7 +262,9 @@ CUSTOM_AUDIT_RULES = {
     "ignore_patterns": ["<!-- ignore-audit -->"],
     "custom_headings": ["Changelog", "Migration Guide"],
     "project_terms": ["gRPC", "FLEXT", "protobuf"],
-}```
+}
+```
+
 ## 🔗 Validation Issues
 
 ### Symptom: Link validation times out
@@ -331,7 +323,7 @@ TimeoutError: Request timed out
 
 **Error:**
 
-```
+```text
 Line too long (120 > 88 characters)
 ```
 

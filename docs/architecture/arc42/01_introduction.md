@@ -123,26 +123,18 @@
 | Stakeholder          | Role      | Responsibilities                         | Concerns                                |
 | -------------------- | --------- | ---------------------------------------- | --------------------------------------- |
 | **FLEXT Developers** | End Users | Implement microservices using FLEXT-gRPC | API usability, performance, reliability |
-
-| **System Architects** | Decision Makers | Design microservices architecture | Scalability,
-security, compliance |
-| **DevOps Engineers** | Infrastructure | Deploy and operate FLEXT-gRPC services | Monitoring,
-troubleshooting, scalability |
-| **Platform Maintainers** | Owners | Maintain and evolve FLEXT-gRPC | Code quality,
-ecosystem compatibility |
+| **System Architects** | Decision Makers | Design microservices architecture | Scalability, security, compliance |
+| **DevOps Engineers** | Infrastructure | Deploy and operate FLEXT-gRPC services | Monitoring, troubleshooting, scalability |
+| **Platform Maintainers** | Owners | Maintain and evolve FLEXT-gRPC | Code quality, ecosystem compatibility |
 
 ### Secondary Stakeholders
 
 | Stakeholder           | Role       | Responsibilities                | Concerns                              |
 | --------------------- | ---------- | ------------------------------- | ------------------------------------- |
 | **Quality Assurance** | Validators | Test and validate functionality | Testability, reliability, performance |
-
-| **Security Team** | Guardians | Ensure security compliance | Vulnerabilities,
-audit trails, compliance |
-| **Product Managers** | Planners | Define feature roadmap | User needs,
-market requirements, timelines |
-| **Enterprise Architects** | Overseers | Ensure enterprise standards | Governance,
-standards compliance, risk management |
+| **Security Team** | Guardians | Ensure security compliance | Vulnerabilities, audit trails, compliance |
+| **Product Managers** | Planners | Define feature roadmap | User needs, market requirements, timelines |
+| **Enterprise Architects** | Overseers | Ensure enterprise standards | Governance, standards compliance, risk management |
 
 ## 1.4 Quality Goals
 
@@ -197,7 +189,6 @@ standards compliance, risk management |
 | -------------------- | ------------------------------------------------------------------------------------------------- |
 | **gRPC**             | Google Remote Procedure Call - high-performance RPC framework                                     |
 | **Protocol Buffers** | Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data |
-
 | **Railway Pattern** | Functional error handling pattern using Result types |
 | **Clean Architecture** | Architectural pattern separating business logic from infrastructure concerns |
 | **Domain-Driven Design** | Software development approach focusing on business domain modeling |

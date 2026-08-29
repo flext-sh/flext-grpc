@@ -53,59 +53,36 @@
       - [2. Integration Tests (Secondary Focus)](#2-integration-tests-secondary-focus)
       - [3. End-to-End Tests (Future Focus)](#3-end-to-end-tests-future-focus)
     - [Testing Priorities](#testing-priorities)
-      - [Phase 1: Bug Fixes & Coverage (Immediate)](#phase-1-bug-fixes--coverage-immediate)
-      - [Phase 2: Integration & Performance (Next)](#phase-2-integration--performance-next)
-      - [Phase 3: E2E & Observability (Future)](#phase-3-e2e--observability-future)
+      - [Phase 1: Bug Fixes & Coverage (Immediate)](#phase-1-bug-fixes-coverage-immediate)
+      - [Phase 2: Integration & Performance (Next)](#phase-2-integration-performance-next)
+      - [Phase 3: E2E & Observability (Future)](#phase-3-e2e-observability-future)
   - [Test Implementation Plan](#test-implementation-plan)
     - [Immediate Actions (Fix Critical Failures)](#immediate-actions-fix-critical-failures)
       - [1. Fix FlextGrpcServices Logger Property](#1-fix-flextgrpcservices-logger-property)
-- [Issue: Property setter missing](#issue-property-setter-missing)
-- [Location: src/flext_grpc/services.py:77](#location-srcflext_grpcservicespy77)
-- [Current: self.logger = u.fetch_logger(**name**) # Fails](#current-selflogger--flextlogger__name__---fails)
-- [Fix: self.\logger = u.fetch_logger(**name**)](#fix-self_logger--flextlogger__name__) - [2. Correct Exception Constructors](#2-correct-exception-constructors)
-- [Issue: Wrong parameter signatures](#issue-wrong-parameter-signatures)
-- [Location: src/flext_grpc/exceptions.py](#location-srcflext_grpcexceptionspy)
-- [Current: def **init**(self, message: str,
-  ...): # Wrong signature](#current-def-__init__self-message-str----wrong-signature)
-- [Fix: def **init**(self, message: str,
-  field_name: str | None = None): # Correct](#fix-def-__init__self-message-str-field_name-str--none--none---correct) - [3. Add Protocol Decorators](#3-add-protocol-decorators)
-- [Issue: @runtime_checkable missing](#issue-runtime_checkable-missing)
-- [Location: src/flext_grpc/protocols.py](#location-srcflext_grpcprotocolspy)
-- [Fix: @runtime_checkable](#fix-runtime_checkable)
-- [class Server(Protocol): ...](#class-serverprotocolprotocol-) - [4. Update Configuration Tests](#4-update-configuration-tests)
-- [Issue: Default host changed](#issue-default-host-changed)
-- [Location: tests/unit/test_config.py](#location-testsunittest_configpy)
-- [Fix: assert settings.host == "localhost" # Update expectation](#fix-assert-confighost--localhost---update-expectation)
+      - [2. Correct Exception Constructors](#2-correct-exception-constructors)
+      - [3. Add Protocol Decorators](#3-add-protocol-decorators)
+      - [4. Update Configuration Tests](#4-update-configuration-tests)
   - [Coverage Improvement Targets](#coverage-improvement-targets)
-    - [High Priority Modules (< 50% coverage)](#high-priority-modules--50-coverage)
-      - [services.py (15% → 90%)](#servicespy-15--90)
-      - [api.py (26% → 90%)](#apipy-26--90)
-      - [entities.py (36% → 90%)](#entitiespy-36--90)
+    - [High Priority Modules (< 50% coverage)](#high-priority-modules-50-coverage)
+      - [services.py (15% → 90%)](#servicespy-15-90)
+      - [api.py (26% → 90%)](#apipy-26-90)
+      - [entities.py (36% → 90%)](#entitiespy-36-90)
     - [Medium Priority Modules (50-80% coverage)](#medium-priority-modules-50-80-coverage)
-      - [utilities.py (18% → 90%)](#utilitiespy-18--90)
-      - [real_servicer.py (24% → 90%)](#real_servicerpy-24--90)
+      - [utilities.py (18% → 90%)](#utilitiespy-18-90)
+      - [real_servicer.py (24% → 90%)](#real_servicerpy-24-90)
   - [Integration Testing Implementation](#integration-testing-implementation)
     - [Real gRPC Server Testing](#real-grpc-server-testing)
     - [Streaming Operations Testing](#streaming-operations-testing)
   - [Testing Procedures](#testing-procedures)
     - [Daily Development Testing](#daily-development-testing)
       - [Quick Test Execution](#quick-test-execution)
-- [Run all tests](#run-all-tests)
-- [Run specific test file](#run-specific-test-file)
-- [Run with coverage](#run-with-coverage) - [Test Debugging](#test-debugging)
-- [Run single failing test](#run-single-failing-test)
-- [Run with detailed output](#run-with-detailed-output)
-- [Debug mode](#debug-mode)
+      - [Test Debugging](#test-debugging)
   - [Continuous Integration Testing](#continuous-integration-testing)
     - [Quality Gates](#quality-gates)
-- [Complete validation pipeline](#complete-validation-pipeline)
-- [Individual checks](#individual-checks) - [Coverage Validation](#coverage-validation)
-- [Coverage report](#coverage-report)
-- [Coverage by module](#coverage-by-module)
-- [Fail if below threshold](#fail-if-below-threshold)
+      - [Coverage Validation](#coverage-validation)
   - [Integration Testing Setup](#integration-testing-setup)
     - [gRPC Test Server](#grpc-test-server)
-- [conftest.py](#conftestpy) - [Test Client Setup](#test-client-setup)
+      - [Test Client Setup](#test-client-setup)
   - [Test Organization](#test-organization)
     - [Directory Structure](#directory-structure)
     - [Test Naming Conventions](#test-naming-conventions)
@@ -123,8 +100,8 @@
     - [Load Testing](#load-testing)
     - [Chaos Testing](#chaos-testing)
 
-**Version**: 0.9.0 | **Updated**: 2026-04-14
-**Current Coverage**: 39% | **Test Status**: 28 failed, 36 passed (64 total tests)
+**Version**: 0.9.0 — **Updated**: 2026-04-14
+**Current Coverage**: 39% — **Test Status**: 28 failed, 36 passed (64 total tests)
 
 ## Executive Summary
 
@@ -331,7 +308,8 @@ def test_service_lifecycle():
     assert server_result.success
 
     # Test service registration
-    # Test startup/shutdown```
+    # Test startup/shutdown
+```
 ##### api.py (26% → 90%)
 
 **Current Issues**: API validation failures
@@ -360,7 +338,8 @@ def test_create_client_target_validation():
     """Test client creation with target validation."""
     client = create_client("localhost:50051")
     assert client.target_host == "localhost"
-    assert client.target_port == 50051```
+    assert client.target_port == 50051
+```
 ##### entities.py (36% → 90%)
 
 **Current Issues**: Entity creation failures
@@ -388,7 +367,8 @@ def test_server_entity_lifecycle():
 
     # Test state transitions
     server.state = "starting"
-    assert server.state == "starting"```
+    assert server.state == "starting"
+```
 #### Medium Priority Modules (50-80% coverage)
 
 ##### utilities.py (18% → 90%)
@@ -429,7 +409,8 @@ async def test_real_grpc_server_operations(grpc_server):
     async with grpc.insecure_channel("localhost:50051") as channel:
         stub = GreeterStub(channel)
         response = await stub.SayHello(HelloRequest(name="test"))
-        assert response.message == "Hello test"```
+        assert response.message == "Hello test"
+```
 #### Streaming Operations Testing
 
 ```python
@@ -451,7 +432,8 @@ async def test_server_streaming():
         assert response is not None
 
     # Close stream
-    await stream.close()```
+    await stream.close()
+```
 ## Testing Procedures
 
 ### Daily Development Testing
@@ -468,7 +450,6 @@ PYTHONPATH=src poetry run pytest tests/unit/test_config.py -v
 # Run with coverage
 PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 ```
-
 #### Test Debugging
 
 ```bash
@@ -481,7 +462,6 @@ PYTHONPATH=src poetry run pytest tests/unit/test_services.py -v --tb=long
 # Debug mode
 PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb
 ```
-
 ### Continuous Integration Testing
 
 #### Quality Gates
@@ -496,7 +476,6 @@ make type-check    # Type safety
 make security      # Security scanning
 make test         # Test execution
 ```
-
 #### Coverage Validation
 
 ```bash
@@ -510,7 +489,6 @@ open htmlcov/index.html
 # Coverage by module
 PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
 ```
-
 > Coverage thresholds are configured in `pyproject.toml` under `[tool.coverage.report]`.
 
 ### Integration Testing Setup
@@ -536,7 +514,8 @@ async def grpc_server():
     yield server
 
     # Cleanup
-    await server.stop()```
+    await server.stop()
+```
 #### Test Client Setup
 
 ```python
@@ -554,7 +533,8 @@ async def grpc_client(grpc_server):
     yield client
 
     # Cleanup
-    await client.disconnect()```
+    await client.disconnect()
+```
 ## Test Organization
 
 ### Directory Structure
@@ -579,7 +559,6 @@ tests/
 │   └── grpc_client.py           # gRPC client fixture
 └── conftest.py                  # pytest configuration
 ```
-
 ### Test Naming Conventions
 
 ```python
@@ -591,7 +570,8 @@ def test_{entity}_{action}_{result}():
     """Test {entity} {action} returns {result}."""
 
 def test_{operation}_with_{configuration}():
-    """Test {operation} using {configuration}."""```
+    """Test {operation} using {configuration}."""
+```
 ### Test Categories and Markers
 
 ```python
@@ -615,7 +595,8 @@ def test_performance_operations():
 
 @pytest.mark.skip(reason="Bug: #123")
 def test_known_issue():
-    """Temporarily skipped tests."""```
+    """Temporarily skipped tests."""
+```
 ## Success Metrics
 
 ### Phase 1 Success Criteria
@@ -671,7 +652,8 @@ def test_grpc_performance_under_load():
     # Concurrent client connections
     # Message throughput measurement
     # Latency validation
-    # Resource usage monitoring```
+    # Resource usage monitoring
+```
 ### Load Testing
 
 ```python
@@ -683,7 +665,8 @@ def test_grpc_scalability_limits():
     # Maximum concurrent connections
     # Message size boundaries
     # Connection pool management
-    # Failure recovery```
+    # Failure recovery
+```
 ### Chaos Testing
 
 ```python
@@ -695,7 +678,8 @@ def test_grpc_fault_tolerance():
     # Network interruptions
     # Server failures
     # Connection drops
-    # Recovery mechanisms```
+    # Recovery mechanisms
+```
 ---
 
 **Testing Status**: Critical failures require immediate attention

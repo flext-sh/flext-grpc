@@ -18,8 +18,6 @@ from flext_grpc.protocols import FlextGrpcProtocols
 class FlextGrpcServiceServicer:
     """Base class for gRPC service implementations."""
 
-    pass
-
 
 class FlextGrpcServiceStub:
     """gRPC service stub for client calls."""
@@ -48,7 +46,6 @@ def add_flext_grpc_service_servicer_to_server(
     server: FlextGrpcProtocols.Grpc.GrpcServer,
 ) -> None:
     """Add gRPC service servicer to server."""
-    pass
 
 
 __all__ = [

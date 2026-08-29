@@ -11,12 +11,6 @@
   - [5. Implementation](#5-implementation)
   - [6. Review and Evolution](#6-review-and-evolution)
 - [ADR Template](#adr-template)
-- [Status](#status)
-- [Context](#context)
-- [Decision](#decision)
-- [Consequences](#consequences)
-- [Alternatives Considered](#alternatives-considered)
-- [References](#references)
 - [Current ADRs](#current-adrs)
 - [ADR Status Definitions](#adr-status-definitions)
 - [Creating a New ADR](#creating-a-new-adr)
@@ -46,12 +40,6 @@
   - [Process Metrics](#process-metrics)
 - [Examples and Templates](#examples-and-templates)
   - [Simple ADR Example](#simple-adr-example)
-- [Status](#status)
-- [Context](#context)
-- [Decision](#decision)
-- [Consequences](#consequences)
-- [Alternatives Considered](#alternatives-considered)
-- [References](#references)
   - [Template File](#template-file)
 - [Related Documentation](#related-documentation)
 - [Contributing](#contributing)
@@ -71,20 +59,10 @@
     - [5. Implementation](#5-implementation)
     - [6. Review and Evolution](#6-review-and-evolution)
   - [ADR Template](#adr-template)
-- [ADR-\[NUMBER\]: [TITLE]](#adr-number-title)
-  - [Status](#status)
-  - [Context](#context)
-  - [Decision](#decision)
-  - [Consequences](#consequences)
-  - [Alternatives Considered](#alternatives-considered)
-  - [References](#references)
   - [Current ADRs](#current-adrs)
   - [ADR Status Definitions](#adr-status-definitions)
   - [Creating a New ADR](#creating-a-new-adr)
     - [Step 1: Prepare](#step-1-prepare)
-- [Create new ADR file](#create-new-adr-file)
-- [Update ADR number and title](#update-adr-number-and-title)
-- [Fill in the template](#fill-in-the-template)
   - [Step 2: Research](#step-2-research)
   - [Step 3: Decide](#step-3-decide)
   - [Step 4: Document](#step-4-document)
@@ -99,10 +77,6 @@
     - [ADR Organization](#adr-organization)
   - [Tooling and Automation](#tooling-and-automation)
     - [ADR Management Tools](#adr-management-tools)
-- [Generate ADR from template](#generate-adr-from-template)
-- [Validate ADR format](#validate-adr-format)
-- [Generate ADR index](#generate-adr-index)
-- [Check ADR status](#check-adr-status)
   - [Integration with Development Workflow](#integration-with-development-workflow)
   - [ADR Categories](#adr-categories)
     - [Architectural Patterns](#architectural-patterns)
@@ -114,13 +88,6 @@
     - [Process Metrics](#process-metrics)
   - [Examples and Templates](#examples-and-templates)
     - [Simple ADR Example](#simple-adr-example)
-- [ADR-001: Clean Architecture Adoption](#adr-001-clean-architecture-adoption)
-  - [Status](#status)
-  - [Context](#context)
-  - [Decision](#decision)
-  - [Consequences](#consequences)
-  - [Alternatives Considered](#alternatives-considered)
-  - [References](#references)
     - [Template File](#template-file)
   - [Related Documentation](#related-documentation)
   - [Contributing](#contributing)
@@ -189,27 +156,27 @@ When a significant architectural decision needs to be made:
 ```markdown
 # ADR-[NUMBER]: [TITLE]
 
-## Status
+# Status
 
 [Proposed | Accepted | Rejected | Deprecated | Superseded by ADR-XXX]
 
-## Context
+# Context
 
 [What is the issue that we're seeing that is motivating this decision or change? What is the business or technical context?]
 
-## Decision
+# Decision
 
 [What is the change that we're proposing and/or doing?]
 
-## Consequences
+# Consequences
 
 [What becomes easier or more difficult to do because of this change? What are the trade-offs?]
 
-## Alternatives Considered
+# Alternatives Considered
 
 [What other approaches did we consider? Why were they rejected?]
 
-## References
+# References
 
 [Links to relevant documentation, issues, or discussions]
 ```
@@ -385,30 +352,30 @@ make docs
 ```markdown
 # ADR-001: Clean Architecture Adoption
 
-## Status
+# Status
 
 Accepted
 
-## Context
+# Context
 
 The codebase was growing complex with mixed concerns. We needed a way to organize code that would be maintainable and testable.
 
-## Decision
+# Decision
 
 Adopt Clean Architecture with clear layer separation: Domain, Application, Infrastructure.
 
-## Consequences
+# Consequences
 
 - Better testability through dependency inversion
 - Clearer code organization and responsibilities
 - Longer initial development time but better long-term maintainability
 
-## Alternatives Considered
+# Alternatives Considered
 
 - Hexagonal Architecture: Similar but more complex for our use case
 - Traditional layered architecture: Didn't provide enough separation
 
-## References
+# References
 
 - [Clean Architecture Book](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 ```
@@ -419,9 +386,9 @@ See `template.md` for the complete ADR template.
 
 ## Related Documentation
 
-- **[C4 Model](../c4-model/)**: Architectural views and diagrams
-- **[Arc42](../arc42/)**: Structured architecture documentation
-- **[Quality Assurance](../../maintenance/reporting.py)**: Architecture quality metrics
+- **[C4 Model](../c4-model/context.md)**: Architectural views and diagrams
+- **[Arc42](../arc42/01_introduction.md)**: Structured architecture documentation
+- **[Quality Assurance](../../maintenance/README.md)**: Architecture quality metrics
 
 ## Contributing
 
