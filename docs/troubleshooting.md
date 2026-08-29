@@ -27,23 +27,12 @@
 - [flext-grpc Troubleshooting](#flext-grpc-troubleshooting)
   - [Fixed Issues](#fixed-issues)
     - [Protobuf Import Compatibility (RESOLVED)](#protobuf-import-compatibility-resolved)
-- [or](#or)
-- [1. Regenerate protobuf files](#1-regenerate-protobuf-files)
-- [2. Fix import paths in generated files](#2-fix-import-paths-in-generated-files)
-- [Changed: import flext_grpc_pb2 as flext**grpc**pb2](#changed-import-flext_grpc_pb2-as-flext__grpc__pb2)
-- [To: from . import flext_grpc_pb2 as flext**grpc**pb2](#to-from--import-flext_grpc_pb2-as-flext__grpc__pb2)
   - [Current Issues](#current-issues)
     - [Test Execution Investigation Required](#test-execution-investigation-required)
-- [Check test discovery](#check-test-discovery)
-- [Run specific test modules](#run-specific-test-modules)
-- [Full test execution](#full-test-execution)
   - [Common Development Issues](#common-development-issues)
     - [Import Path Problems](#import-path-problems)
-- [or use poetry run for installed package](#or-use-poetry-run-for-installed-package)
   - [gRPC Version Conflicts](#grpc-version-conflicts)
   - [Server Startup Issues](#server-startup-issues)
-- [Check server state](#check-server-state)
-- [Attempt startup with error handling](#attempt-startup-with-error-handling)
   - [Development Best Practices](#development-best-practices)
     - [gRPC Service Development](#grpc-service-development)
     - [Performance Considerations](#performance-considerations)
@@ -129,7 +118,8 @@ from __future__ import annotations
 import sys
 
 sys.path.insert(0, "src")  # For development
-# or use poetry run for installed package```
+# or use poetry run for installed package
+```
 ### gRPC Version Conflicts
 
 **Symptom**: Version mismatch warnings or errors.
@@ -140,7 +130,6 @@ sys.path.insert(0, "src")  # For development
 poetry install --all-extras
 poetry show grpcio grpcio-tools protobuf  # Check versions
 ```
-
 ### Server Startup Issues
 
 **Symptom**: Server creation succeeds but startup fails.
@@ -160,7 +149,8 @@ print(f"Server state: {server.state}")
 # Attempt startup with error handling
 start_result = platform.start_server(server)
 if start_result.failure:
-    print(f"Startup failed: {start_result.error}")```
+    print(f"Startup failed: {start_result.error}")
+```
 ## Development Best Practices
 
 ### gRPC Service Development
@@ -212,7 +202,6 @@ Based on 2025 gRPC Python best practices:
 poetry show flext-grpc
 poetry run python -c "import flext_grpc; print('Installation OK')"
 ```
-
 ### Verify Dependencies
 
 ```bash
@@ -223,7 +212,6 @@ print(f'gRPC: {grpc.__version__}')
 print(f'Protobuf: {google.protobuf.__version__}')
 "
 ```
-
 ### Test Core Functionality
 
 ```bash
@@ -236,7 +224,6 @@ print(f'Platform: {platform is not None}')
 print('Core functionality verified')
 "
 ```
-
 ## Getting Help
 
 1. **Check this troubleshooting guide** for common issues
