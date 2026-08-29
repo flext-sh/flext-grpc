@@ -46,7 +46,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        75          host=FlextGrpcConstants.Grpc.NETWORK_DEFAULT_HOST, port=7070
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 2 · 🟠 CRITICAL · CODE_SMELL · `python:S1192`
 **Local**: `src/flext_grpc/_utilities/grpc.py:83` · **Effort**: 8min
@@ -65,7 +65,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        87              FlextGrpcUtilitiesGrpc._GrpcRuntimeAdapter(runtime_result.value)
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 3 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7688`
 **Local**: `.github/scripts/install-git-hooks.sh:55` · **Effort**: 2min
@@ -84,7 +84,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        59  import os
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 4 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7688`
 **Local**: `.github/scripts/install-git-hooks.sh:104` · **Effort**: 2min
@@ -103,7 +103,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       108  
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 5 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7688`
 **Local**: `.github/scripts/install-git-hooks.sh:106` · **Effort**: 2min
@@ -121,7 +121,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       109  echo "install-git-hooks: prepare-commit-msg guarded (BD_ALLOW_AGENT_COMMIT_TRAILERS opt-in)"
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 6 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8264`
 **Local**: `.github/workflows/docs.yml:18` · **Effort**: 5min
@@ -140,7 +140,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        22  concurrency:
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 7 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8233`
 **Local**: `.github/workflows/docs.yml:19` · **Effort**: 5min
@@ -159,7 +159,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        23    group: pages
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 8 · 🟡 MAJOR · VULNERABILITY · `githubactions:S8233`
 **Local**: `.github/workflows/docs.yml:20` · **Effort**: 5min
@@ -178,7 +178,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        24    cancel-in-progress: false
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 9 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7679`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:21` · **Effort**: 5min
@@ -197,7 +197,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        25  	echo -e "${GREEN}[SUCCESS]${NC} $1"
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 10 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7679`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:25` · **Effort**: 5min
@@ -216,7 +216,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        29  	echo -e "${YELLOW}[WARNING]${NC} $1"
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 11 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7679`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:29` · **Effort**: 5min
@@ -235,7 +235,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        33  	echo -e "${RED}[ERROR]${NC} $1"
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 12 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7677`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:33` · **Effort**: 5min
@@ -254,7 +254,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        37  check_dependencies() {
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 13 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7679`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:33` · **Effort**: 5min
@@ -273,7 +273,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        37  check_dependencies() {
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 14 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7679`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:226` · **Effort**: 5min
@@ -292,7 +292,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       230  			shift
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 15 · 🟡 MAJOR · CODE_SMELL · `shelldre:S7679`
 **Local**: `docs/architecture/tools/generate-diagrams.sh:257` · **Effort**: 5min
@@ -311,7 +311,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       261  	done
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 16 · 🟡 MAJOR · CODE_SMELL · `python:S1854`
 **Local**: `docs/architecture/tools/validate_docs.py:193` · **Effort**: 1min
@@ -330,7 +330,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       197          if len(adr_files) < self.MIN_ADR_FILES:
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 17 · 🟡 MAJOR · VULNERABILITY · `text:S8565`
 **Local**: `pyproject.toml:-` · **Effort**: 5min
@@ -338,7 +338,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Dependency versions are not predictable if the lock file (uv.lock, poetry.lock, pdm.lock or pylock.toml) is missing.
 
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 18 · 🟡 MAJOR · CODE_SMELL · `python:S8786`
 **Local**: `src/flext_grpc/constants.py:97` · **Effort**: 20min
@@ -357,7 +357,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
       101  
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 19 · ⚪ MINOR · CODE_SMELL · `python:S7504`
 **Local**: `conftest.py:20` · **Effort**: 5min
@@ -376,7 +376,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        24                  sys.modules.pop(module_name, None)
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 20 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_grpc/_utilities/grpc.py:28` · **Effort**: 2min
@@ -395,7 +395,7 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        32              """Store the imported grpc module."""
 ```
 
-**Decisão**: 
+**Decisão**: pendente
 
 ### 21 · ⚪ MINOR · CODE_SMELL · `python:S116`
 **Local**: `src/flext_grpc/_utilities/grpc.py:29` · **Effort**: 2min
@@ -414,5 +414,4 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        33              self._runtime_module = runtime_module
 ```
 
-**Decisão**: 
-
+**Decisão**: pendente
