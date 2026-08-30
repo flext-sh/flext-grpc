@@ -8,10 +8,4 @@
 
 These pages are generated from public modules and their docstrings.
 
-- [flext_grpc.api](api.md)
-- [flext_grpc.base](base.md)
-- [flext_grpc.constants](constants.md)
-- [flext_grpc.models](models.md)
-- [flext_grpc.protocols](protocols.md)
-- [flext_grpc.typings](typings.md)
-- [flext_grpc.utilities](utilities.md)
+_No public modules discovered._
