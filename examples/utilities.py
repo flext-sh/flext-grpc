@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextGrpcUtilities
+from flext_grpc import FlextGrpcUtilities
 
 class ExamplesFlextGrpcUtilities(FlextGrpcUtilities):
     """Utility functions for flextgrpc."""

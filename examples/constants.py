@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextGrpcConstants
+from flext_grpc import FlextGrpcConstants
 
 class ExamplesFlextGrpcConstants(FlextGrpcConstants):
     """Constants for flextgrpc."""

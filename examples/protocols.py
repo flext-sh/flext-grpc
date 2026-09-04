@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from flext_core import FlextGrpcProtocols
+from flext_grpc import FlextGrpcProtocols
 
 class ExamplesFlextGrpcProtocols(FlextGrpcProtocols):
     """Protocol definitions for flextgrpc."""
