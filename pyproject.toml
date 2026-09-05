@@ -361,22 +361,6 @@ root = "tests"
 
 [[tool.pyright.executionEnvironments]]
 extraPaths = [".", "src"]
-reportAssignmentType = "none"
-reportAttributeAccessIssue = "none"
-reportGeneralTypeIssues = "none"
-reportInvalidTypeForm = "none"
-reportPrivateImportUsage = "none"
-reportPrivateUsage = "none"
-reportUnknownArgumentType = "none"
-reportUnknownLambdaType = "none"
-reportUnknownMemberType = "none"
-reportUnknownParameterType = "none"
-reportUnknownVariableType = "none"
-reportUnusedImport = "none"
-root = "docs"
-
-[[tool.pyright.executionEnvironments]]
-extraPaths = [".", "src"]
 reportArgumentType = "none"
 reportAssignmentType = "none"
 reportAttributeAccessIssue = "none"
@@ -392,6 +376,22 @@ reportUnknownParameterType = "none"
 reportUnknownVariableType = "none"
 reportUnusedImport = "none"
 root = "examples"
+
+[[tool.pyright.executionEnvironments]]
+extraPaths = [".", "src"]
+reportAssignmentType = "none"
+reportAttributeAccessIssue = "none"
+reportGeneralTypeIssues = "none"
+reportInvalidTypeForm = "none"
+reportPrivateImportUsage = "none"
+reportPrivateUsage = "none"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnknownMemberType = "none"
+reportUnknownParameterType = "none"
+reportUnknownVariableType = "none"
+reportUnusedImport = "none"
+root = "docs"
 
 # [MANAGED] pytest
 [tool.pytest.ini_options]
