@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_grpc import FlextGrpcSettings, FlextGrpcUtilities, c, m, p, r, t
-from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+from flext_grpc import u, FlextGrpcSettings, FlextGrpcUtilities, c, m, p, r, t
 from flext_grpc.base import FlextGrpcServiceBase
 
 
@@ -41,23 +40,17 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         server_result = self.create_server(host=host, port=port)
         if server_result.failure:
-            return r[m.Grpc.CompleteSetup].fail(
-                server_result.error or "Server creation failed"
-            )
+            return r[m.Grpc.CompleteSetup].from_failure(server_result)
 
         client_result = self.create_client(target=target)
         if client_result.failure:
-            return r[m.Grpc.CompleteSetup].fail(
-                client_result.error or "Client creation failed"
-            )
+            return r[m.Grpc.CompleteSetup].from_failure(client_result)
 
         service_result = self.create_service(
             name=service_name, methods=resolved_methods
         )
         if service_result.failure:
-            return r[m.Grpc.CompleteSetup].fail(
-                service_result.error or "Service creation failed"
-            )
+            return r[m.Grpc.CompleteSetup].from_failure(service_result)
 
         return r[m.Grpc.CompleteSetup].ok(
             m.Grpc.CompleteSetup(
@@ -110,14 +103,14 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
                     f"Unknown operation: {request.operation_name}"
                 )
         if result.failure:
-            return r[FlextGrpcSettings].fail(result.error or "Unknown error")
+            return r[FlextGrpcSettings].from_failure(result)
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def parse_address(self, address: str) -> p.Result[tuple[str, int]]:
         """Parse gRPC address string."""
         if not FlextGrpcUtilities.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
-        return r[tuple[str, int]].ok(FlextGrpcUtilitiesGrpc.parse_target(address))
+        return r[tuple[str, int]].ok(u.Grpc.parse_target(address))
 
     def validate_target(self, target: str) -> bool:
         """Validate gRPC target string."""
