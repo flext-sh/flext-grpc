@@ -320,7 +320,7 @@ class FlextGrpcModels(m):
             @u.computed_field
             @property
             def valid(self) -> bool:
-                """Check if request is valid."""
+                """Whether request is valid."""
                 return bool(self.operation.name.strip())
 
         class Response(m.Value):
@@ -341,7 +341,7 @@ class FlextGrpcModels(m):
             @u.computed_field
             @property
             def has_error(self) -> bool:
-                """Check if response has error."""
+                """Whether response has error."""
                 return not self.success or self.error is not None
 
         class Payload(m.BaseModel):
