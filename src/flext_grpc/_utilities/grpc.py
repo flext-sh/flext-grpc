@@ -216,9 +216,7 @@ class FlextGrpcUtilitiesGrpc:
             target=target, options=resolved_options
         )
         if channel_result.failure:
-            return r[m.Grpc.Client].fail(
-                channel_result.error or "Client channel creation failed"
-            )
+            return r[m.Grpc.Client].from_failure(channel_result)
 
         def _build_client() -> m.Grpc.Client:
             return m.Grpc.Client(channel=channel_result.value, options=resolved_options)
