@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from flext_core import FlextGrpcModels
 
+
 class ExamplesFlextGrpcModels(FlextGrpcModels):
     """Domain models for flextgrpc."""
 

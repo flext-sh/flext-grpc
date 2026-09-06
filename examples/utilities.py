@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from flext_core import FlextGrpcUtilities
 
+
 class ExamplesFlextGrpcUtilities(FlextGrpcUtilities):
     """Utility functions for flextgrpc."""
 
