@@ -14,6 +14,11 @@ if TYPE_CHECKING:
 
     from . import unit as unit
     from .base import TestsFlextGrpcServiceBase, TestsFlextGrpcServiceBase as s
+    from .conftest import (
+        fixture_connection_pool,
+        fixture_grpc_facade,
+        fixture_metrics_collector,
+    )
     from .constants import TestsFlextGrpcConstants, TestsFlextGrpcConstants as c
     from .models import TestsFlextGrpcModels, TestsFlextGrpcModels as m
     from .protocols import TestsFlextGrpcProtocols, TestsFlextGrpcProtocols as p
@@ -33,6 +38,9 @@ __all__: tuple[str, ...] = (
     "c",
     "d",
     "e",
+    "fixture_connection_pool",
+    "fixture_grpc_facade",
+    "fixture_metrics_collector",
     "h",
     "m",
     "p",
@@ -53,6 +61,11 @@ _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
             ".base": ("TestsFlextGrpcServiceBase", "s"),
+            ".conftest": (
+                "fixture_connection_pool",
+                "fixture_grpc_facade",
+                "fixture_metrics_collector",
+            ),
             ".constants": ("TestsFlextGrpcConstants", "c"),
             ".models": ("TestsFlextGrpcModels", "m"),
             ".protocols": ("TestsFlextGrpcProtocols", "p"),
