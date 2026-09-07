@@ -1,4 +1,4 @@
 version: 1
-workspace: flext-grpc
-database: flext-grpc
-issue_prefix: flext-grpc
+workspace: flext
+database: flext
+issue_prefix: flext
