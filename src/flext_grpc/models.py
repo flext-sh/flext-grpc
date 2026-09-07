@@ -302,7 +302,9 @@ class FlextGrpcModels(m):
             parameters: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Operation parameters"),
-            ] = u.Field(default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({}))
+            ] = u.Field(
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+            )
 
         class Request(m.Value):
             """Generic request model with validation."""
@@ -336,7 +338,9 @@ class FlextGrpcModels(m):
             metadata: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Response metadata"),
-            ] = u.Field(default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({}))
+            ] = u.Field(
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+            )
 
             @u.computed_field
             @property
