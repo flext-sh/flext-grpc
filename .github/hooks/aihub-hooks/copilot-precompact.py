@@ -6,7 +6,8 @@ import sys
 
 payload = json.load(sys.stdin)
 if not isinstance(payload, dict):
-    raise TypeError("hook input must be a JSON object")
+    msg = "hook input must be a JSON object"
+    raise TypeError(msg)
 response = json.loads("{}")
 json.dump(response, sys.stdout, ensure_ascii=False, separators=(",", ":"))
 sys.stdout.write("\n")
