@@ -46,7 +46,7 @@ class FlextGrpcClient(s):
             if client_result.failure:
                 _ = FlextGrpcUtilities.Grpc.run_runtime(grpc_channel.close)
                 del self._active_channels[target]
-                return r[m.Grpc.Client].fail(client_result.error or "Connection failed")
+                return r[m.Grpc.Client].from_failure(client_result)
             return client_result
 
         def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:

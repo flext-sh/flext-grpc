@@ -434,7 +434,7 @@ def main() -> int:
         handler=_run_validation,
     )
     result = cli.execute_app(app, prog_name="flext-grpc-validate-docs")
-    return 0 if result.success else 1
+    return cli.finalize_result(result)
 
 
 if __name__ == "__main__":

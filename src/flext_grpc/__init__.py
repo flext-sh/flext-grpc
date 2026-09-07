@@ -3,28 +3,26 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from types import MappingProxyType
+from typing import TYPE_CHECKING
 
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
-from .__version__ import __author__ as __author__
-from .__version__ import __author_email__ as __author_email__
-from .__version__ import __description__ as __description__
-from .__version__ import __license__ as __license__
-from .__version__ import __title__ as __title__
-from .__version__ import __url__ as __url__
-from .__version__ import __version__ as __version__
-from .__version__ import __version_info__ as __version_info__
+from .__version__ import (
+    __author__ as __author__,
+    __author_email__ as __author_email__,
+    __description__ as __description__,
+    __license__ as __license__,
+    __title__ as __title__,
+    __url__ as __url__,
+    __version__ as __version__,
+    __version_info__ as __version_info__,
+)
 
 if TYPE_CHECKING:
-    from . import proto as proto
-    from . import services as services
-    from enum import StrEnum, unique
     from flext_core import FlextConstants, d, h, r, x
-    from typing import ClassVar, Final, TYPE_CHECKING
 
+    from . import proto as proto, services as services
     from ._config import FlextGrpcConfig, config
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
@@ -47,9 +45,6 @@ if TYPE_CHECKING:
     from .typings import FlextGrpcTypes, FlextGrpcTypes as t
     from .utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
 __all__: tuple[str, ...] = (
-    "TYPE_CHECKING",
-    "ClassVar",
-    "Final",
     "FlextConstants",
     "FlextGrpc",
     "FlextGrpcApiRuntime",
@@ -69,7 +64,6 @@ __all__: tuple[str, ...] = (
     "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
-    "StrEnum",
     "__author__",
     "__author_email__",
     "__description__",
@@ -94,7 +88,6 @@ __all__: tuple[str, ...] = (
     "settings",
     "t",
     "u",
-    "unique",
     "x",
 )
 
@@ -124,9 +117,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".services.stream": ("FlextGrpcStream",),
             ".typings": ("FlextGrpcTypes", "t"),
             ".utilities": ("FlextGrpcUtilities", "u"),
-            "enum": ("StrEnum", "unique"),
             "flext_core": ("FlextConstants", "d", "h", "r", "x"),
-            "typing": ("ClassVar", "Final", "TYPE_CHECKING"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
