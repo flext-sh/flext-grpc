@@ -6,7 +6,8 @@ from typing import override
 
 from flext_cli import u
 from flext_grpc import c, m, p, t
-from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+
+from ._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
 class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
