@@ -22,7 +22,7 @@ from .__version__ import (
 if TYPE_CHECKING:
     from flext_core import FlextConstants, d, h, r, x
 
-    from . import proto as proto, services as services
+    from . import proto, services
     from ._config import FlextGrpcConfig, config
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
