@@ -12,6 +12,7 @@ from concurrent.futures import Executor
 from typing import Protocol, runtime_checkable
 
 from flext_cli import p
+
 from flext_grpc import c, t
 
 

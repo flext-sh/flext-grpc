@@ -6,10 +6,10 @@ from datetime import UTC, datetime
 from typing import TYPE_CHECKING
 
 import pytest
+from flext_tests import tm
 from pydantic import ValidationError
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from flext_tests import tm
 from tests import m
 
 if TYPE_CHECKING:

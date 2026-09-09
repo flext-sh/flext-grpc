@@ -13,6 +13,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from flext_cli import cli
+
 from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
 
 

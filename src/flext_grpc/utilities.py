@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import override
 
 from flext_cli import u
+
 from flext_grpc import c, m, p, t
 
 from ._utilities.grpc import FlextGrpcUtilitiesGrpc
