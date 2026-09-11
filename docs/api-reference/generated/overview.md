@@ -16,16 +16,16 @@
   Internet :: WWW/HTTP :: HTTP Servers` (+2 more)
 - Project class: `platform`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
-- Main facades: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConstants`,
-  `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcServiceBase`,
-  `FlextGrpcSettings`, `FlextGrpcTypes` (+1 more)
+- Main facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
+  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
+  `FlextGrpcErrors`, `FlextGrpcMetrics` (+10 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConstants`,
-  `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcServiceBase`,
-  `FlextGrpcSettings`, `FlextGrpcTypes`, `FlextGrpcUtilities`, `config` (+2
-  more)
-- Exported module shortcuts: _none_
-- Generated module pages: `0`
+- Public symbol exports: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
+  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
+  `FlextGrpcErrors`, `FlextGrpcMetrics`, `FlextGrpcModels`, `FlextGrpcProtocols`
+  (+12 more)
+- Exported module shortcuts: `proto`, `services`
+- Generated module pages: `17`
 
 ## Next Pages
 

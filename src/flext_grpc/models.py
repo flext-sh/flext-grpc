@@ -15,6 +15,7 @@ from types import MappingProxyType
 from typing import Annotated, Self, override
 
 from flext_cli import m, u
+
 from flext_grpc import c, p, r, t
 
 
@@ -95,11 +96,11 @@ class FlextGrpcModels(m):
                 str, u.Field(description="Operation name to execute")
             ]
             arguments: t.ScalarMapping = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
                 description="Positional arguments as dict",
             )
             keyword_arguments: t.ScalarMapping = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
                 description="Keyword arguments",
             )
 
@@ -302,7 +303,9 @@ class FlextGrpcModels(m):
             parameters: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Operation parameters"),
-            ] = u.Field(default_factory=lambda: MappingProxyType({}))
+            ] = u.Field(
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+            )
 
         class Request(m.Value):
             """Generic request model with validation."""
@@ -320,7 +323,7 @@ class FlextGrpcModels(m):
             @u.computed_field
             @property
             def valid(self) -> bool:
-                """Check if request is valid."""
+                """Whether request is valid."""
                 return bool(self.operation.name.strip())
 
         class Response(m.Value):
@@ -336,19 +339,21 @@ class FlextGrpcModels(m):
             metadata: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Response metadata"),
-            ] = u.Field(default_factory=lambda: MappingProxyType({}))
+            ] = u.Field(
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+            )
 
             @u.computed_field
             @property
             def has_error(self) -> bool:
-                """Check if response has error."""
+                """Whether response has error."""
                 return not self.success or self.error is not None
 
         class Payload(m.BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
             values: t.JsonMapping = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.JsonValue]({}),
                 description="Key-value payload data",
             )
 
@@ -400,7 +405,7 @@ class FlextGrpcModels(m):
                 u.Field(description="Current channel connection state"),
             ] = c.Grpc.ChannelState.IDLE
             options: t.JsonMapping | None = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.JsonValue]({}),
                 description="Channel configuration options",
             )
             grpc_channel: Annotated[
@@ -583,7 +588,7 @@ class FlextGrpcModels(m):
                 u.Field(description="Associated gRPC channel for communication"),
             ] = None
             options: t.JsonMapping | None = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.JsonValue]({}),
                 description="Client configuration options",
             )
             grpc_stub: Annotated[
