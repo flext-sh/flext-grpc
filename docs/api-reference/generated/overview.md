@@ -14,7 +14,7 @@
   Developers`, `Operating System :: OS Independent`, `Programming Language ::
   Python :: 3 :: Only`, `Programming Language :: Python :: 3.13`, `Topic ::
   Internet :: WWW/HTTP :: HTTP Servers` (+2 more)
-- Project class: `platform`
+- Project class: `domain`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
 - Main facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
   `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
