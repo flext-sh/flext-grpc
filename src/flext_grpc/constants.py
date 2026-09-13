@@ -17,13 +17,15 @@ import re
 from enum import StrEnum, unique
 from typing import TYPE_CHECKING, ClassVar, Final
 
-from flext_core import FlextConstants
+from flext_core import c as _flext_core_c
+
+from ._constants.base import FlextGrpcConstantsBase
 
 if TYPE_CHECKING:
     from flext_grpc import t
 
 
-class FlextGrpcConstants(FlextConstants):
+class FlextGrpcConstants(_flext_core_c):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
@@ -41,22 +43,24 @@ class FlextGrpcConstants(FlextConstants):
     ```
     """
 
-    class Grpc:
+    class Grpc(FlextGrpcConstantsBase):
         """gRPC domain constants namespace.
 
         All gRPC-specific constants are organized here as flat SSOT members,
         enabling direct access via c.Grpc.CONSTANT_NAME (no nested subclasses).
+        ``NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT`` is inherited from
+        ``FlextGrpcConstantsBase`` (ENFORCE-079: value lives in _constants,
+        this facade only re-exports it via inheritance).
         """
 
         # ===== Network constants =====
-        NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT: Final[float] = 5.0
         NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: Final[float] = 2.0
         NETWORK_DEFAULT_GRPC_PORT: Final[int] = 50051
         NETWORK_DEFAULT_HOST: Final[str] = "127.0.0.1"
         NETWORK_DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000
         NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000
         NETWORK_DEFAULT_TIMEOUT: Final[float] = float(
-            FlextConstants.DEFAULT_TIMEOUT_SECONDS
+            _flext_core_c.DEFAULT_TIMEOUT_SECONDS
         )
         NETWORK_MAX_PORT: Final[int] = 65535
         NETWORK_MIN_PORT: Final[int] = 1
