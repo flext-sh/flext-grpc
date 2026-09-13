@@ -27,6 +27,6 @@ This section is generated from public exports and real docstrings.
 
 - Primary facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
   `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants` (+12 more)
-- Generated module pages: `17`
+- Generated module pages: `18`
 
 Back to [project docs](../index.md).
