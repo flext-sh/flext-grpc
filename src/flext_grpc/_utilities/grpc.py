@@ -281,21 +281,17 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def validate_target(target: str) -> bool:
         """Validate a gRPC target string in the form host:port."""
+        # Why: avoid an exception-driven sentinel branch (silent-failure gate);
+        # port parsing is guarded by isdigit() instead of try/except ValueError.
         if not target or ":" not in target:
             return False
-        try:
-            host, port_str = target.split(":", 1)
-            if not host or not port_str:
-                return False
-            if not c.Grpc.NETWORK_HOST_RE.match(host):
-                return False
-            port = int(port_str)
-            max_port = 65535
-        except (ValueError, AttributeError):
-            FlextGrpcUtilitiesGrpc._logger.debug("Invalid gRPC target: %s", target)
+        host, port_str = target.split(":", 1)
+        if not host or not port_str or not port_str.isdigit():
             return False
-        else:
-            return 1 <= port <= max_port
+        if not c.Grpc.NETWORK_HOST_RE.match(host):
+            return False
+        max_port = 65535
+        return 1 <= int(port_str) <= max_port
 
     @staticmethod
     def validate_port(port: int) -> bool:

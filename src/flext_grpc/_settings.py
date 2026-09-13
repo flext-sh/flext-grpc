@@ -12,8 +12,6 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
-from pydantic_settings import SettingsConfigDict
-
 from flext_core import FlextSettings
 from flext_grpc.models import m
 
@@ -21,7 +19,7 @@ from flext_grpc.models import m
 class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings; fields under ``settings.Grpc.*``."""
 
-    model_config = SettingsConfigDict(
+    model_config = m.SettingsConfigDict(
         env_prefix="FLEXT_GRPC_", env_nested_delimiter="__", extra="ignore"
     )
 
