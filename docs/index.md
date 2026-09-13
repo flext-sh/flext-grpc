@@ -11,7 +11,7 @@
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
 
 - Version: `0.12.0`
-- Project class: `domain`
+- Project class: `platform`
 - Package: `flext_grpc`
 - Description: FLEXT gRPC - High-Performance gRPC Services
 
