@@ -23,7 +23,7 @@
 - Public symbol exports: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcCli`,
   `FlextGrpcClient`, `FlextGrpcConfig`, `FlextGrpcConnectionPool`,
   `FlextGrpcConstants`, `FlextGrpcErrors`, `FlextGrpcMetrics`, `FlextGrpcModels`
-  (+13 more)
+  (+12 more)
 - Exported module shortcuts: `proto`, `services`
 - Generated module pages: `19`
 
