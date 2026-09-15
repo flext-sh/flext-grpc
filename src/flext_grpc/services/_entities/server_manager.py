@@ -8,20 +8,12 @@ from typing import TYPE_CHECKING
 
 from flext_core import r
 from flext_grpc import FlextGrpcModels, FlextGrpcUtilities, c, p
-from flext_grpc.proto.servicer import (
-    FlextGrpcServiceServicer,
-    add_flext_grpc_service_servicer_to_server,
-)
+from flext_grpc.proto.servicer import FlextGrpcProtoServicer
 
 from .metrics_collector import FlextGrpcMetricsCollectorImpl
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
-
-
-def _create_real_servicer(_server_key: str) -> p.Grpc.GrpcServicer:
-    """Create runtime gRPC servicer instance for server registration."""
-    return FlextGrpcServiceServicer()
 
 
 class FlextGrpcServerManagerImpl:
@@ -35,6 +27,10 @@ class FlextGrpcServerManagerImpl:
         self._thread_pool = ThreadPoolExecutor(
             max_workers=50, thread_name_prefix="flext-grpc-server"
         )
+
+    def _create_real_servicer(self, _server_key: str) -> p.Grpc.GrpcServicer:
+        """Create runtime gRPC servicer instance for server registration."""
+        return FlextGrpcProtoServicer.Servicer()
 
     def server_metrics(
         self, server: FlextGrpcModels.Grpc.Server
@@ -122,16 +118,18 @@ class FlextGrpcServerManagerImpl:
             )
         return r[p.Grpc.GrpcServer].ok(grpc_server)
 
-    @staticmethod
     def _register_services(
+        self,
         server_key: str,
         starting_server: FlextGrpcModels.Grpc.Server,
         grpc_server: p.Grpc.GrpcServer,
     ) -> None:
         """Register configured services on the runtime server."""
         for _service in starting_server.services:
-            real_servicer = _create_real_servicer(server_key)
-            add_flext_grpc_service_servicer_to_server(real_servicer, grpc_server)
+            real_servicer = self._create_real_servicer(server_key)
+            FlextGrpcProtoServicer.add_flext_grpc_service_servicer_to_server(
+                real_servicer, grpc_server
+            )
 
     def _activate_runtime_server(
         self,

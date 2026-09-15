@@ -18,6 +18,8 @@ from flext_cli import m, u
 
 from flext_grpc import c, p, r, t
 
+from ._models.base import FlextGrpcModelsBase
+
 
 class FlextGrpcModels(m):
     """gRPC domain models extending flext-core m.
@@ -30,7 +32,7 @@ class FlextGrpcModels(m):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Grpc:
+    class Grpc(FlextGrpcModelsBase):
         """Domain models for gRPC core business entities."""
 
         # =========================================================================

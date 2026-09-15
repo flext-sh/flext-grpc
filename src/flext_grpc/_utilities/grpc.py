@@ -6,8 +6,8 @@ from importlib import import_module
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from flext_core import u
-from flext_grpc import c, m, p, r, t
+from flext_core import r, u
+from flext_grpc import c, m, p, t
 
 if TYPE_CHECKING:
     from collections.abc import Callable

@@ -57,10 +57,6 @@ class FlextGrpcConstants(_flext_core_c):
             FlextGrpcConstantsBase.NETWORK_HOST_PATTERN
         )
 
-        # ===== Performance limits (derived — not a plain literal) =====
-        PERFORMANCE_DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
-        PERFORMANCE_MAX_MESSAGE_LENGTH: Final[int] = 100 * 1024 * 1024
-
         # ===== Validation constants (derived — not a plain literal) =====
         VALIDATION_VERSION_RE: ClassVar[t.RegexPattern] = re.compile(
             FlextGrpcConstantsBase.VALIDATION_VERSION_PATTERN, re.IGNORECASE

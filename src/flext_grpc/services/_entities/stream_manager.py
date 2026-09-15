@@ -16,12 +16,12 @@ if TYPE_CHECKING:
     from collections.abc import MutableMapping
 
 
-def _new_stream_buffer() -> deque[t.JsonMapping | None]:
-    return deque(maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE)
-
-
 class FlextGrpcStreamManagerImpl:
     """Dedicated stream processing with buffering."""
+
+    @staticmethod
+    def _new_stream_buffer() -> deque[t.JsonMapping | None]:
+        return deque(maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE)
 
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
@@ -50,7 +50,7 @@ class FlextGrpcStreamManagerImpl:
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
         self._active_streams[stream_key] = FlextGrpcStreamRuntimeState(
-            stream=stream, created_at=time.time(), buffer=_new_stream_buffer()
+            stream=stream, created_at=time.time(), buffer=self._new_stream_buffer()
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r[m.Grpc.GrpcStream].ok(stream)

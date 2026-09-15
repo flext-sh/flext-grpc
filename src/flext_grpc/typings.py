@@ -11,11 +11,13 @@ from typing import Literal
 
 from flext_cli import t
 
+from ._typings.base import FlextGrpcTypingsBase
+
 
 class FlextGrpcTypes(t):
     """gRPC-specific type definitions extending t via MRO."""
 
-    class Grpc:
+    class Grpc(FlextGrpcTypingsBase):
         """gRPC domain namespace (flat members per AGENTS.md §149)."""
 
         type EntityKind = Literal["server", "client", "channel", "service", "stream"]

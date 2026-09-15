@@ -31,10 +31,7 @@ if TYPE_CHECKING:
     from .constants import FlextGrpcConstants, FlextGrpcConstants as c
     from .errors import FlextGrpcErrors
     from .models import FlextGrpcModels, FlextGrpcModels as m
-    from .proto.servicer import (
-        FlextGrpcServiceServicer,
-        add_flext_grpc_service_servicer_to_server,
-    )
+    from .proto.servicer import FlextGrpcProtoServicer
     from .proto.stub import FlextGrpcServiceStub
     from .protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
     from .services.api_runtime import FlextGrpcApiRuntime
@@ -56,10 +53,10 @@ __all__: tuple[str, ...] = (
     "FlextGrpcErrors",
     "FlextGrpcMetrics",
     "FlextGrpcModels",
+    "FlextGrpcProtoServicer",
     "FlextGrpcProtocols",
     "FlextGrpcServer",
     "FlextGrpcServiceBase",
-    "FlextGrpcServiceServicer",
     "FlextGrpcServiceStub",
     "FlextGrpcSettings",
     "FlextGrpcStream",
@@ -73,7 +70,6 @@ __all__: tuple[str, ...] = (
     "__url__",
     "__version__",
     "__version_info__",
-    "add_flext_grpc_service_servicer_to_server",
     "c",
     "config",
     "d",
@@ -104,10 +100,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".errors": ("FlextGrpcErrors",),
             ".models": ("FlextGrpcModels", "m"),
             ".proto": ("proto",),
-            ".proto.servicer": (
-                "FlextGrpcServiceServicer",
-                "add_flext_grpc_service_servicer_to_server",
-            ),
+            ".proto.servicer": ("FlextGrpcProtoServicer",),
             ".proto.stub": ("FlextGrpcServiceStub",),
             ".protocols": ("FlextGrpcProtocols", "p"),
             ".services": ("services",),

@@ -8,13 +8,14 @@ from flext_cli import u
 
 from flext_grpc import c, m, p, t
 
+from ._utilities.base import FlextGrpcUtilitiesBase
 from ._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
-class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
+class FlextGrpcUtilities(u, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
-    class Grpc(FlextGrpcUtilitiesGrpc):
+    class Grpc(FlextGrpcUtilitiesGrpc, FlextGrpcUtilitiesBase):
         """Public gRPC utility namespace with explicit local signatures.
 
         This nested class re-exports the factory/validation helpers from
