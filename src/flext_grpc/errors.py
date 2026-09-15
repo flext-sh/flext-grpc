@@ -41,6 +41,4 @@ class FlextGrpcErrors(e):
             self.config_key = config_key
 
 
-e = FlextGrpcErrors
-
-__all__: list[str] = ["FlextGrpcErrors", "e"]
+__all__: list[str] = ["FlextGrpcErrors"]

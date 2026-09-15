@@ -8,7 +8,6 @@ module is forbidden.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
@@ -54,9 +53,6 @@ class FlextGrpcConstants(_flext_core_c):
         """
 
         # ===== Network constants (derived — not a plain literal) =====
-        NETWORK_DEFAULT_TIMEOUT: Final[float] = float(
-            _flext_core_c.DEFAULT_TIMEOUT_SECONDS
-        )
         NETWORK_HOST_RE: ClassVar[t.RegexPattern] = re.compile(
             FlextGrpcConstantsBase.NETWORK_HOST_PATTERN
         )
@@ -146,6 +142,8 @@ class FlextGrpcConstants(_flext_core_c):
                 or LoadBalancingPolicies.ROUND_ROBIN directly - no base strings needed.
             """
 
+            ROUND_ROBIN = "round_robin"
+
         # ===== Enum-derived frozensets (immutable collections) =====
         CHANNEL_STATES: Final[frozenset[str]] = frozenset(
             member.value for member in ChannelState.__members__.values()
@@ -161,6 +159,11 @@ class FlextGrpcConstants(_flext_core_c):
             member.value for member in GrpcOperations.__members__.values()
         )
         """Stream types frozenset - generated from GrpcOperations StrEnum."""
+
+        LOAD_BALANCING_POLICIES: Final[frozenset[str]] = frozenset(
+            member.value for member in LoadBalancingPolicies.__members__.values()
+        )
+        """Load balancing policies frozenset - generated from LoadBalancingPolicies StrEnum."""
 
 
 c = FlextGrpcConstants

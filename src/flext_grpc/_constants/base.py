@@ -18,6 +18,7 @@ class FlextGrpcConstantsBase:
     """Private constants owner for gRPC scalar defaults."""
 
     # ===== Network constants =====
+    NETWORK_DEFAULT_TIMEOUT: Final[float] = 30.0
     NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT: Final[float] = 5.0
     NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: Final[float] = 2.0
     NETWORK_DEFAULT_GRPC_PORT: Final[int] = 50051
