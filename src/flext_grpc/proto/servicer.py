@@ -13,15 +13,18 @@ from __future__ import annotations
 from flext_grpc.protocols import FlextGrpcProtocols
 
 
-class FlextGrpcServiceServicer:
-    """Base class for gRPC service implementations."""
+class FlextGrpcProtoServicer:
+    """Proto servicer utilities."""
+
+    class Servicer(FlextGrpcProtocols.Grpc.GrpcServicer):
+        """Base class for gRPC service implementations."""
+
+    @staticmethod
+    def add_flext_grpc_service_servicer_to_server(
+        servicer: FlextGrpcProtocols.Grpc.GrpcServicer,
+        server: FlextGrpcProtocols.Grpc.GrpcServer,
+    ) -> None:
+        """Add gRPC service servicer to server."""
 
 
-def add_flext_grpc_service_servicer_to_server(
-    servicer: FlextGrpcProtocols.Grpc.GrpcServicer,
-    server: FlextGrpcProtocols.Grpc.GrpcServer,
-) -> None:
-    """Add gRPC service servicer to server."""
-
-
-__all__ = ["FlextGrpcServiceServicer", "add_flext_grpc_service_servicer_to_server"]
+__all__ = ["FlextGrpcProtoServicer"]

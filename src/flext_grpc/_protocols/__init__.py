@@ -1,5 +1,5 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Flext Grpc. Utilities package."""
+"""Flext Grpc. Protocols package."""
 
 from __future__ import annotations
 
@@ -9,16 +9,12 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from .base import FlextGrpcUtilitiesBase
-    from .grpc import FlextGrpcUtilitiesGrpc
-__all__: tuple[str, ...] = ("FlextGrpcUtilitiesBase", "FlextGrpcUtilitiesGrpc")
+    from .base import FlextGrpcProtocolsBase
+__all__: tuple[str, ...] = ("FlextGrpcProtocolsBase",)
 
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
-        MappingProxyType({
-            ".base": ("FlextGrpcUtilitiesBase",),
-            ".grpc": ("FlextGrpcUtilitiesGrpc",),
-        }),
+        MappingProxyType({".base": ("FlextGrpcProtocolsBase",)}),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
     )

@@ -15,6 +15,8 @@ from flext_cli import p
 
 from flext_grpc import c, t
 
+from ._protocols.base import FlextGrpcProtocolsBase
+
 
 class FlextGrpcProtocols(p):
     """Unified gRPC protocols extending p.
@@ -40,7 +42,7 @@ class FlextGrpcProtocols(p):
     """
 
     @runtime_checkable
-    class Grpc(Protocol):
+    class Grpc(FlextGrpcProtocolsBase, Protocol):
         """gRPC domain-specific protocols.
 
         Provides protocols for gRPC server management, client communication,

@@ -34,6 +34,8 @@ class FlextGrpcConstantsBase:
     PERFORMANCE_MAX_THREAD_POOL_SIZE: Final[int] = 200
     PERFORMANCE_MIN_MESSAGE_LENGTH: Final[int] = 1024
     PERFORMANCE_MIN_THREAD_POOL_SIZE: Final[int] = 1
+    PERFORMANCE_DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
+    PERFORMANCE_MAX_MESSAGE_LENGTH: Final[int] = 100 * 1024 * 1024
 
     # ===== Service constants =====
     SERVICE_DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000

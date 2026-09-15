@@ -20,20 +20,18 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_core import d, h, r, x
+    from flext_core import d, e, h, r, x
 
     from . import proto, services
     from ._config import FlextGrpcConfig, config
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
     from .base import FlextGrpcServiceBase, FlextGrpcServiceBase as s
+    from .cli import FlextGrpcCli
     from .constants import FlextGrpcConstants, FlextGrpcConstants as c
-    from .errors import FlextGrpcErrors, e
+    from .errors import FlextGrpcErrors
     from .models import FlextGrpcModels, FlextGrpcModels as m
-    from .proto.servicer import (
-        FlextGrpcServiceServicer,
-        add_flext_grpc_service_servicer_to_server,
-    )
+    from .proto.servicer import FlextGrpcProtoServicer
     from .proto.stub import FlextGrpcServiceStub
     from .protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
     from .services.api_runtime import FlextGrpcApiRuntime
@@ -47,6 +45,7 @@ if TYPE_CHECKING:
 __all__: tuple[str, ...] = (
     "FlextGrpc",
     "FlextGrpcApiRuntime",
+    "FlextGrpcCli",
     "FlextGrpcClient",
     "FlextGrpcConfig",
     "FlextGrpcConnectionPool",
@@ -54,10 +53,10 @@ __all__: tuple[str, ...] = (
     "FlextGrpcErrors",
     "FlextGrpcMetrics",
     "FlextGrpcModels",
+    "FlextGrpcProtoServicer",
     "FlextGrpcProtocols",
     "FlextGrpcServer",
     "FlextGrpcServiceBase",
-    "FlextGrpcServiceServicer",
     "FlextGrpcServiceStub",
     "FlextGrpcSettings",
     "FlextGrpcStream",
@@ -71,7 +70,6 @@ __all__: tuple[str, ...] = (
     "__url__",
     "__version__",
     "__version_info__",
-    "add_flext_grpc_service_servicer_to_server",
     "c",
     "config",
     "d",
@@ -97,14 +95,12 @@ _LAZY_IMPORTS = MappingProxyType(
             "._settings": ("FlextGrpcSettings", "settings"),
             ".api": ("FlextGrpc", "grpc"),
             ".base": ("FlextGrpcServiceBase", "s"),
+            ".cli": ("FlextGrpcCli",),
             ".constants": ("FlextGrpcConstants", "c"),
-            ".errors": ("FlextGrpcErrors", "e"),
+            ".errors": ("FlextGrpcErrors",),
             ".models": ("FlextGrpcModels", "m"),
             ".proto": ("proto",),
-            ".proto.servicer": (
-                "FlextGrpcServiceServicer",
-                "add_flext_grpc_service_servicer_to_server",
-            ),
+            ".proto.servicer": ("FlextGrpcProtoServicer",),
             ".proto.stub": ("FlextGrpcServiceStub",),
             ".protocols": ("FlextGrpcProtocols", "p"),
             ".services": ("services",),
@@ -116,7 +112,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".services.stream": ("FlextGrpcStream",),
             ".typings": ("FlextGrpcTypes", "t"),
             ".utilities": ("FlextGrpcUtilities", "u"),
-            "flext_core": ("d", "h", "r", "x"),
+            "flext_core": ("d", "e", "h", "r", "x"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
