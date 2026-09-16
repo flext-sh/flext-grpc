@@ -126,9 +126,7 @@ class ExamplesFlextGrpcAdvancedUsage:
                 server_results.append(server_result)
             return server_results
 
-        def server_status(
-            self,
-        ) -> t.MappingKV[str, t.MappingKV[str, str]]:
+        def server_status(self) -> t.MappingKV[str, t.MappingKV[str, str]]:
             """Get status of all servers through facade."""
             status: t.MutableMappingKV[str, t.MappingKV[str, str]] = {}
             for server_id, server in self.servers.items():
