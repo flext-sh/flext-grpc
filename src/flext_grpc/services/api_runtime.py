@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import override
 
 from flext_grpc import FlextGrpcSettings, FlextGrpcUtilities, c, m, p, r, t, u
-from flext_grpc.base import FlextGrpcServiceBase
+from .base import FlextGrpcServiceBase
 
 
 class FlextGrpcApiRuntime(FlextGrpcServiceBase):
