@@ -14,8 +14,8 @@ from flext_tests import tm
 
 if TYPE_CHECKING:
     from flext_grpc import FlextGrpc, t
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from ..flext_grpc.services.connection_pool import FlextGrpcConnectionPool
+    from ..flext_grpc.services.metrics import FlextGrpcMetrics
 
 
 class TestsFlextGrpcServices:
