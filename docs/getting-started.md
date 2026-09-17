@@ -72,7 +72,7 @@ Managed via Poetry (no manual installation required):
 ```bash
 git clone https://github.com/flext-sh/flext/tree/main/flext-grpc
 cd flext-grpc
-poetry install
+uv sync
 ```
 
 ### 2. Verify Installation

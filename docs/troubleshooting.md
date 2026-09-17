@@ -127,7 +127,7 @@ sys.path.insert(0, "src")  # For development
 **Solution**: Use Poetry for consistent dependency management:
 
 ```bash
-poetry install --all-extras
+uv sync --all-packages
 poetry show grpcio grpcio-tools protobuf  # Check versions
 ```
 ### Server Startup Issues
