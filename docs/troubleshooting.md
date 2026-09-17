@@ -115,6 +115,7 @@ make test tests/ -v
 
 ```python
 from __future__ import annotations
+
 import sys
 
 sys.path.insert(0, "src")  # For development
@@ -138,7 +139,8 @@ make status grpcio grpcio-tools protobuf  # Check versions
 
 ```python
 from __future__ import annotations
-from flext_grpc import create_server, FlextGrpcPlatform
+
+from flext_grpc import FlextGrpcPlatform, create_server
 
 server = create_server("localhost", 50051, 10)
 platform = FlextGrpcPlatform()

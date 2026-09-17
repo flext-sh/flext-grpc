@@ -30,6 +30,8 @@
 - [Troubleshooting Configuration](#troubleshooting-configuration)
   - [Common Issues](#common-issues)
   - [Debugging Configuration](#debugging-configuration)
+- [from __future__ import annotations import os from flext_grpc import FlextGrpcSettings def debug_config(): print("Environment variables:") for key, value in os.environ.items(): if key.startswith("GRPC_"): print(f" {key}={value}") settings = FlextGrpcSettings() print("
+Actual configuration:") print(f" Host: {settings.host}") print(f" Port: {settings.port}") print(f" Workers: {settings.max_workers}") print(f" Timeout: {settings.timeout}")](#from-__future__-import-annotations-import-os-from-flext_grpc-import-flextgrpcsettings-def-debug_config-printenvironment-variables-for-key-value-in-osenvironitems-if-keystartswithgrpc_-printf-keyvalue-settings-flextgrpcsettings-printnactual-configuration-printf-host-settingshost-printf-port-settingsport-printf-workers-settingsmax_workers-printf-timeout-settingstimeout)
 <!-- TOC END -->
 
 ## Table of Contents
@@ -82,6 +84,7 @@ flext-grpc provides flexible configuration through `FlextGrpcSettings` class wit
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 # Simple configuration
@@ -175,6 +178,7 @@ settings = FlextGrpcSettings(timeout=120.0)
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 settings = FlextGrpcSettings(
@@ -211,6 +215,7 @@ All configuration is validated on creation:
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 settings = FlextGrpcSettings(host="", port=99999)  # Invalid
@@ -233,8 +238,8 @@ Configuration validation enforces these rules:
 
 ```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 from flext_grpc import FlextGrpcSettings
 
 
@@ -257,6 +262,7 @@ def validate_production_config(settings: FlextGrpcSettings) -> p.Result[bool]:
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 
@@ -334,9 +340,12 @@ grpc:
 ```
 ```python
 from __future__ import annotations
-import yaml
-from flext_grpc import FlextGrpcSettings
+
 import pathlib
+
+import yaml
+
+from flext_grpc import FlextGrpcSettings
 
 
 def load_config_from_yaml(file_path: str) -> FlextGrpcSettings:
@@ -461,6 +470,7 @@ Configuration operations return `r` for error handling:
 
 ```python
 from __future__ import annotations
+
 from flext_core import p
 from flext_grpc import create_config
 
@@ -477,6 +487,7 @@ Register configuration with FlextContainer:
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 container = FlextContainer.get_global()
@@ -527,7 +538,9 @@ export GRPC_PORT=${FlextConstants.DEFAULT_HTTP_PORT}  # Overwrites previous valu
 
 ```python
 from __future__ import annotations
+
 import os
+
 from flext_grpc import FlextGrpcSettings
 
 

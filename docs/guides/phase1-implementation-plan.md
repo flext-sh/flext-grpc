@@ -1,5 +1,9 @@
 # Phase 1 Implementation Plan: Test Coverage & Bug Fixes
 
+> Historical evidence only. This plan records an earlier execution context and
+> its command examples are not current workspace guidance. Use the root
+> `AGENTS.md` and `make help` for the active contract.
+
 <!-- TOC START -->
 - [Table of Contents](#table-of-contents)
 - [Executive Summary](#executive-summary)

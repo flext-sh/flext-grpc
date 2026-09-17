@@ -24,7 +24,7 @@
   - [Docstring Requirements](#docstring-requirements)
   - [Code Comments](#code-comments)
 - [Contributing Process](#contributing-process)
-  - [Development Workflow](#development-workflow)
+  - [Development Workflow](#development-workflow_1)
   - [Code Review Guidelines](#code-review-guidelines)
   - [Commit Message Standards](#commit-message-standards)
 - [Current Development Priorities](#current-development-priorities)
@@ -34,6 +34,7 @@
 - [Troubleshooting Development Issues](#troubleshooting-development-issues)
   - [Common Issues](#common-issues)
   - [Development Tools](#development-tools)
+- [# Python debugger import pdb; pdb.set_trace() # REPL with project loaded make shell >>> from flext_grpc import FlextGrpcSettings >>> settings = FlextGrpcSettings()](#python-debugger-import-pdb-pdbset_trace-repl-with-project-loaded-make-shell-from-flext_grpc-import-flextgrpcsettings-settings-flextgrpcsettings)
 <!-- TOC END -->
 
 ## Table of Contents
@@ -115,26 +116,12 @@ The `make setup` command configures:
 ```bash
 # Development lifecycle
 make setup                  # Initial environment setup
-make check              # Complete validation pipeline
-make check                 # Quick validation (lint + type)
+make fmt                    # Canonical formatting
+make check                  # Static and structural gates
+make test                   # Behavioral suites
+make build                  # Package candidate
 make clean                 # Clean build artifacts
-
-# Code quality
-make lint                  # Ruff linting with comprehensive rules
-make type-check            # MyPy strict type checking
-make format                # Auto-format code (black + ruff)
-make security              # Security scanning (bandit + pip-audit)
-
-# Testing
-make test                  # Full test suite (28 failures need fixing)
-make test-unit             # Unit tests only
-make test-integration      # Integration tests
-make test-e2e              # End-to-end tests
-
-# Development utilities
-make shell                 # Python REPL with project loaded
 make docs                  # Build documentation
-make build                 # Build package for distribution
 ```
 
 ### Quality Gates
@@ -145,11 +132,8 @@ All contributions must pass these quality gates:
 # MANDATORY before any commit
 make check
 
-# Individual checks
-make lint                  # Zero Ruff violations
-make type-check            # Zero MyPy errors (strict mode)
-make security              # Zero critical security issues
-make test                  # All tests pass (currently 28 failing, needs bug fixes)
+make check                 # All static gates
+make test                  # All behavioral suites
 ```
 
 ## Code Standards
@@ -160,6 +144,7 @@ All code must follow flext-core architectural patterns:
 
 ```python
 from __future__ import annotations
+
 from flext_core import p
 
 # ✅ CORRECT - Railway-oriented programming
@@ -190,9 +175,8 @@ Complete type annotations are mandatory:
 
 ```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
 
+from flext_core import p, r
 from flext_grpc import FlextGrpcServer
 
 T = TypeVar("T")
@@ -219,8 +203,8 @@ Follow Domain-Driven Design patterns:
 
 ```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 from flext_grpc import TGrpcServerState
 
 
@@ -272,7 +256,9 @@ tests/
 
 ```python
 from __future__ import annotations
+
 import pytest
+
 from flext_grpc import FlextGrpcSettings, create_server
 
 
@@ -327,31 +313,28 @@ Use pytest markers for test categorization:
 
 ```python
 from __future__ import annotations
+
 import pytest
 
 
 @pytest.mark.unit
 def test_entity_creation():
     """Unit test for entity creation."""
-    pass
 
 
 @pytest.mark.integration
 def test_service_integration():
     """Integration test for services."""
-    pass
 
 
 @pytest.mark.e2e
 def test_complete_workflow():
     """End-to-end workflow test."""
-    pass
 
 
 @pytest.mark.slow
 def test_performance_benchmark():
     """Slow performance test."""
-    pass
 
 
 # Run specific test categories
@@ -367,6 +350,7 @@ Maintain strict layer boundaries:
 
 ```python
 from __future__ import annotations
+
 from flext_core import p
 
 
@@ -396,9 +380,9 @@ Use FlextContainer for all dependencies:
 
 ```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
 from flext_cli import u
+from flext_core import p, r
 from flext_grpc import FlextGrpcPlatform
 
 
@@ -433,8 +417,9 @@ All public APIs require comprehensive docstrings:
 
 ```python
 from __future__ import annotations
+
 from flext_core import p
-from flext_grpc import FlextGrpcSettings, FlextGrpcServer
+from flext_grpc import FlextGrpcServer, FlextGrpcSettings
 
 
 def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
@@ -466,7 +451,6 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
     """
     # Implementation
-    pass
 ```
 ### Code Comments
 
@@ -474,8 +458,8 @@ Use comments sparingly for complex business logic:
 
 ```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 
 
 def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
@@ -614,8 +598,8 @@ python -c "from flext_grpc import FlextGrpcSettings"
 **Type Checking Issues**
 
 ```bash
-# Check type annotations
-make type-check
+# Check type annotations and static contracts
+make check
 
 # Common fixes:
 # - Add missing return type annotations
@@ -625,23 +609,17 @@ make type-check
 **Test Failures**
 
 ```bash
-# Run specific test file
-pytest tests/unit/test_config.py -v
-
-# Debug test with print statements
-pytest tests/unit/test_config.py::test_validation -s
+# Run the canonical test suite with retained Testmon selection
+make test
 ```
 ### Development Tools
 
 **Code Quality**
 
 ```bash
-# Auto-format code
-make format
-
-# Check specific file
-ruff check src/flext_grpc/settings.py
-mypy src/flext_grpc/settings.py --strict
+# Format and validate through project owners
+make fmt
+make check
 ```
 **Debugging**
 

@@ -34,6 +34,7 @@
   - [Performance Testing](#performance-testing)
   - [Load Testing](#load-testing)
   - [Chaos Testing](#chaos-testing)
+- [from __future__ import annotations def test_grpc_fault_tolerance(): """Test gRPC system fault tolerance.""" # Network interruptions # Server failures # Connection drops # Recovery mechanisms](#from-__future__-import-annotations-def-test_grpc_fault_tolerance-test-grpc-system-fault-tolerance-network-interruptions-server-failures-connection-drops-recovery-mechanisms)
 <!-- TOC END -->
 
 ## Table of Contents
@@ -395,8 +396,9 @@ def test_server_entity_lifecycle():
 
 ```python
 from __future__ import annotations
-import pytest
+
 import grpc
+import pytest
 
 
 @pytest.mark.asyncio
@@ -467,14 +469,8 @@ PYTHONPATH=src make test tests/unit/test_services.py --pdb
 #### Quality Gates
 
 ```bash
-# Complete validation pipeline
-make check
-
-# Individual checks
-make lint          # Code quality
-make type-check    # Type safety
-make security      # Security scanning
-make test         # Test execution
+make check         # Static, typing, security, and structural gates
+make test          # Behavioral suites
 ```
 #### Coverage Validation
 

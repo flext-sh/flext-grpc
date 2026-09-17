@@ -48,6 +48,7 @@
 - [🔐 Security Considerations](#security-considerations)
   - [Safe Operations](#safe-operations)
   - [Best Practices](#best-practices)
+- [from __future__ import annotations # Safe file operations from pathlib import Path def safe_read_file(file_path: Path) -> str: """Safely read documentation file.""" if not file_path.exists(): raise FileNotFoundError(f"File not found: {file_path}") if file_path.stat().st_size > 10 * 1024 * 1024: # 10MB limit raise ValueError(f"File too large: {file_path}") # Validate path is within docs directory docs_dir = Path("docs") try: file_path.relative_to(docs_dir) except ValueError: raise ValueError(f"File outside docs directory: {file_path}") return file_path.read_text(encoding="utf-8")](#from-__future__-import-annotations-safe-file-operations-from-pathlib-import-path-def-safe_read_filefile_path-path-str-safely-read-documentation-file-if-not-file_pathexists-raise-filenotfounderrorffile-not-found-file_path-if-file_pathstatst_size-10-1024-1024-10mb-limit-raise-valueerrorffile-too-large-file_path-validate-path-is-within-docs-directory-docs_dir-pathdocs-try-file_pathrelative_todocs_dir-except-valueerror-raise-valueerrorffile-outside-docs-directory-file_path-return-file_pathread_textencodingutf-8)
 <!-- TOC END -->
 
 ## Table of Contents
@@ -124,6 +125,7 @@ Main class for performing comprehensive documentation audits.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationAuditor
 
 auditor = DocumentationAuditor(root_path=".")
@@ -212,6 +214,7 @@ Validate external and internal links in documentation.
 
 ```python
 from __future__ import annotations
+
 from docs import LinkValidator
 
 validator = LinkValidator(timeout=10, max_retries=3)
@@ -259,6 +262,7 @@ Validate documentation style consistency.
 
 ```python
 from __future__ import annotations
+
 from docs import StyleValidator
 
 style_validator = StyleValidator()
@@ -293,6 +297,7 @@ Optimize and enhance documentation content.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationOptimizer
 
 optimizer = DocumentationOptimizer(root_path=".")
@@ -337,6 +342,7 @@ Handle version control integration and synchronization.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationSynchronizer
 
 sync = DocumentationSynchronizer(root_path=".")
@@ -397,6 +403,7 @@ Generate comprehensive documentation quality reports.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationReporter
 
 reporter = DocumentationReporter(root_path=".")
@@ -453,6 +460,7 @@ Handle scheduled and automated maintenance tasks.
 
 ```python
 from __future__ import annotations
+
 from docs import AutomatedMaintenance
 
 automation = AutomatedMaintenance(root_path=".")
@@ -483,6 +491,7 @@ print(f"Tasks completed: {len(result['tasks_completed'])}")
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -505,6 +514,7 @@ class AuditResult:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -524,6 +534,7 @@ class AuditReport:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -540,6 +551,7 @@ class LinkValidationResult:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -555,6 +567,7 @@ class ReferenceValidationResult:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -570,6 +583,7 @@ class StyleCheckResult:
 
 ```python
 from __future__ import annotations
+
 import json
 import pathlib
 
@@ -614,8 +628,10 @@ CUSTOM_STYLE_RULES = {
 
 ```python
 from __future__ import annotations
-from flext_core import t
+
 from pathlib import Path
+
+from flext_core import t
 
 
 def find_docs_files(root_path: str = ".") -> t.List[Path]:
@@ -652,6 +668,7 @@ def calculate_quality_score(
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -695,37 +712,28 @@ from __future__ import annotations
 class DocumentationMaintenanceError(Exception):
     """Base exception for maintenance operations."""
 
-    pass
-
 
 class AuditError(DocumentationMaintenanceError):
     """Raised when audit operations fail."""
-
-    pass
 
 
 class GrpcValidationError(DocumentationMaintenanceError):
     """Raised when validation operations fail."""
 
-    pass
-
 
 class OptimizationError(DocumentationMaintenanceError):
     """Raised when optimization operations fail."""
 
-    pass
-
 
 class SynchronizationError(DocumentationMaintenanceError):
     """Raised when synchronization operations fail."""
-
-    pass
 ```
 ### Error Handling Patterns
 
 ```python
 from __future__ import annotations
-from docs import DocumentationAuditor, AuditError
+
+from docs import AuditError, DocumentationAuditor
 
 try:
     auditor = DocumentationAuditor()
@@ -745,6 +753,7 @@ except Exception as e:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -762,6 +771,7 @@ def get_quality_metrics(audit_report: AuditReport) -> t.Dict[str, t.JsonValue]:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -840,7 +850,7 @@ echo "✅ Documentation quality checks passed"
 from __future__ import annotations
 
 # custom_integration.py
-from docs import audit, validation, optimization, reporting
+from docs import audit, optimization, reporting, validation
 
 
 class CustomDocumentationWorkflow:
@@ -871,7 +881,6 @@ class CustomDocumentationWorkflow:
     def generate_custom_report(self):
         """Generate custom formatted report."""
         # Implementation for custom reporting needs
-        pass
 ```
 ## 🔄 Version Compatibility
 
@@ -886,6 +895,7 @@ class CustomDocumentationWorkflow:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 

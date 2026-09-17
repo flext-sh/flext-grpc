@@ -95,6 +95,7 @@ print(f'Server: {server.address}, state: {server.state}')
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import create_server
 
 # Create gRPC server
@@ -106,6 +107,7 @@ print(f"Server state: {server.state}")
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import create_client
 
 # Create gRPC client
@@ -116,6 +118,7 @@ print(f"Client created: {type(client).__name__}")
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations
@@ -126,6 +129,7 @@ print(f"Platform ready: {type(platform).__name__}")
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
@@ -186,7 +190,7 @@ print(f'✅ Server creation: {server.address}')
 
 ## Next Steps
 
-1. **Explore API Reference** - See [API Reference](api-reference.md) for complete function documentation
+1. **Explore API Reference** - See [API Reference](api-reference/README.md) for generated function documentation
 1. **Development Workflow** - See [Development](development.md) for contribution guidelines
 1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
 1. **Configuration** - See [Configuration](configuration.md) for advanced settings
@@ -200,7 +204,7 @@ For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 **Within Project**:
 
 - [Architecture](architecture.md) - Architecture and design patterns
-- [API Reference](api-reference.md) - Complete API documentation
+- [API Reference](api-reference/README.md) - Generated API documentation
 - [Development](development.md) - Development workflow
 - [Integration](integration.md) - FLEXT ecosystem usage
 - [Configuration](configuration.md) - Advanced settings

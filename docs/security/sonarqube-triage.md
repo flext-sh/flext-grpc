@@ -1,5 +1,32 @@
 # Triagem SonarCloud — flext-sh/flext-grpc
 
+<!-- TOC START -->
+- [Resumo](#resumo)
+- [Como usar](#como-usar)
+- [Issues](#issues)
+  - [1 · 🟠 CRITICAL · CODE_SMELL · python:S3776](#1-critical-code_smell-pythons3776)
+  - [2 · 🟠 CRITICAL · CODE_SMELL · python:S1192](#2-critical-code_smell-pythons1192)
+  - [3 · 🟡 MAJOR · CODE_SMELL · shelldre:S7688](#3-major-code_smell-shelldres7688)
+  - [4 · 🟡 MAJOR · CODE_SMELL · shelldre:S7688](#4-major-code_smell-shelldres7688)
+  - [5 · 🟡 MAJOR · CODE_SMELL · shelldre:S7688](#5-major-code_smell-shelldres7688)
+  - [6 · 🟡 MAJOR · VULNERABILITY · githubactions:S8264](#6-major-vulnerability-githubactionss8264)
+  - [7 · 🟡 MAJOR · VULNERABILITY · githubactions:S8233](#7-major-vulnerability-githubactionss8233)
+  - [8 · 🟡 MAJOR · VULNERABILITY · githubactions:S8233](#8-major-vulnerability-githubactionss8233)
+  - [9 · 🟡 MAJOR · CODE_SMELL · shelldre:S7679](#9-major-code_smell-shelldres7679)
+  - [10 · 🟡 MAJOR · CODE_SMELL · shelldre:S7679](#10-major-code_smell-shelldres7679)
+  - [11 · 🟡 MAJOR · CODE_SMELL · shelldre:S7679](#11-major-code_smell-shelldres7679)
+  - [12 · 🟡 MAJOR · CODE_SMELL · shelldre:S7677](#12-major-code_smell-shelldres7677)
+  - [13 · 🟡 MAJOR · CODE_SMELL · shelldre:S7679](#13-major-code_smell-shelldres7679)
+  - [14 · 🟡 MAJOR · CODE_SMELL · shelldre:S7679](#14-major-code_smell-shelldres7679)
+  - [15 · 🟡 MAJOR · CODE_SMELL · shelldre:S7679](#15-major-code_smell-shelldres7679)
+  - [16 · 🟡 MAJOR · CODE_SMELL · python:S1854](#16-major-code_smell-pythons1854)
+  - [17 · 🟡 MAJOR · VULNERABILITY · text:S8565](#17-major-vulnerability-texts8565)
+  - [18 · 🟡 MAJOR · CODE_SMELL · python:S8786](#18-major-code_smell-pythons8786)
+  - [19 · ⚪ MINOR · CODE_SMELL · python:S7504](#19-minor-code_smell-pythons7504)
+  - [20 · ⚪ MINOR · CODE_SMELL · python:S116](#20-minor-code_smell-pythons116)
+  - [21 · ⚪ MINOR · CODE_SMELL · python:S116](#21-minor-code_smell-pythons116)
+<!-- TOC END -->
+
 Gerado do dump da plataforma SonarCloud (2026-08-06).
 
 Bead: `mro-2wjm.7`
