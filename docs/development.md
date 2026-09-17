@@ -115,7 +115,7 @@ The `make setup` command configures:
 ```bash
 # Development lifecycle
 make setup                  # Initial environment setup
-make val              # Complete validation pipeline
+make check              # Complete validation pipeline
 make check                 # Quick validation (lint + type)
 make clean                 # Clean build artifacts
 
@@ -143,7 +143,7 @@ All contributions must pass these quality gates:
 
 ```bash
 # MANDATORY before any commit
-make val
+make check
 
 # Individual checks
 make lint                  # Zero Ruff violations
@@ -514,7 +514,7 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
 
    ```bash
    # Make changes following standards
-   make val          # Run quality gates
+   make check          # Run quality gates
    make test             # Run tests (when available)
    git add .
    git commit -m "Add health checking implementation"

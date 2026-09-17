@@ -72,17 +72,17 @@ Managed via Poetry (no manual installation required):
 ```bash
 git clone https://github.com/flext-sh/flext/tree/main/flext-grpc
 cd flext-grpc
-uv sync
+make setup
 ```
 
 ### 2. Verify Installation
 
 ```bash
 # Test core imports
-poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; print('Import successful')"
+python -c "from flext_grpc import create_server, FlextGrpcPlatform; print('Import successful')"
 
 # Test functionality
-poetry run python -c "
+python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
 print(f'Server: {server.address}, state: {server.state}')
@@ -140,16 +140,16 @@ print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 
 ```bash
 # Run a basic test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
+make test tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
 
 # Check test coverage (currently 39%)
-poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
+make test tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 
 # Type checking
-poetry run mypy src/
+make check src/
 
 # Code linting
-poetry run ruff check src/
+make check check src/
 ```
 ### Quality Status Check
 
@@ -157,7 +157,7 @@ Current status verification:
 
 ```bash
 # Verify imports work
-poetry run python -c "
+python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
 from flext_grpc import FlextGrpcSettings
@@ -165,7 +165,7 @@ print('✅ All imports successful')
 "
 
 # Test basic functionality
-poetry run python -c "
+python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
 print(f'✅ Server creation: {server.address}')

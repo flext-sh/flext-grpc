@@ -445,22 +445,22 @@ async def test_server_streaming():
 make test
 
 # Run specific test file
-PYTHONPATH=src poetry run pytest tests/unit/test_config.py -v
+PYTHONPATH=src make test tests/unit/test_config.py -v
 
 # Run with coverage
-PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
+PYTHONPATH=src make test tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 ```
 #### Test Debugging
 
 ```bash
 # Run single failing test
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
+PYTHONPATH=src make test tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
 
 # Run with detailed output
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py -v --tb=long
+PYTHONPATH=src make test tests/unit/test_services.py -v --tb=long
 
 # Debug mode
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb
+PYTHONPATH=src make test tests/unit/test_services.py --pdb
 ```
 ### Continuous Integration Testing
 
@@ -468,7 +468,7 @@ PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb
 
 ```bash
 # Complete validation pipeline
-make val
+make check
 
 # Individual checks
 make lint          # Code quality
@@ -483,11 +483,11 @@ make test         # Test execution
 make test
 
 # Coverage report
-PYTHONPATH=src poetry run pytest --cov --cov-report=html
+PYTHONPATH=src make test --cov --cov-report=html
 open htmlcov/index.html
 
 # Coverage by module
-PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
+PYTHONPATH=src make test --cov --cov-report=term-missing
 ```
 > Coverage thresholds are configured in `pyproject.toml` under `[tool.coverage.report]`.
 

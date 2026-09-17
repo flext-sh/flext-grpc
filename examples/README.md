@@ -74,10 +74,10 @@ examples/
 
 ```bash
 # Run basic usage example
-poetry run python examples/basic_usage.py
+python examples/basic_usage.py
 
 # Run with debug output
-FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
+FLEXT_LOG_LEVEL=debug python examples/basic_usage.py
 ```
 
 ### Client Connection Management
@@ -110,10 +110,10 @@ FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
 
 ```bash
 # Run advanced usage example
-poetry run python examples/advanced_usage.py
+python examples/advanced_usage.py
 
 # Run with performance monitoring
-FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
+FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
 ```
 
 ### Platform Integration
@@ -146,10 +146,10 @@ FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 
 ```bash
 # Run error handling examples
-poetry run python examples/03_error_handling_patterns.py
+python examples/03_error_handling_patterns.py
 
 # Run with error tracing
-FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
+FLEXT_TRACE_ERRORS=true python examples/03_error_handling_patterns.py
 ```
 
 ### Recovery Strategies
@@ -270,11 +270,11 @@ make diagnose
 # Run all examples
 for example in examples/*.py; do
     echo "Running $example"
-    poetry run python "$example"
+    python "$example"
 done
 
 # Run specific example
-poetry run python examples/basic_usage.py
+python examples/basic_usage.py
 ```
 
 **Debug Mode**:
@@ -284,7 +284,7 @@ poetry run python examples/basic_usage.py
 FLEXT_LOG_LEVEL=debug \
 GRPC_VERBOSITY=debug \
 GRPC_TRACE=all \
-poetry run python examples/basic_usage.py
+python examples/basic_usage.py
 ```
 
 **Performance Monitoring**:
@@ -293,7 +293,7 @@ poetry run python examples/basic_usage.py
 # Run with performance metrics
 FLEXT_GRPC_MONITOR=true \
 FLEXT_PERFORMANCE_METRICS=true \
-poetry run python examples/advanced_usage.py
+python examples/advanced_usage.py
 ```
 
 ## Example Patterns
@@ -452,7 +452,7 @@ Key Concepts:
     - [Concept 2]: [Brief explanation]
 
 Usage:
-    poetry run python examples/[filename].py
+    python examples/[filename].py
 
 Author: FLEXT Development Team
 Version: 0.12.0-dev
