@@ -1,6 +1,7 @@
 # FLEXT-gRPC Documentation Maintenance User Guide
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Quick Start](#quick-start)
   - [Installation](#installation)
@@ -41,7 +42,7 @@
   - [Documentation](#documentation)
   - [Community Resources](#community-resources)
   - [Professional Services](#professional-services)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 ## Table of Contents
 
@@ -468,6 +469,7 @@ CUSTOM_STYLE_RULES = {
     "emphasis_style": "*",  # * or _
 }
 ```
+
 ## Integration Examples
 
 ### CI/CD Integration
@@ -496,6 +498,7 @@ jobs:
           name: docs-reports
           path: docs/maintenance/reports/
 ```
+
 #### GitLab CI
 
 ```yaml
@@ -510,6 +513,7 @@ documentation_maintenance:
     - schedules # Daily
     - merge_requests # On MR
 ```
+
 ### Pre-commit Hooks
 
 ```bash
@@ -524,6 +528,7 @@ repos:
         files: \.(md|mdx)$
         pass_filenames: false
 ```
+
 ### Slack Notifications
 
 ```bash
@@ -537,6 +542,7 @@ repos:
   }
 }
 ```
+
 ## Advanced Usage
 
 ### Custom Audit Rules
@@ -560,6 +566,7 @@ class CustomAuditor(DocumentationAuditor):
 
         return score
 ```
+
 ### Automated Fixes
 
 ```python
@@ -576,6 +583,7 @@ class CustomOptimizer(DocumentationOptimizer):
 
         return content
 ```
+
 ### Integration APIs
 
 ```python
@@ -598,6 +606,7 @@ comprehensive_report = reporter.generate_comprehensive_report(
     audit_report, validation_report, optimization_summary
 )
 ```
+
 ## Best Practices
 
 ### Maintenance Frequency
@@ -619,14 +628,17 @@ make docs  # Must pass before merge
 # Release quality gate
 make docs  # Must pass before release
 ```
+
 ### Team Collaboration
 
 1. **Assign Maintenance Roles**
+
    - Documentation maintainer (weekly audits)
    - Content reviewers (monthly reviews)
    - Tool REDACTED_LDAP_BIND_PASSWORDistrators (configuration updates)
 
 2. **Establish Review Process**
+
    - Automated checks first
    - Manual review of critical issues
    - Approval workflow for major changes
@@ -649,6 +661,7 @@ python docs/maintenance/audit.py --since yesterday
 export DOCS_CACHE_DIR=/tmp/docs_cache
 python docs/maintenance/audit.py --use-cache
 ```
+
 ## Support and Resources
 
 ### Documentation

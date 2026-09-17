@@ -1,6 +1,7 @@
 # C4 Model - Context View (Level 1)
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [System Purpose](#system-purpose)
@@ -41,7 +42,7 @@
   - [Immediate Actions (Next Sprint)](#immediate-actions-next-sprint)
   - [Short Term (Next Month)](#short-term-next-month)
   - [Long Term (Next Quarter)](#long-term-next-quarter)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 ## Table of Contents
 
@@ -296,14 +297,14 @@ Rel_Back(flext_ldap, flext_grpc, "May use", "For directory service integration")
 
 ### Quality Attributes (ISO 25010)
 
-| Quality Attribute          | Description                                         | Priority | Current Status          |
-| -------------------------- | --------------------------------------------------- | -------- | ----------------------- |
+| Quality Attribute          | Description                                         | Priority | Current Status           |
+| -------------------------- | --------------------------------------------------- | -------- | ------------------------ |
 | **Functional Suitability** | Ability to provide required functions               | High     | ✅ Complete              |
 | **Performance Efficiency** | Performance relative to resources used              | High     | ✅ Designed              |
 | **Compatibility**          | Degree of interoperability                          | High     | ✅ FLEXT ecosystem       |
 | **Usability**              | Ease of use and learning                            | Medium   | ✅ Developer-focused API |
 | **Reliability**            | Ability to maintain performance under conditions    | High     | ✅ Error handling        |
-| **Security**               | Protection against unauthorized access              | High     | ⚠️ Planned              |
+| **Security**               | Protection against unauthorized access              | High     | ⚠️ Planned               |
 | **Maintainability**        | Ease of modification and evolution                  | High     | ✅ Clean architecture    |
 | **Portability**            | Ability to be transferred to different environments | Medium   | ✅ Python ecosystem      |
 
@@ -448,7 +449,7 @@ Rel_Back(flext_ldap, flext_grpc, "May use", "For directory service integration")
 1. Establish architecture review board
 1. Plan v2.0 architecture evolution
 
-______________________________________________________________________
+---
 
 **This context view establishes FLEXT-gRPC's position within the FLEXT ecosystem and defines its scope,
 stakeholders,

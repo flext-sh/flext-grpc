@@ -1,6 +1,7 @@
 # flext-grpc Development Guide
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Development Setup](#development-setup)
   - [Prerequisites](#prerequisites)
@@ -34,7 +35,7 @@
 - [Troubleshooting Development Issues](#troubleshooting-development-issues)
   - [Common Issues](#common-issues)
   - [Development Tools](#development-tools)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 ## Table of Contents
 
@@ -184,6 +185,7 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
     except Exception:
         return None  # Loses error information
 ```
+
 ### Type Annotations
 
 Complete type annotations are mandatory:
@@ -213,6 +215,7 @@ class GrpcService(Generic[T]):
         # Implementation with proper typing
         return r.ok({"processed": data})
 ```
+
 ### Domain Patterns
 
 Follow Domain-Driven Design patterns:
@@ -249,6 +252,7 @@ class FlextGrpcServer(FlextModels.Entity):
 
         return r.ok(value=True)
 ```
+
 ## Testing Standards
 
 ### Test Structure
@@ -268,6 +272,7 @@ tests/
 │   └── test_streaming.py   # Streaming operations
 └── conftest.py             # Shared fixtures and utilities
 ```
+
 ### Test Writing Guidelines
 
 ```python
@@ -321,6 +326,7 @@ class TestGrpcServer:
         assert validation.failure
         assert expected_error in validation.error
 ```
+
 ### Test Markers
 
 Use pytest markers for test categorization:
@@ -359,6 +365,7 @@ def test_performance_benchmark():
 # pytest -m "not slow"        # Exclude slow tests
 # pytest -m "integration"     # Integration tests only
 ```
+
 ## Architecture Guidelines
 
 ### Layer Separation
@@ -390,6 +397,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
+
 ### Dependency Injection
 
 Use FlextContainer for all dependencies:
@@ -425,6 +433,7 @@ class GrpcServiceManager:
 
         return r.fail("Platform not initialized")
 ```
+
 ## Documentation Standards
 
 ### Docstring Requirements
@@ -468,6 +477,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     # Implementation
     pass
 ```
+
 ### Code Comments
 
 Use comments sparingly for complex business logic:
@@ -493,11 +503,13 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
 
     return r.ok(value=True)
 ```
+
 ## Contributing Process
 
 ### Development Workflow
 
 1. **Issue Creation**
+
    - Create GitHub issue describing the problem/feature
    - Use appropriate labels (bug, feature, documentation)
    - Reference related issues or PRs
@@ -562,11 +574,13 @@ git commit -m "refactor: simplify server state machine logic"
 # Tests
 git commit -m "test: add comprehensive streaming operation tests"
 ```
+
 ## Current Development Priorities
 
 ### Critical Issues
 
 1. **Fix Protobuf Version Conflict**
+
    - Regenerate protobuf files to match runtime version
    - Update CI/CD to prevent version mismatches
    - Enable test suite execution
@@ -579,6 +593,7 @@ git commit -m "test: add comprehensive streaming operation tests"
 ### Short-term Enhancements
 
 1. **Health Checking Implementation**
+
    - Implement grpc.health.v1.Health service
    - Add health monitoring endpoints
    - Integration with flext-observability
@@ -591,6 +606,7 @@ git commit -m "test: add comprehensive streaming operation tests"
 ### Medium-term Features
 
 1. **OpenTelemetry Integration**
+
    - Distributed tracing
    - Metrics export
    - Request correlation
@@ -611,6 +627,7 @@ git commit -m "test: add comprehensive streaming operation tests"
 python -c "from flext_grpc import FlextGrpcSettings"
 # Error: Detected mismatched Protobuf versions
 ```
+
 **Type Checking Issues**
 
 ```bash
@@ -622,6 +639,7 @@ make type-check
 # - Import proper types from typing module
 # - Use r for all fallible operations
 ```
+
 **Test Failures**
 
 ```bash
@@ -631,6 +649,7 @@ pytest tests/unit/test_config.py -v
 # Debug test with print statements
 pytest tests/unit/test_config.py::test_validation -s
 ```
+
 ### Development Tools
 
 **Code Quality**
@@ -643,6 +662,7 @@ make format
 ruff check src/flext_grpc/settings.py
 mypy src/flext_grpc/settings.py --strict
 ```
+
 **Debugging**
 
 ```bash
@@ -654,6 +674,7 @@ make shell
 >>> from flext_grpc import FlextGrpcSettings
 >>> settings = FlextGrpcSettings()
 ```
+
 ---
 
 This development guide provides comprehensive standards and workflows for contributing to flext-grpc while maintaining high quality and FLEXT ecosystem integration.

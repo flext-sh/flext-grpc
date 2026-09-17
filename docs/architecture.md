@@ -154,6 +154,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
         .map(lambda server: register_with_platform(server))
     )
 ```
+
 # Service Architecture
 
 Services follow the Service pattern from flext-core.
@@ -169,21 +170,27 @@ Complete integration with Python 3.13+ type system:
 # State Management
 
 # Server State Machine
+
 ```
 stopped ──start()──> starting ──started()──> running
    ↑                                           │
    └───stopped()───< stopping <──stop()───────┘
 ```
+
 # Client State Machine
+
 ```
 disconnected ──connect()──> connecting ──connected()──> connected
       ↑                                                      │
       └───disconnected()───< disconnecting <──disconnect()──┘
 ```
+
 # Channel State Management
+
 ```
 idle ──open()──> connecting ──ready()──> ready ──close()──> shutdown
 ```
+
 # Memory Management
 
 # Adaptive Buffers

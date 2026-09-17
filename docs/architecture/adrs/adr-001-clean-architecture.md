@@ -1,6 +1,7 @@
 # ADR-001: Clean Architecture Adoption
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Status](#status)
 - [Context](#context)
@@ -251,6 +252,7 @@ class GrpcServerAdapter(ServerInterface):
         # Implementation using grpcio
         pass
 ```
+
 ## References
 
 - [Clean Architecture Book by Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)

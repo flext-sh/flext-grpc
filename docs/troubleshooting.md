@@ -1,6 +1,7 @@
 # flext-grpc Troubleshooting
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Fixed Issues](#fixed-issues)
   - [Protobuf Import Compatibility (RESOLVED)](#protobuf-import-compatibility-resolved)
@@ -120,6 +121,7 @@ import sys
 sys.path.insert(0, "src")  # For development
 # or use poetry run for installed package
 ```
+
 ### gRPC Version Conflicts
 
 **Symptom**: Version mismatch warnings or errors.
@@ -130,6 +132,7 @@ sys.path.insert(0, "src")  # For development
 poetry install --all-extras
 poetry show grpcio grpcio-tools protobuf  # Check versions
 ```
+
 ### Server Startup Issues
 
 **Symptom**: Server creation succeeds but startup fails.
@@ -151,6 +154,7 @@ start_result = platform.start_server(server)
 if start_result.failure:
     print(f"Startup failed: {start_result.error}")
 ```
+
 ## Development Best Practices
 
 ### gRPC Service Development
@@ -202,6 +206,7 @@ Based on 2025 gRPC Python best practices:
 poetry show flext-grpc
 poetry run python -c "import flext_grpc; print('Installation OK')"
 ```
+
 ### Verify Dependencies
 
 ```bash
@@ -212,6 +217,7 @@ print(f'gRPC: {grpc.__version__}')
 print(f'Protobuf: {google.protobuf.__version__}')
 "
 ```
+
 ### Test Core Functionality
 
 ```bash
@@ -224,6 +230,7 @@ print(f'Platform: {platform is not None}')
 print('Core functionality verified')
 "
 ```
+
 ## Getting Help
 
 1. **Check this troubleshooting guide** for common issues

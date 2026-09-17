@@ -1,6 +1,7 @@
 # ADR-003: Protocol Buffer Generation Strategy
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Status](#status)
 - [Context](#context)

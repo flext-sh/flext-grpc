@@ -1,6 +1,7 @@
 # Architecture Decision Records (ADRs)
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [ADR Process](#adr-process)
@@ -45,7 +46,7 @@
 - [Contributing](#contributing)
   - [ADR Submission Process](#adr-submission-process)
   - [ADR Review Checklist](#adr-review-checklist)
-<!-- TOC END -->
+  <!-- TOC END -->
 
 ## Table of Contents
 
@@ -183,10 +184,10 @@ When a significant architectural decision needs to be made:
 
 ## Current ADRs
 
-| ADR                                       | Title                               | Status     | Date       | Impact |
-| ----------------------------------------- | ----------------------------------- | ---------- | ---------- | ------ |
+| ADR                                       | Title                               | Status      | Date       | Impact |
+| ----------------------------------------- | ----------------------------------- | ----------- | ---------- | ------ |
 | [ADR-001](adr-001-clean-architecture.md)  | Clean Architecture Adoption         | ✅ Accepted | 2025-09-15 | High   |
-| [ADR-003](adr-003-protobuf-generation.md) | Protocol Buffer Generation Strategy | ⚠️ Blocked | 2025-09-20 | High   |
+| [ADR-003](adr-003-protobuf-generation.md) | Protocol Buffer Generation Strategy | ⚠️ Blocked  | 2025-09-20 | High   |
 
 ## ADR Status Definitions
 
@@ -408,7 +409,7 @@ See `template.md` for the complete ADR template.
 - [ ] Implementation approach is feasible
 - [ ] Stakeholders are identified and consulted
 
-______________________________________________________________________
+---
 
 **ADRs provide a living record of architectural decisions,
 ensuring that design rationale is preserved and architectural knowledge is accumulated over time. They help teams make better decisions by learning from past choices and their outcomes.**

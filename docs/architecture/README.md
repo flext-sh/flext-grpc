@@ -1,6 +1,7 @@
 # FLEXT-gRPC Architecture
 
 <!-- TOC START -->
+
 - [Structure](#structure)
 - [What To Read](#what-to-read)
 - [Diagrams](#diagrams)

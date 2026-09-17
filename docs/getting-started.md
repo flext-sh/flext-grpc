@@ -1,6 +1,7 @@
 # Getting Started with flext-grpc
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [System Requirements](#system-requirements)
@@ -102,6 +103,7 @@ server = create_server("localhost", 50051, 10)
 print(f"Server address: {server.address}")
 print(f"Server state: {server.state}")
 ```
+
 ### Client Creation
 
 ```python
@@ -112,6 +114,7 @@ from flext_grpc import create_client
 client = create_client("localhost:50051")
 print(f"Client created: {type(client).__name__}")
 ```
+
 ### Platform Management
 
 ```python
@@ -122,6 +125,7 @@ from flext_grpc import FlextGrpcPlatform
 platform = FlextGrpcPlatform()
 print(f"Platform ready: {type(platform).__name__}")
 ```
+
 ### Configuration
 
 ```python
@@ -134,6 +138,7 @@ settings = FlextGrpcSettings.model_validate({
 })
 print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
+
 ## Development Setup
 
 ### Development Commands
@@ -151,6 +156,7 @@ poetry run mypy src/
 # Code linting
 poetry run ruff check src/
 ```
+
 ### Quality Status Check
 
 Current status verification:
@@ -171,6 +177,7 @@ server = create_server('localhost', 50051, 10)
 print(f'✅ Server creation: {server.address}')
 "
 ```
+
 ## Current Limitations
 
 ### Test Coverage
