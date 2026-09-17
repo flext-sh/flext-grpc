@@ -26,10 +26,6 @@ from flext_grpc import (
     t,
 )
 
-Models = FlextGrpcModels
-SettingsCls = FlextGrpcSettings
-Constants = FlextGrpcConstants
-
 
 class ExamplesFlextGrpcAdvancedUsage:
     """Advanced usage examples for flext-grpc."""
@@ -96,14 +92,14 @@ class ExamplesFlextGrpcAdvancedUsage:
             """Initialize the gRPC server manager with facade."""
             self._outer = outer
             self.grpc = outer.grpc
-            self.servers: t.MutableMappingKV[str, Models.Grpc.Server] = {}
-            self.server_configs: t.MutableMappingKV[str, SettingsCls] = {}
+            self.servers: t.MutableMappingKV[str, FlextGrpcModels.Grpc.Server] = {}
+            self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
 
         def create_server_pool(
             self, base_port: int = 8000, count: int = 3
-        ) -> list[p.Result[Models.Grpc.Server]]:
+        ) -> list[p.Result[FlextGrpcModels.Grpc.Server]]:
             """Create a pool of servers on consecutive ports through facade."""
-            server_results: list[p.Result[Models.Grpc.Server]] = []
+            server_results: list[p.Result[FlextGrpcModels.Grpc.Server]] = []
             for i in range(count):
                 server_id = f"pool-server-{i}"
                 port = base_port + i
@@ -182,7 +178,7 @@ class ExamplesFlextGrpcAdvancedUsage:
             port: int = 8080,
             service_name: str = "AdvancedService",
             methods: t.StrSequence | None = None,
-        ) -> p.Result[Models.Grpc.CompleteSetup]:
+        ) -> p.Result[FlextGrpcModels.Grpc.CompleteSetup]:
             """Create a complete gRPC setup through facade."""
             c_facade = self._outer.c
             if host is None:
@@ -193,11 +189,11 @@ class ExamplesFlextGrpcAdvancedUsage:
                 host=host, port=port, service_name=service_name, methods=methods
             )
             if setup_result.failure:
-                return self._outer.r[Models.Grpc.CompleteSetup].from_failure(
+                return self._outer.r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(
                     setup_result
                 )
             setup = setup_result.value
-            return self._outer.r[Models.Grpc.CompleteSetup].ok(setup)
+            return self._outer.r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
 
         def demonstrate_streaming(self) -> None:
             """Demonstrate streaming operations through facade."""
@@ -261,7 +257,7 @@ class ExamplesFlextGrpcAdvancedUsage:
             ("OrderService", ["GetOrder", "CreateOrder", "UpdateOrder"]),
             ("NotificationService", ["SendNotification", "GetNotifications"]),
         ]
-        created_services: list[Models.Grpc.Service] = []
+        created_services: list[FlextGrpcModels.Grpc.Service] = []
         for service_name, methods in services:
             service_result = grpc.create_service(name=service_name, methods=methods)
             if service_result.success:
@@ -283,7 +279,7 @@ class ExamplesFlextGrpcAdvancedUsage:
             ("UploadData", "client_streaming"),
             ("Chat", "bidirectional"),
         ]
-        created_streams: list[Models.Grpc.GrpcStream] = []
+        created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
         for method_name, stream_type in stream_configs:
             stream_result = grpc.create_stream(
                 method_name=method_name, stream_type=stream_type
