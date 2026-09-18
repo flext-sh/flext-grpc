@@ -54,6 +54,7 @@
 ## Table of Contents
 
 - [Documentation Maintenance Framework API Reference](#documentation-maintenance-framework-api-reference)
+
   - [📚 Overview](#overview)
   - [🔍 Audit API](#audit-api) - [DocumentationAuditor](#documentationauditor) -
     [Methods](#methods) - [`discover_files() -> List[Path]`](#discover_files-listpath) -
@@ -64,7 +65,9 @@
   - [🔗 Validation API](#validation-api) - [LinkValidator](#linkvalidator) -
     [Methods](#methods) -
     [`validate_external_link(url: str) -> LinkValidationResult`](#validate_external_linkurl-str-linkvalidationresult) -
-    [`validate_internal_links(content: str, file_path: Path, ](#validate_internal_linkscontent-str-file_path-path) - [StyleValidator](#stylevalidator) - [Methods](#methods) - [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path-stylecheckresult)
+    [`validate_internal_links()`][validate-internal-links] -
+    [StyleValidator](#stylevalidator) - [Methods](#methods) -
+    [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path-stylecheckresult)
   - [🔧 Optimization API](#optimization-api) -
     [DocumentationOptimizer](#documentationoptimizer) - [Methods](#methods) -
     [`optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, object]`](#optimize_filefile_path-path-dry_run-bool-false-dictstr-object) -
@@ -75,9 +78,13 @@
 
     [`detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) -
     [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
+
   - [📊 Reporting API](#reporting-api) -
     [DocumentationReporter](#documentationreporter) - [Methods](#methods) -
-    [`generate_comprehensive_report(audit_report, validation_report, ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict, output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath-none) - [`export_csv_report(report_data: Dict, output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str, object]`](#generate_trend_reportdays-int-30-dictstr-object)
+    [`generate_comprehensive_report()`][generate-comprehensive-report] -
+    [`generate_dashboard()`][generate-dashboard] -
+    [`export_csv_report()`][export-csv-report] -
+    [`generate_trend_report(days: int = 30) -> Dict[str, object]`](#generate_trend_reportdays-int-30-dictstr-object)
   - [🚀 Automation API](#automation-api) -
     [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) -
     [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, object]`](#run_scheduled_maintenancemaintenance_type-str-daily-dictstr-object)
@@ -1024,4 +1031,10 @@ def safe_read_file(file_path: Path) -> str:
 Documentation Maintenance Framework. Use the examples and patterns provided to integrate
 the framework into your development workflow.**
 
-[sync-changes]:#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object
+[sync-changes]:
+  #sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object
+[validate-internal-links]: #validate_internal_linkscontent-str-file_path-path
+[generate-comprehensive-report]:
+  #generate_comprehensive_reportaudit_report-validation_report
+[generate-dashboard]: #generate_dashboardreport_data-dict-output_path-optionalpath-none
+[export-csv-report]: #export_csv_reportreport_data-dict-output_path-path

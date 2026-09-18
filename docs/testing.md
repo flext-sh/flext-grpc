@@ -157,8 +157,7 @@ TOTAL                                          1798    956    380     14    39%
 2. **Exception Constructor Signatures** (6 failures)
 
    - **Issue**: Exception constructors have incorrect parameter signatures
-   - **Error**:
-     `TypeError: ...__init__() takes X positional arguments but Y were given`
+   - **Error**: `TypeError: ...__init__() takes X positional arguments but Y were given`
    - **Impact**: Error handling classes unusable
    - **Tests**: `test_configuration_error_*`, `test_validation_error_*`,
      `test_all_errors_are_exceptions`
