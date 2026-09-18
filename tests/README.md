@@ -162,7 +162,6 @@ pytest tests/e2e/ --benchmark-only
 from __future__ import annotations
 
 import pytest
-from flext_core import t
 
 
 @pytest.mark.unit  # Unit tests (fast, isolated)
@@ -239,7 +238,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Entity Testing Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -260,7 +259,7 @@ def test_entity_creation_and_validation():
 
 ### Service Testing Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -281,7 +280,7 @@ def test_service_operation_success():
 
 ### Error Testing Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 

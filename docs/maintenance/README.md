@@ -360,7 +360,8 @@ make docs
 ### Content Quality Score
 
 ```
-Documentation Quality = (Structure × 0.3) + (Accuracy × 0.3) + (Completeness × 0.2) + (Freshness × 0.2)
+Documentation Quality =
+  (Structure × 0.3) + (Accuracy × 0.3) + (Completeness × 0.2) + (Freshness × 0.2)
 
 Where:
 - Structure: Formatting and organization (0-100)

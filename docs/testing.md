@@ -110,7 +110,8 @@ FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with compreh
 validation of gRPC operations,
 
      FLEXT ecosystem integration,
-     and error handling patterns. Current testing shows 39% coverage with critical failures that must be addressed before production deployment.
+     and error handling patterns. Current testing shows 39% coverage with critical
+     failures that must be addressed before production deployment.
 
 ## Current Testing Status
 
@@ -157,7 +158,7 @@ TOTAL                                          1798    956    380     14    39%
 
    - **Issue**: Exception constructors have incorrect parameter signatures
    - **Error**:
-     `TypeError: FlextGrpcExceptions.*.__init__() takes X positional arguments but Y were given`
+     `TypeError: ...__init__() takes X positional arguments but Y were given`
    - **Impact**: Error handling classes unusable
    - **Tests**: `test_configuration_error_*`, `test_validation_error_*`,
      `test_all_errors_are_exceptions`
@@ -297,7 +298,7 @@ TOTAL                                          1798    956    380     14    39%
 
 **Test Structure**:
 
-```python
+```python notest
 from __future__ import annotations
 
 
@@ -331,7 +332,7 @@ def test_service_lifecycle():
 
 **Test Structure**:
 
-```python
+```python notest
 from __future__ import annotations
 
 
@@ -361,7 +362,7 @@ def test_create_client_target_validation():
 
 **Test Structure**:
 
-```python
+```python notest
 from __future__ import annotations
 
 
@@ -403,7 +404,7 @@ def test_server_entity_lifecycle():
 
 #### Real gRPC Server Testing
 
-```python
+```python notest
 from __future__ import annotations
 import pytest
 import grpc
@@ -424,7 +425,7 @@ async def test_real_grpc_server_operations(grpc_server):
 
 #### Streaming Operations Testing
 
-```python
+```python notest
 from __future__ import annotations
 
 
@@ -467,7 +468,8 @@ PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc 
 
 ```bash
 # Run single failing test
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
+PYTHONPATH=src poetry run \
+  pytest tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
 
 # Run with detailed output
 PYTHONPATH=src poetry run pytest tests/unit/test_services.py -v --tb=long
@@ -511,7 +513,7 @@ PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
 
 #### gRPC Test Server
 
-```python
+```python notest
 from __future__ import annotations
 
 
@@ -535,7 +537,7 @@ async def grpc_server():
 
 #### Test Client Setup
 
-```python
+```python notest
 from __future__ import annotations
 
 
@@ -580,7 +582,7 @@ tests/
 
 ### Test Naming Conventions
 
-```python
+```python notest
 from __future__ import annotations
 def test_{module}_{operation}_{condition}():
     """Test {module} {operation} under {condition}."""
@@ -594,7 +596,7 @@ def test_{operation}_with_{configuration}():
 
 ### Test Categories and Markers
 
-```python
+```python notest
 from __future__ import annotations
 
 

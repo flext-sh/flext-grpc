@@ -81,7 +81,8 @@ poetry install
 
 ```bash
 # Test core imports
-poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; print('Import successful')"
+poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; \
+  print('Import successful')"
 
 # Test functionality
 poetry run python -c "
@@ -146,7 +147,8 @@ print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 
 ```bash
 # Run a basic test
-poetry run pytest tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
+poetry run pytest tests/unit/test_config.py \
+  ::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
 
 # Check test coverage (currently 39%)
 poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term

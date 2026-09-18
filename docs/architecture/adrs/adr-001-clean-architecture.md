@@ -237,6 +237,7 @@ With the following principles:
 ```python
 from __future__ import annotations
 from flext_core import p
+from typing import Protocol
 
 
 # Domain defines interfaces

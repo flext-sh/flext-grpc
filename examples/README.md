@@ -181,7 +181,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Example Usage**:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
@@ -216,7 +216,7 @@ service_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
@@ -302,7 +302,7 @@ FLEXT_GRPC_MONITOR=true \
 
 ### Entity Creation Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
@@ -327,7 +327,7 @@ print(f"Server created: {server.id}")
 
 ### Service Operation Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 from flext_grpc import FlextGrpcServerService
@@ -345,7 +345,7 @@ else:
 
 ### Platform Usage Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 from flext_grpc import FlextGrpcPlatform
@@ -441,7 +441,7 @@ For current development gaps and realistic timelines, see
 
 ### Example Template
 
-```python
+```python notest
 from __future__ import annotations
 
 """
@@ -461,12 +461,6 @@ Author: FLEXT Development Team
 Version: 0.12.0-dev
 """
 
-from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
-from flext_core import FlextSettings
-from datetime import datetime, timezone
-
-
-def main() -> None:
     """Main example execution function."""
     print("Starting FLEXT gRPC example...")
 

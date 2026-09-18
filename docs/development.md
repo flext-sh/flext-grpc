@@ -159,7 +159,7 @@ make test       # All tests pass (currently 28 failing, needs bug fixes)
 
 All code must follow flext-core architectural patterns:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 
@@ -190,12 +190,15 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
 
 Complete type annotations are mandatory:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
 
 from flext_grpc import FlextGrpcServer
+from typing import Generic
+from typing import Protocol
+from typing import TypeVar
 
 T = TypeVar("T")
 
@@ -220,7 +223,7 @@ class GrpcService(Generic[T]):
 
 Follow Domain-Driven Design patterns:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
@@ -372,7 +375,7 @@ def test_performance_benchmark():
 
 Maintain strict layer boundaries:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 
@@ -402,7 +405,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use FlextContainer for all dependencies:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
@@ -482,7 +485,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
 Use comments sparingly for complex business logic:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r

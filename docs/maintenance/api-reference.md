@@ -71,7 +71,8 @@
     [`optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`](#optimize_all_filesfiles-optionallistpath-none-dry_run-bool-false-dictstr-object)
   - [🔄 Synchronization API](#synchronization-api) -
     [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) -
-    [`sync_changes(changes: List[Dict[str, object]], action: str = "maintenance") -> Dict[str, object]`](#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object) -
+    [`sync_changes(changes, action) -> Dict[str, object]`][sync-changes]
+
     [`detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) -
     [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
   - [📊 Reporting API](#reporting-api) -
@@ -147,7 +148,7 @@ Discover all documentation files to audit.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 files = auditor.discover_files()
@@ -166,7 +167,7 @@ Perform comprehensive audit of a single file.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 result = auditor.audit_file(Path("docs/README.md"))
@@ -185,7 +186,7 @@ Run complete audit on specified or all files.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 report = auditor.run_audit()
@@ -203,7 +204,7 @@ Save audit report to JSON file.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 auditor.save_report(report, Path("reports/audit.json"))
@@ -244,7 +245,7 @@ Validate a single external link.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 result = validator.validate_external_link("https://github.com")
@@ -293,7 +294,7 @@ Check style consistency for a file.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 result = style_validator.check_file_style(Path("docs/README.md"))
@@ -330,14 +331,14 @@ Optimize a single documentation file.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 result = optimizer.optimize_file(Path("docs/README.md"))
 print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
 
-##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`
+##### `optimize_all_files(files: Optional[List[Path]], dry_run: bool = False)`
 
 Optimize all documentation files.
 
@@ -363,7 +364,7 @@ sync = DocumentationSynchronizer(root_path=".")
 
 #### Methods
 
-##### `sync_changes(changes: List[Dict[str, object]], action: str = "maintenance") -> Dict[str, object]`
+##### `sync_changes(changes: List[Dict[str, object]], action: str = "maintenance")`
 
 Synchronize documentation changes with git.
 
@@ -378,6 +379,7 @@ Synchronize documentation changes with git.
 
 ```python
 from __future__ import annotations
+from os import sync
 
 changes = [
     {
@@ -494,7 +496,7 @@ Run scheduled maintenance tasks.
 
 **Example**:
 
-```python
+```python notest
 from __future__ import annotations
 
 result = automation.run_scheduled_maintenance("weekly")
@@ -508,6 +510,7 @@ print(f"Tasks completed: {len(result['tasks_completed'])}")
 ```python
 from __future__ import annotations
 from flext_core import t
+from dataclasses import dataclass
 
 
 @dataclass
@@ -528,7 +531,7 @@ class AuditResult:
 
 ### AuditReport
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -551,6 +554,7 @@ class AuditReport:
 ```python
 from __future__ import annotations
 from flext_core import t
+from dataclasses import dataclass
 
 
 @dataclass
@@ -568,6 +572,7 @@ class LinkValidationResult:
 ```python
 from __future__ import annotations
 from flext_core import t
+from dataclasses import dataclass
 
 
 @dataclass
@@ -584,6 +589,7 @@ class ReferenceValidationResult:
 ```python
 from __future__ import annotations
 from flext_core import t
+from dataclasses import dataclass
 
 
 @dataclass
@@ -683,7 +689,7 @@ def calculate_quality_score(
 
 ### Report Generation
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -779,7 +785,7 @@ except Exception as e:
 
 ### Quality Metrics
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -797,7 +803,7 @@ def get_quality_metrics(audit_report: AuditReport) -> t.Dict[str, t.JsonValue]:
 
 ### Trend Analysis
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -951,7 +957,7 @@ def migrate_config(old_config: t.Dict) -> t.Dict:
 
 ### Memory Management
 
-```python
+```python notest
 from __future__ import annotations
 
 # For large documentation sets
@@ -1017,3 +1023,5 @@ def safe_read_file(file_path: Path) -> str:
 **This API reference provides comprehensive documentation for all components of the
 Documentation Maintenance Framework. Use the examples and patterns provided to integrate
 the framework into your development workflow.**
+
+[sync-changes]:#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object

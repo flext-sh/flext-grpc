@@ -137,12 +137,12 @@ Person(user, "FLEXT Developer", "Develops microservices using FLEXT ecosystem")
 Person(architect, "System Architect", "Designs microservices architecture")
 
 System(flext_grpc, "FLEXT-gRPC",
-     "Enterprise gRPC communication library providing clean API over grpcio/protobuf for microservices communication")
+     "Enterprise gRPC communication library over grpcio/protobuf")
 
 System_Boundary(flext_ecosystem, "FLEXT Ecosystem") {
     System(flext_core, "FLEXT-Core", "Foundation library with r,
      FlextContainer, s patterns")
-    System(flext_observability, "FLEXT-Observability", "Monitoring, metrics, and distributed tracing")
+    System(flext_observability, "FLEXT-Observability", "Monitoring, metrics, tracing")
     System(flext_cli, "FLEXT-CLI", "Command-line interface and plugin system")
     System(flext_api, "FLEXT-API", "REST API framework")
     System(flext_auth, "FLEXT-Auth", "Authentication and authorization services")

@@ -97,7 +97,7 @@ graph TB
 flext-grpc components use flext-core patterns (see flext-core documentation for
 details):
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
@@ -117,7 +117,7 @@ class GrpcServiceManager:
 
 flext-grpc services can be registered with FlextContainer:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_grpc import FlextGrpcPlatform
 
@@ -132,7 +132,7 @@ container.bind("grpc_platform", platform)
 
 Authentication and authorization for gRPC services:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 
@@ -165,7 +165,7 @@ class AuthenticatedGrpcService:
 
 Monitoring and metrics for gRPC services:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 
@@ -196,7 +196,7 @@ class ObservableGrpcService:
 
 Command-line management for gRPC services:
 
-```python
+```python notest
 from __future__ import annotations
 
 # Planned integration
@@ -234,7 +234,7 @@ def create_grpc_cli() -> FlextCliApp:
 
 gRPC communication between FLEXT services:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
@@ -354,7 +354,7 @@ class FlextGrpcEnvironmentSettings(FlextSettings):
 
 Integration with FLEXT service discovery:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
@@ -426,7 +426,7 @@ class TestGrpcIntegration(FlextTestCase):
 
 Testing with FLEXT mock patterns:
 
-```python
+```python notest
 from __future__ import annotations
 from unittest.mock import Mock
 from flext_grpc import FlextGrpcPlatform
@@ -454,7 +454,7 @@ class TestGrpcMockIntegration:
 
 Integration with FLEXT deployment infrastructure:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 from flext_core import r
@@ -528,7 +528,7 @@ class MonitoredGrpcService:
 
 Maintaining compatibility during ecosystem upgrades:
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import p
 

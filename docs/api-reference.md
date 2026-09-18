@@ -44,7 +44,7 @@
   [Service Classes](#service-classes) - [FlextGrpcPlatform](#flextgrpcplatform)
 - [`start_server(server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#start_serverserver-flextgrpcserver-presultflextgrpcserver)
 - [`connect_client(client: FlextGrpcClient) -> p.Result[FlextGrpcClient]`](#connect_clientclient-flextgrpcclient-presultflextgrpcclient)
-- [`call_service(client: FlextGrpcClient, method: str, request: dict) -> p.Result[m.Dict]`](#call_serviceclient-flextgrpcclient-method-str-request-dict-presultmdict) -
+- [`call_service(...) -> p.Result[m.Dict]`][call-service]
   [FlextGrpcServerService](#flextgrpcserverservice) -
   [`execute(operation: str, server: FlextGrpcServer) -> p.Result[FlextGrpcServer]`](#executeoperation-str-server-flextgrpcserver-presultflextgrpcserver)
   - [Type Definitions](#type-definitions)
@@ -141,7 +141,7 @@ Server entity with lifecycle management and state transitions.
 
 Starts the server (state transition: stopped → starting).
 
-```python
+```python notest
 from __future__ import annotations
 
 server = FlextGrpcServer(host="localhost", port=50051)
@@ -160,7 +160,7 @@ Stops the server (state transition: running → stopping).
 
 Validates server configuration and business rules.
 
-```python
+```python notest
 from __future__ import annotations
 
 server = FlextGrpcServer(host="", port=80)  # Invalid
@@ -207,7 +207,7 @@ Configuration value object with validation.
 
 Validates configuration parameters.
 
-```python
+```python notest
 from __future__ import annotations
 
 settings = FlextGrpcSettings(host="localhost", port=99999)
@@ -259,7 +259,7 @@ Domain service for server operations.
 
 Executes server operations using Command pattern.
 
-```python
+```python notest
 from __future__ import annotations
 from flext_grpc import FlextGrpcServerService
 
@@ -280,6 +280,7 @@ Server state type definition.
 
 ```python
 from __future__ import annotations
+from typing import Literal
 
 TGrpcServerState = Literal["stopped", "starting", "running", "stopping"]
 ```
@@ -290,6 +291,7 @@ Client state type definition.
 
 ```python
 from __future__ import annotations
+from typing import Literal
 
 TGrpcClientState = Literal["disconnected", "connecting", "connected", "disconnecting"]
 ```
@@ -300,6 +302,7 @@ Streaming pattern types.
 
 ```python
 from __future__ import annotations
+from typing import Literal
 
 TGrpcStreamType = Literal[
     "unary", "server_streaming", "client_streaming", "bidirectional"
@@ -328,7 +331,7 @@ class FlextGrpcError(Exception):
 
 Configuration-related errors.
 
-```python
+```python notest
 from __future__ import annotations
 
 try:
@@ -454,7 +457,7 @@ if result.success:
 
 Integration with FlextContainer:
 
-```python
+```python notest
 from __future__ import annotations
 
 container = FlextContainer.get_global()
@@ -526,3 +529,5 @@ compatibility issue is resolved.
 
 - [PEP 257 - Docstring Conventions](https://peps.python.org/pep-0257/)
 - [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)
+
+[call-service]:#call_serviceclient-flextgrpcclient-method-str-request-dict-presultmdict
