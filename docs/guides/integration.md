@@ -65,7 +65,8 @@
 
 **Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
-Integration patterns and guidelines for flext-grpc within the FLEXT data integration ecosystem.
+Integration patterns and guidelines for flext-grpc within the FLEXT data integration
+ecosystem.
 
 ## Integration Overview
 
@@ -93,7 +94,8 @@ graph TB
 
 ### flext-core Foundation
 
-flext-grpc components use flext-core patterns (see flext-core documentation for details):
+flext-grpc components use flext-core patterns (see flext-core documentation for
+details):
 
 ```python
 from __future__ import annotations
@@ -577,4 +579,5 @@ class GrpcVersionManager:
 
 ---
 
-This integration guide provides comprehensive patterns for using flext-grpc within the FLEXT ecosystem once the protobuf compatibility issue is resolved.
+This integration guide provides comprehensive patterns for using flext-grpc within the
+FLEXT ecosystem once the protobuf compatibility issue is resolved.

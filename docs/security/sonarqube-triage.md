@@ -6,8 +6,8 @@ Bead: `mro-2wjm.7`
 
 ## Resumo
 
-**21 issues** — BLOCKER 0, CRITICAL 2, MAJOR 16, MINOR 3
-Tipos: VULNERABILITY 4, BUG 0, CODE_SMELL 17 · **Debt total: 107min**
+**21 issues** — BLOCKER 0, CRITICAL 2, MAJOR 16, MINOR 3 Tipos: VULNERABILITY 4, BUG 0,
+CODE_SMELL 17 · **Debt total: 107min**
 
 | regra                 | issues |
 | --------------------- | ------ |
@@ -24,8 +24,11 @@ Tipos: VULNERABILITY 4, BUG 0, CODE_SMELL 17 · **Debt total: 107min**
 
 ## Como usar
 
-Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o **código real** (linha `>>>`), o tipo e o effort estimado.
-**Decisão**: `corrigir` / `falso-positivo` (marcar na plataforma com justificativa) / `risco-aceito`. Ordem: BLOCKER → CRITICAL → VULNERABILITY → MAJOR. CODE_SMELL em volume pede correção de padrão.
+Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
+**código real** (linha `>>>`), o tipo e o effort estimado. **Decisão**: `corrigir` /
+`falso-positivo` (marcar na plataforma com justificativa) / `risco-aceito`. Ordem:
+BLOCKER → CRITICAL → VULNERABILITY → MAJOR. CODE_SMELL em volume pede correção de
+padrão.
 
 ## Issues
 
@@ -53,7 +56,8 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `src/flext_grpc/_utilities/grpc.py:83` · **Effort**: 8min
 
-> Define a constant instead of duplicating this literal "gRPC runtime unavailable" 4 times.
+> Define a constant instead of duplicating this literal "gRPC runtime unavailable" 4
+> times.
 
 ```python
        79              lambda: import_module("grpc"), catch=(ImportError, ModuleNotFoundError)
@@ -73,7 +77,8 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `.github/scripts/install-git-hooks.sh:55` · **Effort**: 2min
 
-> Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.
+> Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more
+> feature-rich.
 
 ```bash
        51  _log "Installing Beads git hooks (chained) at ${REPOSITORY_ROOT}"
@@ -93,17 +98,18 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `.github/scripts/install-git-hooks.sh:104` · **Effort**: 2min
 
-> Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.
+> Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more
+> feature-rich.
 
 ```bash
       100  grep -q 'BD_ALLOW_AGENT_COMMIT_TRAILERS' "${hook_path}" \
-      101  	|| fail "guard token missing after injection"
+      101   || fail "guard token missing after injection"
       102  grep -q 'bd hooks run prepare-commit-msg' "${hook_path}" \
-      103  	|| fail "bd delegation missing; refusing to leave hook without beads integration"
+      103   || fail "bd delegation missing; refusing to leave hook without beads integration"
 >>>   104  [ -f "$(git rev-parse --git-path hooks/pre-commit)" ] \
-      105  	|| fail "pre-commit hook missing after provisioning"
+      105   || fail "pre-commit hook missing after provisioning"
       106  [ -f "$(git rev-parse --git-path hooks/pre-push)" ] \
-      107  	|| fail "pre-push hook missing after provisioning"
+      107   || fail "pre-push hook missing after provisioning"
       108
 ```
 
@@ -113,15 +119,16 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `.github/scripts/install-git-hooks.sh:106` · **Effort**: 2min
 
-> Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more feature-rich.
+> Use '[[' instead of '[' for conditional tests. The '[[' construct is safer and more
+> feature-rich.
 
 ```bash
       102  grep -q 'bd hooks run prepare-commit-msg' "${hook_path}" \
-      103  	|| fail "bd delegation missing; refusing to leave hook without beads integration"
+      103   || fail "bd delegation missing; refusing to leave hook without beads integration"
       104  [ -f "$(git rev-parse --git-path hooks/pre-commit)" ] \
-      105  	|| fail "pre-commit hook missing after provisioning"
+      105   || fail "pre-commit hook missing after provisioning"
 >>>   106  [ -f "$(git rev-parse --git-path hooks/pre-push)" ] \
-      107  	|| fail "pre-push hook missing after provisioning"
+      107   || fail "pre-push hook missing after provisioning"
       108
       109  echo "install-git-hooks: prepare-commit-msg guarded (BD_ALLOW_AGENT_COMMIT_TRAILERS opt-in)"
 ```
@@ -199,11 +206,11 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
        18
        19  # Logging functions
        20  log_info() {
->>>    21  	echo -e "${BLUE}[INFO]${NC} $1"
+>>>    21   echo -e "${BLUE}[INFO]${NC} $1"
        22  }
        23
        24  log_success() {
-       25  	echo -e "${GREEN}[SUCCESS]${NC} $1"
+       25   echo -e "${GREEN}[SUCCESS]${NC} $1"
 ```
 
 **Decisão**: pendente
@@ -215,15 +222,15 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Assign this positional parameter to a local variable.
 
 ```bash
-       21  	echo -e "${BLUE}[INFO]${NC} $1"
+       21   echo -e "${BLUE}[INFO]${NC} $1"
        22  }
        23
        24  log_success() {
->>>    25  	echo -e "${GREEN}[SUCCESS]${NC} $1"
+>>>    25   echo -e "${GREEN}[SUCCESS]${NC} $1"
        26  }
        27
        28  log_warning() {
-       29  	echo -e "${YELLOW}[WARNING]${NC} $1"
+       29   echo -e "${YELLOW}[WARNING]${NC} $1"
 ```
 
 **Decisão**: pendente
@@ -235,15 +242,15 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Assign this positional parameter to a local variable.
 
 ```bash
-       25  	echo -e "${GREEN}[SUCCESS]${NC} $1"
+       25   echo -e "${GREEN}[SUCCESS]${NC} $1"
        26  }
        27
        28  log_warning() {
->>>    29  	echo -e "${YELLOW}[WARNING]${NC} $1"
+>>>    29   echo -e "${YELLOW}[WARNING]${NC} $1"
        30  }
        31
        32  log_error() {
-       33  	echo -e "${RED}[ERROR]${NC} $1"
+       33   echo -e "${RED}[ERROR]${NC} $1"
 ```
 
 **Decisão**: pendente
@@ -255,11 +262,11 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Redirect this error message to stderr (>&2).
 
 ```bash
-       29  	echo -e "${YELLOW}[WARNING]${NC} $1"
+       29   echo -e "${YELLOW}[WARNING]${NC} $1"
        30  }
        31
        32  log_error() {
->>>    33  	echo -e "${RED}[ERROR]${NC} $1"
+>>>    33   echo -e "${RED}[ERROR]${NC} $1"
        34  }
        35
        36  # Check dependencies
@@ -275,11 +282,11 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Assign this positional parameter to a local variable.
 
 ```bash
-       29  	echo -e "${YELLOW}[WARNING]${NC} $1"
+       29   echo -e "${YELLOW}[WARNING]${NC} $1"
        30  }
        31
        32  log_error() {
->>>    33  	echo -e "${RED}[ERROR]${NC} $1"
+>>>    33   echo -e "${RED}[ERROR]${NC} $1"
        34  }
        35
        36  # Check dependencies
@@ -295,15 +302,15 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Assign this positional parameter to a local variable.
 
 ```bash
-      222  	local skip_validation=false
+      222   local skip_validation=false
       223
-      224  	# Parse arguments
-      225  	while [[ $# -gt 0 ]]; do
->>>   226  		case $1 in
-      227  		--png-only)
-      228  			generate_svg=false
-      229  			generate_ascii=false
-      230  			shift
+      224   # Parse arguments
+      225   while [[ $# -gt 0 ]]; do
+>>>   226    case $1 in
+      227    --png-only)
+      228     generate_svg=false
+      229     generate_ascii=false
+      230     shift
 ```
 
 **Decisão**: pendente
@@ -315,15 +322,15 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 > Assign this positional parameter to a local variable.
 
 ```bash
-      253  			echo "  --help           Show this help"
-      254  			exit 0
-      255  			;;
-      256  		*)
->>>   257  			log_error "Unknown option: $1"
-      258  			exit 1
-      259  			;;
-      260  		esac
-      261  	done
+      253     echo "  --help           Show this help"
+      254     exit 0
+      255     ;;
+      256    *)
+>>>   257     log_error "Unknown option: $1"
+      258     exit 1
+      259     ;;
+      260    esac
+      261   done
 ```
 
 **Decisão**: pendente
@@ -352,7 +359,8 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `pyproject.toml:-` · **Effort**: 5min
 
-> Dependency versions are not predictable if the lock file (uv.lock, poetry.lock, pdm.lock or pylock.toml) is missing.
+> Dependency versions are not predictable if the lock file (uv.lock, poetry.lock,
+> pdm.lock or pylock.toml) is missing.
 
 **Decisão**: pendente
 
@@ -360,7 +368,8 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `src/flext_grpc/constants.py:97` · **Effort**: 20min
 
-> Simplify this regular expression to reduce its runtime, as it has super-linear performance due to backtracking.
+> Simplify this regular expression to reduce its runtime, as it has super-linear
+> performance due to backtracking.
 
 ```python
        93
@@ -420,7 +429,8 @@ Cada issue traz a **mensagem do SonarQube** (descreve o problema e o impacto), o
 
 **Local**: `src/flext_grpc/_utilities/grpc.py:29` · **Effort**: 2min
 
-> Rename this field "FutureTimeoutError" to match the regular expression ^[\_a-z][_a-z0-9]\*$.
+> Rename this field "FutureTimeoutError" to match the regular expression
+> ^[\_a-z][_a-z0-9]\*$.
 
 ```python
        25      class _GrpcRuntimeAdapter:

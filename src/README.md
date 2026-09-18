@@ -30,7 +30,8 @@
 
 <!-- TOC END -->
 
-Source code implementation for the FLEXT gRPC communication platform following Clean Architecture and Domain-Driven Design principles.
+Source code implementation for the FLEXT gRPC communication platform following Clean
+Architecture and Domain-Driven Design principles.
 
 ## Module Structure
 
@@ -222,9 +223,9 @@ src/flext_grpc/
 **Before Committing**:
 
 ```bash
-make val    # Complete validation pipeline
-make check       # Quick health check
-make test        # Run tests with coverage
+make val   # Complete validation pipeline
+make check # Quick health check
+make test  # Run tests with coverage
 ```
 
 **Code Standards**:

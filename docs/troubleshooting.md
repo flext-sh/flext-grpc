@@ -64,7 +64,8 @@ ModuleNotFoundError: No module named 'flext_grpc_pb2'
 The grpc package installed is at version X.X.X, but the generated code depends on grpcio>=Y.Y.Y
 ```
 
-**Root Cause**: Generated protobuf files using incorrect import paths or version mismatches.
+**Root Cause**: Generated protobuf files using incorrect import paths or version
+mismatches.
 
 **Solution Applied**:
 
@@ -131,7 +132,7 @@ sys.path.insert(0, "src")  # For development
 
 ```bash
 poetry install --all-extras
-poetry show grpcio grpcio-tools protobuf  # Check versions
+poetry show grpcio grpcio-tools protobuf # Check versions
 ```
 
 ### Server Startup Issues
@@ -250,5 +251,5 @@ Planned enhancements to reduce troubleshooting needs:
 
 ---
 
-For development workflow and architectural guidance,
-see [Development](development.md) and [Architecture](architecture.md) documentation.
+For development workflow and architectural guidance, see [Development](development.md)
+and [Architecture](architecture.md) documentation.

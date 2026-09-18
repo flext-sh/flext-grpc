@@ -200,8 +200,10 @@ def _example_markers() -> None:
 - ✅ **test_services.py**: Complete enterprise docstrings for service operation testing
 - ✅ **test_api.py**: Complete enterprise docstrings for public API function testing
 - ✅ **test_types.py**: Complete enterprise docstrings for type system testing
-- ✅ **test_errors_complete.py**: Complete enterprise docstrings for error hierarchy testing
-- ✅ **test_platform_integration.py**: Complete enterprise docstrings for integration testing
+- ✅ **test_errors_complete.py**: Complete enterprise docstrings for error hierarchy
+  testing
+- ✅ **test_platform_integration.py**: Complete enterprise docstrings for integration
+  testing
 
 **Documentation Standards Applied**:
 
@@ -371,4 +373,5 @@ pytest -m "not slow"
 pytest -n auto
 ```
 
-For current testing gaps and improvement priorities, see [../docs/TODO.md](../docs/TODO.md).
+For current testing gaps and improvement priorities, see
+[../docs/TODO.md](../docs/TODO.md).

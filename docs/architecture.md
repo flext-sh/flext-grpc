@@ -12,7 +12,8 @@ Architectural design and patterns for the flext-grpc library within the FLEXT ec
 
 # Clean Architecture Implementation
 
-flext-grpc follows Clean Architecture principles with clear layer separation and dependency inversion:
+flext-grpc follows Clean Architecture principles with clear layer separation and
+dependency inversion:
 
 ```text
 ┌─────────────────────────────────────────┐
@@ -295,7 +296,9 @@ Production deployment patterns:
 
 ---
 
-This architecture provides a solid foundation for gRPC communication within the FLEXT ecosystem while maintaining Clean Architecture principles and full integration with flext-core patterns.
+This architecture provides a solid foundation for gRPC communication within the FLEXT
+ecosystem while maintaining Clean Architecture principles and full integration with
+flext-core patterns.
 
 # Related Documentation
 
@@ -310,9 +313,12 @@ This architecture provides a solid foundation for gRPC communication within the 
 
 **Across Projects**:
 
-- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) - Clean architecture and CQRS patterns
-- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) - Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) - HTTP foundation patterns
+- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) -
+  Clean architecture and CQRS patterns
+- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) -
+  Service patterns and dependency injection
+- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) -
+  HTTP foundation patterns
 
 **External Resources**:
 

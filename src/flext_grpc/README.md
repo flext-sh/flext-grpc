@@ -33,7 +33,9 @@
 
 **Enterprise gRPC Communication Platform - Source Code Organization**
 
-This directory contains the complete source code for the FLEXT gRPC communication platform, implementing Clean Architecture and Domain-Driven Design principles for gRPC operations.
+This directory contains the complete source code for the FLEXT gRPC communication
+platform, implementing Clean Architecture and Domain-Driven Design principles for gRPC
+operations.
 
 ## 📁 Module Organization
 
@@ -41,12 +43,12 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`entities.py`** - Domain Entities Layer
 
-**Purpose**: Business entities with rich domain logic and validation
-**Components**:
+**Purpose**: Business entities with rich domain logic and validation **Components**:
 
 - `FlextGrpcEntity` - Base entity with validation framework
 - `FlextGrpcChannel` - Channel lifecycle and state management
-- `FlextGrpcServer` - Server entity with state machine (stopped → starting → running → stopping)
+- `FlextGrpcServer` - Server entity with state machine (stopped → starting → running →
+  stopping)
 - `FlextGrpcClient` - Client entity with connection management
 - `FlextGrpcService` - Service definition with method specifications
 - `FlextGrpcStream` - Streaming operations for all gRPC patterns
@@ -61,10 +63,10 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`services.py`** - Application Services Layer
 
-**Purpose**: Domain services orchestrating business workflows
-**Components**:
+**Purpose**: Domain services orchestrating business workflows **Components**:
 
-- `FlextGrpcService` - Unified service class with all gRPC operations (server lifecycle, client operations, streaming) following the unified class pattern
+- `FlextGrpcService` - Unified service class with all gRPC operations (server lifecycle,
+  client operations, streaming) following the unified class pattern
 - `_GrpcServiceValidationMixin` - Shared validation patterns (Template Method)
 
 **Architecture Patterns**:
@@ -76,8 +78,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`platform.py`** - Platform Facade Layer
 
-**Purpose**: Unified high-level interface for all gRPC operations
-**Components**:
+**Purpose**: Unified high-level interface for all gRPC operations **Components**:
 
 - `FlextGrpcPlatform` - Main platform facade with convenience methods
 - Container integration with global dependency injection
@@ -95,8 +96,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`settings.py`** - Configuration Management
 
-**Purpose**: Type-safe configuration with validation
-**Components**:
+**Purpose**: Type-safe configuration with validation **Components**:
 
 - `FlextGrpcSettings` - Main configuration class extending `FlextSettings`
 - u.Field validators for host, port, workers, timeout
@@ -112,8 +112,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`constants.py`** - Enterprise Constants
 
-**Purpose**: Single source of truth for all platform constants
-**Components**:
+**Purpose**: Single source of truth for all platform constants **Components**:
 
 - `FlextGrpcConstants` - Main constants class extending `FlextConstants`
 - Network defaults (host, port, ranges)
@@ -125,8 +124,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`types.py`** - Comprehensive Type Definitions
 
-**Purpose**: Type safety and protocol compliance across the platform
-**Components**:
+**Purpose**: Type safety and protocol compliance across the platform **Components**:
 
 - **Domain Types**: `TGrpcTarget`, `TGrpcMethodName`, `TGrpcServiceName`
 - **State Types**: `TGrpcChannelState`, `TGrpcServerState`, `TGrpcStreamType`
@@ -143,8 +141,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`errors.py`** - Enterprise Error Hierarchy
 
-**Purpose**: Comprehensive error handling with detailed context
-**Components**:
+**Purpose**: Comprehensive error handling with detailed context **Components**:
 
 - `FlextGrpcErrors.Error` - Base exception for all gRPC errors
 - `FlextGrpcErrors.ValidationError` - Field validation with context
@@ -163,8 +160,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`api.py`** - High-Level API Functions
 
-**Purpose**: Convenient factory functions and utilities
-**Components**:
+**Purpose**: Convenient factory functions and utilities **Components**:
 
 - **Factory Functions**: `create_server()`, `create_client()`, `create_channel()`
 - **Configuration Builders**: `create_config()`, `create_service()`, `create_stream()`
@@ -180,8 +176,7 @@ This directory contains the complete source code for the FLEXT gRPC communicatio
 
 #### **`__init__.py`** - Public API Exports
 
-**Purpose**: Clean public interface with organized exports
-**Components**:
+**Purpose**: Clean public interface with organized exports **Components**:
 
 - Version information with dynamic package metadata
 - Organized imports by category (entities, services, configuration)

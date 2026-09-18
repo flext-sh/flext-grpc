@@ -52,10 +52,10 @@ Accepted
 
 ## Context
 
-FLEXT-gRPC was initially developed with a traditional layered architecture,
-but as the codebase grew to include domain entities, service coordination,
-infrastructure concerns, and FLEXT ecosystem integration,
-the code became increasingly complex and difficult to maintain.
+FLEXT-gRPC was initially developed with a traditional layered architecture, but as the
+codebase grew to include domain entities, service coordination, infrastructure concerns,
+and FLEXT ecosystem integration, the code became increasingly complex and difficult to
+maintain.
 
 The main issues we were facing:
 
@@ -75,7 +75,8 @@ We needed an architectural approach that would:
 
 ## Decision
 
-Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapters) with the following layer structure:
+Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapters) with
+the following layer structure:
 
 ```text
 ┌─────────────────────────────────────────┐
@@ -263,7 +264,9 @@ class GrpcServerAdapter(ServerInterface):
 
 ## Notes
 
-This ADR established the fundamental architectural approach for FLEXT-gRPC. All subsequent development follows these Clean Architecture principles. The architecture has proven effective for maintainability and testability,
+This ADR established the fundamental architectural approach for FLEXT-gRPC. All
+subsequent development follows these Clean Architecture principles. The architecture has
+proven effective for maintainability and testability,
 
 The layer separation has been particularly valuable for:
 

@@ -55,25 +55,31 @@
 
 - [Documentation Maintenance Framework API Reference](#documentation-maintenance-framework-api-reference)
   - [📚 Overview](#overview)
-  - [🔍 Audit API](#audit-api) - [DocumentationAuditor](#documentationauditor) - [Methods](#methods) - [`discover_files() -> List[Path]`](#discover_files-listpath) - [`audit_file(file_path: Path) -> AuditResult`](#audit_filefile_path-path-auditresult) - [`run_audit(files: Optional[List[Path]] = None) -> AuditReport`](#run_auditfiles-optionallistpath-none-auditreport) - [`save_report(report: AuditReport,
-output_path: Optional[Path] = None)`](#save_reportreport-auditreport-output_path-optionalpath-none) - [`print_summary(report: AuditReport)`](#print_summaryreport-auditreport)
-  - [🔗 Validation API](#validation-api) - [LinkValidator](#linkvalidator) - [Methods](#methods) - [`validate_external_link(url: str) -> LinkValidationResult`](#validate_external_linkurl-str-linkvalidationresult) - [`validate_internal_links(content: str, file_path: Path,
-](#validate_internal_linkscontent-str-file_path-path) - [StyleValidator](#stylevalidator) - [Methods](#methods) - [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path-stylecheckresult)
-  - [🔧 Optimization API](#optimization-api) - [DocumentationOptimizer](#documentationoptimizer) - [Methods](#methods) - [`optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str,
-object]`](#optimize_filefile_path-path-dry_run-bool-false-dictstr-object) - [`optimize_all_files(files: Optional[List[Path]] = None,
-dry_run: bool = False) -> Dict[str,
-object]`](#optimize_all_filesfiles-optionallistpath-none-dry_run-bool-false-dictstr-object)
-  - [🔄 Synchronization API](#synchronization-api) - [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) - [`sync_changes(changes: List[Dict[str, object]],
-action: str = "maintenance") -> Dict[str,
-object]`](#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object) - [`detect_conflicts(target_branch: str = "main") -> List[Dict[str,
-object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) - [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
-  - [📊 Reporting API](#reporting-api) - [DocumentationReporter](#documentationreporter) - [Methods](#methods) - [`generate_comprehensive_report(audit_report, validation_report,
-](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict,
-  output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath-none) - [`export_csv_report(report_data: Dict,
-  output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str,
-  object]`](#generate_trend_reportdays-int-30-dictstr-object)
-  - [🚀 Automation API](#automation-api) - [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) - [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str,
-object]`](#run_scheduled_maintenancemaintenance_type-str-daily-dictstr-object)
+  - [🔍 Audit API](#audit-api) - [DocumentationAuditor](#documentationauditor) -
+    [Methods](#methods) - [`discover_files() -> List[Path]`](#discover_files-listpath) -
+    [`audit_file(file_path: Path) -> AuditResult`](#audit_filefile_path-path-auditresult) -
+    [`run_audit(files: Optional[List[Path]] = None) -> AuditReport`](#run_auditfiles-optionallistpath-none-auditreport) -
+    [`save_report(report: AuditReport, output_path: Optional[Path] = None)`](#save_reportreport-auditreport-output_path-optionalpath-none) -
+    [`print_summary(report: AuditReport)`](#print_summaryreport-auditreport)
+  - [🔗 Validation API](#validation-api) - [LinkValidator](#linkvalidator) -
+    [Methods](#methods) -
+    [`validate_external_link(url: str) -> LinkValidationResult`](#validate_external_linkurl-str-linkvalidationresult) -
+    [`validate_internal_links(content: str, file_path: Path, ](#validate_internal_linkscontent-str-file_path-path) - [StyleValidator](#stylevalidator) - [Methods](#methods) - [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path-stylecheckresult)
+  - [🔧 Optimization API](#optimization-api) -
+    [DocumentationOptimizer](#documentationoptimizer) - [Methods](#methods) -
+    [`optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, object]`](#optimize_filefile_path-path-dry_run-bool-false-dictstr-object) -
+    [`optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`](#optimize_all_filesfiles-optionallistpath-none-dry_run-bool-false-dictstr-object)
+  - [🔄 Synchronization API](#synchronization-api) -
+    [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) -
+    [`sync_changes(changes: List[Dict[str, object]], action: str = "maintenance") -> Dict[str, object]`](#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object) -
+    [`detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) -
+    [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
+  - [📊 Reporting API](#reporting-api) -
+    [DocumentationReporter](#documentationreporter) - [Methods](#methods) -
+    [`generate_comprehensive_report(audit_report, validation_report, ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict, output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath-none) - [`export_csv_report(report_data: Dict, output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str, object]`](#generate_trend_reportdays-int-30-dictstr-object)
+  - [🚀 Automation API](#automation-api) -
+    [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) -
+    [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, object]`](#run_scheduled_maintenancemaintenance_type-str-daily-dictstr-object)
   - [📋 Data Structures](#data-structures)
     - [AuditResult](#auditresult)
     - [AuditReport](#auditreport)
@@ -113,7 +119,8 @@ Complete API reference for the FLEXT-gRPC Documentation Maintenance Framework.
 
 ## 📚 Overview
 
-The Documentation Maintenance Framework provides a comprehensive set of APIs for automated documentation quality assurance,
+The Documentation Maintenance Framework provides a comprehensive set of APIs for
+automated documentation quality assurance,
 
      validation, optimization, and reporting.
 
@@ -860,8 +867,8 @@ jobs:
 # Run documentation checks
 PYTHONPATH=. python docs/maintenance/audit.py --quiet
 if [ $? -ne 0 ]; then
-    echo "❌ Documentation quality issues found. Please fix before committing."
-    exit 1
+  echo "❌ Documentation quality issues found. Please fix before committing."
+  exit 1
 fi
 
 echo "✅ Documentation quality checks passed"
@@ -1007,4 +1014,6 @@ def safe_read_file(file_path: Path) -> str:
 
 ---
 
-**This API reference provides comprehensive documentation for all components of the Documentation Maintenance Framework. Use the examples and patterns provided to integrate the framework into your development workflow.**
+**This API reference provides comprehensive documentation for all components of the
+Documentation Maintenance Framework. Use the examples and patterns provided to integrate
+the framework into your development workflow.**

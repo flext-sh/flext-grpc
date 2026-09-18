@@ -82,8 +82,9 @@ Blocked
 
 ## Context
 
-FLEXT-gRPC needs to provide Protocol Buffer definitions for gRPC services,
-but we're facing version compatibility issues between the generated protobuf files and the runtime dependencies.
+FLEXT-gRPC needs to provide Protocol Buffer definitions for gRPC services, but we're
+facing version compatibility issues between the generated protobuf files and the runtime
+dependencies.
 
 The current situation:
 
@@ -118,12 +119,14 @@ Implement a **version-pinned protobuf generation strategy** with the following a
 ### Version Management
 
 - **Lock versions**: Pin grpcio-tools and protobuf to exact compatible versions
-- **Separate environments**: Use different environments for generation vs runtime if needed
+- **Separate environments**: Use different environments for generation vs runtime if
+  needed
 - **Version validation**: Automated checks to ensure compatibility
 
 ### Generation Process
 
-- **Docker-based generation**: Use Docker containers with pinned versions for reproducible builds
+- **Docker-based generation**: Use Docker containers with pinned versions for
+  reproducible builds
 - **CI/CD integration**: Automated generation in CI pipeline with version validation
 - **Fallback generation**: Local generation with version compatibility checks
 
@@ -267,10 +270,10 @@ COPY proto/ /proto/
 
 # Generate code
 RUN python -m grpc_tools.protoc \
-    --proto_path=/proto \
-    --python_out=/generated \
-    --grpc_python_out=/generated \
-    /proto/*.proto
+  --proto_path=/proto \
+  --python_out=/generated \
+  --grpc_python_out=/generated \
+  /proto/*.proto
 ```
 
 ### CI/CD Integration
@@ -302,8 +305,7 @@ jobs:
 
 ### Version Lock-in Risk
 
-**Risk**: Pinned versions may miss security updates or bug fixes
-**Mitigation**:
+**Risk**: Pinned versions may miss security updates or bug fixes **Mitigation**:
 
 - Regular security audits of pinned versions
 - Quarterly review process for version updates
@@ -311,8 +313,7 @@ jobs:
 
 ### Docker Complexity Risk
 
-**Risk**: Docker-based generation adds complexity for developers
-**Mitigation**:
+**Risk**: Docker-based generation adds complexity for developers **Mitigation**:
 
 - Clear documentation and setup scripts
 - Fallback local generation option
@@ -320,8 +321,7 @@ jobs:
 
 ### Ecosystem Compatibility Risk
 
-**Risk**: Version conflicts with other FLEXT libraries
-**Mitigation**:
+**Risk**: Version conflicts with other FLEXT libraries **Mitigation**:
 
 - Regular compatibility testing across FLEXT ecosystem
 - Clear communication of version requirements
@@ -359,13 +359,15 @@ jobs:
 
 ## Notes
 
-This ADR is currently BLOCKED due to the immediate need to resolve import errors. The protobuf version mismatch is preventing the library from functioning,
+This ADR is currently BLOCKED due to the immediate need to resolve import errors. The
+protobuf version mismatch is preventing the library from functioning,
 
 ```
  which blocks all other development work.
 ```
 
-Once resolved,
-this ADR will be marked as ACCEPTED and implementation will proceed according to the plan outlined above.
+Once resolved, this ADR will be marked as ACCEPTED and implementation will proceed
+according to the plan outlined above.
 
-The Docker-based generation approach provides the most reliable solution for version compatibility while maintaining development workflow efficiency.
+The Docker-based generation approach provides the most reliable solution for version
+compatibility while maintaining development workflow efficiency.

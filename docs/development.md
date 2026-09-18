@@ -115,27 +115,27 @@ The `make setup` command configures:
 
 ```bash
 # Development lifecycle
-make setup                  # Initial environment setup
-make val              # Complete validation pipeline
-make check                 # Quick validation (lint + type)
-make clean                 # Clean build artifacts
+make setup # Initial environment setup
+make val   # Complete validation pipeline
+make check # Quick validation (lint + type)
+make clean # Clean build artifacts
 
 # Code quality
-make lint                  # Ruff linting with comprehensive rules
-make type-check            # MyPy strict type checking
-make format                # Auto-format code (black + ruff)
-make security              # Security scanning (bandit + pip-audit)
+make lint       # Ruff linting with comprehensive rules
+make type-check # MyPy strict type checking
+make format     # Auto-format code (black + ruff)
+make security   # Security scanning (bandit + pip-audit)
 
 # Testing
-make test                  # Full test suite (28 failures need fixing)
-make test-unit             # Unit tests only
-make test-integration      # Integration tests
-make test-e2e              # End-to-end tests
+make test             # Full test suite (28 failures need fixing)
+make test-unit        # Unit tests only
+make test-integration # Integration tests
+make test-e2e         # End-to-end tests
 
 # Development utilities
-make shell                 # Python REPL with project loaded
-make docs                  # Build documentation
-make build                 # Build package for distribution
+make shell # Python REPL with project loaded
+make docs  # Build documentation
+make build # Build package for distribution
 ```
 
 ### Quality Gates
@@ -147,10 +147,10 @@ All contributions must pass these quality gates:
 make val
 
 # Individual checks
-make lint                  # Zero Ruff violations
-make type-check            # Zero MyPy errors (strict mode)
-make security              # Zero critical security issues
-make test                  # All tests pass (currently 28 failing, needs bug fixes)
+make lint       # Zero Ruff violations
+make type-check # Zero MyPy errors (strict mode)
+make security   # Zero critical security issues
+make test       # All tests pass (currently 28 failing, needs bug fixes)
 ```
 
 ## Code Standards
@@ -526,8 +526,8 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
 
    ```bash
    # Make changes following standards
-   make val          # Run quality gates
-   make test             # Run tests (when available)
+   make val  # Run quality gates
+   make test # Run tests (when available)
    git add .
    git commit -m "Add health checking implementation"
    ```
@@ -677,4 +677,5 @@ make shell
 
 ---
 
-This development guide provides comprehensive standards and workflows for contributing to flext-grpc while maintaining high quality and FLEXT ecosystem integration.
+This development guide provides comprehensive standards and workflows for contributing
+to flext-grpc while maintaining high quality and FLEXT ecosystem integration.

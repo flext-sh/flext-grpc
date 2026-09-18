@@ -35,7 +35,8 @@
 
 <!-- TOC END -->
 
-Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
+Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for
+enterprise development.
 
 ## Example Structure
 
@@ -61,7 +62,8 @@ examples/
 ### Server Lifecycle Management
 
 **File**: `basic_usage.py`\
-**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
+**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle
+management
 
 **Key Concepts**:
 
@@ -269,8 +271,8 @@ make diagnose
 ```bash
 # Run all examples
 for example in examples/*.py; do
-    echo "Running $example"
-    poetry run python "$example"
+  echo "Running $example"
+  poetry run python "$example"
 done
 
 # Run specific example
@@ -282,9 +284,9 @@ poetry run python examples/basic_usage.py
 ```bash
 # Run with comprehensive debugging
 FLEXT_LOG_LEVEL=debug \
-GRPC_VERBOSITY=debug \
-GRPC_TRACE=all \
-poetry run python examples/basic_usage.py
+  GRPC_VERBOSITY=debug \
+  GRPC_TRACE=all \
+  poetry run python examples/basic_usage.py
 ```
 
 **Performance Monitoring**:
@@ -292,8 +294,8 @@ poetry run python examples/basic_usage.py
 ```bash
 # Run with performance metrics
 FLEXT_GRPC_MONITOR=true \
-FLEXT_PERFORMANCE_METRICS=true \
-poetry run python examples/advanced_usage.py
+  FLEXT_PERFORMANCE_METRICS=true \
+  poetry run python examples/advanced_usage.py
 ```
 
 ## Example Patterns
@@ -417,7 +419,8 @@ if server_result.success:
 - Real streaming examples with data flow
 - Integration with external gRPC services
 
-For current development gaps and realistic timelines, see [../docs/TODO.md](../docs/TODO.md).
+For current development gaps and realistic timelines, see
+[../docs/TODO.md](../docs/TODO.md).
 
 ## Contributing Examples
 

@@ -77,7 +77,8 @@ Configuration management and settings for the flext-grpc library.
 
 ## Configuration Overview
 
-flext-grpc provides flexible configuration through `FlextGrpcSettings` class with environment variable support and comprehensive validation.
+flext-grpc provides flexible configuration through `FlextGrpcSettings` class with
+environment variable support and comprehensive validation.
 
 ### Basic Configuration
 
@@ -570,4 +571,5 @@ def debug_config():
 
 ---
 
-This configuration guide provides comprehensive coverage of all configuration options and best practices for flext-grpc deployment and operation.
+This configuration guide provides comprehensive coverage of all configuration options
+and best practices for flext-grpc deployment and operation.
