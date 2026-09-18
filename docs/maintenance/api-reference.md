@@ -69,9 +69,9 @@ object]`](#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr
 object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) - [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
   - [📊 Reporting API](#reporting-api) - [DocumentationReporter](#documentationreporter) - [Methods](#methods) - [`generate_comprehensive_report(audit_report, validation_report,
 ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict,
-    output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath-none) - [`export_csv_report(report_data: Dict,
-    output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str,
-    object]`](#generate_trend_reportdays-int-30-dictstr-object)
+  output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath-none) - [`export_csv_report(report_data: Dict,
+  output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str,
+  object]`](#generate_trend_reportdays-int-30-dictstr-object)
   - [🚀 Automation API](#automation-api) - [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) - [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str,
 object]`](#run_scheduled_maintenancemaintenance_type-str-daily-dictstr-object)
   - [📋 Data Structures](#data-structures)
