@@ -287,7 +287,8 @@ class DataStreamProcessor:
         results = []
 
         return (
-            self._validate_stream(input_stream)
+            self
+            ._validate_stream(input_stream)
             .flat_map(lambda _: self._process_stream_data(input_stream, results))
             .map(lambda _: results)
         )
