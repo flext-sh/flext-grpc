@@ -961,9 +961,9 @@ _builtin_setup_submodules:
 		fi; \
 		if [ "$$ancestor" = N ]; then \
 			if [ -z "$$current" ]; then \
-				printf 'ERROR: %s: detached HEAD %s does not contain recorded gitlink %s\n' "$$child_path" "$$head" "$$gitlink" >&2; \
+				printf 'ERROR: %s: detached HEAD %s does not contain recorded gitlink %s; merge the superproject gitlink into this head\n' "$$child_path" "$$head" "$$gitlink" >&2; \
 			else \
-				printf 'ERROR: %s: branch %s does not contain recorded gitlink %s\n' "$$child_path" "$$branch" "$$gitlink" >&2; \
+				printf 'ERROR: %s: checked-out branch %s at %s does not contain recorded gitlink %s; merge the superproject gitlink into this branch\n' "$$child_path" "$$current" "$$head" "$$gitlink" >&2; \
 			fi; \
 			exit 1; \
 		fi; \
@@ -1096,7 +1096,6 @@ _builtin_test_all: _builtin_require_environment
 		trap cleanup_test_tmp EXIT INT TERM; \
 		TMPDIR="$$test_tmp" GOTMPDIR="$$test_tmp" $(PYTEST_BOUNDED) $(UV_RUN) python -m flext_infra._pytest_entry
 
-<<<<<<< HEAD
 # fmt is format-only (single-pass verb law): ruff formats Python, the
 # fmt_gates formatters run once through the checker's apply mode, and every
 # lint repair belongs to `make fix`. Only a real tool failure (exit >= 2)
@@ -1105,30 +1104,6 @@ _builtin_test_all: _builtin_require_environment
 _builtin_fmt_all: _builtin_require_environment
 	@$(UV_RUN) ruff format --preview $(RUFF_PATHS)
 	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gates "markdown-format" --projects . --apply
-=======
-# Ruff is the style/autofix rule (make.ruff in codegen.yaml). Every
-# invocation uses --preview. Never weaken ruff to keep a file; change the code.
-# fmt applies corrections and reports remaining diagnostics without failing:
-# violations are expected and their repair belongs to fix; only a real
-# tool failure (ruff exit >= 2) breaks the Make verb.
-# fmt applies corrections and reports remaining diagnostics without failing:
-# violations are expected and their repair belongs to fix; only a real
-# tool failure (ruff exit >= 2) breaks the Make verb.
-# Their reports preserve the same verdict as the underlying quality gates.
-_builtin_fmt_all: _builtin_require_environment
-	@set -eu; \
-		$(UV_RUN) ruff format --preview $(RUFF_PATHS); \
-		if $(UV_RUN) ruff check --preview --fix --unsafe-fixes $(RUFF_PATHS); then \
-			printf 'INFO: fmt lint clean\n'; \
-		else \
-			stamprc=$$?; \
-			if [ $$stamprc -le 1 ]; then \
-				printf 'INFO: fmt diagnostics remain (report-only, repair belongs to fix)\n'; \
-			else \
-				exit $$stamprc; \
-			fi; \
-		fi
->>>>>>> 6b84a3929f7f8fc05afb3a00a363aa45228c034f
 
 _builtin_fix_all: _builtin_require_environment
 	@$(PROJECT_FLEXT_INFRA) check run --repository-root "$(PROJECT_ROOT)" --gates "lint,markdown,markdown-code,canonical-alias,smells" --projects . --apply --report-findings

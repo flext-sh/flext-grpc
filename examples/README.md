@@ -35,7 +35,8 @@
 
 <!-- TOC END -->
 
-Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
+Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for
+enterprise development.
 
 ## Example Structure
 
@@ -61,7 +62,8 @@ examples/
 ### Server Lifecycle Management
 
 **File**: `basic_usage.py`\
-**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
+**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle
+management
 
 **Key Concepts**:
 
@@ -417,7 +419,8 @@ if server_result.success:
 - Real streaming examples with data flow
 - Integration with external gRPC services
 
-For current development gaps and realistic timelines, see [../docs/TODO.md](../docs/TODO.md).
+For current development gaps and realistic timelines, see
+[../docs/TODO.md](../docs/TODO.md).
 
 ## Contributing Examples
 

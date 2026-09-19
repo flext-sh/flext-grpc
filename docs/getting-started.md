@@ -1,6 +1,7 @@
 # Getting Started with flext-grpc
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [System Requirements](#system-requirements)
@@ -103,6 +104,7 @@ server = create_server("localhost", 50051, 10)
 print(f"Server address: {server.address}")
 print(f"Server state: {server.state}")
 ```
+
 ### Client Creation
 
 ```python
@@ -114,6 +116,7 @@ from flext_grpc import create_client
 client = create_client("localhost:50051")
 print(f"Client created: {type(client).__name__}")
 ```
+
 ### Platform Management
 
 ```python
@@ -125,6 +128,7 @@ from flext_grpc import FlextGrpcPlatform
 platform = FlextGrpcPlatform()
 print(f"Platform ready: {type(platform).__name__}")
 ```
+
 ### Configuration
 
 ```python
@@ -138,6 +142,7 @@ settings = FlextGrpcSettings.model_validate(
 )
 print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
+
 ## Development Setup
 
 ### Development Commands
@@ -155,6 +160,7 @@ make check src/
 # Code linting
 make check check src/
 ```
+
 ### Quality Status Check
 
 Current status verification:
@@ -175,6 +181,7 @@ server = create_server('localhost', 50051, 10)
 print(f'✅ Server creation: {server.address}')
 "
 ```
+
 ## Current Limitations
 
 ### Test Coverage
@@ -190,9 +197,12 @@ print(f'✅ Server creation: {server.address}')
 
 ## Next Steps
 
-1. **Explore API Reference** - See [API Reference](api-reference/README.md) for generated function documentation
-1. **Development Workflow** - See [Development](development.md) for contribution guidelines
-1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
+1. **Explore API Reference** - See [API Reference](api-reference/README.md) for
+   generated function documentation
+1. **Development Workflow** - See [Development](development.md) for contribution
+   guidelines
+1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem
+   usage
 1. **Configuration** - See [Configuration](configuration.md) for advanced settings
 
 ---
@@ -212,9 +222,12 @@ For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 
 **Across Projects**:
 
-- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) - Clean architecture and CQRS patterns
-- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) - Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) - HTTP foundation patterns
+- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) -
+  Clean architecture and CQRS patterns
+- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) -
+  Service patterns and dependency injection
+- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) -
+  HTTP foundation patterns
 
 **External Resources**:
 
