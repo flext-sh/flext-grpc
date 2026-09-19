@@ -38,6 +38,7 @@ class ExamplesFlextGrpcAdvancedUsage:
         self._settings_cls = FlextGrpcSettings
         self._c = c
         self._p = p
+        self._r = r
         self._t = t
 
     @property
@@ -69,6 +70,11 @@ class ExamplesFlextGrpcAdvancedUsage:
     def p(self) -> type[p]:
         """Public accessor for protocols facade."""
         return self._p
+
+    @property
+    def r(self) -> type[r]:
+        """Public accessor for result facade."""
+        return self._r
 
     @property
     def t(self) -> type[t]:
@@ -183,9 +189,11 @@ class ExamplesFlextGrpcAdvancedUsage:
                 host=host, port=port, service_name=service_name, methods=methods
             )
             if setup_result.failure:
-                return r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(setup_result)
+                return self._outer.r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(
+                    setup_result
+                )
             setup = setup_result.value
-            return r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
+            return self._outer.r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
 
         def demonstrate_streaming(self) -> None:
             """Demonstrate streaming operations through facade."""

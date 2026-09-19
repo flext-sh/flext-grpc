@@ -1,7 +1,6 @@
 # flext-grpc Development Guide
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Development Setup](#development-setup)
   - [Prerequisites](#prerequisites)
@@ -25,7 +24,7 @@
   - [Docstring Requirements](#docstring-requirements)
   - [Code Comments](#code-comments)
 - [Contributing Process](#contributing-process)
-  - [Development Workflow](#development-workflow)
+  - [Development Workflow](#development-workflow_1)
   - [Code Review Guidelines](#code-review-guidelines)
   - [Commit Message Standards](#commit-message-standards)
 - [Current Development Priorities](#current-development-priorities)
@@ -35,7 +34,8 @@
 - [Troubleshooting Development Issues](#troubleshooting-development-issues)
   - [Common Issues](#common-issues)
   - [Development Tools](#development-tools)
-  <!-- TOC END -->
+- [# Python debugger import pdb; pdb.set_trace() # REPL with project loaded make shell >>> from flext_grpc import FlextGrpcSettings >>> settings = FlextGrpcSettings()](#python-debugger-import-pdb-pdbset_trace-repl-with-project-loaded-make-shell-from-flext_grpc-import-flextgrpcsettings-settings-flextgrpcsettings)
+<!-- TOC END -->
 
 ## Table of Contents
 
@@ -115,27 +115,13 @@ The `make setup` command configures:
 
 ```bash
 # Development lifecycle
-make setup # Initial environment setup
-make val   # Complete validation pipeline
-make check # Quick validation (lint + type)
-make clean # Clean build artifacts
-
-# Code quality
-make lint       # Ruff linting with comprehensive rules
-make type-check # MyPy strict type checking
-make format     # Auto-format code (black + ruff)
-make security   # Security scanning (bandit + pip-audit)
-
-# Testing
-make test             # Full test suite (28 failures need fixing)
-make test-unit        # Unit tests only
-make test-integration # Integration tests
-make test-e2e         # End-to-end tests
-
-# Development utilities
-make shell # Python REPL with project loaded
-make docs  # Build documentation
-make build # Build package for distribution
+make setup                  # Initial environment setup
+make fmt                    # Canonical formatting
+make check                  # Static and structural gates
+make test                   # Behavioral suites
+make build                  # Package candidate
+make clean                 # Clean build artifacts
+make docs                  # Build documentation
 ```
 
 ### Quality Gates
@@ -144,13 +130,10 @@ All contributions must pass these quality gates:
 
 ```bash
 # MANDATORY before any commit
-make val
+make check
 
-# Individual checks
-make lint       # Zero Ruff violations
-make type-check # Zero MyPy errors (strict mode)
-make security   # Zero critical security issues
-make test       # All tests pass (currently 28 failing, needs bug fixes)
+make check                 # All static gates
+make test                  # All behavioral suites
 ```
 
 ## Code Standards
@@ -159,8 +142,9 @@ make test       # All tests pass (currently 28 failing, needs bug fixes)
 
 All code must follow flext-core architectural patterns:
 
-```python notest
+```python
 from __future__ import annotations
+
 from flext_core import p
 
 # ✅ CORRECT - Railway-oriented programming
@@ -185,20 +169,15 @@ def create_config_bad(host: str, port: int) -> FlextGrpcSettings:
     except Exception:
         return None  # Loses error information
 ```
-
 ### Type Annotations
 
 Complete type annotations are mandatory:
 
-```python notest
+```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
 
+from flext_core import p, r
 from flext_grpc import FlextGrpcServer
-from typing import Generic
-from typing import Protocol
-from typing import TypeVar
 
 T = TypeVar("T")
 
@@ -218,15 +197,14 @@ class GrpcService(Generic[T]):
         # Implementation with proper typing
         return r.ok({"processed": data})
 ```
-
 ### Domain Patterns
 
 Follow Domain-Driven Design patterns:
 
-```python notest
+```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 from flext_grpc import TGrpcServerState
 
 
@@ -255,7 +233,6 @@ class FlextGrpcServer(FlextModels.Entity):
 
         return r.ok(value=True)
 ```
-
 ## Testing Standards
 
 ### Test Structure
@@ -275,12 +252,13 @@ tests/
 │   └── test_streaming.py   # Streaming operations
 └── conftest.py             # Shared fixtures and utilities
 ```
-
 ### Test Writing Guidelines
 
 ```python
 from __future__ import annotations
+
 import pytest
+
 from flext_grpc import FlextGrpcSettings, create_server
 
 
@@ -329,38 +307,34 @@ class TestGrpcServer:
         assert validation.failure
         assert expected_error in validation.error
 ```
-
 ### Test Markers
 
 Use pytest markers for test categorization:
 
 ```python
 from __future__ import annotations
+
 import pytest
 
 
 @pytest.mark.unit
 def test_entity_creation():
     """Unit test for entity creation."""
-    pass
 
 
 @pytest.mark.integration
 def test_service_integration():
     """Integration test for services."""
-    pass
 
 
 @pytest.mark.e2e
 def test_complete_workflow():
     """End-to-end workflow test."""
-    pass
 
 
 @pytest.mark.slow
 def test_performance_benchmark():
     """Slow performance test."""
-    pass
 
 
 # Run specific test categories
@@ -368,15 +342,15 @@ def test_performance_benchmark():
 # pytest -m "not slow"        # Exclude slow tests
 # pytest -m "integration"     # Integration tests only
 ```
-
 ## Architecture Guidelines
 
 ### Layer Separation
 
 Maintain strict layer boundaries:
 
-```python notest
+```python
 from __future__ import annotations
+
 from flext_core import p
 
 
@@ -400,16 +374,15 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     # Infrastructure function using domain and service layers
     pass
 ```
-
 ### Dependency Injection
 
 Use FlextContainer for all dependencies:
 
-```python notest
+```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
 from flext_cli import u
+from flext_core import p, r
 from flext_grpc import FlextGrpcPlatform
 
 
@@ -436,7 +409,6 @@ class GrpcServiceManager:
 
         return r.fail("Platform not initialized")
 ```
-
 ## Documentation Standards
 
 ### Docstring Requirements
@@ -445,8 +417,9 @@ All public APIs require comprehensive docstrings:
 
 ```python
 from __future__ import annotations
+
 from flext_core import p
-from flext_grpc import FlextGrpcSettings, FlextGrpcServer
+from flext_grpc import FlextGrpcServer, FlextGrpcSettings
 
 
 def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
@@ -478,17 +451,15 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
 
     """
     # Implementation
-    pass
 ```
-
 ### Code Comments
 
 Use comments sparingly for complex business logic:
 
-```python notest
+```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 
 
 def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
@@ -506,13 +477,11 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
 
     return r.ok(value=True)
 ```
-
 ## Contributing Process
 
 ### Development Workflow
 
 1. **Issue Creation**
-
    - Create GitHub issue describing the problem/feature
    - Use appropriate labels (bug, feature, documentation)
    - Reference related issues or PRs
@@ -529,8 +498,8 @@ def validate_server_state(self, new_state: TGrpcServerState) -> p.Result[bool]:
 
    ```bash
    # Make changes following standards
-   make val  # Run quality gates
-   make test # Run tests (when available)
+   make check          # Run quality gates
+   make test             # Run tests (when available)
    git add .
    git commit -m "Add health checking implementation"
    ```
@@ -577,13 +546,11 @@ git commit -m "refactor: simplify server state machine logic"
 # Tests
 git commit -m "test: add comprehensive streaming operation tests"
 ```
-
 ## Current Development Priorities
 
 ### Critical Issues
 
 1. **Fix Protobuf Version Conflict**
-
    - Regenerate protobuf files to match runtime version
    - Update CI/CD to prevent version mismatches
    - Enable test suite execution
@@ -596,7 +563,6 @@ git commit -m "test: add comprehensive streaming operation tests"
 ### Short-term Enhancements
 
 1. **Health Checking Implementation**
-
    - Implement grpc.health.v1.Health service
    - Add health monitoring endpoints
    - Integration with flext-observability
@@ -609,7 +575,6 @@ git commit -m "test: add comprehensive streaming operation tests"
 ### Medium-term Features
 
 1. **OpenTelemetry Integration**
-
    - Distributed tracing
    - Metrics export
    - Request correlation
@@ -630,42 +595,32 @@ git commit -m "test: add comprehensive streaming operation tests"
 python -c "from flext_grpc import FlextGrpcSettings"
 # Error: Detected mismatched Protobuf versions
 ```
-
 **Type Checking Issues**
 
 ```bash
-# Check type annotations
-make type-check
+# Check type annotations and static contracts
+make check
 
 # Common fixes:
 # - Add missing return type annotations
 # - Import proper types from typing module
 # - Use r for all fallible operations
 ```
-
 **Test Failures**
 
 ```bash
-# Run specific test file
-pytest tests/unit/test_config.py -v
-
-# Debug test with print statements
-pytest tests/unit/test_config.py::test_validation -s
+# Run the canonical test suite with retained Testmon selection
+make test
 ```
-
 ### Development Tools
 
 **Code Quality**
 
 ```bash
-# Auto-format code
-make format
-
-# Check specific file
-ruff check src/flext_grpc/settings.py
-mypy src/flext_grpc/settings.py --strict
+# Format and validate through project owners
+make fmt
+make check
 ```
-
 **Debugging**
 
 ```bash
@@ -677,8 +632,6 @@ make shell
 >>> from flext_grpc import FlextGrpcSettings
 >>> settings = FlextGrpcSettings()
 ```
-
 ---
 
-This development guide provides comprehensive standards and workflows for contributing
-to flext-grpc while maintaining high quality and FLEXT ecosystem integration.
+This development guide provides comprehensive standards and workflows for contributing to flext-grpc while maintaining high quality and FLEXT ecosystem integration.

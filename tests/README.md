@@ -330,7 +330,7 @@ def test_operation_failure_handling():
 
 ```bash
 # Complete validation pipeline
-make val
+make check
 
 # Quick validation for development
 make check

@@ -1,7 +1,6 @@
 # Documentation Maintenance Framework API Reference
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [📚 Overview](#overview)
 - [🔍 Audit API](#audit-api)
@@ -49,45 +48,32 @@
 - [🔐 Security Considerations](#security-considerations)
   - [Safe Operations](#safe-operations)
   - [Best Practices](#best-practices)
-  <!-- TOC END -->
+- [from __future__ import annotations # Safe file operations from pathlib import Path def safe_read_file(file_path: Path) -> str: """Safely read documentation file.""" if not file_path.exists(): raise FileNotFoundError(f"File not found: {file_path}") if file_path.stat().st_size > 10 * 1024 * 1024: # 10MB limit raise ValueError(f"File too large: {file_path}") # Validate path is within docs directory docs_dir = Path("docs") try: file_path.relative_to(docs_dir) except ValueError: raise ValueError(f"File outside docs directory: {file_path}") return file_path.read_text(encoding="utf-8")](#from-__future__-import-annotations-safe-file-operations-from-pathlib-import-path-def-safe_read_filefile_path-path-str-safely-read-documentation-file-if-not-file_pathexists-raise-filenotfounderrorffile-not-found-file_path-if-file_pathstatst_size-10-1024-1024-10mb-limit-raise-valueerrorffile-too-large-file_path-validate-path-is-within-docs-directory-docs_dir-pathdocs-try-file_pathrelative_todocs_dir-except-valueerror-raise-valueerrorffile-outside-docs-directory-file_path-return-file_pathread_textencodingutf-8)
+<!-- TOC END -->
 
 ## Table of Contents
 
 - [Documentation Maintenance Framework API Reference](#documentation-maintenance-framework-api-reference)
-
   - [📚 Overview](#overview)
-  - [🔍 Audit API](#audit-api) - [DocumentationAuditor](#documentationauditor) -
-    [Methods](#methods) - [`discover_files() -> List[Path]`](#discover_files-listpath) -
-    [`audit_file(file_path: Path) -> AuditResult`](#audit_filefile_path-path-auditresult) -
-    [`run_audit(files: Optional[List[Path]] = None) -> AuditReport`](#run_auditfiles-optionallistpath-none-auditreport) -
-    [`save_report(report: AuditReport, output_path: Optional[Path] = None)`](#save_reportreport-auditreport-output_path-optionalpath-none) -
-    [`print_summary(report: AuditReport)`](#print_summaryreport-auditreport)
-  - [🔗 Validation API](#validation-api) - [LinkValidator](#linkvalidator) -
-    [Methods](#methods) -
-    [`validate_external_link(url: str) -> LinkValidationResult`](#validate_external_linkurl-str-linkvalidationresult) -
-    [`validate_internal_links()`][validate-internal-links] -
-    [StyleValidator](#stylevalidator) - [Methods](#methods) -
-    [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path-stylecheckresult)
-  - [🔧 Optimization API](#optimization-api) -
-    [DocumentationOptimizer](#documentationoptimizer) - [Methods](#methods) -
-    [`optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, object]`](#optimize_filefile_path-path-dry_run-bool-false-dictstr-object) -
-    [`optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`](#optimize_all_filesfiles-optionallistpath-none-dry_run-bool-false-dictstr-object)
-  - [🔄 Synchronization API](#synchronization-api) -
-    [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) -
-    [`sync_changes(changes, action) -> Dict[str, object]`][sync-changes]
-
-    [`detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) -
-    [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
-
-  - [📊 Reporting API](#reporting-api) -
-    [DocumentationReporter](#documentationreporter) - [Methods](#methods) -
-    [`generate_comprehensive_report()`][generate-comprehensive-report] -
-    [`generate_dashboard()`][generate-dashboard] -
-    [`export_csv_report()`][export-csv-report] -
-    [`generate_trend_report(days: int = 30) -> Dict[str, object]`](#generate_trend_reportdays-int-30-dictstr-object)
-  - [🚀 Automation API](#automation-api) -
-    [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) -
-    [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, object]`](#run_scheduled_maintenancemaintenance_type-str-daily-dictstr-object)
+  - [🔍 Audit API](#audit-api) - [DocumentationAuditor](#documentationauditor) - [Methods](#methods) - [`discover_files() -> List[Path]`](#discover_files-listpath) - [`audit_file(file_path: Path) -> AuditResult`](#audit_filefile_path-path-auditresult) - [`run_audit(files: Optional[List[Path]] = None) -> AuditReport`](#run_auditfiles-optionallistpath-none-auditreport) - [`save_report(report: AuditReport,
+output_path: Optional[Path] = None)`](#save_reportreport-auditreport-output_path-optionalpath-none) - [`print_summary(report: AuditReport)`](#print_summaryreport-auditreport)
+  - [🔗 Validation API](#validation-api) - [LinkValidator](#linkvalidator) - [Methods](#methods) - [`validate_external_link(url: str) -> LinkValidationResult`](#validate_external_linkurl-str-linkvalidationresult) - [`validate_internal_links(content: str, file_path: Path,
+    ](#validate_internal_linkscontent-str-file_path-path) - [StyleValidator](#stylevalidator) - [Methods](#methods) - [`check_file_style(file_path: Path) -> StyleCheckResult`](#check_file_stylefile_path-path-stylecheckresult)
+  - [🔧 Optimization API](#optimization-api) - [DocumentationOptimizer](#documentationoptimizer) - [Methods](#methods) - [`optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str,
+object]`](#optimize_filefile_path-path-dry_run-bool-false-dictstr-object) - [`optimize_all_files(files: Optional[List[Path]] = None,
+dry_run: bool = False) -> Dict[str,
+object]`](#optimize_all_filesfiles-optionallistpath-none-dry_run-bool-false-dictstr-object)
+  - [🔄 Synchronization API](#synchronization-api) - [DocumentationSynchronizer](#documentationsynchronizer) - [Methods](#methods) - [`sync_changes(changes: List[Dict[str, object]],
+action: str = "maintenance") -> Dict[str,
+object]`](#sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object) - [`detect_conflicts(target_branch: str = "main") -> List[Dict[str,
+object]]`](#detect_conflictstarget_branch-str-main-listdictstr-object) - [`generate_changelog(since_commit: Optional[str] = None) -> str`](#generate_changelogsince_commit-optionalstr-none-str)
+  - [📊 Reporting API](#reporting-api) - [DocumentationReporter](#documentationreporter) - [Methods](#methods) - [`generate_comprehensive_report(audit_report, validation_report,
+    ](#generate_comprehensive_reportaudit_report-validation_report) - [`generate_dashboard(report_data: Dict,
+output_path: Optional[Path] = None)`](#generate_dashboardreport_data-dict-output_path-optionalpath-none) - [`export_csv_report(report_data: Dict,
+output_path: Path)`](#export_csv_reportreport_data-dict-output_path-path) - [`generate_trend_report(days: int = 30) -> Dict[str,
+object]`](#generate_trend_reportdays-int-30-dictstr-object)
+  - [🚀 Automation API](#automation-api) - [AutomatedMaintenance](#automatedmaintenance) - [Methods](#methods) - [`run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str,
+object]`](#run_scheduled_maintenancemaintenance_type-str-daily-dictstr-object)
   - [📋 Data Structures](#data-structures)
     - [AuditResult](#auditresult)
     - [AuditReport](#auditreport)
@@ -127,8 +113,7 @@ Complete API reference for the FLEXT-gRPC Documentation Maintenance Framework.
 
 ## 📚 Overview
 
-The Documentation Maintenance Framework provides a comprehensive set of APIs for
-automated documentation quality assurance,
+The Documentation Maintenance Framework provides a comprehensive set of APIs for automated documentation quality assurance,
 
      validation, optimization, and reporting.
 
@@ -140,11 +125,11 @@ Main class for performing comprehensive documentation audits.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationAuditor
 
 auditor = DocumentationAuditor(root_path=".")
 ```
-
 #### Methods
 
 ##### `discover_files() -> List[Path]`
@@ -155,13 +140,12 @@ Discover all documentation files to audit.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 files = auditor.discover_files()
 print(f"Found {len(files)} documentation files")
 ```
-
 ##### `audit_file(file_path: Path) -> AuditResult`
 
 Perform comprehensive audit of a single file.
@@ -174,13 +158,12 @@ Perform comprehensive audit of a single file.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 result = auditor.audit_file(Path("docs/README.md"))
 print(f"Quality Score: {result.quality_score}%")
 ```
-
 ##### `run_audit(files: Optional[List[Path]] = None) -> AuditReport`
 
 Run complete audit on specified or all files.
@@ -193,13 +176,12 @@ Run complete audit on specified or all files.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 report = auditor.run_audit()
 print(f"Overall Quality: {report.average_quality}%")
 ```
-
 ##### `save_report(report: AuditReport, output_path: Optional[Path] = None)`
 
 Save audit report to JSON file.
@@ -211,12 +193,11 @@ Save audit report to JSON file.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 auditor.save_report(report, Path("reports/audit.json"))
 ```
-
 ##### `print_summary(report: AuditReport)`
 
 Print formatted audit summary to console.
@@ -233,11 +214,11 @@ Validate external and internal links in documentation.
 
 ```python
 from __future__ import annotations
+
 from docs import LinkValidator
 
 validator = LinkValidator(timeout=10, max_retries=3)
 ```
-
 #### Methods
 
 ##### `validate_external_link(url: str) -> LinkValidationResult`
@@ -252,7 +233,7 @@ Validate a single external link.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 result = validator.validate_external_link("https://github.com")
@@ -261,7 +242,6 @@ if result.status == "valid":
 else:
     print(f"❌ Link broken: {result.error_message}")
 ```
-
 ##### `validate_internal_links(content: str, file_path: Path
 
      all_files: List[Path]) -> List[ReferenceValidationResult]`
@@ -282,11 +262,11 @@ Validate documentation style consistency.
 
 ```python
 from __future__ import annotations
+
 from docs import StyleValidator
 
 style_validator = StyleValidator()
 ```
-
 #### Methods
 
 ##### `check_file_style(file_path: Path) -> StyleCheckResult`
@@ -301,7 +281,7 @@ Check style consistency for a file.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 result = style_validator.check_file_style(Path("docs/README.md"))
@@ -309,7 +289,6 @@ print(f"Style Score: {result.score}%")
 for issue in result.issues:
     print(f"  • {issue['message']}")
 ```
-
 ## 🔧 Optimization API
 
 ### DocumentationOptimizer
@@ -318,11 +297,11 @@ Optimize and enhance documentation content.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationOptimizer
 
 optimizer = DocumentationOptimizer(root_path=".")
 ```
-
 #### Methods
 
 ##### `optimize_file(file_path: Path, dry_run: bool = False) -> Dict[str, object]`
@@ -338,14 +317,13 @@ Optimize a single documentation file.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 result = optimizer.optimize_file(Path("docs/README.md"))
 print(f"Applied {len(result['optimizations_applied'])} optimizations")
 ```
-
-##### `optimize_all_files(files: Optional[List[Path]], dry_run: bool = False)`
+##### `optimize_all_files(files: Optional[List[Path]] = None, dry_run: bool = False) -> Dict[str, object]`
 
 Optimize all documentation files.
 
@@ -364,14 +342,14 @@ Handle version control integration and synchronization.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationSynchronizer
 
 sync = DocumentationSynchronizer(root_path=".")
 ```
-
 #### Methods
 
-##### `sync_changes(changes: List[Dict[str, object]], action: str = "maintenance")`
+##### `sync_changes(changes: List[Dict[str, object]], action: str = "maintenance") -> Dict[str, object]`
 
 Synchronize documentation changes with git.
 
@@ -386,7 +364,6 @@ Synchronize documentation changes with git.
 
 ```python
 from __future__ import annotations
-from os import sync
 
 changes = [
     {
@@ -398,7 +375,6 @@ changes = [
 result = sync.sync_changes(changes, "optimization")
 print(f"Committed: {result['commit_created']}")
 ```
-
 ##### `detect_conflicts(target_branch: str = "main") -> List[Dict[str, object]]`
 
 Detect potential merge conflicts.
@@ -427,11 +403,11 @@ Generate comprehensive documentation quality reports.
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationReporter
 
 reporter = DocumentationReporter(root_path=".")
 ```
-
 #### Methods
 
 ##### `generate_comprehensive_report(audit_report, validation_report
@@ -484,11 +460,11 @@ Handle scheduled and automated maintenance tasks.
 
 ```python
 from __future__ import annotations
+
 from docs import AutomatedMaintenance
 
 automation = AutomatedMaintenance(root_path=".")
 ```
-
 #### Methods
 
 ##### `run_scheduled_maintenance(maintenance_type: str = "daily") -> Dict[str, object]`
@@ -503,21 +479,20 @@ Run scheduled maintenance tasks.
 
 **Example**:
 
-```python notest
+```python
 from __future__ import annotations
 
 result = automation.run_scheduled_maintenance("weekly")
 print(f"Tasks completed: {len(result['tasks_completed'])}")
 ```
-
 ## 📋 Data Structures
 
 ### AuditResult
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
-from dataclasses import dataclass
 
 
 @dataclass
@@ -535,11 +510,11 @@ class AuditResult:
     suggestions: t.List[t.Dict[str, t.JsonValue]]
     metadata: t.Dict[str, t.JsonValue]
 ```
-
 ### AuditReport
 
-```python notest
+```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -555,13 +530,12 @@ class AuditReport:
     file_results: t.List[AuditResult]
     summary: t.Dict[str, t.JsonValue]
 ```
-
 ### LinkValidationResult
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
-from dataclasses import dataclass
 
 
 @dataclass
@@ -573,13 +547,12 @@ class LinkValidationResult:
     error_message: t.Optional[str]
     redirect_url: t.Optional[str]
 ```
-
 ### ReferenceValidationResult
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
-from dataclasses import dataclass
 
 
 @dataclass
@@ -590,13 +563,12 @@ class ReferenceValidationResult:
     target_file: t.Optional[str]
     line_number: t.Optional[int]
 ```
-
 ### StyleCheckResult
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
-from dataclasses import dataclass
 
 
 @dataclass
@@ -605,13 +577,13 @@ class StyleCheckResult:
     issues: t.List[t.Dict[str, t.JsonValue]]
     score: float
 ```
-
 ## ⚙️ Configuration API
 
 ### Configuration Management
 
 ```python
 from __future__ import annotations
+
 import json
 import pathlib
 
@@ -630,7 +602,6 @@ settings["audit"]["quality_thresholds"]["excellent"] = 85
 with pathlib.Path("docs/maintenance/settings.json").open("w") as f:
     json.dump(settings, f, indent=2)
 ```
-
 ### Custom Rules
 
 ```python
@@ -651,15 +622,16 @@ CUSTOM_STYLE_RULES = {
     "emphasis_style": "*",  # *text* instead of _text_
 }
 ```
-
 ## 🔧 Utility Functions
 
 ### File Discovery
 
 ```python
 from __future__ import annotations
-from flext_core import t
+
 from pathlib import Path
+
+from flext_core import t
 
 
 def find_docs_files(root_path: str = ".") -> t.List[Path]:
@@ -680,7 +652,6 @@ def find_docs_files(root_path: str = ".") -> t.List[Path]:
 
     return sorted(filtered_files)
 ```
-
 ### Quality Score Calculation
 
 ```python
@@ -693,11 +664,11 @@ def calculate_quality_score(
     """Calculate overall quality score."""
     return structure * 0.3 + accuracy * 0.3 + completeness * 0.25 + freshness * 0.15
 ```
-
 ### Report Generation
 
-```python notest
+```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -730,7 +701,6 @@ Quality Distribution:
 
     return report
 ```
-
 ## 🚨 Error Handling
 
 ### Exception Types
@@ -742,38 +712,28 @@ from __future__ import annotations
 class DocumentationMaintenanceError(Exception):
     """Base exception for maintenance operations."""
 
-    pass
-
 
 class AuditError(DocumentationMaintenanceError):
     """Raised when audit operations fail."""
-
-    pass
 
 
 class GrpcValidationError(DocumentationMaintenanceError):
     """Raised when validation operations fail."""
 
-    pass
-
 
 class OptimizationError(DocumentationMaintenanceError):
     """Raised when optimization operations fail."""
 
-    pass
-
 
 class SynchronizationError(DocumentationMaintenanceError):
     """Raised when synchronization operations fail."""
-
-    pass
 ```
-
 ### Error Handling Patterns
 
 ```python
 from __future__ import annotations
-from docs import DocumentationAuditor, AuditError
+
+from docs import AuditError, DocumentationAuditor
 
 try:
     auditor = DocumentationAuditor()
@@ -787,13 +747,13 @@ except Exception as e:
     print(f"Unexpected error: {e}")
     # Handle general errors
 ```
-
 ## 📊 Metrics and Analytics
 
 ### Quality Metrics
 
-```python notest
+```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -807,11 +767,11 @@ def get_quality_metrics(audit_report: AuditReport) -> t.Dict[str, t.JsonValue]:
         "improvement_areas": len(audit_report.recommendations),
     }
 ```
-
 ### Trend Analysis
 
-```python notest
+```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -836,7 +796,6 @@ def analyze_quality_trends(reports: t.List[AuditReport]) -> t.Dict[str, t.JsonVa
 
     return trend
 ```
-
 ## 🔌 Integration Examples
 
 ### CI/CD Pipeline Integration
@@ -870,7 +829,6 @@ jobs:
           name: docs-reports
           path: docs/maintenance/reports/
 ```
-
 ### Pre-commit Hook Integration
 
 ```bash
@@ -880,20 +838,19 @@ jobs:
 # Run documentation checks
 PYTHONPATH=. python docs/maintenance/audit.py --quiet
 if [ $? -ne 0 ]; then
-  echo "❌ Documentation quality issues found. Please fix before committing."
-  exit 1
+    echo "❌ Documentation quality issues found. Please fix before committing."
+    exit 1
 fi
 
 echo "✅ Documentation quality checks passed"
 ```
-
 ### Custom Integration
 
 ```python
 from __future__ import annotations
 
 # custom_integration.py
-from docs import audit, validation, optimization, reporting
+from docs import audit, optimization, reporting, validation
 
 
 class CustomDocumentationWorkflow:
@@ -924,9 +881,7 @@ class CustomDocumentationWorkflow:
     def generate_custom_report(self):
         """Generate custom formatted report."""
         # Implementation for custom reporting needs
-        pass
 ```
-
 ## 🔄 Version Compatibility
 
 ### API Versioning
@@ -940,6 +895,7 @@ class CustomDocumentationWorkflow:
 
 ```python
 from __future__ import annotations
+
 from flext_core import t
 
 
@@ -952,7 +908,6 @@ def migrate_config(old_config: t.Dict) -> t.Dict:
 
     return old_config
 ```
-
 ## 📈 Performance Considerations
 
 ### Optimization Tips
@@ -964,7 +919,7 @@ def migrate_config(old_config: t.Dict) -> t.Dict:
 
 ### Memory Management
 
-```python notest
+```python
 from __future__ import annotations
 
 # For large documentation sets
@@ -988,7 +943,6 @@ def process_large_docs():
         # Force garbage collection
         gc.collect()
 ```
-
 ## 🔐 Security Considerations
 
 ### Safe Operations
@@ -1024,17 +978,6 @@ def safe_read_file(file_path: Path) -> str:
 
     return file_path.read_text(encoding="utf-8")
 ```
-
 ---
 
-**This API reference provides comprehensive documentation for all components of the
-Documentation Maintenance Framework. Use the examples and patterns provided to integrate
-the framework into your development workflow.**
-
-[sync-changes]:
-  #sync_changeschanges-listdictstr-object-action-str-maintenance-dictstr-object
-[validate-internal-links]: #validate_internal_linkscontent-str-file_path-path
-[generate-comprehensive-report]:
-  #generate_comprehensive_reportaudit_report-validation_report
-[generate-dashboard]: #generate_dashboardreport_data-dict-output_path-optionalpath-none
-[export-csv-report]: #export_csv_reportreport_data-dict-output_path-path
+**This API reference provides comprehensive documentation for all components of the Documentation Maintenance Framework. Use the examples and patterns provided to integrate the framework into your development workflow.**

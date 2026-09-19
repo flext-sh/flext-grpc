@@ -1,7 +1,6 @@
 # Getting Started with flext-grpc
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Prerequisites](#prerequisites)
   - [System Requirements](#system-requirements)
@@ -22,7 +21,6 @@
   - [Known Issues](#known-issues)
 - [Next Steps](#next-steps)
 - [Related Documentation](#related-documentation)
-
 <!-- TOC END -->
 
 ## Table of Contents
@@ -74,18 +72,17 @@ Managed via Poetry (no manual installation required):
 ```bash
 git clone https://github.com/flext-sh/flext/tree/main/flext-grpc
 cd flext-grpc
-poetry install
+make setup
 ```
 
 ### 2. Verify Installation
 
 ```bash
 # Test core imports
-poetry run python -c "from flext_grpc import create_server, FlextGrpcPlatform; \
-  print('Import successful')"
+python -c "from flext_grpc import create_server, FlextGrpcPlatform; print('Import successful')"
 
 # Test functionality
-poetry run python -c "
+python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
 print(f'Server: {server.address}, state: {server.state}')
@@ -98,6 +95,7 @@ print(f'Server: {server.address}, state: {server.state}')
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import create_server
 
 # Create gRPC server
@@ -105,33 +103,33 @@ server = create_server("localhost", 50051, 10)
 print(f"Server address: {server.address}")
 print(f"Server state: {server.state}")
 ```
-
 ### Client Creation
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import create_client
 
 # Create gRPC client
 client = create_client("localhost:50051")
 print(f"Client created: {type(client).__name__}")
 ```
-
 ### Platform Management
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations
 platform = FlextGrpcPlatform()
 print(f"Platform ready: {type(platform).__name__}")
 ```
-
 ### Configuration
 
 ```python
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
@@ -140,33 +138,30 @@ settings = FlextGrpcSettings.model_validate(
 )
 print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
-
 ## Development Setup
 
 ### Development Commands
 
 ```bash
 # Run a basic test
-poetry run pytest tests/unit/test_config.py \
-  ::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
+make test tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
 
 # Check test coverage (currently 39%)
-poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
+make test tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 
 # Type checking
-poetry run mypy src/
+make check src/
 
 # Code linting
-poetry run ruff check src/
+make check check src/
 ```
-
 ### Quality Status Check
 
 Current status verification:
 
 ```bash
 # Verify imports work
-poetry run python -c "
+python -c "
 import sys
 from flext_grpc import create_server, create_client, FlextGrpcPlatform
 from flext_grpc import FlextGrpcSettings
@@ -174,13 +169,12 @@ print('✅ All imports successful')
 "
 
 # Test basic functionality
-poetry run python -c "
+python -c "
 from flext_grpc import create_server
 server = create_server('localhost', 50051, 10)
 print(f'✅ Server creation: {server.address}')
 "
 ```
-
 ## Current Limitations
 
 ### Test Coverage
@@ -196,12 +190,9 @@ print(f'✅ Server creation: {server.address}')
 
 ## Next Steps
 
-1. **Explore API Reference** - See [API Reference](api-reference.md) for complete
-   function documentation
-1. **Development Workflow** - See [Development](development.md) for contribution
-   guidelines
-1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem
-   usage
+1. **Explore API Reference** - See [API Reference](api-reference/README.md) for generated function documentation
+1. **Development Workflow** - See [Development](development.md) for contribution guidelines
+1. **Integration Patterns** - See [Integration](integration.md) for FLEXT ecosystem usage
 1. **Configuration** - See [Configuration](configuration.md) for advanced settings
 
 ---
@@ -213,7 +204,7 @@ For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 **Within Project**:
 
 - [Architecture](architecture.md) - Architecture and design patterns
-- [API Reference](api-reference.md) - Complete API documentation
+- [API Reference](api-reference/README.md) - Generated API documentation
 - [Development](development.md) - Development workflow
 - [Integration](integration.md) - FLEXT ecosystem usage
 - [Configuration](configuration.md) - Advanced settings
@@ -221,12 +212,9 @@ For troubleshooting common issues, see [Troubleshooting](troubleshooting.md).
 
 **Across Projects**:
 
-- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) -
-  Clean architecture and CQRS patterns
-- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) -
-  Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) -
-  HTTP foundation patterns
+- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) - Clean architecture and CQRS patterns
+- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) - Service patterns and dependency injection
+- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) - HTTP foundation patterns
 
 **External Resources**:
 
