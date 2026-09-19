@@ -1,5 +1,10 @@
 # flext-grpc Architecture
 
+<!-- TOC START -->
+
+- No sections found
+<!-- TOC END -->
+
 # Table of Contents
 
 - [flext-grpc Architecture](#flext-grpc-architecture)
@@ -145,6 +150,7 @@ All components integrate with flext-core patterns.
 
 ```python notest
 from __future__ import annotations
+
 from flext_core import p
 
 
@@ -305,7 +311,7 @@ flext-core patterns.
 **Within Project**:
 
 - [Getting Started](getting-started.md) - Installation and basic usage
-- [API Reference](api-reference.md) - Complete API documentation
+- [API Reference](api-reference/README.md) - Generated API documentation
 - [Development](development.md) - Development workflow
 - [Integration](integration.md) - FLEXT ecosystem usage
 - [Configuration](configuration.md) - Advanced settings

@@ -550,6 +550,7 @@ repos:
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationAuditor
 
 
@@ -572,6 +573,7 @@ class CustomAuditor(DocumentationAuditor):
 
 ```python
 from __future__ import annotations
+
 from docs import DocumentationOptimizer
 
 
@@ -589,7 +591,8 @@ class CustomOptimizer(DocumentationOptimizer):
 
 ```python
 from __future__ import annotations
-from docs import audit, validation, optimization, reporting
+
+from docs import audit, optimization, reporting, validation
 
 # Programmatic usage
 auditor = audit.DocumentationAuditor()

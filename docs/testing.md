@@ -1,7 +1,6 @@
 # FLEXT-gRPC Testing Plan
 
 <!-- TOC START -->
-
 - [Table of Contents](#table-of-contents)
 - [Executive Summary](#executive-summary)
 - [Current Testing Status](#current-testing-status)
@@ -35,7 +34,8 @@
   - [Performance Testing](#performance-testing)
   - [Load Testing](#load-testing)
   - [Chaos Testing](#chaos-testing)
-  <!-- TOC END -->
+- [from __future__ import annotations def test_grpc_fault_tolerance(): """Test gRPC system fault tolerance.""" # Network interruptions # Server failures # Connection drops # Recovery mechanisms](#from-__future__-import-annotations-def-test_grpc_fault_tolerance-test-grpc-system-fault-tolerance-network-interruptions-server-failures-connection-drops-recovery-mechanisms)
+<!-- TOC END -->
 
 ## Table of Contents
 
@@ -101,25 +101,23 @@
     - [Load Testing](#load-testing)
     - [Chaos Testing](#chaos-testing)
 
-**Version**: 0.9.0 — **Updated**: 2026-04-14 **Current Coverage**: 39% — **Test
-Status**: 28 failed, 36 passed (64 total tests)
+**Version**: 0.9.0 — **Updated**: 2026-04-14
+**Current Coverage**: 39% — **Test Status**: 28 failed, 36 passed (64 total tests)
 
 ## Executive Summary
 
-FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with comprehensive
-validation of gRPC operations,
+FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with comprehensive validation of gRPC operations,
 
      FLEXT ecosystem integration,
-     and error handling patterns. Current testing shows 39% coverage with critical
-     failures that must be addressed before production deployment.
+     and error handling patterns. Current testing shows 39% coverage with critical failures that must be addressed before production deployment.
 
 ## Current Testing Status
 
 ### Test Suite Overview
 
-| Metric             | Current Value         | Target            | Status               |
-| ------------------ | --------------------- | ----------------- | -------------------- |
-| **Total Tests**    | 64                    | 150+              | ⚠️ Needs expansion   |
+| Metric             | Current Value         | Target            | Status              |
+| ------------------ | --------------------- | ----------------- | ------------------- |
+| **Total Tests**    | 64                    | 150+              | ⚠️ Needs expansion  |
 | **Passing Tests**  | 36                    | 64                | ❌ Critical failures |
 | **Failing Tests**  | 28                    | 0                 | ❌ Must fix          |
 | **Code Coverage**  | 39%                   | 90%               | ❌ Major gap         |
@@ -146,24 +144,18 @@ TOTAL                                          1798    956    380     14    39%
 #### High Priority Failures
 
 1. **FlextGrpcServices Initialization** (4 failures)
-
    - **Issue**: Logger property setter missing
-   - **Error**:
-     `AttributeError: property 'logger' of 'FlextGrpcServices' t.JsonValue has no setter`
+   - **Error**: `AttributeError: property 'logger' of 'FlextGrpcServices' t.JsonValue has no setter`
    - **Impact**: Core service class cannot be instantiated
-   - **Tests**: `test_init`, `test_create_server`, `test_create_client`,
-     `test_create_stream`
+   - **Tests**: `test_init`, `test_create_server`, `test_create_client`, `test_create_stream`
 
 2. **Exception Constructor Signatures** (6 failures)
-
    - **Issue**: Exception constructors have incorrect parameter signatures
-   - **Error**: `TypeError: ...__init__() takes X positional arguments but Y were given`
+   - **Error**: `TypeError: FlextGrpcExceptions.*.__init__() takes X positional arguments but Y were given`
    - **Impact**: Error handling classes unusable
-   - **Tests**: `test_configuration_error_*`, `test_validation_error_*`,
-     `test_all_errors_are_exceptions`
+   - **Tests**: `test_configuration_error_*`, `test_validation_error_*`, `test_all_errors_are_exceptions`
 
 3. **Protocol Runtime Checking** (1 failure)
-
    - **Issue**: `@runtime_checkable` decorator missing on protocols
    - **Error**: `AssertionError: assert False` in protocol runtime check
    - **Impact**: Protocol validation fails
@@ -178,7 +170,6 @@ TOTAL                                          1798    956    380     14    39%
 #### Medium Priority Failures
 
 1. **Protobuf Utilities** (1 failure)
-
    - **Issue**: Protobuf utility functions not properly tested
    - **Error**: Test implementation issues
    - **Impact**: Protocol buffer operations untested
@@ -288,7 +279,8 @@ TOTAL                                          1798    956    380     14    39%
 
 ##### services.py (15% → 90%)
 
-**Current Issues**: Initialization failures, missing service tests **Required Tests**:
+**Current Issues**: Initialization failures, missing service tests
+**Required Tests**:
 
 - Service lifecycle management (init/start/stop)
 - gRPC method registration and invocation
@@ -297,7 +289,7 @@ TOTAL                                          1798    956    380     14    39%
 
 **Test Structure**:
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -319,10 +311,10 @@ def test_service_lifecycle():
     # Test service registration
     # Test startup/shutdown
 ```
-
 ##### api.py (26% → 90%)
 
-**Current Issues**: API validation failures **Required Tests**:
+**Current Issues**: API validation failures
+**Required Tests**:
 
 - Server creation with various configurations
 - Client creation and target validation
@@ -331,7 +323,7 @@ def test_service_lifecycle():
 
 **Test Structure**:
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -349,10 +341,10 @@ def test_create_client_target_validation():
     assert client.target_host == "localhost"
     assert client.target_port == 50051
 ```
-
 ##### entities.py (36% → 90%)
 
-**Current Issues**: Entity creation failures **Required Tests**:
+**Current Issues**: Entity creation failures
+**Required Tests**:
 
 - Server entity state transitions
 - Client entity connection management
@@ -361,7 +353,7 @@ def test_create_client_target_validation():
 
 **Test Structure**:
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -378,7 +370,6 @@ def test_server_entity_lifecycle():
     server.state = "starting"
     assert server.state == "starting"
 ```
-
 #### Medium Priority Modules (50-80% coverage)
 
 ##### utilities.py (18% → 90%)
@@ -403,10 +394,11 @@ def test_server_entity_lifecycle():
 
 #### Real gRPC Server Testing
 
-```python notest
+```python
 from __future__ import annotations
-import pytest
+
 import grpc
+import pytest
 
 
 @pytest.mark.asyncio
@@ -421,10 +413,9 @@ async def test_real_grpc_server_operations(grpc_server):
         response = await stub.SayHello(HelloRequest(name="test"))
         assert response.message == "Hello test"
 ```
-
 #### Streaming Operations Testing
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -445,7 +436,6 @@ async def test_server_streaming():
     # Close stream
     await stream.close()
 ```
-
 ## Testing Procedures
 
 ### Daily Development Testing
@@ -457,41 +447,31 @@ async def test_server_streaming():
 make test
 
 # Run specific test file
-PYTHONPATH=src poetry run pytest tests/unit/test_config.py -v
+PYTHONPATH=src make test tests/unit/test_config.py -v
 
 # Run with coverage
-PYTHONPATH=src poetry run pytest tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
+PYTHONPATH=src make test tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
 ```
-
 #### Test Debugging
 
 ```bash
 # Run single failing test
-PYTHONPATH=src poetry run \
-  pytest tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
+PYTHONPATH=src make test tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
 
 # Run with detailed output
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py -v --tb=long
+PYTHONPATH=src make test tests/unit/test_services.py -v --tb=long
 
 # Debug mode
-PYTHONPATH=src poetry run pytest tests/unit/test_services.py --pdb
+PYTHONPATH=src make test tests/unit/test_services.py --pdb
 ```
-
 ### Continuous Integration Testing
 
 #### Quality Gates
 
 ```bash
-# Complete validation pipeline
-make val
-
-# Individual checks
-make lint       # Code quality
-make type-check # Type safety
-make security   # Security scanning
-make test       # Test execution
+make check         # Static, typing, security, and structural gates
+make test          # Behavioral suites
 ```
-
 #### Coverage Validation
 
 ```bash
@@ -499,20 +479,19 @@ make test       # Test execution
 make test
 
 # Coverage report
-PYTHONPATH=src poetry run pytest --cov --cov-report=html
+PYTHONPATH=src make test --cov --cov-report=html
 open htmlcov/index.html
 
 # Coverage by module
-PYTHONPATH=src poetry run pytest --cov --cov-report=term-missing
+PYTHONPATH=src make test --cov --cov-report=term-missing
 ```
-
 > Coverage thresholds are configured in `pyproject.toml` under `[tool.coverage.report]`.
 
 ### Integration Testing Setup
 
 #### gRPC Test Server
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -533,10 +512,9 @@ async def grpc_server():
     # Cleanup
     await server.stop()
 ```
-
 #### Test Client Setup
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -553,7 +531,6 @@ async def grpc_client(grpc_server):
     # Cleanup
     await client.disconnect()
 ```
-
 ## Test Organization
 
 ### Directory Structure
@@ -578,10 +555,9 @@ tests/
 │   └── grpc_client.py           # gRPC client fixture
 └── conftest.py                  # pytest configuration
 ```
-
 ### Test Naming Conventions
 
-```python notest
+```python
 from __future__ import annotations
 def test_{module}_{operation}_{condition}():
     """Test {module} {operation} under {condition}."""
@@ -592,10 +568,9 @@ def test_{entity}_{action}_{result}():
 def test_{operation}_with_{configuration}():
     """Test {operation} using {configuration}."""
 ```
-
 ### Test Categories and Markers
 
-```python notest
+```python
 from __future__ import annotations
 
 
@@ -618,7 +593,6 @@ def test_performance_operations():
 def test_known_issue():
     """Temporarily skipped tests."""
 ```
-
 ## Success Metrics
 
 ### Phase 1 Success Criteria
@@ -648,14 +622,12 @@ def test_known_issue():
 
 ### High Risk
 
-1. **Critical Bug Fixes**: Logger property and exception constructor fixes may have
-   cascading effects
+1. **Critical Bug Fixes**: Logger property and exception constructor fixes may have cascading effects
 2. **Integration Complexity**: Real gRPC testing may introduce flakiness and complexity
 
 ### Medium Risk
 
-1. **Coverage Achievement**: Reaching 90% coverage requires significant test
-   implementation
+1. **Coverage Achievement**: Reaching 90% coverage requires significant test implementation
 2. **Test Maintenance**: Large test suite requires ongoing maintenance
 
 ### Low Risk
@@ -678,7 +650,6 @@ def test_grpc_performance_under_load():
     # Latency validation
     # Resource usage monitoring
 ```
-
 ### Load Testing
 
 ```python
@@ -692,7 +663,6 @@ def test_grpc_scalability_limits():
     # Connection pool management
     # Failure recovery
 ```
-
 ### Chaos Testing
 
 ```python
@@ -706,9 +676,8 @@ def test_grpc_fault_tolerance():
     # Connection drops
     # Recovery mechanisms
 ```
-
 ---
 
-**Testing Status**: Critical failures require immediate attention **Next Priority**: Fix
-28 test failures and achieve 90% coverage **Timeline**: Phase 1 completion required for
-production readiness
+**Testing Status**: Critical failures require immediate attention
+**Next Priority**: Fix 28 test failures and achieve 90% coverage
+**Timeline**: Phase 1 completion required for production readiness

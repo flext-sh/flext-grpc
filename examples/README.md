@@ -35,8 +35,7 @@
 
 <!-- TOC END -->
 
-Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for
-enterprise development.
+Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
 
 ## Example Structure
 
@@ -62,8 +61,7 @@ examples/
 ### Server Lifecycle Management
 
 **File**: `basic_usage.py`\
-**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle
-management
+**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
 
 **Key Concepts**:
 
@@ -76,10 +74,10 @@ management
 
 ```bash
 # Run basic usage example
-poetry run python examples/basic_usage.py
+python examples/basic_usage.py
 
 # Run with debug output
-FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
+FLEXT_LOG_LEVEL=debug python examples/basic_usage.py
 ```
 
 ### Client Connection Management
@@ -112,10 +110,10 @@ FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
 
 ```bash
 # Run advanced usage example
-poetry run python examples/advanced_usage.py
+python examples/advanced_usage.py
 
 # Run with performance monitoring
-FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
+FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
 ```
 
 ### Platform Integration
@@ -148,10 +146,10 @@ FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 
 ```bash
 # Run error handling examples
-poetry run python examples/03_error_handling_patterns.py
+python examples/03_error_handling_patterns.py
 
 # Run with error tracing
-FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
+FLEXT_TRACE_ERRORS=true python examples/03_error_handling_patterns.py
 ```
 
 ### Recovery Strategies
@@ -181,7 +179,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Example Usage**:
 
-```python notest
+```python
 from __future__ import annotations
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
@@ -216,7 +214,7 @@ service_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python notest
+```python
 from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
@@ -271,12 +269,12 @@ make diagnose
 ```bash
 # Run all examples
 for example in examples/*.py; do
-  echo "Running $example"
-  poetry run python "$example"
+    echo "Running $example"
+    python "$example"
 done
 
 # Run specific example
-poetry run python examples/basic_usage.py
+python examples/basic_usage.py
 ```
 
 **Debug Mode**:
@@ -284,9 +282,9 @@ poetry run python examples/basic_usage.py
 ```bash
 # Run with comprehensive debugging
 FLEXT_LOG_LEVEL=debug \
-  GRPC_VERBOSITY=debug \
-  GRPC_TRACE=all \
-  poetry run python examples/basic_usage.py
+GRPC_VERBOSITY=debug \
+GRPC_TRACE=all \
+python examples/basic_usage.py
 ```
 
 **Performance Monitoring**:
@@ -294,15 +292,15 @@ FLEXT_LOG_LEVEL=debug \
 ```bash
 # Run with performance metrics
 FLEXT_GRPC_MONITOR=true \
-  FLEXT_PERFORMANCE_METRICS=true \
-  poetry run python examples/advanced_usage.py
+FLEXT_PERFORMANCE_METRICS=true \
+python examples/advanced_usage.py
 ```
 
 ## Example Patterns
 
 ### Entity Creation Pattern
 
-```python notest
+```python
 from __future__ import annotations
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
@@ -327,7 +325,7 @@ print(f"Server created: {server.id}")
 
 ### Service Operation Pattern
 
-```python notest
+```python
 from __future__ import annotations
 from flext_core import t
 from flext_grpc import FlextGrpcServerService
@@ -345,7 +343,7 @@ else:
 
 ### Platform Usage Pattern
 
-```python notest
+```python
 from __future__ import annotations
 from flext_core import t
 from flext_grpc import FlextGrpcPlatform
@@ -419,8 +417,7 @@ if server_result.success:
 - Real streaming examples with data flow
 - Integration with external gRPC services
 
-For current development gaps and realistic timelines, see
-[../docs/TODO.md](../docs/TODO.md).
+For current development gaps and realistic timelines, see [../docs/TODO.md](../docs/TODO.md).
 
 ## Contributing Examples
 
@@ -441,7 +438,7 @@ For current development gaps and realistic timelines, see
 
 ### Example Template
 
-```python notest
+```python
 from __future__ import annotations
 
 """
@@ -455,12 +452,18 @@ Key Concepts:
     - [Concept 2]: [Brief explanation]
 
 Usage:
-    poetry run python examples/[filename].py
+    python examples/[filename].py
 
 Author: FLEXT Development Team
 Version: 0.12.0-dev
 """
 
+from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
+from flext_core import FlextSettings
+from datetime import datetime, timezone
+
+
+def main() -> None:
     """Main example execution function."""
     print("Starting FLEXT gRPC example...")
 
