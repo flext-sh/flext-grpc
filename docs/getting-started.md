@@ -137,9 +137,9 @@ from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
-settings = FlextGrpcSettings.model_validate({
-    "Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}
-})
+settings = FlextGrpcSettings.model_validate(
+    {"Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}}
+)
 print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
 

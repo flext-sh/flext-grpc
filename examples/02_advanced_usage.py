@@ -189,9 +189,7 @@ class ExamplesFlextGrpcAdvancedUsage:
                 host=host, port=port, service_name=service_name, methods=methods
             )
             if setup_result.failure:
-                return r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(
-                    setup_result
-                )
+                return r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(setup_result)
             setup = setup_result.value
             return r[FlextGrpcModels.Grpc.CompleteSetup].ok(setup)
 
