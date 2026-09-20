@@ -1,6 +1,7 @@
 # flext-grpc Troubleshooting
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Fixed Issues](#fixed-issues)
   - [Protobuf Import Compatibility (RESOLVED)](#protobuf-import-compatibility-resolved)
@@ -62,7 +63,8 @@ ModuleNotFoundError: No module named 'flext_grpc_pb2'
 The grpc package installed is at version X.X.X, but the generated code depends on grpcio>=Y.Y.Y
 ```
 
-**Root Cause**: Generated protobuf files using incorrect import paths or version mismatches.
+**Root Cause**: Generated protobuf files using incorrect import paths or version
+mismatches.
 
 **Solution Applied**:
 
@@ -121,6 +123,7 @@ import sys
 sys.path.insert(0, "src")  # For development
 # or use python for installed package
 ```
+
 ### gRPC Version Conflicts
 
 **Symptom**: Version mismatch warnings or errors.
@@ -131,6 +134,7 @@ sys.path.insert(0, "src")  # For development
 make setup --all-packages
 make status grpcio grpcio-tools protobuf  # Check versions
 ```
+
 ### Server Startup Issues
 
 **Symptom**: Server creation succeeds but startup fails.
@@ -153,6 +157,7 @@ start_result = platform.start_server(server)
 if start_result.failure:
     print(f"Startup failed: {start_result.error}")
 ```
+
 ## Development Best Practices
 
 ### gRPC Service Development
@@ -204,6 +209,7 @@ Based on 2025 gRPC Python best practices:
 make status flext-grpc
 python -c "import flext_grpc; print('Installation OK')"
 ```
+
 ### Verify Dependencies
 
 ```bash
@@ -214,6 +220,7 @@ print(f'gRPC: {grpc.__version__}')
 print(f'Protobuf: {google.protobuf.__version__}')
 "
 ```
+
 ### Test Core Functionality
 
 ```bash
@@ -226,6 +233,7 @@ print(f'Platform: {platform is not None}')
 print('Core functionality verified')
 "
 ```
+
 ## Getting Help
 
 1. **Check this troubleshooting guide** for common issues
@@ -244,5 +252,5 @@ Planned enhancements to reduce troubleshooting needs:
 
 ---
 
-For development workflow and architectural guidance,
-see [Development](development.md) and [Architecture](architecture.md) documentation.
+For development workflow and architectural guidance, see [Development](development.md)
+and [Architecture](architecture.md) documentation.

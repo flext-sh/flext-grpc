@@ -18,7 +18,7 @@ from flext_cli import m, u
 
 from flext_grpc import c, p, r, t
 
-from ._models.base import FlextGrpcModelsBase
+from ._models import FlextGrpcModelsBase
 
 
 class FlextGrpcModels(m):
@@ -388,12 +388,16 @@ class FlextGrpcModels(m):
                 **kwargs: u.Field updates for the entity
 
                 """
+                from flext_grpc import r
+
                 return r[Self].create_from_callable(
                     lambda: self.model_copy(update=kwargs)
                 )
 
             def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation."""
+                from flext_grpc import r
+
                 return r[bool].ok(True)
 
         class Channel(Entity, StateMachine):

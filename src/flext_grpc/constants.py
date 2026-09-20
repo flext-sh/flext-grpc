@@ -13,8 +13,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import re
-from enum import StrEnum, unique
-from typing import TYPE_CHECKING, ClassVar, Final
+from typing import TYPE_CHECKING, ClassVar
 
 from flext_core import c as _flext_core_c
 
@@ -68,98 +67,10 @@ class FlextGrpcConstants(_flext_core_c):
 
         # ===== Timeout validation =====
 
-        # ===== Enums (single source of truth) =====
-        @unique
-        class ChannelState(StrEnum):
-            """gRPC channel state enumeration (single source of truth).
-
-            DRY Pattern:
-                StrEnum is the single source of truth. Use ChannelState.IDLE.value
-                or ChannelState.IDLE directly - no base strings needed.
-            """
-
-            IDLE = "idle"
-            READY = "ready"
-
-        @unique
-        class ServerState(StrEnum):
-            """gRPC server state enumeration (single source of truth).
-
-            DRY Pattern:
-                StrEnum is the single source of truth. Use ServerState.STOPPED.value
-                or ServerState.STOPPED directly - no base strings needed.
-            """
-
-            STOPPED = "stopped"
-            STARTING = "starting"
-            RUNNING = "running"
-            STOPPING = "stopping"
-
-        @unique
-        class GrpcOperations(StrEnum):
-            """gRPC operation types (single source of truth).
-
-            DRY Pattern:
-                StrEnum is the single source of truth. Use GrpcOperations.UNARY.value
-                or GrpcOperations.UNARY directly - no base strings needed.
-            """
-
-            UNARY = "unary"
-
-        @unique
-        class ServiceMethod(StrEnum):
-            """gRPC service method names (single source of truth).
-
-            DRY Pattern:
-                StrEnum is the single source of truth. Use ServiceMethod.ECHO.value
-                or ServiceMethod.ECHO directly - no base strings needed.
-            """
-
-            ECHO = "Echo"
-            HEALTH_CHECK = "HealthCheck"
-
-        @unique
-        class CompressionTypes(StrEnum):
-            """gRPC compression types (single source of truth).
-
-            DRY Pattern:
-                StrEnum is the single source of truth. Use CompressionTypes.NONE.value
-                or CompressionTypes.NONE directly - no base strings needed.
-            """
-
-            NONE = "none"
-
-        @unique
-        class LoadBalancingPolicies(StrEnum):
-            """gRPC load balancing policies (single source of truth).
-
-            DRY Pattern:
-                StrEnum is the single source of truth. Use LoadBalancingPolicies.ROUND_ROBIN.value
-                or LoadBalancingPolicies.ROUND_ROBIN directly - no base strings needed.
-            """
-
-            ROUND_ROBIN = "round_robin"
-
         # ===== Enum-derived frozensets (immutable collections) =====
-        CHANNEL_STATES: Final[frozenset[str]] = frozenset(
-            member.value for member in ChannelState.__members__.values()
-        )
-        """Channel states frozenset - generated from ChannelState StrEnum."""
-
-        SERVER_STATES: Final[frozenset[str]] = frozenset(
-            member.value for member in ServerState.__members__.values()
-        )
-        """Server states frozenset - generated from ServerState StrEnum."""
-
-        STREAM_TYPES: Final[frozenset[str]] = frozenset(
-            member.value for member in GrpcOperations.__members__.values()
-        )
-        """Stream types frozenset - generated from GrpcOperations StrEnum."""
-
-        LOAD_BALANCING_POLICIES: Final[frozenset[str]] = frozenset(
-            member.value for member in LoadBalancingPolicies.__members__.values()
-        )
-        """Load balancing policies frozenset - generated from LoadBalancingPolicies StrEnum."""
+        # Owned by ``FlextGrpcConstantsBase`` in ``_constants/base.py``
+        # (ENFORCE-079): state enums and their derived frozensets resolve
+        # through the MRO (``c.Grpc.ChannelState``, ``c.Grpc.CHANNEL_STATES``).
 
 
 c = FlextGrpcConstants
