@@ -727,9 +727,9 @@ Quality Distribution:
     quality_ranges = {
         "Excellent (90-100%)": len([r for r in audit_results if r.quality_score >= 90]),
         "Good (80-89%)": len([r for r in audit_results if 80 <= r.quality_score < 90]),
-        "Needs Work (70-79%)": len([
-            r for r in audit_results if 70 <= r.quality_score < 80
-        ]),
+        "Needs Work (70-79%)": len(
+            [r for r in audit_results if 70 <= r.quality_score < 80]
+        ),
         "Critical (<70%)": len([r for r in audit_results if r.quality_score < 70]),
     }
 
