@@ -23,6 +23,7 @@ if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
 
     from . import proto, services
+    from .__version__ import FlextGrpcVersion
     from ._config import FlextGrpcConfig, config
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
@@ -62,6 +63,7 @@ __all__: tuple[str, ...] = (
     "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
+    "FlextGrpcVersion",
     "__author__",
     "__author_email__",
     "__description__",
@@ -91,6 +93,7 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
+            ".__version__": ("FlextGrpcVersion",),
             "._config": ("FlextGrpcConfig", "config"),
             "._settings": ("FlextGrpcSettings", "settings"),
             ".api": ("FlextGrpc", "grpc"),

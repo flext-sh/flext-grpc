@@ -9,13 +9,25 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc import FlextGrpcConstants, d, e, h, r, s, x
+    from flext_grpc import (
+        FlextGrpcConstants,
+        FlextGrpcConstants as c,
+        d,
+        e,
+        h,
+        m,
+        p,
+        r,
+        s,
+        u,
+        x,
+    )
 
-    from .constants import ExamplesFlextGrpcConstants, ExamplesFlextGrpcConstants as c
-    from .models import ExamplesFlextGrpcModels, ExamplesFlextGrpcModels as m
-    from .protocols import ExamplesFlextGrpcProtocols, ExamplesFlextGrpcProtocols as p
+    from .constants import ExamplesFlextGrpcConstants
+    from .models import ExamplesFlextGrpcModels
+    from .protocols import ExamplesFlextGrpcProtocols
     from .typings import ExamplesFlextGrpcTypes, ExamplesFlextGrpcTypes as t
-    from .utilities import ExamplesFlextGrpcUtilities, ExamplesFlextGrpcUtilities as u
+    from .utilities import ExamplesFlextGrpcUtilities
 __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcConstants",
     "ExamplesFlextGrpcModels",
@@ -39,12 +51,24 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
-            ".constants": ("ExamplesFlextGrpcConstants", "c"),
-            ".models": ("ExamplesFlextGrpcModels", "m"),
-            ".protocols": ("ExamplesFlextGrpcProtocols", "p"),
+            ".constants": ("ExamplesFlextGrpcConstants",),
+            ".models": ("ExamplesFlextGrpcModels",),
+            ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
-            ".utilities": ("ExamplesFlextGrpcUtilities", "u"),
-            "flext_grpc": ("FlextGrpcConstants", "d", "e", "h", "r", "s", "x"),
+            ".utilities": ("ExamplesFlextGrpcUtilities",),
+            "flext_grpc": (
+                "FlextGrpcConstants",
+                "c",
+                "d",
+                "e",
+                "h",
+                "m",
+                "p",
+                "r",
+                "s",
+                "u",
+                "x",
+            ),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
