@@ -9,25 +9,14 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc import (
-        FlextGrpcConstants,
-        FlextGrpcConstants as c,
-        d,
-        e,
-        h,
-        m,
-        p,
-        r,
-        s,
-        u,
-        x,
-    )
+    from flext_core import d, e, h, r, x
+    from flext_grpc import FlextGrpcConstants, s
 
-    from .constants import ExamplesFlextGrpcConstants
-    from .models import ExamplesFlextGrpcModels
-    from .protocols import ExamplesFlextGrpcProtocols
+    from .constants import ExamplesFlextGrpcConstants, ExamplesFlextGrpcConstants as c
+    from .models import ExamplesFlextGrpcModels, ExamplesFlextGrpcModels as m
+    from .protocols import ExamplesFlextGrpcProtocols, ExamplesFlextGrpcProtocols as p
     from .typings import ExamplesFlextGrpcTypes, ExamplesFlextGrpcTypes as t
-    from .utilities import ExamplesFlextGrpcUtilities
+    from .utilities import ExamplesFlextGrpcUtilities, ExamplesFlextGrpcUtilities as u
 __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcConstants",
     "ExamplesFlextGrpcModels",
@@ -51,24 +40,13 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
-            ".constants": ("ExamplesFlextGrpcConstants",),
-            ".models": ("ExamplesFlextGrpcModels",),
-            ".protocols": ("ExamplesFlextGrpcProtocols",),
+            ".constants": ("ExamplesFlextGrpcConstants", "c"),
+            ".models": ("ExamplesFlextGrpcModels", "m"),
+            ".protocols": ("ExamplesFlextGrpcProtocols", "p"),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
-            ".utilities": ("ExamplesFlextGrpcUtilities",),
-            "flext_grpc": (
-                "FlextGrpcConstants",
-                "c",
-                "d",
-                "e",
-                "h",
-                "m",
-                "p",
-                "r",
-                "s",
-                "u",
-                "x",
-            ),
+            ".utilities": ("ExamplesFlextGrpcUtilities", "u"),
+            "flext_core": ("d", "e", "h", "r", "x"),
+            "flext_grpc": ("FlextGrpcConstants", "s"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
