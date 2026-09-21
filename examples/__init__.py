@@ -9,11 +9,8 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc import (
-        FlextGrpcConstants, FlextGrpcConstants as c, d, e,
-        h, m, p, r,
-        s, u, x,
-    )
+    from flext_core import d, e, h, r, x
+    from flext_grpc import FlextGrpcConstants, FlextGrpcConstants as c, m, p, s, u
 
     from .constants import ExamplesFlextGrpcConstants
     from .models import ExamplesFlextGrpcModels
@@ -21,10 +18,22 @@ if TYPE_CHECKING:
     from .typings import ExamplesFlextGrpcTypes, ExamplesFlextGrpcTypes as t
     from .utilities import ExamplesFlextGrpcUtilities
 __all__: tuple[str, ...] = (
-    "ExamplesFlextGrpcConstants", "ExamplesFlextGrpcModels", "ExamplesFlextGrpcProtocols", "ExamplesFlextGrpcTypes",
-    "ExamplesFlextGrpcUtilities", "FlextGrpcConstants", "c", "d",
-    "e", "h", "m", "p",
-    "r", "s", "t", "u",
+    "ExamplesFlextGrpcConstants",
+    "ExamplesFlextGrpcModels",
+    "ExamplesFlextGrpcProtocols",
+    "ExamplesFlextGrpcTypes",
+    "ExamplesFlextGrpcUtilities",
+    "FlextGrpcConstants",
+    "c",
+    "d",
+    "e",
+    "h",
+    "m",
+    "p",
+    "r",
+    "s",
+    "t",
+    "u",
     "x",
 )
 
@@ -36,9 +45,8 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
             ".utilities": ("ExamplesFlextGrpcUtilities",),
-            "flext_grpc": (
-                "FlextGrpcConstants", "c", "d", "e", "h", "m", "p", "r", "s", "u", "x",
-            ),
+            "flext_core": ("d", "e", "h", "r", "x"),
+            "flext_grpc": ("FlextGrpcConstants", "c", "m", "p", "s", "u"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
