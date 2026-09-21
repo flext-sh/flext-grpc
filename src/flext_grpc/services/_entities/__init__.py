@@ -17,13 +17,8 @@ if TYPE_CHECKING:
     from .stream_manager import FlextGrpcStreamManagerImpl
     from .stream_state import FlextGrpcStreamRuntimeState
 __all__: tuple[str, ...] = (
-    "FlextGrpcClientManagerImpl",
-    "FlextGrpcConnectionPoolImpl",
-    "FlextGrpcMetricValueModel",
-    "FlextGrpcMetricsCollectorImpl",
-    "FlextGrpcServerManagerImpl",
-    "FlextGrpcStreamManagerImpl",
-    "FlextGrpcStreamRuntimeState",
+    "FlextGrpcClientManagerImpl", "FlextGrpcConnectionPoolImpl", "FlextGrpcMetricValueModel", "FlextGrpcMetricsCollectorImpl",
+    "FlextGrpcServerManagerImpl", "FlextGrpcStreamManagerImpl", "FlextGrpcStreamRuntimeState",
 )
 
 _LAZY_IMPORTS = MappingProxyType(
