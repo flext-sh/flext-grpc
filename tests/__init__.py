@@ -9,21 +9,20 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
+    from flext_cli import cli
     from flext_tests import (
+        active_rules,
         api,
-        cli,
         config,
-        from_json,
+        discover_repository_root,
         install_local_packages,
         load_infra_report,
-        services,
         settings,
+        split_csv,
         td,
         tf,
         tk,
         tm,
-        to_json,
-        to_jsonable_python,
         tv,
     )
 
@@ -38,6 +37,8 @@ if TYPE_CHECKING:
     from .settings import TestsFlextGrpcSettings
     from .typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
     from .utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
+
+
 __all__: tuple[str, ...] = (
     "TestsFlextGrpcConstants",
     "TestsFlextGrpcModels",
@@ -46,14 +47,15 @@ __all__: tuple[str, ...] = (
     "TestsFlextGrpcSettings",
     "TestsFlextGrpcTypes",
     "TestsFlextGrpcUtilities",
+    "active_rules",
     "api",
     "c",
     "cli",
     "config",
     "core",
     "d",
+    "discover_repository_root",
     "e",
-    "from_json",
     "grpc",
     "h",
     "install_local_packages",
@@ -64,15 +66,13 @@ __all__: tuple[str, ...] = (
     "p",
     "r",
     "s",
-    "services",
     "settings",
+    "split_csv",
     "t",
     "td",
     "tf",
     "tk",
     "tm",
-    "to_json",
-    "to_jsonable_python",
     "tv",
     "u",
     "unit",
@@ -90,23 +90,22 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("TestsFlextGrpcTypes", "t"),
             ".unit": ("unit",),
             ".utilities": ("TestsFlextGrpcUtilities", "u"),
+            "flext_cli": ("cli",),
             "flext_core": ("core", "d", "e", "h", "lazy_attribute", "r", "x"),
             "flext_grpc": ("grpc", "main"),
             "flext_tests": (
+                "active_rules",
                 "api",
-                "cli",
                 "config",
-                "from_json",
+                "discover_repository_root",
                 "install_local_packages",
                 "load_infra_report",
-                "services",
                 "settings",
+                "split_csv",
                 "td",
                 "tf",
                 "tk",
                 "tm",
-                "to_json",
-                "to_jsonable_python",
                 "tv",
             ),
         }),

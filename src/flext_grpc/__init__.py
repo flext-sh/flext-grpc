@@ -42,6 +42,8 @@ if TYPE_CHECKING:
     from .services.stream import FlextGrpcStream
     from .typings import FlextGrpcTypes, t
     from .utilities import FlextGrpcUtilities, u
+
+
 __all__: tuple[str, ...] = (
     "FlextGrpc",
     "FlextGrpcApiRuntime",
