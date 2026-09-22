@@ -9,30 +9,51 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_core import d, e, h, r, x
-    from flext_grpc import FlextGrpcConstants, s
+    from pydantic_core import from_json, to_json, to_jsonable_python
 
-    from .constants import ExamplesFlextGrpcConstants, ExamplesFlextGrpcConstants as c
-    from .models import ExamplesFlextGrpcModels, ExamplesFlextGrpcModels as m
-    from .protocols import ExamplesFlextGrpcProtocols, ExamplesFlextGrpcProtocols as p
+    from flext_core import (
+        core,
+        d,
+        e,
+        h,
+        lazy,
+        lazy_attribute,
+        normalize_lazy_imports,
+        r,
+        x,
+    )
+    from flext_grpc import c, config, grpc, m, p, s, settings, u
+
+    from .constants import ExamplesFlextGrpcConstants
+    from .models import ExamplesFlextGrpcModels
+    from .protocols import ExamplesFlextGrpcProtocols
     from .typings import ExamplesFlextGrpcTypes, ExamplesFlextGrpcTypes as t
-    from .utilities import ExamplesFlextGrpcUtilities, ExamplesFlextGrpcUtilities as u
+    from .utilities import ExamplesFlextGrpcUtilities
 __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcConstants",
     "ExamplesFlextGrpcModels",
     "ExamplesFlextGrpcProtocols",
     "ExamplesFlextGrpcTypes",
     "ExamplesFlextGrpcUtilities",
-    "FlextGrpcConstants",
     "c",
+    "config",
+    "core",
     "d",
     "e",
+    "from_json",
+    "grpc",
     "h",
+    "lazy",
+    "lazy_attribute",
     "m",
+    "normalize_lazy_imports",
     "p",
     "r",
     "s",
+    "settings",
     "t",
+    "to_json",
+    "to_jsonable_python",
     "u",
     "x",
 )
@@ -40,13 +61,24 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
-            ".constants": ("ExamplesFlextGrpcConstants", "c"),
-            ".models": ("ExamplesFlextGrpcModels", "m"),
-            ".protocols": ("ExamplesFlextGrpcProtocols", "p"),
+            ".constants": ("ExamplesFlextGrpcConstants",),
+            ".models": ("ExamplesFlextGrpcModels",),
+            ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
-            ".utilities": ("ExamplesFlextGrpcUtilities", "u"),
-            "flext_core": ("d", "e", "h", "r", "x"),
-            "flext_grpc": ("FlextGrpcConstants", "s"),
+            ".utilities": ("ExamplesFlextGrpcUtilities",),
+            "flext_core": (
+                "core",
+                "d",
+                "e",
+                "h",
+                "lazy",
+                "lazy_attribute",
+                "normalize_lazy_imports",
+                "r",
+                "x",
+            ),
+            "flext_grpc": ("c", "config", "grpc", "m", "p", "s", "settings", "u"),
+            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
