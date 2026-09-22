@@ -113,7 +113,8 @@ padrão.
        52  bd hooks install --chain >/dev/null || fail "bd hooks install --chain failed"
        53
        54  hook_path="$(git rev-parse --git-path hooks/prepare-commit-msg)"
->>>    55  [ -f "${hook_path}" ] || fail "prepare-commit-msg hook missing after bd hooks install"
+>>>    55  [ -f "${hook_path}" ] \
+>>>        || fail "prepare-commit-msg hook missing after bd hooks install"
        56
        57  _log "Applying FLEXT agent-trailer guard to ${hook_path}"
        58  GUARD_TOKEN="BD_ALLOW_AGENT_COMMIT_TRAILERS" python3 - "${hook_path}" <<'PY'
@@ -158,7 +159,8 @@ padrão.
 >>>   106  [ -f "$(git rev-parse --git-path hooks/pre-push)" ] \
       107  	|| fail "pre-push hook missing after provisioning"
       108
-      109  echo "install-git-hooks: prepare-commit-msg guarded (BD_ALLOW_AGENT_COMMIT_TRAILERS opt-in)"
+      109  echo "install-git-hooks: prepare-commit-msg guarded" \
+             "(BD_ALLOW_AGENT_COMMIT_TRAILERS opt-in)"
 ```
 
 **Decisão**: pendente
