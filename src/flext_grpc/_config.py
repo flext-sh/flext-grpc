@@ -26,7 +26,9 @@ class FlextGrpcConfig(FlextCliConfig):
 
     Grpc: Annotated[
         _GrpcNamespace,
-        m.Field(description="Open namespace exposing ``config/*.yaml`` under ``Grpc``."),
+        m.Field(
+            description="Open namespace exposing ``config/*.yaml`` under ``Grpc``."
+        ),
     ] = _GrpcNamespace()
 
 
