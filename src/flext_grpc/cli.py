@@ -18,4 +18,10 @@ class FlextGrpcCli(FlextCliCli):
     """Flext-grpc CLI facade — extends flext-cli CLI."""
 
 
-__all__: t.VariadicTuple[str] = ("FlextGrpcCli",)
+def main(args: t.StrSequence | None = None) -> int:
+    """Console-script entry point — commands are not implemented yet."""
+    _ = args
+    return 0
+
+
+__all__: t.VariadicTuple[str] = ("FlextGrpcCli", "main")
