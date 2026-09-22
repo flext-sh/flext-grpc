@@ -108,10 +108,9 @@ Status**: 28 failed, 36 passed (64 total tests)
 ## Executive Summary
 
 FLEXT-gRPC testing strategy focuses on achieving 90%+ code coverage with comprehensive
-validation of gRPC operations,
-
-     FLEXT ecosystem integration,
-     and error handling patterns. Current testing shows 39% coverage with critical failures that must be addressed before production deployment.
+validation of gRPC operations, FLEXT ecosystem integration, and error handling patterns.
+Current testing shows 39% coverage with critical failures that must be addressed before
+production deployment.
 
 ## Current Testing Status
 
@@ -158,7 +157,7 @@ TOTAL                                          1798    956    380     14    39%
 
    - **Issue**: Exception constructors have incorrect parameter signatures
    - **Error**:
-     `TypeError: FlextGrpcExceptions.*.__init__() takes X positional arguments but Y were given`
+     `TypeError: FlextGrpcExceptions.*.__init__() takes X positional args but Y given`
    - **Impact**: Error handling classes unusable
    - **Tests**: `test_configuration_error_*`, `test_validation_error_*`,
      `test_all_errors_are_exceptions`
@@ -469,7 +468,8 @@ PYTHONPATH=src make test tests/unit/test_config.py --cov=src/flext_grpc --cov-re
 
 ```bash
 # Run single failing test
-PYTHONPATH=src make test tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
+PYTHONPATH=src make test \
+  tests/unit/test_services.py::TestFlextGrpcServices::test_init -v -s
 
 # Run with detailed output
 PYTHONPATH=src make test tests/unit/test_services.py -v --tb=long
