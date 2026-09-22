@@ -48,7 +48,8 @@
   - [Documentation](#documentation)
   - [Development](#development)
   - [Community](#community)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

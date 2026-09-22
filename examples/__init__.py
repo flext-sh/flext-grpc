@@ -9,20 +9,8 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from pydantic_core import from_json, to_json, to_jsonable_python
-
-    from flext_core import (
-        core,
-        d,
-        e,
-        h,
-        lazy,
-        lazy_attribute,
-        normalize_lazy_imports,
-        r,
-        x,
-    )
-    from flext_grpc import c, config, grpc, m, p, s, settings, u
+    from flext_core import core, d, e, h, lazy_attribute, r, services, x
+    from flext_grpc import c, config, grpc, m, main, p, s, settings, u
 
     from .constants import ExamplesFlextGrpcConstants
     from .models import ExamplesFlextGrpcModels
@@ -40,20 +28,17 @@ __all__: tuple[str, ...] = (
     "core",
     "d",
     "e",
-    "from_json",
     "grpc",
     "h",
-    "lazy",
     "lazy_attribute",
     "m",
-    "normalize_lazy_imports",
+    "main",
     "p",
     "r",
     "s",
+    "services",
     "settings",
     "t",
-    "to_json",
-    "to_jsonable_python",
     "u",
     "x",
 )
@@ -71,14 +56,22 @@ _LAZY_IMPORTS = MappingProxyType(
                 "d",
                 "e",
                 "h",
-                "lazy",
                 "lazy_attribute",
-                "normalize_lazy_imports",
                 "r",
+                "services",
                 "x",
             ),
-            "flext_grpc": ("c", "config", "grpc", "m", "p", "s", "settings", "u"),
-            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
+            "flext_grpc": (
+                "c",
+                "config",
+                "grpc",
+                "m",
+                "main",
+                "p",
+                "s",
+                "settings",
+                "u",
+            ),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

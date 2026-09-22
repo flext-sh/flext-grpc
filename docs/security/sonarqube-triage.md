@@ -26,7 +26,8 @@
   - [19 · ⚪ MINOR · CODE_SMELL · python:S7504](#19-minor-code_smell-pythons7504)
   - [20 · ⚪ MINOR · CODE_SMELL · python:S116](#20-minor-code_smell-pythons116)
   - [21 · ⚪ MINOR · CODE_SMELL · python:S116](#21-minor-code_smell-pythons116)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 Gerado do dump da plataforma SonarCloud (2026-08-06).
 

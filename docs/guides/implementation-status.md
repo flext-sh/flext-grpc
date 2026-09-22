@@ -30,7 +30,8 @@
   - [Phase 1 Success (Test Coverage & Bug Fixes)](#phase-1-success-test-coverage-bug-fixes)
   - [Phase 2 Success (Production Hardening)](#phase-2-success-production-hardening)
   - [Phase 3 Success (Feature Complete)](#phase-3-success-feature-complete)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

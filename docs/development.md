@@ -35,7 +35,7 @@
 - [Troubleshooting Development Issues](#troubleshooting-development-issues)
   - [Common Issues](#common-issues)
   - [Development Tools](#development-tools)
-- [# Python debugger import pdb; pdb.set_trace() # REPL with project loaded make shell >>> from flext_grpc import FlextGrpcSettings >>> settings = FlextGrpcSettings()](#python-debugger-import-pdb-pdbset_trace-repl-with-project-loaded-make-shell-from-flext_grpc-import-flextgrpcsettings-settings-flextgrpcsettings)
+
 <!-- TOC END -->
 
 ## Table of Contents

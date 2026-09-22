@@ -31,7 +31,7 @@
 - [Troubleshooting Configuration](#troubleshooting-configuration)
   - [Common Issues](#common-issues)
   - [Debugging Configuration](#debugging-configuration)
-- [from **future** import annotations import os from flext*grpc import FlextGrpcSettings def debug_config(): print("Environment variables:") for key, value in os.environ.items(): if key.startswith("GRPC*"): print(f" {key}={value}") settings = FlextGrpcSettings() print(" Actual configuration:") print(f" Host: {settings.host}") print(f" Port: {settings.port}") print(f" Workers: {settings.max_workers}") print(f" Timeout: {settings.timeout}")](#from-__future__-import-annotations-import-os-from-flext_grpc-import-flextgrpcsettings-def-debug_config-printenvironment-variables-for-key-value-in-osenvironitems-if-keystartswithgrpc_-printf-keyvalue-settings-flextgrpcsettings-printnactual-configuration-printf-host-settingshost-printf-port-settingsport-printf-workers-settingsmax_workers-printf-timeout-settingstimeout)
+
 <!-- TOC END -->
 
 ## Table of Contents
