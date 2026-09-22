@@ -20,8 +20,6 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from pydantic_core import from_json, to_json, to_jsonable_python
-
     from flext_core import core, d, e, h, lazy_attribute, r, x
 
     from . import proto, services
@@ -77,7 +75,6 @@ __all__: tuple[str, ...] = (
     "core",
     "d",
     "e",
-    "from_json",
     "grpc",
     "h",
     "lazy_attribute",
@@ -89,8 +86,6 @@ __all__: tuple[str, ...] = (
     "services",
     "settings",
     "t",
-    "to_json",
-    "to_jsonable_python",
     "u",
     "x",
 )
@@ -120,7 +115,6 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("FlextGrpcTypes", "t"),
             ".utilities": ("FlextGrpcUtilities", "u"),
             "flext_core": ("core", "d", "e", "h", "lazy_attribute", "r", "x"),
-            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
