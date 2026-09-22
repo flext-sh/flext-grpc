@@ -24,7 +24,7 @@ from tests import p
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
 # satisfy the runtime-checkable protocol (verified via isinstance below).
-_PROTOCOL_CONTRACTS: t.MappingKV[str, tuple[str, ...]] = {
+_PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
     "Server": (
         "add_service",
         "configure_port",
@@ -76,16 +76,16 @@ _PROTOCOL_CONTRACTS: t.MappingKV[str, tuple[str, ...]] = {
     ),
 }
 
-_PROTOCOL_NAMES: tuple[str, ...] = tuple(_PROTOCOL_CONTRACTS)
+_PROTOCOL_NAMES: t.VariadicTuple[str] = tuple(_PROTOCOL_CONTRACTS)
 
 
-def _build_conforming_instance(members: tuple[str, ...]) -> object:
+def _build_conforming_instance(members: t.VariadicTuple[str]) -> object:
     """Create an object exposing exactly ``members`` as callables."""
     namespace = {name: (lambda: None) for name in members}
     return type("Conforming", (), namespace)()
 
 
-def _build_partial_instance(members: tuple[str, ...], *, omit: str) -> object:
+def _build_partial_instance(members: t.VariadicTuple[str], *, omit: str) -> object:
     """Create an object exposing every member except ``omit``."""
     namespace = {name: (lambda: None) for name in members if name != omit}
     return type("Partial", (), namespace)()

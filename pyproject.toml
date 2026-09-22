@@ -153,8 +153,11 @@ allow-direct-references = true
 [tool.hatch.build.targets.wheel]
 packages = ["src/flext_grpc"]
 
+[tool.hatch.build.targets.wheel.force-include]
+config = "flext_grpc/config"
+
 [tool.hatch.build.targets.sdist]
-only-include = ["src/flext_grpc"]
+only-include = ["src/flext_grpc", "config"]
 
 [tool.mypy]
 disable_error_code = [
