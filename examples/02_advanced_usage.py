@@ -38,7 +38,6 @@ class ExamplesFlextGrpcAdvancedUsage:
         self._settings_cls = FlextGrpcSettings
         self._c = c
         self._p = p
-        self._r = r
         self._t = t
 
     @property
@@ -70,11 +69,6 @@ class ExamplesFlextGrpcAdvancedUsage:
     def p(self) -> type[p]:
         """Public accessor for protocols facade."""
         return self._p
-
-    @property
-    def r(self) -> type[r]:
-        """Public accessor for result facade."""
-        return self._r
 
     @property
     def t(self) -> type[t]:

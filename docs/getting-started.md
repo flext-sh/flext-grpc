@@ -137,9 +137,9 @@ from __future__ import annotations
 from flext_grpc import FlextGrpcSettings
 
 # Create configuration with validation
-settings = FlextGrpcSettings.model_validate(
-    {"Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}}
-)
+settings = FlextGrpcSettings.model_validate({
+    "Grpc": {"host": "localhost", "port": 50051, "max_workers": 10, "timeout": 30.0}
+})
 print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 ```
 
@@ -149,7 +149,7 @@ print(f"Config: {settings.Grpc.host}:{settings.Grpc.port}")
 
 ```bash
 # Run a basic test
-make test tests/unit/test_config.py::TestFlextGrpcSettings::test_create_valid_config_with_defaults -v
+make test tests/unit/test_config.py -k test_create_valid_config_with_defaults -v
 
 # Check test coverage (currently 39%)
 make test tests/unit/test_config.py --cov=src/flext_grpc --cov-report=term
