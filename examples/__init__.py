@@ -9,8 +9,6 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from pydantic_core import from_json, to_json, to_jsonable_python
-
     from flext_core import (
         core,
         d,
@@ -22,7 +20,7 @@ if TYPE_CHECKING:
         r,
         x,
     )
-    from flext_grpc import c, config, grpc, m, p, s, settings, u
+    from flext_grpc import c, config, grpc, m, main, p, s, settings, u
 
     from .constants import ExamplesFlextGrpcConstants
     from .models import ExamplesFlextGrpcModels
@@ -40,20 +38,18 @@ __all__: tuple[str, ...] = (
     "core",
     "d",
     "e",
-    "from_json",
     "grpc",
     "h",
     "lazy",
     "lazy_attribute",
     "m",
+    "main",
     "normalize_lazy_imports",
     "p",
     "r",
     "s",
     "settings",
     "t",
-    "to_json",
-    "to_jsonable_python",
     "u",
     "x",
 )
@@ -77,8 +73,17 @@ _LAZY_IMPORTS = MappingProxyType(
                 "r",
                 "x",
             ),
-            "flext_grpc": ("c", "config", "grpc", "m", "p", "s", "settings", "u"),
-            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
+            "flext_grpc": (
+                "c",
+                "config",
+                "grpc",
+                "m",
+                "main",
+                "p",
+                "s",
+                "settings",
+                "u",
+            ),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

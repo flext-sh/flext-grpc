@@ -20,8 +20,6 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from pydantic_core import from_json, to_json, to_jsonable_python
-
     from flext_core import core, d, e, h, lazy_attribute, r, x
 
     from . import proto, services
@@ -29,7 +27,7 @@ if TYPE_CHECKING:
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
     from .base import FlextGrpcServiceBase, s
-    from .cli import FlextGrpcCli
+    from .cli import FlextGrpcCli, main
     from .constants import FlextGrpcConstants, FlextGrpcConstants as c
     from .errors import FlextGrpcErrors
     from .models import FlextGrpcModels, m
@@ -77,11 +75,11 @@ __all__: tuple[str, ...] = (
     "core",
     "d",
     "e",
-    "from_json",
     "grpc",
     "h",
     "lazy_attribute",
     "m",
+    "main",
     "p",
     "proto",
     "r",
@@ -89,8 +87,6 @@ __all__: tuple[str, ...] = (
     "services",
     "settings",
     "t",
-    "to_json",
-    "to_jsonable_python",
     "u",
     "x",
 )
@@ -102,7 +98,7 @@ _LAZY_IMPORTS = MappingProxyType(
             "._settings": ("FlextGrpcSettings", "settings"),
             ".api": ("FlextGrpc", "grpc"),
             ".base": ("FlextGrpcServiceBase", "s"),
-            ".cli": ("FlextGrpcCli",),
+            ".cli": ("FlextGrpcCli", "main"),
             ".constants": ("FlextGrpcConstants", "c"),
             ".errors": ("FlextGrpcErrors",),
             ".models": ("FlextGrpcModels", "m"),
@@ -120,7 +116,6 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("FlextGrpcTypes", "t"),
             ".utilities": ("FlextGrpcUtilities", "u"),
             "flext_core": ("core", "d", "e", "h", "lazy_attribute", "r", "x"),
-            "pydantic_core": ("from_json", "to_json", "to_jsonable_python"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
