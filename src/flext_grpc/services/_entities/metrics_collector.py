@@ -33,7 +33,8 @@ class FlextGrpcMetricsCollectorImpl:
         """
         with self._lock:
             vals = self._metrics.values
-            return vals.get(key)
+            value: t.JsonValue | None = vals.get(key)
+            return value
 
     def record_metric(self, key: str, value: t.JsonValue | None) -> None:
         """Thread-safe metric recording.
