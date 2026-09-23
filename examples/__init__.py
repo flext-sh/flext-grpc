@@ -9,17 +9,7 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_core import (
-        core,
-        d,
-        e,
-        h,
-        lazy,
-        lazy_attribute,
-        normalize_lazy_imports,
-        r,
-        x,
-    )
+    from flext_core import core, d, e, h, lazy_attribute, r, services, x
     from flext_grpc import c, config, grpc, m, main, p, s, settings, u
 
     from .constants import ExamplesFlextGrpcConstants
@@ -42,14 +32,13 @@ __all__: tuple[str, ...] = (
     "e",
     "grpc",
     "h",
-    "lazy",
     "lazy_attribute",
     "m",
     "main",
-    "normalize_lazy_imports",
     "p",
     "r",
     "s",
+    "services",
     "settings",
     "t",
     "u",
@@ -69,10 +58,9 @@ _LAZY_IMPORTS = MappingProxyType(
                 "d",
                 "e",
                 "h",
-                "lazy",
                 "lazy_attribute",
-                "normalize_lazy_imports",
                 "r",
+                "services",
                 "x",
             ),
             "flext_grpc": (
