@@ -42,7 +42,8 @@
   - [Immediate Actions (Next Sprint)](#immediate-actions-next-sprint)
   - [Short Term (Next Month)](#short-term-next-month)
   - [Long Term (Next Quarter)](#long-term-next-quarter)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

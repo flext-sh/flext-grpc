@@ -49,7 +49,7 @@
 - [🔐 Security Considerations](#security-considerations)
   - [Safe Operations](#safe-operations)
   - [Best Practices](#best-practices)
-- [from **future** import annotations # Safe file operations from pathlib import Path def safe*read_file(file_path: Path) -> str: """Safely read documentation file.""" if not file_path.exists(): raise FileNotFoundError(f"File not found: {file_path}") if file_path.stat().st_size > 10 * 1024 \_ 1024: # 10MB limit raise ValueError(f"File too large: {file_path}") # Validate path is within docs directory docs_dir = Path("docs") try: file_path.relative_to(docs_dir) except ValueError: raise ValueError(f"File outside docs directory: {file_path}") return file_path.read_text(encoding="utf-8")](#from-__future__-import-annotations-safe-file-operations-from-pathlib-import-path-def-safe_read_filefile_path-path-str-safely-read-documentation-file-if-not-file_pathexists-raise-filenotfounderrorffile-not-found-file_path-if-file_pathstatst_size-10-1024-1024-10mb-limit-raise-valueerrorffile-too-large-file_path-validate-path-is-within-docs-directory-docs_dir-pathdocs-try-file_pathrelative_todocs_dir-except-valueerror-raise-valueerrorffile-outside-docs-directory-file_path-return-file_pathread_textencodingutf-8)
+
 <!-- TOC END -->
 
 ## Table of Contents

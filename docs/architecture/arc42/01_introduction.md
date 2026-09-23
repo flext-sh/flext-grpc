@@ -29,7 +29,8 @@
   - [Technical Assumptions](#technical-assumptions)
   - [Business Assumptions](#business-assumptions)
   - [Environmental Assumptions](#environmental-assumptions)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

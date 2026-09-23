@@ -82,7 +82,7 @@ operations.
 
 - `FlextGrpcPlatform` - Main platform facade with convenience methods
 - Container integration with global dependency injection
-- High-level operations: `start_server()`, `connect_client()`, `make_call()`
+- runtime_bootstrap_options
 - Type-safe result handling and validation
 
 **Benefits**:
@@ -130,7 +130,7 @@ operations.
 - **State Types**: `TGrpcChannelState`, `TGrpcServerState`, `TGrpcStreamType`
 - **Configuration Types**: `TGrpcHost`, `TGrpcPort`, `TGrpcTimeout`
 - **Protocol Definitions**: `TGrpcChannel`, `TGrpcServer`, `TGrpcStub`
-- **Validation Functions**: `flext_grpc_validate_target()`, `flext_grpc_parse_target()`
+- runtime_bootstrap_options
 
 **Benefits**:
 
@@ -162,8 +162,8 @@ operations.
 
 **Purpose**: Convenient factory functions and utilities **Components**:
 
-- **Factory Functions**: `create_server()`, `create_client()`, `create_channel()`
-- **Configuration Builders**: `create_config()`, `create_service()`, `create_stream()`
+- runtime_bootstrap_options
+- runtime_bootstrap_options
 - **Validation Utilities**: `validate_address()`, `parse_address()`
 - **Complete Setup**: `create_complete_setup()` for rapid development
 
@@ -174,13 +174,13 @@ operations.
 - Type safety through proper annotations
 - Integration with underlying domain entities
 
-#### **`__init__.py`** - Public API Exports
+#### runtime_bootstrap_options
 
 **Purpose**: Clean public interface with organized exports **Components**:
 
 - Version information with dynamic package metadata
 - Organized imports by category (entities, services, configuration)
-- Complete `__all__` export list with documentation
+- runtime_bootstrap_options
 - Architecture metadata and compatibility information
 
 ## 🏗️ Architecture Implementation
@@ -238,7 +238,7 @@ operations.
 1. Add high-level functions to `api.py`
 1. Provide comprehensive parameter validation
 1. Include working code examples in docstrings
-1. Export through `__init__.py` with proper categorization
+1. runtime_bootstrap_options
 
 ### **Configuration Development**
 

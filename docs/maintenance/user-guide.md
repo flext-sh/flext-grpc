@@ -42,7 +42,8 @@
   - [Documentation](#documentation)
   - [Community Resources](#community-resources)
   - [Professional Services](#professional-services)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 
