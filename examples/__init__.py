@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
+<<<<<<< HEAD
     from flext_core import (
         core,
         d,
@@ -21,6 +22,9 @@ if TYPE_CHECKING:
         x,
     )
     from flext_grpc import c, config, grpc, m, main, p, s, settings, u
+=======
+    from flext_grpc import c, d, e, h, m, p, r, s, u, x
+>>>>>>> recovery/rope-automation-20260921
 
     from .constants import ExamplesFlextGrpcConstants
     from .models import ExamplesFlextGrpcModels
@@ -36,12 +40,10 @@ __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcTypes",
     "ExamplesFlextGrpcUtilities",
     "c",
-    "config",
-    "core",
     "d",
     "e",
-    "grpc",
     "h",
+<<<<<<< HEAD
     "lazy",
     "lazy_attribute",
     "m",
@@ -51,6 +53,12 @@ __all__: tuple[str, ...] = (
     "r",
     "s",
     "settings",
+=======
+    "m",
+    "p",
+    "r",
+    "s",
+>>>>>>> recovery/rope-automation-20260921
     "t",
     "u",
     "x",
@@ -64,6 +72,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
             ".utilities": ("ExamplesFlextGrpcUtilities",),
+<<<<<<< HEAD
             "flext_core": (
                 "core",
                 "d",
@@ -86,6 +95,9 @@ _LAZY_IMPORTS = MappingProxyType(
                 "settings",
                 "u",
             ),
+=======
+            "flext_grpc": ("c", "d", "e", "h", "m", "p", "r", "s", "u", "x"),
+>>>>>>> recovery/rope-automation-20260921
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

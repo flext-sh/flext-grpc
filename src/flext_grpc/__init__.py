@@ -20,7 +20,7 @@ from .__version__ import (
 )
 
 if TYPE_CHECKING:
-    from flext_core import core, d, e, h, lazy_attribute, r, x
+    from flext_core import d, e, h, r, x
 
     from . import proto, services
     from ._config import FlextGrpcConfig, config
@@ -74,12 +74,10 @@ __all__: tuple[str, ...] = (
     "__version_info__",
     "c",
     "config",
-    "core",
     "d",
     "e",
     "grpc",
     "h",
-    "lazy_attribute",
     "m",
     "main",
     "p",
@@ -117,7 +115,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".services.stream": ("FlextGrpcStream",),
             ".typings": ("FlextGrpcTypes", "t"),
             ".utilities": ("FlextGrpcUtilities", "u"),
-            "flext_core": ("core", "d", "e", "h", "lazy_attribute", "r", "x"),
+            "flext_core": ("d", "e", "h", "r", "x"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
