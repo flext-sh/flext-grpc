@@ -30,18 +30,18 @@ if TYPE_CHECKING:
     from .cli import FlextGrpcCli, main
     from .constants import FlextGrpcConstants, FlextGrpcConstants as c
     from .errors import FlextGrpcErrors
-    from .models import FlextGrpcModels, m
+    from .models import FlextGrpcModels, FlextGrpcModels as m
     from .proto.servicer import FlextGrpcProtoServicer
     from .proto.stub import FlextGrpcServiceStub
-    from .protocols import FlextGrpcProtocols, p
+    from .protocols import FlextGrpcProtocols, FlextGrpcProtocols as p
     from .services.api_runtime import FlextGrpcApiRuntime
     from .services.client import FlextGrpcClient
     from .services.connection_pool import FlextGrpcConnectionPool
     from .services.metrics import FlextGrpcMetrics
     from .services.server import FlextGrpcServer
     from .services.stream import FlextGrpcStream
-    from .typings import FlextGrpcTypes, t
-    from .utilities import FlextGrpcUtilities, u
+    from .typings import FlextGrpcTypes, FlextGrpcTypes as t
+    from .utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
 
 
 __all__: tuple[str, ...] = (

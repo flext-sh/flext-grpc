@@ -15,7 +15,7 @@ from __future__ import annotations
 import re
 from typing import TYPE_CHECKING, ClassVar
 
-from flext_core import c as _flext_core_c
+from flext_core import FlextConstants
 
 from ._constants.base import FlextGrpcConstantsBase
 
@@ -23,7 +23,7 @@ if TYPE_CHECKING:
     from flext_grpc import t
 
 
-class FlextGrpcConstants(_flext_core_c):
+class FlextGrpcConstants(FlextConstants):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited

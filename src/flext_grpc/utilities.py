@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_cli import u
+from flext_cli import FlextCliUtilities
 
 from flext_grpc import c, m, p, t
 
@@ -12,7 +12,7 @@ from ._utilities.base import FlextGrpcUtilitiesBase
 from ._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
-class FlextGrpcUtilities(u, FlextGrpcUtilitiesBase):
+class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(FlextGrpcUtilitiesGrpc, FlextGrpcUtilitiesBase):
