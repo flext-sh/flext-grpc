@@ -9,8 +9,7 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_core import core, d, e, h, lazy_attribute, r, services, x
-    from flext_grpc import c, config, grpc, m, main, p, s, settings, u
+    from flext_grpc import c, d, e, h, m, p, r, s, u, x
 
     from .constants import ExamplesFlextGrpcConstants
     from .models import ExamplesFlextGrpcModels
@@ -26,20 +25,13 @@ __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcTypes",
     "ExamplesFlextGrpcUtilities",
     "c",
-    "config",
-    "core",
     "d",
     "e",
-    "grpc",
     "h",
-    "lazy_attribute",
     "m",
-    "main",
     "p",
     "r",
     "s",
-    "services",
-    "settings",
     "t",
     "u",
     "x",
@@ -53,27 +45,7 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
             ".utilities": ("ExamplesFlextGrpcUtilities",),
-            "flext_core": (
-                "core",
-                "d",
-                "e",
-                "h",
-                "lazy_attribute",
-                "r",
-                "services",
-                "x",
-            ),
-            "flext_grpc": (
-                "c",
-                "config",
-                "grpc",
-                "m",
-                "main",
-                "p",
-                "s",
-                "settings",
-                "u",
-            ),
+            "flext_grpc": ("c", "d", "e", "h", "m", "p", "r", "s", "u", "x"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
