@@ -9,7 +9,8 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc import c, d, e, h, m, p, r, s, u, x
+    from flext_core import d, e, h, r, x
+    from flext_grpc import c, m, p, s, u
 
     from .constants import ExamplesFlextGrpcConstants
     from .models import ExamplesFlextGrpcModels
@@ -45,7 +46,8 @@ _LAZY_IMPORTS = MappingProxyType(
             ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
             ".utilities": ("ExamplesFlextGrpcUtilities",),
-            "flext_grpc": ("c", "d", "e", "h", "m", "p", "r", "s", "u", "x"),
+            "flext_core": ("d", "e", "h", "r", "x"),
+            "flext_grpc": ("c", "m", "p", "s", "u"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
