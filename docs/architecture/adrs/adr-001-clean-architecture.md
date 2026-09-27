@@ -68,15 +68,15 @@ The main issues we were facing:
 We needed an architectural approach that would:
 
 - Provide clear separation of concerns
-- Enable easy testing and mocking
+- Enable behavioral testing through public boundaries
 - Support clean dependency management
 - Allow independent evolution of layers
 - Make the codebase more maintainable and understandable
 
 ## Decision
 
-Adopt Clean Architecture (also known as Hexagonal Architecture or Ports & Adapters) with
-the following layer structure:
+Adopt Clean Architecture, using ports and adapters at transport boundaries, with the
+following layer structure:
 
 ```text
 ┌─────────────────────────────────────────┐
@@ -117,7 +117,7 @@ With the following principles:
 **Better Testability**
 
 - Domain entities can be tested in isolation
-- Dependencies can be easily mocked
+- Dependencies can be supplied through explicit contracts
 - Unit tests don't require infrastructure setup
 - Faster test execution and better coverage
 
@@ -234,29 +234,12 @@ With the following principles:
 
 ### Interface Design
 
-```python
-from __future__ import annotations
-
-from typing import Protocol
-
-from flext_core import p
-
-
-# Domain defines interfaces
-class ServerInterface(Protocol):
-    def start(self) -> p.Result[bool]: ...
-    def stop(self) -> p.Result[bool]: ...
-
-
-# Infrastructure implements interfaces
-class GrpcServerAdapter(ServerInterface):
-    def __init__(self, grpc_server):
-        self.grpc_server = grpc_server
-
-    def start(self) -> p.Result[bool]:
-        # Implementation using grpcio
-        pass
-```
+The package publishes transport contracts through `p.Grpc` and typed payloads through
+`m.Grpc`. `FlextGrpc` composes the service implementations and exposes their operations
+at the public boundary. Transport adapters depend on those contracts; consumers use the
+facade and its `p.Result` outcomes. The source in `src/flext_grpc/protocols.py`,
+`src/flext_grpc/models.py`, and `src/flext_grpc/api.py` is authoritative for the current
+signatures.
 
 ## References
 
@@ -269,7 +252,7 @@ class GrpcServerAdapter(ServerInterface):
 
 This ADR established the fundamental architectural approach for FLEXT-gRPC. All
 subsequent development follows these Clean Architecture principles. The architecture has
-proven effective for maintainability and testability,
+proven effective for maintainability and testability.
 
 The layer separation has been particularly valuable for:
 
