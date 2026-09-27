@@ -165,7 +165,17 @@ class FlextGrpcUtilitiesGrpc:
 
         def _open() -> p.Grpc.GrpcChannel:
             grpc_channel = runtime.insecure_channel(target)
-            runtime.channel_ready_future(grpc_channel).result(timeout=timeout)
+            ready = False
+            try:
+                future = runtime.channel_ready_future(grpc_channel)
+                try:
+                    future.result(timeout=timeout)
+                finally:
+                    future.cancel()
+                ready = True
+            finally:
+                if not ready:
+                    grpc_channel.close()
             return grpc_channel
 
         return u.try_(
