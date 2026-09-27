@@ -10,20 +10,21 @@ from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
-    from flext_grpc import FlextGrpcConstants, s
+    from flext_grpc import c, m, p, s, u
 
-    from .constants import ExamplesFlextGrpcConstants, ExamplesFlextGrpcConstants as c
-    from .models import ExamplesFlextGrpcModels, ExamplesFlextGrpcModels as m
-    from .protocols import ExamplesFlextGrpcProtocols, ExamplesFlextGrpcProtocols as p
+    from .constants import ExamplesFlextGrpcConstants
+    from .models import ExamplesFlextGrpcModels
+    from .protocols import ExamplesFlextGrpcProtocols
     from .typings import ExamplesFlextGrpcTypes, ExamplesFlextGrpcTypes as t
-    from .utilities import ExamplesFlextGrpcUtilities, ExamplesFlextGrpcUtilities as u
+    from .utilities import ExamplesFlextGrpcUtilities
+
+
 __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcConstants",
     "ExamplesFlextGrpcModels",
     "ExamplesFlextGrpcProtocols",
     "ExamplesFlextGrpcTypes",
     "ExamplesFlextGrpcUtilities",
-    "FlextGrpcConstants",
     "c",
     "d",
     "e",
@@ -40,13 +41,13 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
-            ".constants": ("ExamplesFlextGrpcConstants", "c"),
-            ".models": ("ExamplesFlextGrpcModels", "m"),
-            ".protocols": ("ExamplesFlextGrpcProtocols", "p"),
+            ".constants": ("ExamplesFlextGrpcConstants",),
+            ".models": ("ExamplesFlextGrpcModels",),
+            ".protocols": ("ExamplesFlextGrpcProtocols",),
             ".typings": ("ExamplesFlextGrpcTypes", "t"),
-            ".utilities": ("ExamplesFlextGrpcUtilities", "u"),
+            ".utilities": ("ExamplesFlextGrpcUtilities",),
             "flext_core": ("d", "e", "h", "r", "x"),
-            "flext_grpc": ("FlextGrpcConstants", "s"),
+            "flext_grpc": ("c", "m", "p", "s", "u"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

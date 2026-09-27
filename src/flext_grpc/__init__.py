@@ -23,12 +23,11 @@ if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
 
     from . import proto, services
-    from .__version__ import FlextGrpcVersion
     from ._config import FlextGrpcConfig, config
     from ._settings import FlextGrpcSettings, settings
     from .api import FlextGrpc, grpc
-    from .base import FlextGrpcServiceBase, FlextGrpcServiceBase as s
-    from .cli import FlextGrpcCli
+    from .base import FlextGrpcServiceBase, s
+    from .cli import FlextGrpcCli, main
     from .constants import FlextGrpcConstants, FlextGrpcConstants as c
     from .errors import FlextGrpcErrors
     from .models import FlextGrpcModels, FlextGrpcModels as m
@@ -43,6 +42,8 @@ if TYPE_CHECKING:
     from .services.stream import FlextGrpcStream
     from .typings import FlextGrpcTypes, FlextGrpcTypes as t
     from .utilities import FlextGrpcUtilities, FlextGrpcUtilities as u
+
+
 __all__: tuple[str, ...] = (
     "FlextGrpc",
     "FlextGrpcApiRuntime",
@@ -63,7 +64,6 @@ __all__: tuple[str, ...] = (
     "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
-    "FlextGrpcVersion",
     "__author__",
     "__author_email__",
     "__description__",
@@ -79,6 +79,7 @@ __all__: tuple[str, ...] = (
     "grpc",
     "h",
     "m",
+    "main",
     "p",
     "proto",
     "r",
@@ -93,12 +94,11 @@ __all__: tuple[str, ...] = (
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
         MappingProxyType({
-            ".__version__": ("FlextGrpcVersion",),
             "._config": ("FlextGrpcConfig", "config"),
             "._settings": ("FlextGrpcSettings", "settings"),
             ".api": ("FlextGrpc", "grpc"),
             ".base": ("FlextGrpcServiceBase", "s"),
-            ".cli": ("FlextGrpcCli",),
+            ".cli": ("FlextGrpcCli", "main"),
             ".constants": ("FlextGrpcConstants", "c"),
             ".errors": ("FlextGrpcErrors",),
             ".models": ("FlextGrpcModels", "m"),

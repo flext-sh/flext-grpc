@@ -43,7 +43,8 @@
   - [Data Recovery](#data-recovery)
   - [Configuration Recovery](#configuration-recovery)
   - [System Recovery](#system-recovery)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

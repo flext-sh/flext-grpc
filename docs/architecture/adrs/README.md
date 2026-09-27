@@ -46,7 +46,8 @@
 - [Contributing](#contributing)
   - [ADR Submission Process](#adr-submission-process)
   - [ADR Review Checklist](#adr-review-checklist)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

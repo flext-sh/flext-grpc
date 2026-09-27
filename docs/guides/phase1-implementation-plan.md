@@ -40,7 +40,8 @@
   - [Implementation Challenges](#implementation-challenges)
   - [Solutions Implemented](#solutions-implemented)
   - [Best Practices Established](#best-practices-established)
-  <!-- TOC END -->
+
+<!-- TOC END -->
 
 ## Table of Contents
 

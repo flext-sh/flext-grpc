@@ -23,6 +23,8 @@ if TYPE_CHECKING:
     from .metrics import FlextGrpcMetrics
     from .server import FlextGrpcServer
     from .stream import FlextGrpcStream
+
+
 __all__: tuple[str, ...] = (
     "FlextGrpcApiRuntime",
     "FlextGrpcClient",

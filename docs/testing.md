@@ -35,7 +35,7 @@
   - [Performance Testing](#performance-testing)
   - [Load Testing](#load-testing)
   - [Chaos Testing](#chaos-testing)
-- [from **future** import annotations def test_grpc_fault_tolerance(): """Test gRPC system fault tolerance.""" # Network interruptions # Server failures # Connection drops # Recovery mechanisms](#from-__future__-import-annotations-def-test_grpc_fault_tolerance-test-grpc-system-fault-tolerance-network-interruptions-server-failures-connection-drops-recovery-mechanisms)
+
 <!-- TOC END -->
 
 ## Table of Contents

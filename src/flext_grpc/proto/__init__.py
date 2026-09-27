@@ -11,6 +11,8 @@ from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 if TYPE_CHECKING:
     from .servicer import FlextGrpcProtoServicer
     from .stub import FlextGrpcServiceStub
+
+
 __all__: tuple[str, ...] = ("FlextGrpcProtoServicer", "FlextGrpcServiceStub")
 
 _LAZY_IMPORTS = MappingProxyType(

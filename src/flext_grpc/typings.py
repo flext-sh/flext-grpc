@@ -9,20 +9,22 @@ from __future__ import annotations
 
 from typing import Literal
 
-from flext_cli import t
+from flext_cli import FlextCliTypes
 
 from ._typings.base import FlextGrpcTypingsBase
 
 
-class FlextGrpcTypes(t):
+class FlextGrpcTypes(FlextCliTypes):
     """gRPC-specific type definitions extending t via MRO."""
 
     class Grpc(FlextGrpcTypingsBase):
         """gRPC domain namespace (flat members per AGENTS.md §149)."""
 
         type EntityKind = Literal["server", "client", "channel", "service", "stream"]
-        type Headers = t.StrMapping
-        type ConfigDict = t.MappingKV[str, t.Scalar | t.JsonValue | None]
+        type Headers = FlextCliTypes.StrMapping
+        type ConfigDict = FlextCliTypes.MappingKV[
+            str, FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None
+        ]
 
 
 t = FlextGrpcTypes

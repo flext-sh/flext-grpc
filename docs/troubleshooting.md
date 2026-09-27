@@ -21,6 +21,7 @@
   - [Test Core Functionality](#test-core-functionality)
 - [Getting Help](#getting-help)
 - [Future Improvements](#future-improvements)
+
 <!-- TOC END -->
 
 ## Table of Contents
