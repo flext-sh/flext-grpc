@@ -576,7 +576,7 @@ tests/
 
 ### Test Naming Conventions
 
-```python
+```text
 from __future__ import annotations
 def test_{module}_{operation}_{condition}():
     """Test {module} {operation} under {condition}."""

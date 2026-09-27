@@ -67,7 +67,7 @@ padrão.
 
 > Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
 
-```python
+```text
        67      if invalid_server_result.failure:
        68          _emit(f"Expected validation failure: {invalid_server_result.error}")
        69
@@ -88,7 +88,7 @@ padrão.
 > Define a constant instead of duplicating this literal "gRPC runtime unavailable" 4
 > times.
 
-```python
+```text
        79              lambda: import_module("grpc"), catch=(ImportError, ModuleNotFoundError)
        80          )
        81          if runtime_result.failure:
@@ -372,7 +372,7 @@ padrão.
 
 > Remove this assignment to local variable 'adr_files'; the value is never used.
 
-```python
+```text
       189                  "message": "ADR README documentation missing",
       190              })
       191
@@ -402,7 +402,7 @@ padrão.
 > Simplify this regular expression to reduce its runtime, as it has super-linear
 > performance due to backtracking.
 
-```python
+```text
        93
        94          # ===== Validation constants =====
        95          VALIDATION_ADDRESS_PARTS_COUNT: Final[int] = 2
@@ -422,7 +422,7 @@ padrão.
 
 > Remove this unnecessary `list()` call on an already iterable object.
 
-```python
+```text
        16      if (
        17          existing_package is None
        18          or Path(getattr(existing_package, "__file__", "")).resolve() != init_file
@@ -442,7 +442,7 @@ padrão.
 
 > Rename this field "RpcError" to match the regular expression ^[\_a-z][_a-z0-9]\*$.
 
-```python
+```text
        24
        25      class _GrpcRuntimeAdapter:
        26          """Typed adapter that isolates the untyped grpc runtime module."""
@@ -463,7 +463,7 @@ padrão.
 > Rename this field "FutureTimeoutError" to match the regular expression
 > ^[\_a-z][_a-z0-9]\*$.
 
-```python
+```text
        25      class _GrpcRuntimeAdapter:
        26          """Typed adapter that isolates the untyped grpc runtime module."""
        27
