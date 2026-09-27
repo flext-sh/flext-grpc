@@ -10,7 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pydantic
 import pytest
 from flext_tests import tm
 
@@ -48,9 +47,7 @@ class TestsFlextGrpcModelsUnit:
         """Value models are frozen: assigning a field raises ValidationError."""
         request = m.Grpc.EchoRequest(message="x")
 
-        tm.rejects_assignment(
-            request, "message", "y", expected=pydantic.ValidationError
-        )
+        tm.rejects_assignment(request, "message", "y", expected=m.ValidationError)
 
     # ------------------------------------------------------------------
     # StreamInfo: validation via model_validate and numeric constraints
@@ -79,7 +76,7 @@ class TestsFlextGrpcModelsUnit:
     @pytest.mark.parametrize("field", ["total_requests_sent", "error_count"])
     def test_stream_info_rejects_negative_counters(self, field: str) -> None:
         """Non-negative counter constraints reject negative values."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.StreamInfo.model_validate({
                 "stream_id": "s",
                 "stream_type": "unary",
@@ -117,7 +114,7 @@ class TestsFlextGrpcModelsUnit:
 
     def test_operation_spec_rejects_blank_name(self) -> None:
         """OperationSpec strips and rejects whitespace-only names."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.OperationSpec(name="   ", entity_type="server")
 
     def test_request_valid_true_for_named_operation(self) -> None:
@@ -256,12 +253,12 @@ class TestsFlextGrpcModelsUnit:
 
     def test_service_rejects_empty_name(self) -> None:
         """Service name validator rejects a blank name."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.Service(name="", methods=("a",))
 
     def test_service_rejects_empty_methods(self) -> None:
         """Service methods validator rejects an empty method tuple."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.Service(name="svc", methods=())
 
     def test_service_add_method_appends_new_and_rejects_duplicate(self) -> None:
@@ -296,5 +293,5 @@ class TestsFlextGrpcModelsUnit:
 
     def test_grpc_stream_rejects_blank_method_name(self) -> None:
         """GrpcStream method_name validator rejects whitespace-only names."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.GrpcStream(method_name="   ")

@@ -1,11 +1,11 @@
-"""FLEXT gRPC Proto Stubs - Service definitions and message types.
+"""FLEXT gRPC Proto Stub - client-side call primitives.
 
-Provides Pydantic-based message types and service stubs for gRPC operations.
-These are used by services.py until full protobuf code generation is in place.
+Provides the Pydantic-based client stub for gRPC calls, used by services.py
+until full protobuf code generation is in place. Split from servicer.py
+(ENFORCE-067: one top-level class per module).
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
-
 """
 
 from __future__ import annotations
@@ -13,10 +13,6 @@ from __future__ import annotations
 from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
 from flext_grpc.protocols import FlextGrpcProtocols
-
-
-class FlextGrpcServiceServicer:
-    """Base class for gRPC service implementations."""
 
 
 class FlextGrpcServiceStub:
@@ -41,15 +37,4 @@ class FlextGrpcServiceStub:
         )
 
 
-def add_flext_grpc_service_servicer_to_server(
-    servicer: FlextGrpcProtocols.Grpc.GrpcServicer,
-    server: FlextGrpcProtocols.Grpc.GrpcServer,
-) -> None:
-    """Add gRPC service servicer to server."""
-
-
-__all__ = [
-    "FlextGrpcServiceServicer",
-    "FlextGrpcServiceStub",
-    "add_flext_grpc_service_servicer_to_server",
-]
+__all__ = ["FlextGrpcServiceStub"]

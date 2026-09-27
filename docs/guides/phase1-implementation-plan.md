@@ -1,6 +1,11 @@
 # Phase 1 Implementation Plan: Test Coverage & Bug Fixes
 
+> Historical evidence only. This plan records an earlier execution context and its
+> command examples are not current workspace guidance. Use the root `AGENTS.md` and
+> `make help` for the active contract.
+
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Executive Summary](#executive-summary)
 - [Current Test Status Analysis](#current-test-status-analysis)
@@ -35,6 +40,7 @@
   - [Implementation Challenges](#implementation-challenges)
   - [Solutions Implemented](#solutions-implemented)
   - [Best Practices Established](#best-practices-established)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -97,10 +103,9 @@
     - [Solutions Implemented](#solutions-implemented)
     - [Best Practices Established](#best-practices-established)
 
-**Phase**: 1 - Test Coverage Improvement
-**Goal**: Increase test coverage from 39% to 90% with all tests passing
-**Timeline**: Immediate (current sprint)
-**Success Criteria**:
+**Phase**: 1 - Test Coverage Improvement **Goal**: Increase test coverage from 39% to
+90% with all tests passing **Timeline**: Immediate (current sprint) **Success
+Criteria**:
 
 - ✅ All 64 tests passing (currently 28 failing)
 - ✅ 90%+ code coverage achieved
@@ -109,7 +114,9 @@
 
 ## Executive Summary
 
-Phase 1 focuses on achieving production-ready test coverage and fixing critical bugs that prevent the test suite from passing. Current status shows 39% coverage with 28 test failures out of 64 total tests. The core functionality is working,
+Phase 1 focuses on achieving production-ready test coverage and fixing critical bugs
+that prevent the test suite from passing. Current status shows 39% coverage with 28 test
+failures out of 64 total tests. The core functionality is working,
 
 ```
  but comprehensive testing and bug fixes are required before production deployment.
@@ -119,13 +126,13 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Test Coverage Breakdown (39% Total)
 
-| Module             | Coverage | Status               | Priority   |
-| ------------------ | -------- | -------------------- | ---------- |
+| Module             | Coverage | Status                | Priority   |
+| ------------------ | -------- | --------------------- | ---------- |
 | `services.py`      | 15%      | ❌ Critical           | **HIGH**   |
-| `api.py`           | 26%      | ⚠️ Needs work        | **HIGH**   |
-| `entities.py`      | 36%      | ⚠️ Needs testing     | **MEDIUM** |
-| `utilities.py`     | 18%      | ⚠️ Needs testing     | **MEDIUM** |
-| `real_servicer.py` | 24%      | ⚠️ Needs testing     | **LOW**    |
+| `api.py`           | 26%      | ⚠️ Needs work         | **HIGH**   |
+| `entities.py`      | 36%      | ⚠️ Needs testing      | **MEDIUM** |
+| `utilities.py`     | 18%      | ⚠️ Needs testing      | **MEDIUM** |
+| `real_servicer.py` | 24%      | ⚠️ Needs testing      | **LOW**    |
 | `exceptions.py`    | 76%      | ❌ Constructor issues | **HIGH**   |
 | `typings.py`       | 93%      | ✅ Complete           | **DONE**   |
 
@@ -141,7 +148,8 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 1. **Exception Constructor Signatures** (6 failures)
 
-   - Issue: `FlextGrpcExceptions.ConfigurationError.__init__()` takes incorrect arguments
+   - Issue: `FlextGrpcExceptions.ConfigurationError.__init__()` takes incorrect
+     arguments
    - Impact: Error handling classes unusable
    - Solution: Correct constructor signatures
 
@@ -182,9 +190,8 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 1: Fix Critical Bugs (Priority: CRITICAL)
 
-**Goal**: Fix the 28 test failures blocking test execution
-**Estimated Effort**: 2-3 days
-**Success Criteria**: All 64 tests pass individually
+**Goal**: Fix the 28 test failures blocking test execution **Estimated Effort**: 2-3
+days **Success Criteria**: All 64 tests pass individually
 
 #### 1.1 Fix FlextGrpcServices Logger Property
 
@@ -256,9 +263,8 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 2: Improve Core Module Coverage (Priority: HIGH)
 
-**Goal**: Increase coverage for critical modules from current levels to 90%+
-**Estimated Effort**: 3-4 days
-**Success Criteria**: Core modules reach 90%+ coverage
+**Goal**: Increase coverage for critical modules from current levels to 90%+ **Estimated
+Effort**: 3-4 days **Success Criteria**: Core modules reach 90%+ coverage
 
 #### 2.1 Services Module (15% → 90%)
 
@@ -295,8 +301,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 3: Implement Integration Testing (Priority: HIGH)
 
-**Goal**: Add real gRPC server/client communication tests
-**Estimated Effort**: 2-3 days
+**Goal**: Add real gRPC server/client communication tests **Estimated Effort**: 2-3 days
 **Success Criteria**: Integration tests with actual gRPC operations
 
 #### 3.1 Real gRPC Server Tests
@@ -331,8 +336,7 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 4: Error Path and Edge Case Testing (Priority: MEDIUM)
 
-**Goal**: Test all r error paths and edge conditions
-**Estimated Effort**: 2 days
+**Goal**: Test all r error paths and edge conditions **Estimated Effort**: 2 days
 **Success Criteria**: Complete error condition coverage
 
 #### 4.1 r Error Testing
@@ -357,9 +361,8 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 5: Utilities and Helper Testing (Priority: MEDIUM)
 
-**Goal**: Improve utilities module coverage from 18% to 90%
-**Estimated Effort**: 1-2 days
-**Success Criteria**: Utilities module fully tested
+**Goal**: Improve utilities module coverage from 18% to 90% **Estimated Effort**: 1-2
+days **Success Criteria**: Utilities module fully tested
 
 #### 5.1 Protobuf Utilities Testing
 
@@ -383,9 +386,8 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Task 6: Documentation Updates (Priority: MEDIUM)
 
-**Goal**: Update documentation with accurate status and procedures
-**Estimated Effort**: 1 day
-**Success Criteria**: Documentation reflects actual implementation status
+**Goal**: Update documentation with accurate status and procedures **Estimated Effort**:
+1 day **Success Criteria**: Documentation reflects actual implementation status
 
 #### 6.1 Update Coverage Numbers
 
@@ -442,7 +444,8 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
 ### Technical Risks
 
-1. **Complex Bug Fixes**: Logger property and exception constructor issues may have cascading effects
+1. **Complex Bug Fixes**: Logger property and exception constructor issues may have
+   cascading effects
 
    - **Mitigation**: Thorough testing of all affected components after fixes
 
@@ -450,9 +453,11 @@ Phase 1 focuses on achieving production-ready test coverage and fixing critical 
 
    - **Mitigation**: Use proper test isolation and fixtures
 
-1. **Coverage Targets**: Achieving 90% coverage may require significant test implementation
+1. **Coverage Targets**: Achieving 90% coverage may require significant test
+   implementation
 
-   - **Mitigation**: Focus on high-impact modules first (services.py, api.py, entities.py)
+   - **Mitigation**: Focus on high-impact modules first (services.py, api.py,
+     entities.py)
 
 ### Schedule Risks
 
@@ -532,9 +537,9 @@ make test 2>&1 | grep -E "(FAILED|ERROR)" | wc -l
 
 ```bash
 # Phase 1 completion check
-make val                    # All quality gates pass
-make test | grep "100%"          # 100% test success (64/64)
-pytest --cov=flext_grpc --cov-report=term | grep "TOTAL" | grep -E "9[0-9]%"  # 90%+ coverage
+make val                                                        # All quality gates pass
+make test | grep "100%"                                         # 100% test success (64/64)
+pytest --cov=flext_grpc --cov-report=term | grep "TOTAL" | grep -E "9[0-9]%" # 90%+ coverage
 ```
 
 ### Integration Verification
@@ -562,16 +567,19 @@ print('✅ Integration test completed')
 
 ### Implementation Challenges
 
-- **Property Setter Issues**: FlextGrpcServices logger property lacked proper setter implementation
+- **Property Setter Issues**: FlextGrpcServices logger property lacked proper setter
+  implementation
 - **Exception Signatures**: Exception constructors had incorrect parameter signatures
 - **Protocol Decorators**: Missing runtime_checkable decorators on protocol classes
 - **Configuration Drift**: Default values changed without test updates
 
 ### Solutions Implemented
 
-- **Property Initialization**: Use proper attribute assignment instead of property setter
+- **Property Initialization**: Use proper attribute assignment instead of property
+  setter
 - **Constructor Correction**: Align exception constructors with usage patterns
-- **Decorator Addition**: Add missing @runtime_checkable decorators for protocol validation
+- **Decorator Addition**: Add missing @runtime_checkable decorators for protocol
+  validation
 - **Test Synchronization**: Update tests to match current implementation defaults
 
 ### Best Practices Established
@@ -581,9 +589,8 @@ print('✅ Integration test completed')
 - **Documentation Sync**: Keep documentation synchronized with implementation
 - **Version Consistency**: Maintain consistent version numbers across all documentation
 
-______________________________________________________________________
+---
 
-**Phase 1 Status**: Ready for implementation
-**Estimated Duration**: 4 weeks
-**Risk Level**: Medium (known issues, established patterns)
-**Success Probability**: High (focused scope, clear success criteria)
+**Phase 1 Status**: Ready for implementation **Estimated Duration**: 4 weeks **Risk
+Level**: Medium (known issues, established patterns) **Success Probability**: High
+(focused scope, clear success criteria)

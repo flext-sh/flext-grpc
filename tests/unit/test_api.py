@@ -7,7 +7,6 @@ from typing import TYPE_CHECKING
 
 import pytest
 from flext_tests import tm
-from pydantic import ValidationError
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
 from tests import m
@@ -122,7 +121,7 @@ class TestsFlextGrpcApi:
 
     def test_validate_entity_type_rejects_invalid(self) -> None:
         """OperationSpec rejects unknown entity_type values."""
-        with pytest.raises(ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",

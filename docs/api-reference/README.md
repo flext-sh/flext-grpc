@@ -1,9 +1,11 @@
 # flext-grpc API Reference
 
 <!-- TOC START -->
+
 - [Source of Truth](#source-of-truth)
 - [Generated Pages](#generated-pages)
 - [Surface Summary](#surface-summary)
+
 <!-- TOC END -->
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
@@ -25,8 +27,8 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
-  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants` (+12 more)
-- Generated module pages: `17`
+- Primary facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcCli`,
+  `FlextGrpcClient`, `FlextGrpcConfig`, `FlextGrpcConnectionPool` (+13 more)
+- Generated module pages: `19`
 
 Back to [project docs](../index.md).

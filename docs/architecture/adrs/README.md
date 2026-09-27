@@ -1,6 +1,7 @@
 # Architecture Decision Records (ADRs)
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Overview](#overview)
 - [ADR Process](#adr-process)
@@ -45,6 +46,7 @@
 - [Contributing](#contributing)
   - [ADR Submission Process](#adr-submission-process)
   - [ADR Review Checklist](#adr-review-checklist)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -96,14 +98,14 @@
 
 **Version**: 1.0.0 | **Status**: Active | **Last Updated**: 2026-04-14
 
-Systematic documentation of architecture decisions for FLEXT-gRPC,
-following the ADR (Architecture Decision Record) pattern.
+Systematic documentation of architecture decisions for FLEXT-gRPC, following the ADR
+(Architecture Decision Record) pattern.
 
 ## Overview
 
-Architecture Decision Records (ADRs) document important architectural decisions,
-their context, consequences,
-and rationale. They provide a historical record of design decisions and help teams understand the reasoning behind current architecture choices.
+Architecture Decision Records (ADRs) document important architectural decisions, their
+context, consequences, and rationale. They provide a historical record of design
+decisions and help teams understand the reasoning behind current architecture choices.
 
 ## ADR Process
 
@@ -162,7 +164,8 @@ When a significant architectural decision needs to be made:
 
 # Context
 
-[What is the issue that we're seeing that is motivating this decision or change? What is the business or technical context?]
+[What is the issue that we're seeing that is motivating this decision or change? What is
+the business or technical context?]
 
 # Decision
 
@@ -170,7 +173,8 @@ When a significant architectural decision needs to be made:
 
 # Consequences
 
-[What becomes easier or more difficult to do because of this change? What are the trade-offs?]
+[What becomes easier or more difficult to do because of this change? What are the
+trade-offs?]
 
 # Alternatives Considered
 
@@ -183,10 +187,10 @@ When a significant architectural decision needs to be made:
 
 ## Current ADRs
 
-| ADR                                       | Title                               | Status     | Date       | Impact |
-| ----------------------------------------- | ----------------------------------- | ---------- | ---------- | ------ |
+| ADR                                       | Title                               | Status      | Date       | Impact |
+| ----------------------------------------- | ----------------------------------- | ----------- | ---------- | ------ |
 | [ADR-001](adr-001-clean-architecture.md)  | Clean Architecture Adoption         | ✅ Accepted | 2025-09-15 | High   |
-| [ADR-003](adr-003-protobuf-generation.md) | Protocol Buffer Generation Strategy | ⚠️ Blocked | 2025-09-20 | High   |
+| [ADR-003](adr-003-protobuf-generation.md) | Protocol Buffer Generation Strategy | ⚠️ Blocked  | 2025-09-20 | High   |
 
 ## ADR Status Definitions
 
@@ -358,11 +362,13 @@ Accepted
 
 # Context
 
-The codebase was growing complex with mixed concerns. We needed a way to organize code that would be maintainable and testable.
+The codebase was growing complex with mixed concerns. We needed a way to organize code
+that would be maintainable and testable.
 
 # Decision
 
-Adopt Clean Architecture with clear layer separation: Domain, Application, Infrastructure.
+Adopt Clean Architecture with clear layer separation: Domain, Application,
+Infrastructure.
 
 # Consequences
 
@@ -408,7 +414,8 @@ See `template.md` for the complete ADR template.
 - [ ] Implementation approach is feasible
 - [ ] Stakeholders are identified and consulted
 
-______________________________________________________________________
+---
 
-**ADRs provide a living record of architectural decisions,
-ensuring that design rationale is preserved and architectural knowledge is accumulated over time. They help teams make better decisions by learning from past choices and their outcomes.**
+**ADRs provide a living record of architectural decisions, ensuring that design
+rationale is preserved and architectural knowledge is accumulated over time. They help
+teams make better decisions by learning from past choices and their outcomes.**

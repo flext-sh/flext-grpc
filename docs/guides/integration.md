@@ -1,6 +1,7 @@
 # flext-grpc FLEXT Ecosystem Integration
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Integration Overview](#integration-overview)
   - [FLEXT Ecosystem Position](#flext-ecosystem-position)
@@ -29,6 +30,7 @@
   - [Working Integrations](#working-integrations)
   - [Planned Integrations](#planned-integrations)
   - [Integration Priorities](#integration-priorities)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -64,7 +66,8 @@
 
 **Version**: 0.12.0-dev | **Updated**: April 14, 2026
 
-Integration patterns and guidelines for flext-grpc within the FLEXT data integration ecosystem.
+Integration patterns and guidelines for flext-grpc within the FLEXT data integration
+ecosystem.
 
 ## Integration Overview
 
@@ -92,13 +95,13 @@ graph TB
 
 ### flext-core Foundation
 
-flext-grpc components use flext-core patterns (see flext-core documentation for details):
+flext-grpc components use flext-core patterns (see flext-core documentation for
+details):
 
-```python
+```{.python .notest}
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
-from flext_core import t
+
+from flext_core import p, r, t
 
 
 class GrpcServiceManager:
@@ -109,31 +112,37 @@ class GrpcServiceManager:
         # Implementation uses flext-core patterns
         return r.ok(["service1", "service2"])
 ```
+
 ### Dependency Injection Integration
 
 flext-grpc services can be registered with FlextContainer:
 
-```python
+```{.python .notest}
 from __future__ import annotations
+
 from flext_grpc import FlextGrpcPlatform
 
 container = FlextContainer.get_global()
 platform = FlextGrpcPlatform()
 container.bind("grpc_platform", platform)
 ```
+
 ## FLEXT Service Integration
 
 ### flext-auth Integration
 
 Authentication and authorization for gRPC services:
 
-```python
+```{.python .notest}
 from __future__ import annotations
+
 from flext_core import p
 
 # Planned integration (requires protobuf fix)
-from flext_grpc import FlextGrpcServer
-from flext_grpc import AuthInterceptor  # Future
+from flext_grpc import (
+    AuthInterceptor,  # Future
+    FlextGrpcServer,
+)
 
 
 class AuthenticatedGrpcService:
@@ -155,12 +164,14 @@ class AuthenticatedGrpcService:
             )
         )
 ```
+
 ### flext-observability Integration
 
 Monitoring and metrics for gRPC services:
 
-```python
+```{.python .notest}
 from __future__ import annotations
+
 from flext_core import p
 
 # Planned integration
@@ -185,11 +196,12 @@ class ObservableGrpcService:
             )
         )
 ```
+
 ### flext-cli Integration
 
 Command-line management for gRPC services:
 
-```python
+```{.python .notest}
 from __future__ import annotations
 
 # Planned integration
@@ -216,20 +228,20 @@ def create_grpc_cli() -> FlextCliApp:
     def check_health(address: str):
         """Check server health."""
         # Health check implementation
-        pass
 
     return cli
 ```
+
 ## Data Integration Patterns
 
 ### Service-to-Service Communication
 
 gRPC communication between FLEXT services:
 
-```python
+```{.python .notest}
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 from flext_grpc import FlextGrpcClient, FlextGrpcSettings
 
 
@@ -259,14 +271,15 @@ class FlextServiceConnector:
         # gRPC call implementation
         return r.ok({"response": "data"})
 ```
+
 ### Data Pipeline Integration
 
 gRPC in data processing pipelines:
 
 ```python
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 from flext_grpc import FlextGrpcStream
 
 
@@ -297,6 +310,7 @@ class DataStreamProcessor:
         # Stream processing logic
         return r.ok(value=True)
 ```
+
 ## Configuration Integration
 
 ### Environment-Specific Configuration
@@ -305,6 +319,7 @@ Integration with FLEXT configuration patterns:
 
 ```python
 from __future__ import annotations
+
 from flext_core import FlextSettings
 from flext_grpc import FlextGrpcSettings
 
@@ -339,14 +354,15 @@ class FlextGrpcEnvironmentSettings(FlextSettings):
             )
         raise ValueError(f"Unknown environment: {environment}")
 ```
+
 ### Service Discovery Integration
 
 Integration with FLEXT service discovery:
 
-```python
+```{.python .notest}
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
+
+from flext_core import p, r
 
 # Planned integration
 from flext_grpc import FlextGrpcClient
@@ -373,6 +389,7 @@ class FlextServiceDiscovery:
         # Service registry lookup
         return r.ok(("localhost", 50051))
 ```
+
 ## Testing Integration
 
 ### Test Framework Integration
@@ -381,8 +398,10 @@ Integration with FLEXT testing patterns:
 
 ```python
 from __future__ import annotations
-from flext_grpc import FlextGrpcSettings, create_server
+
 from flext_tests import FlextTestCase
+
+from flext_grpc import FlextGrpcSettings, create_server
 
 
 class TestGrpcIntegration(FlextTestCase):
@@ -409,13 +428,16 @@ class TestGrpcIntegration(FlextTestCase):
         assert server_result.failure
         assert "Invalid configuration" in server_result.error
 ```
+
 ### Mock Integration
 
 Testing with FLEXT mock patterns:
 
-```python
+```{.python .notest}
 from __future__ import annotations
+
 from unittest.mock import Mock
+
 from flext_grpc import FlextGrpcPlatform
 from flext_tests import FlextMockFactory
 
@@ -434,18 +456,19 @@ class TestGrpcMockIntegration:
         platform = FlextGrpcPlatform()
         # Platform uses mocked dependencies
 ```
+
 ## Production Integration
 
 ### Deployment Patterns
 
 Integration with FLEXT deployment infrastructure:
 
-```python
+```{.python .notest}
 from __future__ import annotations
-from flext_core import p
-from flext_core import r
-from flext_grpc import FlextGrpcPlatform, FlextGrpcSettings
+
 from flext_cli import u
+from flext_core import p, r
+from flext_grpc import FlextGrpcPlatform, FlextGrpcSettings
 
 
 class FlextGrpcProductionService:
@@ -478,16 +501,18 @@ class FlextGrpcProductionService:
             )
         )
 ```
+
 ### Monitoring Integration
 
 Integration with FLEXT monitoring systems:
 
 ```python
 from __future__ import annotations
-from flext_core import p
 
 # Planned integration
 from flext_observability import MetricsCollector
+
+from flext_core import p
 from flext_grpc import FlextGrpcServer
 
 
@@ -506,14 +531,16 @@ class MonitoredGrpcService:
 
         return self._platform.start_server(server)
 ```
+
 ## Migration and Upgrade Patterns
 
 ### Version Compatibility
 
 Maintaining compatibility during ecosystem upgrades:
 
-```python
+```{.python .notest}
 from __future__ import annotations
+
 from flext_core import p
 
 
@@ -537,6 +564,7 @@ class GrpcVersionManager:
         """Update to new configuration format."""
         return r.ok(value=True)
 ```
+
 ## Current Integration Status
 
 ### Working Integrations
@@ -560,6 +588,7 @@ class GrpcVersionManager:
 1. **Monitoring** - Observability integration
 1. **CLI Management** - Operational tools integration
 
-______________________________________________________________________
+---
 
-This integration guide provides comprehensive patterns for using flext-grpc within the FLEXT ecosystem once the protobuf compatibility issue is resolved.
+This integration guide provides comprehensive patterns for using flext-grpc within the
+FLEXT ecosystem once the protobuf compatibility issue is resolved.

@@ -1,6 +1,7 @@
 # 1. Introduction and Goals
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [1.1 Purpose and Scope](#11-purpose-and-scope)
   - [Purpose](#purpose)
@@ -28,6 +29,7 @@
   - [Technical Assumptions](#technical-assumptions)
   - [Business Assumptions](#business-assumptions)
   - [Environmental Assumptions](#environmental-assumptions)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -70,20 +72,26 @@
 
 ## 1.1 Purpose and Scope
 
-**FLEXT-gRPC** is an enterprise-grade gRPC communication library that provides a complete abstraction layer over grpcio and protobuf for microservices communication within the FLEXT data integration platform.
+**FLEXT-gRPC** is an enterprise-grade gRPC communication library that provides a
+complete abstraction layer over grpcio and protobuf for microservices communication
+within the FLEXT data integration platform.
 
 ### Purpose
 
-- **Enable Microservices Communication**: Provide reliable, type-safe gRPC communication patterns
-- **Abstract Complexity**: Hide grpcio/protobuf implementation details from application developers
-- **Ensure Enterprise Quality**: Meet enterprise security, performance, and reliability requirements
+- **Enable Microservices Communication**: Provide reliable, type-safe gRPC communication
+  patterns
+- **Abstract Complexity**: Hide grpcio/protobuf implementation details from application
+  developers
+- **Ensure Enterprise Quality**: Meet enterprise security, performance, and reliability
+  requirements
 - **Maintain Ecosystem Consistency**: Follow FLEXT architectural patterns and standards
 
 ### Scope
 
 **In Scope:**
 
-- Complete gRPC protocol abstraction (unary, server streaming, client streaming, bidirectional)
+- Complete gRPC protocol abstraction (unary, server streaming, client streaming,
+  bidirectional)
 - Protocol Buffer message generation and validation
 - Connection lifecycle management and error handling
 - FLEXT ecosystem integration (r, FlextContainer, FlextLogger)
@@ -106,8 +114,10 @@
 1. **Accelerate Development**: Reduce gRPC service development time from weeks to days
 1. **Ensure Reliability**: Provide 99.9% uptime with comprehensive error handling
 1. **Maintain Security**: Meet enterprise security standards with audit capabilities
-1. **Enable Scalability**: Support 1000+ concurrent connections with performance optimization
-1. **Simplify Operations**: Provide monitoring, logging, and troubleshooting capabilities
+1. **Enable Scalability**: Support 1000+ concurrent connections with performance
+   optimization
+1. **Simplify Operations**: Provide monitoring, logging, and troubleshooting
+   capabilities
 
 ### Secondary Business Goals
 
@@ -120,21 +130,21 @@
 
 ### Primary Stakeholders
 
-| Stakeholder          | Role      | Responsibilities                         | Concerns                                |
-| -------------------- | --------- | ---------------------------------------- | --------------------------------------- |
-| **FLEXT Developers** | End Users | Implement microservices using FLEXT-gRPC | API usability, performance, reliability |
-| **System Architects** | Decision Makers | Design microservices architecture | Scalability, security, compliance |
-| **DevOps Engineers** | Infrastructure | Deploy and operate FLEXT-gRPC services | Monitoring, troubleshooting, scalability |
-| **Platform Maintainers** | Owners | Maintain and evolve FLEXT-gRPC | Code quality, ecosystem compatibility |
+| Stakeholder              | Role            | Responsibilities                         | Concerns                                 |
+| ------------------------ | --------------- | ---------------------------------------- | ---------------------------------------- |
+| **FLEXT Developers**     | End Users       | Implement microservices using FLEXT-gRPC | API usability, performance, reliability  |
+| **System Architects**    | Decision Makers | Design microservices architecture        | Scalability, security, compliance        |
+| **DevOps Engineers**     | Infrastructure  | Deploy and operate FLEXT-gRPC services   | Monitoring, troubleshooting, scalability |
+| **Platform Maintainers** | Owners          | Maintain and evolve FLEXT-gRPC           | Code quality, ecosystem compatibility    |
 
 ### Secondary Stakeholders
 
-| Stakeholder           | Role       | Responsibilities                | Concerns                              |
-| --------------------- | ---------- | ------------------------------- | ------------------------------------- |
-| **Quality Assurance** | Validators | Test and validate functionality | Testability, reliability, performance |
-| **Security Team** | Guardians | Ensure security compliance | Vulnerabilities, audit trails, compliance |
-| **Product Managers** | Planners | Define feature roadmap | User needs, market requirements, timelines |
-| **Enterprise Architects** | Overseers | Ensure enterprise standards | Governance, standards compliance, risk management |
+| Stakeholder               | Role       | Responsibilities                | Concerns                                          |
+| ------------------------- | ---------- | ------------------------------- | ------------------------------------------------- |
+| **Quality Assurance**     | Validators | Test and validate functionality | Testability, reliability, performance             |
+| **Security Team**         | Guardians  | Ensure security compliance      | Vulnerabilities, audit trails, compliance         |
+| **Product Managers**      | Planners   | Define feature roadmap          | User needs, market requirements, timelines        |
+| **Enterprise Architects** | Overseers  | Ensure enterprise standards     | Governance, standards compliance, risk management |
 
 ## 1.4 Quality Goals
 
@@ -185,13 +195,13 @@
 
 ### Technical Terms
 
-| Term                 | Definition                                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------------- |
-| **gRPC**             | Google Remote Procedure Call - high-performance RPC framework                                     |
-| **Protocol Buffers** | Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data |
-| **Railway Pattern** | Functional error handling pattern using Result types |
-| **Clean Architecture** | Architectural pattern separating business logic from infrastructure concerns |
-| **Domain-Driven Design** | Software development approach focusing on business domain modeling |
+| Term                     | Definition                                                                                        |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| **gRPC**                 | Google Remote Procedure Call - high-performance RPC framework                                     |
+| **Protocol Buffers**     | Google's language-neutral, platform-neutral, extensible mechanism for serializing structured data |
+| **Railway Pattern**      | Functional error handling pattern using Result types                                              |
+| **Clean Architecture**   | Architectural pattern separating business logic from infrastructure concerns                      |
+| **Domain-Driven Design** | Software development approach focusing on business domain modeling                                |
 
 ### FLEXT Ecosystem Terms
 
@@ -263,25 +273,31 @@
 ### Technical Assumptions
 
 1. **Python 3.13+ Availability**: Target environments will support Python 3.13+
-1. **Network Connectivity**: Services will operate in network environments with reliable connectivity
+1. **Network Connectivity**: Services will operate in network environments with reliable
+   connectivity
 1. **Resource Availability**: Sufficient CPU, memory, and storage will be available
 1. **gRPC Compatibility**: gRPC protocol will remain backward compatible
 
 ### Business Assumptions
 
-1. **Microservices Adoption**: Organization will continue microservices architecture adoption
+1. **Microservices Adoption**: Organization will continue microservices architecture
+   adoption
 1. **FLEXT Ecosystem Growth**: FLEXT platform will continue to expand and evolve
 1. **Security Requirements**: Enterprise security requirements will remain consistent
-1. **Performance Needs**: Current performance requirements will be representative of future needs
+1. **Performance Needs**: Current performance requirements will be representative of
+   future needs
 
 ### Environmental Assumptions
 
-1. **Cloud Infrastructure**: Services will run in cloud environments with container orchestration
+1. **Cloud Infrastructure**: Services will run in cloud environments with container
+   orchestration
 1. **Monitoring Infrastructure**: Prometheus/Grafana monitoring stack will be available
 1. **Identity Management**: OAuth/OIDC identity providers will be available
 1. **Network Security**: mTLS and service mesh infrastructure will be available
 
-______________________________________________________________________
+---
 
-**This introduction establishes FLEXT-gRPC's purpose, scope, stakeholders,
-and quality goals within the FLEXT ecosystem. The system provides a critical communication foundation for enterprise microservices while maintaining architectural integrity and operational excellence.**
+**This introduction establishes FLEXT-gRPC's purpose, scope, stakeholders, and quality
+goals within the FLEXT ecosystem. The system provides a critical communication
+foundation for enterprise microservices while maintaining architectural integrity and
+operational excellence.**
