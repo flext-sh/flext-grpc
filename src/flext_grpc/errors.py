@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import e
+from flext_core import e
 
 
 class FlextGrpcErrors(e):
@@ -41,6 +41,4 @@ class FlextGrpcErrors(e):
             self.config_key = config_key
 
 
-e = FlextGrpcErrors
-
-__all__: list[str] = ["FlextGrpcErrors", "e"]
+__all__: list[str] = ["FlextGrpcErrors"]

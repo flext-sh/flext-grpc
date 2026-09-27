@@ -1,5 +1,11 @@
 # flext-grpc Architecture
 
+<!-- TOC START -->
+
+- No sections found
+
+<!-- TOC END -->
+
 # Table of Contents
 
 - [flext-grpc Architecture](#flext-grpc-architecture)
@@ -12,7 +18,8 @@ Architectural design and patterns for the flext-grpc library within the FLEXT ec
 
 # Clean Architecture Implementation
 
-flext-grpc follows Clean Architecture principles with clear layer separation and dependency inversion:
+flext-grpc follows Clean Architecture principles with clear layer separation and
+dependency inversion:
 
 ```text
 ┌─────────────────────────────────────────┐
@@ -142,8 +149,9 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 All components integrate with flext-core patterns.
 
-```python
+```{.python .notest}
 from __future__ import annotations
+
 from flext_core import p
 
 
@@ -154,6 +162,7 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
         .map(lambda server: register_with_platform(server))
     )
 ```
+
 # Service Architecture
 
 Services follow the Service pattern from flext-core.
@@ -169,21 +178,27 @@ Complete integration with Python 3.13+ type system:
 # State Management
 
 # Server State Machine
+
 ```
 stopped ──start()──> starting ──started()──> running
    ↑                                           │
    └───stopped()───< stopping <──stop()───────┘
 ```
+
 # Client State Machine
+
 ```
 disconnected ──connect()──> connecting ──connected()──> connected
       ↑                                                      │
       └───disconnected()───< disconnecting <──disconnect()──┘
 ```
+
 # Channel State Management
+
 ```
 idle ──open()──> connecting ──ready()──> ready ──close()──> shutdown
 ```
+
 # Memory Management
 
 # Adaptive Buffers
@@ -288,14 +303,16 @@ Production deployment patterns:
 
 ---
 
-This architecture provides a solid foundation for gRPC communication within the FLEXT ecosystem while maintaining Clean Architecture principles and full integration with flext-core patterns.
+This architecture provides a solid foundation for gRPC communication within the FLEXT
+ecosystem while maintaining Clean Architecture principles and full integration with
+flext-core patterns.
 
 # Related Documentation
 
 **Within Project**:
 
 - [Getting Started](getting-started.md) - Installation and basic usage
-- [API Reference](api-reference.md) - Complete API documentation
+- [API Reference](api-reference/README.md) - Generated API documentation
 - [Development](development.md) - Development workflow
 - [Integration](integration.md) - FLEXT ecosystem usage
 - [Configuration](configuration.md) - Advanced settings
@@ -303,9 +320,12 @@ This architecture provides a solid foundation for gRPC communication within the 
 
 **Across Projects**:
 
-- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) - Clean architecture and CQRS patterns
-- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) - Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) - HTTP foundation patterns
+- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) -
+  Clean architecture and CQRS patterns
+- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) -
+  Service patterns and dependency injection
+- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) -
+  HTTP foundation patterns
 
 **External Resources**:
 

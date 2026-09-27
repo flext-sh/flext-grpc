@@ -12,9 +12,9 @@ SPDX-License-Identifier: MIT.
 from __future__ import annotations
 
 import pytest
+from flext_tests import e, tm
 
 from flext_grpc.errors import FlextGrpcErrors
-from flext_tests import e, tm
 
 
 class TestsFlextGrpcErrors:

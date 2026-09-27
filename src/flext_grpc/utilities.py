@@ -4,15 +4,18 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_cli import u
+from flext_cli import FlextCliUtilities
+
 from flext_grpc import c, m, p, t
-from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+
+from ._utilities.base import FlextGrpcUtilitiesBase
+from ._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
-class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
+class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
-    class Grpc(FlextGrpcUtilitiesGrpc):
+    class Grpc(FlextGrpcUtilitiesGrpc, FlextGrpcUtilitiesBase):
         """Public gRPC utility namespace with explicit local signatures.
 
         This nested class re-exports the factory/validation helpers from

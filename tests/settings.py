@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-from flext_grpc import FlextGrpcSettings
 from flext_tests import FlextTestsSettings
+
+from flext_grpc import FlextGrpcSettings
 
 
 class TestsFlextGrpcSettings(FlextGrpcSettings, FlextTestsSettings):

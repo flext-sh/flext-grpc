@@ -8,8 +8,8 @@ observable contract only: return values of ``validate_target`` (bool) and
 from __future__ import annotations
 
 import pytest
-
 from flext_tests import tm
+
 from tests import u
 
 

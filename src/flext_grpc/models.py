@@ -14,11 +14,14 @@ from datetime import datetime
 from types import MappingProxyType
 from typing import Annotated, Self, override
 
-from flext_cli import m, u
+from flext_cli import FlextCliModels, u
+
 from flext_grpc import c, p, r, t
 
+from ._models import FlextGrpcModelsBase
 
-class FlextGrpcModels(m):
+
+class FlextGrpcModels(FlextCliModels):
     """gRPC domain models extending flext-core m.
 
     Consolidated namespace class containing all gRPC domain models as nested classes.
@@ -29,19 +32,19 @@ class FlextGrpcModels(m):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Grpc:
+    class Grpc(FlextGrpcModelsBase):
         """Domain models for gRPC core business entities."""
 
         # =========================================================================
         # PROTO MESSAGE MODELS - RPC request/response messages
         # =========================================================================
 
-        class EchoRequest(m.Value):
+        class EchoRequest(FlextCliModels.Value):
             """Echo request message (immutable value model)."""
 
             message: Annotated[str, u.Field(description="Echo message")]
 
-        class EchoResponse(m.Value):
+        class EchoResponse(FlextCliModels.Value):
             """Echo response message (immutable value model)."""
 
             message: Annotated[str, u.Field(description="Echo message")]
@@ -50,18 +53,18 @@ class FlextGrpcModels(m):
                 default_factory=datetime.now, description="Response timestamp"
             )
 
-        class HealthRequest(m.Value):
+        class HealthRequest(FlextCliModels.Value):
             """Health check request message (immutable value model)."""
 
             service: Annotated[str, u.Field(description="Service name")] = ""
 
-        class HealthResponse(m.Value):
+        class HealthResponse(FlextCliModels.Value):
             """Health check response message (immutable value model)."""
 
             status: Annotated[str, u.Field(description="Health status")]
             message: Annotated[str, u.Field(description="Health check message")] = ""
 
-        class StreamInfo(m.Value):
+        class StreamInfo(FlextCliModels.Value):
             """Basic stream information (immutable value model)."""
 
             stream_id: str = u.Field(description="Unique stream identifier")
@@ -81,29 +84,29 @@ class FlextGrpcModels(m):
                 t.NonNegativeInt, u.Field(description="Number of errors on stream")
             ] = 0
 
-        class HealthCheck(m.Value):
+        class HealthCheck(FlextCliModels.Value):
             """gRPC health check model (immutable value model)."""
 
             service_name: Annotated[str, u.Field(description="Service name")]
             status: Annotated[str, u.Field(description="Health status")]
             timestamp: Annotated[datetime, u.Field(description="Check timestamp")]
 
-        class OperationExecutionRequest(m.Value):
+        class OperationExecutionRequest(FlextCliModels.Value):
             """Operation execution request for gRPC service operations."""
 
             operation_name: Annotated[
                 str, u.Field(description="Operation name to execute")
             ]
             arguments: t.ScalarMapping = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
                 description="Positional arguments as dict",
             )
             keyword_arguments: t.ScalarMapping = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
                 description="Keyword arguments",
             )
 
-        class ClientConfig(m.Value):
+        class ClientConfig(FlextCliModels.Value):
             """Basic client configuration (immutable value model)."""
 
             target: Annotated[str, u.Field(description="Target server address")] = (
@@ -113,7 +116,7 @@ class FlextGrpcModels(m):
                 t.PositiveTimeout, u.Field(description="Request timeout in seconds")
             ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
-        class ChannelConfig(m.Value):
+        class ChannelConfig(FlextCliModels.Value):
             """Basic channel configuration (immutable value model)."""
 
             address: str = u.Field(description="Channel address")
@@ -121,7 +124,7 @@ class FlextGrpcModels(m):
                 t.JsonMapping | None, u.Field(description="Channel options")
             ] = None
 
-        class SecurityConfig(m.Value):
+        class SecurityConfig(FlextCliModels.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: Annotated[
@@ -146,7 +149,7 @@ class FlextGrpcModels(m):
                 bool, u.Field(description="Require client certificates")
             ] = False
 
-        class NetworkConfig(m.Value):
+        class NetworkConfig(FlextCliModels.Value):
             """Generic gRPC network configuration with validation."""
 
             host: Annotated[t.NonEmptyStr, u.Field(description="gRPC server host")] = (
@@ -165,7 +168,7 @@ class FlextGrpcModels(m):
                 t.PositiveInt, u.Field(description="Keepalive timeout (seconds)")
             ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
 
-        class PerformanceConfig(m.Value):
+        class PerformanceConfig(FlextCliModels.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: Annotated[
@@ -199,7 +202,7 @@ class FlextGrpcModels(m):
                 ),
             ] = c.Grpc.PERFORMANCE_DEFAULT_THREAD_POOL_SIZE
 
-        class StreamingConfig(m.Value):
+        class StreamingConfig(FlextCliModels.Value):
             """Generic gRPC streaming configuration."""
 
             enabled: Annotated[
@@ -226,7 +229,7 @@ class FlextGrpcModels(m):
                 bool, u.Field(description="Enable message compression")
             ] = True
 
-        class MonitoringConfig(m.Value):
+        class MonitoringConfig(FlextCliModels.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: Annotated[
@@ -244,12 +247,12 @@ class FlextGrpcModels(m):
             ] = 30
             log_level: Annotated[str, u.Field(description="Logging level")] = "INFO"
 
-        class StateTransition(m.Value):
+        class StateTransition(FlextCliModels.Value):
             """State transition result model."""
 
             state: str = u.Field(description="Target state after transition")
 
-        class StateMachine(m.BaseModel):
+        class StateMachine(FlextCliModels.BaseModel):
             """Generic state machine with functional transitions.
 
             Provides state transition logic that can be composed into
@@ -289,7 +292,7 @@ class FlextGrpcModels(m):
                     FlextGrpcModels.Grpc.StateTransition(state=target)
                 )
 
-        class OperationSpec(m.Value):
+        class OperationSpec(FlextCliModels.Value):
             """Generic operation specification using Pydantic."""
 
             name: Annotated[str, u.Field(min_length=1, description="Operation name")]
@@ -302,16 +305,19 @@ class FlextGrpcModels(m):
             parameters: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Operation parameters"),
-            ] = u.Field(default_factory=lambda: MappingProxyType({}))
+            ] = u.Field(
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+            )
 
-        class Request(m.Value):
+        class Request(FlextCliModels.Value):
             """Generic request model with validation."""
 
             operation: FlextGrpcModels.Grpc.OperationSpec = u.Field(
                 description="Operation specification to execute"
             )
             entity: Annotated[
-                m.BaseModel | None, u.Field(description="Associated entity")
+                FlextCliModels.BaseModel | None,
+                u.Field(description="Associated entity"),
             ] = None
             data: Annotated[
                 t.JsonMapping | None, u.Field(description="Request data")
@@ -320,15 +326,15 @@ class FlextGrpcModels(m):
             @u.computed_field
             @property
             def valid(self) -> bool:
-                """Check if request is valid."""
+                """Whether request is valid."""
                 return bool(self.operation.name.strip())
 
-        class Response(m.Value):
+        class Response(FlextCliModels.Value):
             """Generic response model with metadata."""
 
             success: Annotated[bool, u.Field(description="Operation success status")]
             data: Annotated[
-                m.BaseModel | None, u.Field(description="Response data")
+                FlextCliModels.BaseModel | None, u.Field(description="Response data")
             ] = None
             error: Annotated[
                 str | None, u.Field(description="Error message if failed")
@@ -336,19 +342,21 @@ class FlextGrpcModels(m):
             metadata: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Response metadata"),
-            ] = u.Field(default_factory=lambda: MappingProxyType({}))
+            ] = u.Field(
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+            )
 
             @u.computed_field
             @property
             def has_error(self) -> bool:
-                """Check if response has error."""
+                """Whether response has error."""
                 return not self.success or self.error is not None
 
-        class Payload(m.BaseModel):
+        class Payload(FlextCliModels.BaseModel):
             """Structured payload model replacing ad-hoc dict responses."""
 
             values: t.JsonMapping = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.JsonValue]({}),
                 description="Key-value payload data",
             )
 
@@ -371,7 +379,7 @@ class FlextGrpcModels(m):
                 }
                 return cls(values=normalized_values)
 
-        class Entity(m.Entity):
+        class Entity(FlextCliModels.Entity):
             """Generic base entity with functional patterns."""
 
             def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
@@ -381,12 +389,16 @@ class FlextGrpcModels(m):
                 **kwargs: u.Field updates for the entity
 
                 """
+                from flext_grpc import r
+
                 return r[Self].create_from_callable(
                     lambda: self.model_copy(update=kwargs)
                 )
 
             def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation."""
+                from flext_grpc import r
+
                 return r[bool].ok(True)
 
         class Channel(Entity, StateMachine):
@@ -400,7 +412,7 @@ class FlextGrpcModels(m):
                 u.Field(description="Current channel connection state"),
             ] = c.Grpc.ChannelState.IDLE
             options: t.JsonMapping | None = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.JsonValue]({}),
                 description="Channel configuration options",
             )
             grpc_channel: Annotated[
@@ -583,7 +595,7 @@ class FlextGrpcModels(m):
                 u.Field(description="Associated gRPC channel for communication"),
             ] = None
             options: t.JsonMapping | None = u.Field(
-                default_factory=lambda: MappingProxyType({}),
+                default_factory=lambda: MappingProxyType[str, t.JsonValue]({}),
                 description="Client configuration options",
             )
             grpc_stub: Annotated[
@@ -635,7 +647,7 @@ class FlextGrpcModels(m):
                     raise ValueError(msg)
                 return v
 
-        class CompleteSetup(m.BaseModel):
+        class CompleteSetup(FlextCliModels.BaseModel):
             """Complete gRPC setup result with server, client, and service."""
 
             server: FlextGrpcModels.Grpc.Server = u.Field(

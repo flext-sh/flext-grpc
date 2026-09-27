@@ -10,8 +10,8 @@ details are inspected.
 from __future__ import annotations
 
 import pytest
-
 from flext_tests import tm
+
 from tests import m, u
 
 

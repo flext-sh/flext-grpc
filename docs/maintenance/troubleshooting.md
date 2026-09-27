@@ -1,6 +1,7 @@
 # Documentation Maintenance Troubleshooting Guide
 
 <!-- TOC START -->
+
 - [Table of Contents](#table-of-contents)
 - [Quick Diagnosis](#quick-diagnosis)
   - [System Health Check](#system-health-check)
@@ -42,6 +43,7 @@
   - [Data Recovery](#data-recovery)
   - [Configuration Recovery](#configuration-recovery)
   - [System Recovery](#system-recovery)
+
 <!-- TOC END -->
 
 ## Table of Contents
@@ -166,7 +168,8 @@
 
 **Version**: 1.0.0 | **Last Updated**: 2026-04-14
 
-Comprehensive troubleshooting guide for the FLEXT-gRPC Documentation Maintenance Framework.
+Comprehensive troubleshooting guide for the FLEXT-gRPC Documentation Maintenance
+Framework.
 
 ## Quick Diagnosis
 
@@ -668,7 +671,7 @@ make docs
 
 # From git history
 git checkout HEAD~1 -- docs/
-git checkout <commit-hash> -- docs/maintenance/reports/
+git checkout docs/maintenance/reports/ < commit-hash > --
 
 # From manual backup
 tar -xzf docs/maintenance/backups/docs_backup_*.tar.gz
@@ -698,6 +701,6 @@ make docs DOCS_PHASE=audit
 
 ---
 
-**Remember**: Most issues can be resolved by checking logs, verifying configuration,
-and ensuring dependencies are installed. For persistent problems,
-gather diagnostic information and create a detailed issue report.
+**Remember**: Most issues can be resolved by checking logs, verifying configuration, and
+ensuring dependencies are installed. For persistent problems, gather diagnostic
+information and create a detailed issue report.

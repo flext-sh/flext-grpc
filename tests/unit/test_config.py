@@ -9,9 +9,9 @@ no internal-collaborator spying.
 from __future__ import annotations
 
 import pytest
+from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings, settings
-from flext_tests import tm
 
 
 class TestsFlextGrpcConfig:

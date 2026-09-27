@@ -1,14 +1,17 @@
 # FLEXT-gRPC Architecture
 
 <!-- TOC START -->
+
 - [Structure](#structure)
 - [What To Read](#what-to-read)
 - [Diagrams](#diagrams)
 - [Validation](#validation)
 - [Maintenance Rules](#maintenance-rules)
+
 <!-- TOC END -->
 
-Architecture docs for `flext-grpc` are organized by view type and kept aligned with the files that currently exist in this folder.
+Architecture docs for `flext-grpc` are organized by view type and kept aligned with the
+files that currently exist in this folder.
 
 ## Structure
 
@@ -45,7 +48,8 @@ docs/architecture/
 
 ## Diagrams
 
-PlantUML sources live in `diagrams/`. Use the local helper script to render or refresh images when diagrams change.
+PlantUML sources live in `diagrams/`. Use the local helper script to render or refresh
+images when diagrams change.
 
 ```bash
 cd flext-grpc/docs/architecture
@@ -54,7 +58,8 @@ cd flext-grpc/docs/architecture
 
 ## Validation
 
-Use the docs validator in this folder to check internal references and documentation structure.
+Use the docs validator in this folder to check internal references and documentation
+structure.
 
 ```bash
 cd flext-grpc/docs/architecture
@@ -65,4 +70,5 @@ python tools/validate_docs.py
 
 - Keep this file as a factual index only; avoid speculative metrics or roadmap claims.
 - When adding a new ADR, update both `adrs/README.md` and this index.
-- When adding/removing architecture files, update the structure tree above in the same change.
+- When adding/removing architecture files, update the structure tree above in the same
+  change.

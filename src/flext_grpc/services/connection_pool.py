@@ -2,59 +2,23 @@
 
 from __future__ import annotations
 
-import threading
-from queue import Queue
+from typing import ClassVar
 
-from flext_grpc import e, m, p, r, s
+from flext_grpc import m, s
+
+from ._entities.connection_pool_impl import FlextGrpcConnectionPoolImpl
 
 
 class FlextGrpcConnectionPool(s):
     """Mixin providing connection pooling for FlextGrpc facade."""
 
-    _resource_manager: FlextGrpcConnectionPool.ConnectionPool = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcConnectionPool.ConnectionPool(max_size=20)
+    ConnectionPool: ClassVar[type[FlextGrpcConnectionPoolImpl]] = (
+        FlextGrpcConnectionPoolImpl
     )
 
-    class ConnectionPool:
-        """Generic connection pool with resource management."""
-
-        def __init__(self, max_size: int = 10) -> None:
-            """Initialize connection pool.
-
-            Args:
-            max_size: Maximum pool size
-
-            """
-            super().__init__()
-            self._pool: Queue[p.Grpc.GrpcChannel] = Queue(maxsize=max_size)
-            self._active: set[p.Grpc.GrpcChannel] = set()
-            self._lock = threading.RLock()
-
-        def acquire(self) -> p.Result[p.Grpc.GrpcChannel]:
-            """Acquire connection from pool."""
-            with self._lock:
-                if not self._pool.empty():
-                    conn = self._pool.get_nowait()
-                    self._active.add(conn)
-                    return r[p.Grpc.GrpcChannel].ok(conn)
-                return e.fail_not_found("connection", "available")
-
-        def cleanup(self) -> p.Result[bool]:
-            """Cleanup all connections."""
-            with self._lock:
-                self._active.clear()
-                while not self._pool.empty():
-                    _ = self._pool.get_nowait()
-            return r[bool].ok(True)
-
-        def release(self, connection: p.Grpc.GrpcChannel) -> p.Result[bool]:
-            """Release connection back to pool."""
-            with self._lock:
-                if connection in self._active:
-                    self._active.remove(connection)
-                    if not self._pool.full():
-                        self._pool.put_nowait(connection)
-                return r[bool].ok(True)
+    _resource_manager: FlextGrpcConnectionPoolImpl = m.PrivateAttr(
+        default_factory=lambda: FlextGrpcConnectionPoolImpl(max_size=20)
+    )
 
 
 __all__: list[str] = ["FlextGrpcConnectionPool"]

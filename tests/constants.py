@@ -6,8 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import FlextGrpcConstants
 from flext_tests import FlextTestsConstants
+
+from flext_grpc import FlextGrpcConstants
 
 
 class TestsFlextGrpcConstants(FlextTestsConstants, FlextGrpcConstants):
