@@ -10,12 +10,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
-from flext_grpc.services.client import FlextGrpcClient
-from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-from flext_grpc.services.metrics import FlextGrpcMetrics
-from flext_grpc.services.server import FlextGrpcServer
-from flext_grpc.services.stream import FlextGrpcStream
+from .services.api_runtime import FlextGrpcApiRuntime
+from .services.client import FlextGrpcClient
+from .services.connection_pool import FlextGrpcConnectionPool
+from .services.metrics import FlextGrpcMetrics
+from .services.server import FlextGrpcServer
+from .services.stream import FlextGrpcStream
 
 
 class FlextGrpc(

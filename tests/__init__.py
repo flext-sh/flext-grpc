@@ -9,9 +9,9 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_tests import FlextTestsConstants, d, e, h, r, td, tf, tk, tm, tv, x
+    from flext_tests import api, td, tf, tk, tm, tv
 
-    from flext_grpc import FlextGrpcConstants
+    from flext_core import d, e, h, r, x
 
     from . import unit
     from .base import TestsFlextGrpcServiceBase, TestsFlextGrpcServiceBase as s
@@ -21,9 +21,9 @@ if TYPE_CHECKING:
     from .settings import TestsFlextGrpcSettings
     from .typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
     from .utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
+
+
 __all__: tuple[str, ...] = (
-    "FlextGrpcConstants",
-    "FlextTestsConstants",
     "TestsFlextGrpcConstants",
     "TestsFlextGrpcModels",
     "TestsFlextGrpcProtocols",
@@ -31,6 +31,7 @@ __all__: tuple[str, ...] = (
     "TestsFlextGrpcSettings",
     "TestsFlextGrpcTypes",
     "TestsFlextGrpcUtilities",
+    "api",
     "c",
     "d",
     "e",
@@ -61,20 +62,8 @@ _LAZY_IMPORTS = MappingProxyType(
             ".typings": ("TestsFlextGrpcTypes", "t"),
             ".unit": ("unit",),
             ".utilities": ("TestsFlextGrpcUtilities", "u"),
-            "flext_grpc": ("FlextGrpcConstants",),
-            "flext_tests": (
-                "FlextTestsConstants",
-                "d",
-                "e",
-                "h",
-                "r",
-                "td",
-                "tf",
-                "tk",
-                "tm",
-                "tv",
-                "x",
-            ),
+            "flext_core": ("d", "e", "h", "r", "x"),
+            "flext_tests": ("api", "td", "tf", "tk", "tm", "tv"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,

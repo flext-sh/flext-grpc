@@ -10,7 +10,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import Annotated
+
 from flext_cli import FlextCliConfig, m
+
+from flext_core import FlextSettings
 
 
 class _GrpcNamespace(m.BaseModel):
@@ -19,10 +23,15 @@ class _GrpcNamespace(m.BaseModel):
     model_config = m.ConfigDict(extra="allow", frozen=True)
 
 
-class FlextGrpcConfig(FlextCliConfig):
+class FlextGrpcConfig(FlextSettings, FlextCliConfig):
     """Grpc config auto-loaded model-less from ``config/*.yaml``."""
 
-    Grpc: _GrpcNamespace = _GrpcNamespace()
+    Grpc: Annotated[
+        _GrpcNamespace,
+        m.Field(
+            description="Open namespace exposing ``config/*.yaml`` under ``Grpc``."
+        ),
+    ] = _GrpcNamespace()
 
 
 config: FlextGrpcConfig = FlextGrpcConfig.fetch_global()

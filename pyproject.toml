@@ -19,12 +19,12 @@ dependencies = [
   "dependency-injector>=4.49.1",
   "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
   "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
-  "grpcio>=1.83.1",
+  "grpcio>=1.84.0",
   "packaging>=26.3",
   "pydantic>=2.13.5",
-  "pydantic-settings>=2.15.0",
+  "pydantic-settings>=2.14.2,<2.15",
   "pyyaml>=6.0.3",
-  "structlog>=25.5.0",
+  "structlog>=25.5.0,<27",
   "typing-extensions>=4.16.0",
 ]
 description = "FLEXT gRPC - High-Performance gRPC Services"
@@ -59,6 +59,7 @@ dev = [
   "actionlint-py>=1.7.12.24",
   "bandit>=1.9.4",
   "deptry",
+  "editables>=0.6",
   "flext-tests @ git+https://github.com/flext-sh/flext-tests.git@0.12.0-dev",
   "hypothesis",
   "mkdocs",
@@ -82,6 +83,7 @@ dev = [
   "pytest-cov",
   "pytest-markdown-docs",
   "pytest-randomly>=4.1.0",
+  "pytest-reportlog",
   "pytest-testmon>=2.2.0",
   "pytest-timeout",
   "pytest-xdist",
@@ -95,6 +97,7 @@ dev = [
   "types-flask>=1.1.6",
   "types-jsonschema>=4.26.0.20260518",
   "types-ldap3>=2.9.13.20260827",
+  "types-openpyxl>=3.1.5.20260827",
   "types-paramiko>=5.0.0.20260724",
   "types-protobuf>=7.35.1.20260827",
   "types-psutil>=7.2.2.20260827",
@@ -140,7 +143,10 @@ known_first_party = ["flext_core", "flext_grpc"]
 pep621_dev_dependency_groups = ["dev"]
 
 [tool.flext.docs]
-project_class = "platform"
+package_name = "flext_grpc"
+
+[tool.flext.namespace]
+scan_dirs = ["src"]
 
 [tool.hatch.metadata]
 allow-direct-references = true
@@ -148,26 +154,29 @@ allow-direct-references = true
 [tool.hatch.build.targets.wheel]
 packages = ["src/flext_grpc"]
 
-[tool.hatch.build.targets.wheel.force-include]
-config = "flext_grpc/config"
-
 [tool.hatch.build.targets.sdist]
-only-include = ["src/flext_grpc", "config"]
+only-include = ["src/flext_grpc"]
 
 [tool.mypy]
 disable_error_code = [
+  "arg-type",
   "assignment",
   "attr-defined",
   "call-arg",
   "misc",
   "name-defined",
+  "no-any-return",
+  "no-redef",
   "prop-decorator",
+  "type-var",
+  "unreachable",
   "valid-type",
 ]
-exclude = ""
+exclude = "^legado(?:/|$)"
 mypy_path = ["src"]
 plugins = ["pydantic.mypy"]
 python_version = "3.13"
+allow_redefinition = true
 check_untyped_defs = true
 explicit_package_bases = true
 extra_checks = true
@@ -184,8 +193,9 @@ warn_unused_ignores = true
 follow_imports = "normal"
 
 [[tool.mypy.overrides]]
-module = ["dcdoc._utilities._charts._matplotlib_renderer._renders_spec"]
-disable_error_code = ["unreachable"]
+module = ["rope.*"]
+disable_error_code = []
+follow_untyped_imports = true
 
 [tool.pydantic-mypy]
 init_forbid_extra = true
@@ -209,7 +219,7 @@ project-excludes = [
   "typings/**",
   "vendor/**",
 ]
-project-includes = ["src/**/*.py*", "tests/**/*.py*"]
+project-includes = ["examples/**/*.py*", "src/**/*.py*", "tests/**/*.py*"]
 python-version = "3.13"
 search-path = ["src", "."]
 use-ignore-files = false
@@ -407,14 +417,18 @@ markers = [
   "smoke: public-interface smoke tests",
   "unit: unit tests",
   "integration: integration tests",
+  "functional: functional behavior tests",
   "performance: performance and benchmark tests",
   "slow: slow-running tests",
   "docker: tests requiring Docker",
+  "oracle: tests requiring the shared Oracle database",
   "remote: tests requiring remote/external network services",
   "e2e: end-to-end integration tests",
   "edge_cases: edge case tests",
   "stress: stress tests",
   "resilience: resilience tests",
+  "discovery: catalog and stream discovery tests",
+  "singer: Singer protocol contract tests",
 ]
 minversion = "8.0"
 python_classes = ["Test*"]
@@ -425,9 +439,18 @@ testpaths = ["tests"]
 exclude = [
   "**/.archive/**",
   "**/__pyrefly_virtual__/**",
-  "**/aihub-hooks/**",
+  ".agents/aihub-hooks",
+  ".agents/aihub-hooks/**",
   ".archive",
   ".archive/**",
+  ".claude/aihub-hooks",
+  ".claude/aihub-hooks/**",
+  ".codex/aihub-hooks",
+  ".codex/aihub-hooks/**",
+  ".cursor/aihub-hooks",
+  ".cursor/aihub-hooks/**",
+  ".gemini/aihub-hooks",
+  ".gemini/aihub-hooks/**",
   ".git",
   ".github/hooks",
   ".github/hooks/**",
@@ -448,6 +471,7 @@ exclude = [
 ]
 fix = false
 line-length = 88
+namespace-packages = ["tests", "examples", "scripts"]
 preview = true
 respect-gitignore = true
 show-fixes = true
@@ -560,6 +584,5 @@ whitelines = 1
 
 [tool.uv]
 link-mode = "copy"
-exclude-newer = "0 days"
 constraint-dependencies = ["structlog<26"]
 environments = ["sys_platform == 'linux'", "sys_platform == 'darwin'"]

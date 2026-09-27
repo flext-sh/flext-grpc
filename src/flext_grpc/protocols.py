@@ -11,12 +11,14 @@ from collections.abc import Callable, Iterable, Mapping, Sequence
 from concurrent.futures import Executor
 from typing import Protocol, runtime_checkable
 
-from flext_cli import p
+from flext_cli import FlextCliProtocols
 
 from flext_grpc import c, t
 
+from ._protocols.base import FlextGrpcProtocolsBase
 
-class FlextGrpcProtocols(p):
+
+class FlextGrpcProtocols(FlextCliProtocols):
     """Unified gRPC protocols extending p.
 
     Extends p to inherit all foundation protocols (Result, Service, etc.)
@@ -40,7 +42,7 @@ class FlextGrpcProtocols(p):
     """
 
     @runtime_checkable
-    class Grpc(Protocol):
+    class Grpc(FlextGrpcProtocolsBase, Protocol):
         """gRPC domain-specific protocols.
 
         Provides protocols for gRPC server management, client communication,
