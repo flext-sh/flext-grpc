@@ -93,7 +93,9 @@ print(server.host, server.port)
 
 `grpc.create_client(target)` accepts a target address and also returns a typed `Result`.
 Use `grpc.connect_client(target)` when a client connection is needed. The timeout field
-belongs to settings and is not a keyword argument of either method.
+belongs to settings and is not a keyword argument of either method. A failed connection
+attempt cancels its readiness subscription and closes the runtime channel before
+returning a failure result.
 
 ## TLS and advanced options
 

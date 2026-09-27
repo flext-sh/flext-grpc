@@ -396,6 +396,10 @@ class FlextGrpcProtocols(FlextCliProtocols):
                 """Wait until the underlying operation is ready."""
                 ...
 
+            def cancel(self) -> bool:
+                """Release the channel subscription when readiness ends."""
+                ...
+
         @runtime_checkable
         class GrpcServer(Protocol):
             """Protocol for gRPC server operations (duck typing for grpc.Server)."""
