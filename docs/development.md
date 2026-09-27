@@ -390,7 +390,6 @@ Use FlextContainer for all dependencies:
 from __future__ import annotations
 
 from flext_cli import u
-
 from flext_core import p, r
 from flext_grpc import FlextGrpcPlatform
 

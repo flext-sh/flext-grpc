@@ -399,9 +399,8 @@ Integration with FLEXT testing patterns:
 ```python
 from __future__ import annotations
 
-from flext_tests import FlextTestCase
-
 from flext_grpc import FlextGrpcSettings, create_server
+from flext_tests import FlextTestCase
 
 
 class TestGrpcIntegration(FlextTestCase):
@@ -509,11 +508,11 @@ Integration with FLEXT monitoring systems:
 ```python
 from __future__ import annotations
 
-# Planned integration
-from flext_observability import MetricsCollector
-
 from flext_core import p
 from flext_grpc import FlextGrpcServer
+
+# Planned integration
+from flext_observability import MetricsCollector
 
 
 class MonitoredGrpcService:
