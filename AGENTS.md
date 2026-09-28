@@ -47,9 +47,12 @@ src/flext_grpc/
 
 ## Commands
 
+Run from the workspace root (selector-free; the root dispatcher routes to every
+member — `PROJECT=` is not a root Make variable):
+
 ```bash
-make check PROJECT=flext-grpc
-make test PROJECT=flext-grpc # tests/unit
+make check
+make test
 ```
 
 <!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
