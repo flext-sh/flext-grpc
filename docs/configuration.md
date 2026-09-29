@@ -51,9 +51,9 @@ needs an explicit override:
 ```python
 from flext_grpc import FlextGrpcSettings, settings
 
-configured = FlextGrpcSettings.model_validate(
-    {"Grpc": {"host": settings.Grpc.host, "port": settings.Grpc.port}}
-)
+configured = FlextGrpcSettings.model_validate({
+    "Grpc": {"host": settings.Grpc.host, "port": settings.Grpc.port}
+})
 print(configured.Grpc.host, configured.Grpc.port)
 ```
 
