@@ -26,7 +26,7 @@
   `FlextGrpcClient`, `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
   `FlextGrpcErrors`, `FlextGrpcMetrics`, `FlextGrpcModels` (+13 more)
 - Exported module shortcuts: `proto`, `services`
-- Generated module pages: `19`
+- Generated module pages: `9`
 
 ## Next Pages
 
