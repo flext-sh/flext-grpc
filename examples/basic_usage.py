@@ -14,14 +14,14 @@ from __future__ import annotations
 
 from flext_cli import cli
 
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
+
 
 class ExamplesFlextGrpcBasicUsage:
     """Basic usage examples for flext-grpc."""
 
     def __init__(self) -> None:
         """Initialize with facade."""
-        from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
-
         self._grpc = FlextGrpc()
         self._constants = FlextGrpcConstants
         self._settings_cls = FlextGrpcSettings
@@ -66,13 +66,15 @@ class ExamplesFlextGrpcBasicUsage:
         settings_cls = self._settings_cls
         default_config = settings_cls()
         self._emit(
-            f"Created settings with host: {default_config.Grpc.host}, port: {default_config.Grpc.port}",
+            f"Created settings with host: {default_config.Grpc.host}, "
+            f"port: {default_config.Grpc.port}",
         )
         custom_config = settings_cls.model_validate({
             "Grpc": {"host": "example.com", "port": 9090, "max_workers": 20},
         })
         self._emit(
-            f"Created custom settings: {custom_config.Grpc.host}:{custom_config.Grpc.port}",
+            "Created custom settings: "
+            f"{custom_config.Grpc.host}:{custom_config.Grpc.port}",
         )
         invalid_server_result = grpc.create_server(host="", port=0)
         if invalid_server_result.failure:
@@ -131,10 +133,14 @@ class ExamplesFlextGrpcBasicUsage:
         invalid_server_result = grpc.create_server(host="", port=0, max_workers=0)
         if invalid_server_result.failure:
             self._emit(
-                f"Invalid server creation failed as expected: {invalid_server_result.error}",
+                "Invalid server creation failed as expected: "
+                f"{invalid_server_result.error}",
             )
         valid_channel_result = grpc.create_channel(
-            target=f"{constants.Grpc.NETWORK_DEFAULT_HOST}:{constants.Grpc.NETWORK_DEFAULT_GRPC_PORT}",
+            target=(
+                f"{constants.Grpc.NETWORK_DEFAULT_HOST}:"
+                f"{constants.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
+            ),
         )
         if valid_channel_result.success:
             valid_channel = valid_channel_result.value
@@ -144,7 +150,8 @@ class ExamplesFlextGrpcBasicUsage:
         invalid_channel_result = grpc.create_channel(target="")
         if invalid_channel_result.failure:
             self._emit(
-                f"Invalid channel creation failed as expected: {invalid_channel_result.error}",
+                "Invalid channel creation failed as expected: "
+                f"{invalid_channel_result.error}",
             )
 
     def example_5_state_transitions(self) -> None:

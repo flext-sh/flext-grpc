@@ -21,7 +21,101 @@ if TYPE_CHECKING:
     from flext_grpc import FlextGrpcModels
 
 
-class FlextGrpcUtilitiesGrpc:
+class FlextGrpcUtilitiesEntityFactories:
+    """Typed gRPC entity factory namespace composed into the gRPC utilities."""
+
+    @staticmethod
+    def create_channel_entity(
+        target: str, options: t.JsonMapping | None = None,
+    ) -> p.Result[m.Grpc.Channel]:
+        """Create a typed channel entity from validated inputs.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Channel]``.
+        """
+        resolved_options = {} if options is None else dict(options)
+
+        def _build_channel() -> m.Grpc.Channel:
+            return m.Grpc.Channel(target=target, options=resolved_options)
+
+        return r[m.Grpc.Channel].create_from_callable(_build_channel)
+
+    @staticmethod
+    def create_client_entity(
+        target: str, options: t.JsonMapping | None = None,
+    ) -> p.Result[m.Grpc.Client]:
+        """Create a typed client entity backed by a typed channel entity.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Client]``.
+        """
+        resolved_options = {} if options is None else dict(options)
+        channel_result = FlextGrpcUtilitiesGrpc.create_channel_entity(
+            target=target, options=resolved_options,
+        )
+        if channel_result.failure:
+            return r[m.Grpc.Client].from_failure(channel_result)
+
+        def _build_client() -> m.Grpc.Client:
+            return m.Grpc.Client(channel=channel_result.value, options=resolved_options)
+
+        return r[m.Grpc.Client].create_from_callable(_build_client)
+
+    @staticmethod
+    def create_server_entity(
+        host: str = c.Grpc.NETWORK_DEFAULT_HOST,
+        port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+        max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
+    ) -> p.Result[m.Grpc.Server]:
+        """Create a typed server entity from validated inputs.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Server]``.
+        """
+
+        def _build_server() -> m.Grpc.Server:
+            return m.Grpc.Server(host=host, port=port, max_workers=max_workers)
+
+        return r[m.Grpc.Server].create_from_callable(_build_server)
+
+    @staticmethod
+    def create_service_entity(
+        name: str, methods: t.StrSequence | None = None,
+    ) -> p.Result[m.Grpc.Service]:
+        """Create a typed service entity with a minimal valid method set.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Service]``.
+        """
+        resolved_methods = ["HealthCheck"] if methods is None else list(methods)
+
+        def _build_service() -> m.Grpc.Service:
+            return m.Grpc.Service(name=name, methods=resolved_methods)
+
+        return r[m.Grpc.Service].create_from_callable(_build_service)
+
+    @staticmethod
+    def create_stream_entity(
+        method_name: str, stream_type: c.Grpc.GrpcOperations | str,
+    ) -> p.Result[m.Grpc.GrpcStream]:
+        """Create a typed stream entity from validated inputs.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.GrpcStream]``.
+        """
+        resolved_stream_type = c.Grpc.GrpcOperations(stream_type)
+
+        def _build_stream() -> m.Grpc.GrpcStream:
+            return m.Grpc.GrpcStream(
+                id=str(uuid4()),
+                method_name=method_name,
+                stream_type=resolved_stream_type,
+            )
+
+        return r[m.Grpc.GrpcStream].create_from_callable(_build_stream)
+
+
+class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
     """gRPC utility namespace composed into ``FlextGrpcUtilities.Grpc``."""
 
     _logger = u.fetch_logger(__name__)
@@ -267,96 +361,6 @@ class FlextGrpcUtilitiesGrpc:
         return FlextGrpcUtilitiesGrpc.call_runtime(
             lambda: server.add_insecure_port(address),
         )
-
-    @staticmethod
-    def create_channel_entity(
-        target: str, options: t.JsonMapping | None = None,
-    ) -> p.Result[m.Grpc.Channel]:
-        """Create a typed channel entity from validated inputs.
-
-        Returns:
-            The resulting ``p.Result[m.Grpc.Channel]``.
-        """
-        resolved_options = {} if options is None else dict(options)
-
-        def _build_channel() -> m.Grpc.Channel:
-            return m.Grpc.Channel(target=target, options=resolved_options)
-
-        return r[m.Grpc.Channel].create_from_callable(_build_channel)
-
-    @staticmethod
-    def create_client_entity(
-        target: str, options: t.JsonMapping | None = None,
-    ) -> p.Result[m.Grpc.Client]:
-        """Create a typed client entity backed by a typed channel entity.
-
-        Returns:
-            The resulting ``p.Result[m.Grpc.Client]``.
-        """
-        resolved_options = {} if options is None else dict(options)
-        channel_result = FlextGrpcUtilitiesGrpc.create_channel_entity(
-            target=target, options=resolved_options,
-        )
-        if channel_result.failure:
-            return r[m.Grpc.Client].from_failure(channel_result)
-
-        def _build_client() -> m.Grpc.Client:
-            return m.Grpc.Client(channel=channel_result.value, options=resolved_options)
-
-        return r[m.Grpc.Client].create_from_callable(_build_client)
-
-    @staticmethod
-    def create_server_entity(
-        host: str = c.Grpc.NETWORK_DEFAULT_HOST,
-        port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
-        max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
-    ) -> p.Result[m.Grpc.Server]:
-        """Create a typed server entity from validated inputs.
-
-        Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
-        """
-
-        def _build_server() -> m.Grpc.Server:
-            return m.Grpc.Server(host=host, port=port, max_workers=max_workers)
-
-        return r[m.Grpc.Server].create_from_callable(_build_server)
-
-    @staticmethod
-    def create_service_entity(
-        name: str, methods: t.StrSequence | None = None,
-    ) -> p.Result[m.Grpc.Service]:
-        """Create a typed service entity with a minimal valid method set.
-
-        Returns:
-            The resulting ``p.Result[m.Grpc.Service]``.
-        """
-        resolved_methods = ["HealthCheck"] if methods is None else list(methods)
-
-        def _build_service() -> m.Grpc.Service:
-            return m.Grpc.Service(name=name, methods=resolved_methods)
-
-        return r[m.Grpc.Service].create_from_callable(_build_service)
-
-    @staticmethod
-    def create_stream_entity(
-        method_name: str, stream_type: c.Grpc.GrpcOperations | str,
-    ) -> p.Result[m.Grpc.GrpcStream]:
-        """Create a typed stream entity from validated inputs.
-
-        Returns:
-            The resulting ``p.Result[m.Grpc.GrpcStream]``.
-        """
-        resolved_stream_type = c.Grpc.GrpcOperations(stream_type)
-
-        def _build_stream() -> m.Grpc.GrpcStream:
-            return m.Grpc.GrpcStream(
-                id=str(uuid4()),
-                method_name=method_name,
-                stream_type=resolved_stream_type,
-            )
-
-        return r[m.Grpc.GrpcStream].create_from_callable(_build_stream)
 
     @staticmethod
     def parse_address(address: str) -> tuple[str, int]:

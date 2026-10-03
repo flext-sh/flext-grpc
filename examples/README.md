@@ -44,9 +44,9 @@ enterprise development.
 
 ```
 examples/
-├── 01_basic_usage.py           # Core functionality and entity usage
-├── 02_advanced_usage.py        # Complex scenarios with streaming
-├── 03_error_handling_patterns.py # Comprehensive error handling
+├── basic_usage.py           # Core functionality and entity usage
+├── advanced_usage.py        # Complex scenarios with streaming
+├── error_handling_patterns.py # Comprehensive error handling
 └── README.md                   # This documentation
 ```
 
@@ -134,7 +134,7 @@ FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
 
 ### Comprehensive Error Patterns
 
-**File**: `03_error_handling_patterns.py`\
+**File**: `error_handling_patterns.py`\
 **Purpose**: Demonstrates enterprise-grade error handling using r patterns
 
 **Key Concepts**:
@@ -148,15 +148,15 @@ FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
 
 ```bash
 # Run error handling examples
-python examples/03_error_handling_patterns.py
+python examples/error_handling_patterns.py
 
 # Run with error tracing
-FLEXT_TRACE_ERRORS=true python examples/03_error_handling_patterns.py
+FLEXT_TRACE_ERRORS=true python examples/error_handling_patterns.py
 ```
 
 ### Recovery Strategies
 
-**File**: `03_error_handling_patterns.py`\
+**File**: `error_handling_patterns.py`\
 **Purpose**: Shows error recovery and resilience patterns
 
 **Key Concepts**:
