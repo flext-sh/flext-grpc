@@ -1,4 +1,8 @@
-"""Connection pool implementation entity (ENFORCE-067: one class per module)."""
+"""Connection pool implementation entity (ENFORCE-067: one class per module).
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -24,7 +28,11 @@ class FlextGrpcConnectionPoolImpl:
         self._lock = threading.RLock()
 
     def acquire(self) -> p.Result[p.Grpc.GrpcChannel]:
-        """Acquire connection from pool."""
+        """Acquire connection from pool.
+
+        Returns:
+            The resulting ``p.Result[p.Grpc.GrpcChannel]``.
+        """
         with self._lock:
             if not self._pool.empty():
                 conn = self._pool.get_nowait()
@@ -33,7 +41,11 @@ class FlextGrpcConnectionPoolImpl:
             return e.fail_not_found("connection", "available")
 
     def cleanup(self) -> p.Result[bool]:
-        """Cleanup all connections."""
+        """Cleanup all connections.
+
+        Returns:
+            The resulting ``p.Result[bool]``.
+        """
         with self._lock:
             self._active.clear()
             while not self._pool.empty():
@@ -41,7 +53,11 @@ class FlextGrpcConnectionPoolImpl:
         return r[bool].ok(True)
 
     def release(self, connection: p.Grpc.GrpcChannel) -> p.Result[bool]:
-        """Release connection back to pool."""
+        """Release connection back to pool.
+
+        Returns:
+            The resulting ``p.Result[bool]``.
+        """
         with self._lock:
             if connection in self._active:
                 self._active.remove(connection)
