@@ -15,17 +15,29 @@ from flext_grpc.services.metrics import FlextGrpcMetrics
 
 @pytest.fixture(name="grpc_facade")
 def fixture_grpc_facade() -> FlextGrpc:
-    """Build the canonical public gRPC facade."""
+    """Build the canonical public gRPC facade.
+
+    Returns:
+        The resulting ``FlextGrpc``.
+    """
     return FlextGrpc()
 
 
 @pytest.fixture(name="connection_pool")
 def fixture_connection_pool() -> FlextGrpcConnectionPool.ConnectionPool:
-    """Build a connection pool service component."""
+    """Build a connection pool service component.
+
+    Returns:
+        The resulting ``FlextGrpcConnectionPool.ConnectionPool``.
+    """
     return FlextGrpcConnectionPool.ConnectionPool(max_size=5)
 
 
 @pytest.fixture(name="metrics_collector")
 def fixture_metrics_collector() -> FlextGrpcMetrics.MetricsCollector:
-    """Build a metrics collector service component."""
+    """Build a metrics collector service component.
+
+    Returns:
+        The resulting ``FlextGrpcMetrics.MetricsCollector``.
+    """
     return FlextGrpcMetrics.MetricsCollector()
