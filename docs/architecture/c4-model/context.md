@@ -231,35 +231,35 @@ FLEXT ecosystem integration
 
 #### System Architects (Decision Makers)
 
-**Needs**: Enterprise-grade communication patterns, performance guarantees **Pain
-Points**: Architecture complexity, scalability concerns, security requirements
+**Needs**: Enterprise-grade communication patterns, performance guarantees
+**Pain Points**: Architecture complexity, scalability concerns, security requirements
 **Value**: Proven architectural patterns, quality attributes, compliance
 
 #### DevOps Engineers (Infrastructure)
 
-**Needs**: Reliable deployment, monitoring, troubleshooting capabilities **Pain
-Points**: Debugging distributed systems, performance monitoring **Value**: Observability
-integration, deployment patterns, operational visibility
+**Needs**: Reliable deployment, monitoring, troubleshooting capabilities
+**Pain Points**: Debugging distributed systems, performance monitoring **Value**:
+Observability integration, deployment patterns, operational visibility
 
 #### Platform Maintainers (FLEXT Team)
 
-**Needs**: Maintainable codebase, evolution capabilities, ecosystem compatibility **Pain
-Points**: Breaking changes, dependency management, testing complexity **Value**: Clean
-architecture, comprehensive testing, automated maintenance
+**Needs**: Maintainable codebase, evolution capabilities, ecosystem compatibility
+**Pain Points**: Breaking changes, dependency management, testing complexity **Value**:
+Clean architecture, comprehensive testing, automated maintenance
 
 ### Secondary Stakeholders
 
 #### Quality Assurance Teams
 
-**Needs**: Testable interfaces, reliable behavior, performance validation **Pain
-Points**: Complex testing setup, unreliable test environments **Value**: Comprehensive
-test coverage, reliable APIs, performance benchmarks
+**Needs**: Testable interfaces, reliable behavior, performance validation
+**Pain Points**: Complex testing setup, unreliable test environments **Value**:
+Comprehensive test coverage, reliable APIs, performance benchmarks
 
 #### Security Teams
 
-**Needs**: Secure communication, audit capabilities, compliance evidence **Pain
-Points**: Security vulnerabilities, compliance gaps, audit trails **Value**: Security
-architecture, TLS support, audit logging
+**Needs**: Secure communication, audit capabilities, compliance evidence
+**Pain Points**: Security vulnerabilities, compliance gaps, audit trails **Value**:
+Security architecture, TLS support, audit logging
 
 #### Product Managers
 
