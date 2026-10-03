@@ -1,7 +1,9 @@
 # flext-grpc API Overview
 
 <!-- TOC START -->
+
 - [Next Pages](#next-pages)
+
 <!-- TOC END -->
 
 <!-- AUTO-GENERATED — DO NOT EDIT MANUALLY -->
@@ -10,22 +12,21 @@
 - Version: `0.12.0`
 - Description: FLEXT gRPC - High-Performance gRPC Services
 - Doc summary: Flext Grpc package.
-- Classifiers: `Development Status :: 3 - Alpha`, `Intended Audience ::
-  Developers`, `Operating System :: OS Independent`, `Programming Language ::
-  Python :: 3 :: Only`, `Programming Language :: Python :: 3.13`, `Topic ::
-  Internet :: WWW/HTTP :: HTTP Servers` (+2 more)
-- Project class: `platform`
+- Classifiers: Development Status :: 3 - Alpha, Intended Audience :: Developers,
+  Operating System :: OS Independent, Programming Language :: Python :: 3 :: Only,
+  Programming Language :: Python :: 3.13, Topic :: Internet :: WWW/HTTP :: HTTP Servers,
+  Topic :: Software Development :: Libraries :: Python Modules, Typing :: Typed
+- Project class: `domain`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
-- Main facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
-  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
-  `FlextGrpcErrors`, `FlextGrpcMetrics` (+10 more)
+- Main facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcCli`, `FlextGrpcClient`,
+  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`, `FlextGrpcErrors`
+  (+11 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
-  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
-  `FlextGrpcErrors`, `FlextGrpcMetrics`, `FlextGrpcModels`, `FlextGrpcProtocols`
-  (+12 more)
+- Public symbol exports: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcCli`,
+  `FlextGrpcClient`, `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConstants`,
+  `FlextGrpcErrors`, `FlextGrpcMetrics`, `FlextGrpcModels` (+13 more)
 - Exported module shortcuts: `proto`, `services`
-- Generated module pages: `18`
+- Generated module pages: `9`
 
 ## Next Pages
 

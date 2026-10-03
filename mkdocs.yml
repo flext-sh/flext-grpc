@@ -1,6 +1,6 @@
 # AUTO-GENERATED — DO NOT EDIT MANUALLY
-site_name: flext-grpc Documentation
-site_description: Generated documentation for flext-grpc
+site_name: flext-grpc
+site_description: Workspace documentation generated from code and curated root docs
 site_url: https://github.com/flext-sh/flext/blob/main/README.md
 repo_name: flext-sh/flext
 repo_url: https://github.com/flext-sh/flext
@@ -10,6 +10,7 @@ site_dir: .reports/docs/site
 
 exclude_docs: |
   /README.md
+  /API/**
 
 theme:
   name: material
@@ -86,11 +87,8 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
 
-nav:
-  - Home: index.md
-  - Guides: guides/README.md
-  - API Reference: api-reference/README.md
-
+# MkDocs discovers the complete documentation tree, including maintained pages.
+# A fixed three-page nav silently omitted guides, standards, and decisions.
 not_in_nav: |
   api-reference/generated/**
 validation:

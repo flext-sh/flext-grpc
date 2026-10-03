@@ -1,4 +1,8 @@
-"""Runtime settings for flext-grpc tests."""
+"""Runtime settings for flext-grpc tests.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 

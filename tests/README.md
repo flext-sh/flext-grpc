@@ -162,7 +162,6 @@ pytest tests/e2e/ --benchmark-only
 from __future__ import annotations
 
 import pytest
-from flext_core import t
 
 
 @pytest.mark.unit  # Unit tests (fast, isolated)
@@ -200,8 +199,10 @@ def _example_markers() -> None:
 - ✅ **test_services.py**: Complete enterprise docstrings for service operation testing
 - ✅ **test_api.py**: Complete enterprise docstrings for public API function testing
 - ✅ **test_types.py**: Complete enterprise docstrings for type system testing
-- ✅ **test_errors_complete.py**: Complete enterprise docstrings for error hierarchy testing
-- ✅ **test_platform_integration.py**: Complete enterprise docstrings for integration testing
+- ✅ **test_errors_complete.py**: Complete enterprise docstrings for error hierarchy
+  testing
+- ✅ **test_platform_integration.py**: Complete enterprise docstrings for integration
+  testing
 
 **Documentation Standards Applied**:
 
@@ -237,7 +238,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Entity Testing Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -258,7 +259,7 @@ def test_entity_creation_and_validation():
 
 ### Service Testing Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -279,7 +280,7 @@ def test_service_operation_success():
 
 ### Error Testing Pattern
 
-```python
+```python notest
 from __future__ import annotations
 from flext_core import t
 
@@ -329,7 +330,7 @@ def test_operation_failure_handling():
 
 ```bash
 # Complete validation pipeline
-make val
+make check
 
 # Quick validation for development
 make check
@@ -371,4 +372,5 @@ pytest -m "not slow"
 pytest -n auto
 ```
 
-For current testing gaps and improvement priorities, see [../docs/TODO.md](../docs/TODO.md).
+For current testing gaps and improvement priorities, see
+[../docs/TODO.md](../docs/TODO.md).

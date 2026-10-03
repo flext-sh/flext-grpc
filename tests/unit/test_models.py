@@ -10,7 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pydantic
 import pytest
 from flext_tests import tm
 
@@ -24,39 +23,42 @@ class TestsFlextGrpcModelsUnit:
     # Value message models: field contract, defaults, immutability
     # ------------------------------------------------------------------
 
-    def test_echo_request_exposes_message(self) -> None:
+    @staticmethod
+    def test_echo_request_exposes_message() -> None:
         """EchoRequest carries the provided message on its public field."""
         request = m.Grpc.EchoRequest(message="ping")
 
         tm.that(request.message, eq="ping")
 
-    def test_echo_response_defaults_server_id_and_message(self) -> None:
+    @staticmethod
+    def test_echo_response_defaults_server_id_and_message() -> None:
         """EchoResponse defaults server_id to empty and keeps the message."""
         response = m.Grpc.EchoResponse(message="pong")
 
         tm.that(response.message, eq="pong")
         tm.that(response.server_id, eq="")
 
-    def test_health_response_defaults_message_empty(self) -> None:
+    @staticmethod
+    def test_health_response_defaults_message_empty() -> None:
         """HealthResponse requires status and defaults message to empty."""
         response = m.Grpc.HealthResponse(status="SERVING")
 
         tm.that(response.status, eq="SERVING")
         tm.that(response.message, eq="")
 
-    def test_value_model_is_immutable(self) -> None:
+    @staticmethod
+    def test_value_model_is_immutable() -> None:
         """Value models are frozen: assigning a field raises ValidationError."""
         request = m.Grpc.EchoRequest(message="x")
 
-        tm.rejects_assignment(
-            request, "message", "y", expected=pydantic.ValidationError
-        )
+        tm.rejects_assignment(request, "message", "y", expected=m.ValidationError)
 
     # ------------------------------------------------------------------
     # StreamInfo: validation via model_validate and numeric constraints
     # ------------------------------------------------------------------
 
-    def test_stream_info_model_validate_populates_fields(self) -> None:
+    @staticmethod
+    def test_stream_info_model_validate_populates_fields() -> None:
         """StreamInfo.model_validate maps the input payload onto public fields."""
         info = m.Grpc.StreamInfo.model_validate({
             "stream_id": "s1",
@@ -68,7 +70,8 @@ class TestsFlextGrpcModelsUnit:
         tm.that(info.stream_type, eq="unary")
         tm.that(info.target, eq="localhost:50051")
 
-    def test_stream_info_defaults_counters_to_zero(self) -> None:
+    @staticmethod
+    def test_stream_info_defaults_counters_to_zero() -> None:
         """StreamInfo defaults its counters and latency to zero."""
         info = m.Grpc.StreamInfo(stream_id="s", stream_type="unary", target="t")
 
@@ -76,10 +79,11 @@ class TestsFlextGrpcModelsUnit:
         tm.that(info.error_count, eq=0)
         tm.that(info.average_latency_ms, eq=0.0)
 
+    @staticmethod
     @pytest.mark.parametrize("field", ["total_requests_sent", "error_count"])
-    def test_stream_info_rejects_negative_counters(self, field: str) -> None:
+    def test_stream_info_rejects_negative_counters(field: str) -> None:
         """Non-negative counter constraints reject negative values."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.StreamInfo.model_validate({
                 "stream_id": "s",
                 "stream_type": "unary",
@@ -91,20 +95,23 @@ class TestsFlextGrpcModelsUnit:
     # Config models: default contract
     # ------------------------------------------------------------------
 
-    def test_client_config_uses_provided_target_and_timeout(self) -> None:
+    @staticmethod
+    def test_client_config_uses_provided_target_and_timeout() -> None:
         """ClientConfig stores the target and timeout it is given."""
         config = m.Grpc.ClientConfig(target="127.0.0.1:50051", timeout=30.0)
 
         tm.that(config.target, eq="127.0.0.1:50051")
         tm.that(config.timeout, eq=30.0)
 
-    def test_client_config_applies_defaults(self) -> None:
+    @staticmethod
+    def test_client_config_applies_defaults() -> None:
         """ClientConfig exposes a concrete default target endpoint."""
         config = m.Grpc.ClientConfig()
 
         tm.that(config.target, eq="127.0.0.1:50051")
 
-    def test_channel_config_defaults_options_to_none(self) -> None:
+    @staticmethod
+    def test_channel_config_defaults_options_to_none() -> None:
         """ChannelConfig keeps the address and defaults options to None."""
         config = m.Grpc.ChannelConfig(address="localhost:50051")
 
@@ -115,19 +122,22 @@ class TestsFlextGrpcModelsUnit:
     # OperationSpec / Request / Response: validators and computed fields
     # ------------------------------------------------------------------
 
-    def test_operation_spec_rejects_blank_name(self) -> None:
+    @staticmethod
+    def test_operation_spec_rejects_blank_name() -> None:
         """OperationSpec strips and rejects whitespace-only names."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.OperationSpec(name="   ", entity_type="server")
 
-    def test_request_valid_true_for_named_operation(self) -> None:
+    @staticmethod
+    def test_request_valid_true_for_named_operation() -> None:
         """Request.valid computed field is True when the operation is named."""
         request = m.Grpc.Request(
-            operation=m.Grpc.OperationSpec(name="op", entity_type="server")
+            operation=m.Grpc.OperationSpec(name="op", entity_type="server"),
         )
 
         tm.that(request.valid, eq=True)
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("success", "error", "expected"),
         [
@@ -138,7 +148,7 @@ class TestsFlextGrpcModelsUnit:
         ],
     )
     def test_response_has_error_reflects_success_and_error(
-        self, *, success: bool, error: str | None, expected: bool
+        *, success: bool, error: str | None, expected: bool,
     ) -> None:
         """Response.has_error is True on failure or whenever an error is set."""
         response = m.Grpc.Response(success=success, error=error)
@@ -149,7 +159,8 @@ class TestsFlextGrpcModelsUnit:
     # Payload: value normalization contract
     # ------------------------------------------------------------------
 
-    def test_payload_from_values_normalizes_none_and_complex(self) -> None:
+    @staticmethod
+    def test_payload_from_values_normalizes_none_and_complex() -> None:
         """from_values maps None to "" and stringifies non-primitive values."""
         payload = m.Grpc.Payload.from_values(missing=None, count=1, items=[1, 2])
 
@@ -162,7 +173,8 @@ class TestsFlextGrpcModelsUnit:
     # StateMachine: transition returns r[T] with correct outcome
     # ------------------------------------------------------------------
 
-    def test_state_machine_allows_permitted_transition(self) -> None:
+    @staticmethod
+    def test_state_machine_allows_permitted_transition() -> None:
         """A permitted transition succeeds and reports the target state."""
         machine = m.Grpc.StateMachine()
 
@@ -171,7 +183,8 @@ class TestsFlextGrpcModelsUnit:
         tm.that(result.success, eq=True)
         tm.that(result.unwrap().state, eq="ready")
 
-    def test_state_machine_rejects_disallowed_transition(self) -> None:
+    @staticmethod
+    def test_state_machine_rejects_disallowed_transition() -> None:
         """A disallowed transition fails with a descriptive error."""
         machine = m.Grpc.StateMachine()
 
@@ -185,7 +198,8 @@ class TestsFlextGrpcModelsUnit:
     # Channel: lifecycle transitions and business-rule validation
     # ------------------------------------------------------------------
 
-    def test_channel_connect_advances_to_connecting(self) -> None:
+    @staticmethod
+    def test_channel_connect_advances_to_connecting() -> None:
         """connect() from idle succeeds and yields a connecting channel."""
         channel = m.Grpc.Channel(target="localhost:50051")
 
@@ -194,7 +208,8 @@ class TestsFlextGrpcModelsUnit:
         tm.that(result.success, eq=True)
         tm.that(result.unwrap().state, eq="connecting")
 
-    def test_channel_mark_ready_requires_connecting_first(self) -> None:
+    @staticmethod
+    def test_channel_mark_ready_requires_connecting_first() -> None:
         """mark_ready() fails from idle but succeeds after connect()."""
         channel = m.Grpc.Channel(target="localhost:50051")
 
@@ -205,7 +220,8 @@ class TestsFlextGrpcModelsUnit:
         tm.that(ready.success, eq=True)
         tm.that(ready.unwrap().ready(), eq=True)
 
-    def test_channel_rejects_empty_target_business_rule(self) -> None:
+    @staticmethod
+    def test_channel_rejects_empty_target_business_rule() -> None:
         """validate_business_rules fails for a blank channel target."""
         channel = m.Grpc.Channel(target="   ")
 
@@ -213,7 +229,8 @@ class TestsFlextGrpcModelsUnit:
 
         tm.that(result.success, eq=False)
 
-    def test_channel_accepts_valid_target_business_rule(self) -> None:
+    @staticmethod
+    def test_channel_accepts_valid_target_business_rule() -> None:
         """validate_business_rules succeeds for a non-empty target."""
         channel = m.Grpc.Channel(target="localhost:50051")
 
@@ -223,7 +240,8 @@ class TestsFlextGrpcModelsUnit:
     # Server: lifecycle transitions and validation
     # ------------------------------------------------------------------
 
-    def test_server_start_transitions_to_starting(self) -> None:
+    @staticmethod
+    def test_server_start_transitions_to_starting() -> None:
         """start() from stopped succeeds and yields a starting server."""
         server = m.Grpc.Server(host="localhost", port=50051)
 
@@ -232,19 +250,22 @@ class TestsFlextGrpcModelsUnit:
         tm.that(result.success, eq=True)
         tm.that(result.unwrap().state, eq="starting")
 
-    def test_server_mark_stopped_fails_when_not_running(self) -> None:
+    @staticmethod
+    def test_server_mark_stopped_fails_when_not_running() -> None:
         """mark_stopped() is rejected from a stopped state."""
         server = m.Grpc.Server(host="localhost", port=50051)
 
         tm.that(server.mark_stopped().success, eq=False)
 
-    def test_server_rejects_blank_host_business_rule(self) -> None:
+    @staticmethod
+    def test_server_rejects_blank_host_business_rule() -> None:
         """validate_business_rules fails when the bind host is blank."""
         server = m.Grpc.Server(host="   ", port=50051)
 
         tm.that(server.validate_business_rules().success, eq=False)
 
-    def test_server_accepts_valid_configuration(self) -> None:
+    @staticmethod
+    def test_server_accepts_valid_configuration() -> None:
         """validate_business_rules succeeds for a well-formed server."""
         server = m.Grpc.Server(host="localhost", port=50051)
 
@@ -254,17 +275,20 @@ class TestsFlextGrpcModelsUnit:
     # Service: field validators and functional method management
     # ------------------------------------------------------------------
 
-    def test_service_rejects_empty_name(self) -> None:
+    @staticmethod
+    def test_service_rejects_empty_name() -> None:
         """Service name validator rejects a blank name."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.Service(name="", methods=("a",))
 
-    def test_service_rejects_empty_methods(self) -> None:
+    @staticmethod
+    def test_service_rejects_empty_methods() -> None:
         """Service methods validator rejects an empty method tuple."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.Service(name="svc", methods=())
 
-    def test_service_add_method_appends_new_and_rejects_duplicate(self) -> None:
+    @staticmethod
+    def test_service_add_method_appends_new_and_rejects_duplicate() -> None:
         """add_method appends a new method and refuses duplicates."""
         service = m.Grpc.Service(name="svc", methods=("a",))
 
@@ -274,7 +298,8 @@ class TestsFlextGrpcModelsUnit:
 
         tm.that(service.add_method("a").success, eq=False)
 
-    def test_service_has_method_reflects_membership(self) -> None:
+    @staticmethod
+    def test_service_has_method_reflects_membership() -> None:
         """has_method reports whether a method name is registered."""
         service = m.Grpc.Service(name="svc", methods=("a",))
 
@@ -285,7 +310,8 @@ class TestsFlextGrpcModelsUnit:
     # Client / GrpcStream: connect delegation and validators
     # ------------------------------------------------------------------
 
-    def test_client_connect_to_creates_channel_for_target(self) -> None:
+    @staticmethod
+    def test_client_connect_to_creates_channel_for_target() -> None:
         """connect_to attaches a channel bound to the requested target."""
         result = m.Grpc.Client().connect_to("localhost:50051")
 
@@ -294,7 +320,8 @@ class TestsFlextGrpcModelsUnit:
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq="localhost:50051")
 
-    def test_grpc_stream_rejects_blank_method_name(self) -> None:
+    @staticmethod
+    def test_grpc_stream_rejects_blank_method_name() -> None:
         """GrpcStream method_name validator rejects whitespace-only names."""
-        with pytest.raises(pydantic.ValidationError):
+        with pytest.raises(m.ValidationError):
             m.Grpc.GrpcStream(method_name="   ")

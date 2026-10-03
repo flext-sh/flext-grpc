@@ -21,7 +21,11 @@ logger = u.fetch_logger(__name__)
 
 
 def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
-    """Validate user input with FlextGrpcErrors.ValidationError."""
+    """Validate user input with FlextGrpcErrors.ValidationError.
+
+    Returns:
+        The resulting ``p.Result[t.Grpc.Headers]``.
+    """
 
     def _raise_username_error() -> NoReturn:
         msg = "Username cannot be empty"
@@ -43,7 +47,11 @@ def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
 
 
 def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]:
-    """Create server configuration with proper error handling."""
+    """Create server configuration with proper error handling.
+
+    Returns:
+        The resulting ``p.Result[t.Grpc.ConfigDict]``.
+    """
 
     def _raise_port_error() -> NoReturn:
         msg = "Port must be between 1 and 65535"
@@ -74,7 +82,11 @@ def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]
 
 
 def simulate_connection_error() -> p.Result[str]:
-    """Simulate a connection error scenario."""
+    """Simulate a connection error scenario.
+
+    Returns:
+        The resulting ``p.Result[str]``.
+    """
 
     def _raise_connection_error() -> NoReturn:
         msg = "Failed to connect to gRPC server"
@@ -88,7 +100,11 @@ def simulate_connection_error() -> p.Result[str]:
 
 
 def simulate_timeout_error() -> p.Result[str]:
-    """Simulate a timeout error scenario."""
+    """Simulate a timeout error scenario.
+
+    Returns:
+        The resulting ``p.Result[str]``.
+    """
 
     def _raise_timeout_error() -> NoReturn:
         msg = "Request timed out after 30 seconds"
@@ -102,7 +118,11 @@ def simulate_timeout_error() -> p.Result[str]:
 
 
 def handle_generic_grpc_error() -> p.Result[str]:
-    """Handle generic gRPC errors."""
+    """Handle generic gRPC errors.
+
+    Returns:
+        The resulting ``p.Result[str]``.
+    """
 
     def _raise_generic_error() -> NoReturn:
         msg = "Unknown gRPC error occurred"
@@ -116,14 +136,18 @@ def handle_generic_grpc_error() -> p.Result[str]:
 
 
 def comprehensive_error_handling_pipeline() -> p.Result[str]:
-    """Demonstrate comprehensive error handling in a realistic pipeline."""
+    """Demonstrate comprehensive error handling in a realistic pipeline.
+
+    Returns:
+        The resulting ``p.Result[str]``.
+    """
     logger.info("Starting comprehensive error handling pipeline")
     validation_result = validate_user_input("john_doe", "john@example.com")
     if validation_result.failure:
         return r[str].fail(f"Pipeline failed at validation: {validation_result.error}")
     logger.info("✅ User input validation passed")
     config_result = create_server_config(
-        FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT, 4
+        FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT, 4,
     )
     if config_result.failure:
         return r[str].fail(f"Pipeline failed at configuration: {config_result.error}")
@@ -137,13 +161,17 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
         result = scenario_func()
         if result.failure:
             logger.warning(
-                f"⚠️ {scenario_name} scenario failed as expected: {result.error}"
+                f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
             )
     return r[str].ok("Pipeline completed with graceful error handling")
 
 
 def error_recovery_patterns() -> p.Result[str]:
-    """Demonstrate error recovery patterns."""
+    """Demonstrate error recovery patterns.
+
+    Returns:
+        The resulting ``p.Result[str]``.
+    """
     logger.info("Testing error recovery patterns")
     for attempt in range(3):
         connection_result = simulate_connection_error()
@@ -159,7 +187,7 @@ def error_recovery_patterns() -> p.Result[str]:
     if primary_config_result.failure:
         logger.warning("Invalid primary settings rejected; trying corrected settings")
         corrected_config_result = create_server_config(
-            FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT, 2
+            FlextGrpcConstants.Grpc.NETWORK_DEFAULT_GRPC_PORT, 2,
         )
         if corrected_config_result.success:
             logger.info("✅ Corrected configuration successful")
@@ -171,7 +199,7 @@ def demonstrate_error_context() -> None:
     """Demonstrate how error context helps with debugging."""
     logger.info("Demonstrating error context for debugging")
     validation_error = FlextGrpcErrors.ValidationError(
-        "Email format is invalid - missing @ symbol", field="user_email"
+        "Email format is invalid - missing @ symbol", field="user_email",
     )
     config_error = FlextGrpcErrors.ConfigurationError(
         "Invalid port configuration for production environment",
@@ -194,7 +222,11 @@ def demonstrate_error_context() -> None:
 
 
 def error_handling() -> p.Result[str]:
-    """Demonstrate error handling in contexts."""
+    """Demonstrate error handling in contexts.
+
+    Returns:
+        The resulting ``p.Result[str]``.
+    """
     logger.info("Testing error handling patterns")
 
     def _raise_timeout() -> NoReturn:

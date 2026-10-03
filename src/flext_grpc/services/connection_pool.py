@@ -1,12 +1,17 @@
-"""Connection pool service mixin for flext-grpc."""
+"""Connection pool service mixin for flext-grpc.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from typing import ClassVar
 
 from flext_grpc import m, s
-
-from ._entities.connection_pool_impl import FlextGrpcConnectionPoolImpl
+from flext_grpc.services._entities.connection_pool_impl import (
+    FlextGrpcConnectionPoolImpl,
+)
 
 
 class FlextGrpcConnectionPool(s):
@@ -17,7 +22,7 @@ class FlextGrpcConnectionPool(s):
     )
 
     _resource_manager: FlextGrpcConnectionPoolImpl = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcConnectionPoolImpl(max_size=20)
+        default_factory=lambda: FlextGrpcConnectionPoolImpl(max_size=20),
     )
 
 
