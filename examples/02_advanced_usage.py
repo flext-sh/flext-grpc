@@ -75,7 +75,8 @@ class ExamplesFlextGrpcAdvancedUsage:
         """Public accessor for typings facade."""
         return self._t
 
-    def emit(self, message: str) -> None:
+    @staticmethod
+    def emit(message: str) -> None:
         """Emit example output through the canonical CLI facade."""
         cli.print(message)
 
@@ -90,9 +91,13 @@ class ExamplesFlextGrpcAdvancedUsage:
             self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
 
         def create_server_pool(
-            self, base_port: int = 8000, count: int = 3
+            self, base_port: int = 8000, count: int = 3,
         ) -> list[p.Result[FlextGrpcModels.Grpc.Server]]:
-            """Create a pool of servers on consecutive ports through facade."""
+            """Create a pool of servers on consecutive ports through facade.
+
+            Returns:
+                The resulting ``list[p.Result[FlextGrpcModels.Grpc.Server]]``.
+            """
             server_results: list[p.Result[FlextGrpcModels.Grpc.Server]] = []
             for i in range(count):
                 server_id = f"pool-server-{i}"
@@ -102,7 +107,7 @@ class ExamplesFlextGrpcAdvancedUsage:
                         "host": self._outer.constants.Grpc.NETWORK_DEFAULT_HOST,
                         "port": port,
                         "max_workers": 10 + i * 5,
-                    }
+                    },
                 })
                 self.server_configs[server_id] = settings
                 server_result = self.grpc.create_server(
@@ -117,7 +122,11 @@ class ExamplesFlextGrpcAdvancedUsage:
             return server_results
 
         def server_status(self) -> t.MappingKV[str, t.MappingKV[str, str]]:
-            """Get status of all servers through facade."""
+            """Get status of all servers through facade.
+
+            Returns:
+                The resulting ``t.MappingKV[str, t.MappingKV[str, str]]``.
+            """
             status: t.MutableMappingKV[str, t.MappingKV[str, str]] = {}
             for server_id, server in self.servers.items():
                 settings = self.server_configs[server_id]
@@ -132,7 +141,11 @@ class ExamplesFlextGrpcAdvancedUsage:
             return status
 
         def start_all_servers(self) -> t.MappingKV[str, bool]:
-            """Start all servers in the pool through facade."""
+            """Start all servers in the pool through facade.
+
+            Returns:
+                The resulting ``t.MappingKV[str, bool]``.
+            """
             results: t.MutableMappingKV[str, bool] = {}
             for server_id, server in self.servers.items():
                 start_result = self.grpc.start_server(server)
@@ -144,7 +157,11 @@ class ExamplesFlextGrpcAdvancedUsage:
             return results
 
         def stop_all_servers(self) -> t.MappingKV[str, bool]:
-            """Stop all servers in the pool through facade."""
+            """Stop all servers in the pool through facade.
+
+            Returns:
+                The resulting ``t.MappingKV[str, bool]``.
+            """
             results: t.MutableMappingKV[str, bool] = {}
             for server_id, server in self.servers.items():
                 if server.state == "running":
@@ -173,14 +190,18 @@ class ExamplesFlextGrpcAdvancedUsage:
             service_name: str = "AdvancedService",
             methods: t.StrSequence | None = None,
         ) -> p.Result[FlextGrpcModels.Grpc.CompleteSetup]:
-            """Create a complete gRPC setup through facade."""
+            """Create a complete gRPC setup through facade.
+
+            Returns:
+                The resulting ``p.Result[FlextGrpcModels.Grpc.CompleteSetup]``.
+            """
             c_facade = self._outer.c
             if host is None:
                 host = c_facade.LOCALHOST
             if methods is None:
                 methods = ["ProcessData", "GetStatus", "StreamResults"]
             setup_result = self.grpc.create_complete_setup(
-                host=host, port=port, service_name=service_name, methods=methods
+                host=host, port=port, service_name=service_name, methods=methods,
             )
             if setup_result.failure:
                 return r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(setup_result)
@@ -197,14 +218,14 @@ class ExamplesFlextGrpcAdvancedUsage:
             ]
             for method_name, stream_type in stream_configs:
                 stream_result = self.grpc.create_stream(
-                    method_name=method_name, stream_type=stream_type
+                    method_name=method_name, stream_type=stream_type,
                 )
                 if stream_result.success:
                     stream = stream_result.value
                     self._outer.emit(f"Created {stream_type} stream: {stream.id}")
                 else:
                     self._outer.emit(
-                        f"Failed to create {stream_type} stream: {stream_result.error}"
+                        f"Failed to create {stream_type} stream: {stream_result.error}",
                     )
 
     def example_1_server_pool(self) -> None:
@@ -219,7 +240,7 @@ class ExamplesFlextGrpcAdvancedUsage:
         status = manager.server_status()
         for server_id, info in status.items():
             self.emit(
-                f"Server {server_id}: {info['state']}, running: {info['is_running']}"
+                f"Server {server_id}: {info['state']}, running: {info['is_running']}",
             )
         stop_results = manager.stop_all_servers()
         successful_stops = sum(1 for success in stop_results.values() if success)
@@ -256,7 +277,7 @@ class ExamplesFlextGrpcAdvancedUsage:
                 service = service_result.value
                 created_services.append(service)
                 self.emit(
-                    f"Created service: {service.name} with {len(service.methods)} methods"
+                    f"Created service: {service.name} with {len(service.methods)} methods",
                 )
             else:
                 self.emit(f"Failed to create {service_name}: {service_result.error}")
@@ -274,7 +295,7 @@ class ExamplesFlextGrpcAdvancedUsage:
         created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
         for method_name, stream_type in stream_configs:
             stream_result = grpc.create_stream(
-                method_name=method_name, stream_type=stream_type
+                method_name=method_name, stream_type=stream_type,
             )
             if stream_result.success:
                 stream = stream_result.value
@@ -282,7 +303,7 @@ class ExamplesFlextGrpcAdvancedUsage:
                 self.emit(f"Created {stream_type} stream for method: {method_name}")
             else:
                 self.emit(
-                    f"Failed to create {stream_type} stream: {stream_result.error}"
+                    f"Failed to create {stream_type} stream: {stream_result.error}",
                 )
         self.emit(f"Successfully created {len(created_streams)} streaming operations")
 
@@ -293,32 +314,32 @@ class ExamplesFlextGrpcAdvancedUsage:
         invalid_server_result = grpc.create_server(host="", port=0)
         if invalid_server_result.failure:
             self.emit(
-                f"Invalid server creation properly failed: {invalid_server_result.error}"
+                f"Invalid server creation properly failed: {invalid_server_result.error}",
             )
         invalid_client_result = grpc.create_client(target="")
         if invalid_client_result.failure:
             self.emit(
-                f"Invalid client creation properly failed: {invalid_client_result.error}"
+                f"Invalid client creation properly failed: {invalid_client_result.error}",
             )
         invalid_channel_result = grpc.create_channel(target="")
         if invalid_channel_result.failure:
             self.emit(
-                f"Invalid channel creation properly failed: {invalid_channel_result.error}"
+                f"Invalid channel creation properly failed: {invalid_channel_result.error}",
             )
         invalid_service_result = grpc.create_service(name="", methods=[])
         if invalid_service_result.failure:
             self.emit(
-                f"Invalid service creation properly failed: {invalid_service_result.error}"
+                f"Invalid service creation properly failed: {invalid_service_result.error}",
             )
         invalid_stream_result = grpc.create_stream(
-            method_name="", stream_type="invalid"
+            method_name="", stream_type="invalid",
         )
         if invalid_stream_result.failure:
             self.emit(
-                f"Invalid stream creation properly failed: {invalid_stream_result.error}"
+                f"Invalid stream creation properly failed: {invalid_stream_result.error}",
             )
         self.emit(
-            "Error handling validation completed - all invalid inputs properly rejected"
+            "Error handling validation completed - all invalid inputs properly rejected",
         )
 
     def main(self) -> None:
