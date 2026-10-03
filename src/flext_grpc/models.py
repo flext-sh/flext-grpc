@@ -394,8 +394,6 @@ class FlextGrpcModels(FlextCliModels):
                 Returns:
                     The resulting ``p.Result[Self]``.
                 """
-                from flext_grpc import r
-
                 return r[Self].create_from_callable(
                     lambda: self.model_copy(update=kwargs),
                 )
@@ -407,8 +405,6 @@ class FlextGrpcModels(FlextCliModels):
                 Returns:
                     The resulting ``p.Result[bool]``.
                 """
-                from flext_grpc import r
-
                 return r[bool].ok(value=True)
 
         class Channel(Entity, StateMachine):

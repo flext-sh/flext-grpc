@@ -63,7 +63,7 @@ padrão.
 
 ### 1 · 🟠 CRITICAL · CODE_SMELL · `python:S3776`
 
-**Local**: `examples/01_basic_usage.py:71` · **Effort**: 8min
+**Local**: `examples/basic_usage.py:71` · **Effort**: 8min
 
 > Refactor this function to reduce its Cognitive Complexity from 18 to the 15 allowed.
 

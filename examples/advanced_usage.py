@@ -277,7 +277,8 @@ class ExamplesFlextGrpcAdvancedUsage:
                 service = service_result.value
                 created_services.append(service)
                 self.emit(
-                    f"Created service: {service.name} with {len(service.methods)} methods",
+                    f"Created service: {service.name} "
+                    f"with {len(service.methods)} methods",
                 )
             else:
                 self.emit(f"Failed to create {service_name}: {service_result.error}")
@@ -314,32 +315,38 @@ class ExamplesFlextGrpcAdvancedUsage:
         invalid_server_result = grpc.create_server(host="", port=0)
         if invalid_server_result.failure:
             self.emit(
-                f"Invalid server creation properly failed: {invalid_server_result.error}",
+                "Invalid server creation properly failed: "
+                f"{invalid_server_result.error}",
             )
         invalid_client_result = grpc.create_client(target="")
         if invalid_client_result.failure:
             self.emit(
-                f"Invalid client creation properly failed: {invalid_client_result.error}",
+                "Invalid client creation properly failed: "
+                f"{invalid_client_result.error}",
             )
         invalid_channel_result = grpc.create_channel(target="")
         if invalid_channel_result.failure:
             self.emit(
-                f"Invalid channel creation properly failed: {invalid_channel_result.error}",
+                "Invalid channel creation properly failed: "
+                f"{invalid_channel_result.error}",
             )
         invalid_service_result = grpc.create_service(name="", methods=[])
         if invalid_service_result.failure:
             self.emit(
-                f"Invalid service creation properly failed: {invalid_service_result.error}",
+                "Invalid service creation properly failed: "
+                f"{invalid_service_result.error}",
             )
         invalid_stream_result = grpc.create_stream(
             method_name="", stream_type="invalid",
         )
         if invalid_stream_result.failure:
             self.emit(
-                f"Invalid stream creation properly failed: {invalid_stream_result.error}",
+                "Invalid stream creation properly failed: "
+                f"{invalid_stream_result.error}",
             )
         self.emit(
-            "Error handling validation completed - all invalid inputs properly rejected",
+            "Error handling validation completed - "
+            "all invalid inputs properly rejected",
         )
 
     def main(self) -> None:

@@ -16,7 +16,7 @@ from flext_tests import tm
 from tests import m
 
 
-class TestsFlextGrpcModelsUnit:
+class TestsFlextGrpcModelContracts:
     """Behavioral contract tests for FlextGrpcModels.Grpc models."""
 
     # ------------------------------------------------------------------
@@ -168,6 +168,10 @@ class TestsFlextGrpcModelsUnit:
         tm.that(values["missing"], eq="")
         tm.that(values["count"], eq=1)
         tm.that(values["items"], eq="[1, 2]")
+
+
+class TestsFlextGrpcModelBehaviors:
+    """Behavior contracts of the gRPC model state machines and aggregates."""
 
     # ------------------------------------------------------------------
     # StateMachine: transition returns r[T] with correct outcome

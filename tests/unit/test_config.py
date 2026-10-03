@@ -16,6 +16,9 @@ from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings, settings
 
+PORT_RANGE_MAX = 65535
+TIMEOUT_TOLERANCE = 0.01
+
 
 class TestsFlextGrpcConfig:
     """Behavioral contract for FlextGrpcSettings."""
@@ -27,9 +30,9 @@ class TestsFlextGrpcConfig:
         tm_grpc = cfg.Grpc
         tm.that(tm_grpc.host, is_=str)
         tm.that(tm_grpc.host.strip(), ne="")
-        assert 1 <= tm_grpc.port <= 65535
+        assert 1 <= tm_grpc.port <= PORT_RANGE_MAX
         assert tm_grpc.max_workers >= 1
-        assert abs(tm_grpc.timeout - 30.0) < 0.01
+        assert abs(tm_grpc.timeout - 30.0) < TIMEOUT_TOLERANCE
 
     @staticmethod
     def test_default_namespace_values() -> None:
@@ -38,7 +41,7 @@ class TestsFlextGrpcConfig:
         tm.that(grpc.host, eq="127.0.0.1")
         tm.that(grpc.port, eq=50051)
         tm.that(grpc.max_workers, eq=100)
-        assert abs(grpc.timeout - 30.0) < 0.01
+        assert abs(grpc.timeout - 30.0) < TIMEOUT_TOLERANCE
 
     @staticmethod
     def test_constructor_sets_namespaced_fields() -> None:

@@ -12,23 +12,23 @@ from flext_tests import tm
 from tests import c, m
 
 
-class TestsFlextGrpcEntities:
-    """Public-contract behavior of the gRPC entity models."""
+@pytest.fixture
+def channel() -> m.Grpc.Channel:
+    """Idle channel bound to a concrete target.
 
-    @staticmethod
-    @pytest.fixture
-    def channel() -> m.Grpc.Channel:
-        """Idle channel bound to a concrete target.
+    Returns:
+        The resulting ``m.Grpc.Channel``.
+    """
+    return m.Grpc.Channel(
+        target="localhost:50051",
+        state=c.Grpc.ChannelState.IDLE,
+        options={},
+        domain_events=[],
+    )
 
-        Returns:
-            The resulting ``m.Grpc.Channel``.
-        """
-        return m.Grpc.Channel(
-            target="localhost:50051",
-            state=c.Grpc.ChannelState.IDLE,
-            options={},
-            domain_events=[],
-        )
+
+class TestsFlextGrpcServerEntities:
+    """Public-contract behavior of the gRPC server entity."""
 
     @staticmethod
     @pytest.fixture
@@ -128,6 +128,10 @@ class TestsFlextGrpcEntities:
         """A well-formed server validates successfully."""
         tm.ok(server.validate_business_rules())
 
+
+class TestsFlextGrpcChannelEntities:
+    """Public-contract behavior of the gRPC channel entity."""
+
     # ---- Channel ----------------------------------------------------------
 
     @staticmethod
@@ -179,6 +183,10 @@ class TestsFlextGrpcEntities:
             tm.ok(channel.copy_with(target="127.0.0.1:8080")).target,
             eq="127.0.0.1:8080",
         )
+
+
+class TestsFlextGrpcClientServiceStreamEntities:
+    """Public-contract behavior of the gRPC client, service, and stream entities."""
 
     # ---- Client -----------------------------------------------------------
 
