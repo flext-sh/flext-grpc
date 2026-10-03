@@ -1,12 +1,15 @@
-"""Metrics collector implementation entity (ENFORCE-067: one class per module)."""
+"""Metrics collector implementation entity (ENFORCE-067: one class per module).
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 import threading
 
 from flext_grpc import m, t, u
-
-from .metric_value import FlextGrpcMetricValueModel
+from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
 
 
 class FlextGrpcMetricsCollectorImpl:
@@ -19,7 +22,11 @@ class FlextGrpcMetricsCollectorImpl:
         self._lock = threading.RLock()
 
     def all_metrics(self) -> m.Grpc.Payload:
-        """Get all metrics snapshot."""
+        """Get all metrics snapshot.
+
+        Returns:
+            The resulting ``m.Grpc.Payload``.
+        """
         with self._lock:
             vals = self._metrics.values
             return m.Grpc.Payload(values=dict(vals))

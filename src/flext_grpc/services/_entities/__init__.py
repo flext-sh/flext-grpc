@@ -1,21 +1,29 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Flext Grpc.services. Entities package."""
+"""Flext Grpc.services. Entities package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
+from flext_core import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from .client_manager import FlextGrpcClientManagerImpl
-    from .connection_pool_impl import FlextGrpcConnectionPoolImpl
-    from .metric_value import FlextGrpcMetricValueModel
-    from .metrics_collector import FlextGrpcMetricsCollectorImpl
-    from .server_manager import FlextGrpcServerManagerImpl
-    from .stream_manager import FlextGrpcStreamManagerImpl
-    from .stream_state import FlextGrpcStreamRuntimeState
+    from flext_grpc.services._entities.client_manager import FlextGrpcClientManagerImpl
+    from flext_grpc.services._entities.connection_pool_impl import (
+        FlextGrpcConnectionPoolImpl,
+    )
+    from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
+    from flext_grpc.services._entities.metrics_collector import (
+        FlextGrpcMetricsCollectorImpl,
+    )
+    from flext_grpc.services._entities.server_manager import FlextGrpcServerManagerImpl
+    from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
+    from flext_grpc.services._entities.stream_state import FlextGrpcStreamRuntimeState
 
 
 __all__: tuple[str, ...] = (
@@ -41,7 +49,7 @@ _LAZY_IMPORTS = MappingProxyType(
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
-    )
+    ),
 )
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

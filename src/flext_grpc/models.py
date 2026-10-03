@@ -17,8 +17,7 @@ from typing import Annotated, Self, override
 from flext_cli import FlextCliModels, u
 
 from flext_grpc import c, p, r, t
-
-from ._models import FlextGrpcModelsBase
+from flext_grpc._models import FlextGrpcModelsBase
 
 
 class FlextGrpcModels(FlextCliModels):
@@ -50,7 +49,7 @@ class FlextGrpcModels(FlextCliModels):
             message: Annotated[str, u.Field(description="Echo message")]
             server_id: Annotated[str, u.Field(description="Server identifier")] = ""
             timestamp: datetime = u.Field(
-                default_factory=datetime.now, description="Response timestamp"
+                default_factory=datetime.now, description="Response timestamp",
             )
 
         class HealthRequest(FlextCliModels.Value):
@@ -71,17 +70,17 @@ class FlextGrpcModels(FlextCliModels):
             stream_type: str = u.Field(description="Stream communication type")
             target: str = u.Field(description="Target endpoint address")
             created_at: datetime = u.Field(
-                default_factory=datetime.now, description="Stream creation timestamp"
+                default_factory=datetime.now, description="Stream creation timestamp",
             )
             total_requests_sent: Annotated[
-                t.NonNegativeInt, u.Field(description="Total requests sent on stream")
+                t.NonNegativeInt, u.Field(description="Total requests sent on stream"),
             ] = 0
             average_latency_ms: Annotated[
                 t.NonNegativeFloat,
                 u.Field(description="Average latency in milliseconds"),
             ] = 0.0
             error_count: Annotated[
-                t.NonNegativeInt, u.Field(description="Number of errors on stream")
+                t.NonNegativeInt, u.Field(description="Number of errors on stream"),
             ] = 0
 
         class HealthCheck(FlextCliModels.Value):
@@ -95,7 +94,7 @@ class FlextGrpcModels(FlextCliModels):
             """Operation execution request for gRPC service operations."""
 
             operation_name: Annotated[
-                str, u.Field(description="Operation name to execute")
+                str, u.Field(description="Operation name to execute"),
             ]
             arguments: t.ScalarMapping = u.Field(
                 default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
@@ -113,7 +112,7 @@ class FlextGrpcModels(FlextCliModels):
                 f"{c.Grpc.NETWORK_DEFAULT_HOST}:{c.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
             )
             timeout: Annotated[
-                t.PositiveTimeout, u.Field(description="Request timeout in seconds")
+                t.PositiveTimeout, u.Field(description="Request timeout in seconds"),
             ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
         class ChannelConfig(FlextCliModels.Value):
@@ -121,32 +120,32 @@ class FlextGrpcModels(FlextCliModels):
 
             address: str = u.Field(description="Channel address")
             options: Annotated[
-                t.JsonMapping | None, u.Field(description="Channel options")
+                t.JsonMapping | None, u.Field(description="Channel options"),
             ] = None
 
         class SecurityConfig(FlextCliModels.Value):
             """Generic gRPC security configuration with validation."""
 
             tls_enabled: Annotated[
-                bool, u.Field(description="Enable TLS encryption")
+                bool, u.Field(description="Enable TLS encryption"),
             ] = False
             tls_cert_file: Annotated[
-                str | None, u.Field(description="TLS certificate file path")
+                str | None, u.Field(description="TLS certificate file path"),
             ] = None
             tls_key_file: Annotated[
-                str | None, u.Field(description="TLS private key file path")
+                str | None, u.Field(description="TLS private key file path"),
             ] = None
             tls_ca_file: Annotated[
-                str | None, u.Field(description="TLS CA certificate file path")
+                str | None, u.Field(description="TLS CA certificate file path"),
             ] = None
             auth_enabled: Annotated[
-                bool, u.Field(description="Enable authentication")
+                bool, u.Field(description="Enable authentication"),
             ] = False
             auth_token: Annotated[
-                str | None, u.Field(description="Authentication token")
+                str | None, u.Field(description="Authentication token"),
             ] = None
             client_cert_required: Annotated[
-                bool, u.Field(description="Require client certificates")
+                bool, u.Field(description="Require client certificates"),
             ] = False
 
         class NetworkConfig(FlextCliModels.Value):
@@ -159,23 +158,23 @@ class FlextGrpcModels(FlextCliModels):
                 c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             )
             max_connections: Annotated[
-                t.BatchSize, u.Field(description="Maximum concurrent connections")
+                t.BatchSize, u.Field(description="Maximum concurrent connections"),
             ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
             keepalive_time: Annotated[
-                t.PositiveInt, u.Field(description="Keepalive ping interval (seconds)")
+                t.PositiveInt, u.Field(description="Keepalive ping interval (seconds)"),
             ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIME_MS // 1000
             keepalive_timeout: Annotated[
-                t.PositiveInt, u.Field(description="Keepalive timeout (seconds)")
+                t.PositiveInt, u.Field(description="Keepalive timeout (seconds)"),
             ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
 
         class PerformanceConfig(FlextCliModels.Value):
             """Generic gRPC performance configuration."""
 
             max_workers: Annotated[
-                int, u.Field(ge=1, le=1000, description="Maximum worker threads")
+                int, u.Field(ge=1, le=1000, description="Maximum worker threads"),
             ] = c.Grpc.SERVICE_MAX_WORKERS
             max_concurrent_rpcs: Annotated[
-                t.BatchSize, u.Field(description="Maximum concurrent RPCs")
+                t.BatchSize, u.Field(description="Maximum concurrent RPCs"),
             ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
             max_receive_message_length: Annotated[
                 int,
@@ -206,10 +205,10 @@ class FlextGrpcModels(FlextCliModels):
             """Generic gRPC streaming configuration."""
 
             enabled: Annotated[
-                bool, u.Field(description="Enable streaming operations")
+                bool, u.Field(description="Enable streaming operations"),
             ] = True
             max_concurrent_streams: Annotated[
-                t.WorkerCount, u.Field(description="Maximum concurrent streams")
+                t.WorkerCount, u.Field(description="Maximum concurrent streams"),
             ] = c.Grpc.STREAMING_DEFAULT_MAX_CONCURRENT_STREAMS
             stream_buffer_size: Annotated[
                 int,
@@ -222,24 +221,24 @@ class FlextGrpcModels(FlextCliModels):
             max_stream_duration: Annotated[
                 int,
                 u.Field(
-                    ge=10, le=3600, description="Maximum stream duration (seconds)"
+                    ge=10, le=3600, description="Maximum stream duration (seconds)",
                 ),
             ] = 300
             enable_compression: Annotated[
-                bool, u.Field(description="Enable message compression")
+                bool, u.Field(description="Enable message compression"),
             ] = True
 
         class MonitoringConfig(FlextCliModels.Value):
             """Generic gRPC monitoring and observability configuration."""
 
             metrics_enabled: Annotated[
-                bool, u.Field(description="Enable metrics collection")
+                bool, u.Field(description="Enable metrics collection"),
             ] = True
             tracing_enabled: Annotated[
-                bool, u.Field(description="Enable distributed tracing")
+                bool, u.Field(description="Enable distributed tracing"),
             ] = False
             health_check_enabled: Annotated[
-                bool, u.Field(description="Enable health checks")
+                bool, u.Field(description="Enable health checks"),
             ] = True
             health_check_interval: Annotated[
                 int,
@@ -264,8 +263,8 @@ class FlextGrpcModels(FlextCliModels):
             the model to NOT be frozen.
             """
 
+            @staticmethod
             def transition(
-                self,
                 current: str,
                 target: str,
                 allowed_transitions: t.MappingKV[str, set[str]],
@@ -286,10 +285,10 @@ class FlextGrpcModels(FlextCliModels):
                     or target not in allowed_transitions[current]
                 ):
                     return r[FlextGrpcModels.Grpc.StateTransition].fail(
-                        f"Invalid transition from {current} to {target}"
+                        f"Invalid transition from {current} to {target}",
                     )
                 return r[FlextGrpcModels.Grpc.StateTransition].ok(
-                    FlextGrpcModels.Grpc.StateTransition(state=target)
+                    FlextGrpcModels.Grpc.StateTransition(state=target),
                 )
 
         class OperationSpec(FlextCliModels.Value):
@@ -297,30 +296,30 @@ class FlextGrpcModels(FlextCliModels):
 
             name: Annotated[str, u.Field(min_length=1, description="Operation name")]
             entity_type: Annotated[
-                t.Grpc.EntityKind, u.Field(description="Type of entity to operate on")
+                t.Grpc.EntityKind, u.Field(description="Type of entity to operate on"),
             ]
             method_name: Annotated[
-                str | None, u.Field(description="Method to invoke on entity")
+                str | None, u.Field(description="Method to invoke on entity"),
             ] = None
             parameters: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Operation parameters"),
             ] = u.Field(
-                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({}),
             )
 
         class Request(FlextCliModels.Value):
             """Generic request model with validation."""
 
             operation: FlextGrpcModels.Grpc.OperationSpec = u.Field(
-                description="Operation specification to execute"
+                description="Operation specification to execute",
             )
             entity: Annotated[
                 FlextCliModels.BaseModel | None,
                 u.Field(description="Associated entity"),
             ] = None
             data: Annotated[
-                t.JsonMapping | None, u.Field(description="Request data")
+                t.JsonMapping | None, u.Field(description="Request data"),
             ] = None
 
             @u.computed_field
@@ -334,16 +333,16 @@ class FlextGrpcModels(FlextCliModels):
 
             success: Annotated[bool, u.Field(description="Operation success status")]
             data: Annotated[
-                FlextCliModels.BaseModel | None, u.Field(description="Response data")
+                FlextCliModels.BaseModel | None, u.Field(description="Response data"),
             ] = None
             error: Annotated[
-                str | None, u.Field(description="Error message if failed")
+                str | None, u.Field(description="Error message if failed"),
             ] = None
             metadata: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
                 u.Field(description="Response metadata"),
             ] = u.Field(
-                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({})
+                default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({}),
             )
 
             @u.computed_field
@@ -362,7 +361,11 @@ class FlextGrpcModels(FlextCliModels):
 
             @classmethod
             def from_values(cls, **values: t.JsonPayload | None) -> Self:
-                """Build payload from keyword values."""
+                """Build payload from keyword values.
+
+                Returns:
+                    The resulting ``Self``.
+                """
 
                 def normalize_payload_value(
                     value: t.JsonPayload | None,
@@ -388,24 +391,31 @@ class FlextGrpcModels(FlextCliModels):
                 Args:
                 **kwargs: u.Field updates for the entity
 
+                Returns:
+                    The resulting ``p.Result[Self]``.
                 """
                 from flext_grpc import r
 
                 return r[Self].create_from_callable(
-                    lambda: self.model_copy(update=kwargs)
+                    lambda: self.model_copy(update=kwargs),
                 )
 
-            def validate_business_rules(self) -> p.Result[bool]:
-                """Override in subclasses for specific validation."""
+            @staticmethod
+            def validate_business_rules() -> p.Result[bool]:
+                """Override in subclasses for specific validation.
+
+                Returns:
+                    The resulting ``p.Result[bool]``.
+                """
                 from flext_grpc import r
 
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
 
             target: Annotated[
-                str, u.Field(description="gRPC server target address")
+                str, u.Field(description="gRPC server target address"),
             ] = ""
             state: Annotated[
                 c.Grpc.ChannelState,
@@ -421,20 +431,32 @@ class FlextGrpcModels(FlextCliModels):
             ] = None
 
             def connect(self) -> p.Result[Self]:
-                """Transition to connecting."""
+                """Transition to connecting.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 return self.transition(
-                    self.state, "connecting", {"idle": {"connecting"}}
+                    self.state, "connecting", {"idle": {"connecting"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def disconnect(self) -> p.Result[Self]:
-                """Transition to idle."""
+                """Transition to idle.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 return r[Self](
                     value=self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}),
                     success=True,
                 )
 
             def ready(self) -> bool:
-                """Check readiness."""
+                """Check readiness.
+
+                Returns:
+                    The resulting ``bool``.
+                """
                 # ChannelState is a StrEnum, so its members compare as plain strings.
                 # `c.Grpc` widens to Any through the facade MRO for mypy, which would
                 # make the comparison itself Any; binding both sides to str keeps the
@@ -444,17 +466,25 @@ class FlextGrpcModels(FlextCliModels):
                 return current == ready_state
 
             def mark_ready(self) -> p.Result[Self]:
-                """Transition to ready."""
+                """Transition to ready.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 return self.transition(
-                    self.state, "ready", {"connecting": {"ready"}}
+                    self.state, "ready", {"connecting": {"ready"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
             def validate_business_rules(self) -> p.Result[bool]:
-                """Functional validation composition."""
+                """Functional validation composition.
+
+                Returns:
+                    The resulting ``p.Result[bool]``.
+                """
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class Server(Entity, StateMachine):
             """Generic gRPC server with state machine and validation delegation."""
@@ -463,7 +493,7 @@ class FlextGrpcModels(FlextCliModels):
                 c.Grpc.NETWORK_DEFAULT_HOST
             )
             port: Annotated[
-                t.PortNumber, u.Field(description="Server listen port number")
+                t.PortNumber, u.Field(description="Server listen port number"),
             ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             state: Annotated[
                 c.Grpc.ServerState,
@@ -474,7 +504,7 @@ class FlextGrpcModels(FlextCliModels):
                 u.Field(description="Maximum worker threads for request handling"),
             ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
             services: Annotated[
-                t.SequenceOf[p.Grpc.GrpcServicer], u.Field(description="gRPC services")
+                t.SequenceOf[p.Grpc.GrpcServicer], u.Field(description="gRPC services"),
             ] = u.Field(default_factory=tuple)
             grpc_server: Annotated[
                 p.Grpc.GrpcServer | None,
@@ -487,22 +517,32 @@ class FlextGrpcModels(FlextCliModels):
                 Args:
                 service: gRPC service t.JsonValue (dynamic type from grpc library)
 
+                Returns:
+                    The resulting ``p.Result[Self]``.
                 """
                 return r[Self](
                     value=self.model_copy(
-                        update={"services": [*self.services, service]}
+                        update={"services": [*self.services, service]},
                     ),
                     success=True,
                 )
 
             def mark_running(self) -> p.Result[Self]:
-                """Transition to running."""
+                """Transition to running.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 return self.transition(
-                    self.state, "running", {"starting": {"running"}}
+                    self.state, "running", {"starting": {"running"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def mark_stopped(self) -> p.Result[Self]:
-                """Transition to stopped."""
+                """Transition to stopped.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 if self.state not in {"stopping", "running"}:
                     return (
                         r[Self]
@@ -511,26 +551,38 @@ class FlextGrpcModels(FlextCliModels):
                     )
                 return r[Self](
                     value=self.model_copy(
-                        update={"state": c.Grpc.ServerState.STOPPED.value}
+                        update={"state": c.Grpc.ServerState.STOPPED.value},
                     ),
                     success=True,
                 )
 
             def start(self) -> p.Result[Self]:
-                """Transition to starting."""
+                """Transition to starting.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 return self.transition(
-                    self.state, "starting", {"stopped": {"starting"}}
+                    self.state, "starting", {"stopped": {"starting"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def stop(self) -> p.Result[Self]:
-                """Transition to stopping."""
+                """Transition to stopping.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 return self.transition(
-                    self.state, "stopping", {"running": {"stopping"}}
+                    self.state, "stopping", {"running": {"stopping"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
             def validate_business_rules(self) -> p.Result[bool]:
-                """Delegate validation to generic validators."""
+                """Delegate validation to generic validators.
+
+                Returns:
+                    The resulting ``p.Result[bool]``.
+                """
                 if not self.host.strip():
                     return r[bool].fail("Server host cannot be empty")
                 # Port range validation using IANA standard range
@@ -540,20 +592,28 @@ class FlextGrpcModels(FlextCliModels):
                     return r[bool].fail(f"Invalid port: {self.port}")
                 if self.max_workers < 1:
                     return r[bool].fail("Max workers must be >= 1")
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class Service(Entity):
             """Generic gRPC service with validation delegation."""
 
             name: Annotated[str, u.Field(description="Service name identifier")] = ""
             methods: t.StrSequence = u.Field(
-                default_factory=tuple, description="Registered RPC method names"
+                default_factory=tuple, description="Registered RPC method names",
             )
 
             @u.field_validator("methods")
             @classmethod
             def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
-                """Validate methods list is not empty with valid items."""
+                """Validate methods list is not empty with valid items.
+
+                Returns:
+                    The resulting ``t.StrSequence``.
+
+                Raises:
+                    ValueError: If methods cannot be empty; or if method cannot be
+                        empty.
+                """
                 if not v:
                     msg = "methods cannot be empty"
                     raise ValueError(msg)
@@ -566,25 +626,40 @@ class FlextGrpcModels(FlextCliModels):
             @u.field_validator("name")
             @classmethod
             def validate_name(cls, v: str) -> str:
-                """Validate name is not empty or whitespace."""
+                """Validate name is not empty or whitespace.
+
+                Returns:
+                    The resulting ``str``.
+
+                Raises:
+                    ValueError: If name cannot be empty.
+                """
                 if not v or not v.strip():
                     msg = "name cannot be empty"
                     raise ValueError(msg)
                 return v
 
             def add_method(self, method_name: str) -> p.Result[Self]:
-                """Add method functionally."""
+                """Add method functionally.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
                 return r[Self](
                     value=self.model_copy(
-                        update={"methods": [*self.methods, method_name]}
+                        update={"methods": [*self.methods, method_name]},
                     ),
                     success=True,
                 )
 
             def has_method(self, method_name: str) -> bool:
-                """Check method existence."""
+                """Check method existence.
+
+                Returns:
+                    The resulting ``bool``.
+                """
                 return method_name in self.methods
 
         class Client(Entity):
@@ -604,7 +679,11 @@ class FlextGrpcModels(FlextCliModels):
             ] = None
 
             def connect_to(self, target: str) -> p.Result[Self]:
-                """Connect functionally."""
+                """Connect functionally.
+
+                Returns:
+                    The resulting ``p.Result[Self]``.
+                """
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
                     state=c.Grpc.ChannelState.IDLE,
@@ -612,22 +691,26 @@ class FlextGrpcModels(FlextCliModels):
                     domain_events=[],
                 )
                 return r[Self](
-                    value=self.model_copy(update={"channel": channel}), success=True
+                    value=self.model_copy(update={"channel": channel}), success=True,
                 )
 
             @override
             def validate_business_rules(self) -> p.Result[bool]:
-                """Delegate validation."""
+                """Delegate validation.
+
+                Returns:
+                    The resulting ``p.Result[bool]``.
+                """
                 if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class GrpcStream(Entity):
             """Generic gRPC stream with validation delegation."""
 
             id: Annotated[str, u.Field(description="Unique stream identifier")] = ""
             method_name: Annotated[
-                str, u.Field(description="RPC method name for this stream")
+                str, u.Field(description="RPC method name for this stream"),
             ] = ""
             stream_type: Annotated[
                 c.Grpc.GrpcOperations,
@@ -641,7 +724,14 @@ class FlextGrpcModels(FlextCliModels):
             @u.field_validator("method_name")
             @classmethod
             def validate_method_name(cls, v: str) -> str:
-                """Validate method_name is not empty or whitespace."""
+                """Validate method_name is not empty or whitespace.
+
+                Returns:
+                    The resulting ``str``.
+
+                Raises:
+                    ValueError: If method_name cannot be empty.
+                """
                 if not v or not v.strip():
                     msg = "method_name cannot be empty"
                     raise ValueError(msg)
@@ -651,13 +741,13 @@ class FlextGrpcModels(FlextCliModels):
             """Complete gRPC setup result with server, client, and service."""
 
             server: FlextGrpcModels.Grpc.Server = u.Field(
-                description="Configured gRPC server instance"
+                description="Configured gRPC server instance",
             )
             client: FlextGrpcModels.Grpc.Client = u.Field(
-                description="Configured gRPC client instance"
+                description="Configured gRPC client instance",
             )
             service: FlextGrpcModels.Grpc.Service = u.Field(
-                description="Configured gRPC service definition"
+                description="Configured gRPC service definition",
             )
             target: str = u.Field(description="Target server address for the setup")
 

@@ -11,7 +11,7 @@ from typing import Literal
 
 from flext_cli import FlextCliTypes
 
-from ._typings.base import FlextGrpcTypingsBase
+from flext_grpc._typings.base import FlextGrpcTypingsBase
 
 
 class FlextGrpcTypes(FlextCliTypes):
@@ -23,7 +23,7 @@ class FlextGrpcTypes(FlextCliTypes):
         type EntityKind = Literal["server", "client", "channel", "service", "stream"]
         type Headers = FlextCliTypes.StrMapping
         type ConfigDict = FlextCliTypes.MappingKV[
-            str, FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None
+            str, FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None,
         ]
 
 

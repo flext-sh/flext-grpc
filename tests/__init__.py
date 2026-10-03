@@ -1,26 +1,29 @@
 # AUTO-GENERATED FILE — Regenerate with: make gen
-"""Tests package."""
+"""Tests package.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import build_lazy_import_map, install_lazy_exports
+from flext_core import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_tests import api, td, tf, tk, tm, tv
+    from flext_tests import api, td, tf, tk, tm
 
     from flext_core import d, e, h, r, x
-
-    from . import unit
-    from .base import TestsFlextGrpcServiceBase, TestsFlextGrpcServiceBase as s
-    from .constants import TestsFlextGrpcConstants, TestsFlextGrpcConstants as c
-    from .models import TestsFlextGrpcModels, TestsFlextGrpcModels as m
-    from .protocols import TestsFlextGrpcProtocols, TestsFlextGrpcProtocols as p
-    from .settings import TestsFlextGrpcSettings
-    from .typings import TestsFlextGrpcTypes, TestsFlextGrpcTypes as t
-    from .utilities import TestsFlextGrpcUtilities, TestsFlextGrpcUtilities as u
+    from tests import unit
+    from tests.base import TestsFlextGrpcServiceBase, s
+    from tests.constants import TestsFlextGrpcConstants, c
+    from tests.models import TestsFlextGrpcModels, m
+    from tests.protocols import TestsFlextGrpcProtocols, p
+    from tests.settings import TestsFlextGrpcSettings
+    from tests.typings import TestsFlextGrpcTypes, t
+    from tests.utilities import TestsFlextGrpcUtilities, u
 
 
 __all__: tuple[str, ...] = (
@@ -45,7 +48,6 @@ __all__: tuple[str, ...] = (
     "tf",
     "tk",
     "tm",
-    "tv",
     "u",
     "unit",
     "x",
@@ -63,11 +65,11 @@ _LAZY_IMPORTS = MappingProxyType(
             ".unit": ("unit",),
             ".utilities": ("TestsFlextGrpcUtilities", "u"),
             "flext_core": ("d", "e", "h", "r", "x"),
-            "flext_tests": ("api", "td", "tf", "tk", "tm", "tv"),
+            "flext_tests": ("api", "td", "tf", "tk", "tm"),
         }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
-    )
+    ),
 )
 
 install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

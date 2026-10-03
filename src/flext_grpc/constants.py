@@ -16,8 +16,7 @@ import re
 from typing import TYPE_CHECKING, ClassVar
 
 from flext_core import FlextConstants
-
-from ._constants.base import FlextGrpcConstantsBase
+from flext_grpc._constants.base import FlextGrpcConstantsBase
 
 if TYPE_CHECKING:
     from flext_grpc import t
@@ -53,12 +52,12 @@ class FlextGrpcConstants(FlextConstants):
 
         # ===== Network constants (derived — not a plain literal) =====
         NETWORK_HOST_RE: ClassVar[t.RegexPattern] = re.compile(
-            FlextGrpcConstantsBase.NETWORK_HOST_PATTERN
+            FlextGrpcConstantsBase.NETWORK_HOST_PATTERN,
         )
 
         # ===== Validation constants (derived — not a plain literal) =====
         VALIDATION_VERSION_RE: ClassVar[t.RegexPattern] = re.compile(
-            FlextGrpcConstantsBase.VALIDATION_VERSION_PATTERN, re.IGNORECASE
+            FlextGrpcConstantsBase.VALIDATION_VERSION_PATTERN, re.IGNORECASE,
         )
 
         # ===== Error messages =====

@@ -1,4 +1,8 @@
-"""Metric value model entity (ENFORCE-067: one class per module)."""
+"""Metric value model entity (ENFORCE-067: one class per module).
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -9,7 +13,7 @@ class FlextGrpcMetricValueModel(m.Value):
     """Normalized metric measurement value model."""
 
     value: t.JsonValue | None = u.Field(
-        description="Normalized metric measurement value"
+        description="Normalized metric measurement value",
     )
 
 

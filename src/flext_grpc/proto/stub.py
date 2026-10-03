@@ -10,9 +10,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.protocols import FlextGrpcProtocols
+
+if TYPE_CHECKING:
+    from flext_grpc.protocols import FlextGrpcProtocols
 
 
 class FlextGrpcServiceStub:
@@ -22,18 +26,28 @@ class FlextGrpcServiceStub:
         """Initialize stub with channel."""
         self.channel = channel
 
+    @staticmethod
     def echo(
-        self, request: FlextGrpcModels.Grpc.EchoRequest
+        request: FlextGrpcModels.Grpc.EchoRequest,
     ) -> FlextGrpcModels.Grpc.EchoResponse:
-        """Echo RPC method."""
+        """Echo RPC method.
+
+        Returns:
+            The resulting ``FlextGrpcModels.Grpc.EchoResponse``.
+        """
         return FlextGrpcModels.Grpc.EchoResponse(message=request.message, server_id="")
 
+    @staticmethod
     def health_check(
-        self, request: FlextGrpcModels.Grpc.HealthRequest
+        request: FlextGrpcModels.Grpc.HealthRequest,
     ) -> FlextGrpcModels.Grpc.HealthResponse:
-        """Health check RPC method."""
+        """Health check RPC method.
+
+        Returns:
+            The resulting ``FlextGrpcModels.Grpc.HealthResponse``.
+        """
         return FlextGrpcModels.Grpc.HealthResponse(
-            status=c.HealthStatus.HEALTHY.value, message=request.service
+            status=c.HealthStatus.HEALTHY.value, message=request.service,
         )
 
 
