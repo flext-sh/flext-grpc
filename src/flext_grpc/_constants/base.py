@@ -118,33 +118,17 @@ class FlextGrpcConstantsBase:
     NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: Final[float] = 2.0
     NETWORK_DEFAULT_GRPC_PORT: Final[int] = 50051
     NETWORK_DEFAULT_HOST: Final[str] = "127.0.0.1"
-    NETWORK_DEFAULT_KEEPALIVE_TIME_MS: Final[int] = 30000
-    NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS: Final[int] = 5000
     NETWORK_MAX_PORT: Final[int] = 65535
     NETWORK_MIN_PORT: Final[int] = 1
     NETWORK_HOST_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
 
-    # ===== Performance limits =====
-    PERFORMANCE_DEFAULT_THREAD_POOL_SIZE: Final[int] = 50
-    PERFORMANCE_MAX_THREAD_POOL_SIZE: Final[int] = 200
-    PERFORMANCE_MIN_MESSAGE_LENGTH: Final[int] = 1024
-    PERFORMANCE_MIN_THREAD_POOL_SIZE: Final[int] = 1
-    PERFORMANCE_DEFAULT_MESSAGE_LENGTH: Final[int] = 4 * 1024 * 1024
-    PERFORMANCE_MAX_MESSAGE_LENGTH: Final[int] = 100 * 1024 * 1024
-
     # ===== Service constants =====
-    SERVICE_DEFAULT_MAX_CONCURRENT_RPCS: Final[int] = 1000
     SERVICE_DEFAULT_MAX_WORKERS: Final[int] = 10
-    SERVICE_MAX_WORKERS: Final[int] = 100
-    SERVICE_MIN_WORKERS: Final[int] = 1
 
     # ===== Streaming configuration =====
     BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
     CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
     STREAMING_DEFAULT_BUFFER_SIZE: Final[int] = 500
-    STREAMING_DEFAULT_MAX_CONCURRENT_STREAMS: Final[int] = 10
-    STREAMING_MAX_BUFFER_SIZE: Final[int] = 10000
-    STREAMING_MIN_BUFFER_SIZE: Final[int] = 10
     SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
 
     # ===== Connection pool defaults =====

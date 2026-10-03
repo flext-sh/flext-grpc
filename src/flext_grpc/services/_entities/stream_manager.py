@@ -46,7 +46,8 @@ class FlextGrpcStreamManagerImpl:
         return r[m.Grpc.GrpcStream].ok(stream)
 
     def create_stream(
-        self, **kwargs: t.JsonValue | None,
+        self,
+        **kwargs: t.JsonValue | None,
     ) -> p.Result[m.Grpc.GrpcStream]:
         """Create stream with proper setup.
 
@@ -56,20 +57,25 @@ class FlextGrpcStreamManagerImpl:
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
         stream_type = str(kwargs.get("stream_type", "unary"))
         stream_result = FlextGrpcUtilities.Grpc.create_stream_entity(
-            method_name, stream_type,
+            method_name,
+            stream_type,
         )
         if stream_result.failure:
             return stream_result
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
         self._active_streams[stream_key] = FlextGrpcStreamRuntimeState(
-            stream=stream, created_at=time.time(), buffer=self._new_stream_buffer(),
+            stream=stream,
+            created_at=time.time(),
+            buffer=self._new_stream_buffer(),
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r[m.Grpc.GrpcStream].ok(stream)
 
     def send_data(
-        self, stream: m.Grpc.GrpcStream, data: t.JsonMapping | None,
+        self,
+        stream: m.Grpc.GrpcStream,
+        data: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
         """Send data with buffering strategy.
 

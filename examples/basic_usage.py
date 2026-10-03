@@ -85,7 +85,8 @@ class ExamplesFlextGrpcBasicUsage:
         grpc = self._grpc
         constants = self._constants
         server_result = grpc.create_server(
-            host=constants.Grpc.NETWORK_DEFAULT_HOST, port=7070,
+            host=constants.Grpc.NETWORK_DEFAULT_HOST,
+            port=7070,
         )
         if server_result.success:
             server = server_result.value
@@ -108,7 +109,9 @@ class ExamplesFlextGrpcBasicUsage:
             if connect_result.success:
                 connected_client = connect_result.value
                 call_result = grpc.make_call(
-                    connected_client, "GetServerInfo", {"request_id": "12345"},
+                    connected_client,
+                    "GetServerInfo",
+                    {"request_id": "12345"},
                 )
                 if call_result.success:
                     self._emit(f"Call result: {call_result.value}")

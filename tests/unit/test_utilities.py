@@ -48,7 +48,9 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_parse_address_returns_host_and_int_port(
-        address: str, expected_host: str, expected_port: int,
+        address: str,
+        expected_host: str,
+        expected_port: int,
     ) -> None:
         """A valid address parses into a (host, int-port) pair."""
         host, port = u.Grpc.parse_address(address)
@@ -66,7 +68,8 @@ class TestsFlextGrpcUtilitiesUnit:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "bad_address", ["nocolon", "", "host:", ":50051", "host:notaport", "host:0"],
+        "bad_address",
+        ["nocolon", "", "host:", ":50051", "host:notaport", "host:0"],
     )
     def test_parse_address_rejects_invalid_target(bad_address: str) -> None:
         """Parsing an invalid target raises ValueError naming the target."""
@@ -99,7 +102,9 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_validate_target_reflects_host_port_validity(
-        target: str, *, expected: bool,
+        target: str,
+        *,
+        expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port strings."""
         tm.that(u.Grpc.validate_target(target), eq=expected)
@@ -121,7 +126,9 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_validate_port_enforces_inclusive_range(
-        port: int, *, expected: bool,
+        port: int,
+        *,
+        expected: bool,
     ) -> None:
         """Ports are valid only within the inclusive 1..65535 range."""
         tm.that(u.Grpc.validate_port(port), eq=expected)
@@ -132,7 +139,9 @@ class TestsFlextGrpcUtilitiesUnit:
         [("localhost", True), ("127.0.0.1", True), ("", False), ("   ", False)],
     )
     def test_validate_host_requires_non_blank(
-        host: str, *, expected: bool,
+        host: str,
+        *,
+        expected: bool,
     ) -> None:
         """A host is valid only when it is non-empty after stripping."""
         tm.that(u.Grpc.validate_host(host), eq=expected)
@@ -161,7 +170,8 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_channel_state_name_normalizes_known_states(
-        state: str, expected: str,
+        state: str,
+        expected: str,
     ) -> None:
         """Known channel states normalize to lowercase; others map to unknown."""
         tm.that(u.Grpc.channel_state_name(state), eq=expected)
@@ -177,7 +187,8 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_server_state_name_normalizes_known_states(
-        state: str, expected: str,
+        state: str,
+        expected: str,
     ) -> None:
         """Known server states normalize to lowercase; others map to unknown."""
         tm.that(u.Grpc.server_state_name(state), eq=expected)

@@ -31,8 +31,6 @@ class TestsFlextGrpcConstantsUnit:
             ("NETWORK_MIN_PORT", 1),
             ("NETWORK_MAX_PORT", 65535),
             ("SERVICE_DEFAULT_MAX_WORKERS", 10),
-            ("SERVICE_MIN_WORKERS", 1),
-            ("SERVICE_MAX_WORKERS", 100),
             ("VALIDATION_ADDRESS_PARTS_COUNT", 2),
             ("VALIDATION_MAX_PORT_NUMBER", 65535),
             ("CLIENT_STREAMING_BUFFER_THRESHOLD", 10),
@@ -45,34 +43,9 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(getattr(Grpc, name), eq=expected)
 
     @staticmethod
-    @pytest.mark.parametrize(
-        ("lower", "upper"),
-        [
-            ("NETWORK_MIN_PORT", "NETWORK_MAX_PORT"),
-            ("SERVICE_MIN_WORKERS", "SERVICE_MAX_WORKERS"),
-            ("PERFORMANCE_MIN_MESSAGE_LENGTH", "PERFORMANCE_DEFAULT_MESSAGE_LENGTH"),
-            ("PERFORMANCE_DEFAULT_MESSAGE_LENGTH", "PERFORMANCE_MAX_MESSAGE_LENGTH"),
-            (
-                "PERFORMANCE_MIN_THREAD_POOL_SIZE",
-                "PERFORMANCE_DEFAULT_THREAD_POOL_SIZE",
-            ),
-            (
-                "PERFORMANCE_DEFAULT_THREAD_POOL_SIZE",
-                "PERFORMANCE_MAX_THREAD_POOL_SIZE",
-            ),
-            ("STREAMING_MIN_BUFFER_SIZE", "STREAMING_DEFAULT_BUFFER_SIZE"),
-            ("STREAMING_DEFAULT_BUFFER_SIZE", "STREAMING_MAX_BUFFER_SIZE"),
-        ],
-    )
-    def test_range_bounds_are_ordered(lower: str, upper: str) -> None:
-        """Min/default/max bound pairs preserve a strict ordering invariant."""
-        assert getattr(Grpc, lower) < getattr(Grpc, upper)
-
-    @staticmethod
-    def test_default_and_min_workers_are_within_bounds() -> None:
-        """The default worker count falls inside the declared worker range."""
-        assert Grpc.SERVICE_MIN_WORKERS <= Grpc.SERVICE_DEFAULT_MAX_WORKERS
-        assert Grpc.SERVICE_DEFAULT_MAX_WORKERS <= Grpc.SERVICE_MAX_WORKERS
+    def test_port_bounds_are_ordered() -> None:
+        """The minimum port stays strictly below the maximum port."""
+        assert Grpc.NETWORK_MIN_PORT < Grpc.NETWORK_MAX_PORT
 
     @staticmethod
     def test_default_grpc_port_within_valid_port_range() -> None:
@@ -87,7 +60,8 @@ class TestsFlextGrpcConstantsUnit:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "host", ["127.0.0.1", "localhost", "grpc-server", "example.com"],
+        "host",
+        ["127.0.0.1", "localhost", "grpc-server", "example.com"],
     )
     def test_host_pattern_accepts_valid_hosts(host: str) -> None:
         """The compiled host pattern matches syntactically valid hosts."""
@@ -95,7 +69,8 @@ class TestsFlextGrpcConstantsUnit:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "host", ["bad host", "under_score!", "with/slash", "colon:port"],
+        "host",
+        ["bad host", "under_score!", "with/slash", "colon:port"],
     )
     def test_host_pattern_rejects_invalid_hosts(host: str) -> None:
         """The compiled host pattern rejects hosts with illegal characters."""
@@ -107,7 +82,8 @@ class TestsFlextGrpcConstantsUnit:
         [("Version 1.2.3", "1.2.3"), ("version 4.5.6 build", "4.5.6")],
     )
     def test_version_pattern_captures_semver(
-        text: str, expected_group: str,
+        text: str,
+        expected_group: str,
     ) -> None:
         """The version pattern extracts the semantic version, case-insensitively."""
         match = tm.not_none(Grpc.VALIDATION_VERSION_RE.search(text))
@@ -147,7 +123,8 @@ class TestsFlextGrpcConstantsUnit:
         ],
     )
     def test_frozensets_derive_from_their_enums(
-        frozenset_attr: str, enum_attr: str,
+        frozenset_attr: str,
+        enum_attr: str,
     ) -> None:
         """Each published frozenset equals the value set of its source enum."""
         collection = getattr(Grpc, frozenset_attr)

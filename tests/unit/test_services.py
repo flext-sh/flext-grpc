@@ -95,7 +95,10 @@ class TestsFlextGrpcServices:
         ],
     )
     def test_validate_target_recognizes_host_port_form(
-        grpc_facade: FlextGrpc, target: str, *, expected: bool,
+        grpc_facade: FlextGrpc,
+        target: str,
+        *,
+        expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
         assert grpc_facade.validate_target(target) is expected
@@ -113,7 +116,8 @@ class TestsFlextGrpcServices:
     @staticmethod
     @pytest.mark.parametrize("address", ["host", "bad:x", ""])
     def test_parse_address_fails_for_malformed_input(
-        grpc_facade: FlextGrpc, address: str,
+        grpc_facade: FlextGrpc,
+        address: str,
     ) -> None:
         """parse_address fails with a descriptive error for malformed input."""
         result = grpc_facade.parse_address(address)

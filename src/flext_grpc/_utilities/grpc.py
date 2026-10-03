@@ -26,7 +26,8 @@ class FlextGrpcUtilitiesEntityFactories:
 
     @staticmethod
     def create_channel_entity(
-        target: str, options: t.JsonMapping | None = None,
+        target: str,
+        options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Channel]:
         """Create a typed channel entity from validated inputs.
 
@@ -42,7 +43,8 @@ class FlextGrpcUtilitiesEntityFactories:
 
     @staticmethod
     def create_client_entity(
-        target: str, options: t.JsonMapping | None = None,
+        target: str,
+        options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Client]:
         """Create a typed client entity backed by a typed channel entity.
 
@@ -51,7 +53,8 @@ class FlextGrpcUtilitiesEntityFactories:
         """
         resolved_options = {} if options is None else dict(options)
         channel_result = FlextGrpcUtilitiesGrpc.create_channel_entity(
-            target=target, options=resolved_options,
+            target=target,
+            options=resolved_options,
         )
         if channel_result.failure:
             return r[m.Grpc.Client].from_failure(channel_result)
@@ -80,7 +83,8 @@ class FlextGrpcUtilitiesEntityFactories:
 
     @staticmethod
     def create_service_entity(
-        name: str, methods: t.StrSequence | None = None,
+        name: str,
+        methods: t.StrSequence | None = None,
     ) -> p.Result[m.Grpc.Service]:
         """Create a typed service entity with a minimal valid method set.
 
@@ -96,7 +100,8 @@ class FlextGrpcUtilitiesEntityFactories:
 
     @staticmethod
     def create_stream_entity(
-        method_name: str, stream_type: c.Grpc.GrpcOperations | str,
+        method_name: str,
+        stream_type: c.Grpc.GrpcOperations | str,
     ) -> p.Result[m.Grpc.GrpcStream]:
         """Create a typed stream entity from validated inputs.
 
@@ -130,10 +135,12 @@ class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
             """Store the imported grpc module."""
             self._runtime_module = runtime_module
             self.RpcError = self._exception_type(
-                self._runtime_module.RpcError, "RpcError",
+                self._runtime_module.RpcError,
+                "RpcError",
             )
             self.FutureTimeoutError = self._exception_type(
-                self._runtime_module.FutureTimeoutError, "FutureTimeoutError",
+                self._runtime_module.FutureTimeoutError,
+                "FutureTimeoutError",
             )
 
         @staticmethod
@@ -167,7 +174,8 @@ class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
             return channel
 
         def channel_ready_future(
-            self, channel: p.Grpc.GrpcChannel,
+            self,
+            channel: p.Grpc.GrpcChannel,
         ) -> p.Grpc.GrpcReadyFuture:
             """Create a typed ready future for the given channel.
 
@@ -206,7 +214,8 @@ class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
             The resulting ``p.Result[p.Grpc.GrpcRuntime]``.
         """
         runtime_result = u.try_(
-            lambda: import_module("grpc"), catch=(ImportError, ModuleNotFoundError),
+            lambda: import_module("grpc"),
+            catch=(ImportError, ModuleNotFoundError),
         )
         if runtime_result.failure:
             return r[p.Grpc.GrpcRuntime].fail(
@@ -279,7 +288,8 @@ class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
             )
         runtime = runtime_result.value
         return u.try_(
-            operation, catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime),
+            operation,
+            catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime),
         )
 
     @staticmethod
@@ -298,7 +308,9 @@ class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
 
     @staticmethod
     def open_insecure_channel(
-        target: str, *, timeout: float = c.Grpc.NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT,
+        target: str,
+        *,
+        timeout: float = c.Grpc.NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT,
     ) -> p.Result[p.Grpc.GrpcChannel]:
         """Open an insecure channel and wait until it is ready.
 
@@ -329,7 +341,8 @@ class FlextGrpcUtilitiesGrpc(FlextGrpcUtilitiesEntityFactories):
             return grpc_channel
 
         return u.try_(
-            _open, catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime),
+            _open,
+            catch=FlextGrpcUtilitiesGrpc._runtime_exception_types(runtime),
         )
 
     @staticmethod

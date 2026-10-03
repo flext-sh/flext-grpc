@@ -4,7 +4,6 @@ site_description: Workspace documentation generated from code and curated root d
 site_url: https://github.com/flext-sh/flext/blob/main/README.md
 repo_name: flext-sh/flext
 repo_url: https://github.com/flext-sh/flext
-edit_uri: edit/main/flext-grpc/
 docs_dir: docs
 site_dir: .reports/docs/site
 

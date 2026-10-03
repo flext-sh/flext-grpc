@@ -17,7 +17,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
     @staticmethod
     def create_channel(
-        target: str, options: t.JsonMapping | None = None,
+        target: str,
+        options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs.
 
@@ -25,12 +26,14 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             The resulting ``p.Result[m.Grpc.Channel]``.
         """
         return FlextGrpcUtilities.Grpc.create_channel_entity(
-            target=target, options={} if options is None else options,
+            target=target,
+            options={} if options is None else options,
         )
 
     @staticmethod
     def create_client(
-        target: str, options: t.JsonMapping | None = None,
+        target: str,
+        options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Client]:
         """Create typed client entity from validated inputs.
 
@@ -38,7 +41,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             The resulting ``p.Result[m.Grpc.Client]``.
         """
         return FlextGrpcUtilities.Grpc.create_client_entity(
-            target=target, options=options,
+            target=target,
+            options=options,
         )
 
     def create_complete_setup(
@@ -65,7 +69,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             return r[m.Grpc.CompleteSetup].from_failure(client_result)
 
         service_result = self.create_service(
-            name=service_name, methods=resolved_methods,
+            name=service_name,
+            methods=resolved_methods,
         )
         if service_result.failure:
             return r[m.Grpc.CompleteSetup].from_failure(service_result)
@@ -91,12 +96,15 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             The resulting ``p.Result[m.Grpc.Server]``.
         """
         return FlextGrpcUtilities.Grpc.create_server_entity(
-            host=host, port=port, max_workers=max_workers,
+            host=host,
+            port=port,
+            max_workers=max_workers,
         )
 
     @staticmethod
     def create_service(
-        name: str, methods: t.StrSequence | None = None,
+        name: str,
+        methods: t.StrSequence | None = None,
     ) -> p.Result[m.Grpc.Service]:
         """Create typed service entity from validated inputs.
 
@@ -104,7 +112,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             The resulting ``p.Result[m.Grpc.Service]``.
         """
         return FlextGrpcUtilities.Grpc.create_service_entity(
-            name=name, methods=[] if methods is None else methods,
+            name=name,
+            methods=[] if methods is None else methods,
         )
 
     @override
@@ -117,7 +126,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
     def execute_operation(
-        self, request: m.Grpc.OperationExecutionRequest,
+        self,
+        request: m.Grpc.OperationExecutionRequest,
     ) -> p.Result[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring.
 
