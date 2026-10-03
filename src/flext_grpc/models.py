@@ -49,7 +49,8 @@ class FlextGrpcModels(FlextCliModels):
             message: Annotated[str, u.Field(description="Echo message")]
             server_id: Annotated[str, u.Field(description="Server identifier")] = ""
             timestamp: datetime = u.Field(
-                default_factory=datetime.now, description="Response timestamp",
+                default_factory=datetime.now,
+                description="Response timestamp",
             )
 
         class HealthRequest(FlextCliModels.Value):
@@ -70,17 +71,20 @@ class FlextGrpcModels(FlextCliModels):
             stream_type: str = u.Field(description="Stream communication type")
             target: str = u.Field(description="Target endpoint address")
             created_at: datetime = u.Field(
-                default_factory=datetime.now, description="Stream creation timestamp",
+                default_factory=datetime.now,
+                description="Stream creation timestamp",
             )
             total_requests_sent: Annotated[
-                t.NonNegativeInt, u.Field(description="Total requests sent on stream"),
+                t.NonNegativeInt,
+                u.Field(description="Total requests sent on stream"),
             ] = 0
             average_latency_ms: Annotated[
                 t.NonNegativeFloat,
                 u.Field(description="Average latency in milliseconds"),
             ] = 0.0
             error_count: Annotated[
-                t.NonNegativeInt, u.Field(description="Number of errors on stream"),
+                t.NonNegativeInt,
+                u.Field(description="Number of errors on stream"),
             ] = 0
 
         class HealthCheck(FlextCliModels.Value):
@@ -94,7 +98,8 @@ class FlextGrpcModels(FlextCliModels):
             """Operation execution request for gRPC service operations."""
 
             operation_name: Annotated[
-                str, u.Field(description="Operation name to execute"),
+                str,
+                u.Field(description="Operation name to execute"),
             ]
             arguments: t.ScalarMapping = u.Field(
                 default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
@@ -112,7 +117,8 @@ class FlextGrpcModels(FlextCliModels):
                 f"{c.Grpc.NETWORK_DEFAULT_HOST}:{c.Grpc.NETWORK_DEFAULT_GRPC_PORT}"
             )
             timeout: Annotated[
-                t.PositiveTimeout, u.Field(description="Request timeout in seconds"),
+                t.PositiveTimeout,
+                u.Field(description="Request timeout in seconds"),
             ] = c.Grpc.NETWORK_DEFAULT_TIMEOUT
 
         class ChannelConfig(FlextCliModels.Value):
@@ -120,131 +126,9 @@ class FlextGrpcModels(FlextCliModels):
 
             address: str = u.Field(description="Channel address")
             options: Annotated[
-                t.JsonMapping | None, u.Field(description="Channel options"),
+                t.JsonMapping | None,
+                u.Field(description="Channel options"),
             ] = None
-
-        class SecurityConfig(FlextCliModels.Value):
-            """Generic gRPC security configuration with validation."""
-
-            tls_enabled: Annotated[
-                bool, u.Field(description="Enable TLS encryption"),
-            ] = False
-            tls_cert_file: Annotated[
-                str | None, u.Field(description="TLS certificate file path"),
-            ] = None
-            tls_key_file: Annotated[
-                str | None, u.Field(description="TLS private key file path"),
-            ] = None
-            tls_ca_file: Annotated[
-                str | None, u.Field(description="TLS CA certificate file path"),
-            ] = None
-            auth_enabled: Annotated[
-                bool, u.Field(description="Enable authentication"),
-            ] = False
-            auth_token: Annotated[
-                str | None, u.Field(description="Authentication token"),
-            ] = None
-            client_cert_required: Annotated[
-                bool, u.Field(description="Require client certificates"),
-            ] = False
-
-        class NetworkConfig(FlextCliModels.Value):
-            """Generic gRPC network configuration with validation."""
-
-            host: Annotated[t.NonEmptyStr, u.Field(description="gRPC server host")] = (
-                c.Grpc.NETWORK_DEFAULT_HOST
-            )
-            port: Annotated[t.PortNumber, u.Field(description="gRPC server port")] = (
-                c.Grpc.NETWORK_DEFAULT_GRPC_PORT
-            )
-            max_connections: Annotated[
-                t.BatchSize, u.Field(description="Maximum concurrent connections"),
-            ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
-            keepalive_time: Annotated[
-                t.PositiveInt, u.Field(description="Keepalive ping interval (seconds)"),
-            ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIME_MS // 1000
-            keepalive_timeout: Annotated[
-                t.PositiveInt, u.Field(description="Keepalive timeout (seconds)"),
-            ] = c.Grpc.NETWORK_DEFAULT_KEEPALIVE_TIMEOUT_MS // 1000
-
-        class PerformanceConfig(FlextCliModels.Value):
-            """Generic gRPC performance configuration."""
-
-            max_workers: Annotated[
-                int, u.Field(ge=1, le=1000, description="Maximum worker threads"),
-            ] = c.Grpc.SERVICE_MAX_WORKERS
-            max_concurrent_rpcs: Annotated[
-                t.BatchSize, u.Field(description="Maximum concurrent RPCs"),
-            ] = c.Grpc.SERVICE_DEFAULT_MAX_CONCURRENT_RPCS
-            max_receive_message_length: Annotated[
-                int,
-                u.Field(
-                    ge=c.Grpc.PERFORMANCE_MIN_MESSAGE_LENGTH,
-                    le=c.Grpc.PERFORMANCE_MAX_MESSAGE_LENGTH,
-                    description="Maximum receive message length (bytes)",
-                ),
-            ] = c.Grpc.PERFORMANCE_DEFAULT_MESSAGE_LENGTH
-            max_send_message_length: Annotated[
-                int,
-                u.Field(
-                    ge=c.Grpc.PERFORMANCE_MIN_MESSAGE_LENGTH,
-                    le=c.Grpc.PERFORMANCE_MAX_MESSAGE_LENGTH,
-                    description="Maximum send message length (bytes)",
-                ),
-            ] = c.Grpc.PERFORMANCE_DEFAULT_MESSAGE_LENGTH
-            thread_pool_size: Annotated[
-                int,
-                u.Field(
-                    ge=c.Grpc.PERFORMANCE_MIN_THREAD_POOL_SIZE,
-                    le=c.Grpc.PERFORMANCE_MAX_THREAD_POOL_SIZE,
-                    description="Thread pool size",
-                ),
-            ] = c.Grpc.PERFORMANCE_DEFAULT_THREAD_POOL_SIZE
-
-        class StreamingConfig(FlextCliModels.Value):
-            """Generic gRPC streaming configuration."""
-
-            enabled: Annotated[
-                bool, u.Field(description="Enable streaming operations"),
-            ] = True
-            max_concurrent_streams: Annotated[
-                t.WorkerCount, u.Field(description="Maximum concurrent streams"),
-            ] = c.Grpc.STREAMING_DEFAULT_MAX_CONCURRENT_STREAMS
-            stream_buffer_size: Annotated[
-                int,
-                u.Field(
-                    ge=c.Grpc.STREAMING_MIN_BUFFER_SIZE,
-                    le=c.Grpc.STREAMING_MAX_BUFFER_SIZE,
-                    description="Stream buffer size",
-                ),
-            ] = c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE
-            max_stream_duration: Annotated[
-                int,
-                u.Field(
-                    ge=10, le=3600, description="Maximum stream duration (seconds)",
-                ),
-            ] = 300
-            enable_compression: Annotated[
-                bool, u.Field(description="Enable message compression"),
-            ] = True
-
-        class MonitoringConfig(FlextCliModels.Value):
-            """Generic gRPC monitoring and observability configuration."""
-
-            metrics_enabled: Annotated[
-                bool, u.Field(description="Enable metrics collection"),
-            ] = True
-            tracing_enabled: Annotated[
-                bool, u.Field(description="Enable distributed tracing"),
-            ] = False
-            health_check_enabled: Annotated[
-                bool, u.Field(description="Enable health checks"),
-            ] = True
-            health_check_interval: Annotated[
-                int,
-                u.Field(ge=5, le=300, description="Health check interval (seconds)"),
-            ] = 30
-            log_level: Annotated[str, u.Field(description="Logging level")] = "INFO"
 
         class StateTransition(FlextCliModels.Value):
             """State transition result model."""
@@ -296,10 +180,12 @@ class FlextGrpcModels(FlextCliModels):
 
             name: Annotated[str, u.Field(min_length=1, description="Operation name")]
             entity_type: Annotated[
-                t.Grpc.EntityKind, u.Field(description="Type of entity to operate on"),
+                t.Grpc.EntityKind,
+                u.Field(description="Type of entity to operate on"),
             ]
             method_name: Annotated[
-                str | None, u.Field(description="Method to invoke on entity"),
+                str | None,
+                u.Field(description="Method to invoke on entity"),
             ] = None
             parameters: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
@@ -319,7 +205,8 @@ class FlextGrpcModels(FlextCliModels):
                 u.Field(description="Associated entity"),
             ] = None
             data: Annotated[
-                t.JsonMapping | None, u.Field(description="Request data"),
+                t.JsonMapping | None,
+                u.Field(description="Request data"),
             ] = None
 
             @u.computed_field
@@ -333,10 +220,12 @@ class FlextGrpcModels(FlextCliModels):
 
             success: Annotated[bool, u.Field(description="Operation success status")]
             data: Annotated[
-                FlextCliModels.BaseModel | None, u.Field(description="Response data"),
+                FlextCliModels.BaseModel | None,
+                u.Field(description="Response data"),
             ] = None
             error: Annotated[
-                str | None, u.Field(description="Error message if failed"),
+                str | None,
+                u.Field(description="Error message if failed"),
             ] = None
             metadata: Annotated[
                 t.MappingKV[str, t.JsonMapping | None],
@@ -411,7 +300,8 @@ class FlextGrpcModels(FlextCliModels):
             """Generic gRPC channel with state machine delegation."""
 
             target: Annotated[
-                str, u.Field(description="gRPC server target address"),
+                str,
+                u.Field(description="gRPC server target address"),
             ] = ""
             state: Annotated[
                 c.Grpc.ChannelState,
@@ -433,7 +323,9 @@ class FlextGrpcModels(FlextCliModels):
                     The resulting ``p.Result[Self]``.
                 """
                 return self.transition(
-                    self.state, "connecting", {"idle": {"connecting"}},
+                    self.state,
+                    "connecting",
+                    {"idle": {"connecting"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def disconnect(self) -> p.Result[Self]:
@@ -468,7 +360,9 @@ class FlextGrpcModels(FlextCliModels):
                     The resulting ``p.Result[Self]``.
                 """
                 return self.transition(
-                    self.state, "ready", {"connecting": {"ready"}},
+                    self.state,
+                    "ready",
+                    {"connecting": {"ready"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
@@ -489,7 +383,8 @@ class FlextGrpcModels(FlextCliModels):
                 c.Grpc.NETWORK_DEFAULT_HOST
             )
             port: Annotated[
-                t.PortNumber, u.Field(description="Server listen port number"),
+                t.PortNumber,
+                u.Field(description="Server listen port number"),
             ] = c.Grpc.NETWORK_DEFAULT_GRPC_PORT
             state: Annotated[
                 c.Grpc.ServerState,
@@ -500,7 +395,8 @@ class FlextGrpcModels(FlextCliModels):
                 u.Field(description="Maximum worker threads for request handling"),
             ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
             services: Annotated[
-                t.SequenceOf[p.Grpc.GrpcServicer], u.Field(description="gRPC services"),
+                t.SequenceOf[p.Grpc.GrpcServicer],
+                u.Field(description="gRPC services"),
             ] = u.Field(default_factory=tuple)
             grpc_server: Annotated[
                 p.Grpc.GrpcServer | None,
@@ -530,7 +426,9 @@ class FlextGrpcModels(FlextCliModels):
                     The resulting ``p.Result[Self]``.
                 """
                 return self.transition(
-                    self.state, "running", {"starting": {"running"}},
+                    self.state,
+                    "running",
+                    {"starting": {"running"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def mark_stopped(self) -> p.Result[Self]:
@@ -559,7 +457,9 @@ class FlextGrpcModels(FlextCliModels):
                     The resulting ``p.Result[Self]``.
                 """
                 return self.transition(
-                    self.state, "starting", {"stopped": {"starting"}},
+                    self.state,
+                    "starting",
+                    {"stopped": {"starting"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def stop(self) -> p.Result[Self]:
@@ -569,7 +469,9 @@ class FlextGrpcModels(FlextCliModels):
                     The resulting ``p.Result[Self]``.
                 """
                 return self.transition(
-                    self.state, "stopping", {"running": {"stopping"}},
+                    self.state,
+                    "stopping",
+                    {"running": {"stopping"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             @override
@@ -595,7 +497,8 @@ class FlextGrpcModels(FlextCliModels):
 
             name: Annotated[str, u.Field(description="Service name identifier")] = ""
             methods: t.StrSequence = u.Field(
-                default_factory=tuple, description="Registered RPC method names",
+                default_factory=tuple,
+                description="Registered RPC method names",
             )
 
             @u.field_validator("methods")
@@ -687,7 +590,8 @@ class FlextGrpcModels(FlextCliModels):
                     domain_events=[],
                 )
                 return r[Self](
-                    value=self.model_copy(update={"channel": channel}), success=True,
+                    value=self.model_copy(update={"channel": channel}),
+                    success=True,
                 )
 
             @override
@@ -706,7 +610,8 @@ class FlextGrpcModels(FlextCliModels):
 
             id: Annotated[str, u.Field(description="Unique stream identifier")] = ""
             method_name: Annotated[
-                str, u.Field(description="RPC method name for this stream"),
+                str,
+                u.Field(description="RPC method name for this stream"),
             ] = ""
             stream_type: Annotated[
                 c.Grpc.GrpcOperations,

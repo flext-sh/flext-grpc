@@ -103,10 +103,8 @@ returning a failure result.
 fields. Do not pass those names to `FlextGrpcSettings`: with its declared
 `extra="ignore"` policy, unsupported input could be silently dropped.
 
-The public `m.Grpc.SecurityConfig` model represents TLS certificate paths and
-authentication choices for consumers that explicitly implement those features. It does
-not install credentials or enable TLS on a server by itself. Channel options are passed
-through the public `grpc.create_channel(target, options)` boundary where applicable.
+The package publishes no TLS or authentication model. Channel options are passed through
+the public `grpc.create_channel(target, options)` boundary where applicable.
 Validate transport behavior through the actual consumer before claiming TLS or option
 propagation.
 
