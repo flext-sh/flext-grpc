@@ -84,8 +84,9 @@ class FlextGrpcConstantsBase:
         """gRPC load balancing policies (single source of truth).
 
         DRY Pattern:
-            StrEnum is the single source of truth. Use LoadBalancingPolicies.ROUND_ROBIN.value
-            or LoadBalancingPolicies.ROUND_ROBIN directly - no base strings needed.
+            StrEnum is the single source of truth. Use
+            LoadBalancingPolicies.ROUND_ROBIN.value or
+            LoadBalancingPolicies.ROUND_ROBIN directly - no base strings needed.
         """
 
         ROUND_ROBIN = "round_robin"
@@ -109,7 +110,7 @@ class FlextGrpcConstantsBase:
     LOAD_BALANCING_POLICIES: Final[frozenset[str]] = frozenset(
         member.value for member in LoadBalancingPolicies.__members__.values()
     )
-    """Load balancing policies frozenset - generated from LoadBalancingPolicies StrEnum."""
+    """Load balancing policies frozenset from LoadBalancingPolicies StrEnum."""
 
     # ===== Network constants =====
     NETWORK_DEFAULT_TIMEOUT: Final[float] = 30.0

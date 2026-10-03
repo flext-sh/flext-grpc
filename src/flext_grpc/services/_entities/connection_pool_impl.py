@@ -50,7 +50,7 @@ class FlextGrpcConnectionPoolImpl:
             self._active.clear()
             while not self._pool.empty():
                 _ = self._pool.get_nowait()
-        return r[bool].ok(True)
+        return r[bool].ok(value=True)
 
     def release(self, connection: p.Grpc.GrpcChannel) -> p.Result[bool]:
         """Release connection back to pool.
@@ -63,7 +63,7 @@ class FlextGrpcConnectionPoolImpl:
                 self._active.remove(connection)
                 if not self._pool.full():
                     self._pool.put_nowait(connection)
-            return r[bool].ok(True)
+            return r[bool].ok(value=True)
 
 
 __all__: list[str] = ["FlextGrpcConnectionPoolImpl"]

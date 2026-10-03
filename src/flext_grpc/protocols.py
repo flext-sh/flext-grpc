@@ -6,15 +6,18 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import threading
-from collections.abc import Callable, Iterable, Mapping, Sequence
-from concurrent.futures import Executor
-from typing import Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc import c, t
 from flext_grpc._protocols.base import FlextGrpcProtocolsBase
+
+if TYPE_CHECKING:
+    import threading
+    from collections.abc import Callable, Iterable, Mapping, Sequence
+    from concurrent.futures import Executor
+
+    from flext_grpc import c, t
 
 
 class FlextGrpcProtocols(FlextCliProtocols):
@@ -432,7 +435,10 @@ class FlextGrpcProtocols(FlextCliProtocols):
 
         @runtime_checkable
         class GrpcChannelCredentials(Protocol):
-            """Protocol for gRPC channel credentials (duck typing for grpc.ChannelCredentials)."""
+            """Protocol for gRPC channel credentials.
+
+            Duck typing for ``grpc.ChannelCredentials``.
+            """
 
         @runtime_checkable
         class GrpcCallFailure(Protocol):

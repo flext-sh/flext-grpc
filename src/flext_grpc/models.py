@@ -400,7 +400,8 @@ class FlextGrpcModels(FlextCliModels):
                     lambda: self.model_copy(update=kwargs),
                 )
 
-            def validate_business_rules(self) -> p.Result[bool]:
+            @staticmethod
+            def validate_business_rules() -> p.Result[bool]:
                 """Override in subclasses for specific validation.
 
                 Returns:
@@ -408,7 +409,7 @@ class FlextGrpcModels(FlextCliModels):
                 """
                 from flext_grpc import r
 
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
@@ -483,7 +484,7 @@ class FlextGrpcModels(FlextCliModels):
                 """
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class Server(Entity, StateMachine):
             """Generic gRPC server with state machine and validation delegation."""
@@ -591,7 +592,7 @@ class FlextGrpcModels(FlextCliModels):
                     return r[bool].fail(f"Invalid port: {self.port}")
                 if self.max_workers < 1:
                     return r[bool].fail("Max workers must be >= 1")
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class Service(Entity):
             """Generic gRPC service with validation delegation."""
@@ -702,7 +703,7 @@ class FlextGrpcModels(FlextCliModels):
                 """
                 if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")
-                return r[bool].ok(True)
+                return r[bool].ok(value=True)
 
         class GrpcStream(Entity):
             """Generic gRPC stream with validation delegation."""

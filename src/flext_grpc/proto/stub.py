@@ -10,9 +10,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from flext_grpc import c
 from flext_grpc.models import FlextGrpcModels
-from flext_grpc.protocols import FlextGrpcProtocols
+
+if TYPE_CHECKING:
+    from flext_grpc.protocols import FlextGrpcProtocols
 
 
 class FlextGrpcServiceStub:

@@ -150,7 +150,8 @@ class TestsFlextGrpcApi:
     def test_request_creation() -> None:
         """Test request creation."""
         operation = m.Grpc.OperationSpec(
-            name="test_operation", entity_type="server", method_name=None, parameters={},
+            name="test_operation", entity_type="server",
+            method_name=None, parameters={},
         )
         request = m.Grpc.Request(
             operation=operation, entity=None, data={"value": "test"},

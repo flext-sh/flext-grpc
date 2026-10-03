@@ -73,7 +73,7 @@ class TestsFlextGrpcEntities:
 
     @staticmethod
     def test_server_start_does_not_mutate_original(server: m.Grpc.Server) -> None:
-        """Transitions return a new entity, leaving the source stopped (immutability)."""
+        """Transitions return a new entity, source left stopped (immutability)."""
         tm.ok(server.start())
         tm.that(server.state, eq="stopped")
 
@@ -81,7 +81,7 @@ class TestsFlextGrpcEntities:
     def test_server_mark_stopped_rejected_from_stopped(
         server: m.Grpc.Server,
     ) -> None:
-        """mark_stopped from an already-stopped state fails with an explanatory error."""
+        """mark_stopped from an already-stopped state fails with an error."""
         tm.fail(server.mark_stopped(), has="Cannot mark stopped")
 
     @staticmethod
