@@ -91,7 +91,9 @@ class ExamplesFlextGrpcAdvancedUsage:
             self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
 
         def create_server_pool(
-            self, base_port: int = 8000, count: int = 3,
+            self,
+            base_port: int = 8000,
+            count: int = 3,
         ) -> list[p.Result[FlextGrpcModels.Grpc.Server]]:
             """Create a pool of servers on consecutive ports through facade.
 
@@ -201,7 +203,10 @@ class ExamplesFlextGrpcAdvancedUsage:
             if methods is None:
                 methods = ["ProcessData", "GetStatus", "StreamResults"]
             setup_result = self.grpc.create_complete_setup(
-                host=host, port=port, service_name=service_name, methods=methods,
+                host=host,
+                port=port,
+                service_name=service_name,
+                methods=methods,
             )
             if setup_result.failure:
                 return r[FlextGrpcModels.Grpc.CompleteSetup].from_failure(setup_result)
@@ -218,7 +223,8 @@ class ExamplesFlextGrpcAdvancedUsage:
             ]
             for method_name, stream_type in stream_configs:
                 stream_result = self.grpc.create_stream(
-                    method_name=method_name, stream_type=stream_type,
+                    method_name=method_name,
+                    stream_type=stream_type,
                 )
                 if stream_result.success:
                     stream = stream_result.value
@@ -296,7 +302,8 @@ class ExamplesFlextGrpcAdvancedUsage:
         created_streams: list[FlextGrpcModels.Grpc.GrpcStream] = []
         for method_name, stream_type in stream_configs:
             stream_result = grpc.create_stream(
-                method_name=method_name, stream_type=stream_type,
+                method_name=method_name,
+                stream_type=stream_type,
             )
             if stream_result.success:
                 stream = stream_result.value
@@ -337,7 +344,8 @@ class ExamplesFlextGrpcAdvancedUsage:
                 f"{invalid_service_result.error}",
             )
         invalid_stream_result = grpc.create_stream(
-            method_name="", stream_type="invalid",
+            method_name="",
+            stream_type="invalid",
         )
         if invalid_stream_result.failure:
             self.emit(

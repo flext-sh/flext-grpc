@@ -20,7 +20,9 @@ class FlextGrpcSettings(FlextSettings):
     """gRPC runtime settings; fields under ``settings.Grpc.*``."""
 
     model_config = m.SettingsConfigDict(
-        env_prefix="FLEXT_GRPC_", env_nested_delimiter="__", extra="ignore",
+        env_prefix="FLEXT_GRPC_",
+        env_nested_delimiter="__",
+        extra="ignore",
     )
 
     class _Grpc(m.BaseModel):
@@ -28,20 +30,24 @@ class FlextGrpcSettings(FlextSettings):
 
         host: Annotated[str, m.Field(default="127.0.0.1", description="gRPC bind host")]
         port: Annotated[
-            int, m.Field(default=50051, ge=1, le=65535, description="gRPC bind port"),
+            int,
+            m.Field(default=50051, ge=1, le=65535, description="gRPC bind port"),
         ]
         max_workers: Annotated[
-            int, m.Field(default=100, ge=1, description="Max worker threads"),
+            int,
+            m.Field(default=100, ge=1, description="Max worker threads"),
         ]
         timeout: Annotated[
-            float, m.Field(default=30.0, gt=0, description="Request timeout (s)"),
+            float,
+            m.Field(default=30.0, gt=0, description="Request timeout (s)"),
         ]
 
     if TYPE_CHECKING:
         Grpc: _Grpc
     else:
         Grpc: _Grpc = m.Field(
-            default_factory=_Grpc, description="Namespaced gRPC settings.",
+            default_factory=_Grpc,
+            description="Namespaced gRPC settings.",
         )
 
 

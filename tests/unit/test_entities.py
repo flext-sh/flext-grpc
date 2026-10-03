@@ -35,7 +35,10 @@ class TestsFlextGrpcServerEntities:
     def server() -> m.Grpc.Server:
         """Return a stopped server with no registered services."""
         return m.Grpc.Server(
-            host="localhost", port=50051, services=[], domain_events=[],
+            host="localhost",
+            port=50051,
+            services=[],
+            domain_events=[],
         )
 
     # ---- Server -----------------------------------------------------------
@@ -44,7 +47,11 @@ class TestsFlextGrpcServerEntities:
     def test_server_exposes_constructor_field_state() -> None:
         """Server surfaces host, port and explicit max_workers as public state."""
         server = m.Grpc.Server(
-            host="localhost", port=50051, max_workers=10, services=[], domain_events=[],
+            host="localhost",
+            port=50051,
+            max_workers=10,
+            services=[],
+            domain_events=[],
         )
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
@@ -54,7 +61,10 @@ class TestsFlextGrpcServerEntities:
     def test_server_defaults_max_workers_when_omitted() -> None:
         """Omitting max_workers yields the documented default of 10."""
         server = m.Grpc.Server(
-            host="localhost", port=50051, services=[], domain_events=[],
+            host="localhost",
+            port=50051,
+            services=[],
+            domain_events=[],
         )
         tm.that(server.max_workers, eq=10)
 
@@ -109,7 +119,9 @@ class TestsFlextGrpcServerEntities:
         ids=["out-of-range-port", "zero-workers"],
     )
     def test_server_construction_rejects_out_of_range_numeric_fields(
-        port: int, max_workers: int, match: str,
+        port: int,
+        max_workers: int,
+        match: str,
     ) -> None:
         """Port and worker-count bounds are enforced at construction time."""
         with pytest.raises(ValueError, match=match):
@@ -230,7 +242,9 @@ class TestsFlextGrpcClientServiceStreamEntities:
     def test_service_exposes_name_and_methods() -> None:
         """Service surfaces its name and registered methods."""
         service = m.Grpc.Service(
-            name="TestService", methods=["m1", "m2"], domain_events=[],
+            name="TestService",
+            methods=["m1", "m2"],
+            domain_events=[],
         )
         tm.that(service.name, eq="TestService")
         tm.that(list(service.methods), eq=["m1", "m2"])
@@ -247,7 +261,9 @@ class TestsFlextGrpcClientServiceStreamEntities:
         ids=["empty-methods", "empty-name", "blank-name", "blank-method"],
     )
     def test_service_construction_rejects_invalid_name_or_methods(
-        name: str, methods: list[str], match: str,
+        name: str,
+        methods: list[str],
+        match: str,
     ) -> None:
         """Service construction raises on empty/blank name or method entries."""
         with pytest.raises(ValueError, match=match):

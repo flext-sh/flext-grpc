@@ -148,7 +148,10 @@ class TestsFlextGrpcModelContracts:
         ],
     )
     def test_response_has_error_reflects_success_and_error(
-        *, success: bool, error: str | None, expected: bool,
+        *,
+        success: bool,
+        error: str | None,
+        expected: bool,
     ) -> None:
         """Response.has_error is True on failure or whenever an error is set."""
         response = m.Grpc.Response(success=success, error=error)

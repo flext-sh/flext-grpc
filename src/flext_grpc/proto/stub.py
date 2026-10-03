@@ -47,7 +47,8 @@ class FlextGrpcServiceStub:
             The resulting ``FlextGrpcModels.Grpc.HealthResponse``.
         """
         return FlextGrpcModels.Grpc.HealthResponse(
-            status=c.HealthStatus.HEALTHY.value, message=request.service,
+            status=c.HealthStatus.HEALTHY.value,
+            message=request.service,
         )
 
 

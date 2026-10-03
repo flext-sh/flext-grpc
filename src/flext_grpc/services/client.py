@@ -48,7 +48,10 @@ class FlextGrpcClient(s):
         return self._client_manager.client_status(client)
 
     def make_call(
-        self, client: m.Grpc.Client, method: str, request: t.JsonMapping | None,
+        self,
+        client: m.Grpc.Client,
+        method: str,
+        request: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
         """Execute an RPC call through the dedicated client manager.
 

@@ -38,7 +38,8 @@ class TestsFlextGrpcApi:
 
     @staticmethod
     @pytest.mark.parametrize(
-        ("host", "port"), [("localhost", 50051), ("127.0.0.1", 8080)],
+        ("host", "port"),
+        [("localhost", 50051), ("127.0.0.1", 8080)],
     )
     def test_create_server(host: str, port: int) -> None:
         """Test server creation across canonical address shapes."""
@@ -71,7 +72,8 @@ class TestsFlextGrpcApi:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "target", ["", "no_port", "localhost", ":50051", "localhost:99999", "invalid"],
+        "target",
+        ["", "no_port", "localhost", ":50051", "localhost:99999", "invalid"],
     )
     def test_validate_target_invalid(target: str) -> None:
         """Invalid targets fail validation."""
@@ -128,12 +130,16 @@ class TestsFlextGrpcApi:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "entity_type", ["server", "client", "channel", "service", "stream"],
+        "entity_type",
+        ["server", "client", "channel", "service", "stream"],
     )
     def test_validate_entity_type_accepts(entity_type: t.Grpc.EntityKind) -> None:
         """OperationSpec accepts every canonical entity_type literal."""
         spec = m.Grpc.OperationSpec(
-            name="op", entity_type=entity_type, method_name=None, parameters={},
+            name="op",
+            entity_type=entity_type,
+            method_name=None,
+            parameters={},
         )
         tm.that(spec.entity_type, eq=entity_type)
 
@@ -150,11 +156,15 @@ class TestsFlextGrpcApi:
     def test_request_creation() -> None:
         """Test request creation."""
         operation = m.Grpc.OperationSpec(
-            name="test_operation", entity_type="server",
-            method_name=None, parameters={},
+            name="test_operation",
+            entity_type="server",
+            method_name=None,
+            parameters={},
         )
         request = m.Grpc.Request(
-            operation=operation, entity=None, data={"value": "test"},
+            operation=operation,
+            entity=None,
+            data={"value": "test"},
         )
         tm.that(request.data, eq={"value": "test"})
         tm.that(request.operation.name, eq="test_operation")

@@ -57,7 +57,8 @@ class FlextGrpcConstants(FlextConstants):
 
         # ===== Validation constants (derived — not a plain literal) =====
         VALIDATION_VERSION_RE: ClassVar[t.RegexPattern] = re.compile(
-            FlextGrpcConstantsBase.VALIDATION_VERSION_PATTERN, re.IGNORECASE,
+            FlextGrpcConstantsBase.VALIDATION_VERSION_PATTERN,
+            re.IGNORECASE,
         )
 
         # ===== Error messages =====

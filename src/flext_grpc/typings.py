@@ -23,7 +23,8 @@ class FlextGrpcTypes(FlextCliTypes):
         type EntityKind = Literal["server", "client", "channel", "service", "stream"]
         type Headers = FlextCliTypes.StrMapping
         type ConfigDict = FlextCliTypes.MappingKV[
-            str, FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None,
+            str,
+            FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None,
         ]
 
 

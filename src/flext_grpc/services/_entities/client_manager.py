@@ -93,7 +93,10 @@ class FlextGrpcClientManagerImpl:
         )
 
     def make_call(
-        self, client: m.Grpc.Client, method: str, request: t.JsonMapping | None,
+        self,
+        client: m.Grpc.Client,
+        method: str,
+        request: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
         """Execute gRPC call through client.
 

@@ -1055,28 +1055,6 @@ _activated-fix-accessors: _builtin_require_environment
 
 
 
-fix-namespace: _builtin_require_workspace
-	+@direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-fix-namespace
-
-.PHONY: _activated-fix-namespace
-_activated-fix-namespace: _builtin_require_environment
-
-	$(call RUN_PUBLIC,fix-namespace)
-
-
-
-
-fix-accessors: _builtin_require_workspace
-	+@direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-fix-accessors
-
-.PHONY: _activated-fix-accessors
-_activated-fix-accessors: _builtin_require_environment
-
-	$(call RUN_PUBLIC,fix-accessors)
-
-
-
-
 audit: _builtin_require_workspace
 	+@direnv exec "$(PROJECT_ROOT)" $(SELF_MAKE) _activated-audit
 
@@ -1372,10 +1350,6 @@ _builtin-help:
 	@printf '  %-16s %s\n' 'fmt' 'Apply ruff format --preview and every declared formatter gate. Ruff is the rule; change code, never ruff.';
 
 	@printf '  %-16s %s\n' 'fix' 'Apply the safe fixes of ruff check --fix --preview plus every other configured safe correction; never deletes information. Ruff is the rule; change code, never ruff.';
-
-	@printf '  %-16s %s\n' 'fix-namespace' 'Apply the canonical namespace enforcer to the selected workspace.';
-
-	@printf '  %-16s %s\n' 'fix-accessors' 'Migrate forbidden accessor names and every resolved consumer.';
 
 	@printf '  %-16s %s\n' 'fix-namespace' 'Apply the canonical namespace enforcer to the selected workspace.';
 

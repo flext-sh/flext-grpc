@@ -64,14 +64,16 @@ class TestsFlextGrpcTypesUnit:
         ],
     )
     def test_parse_target_splits_into_host_and_int_port(
-        target: str, expected: tuple[str, int],
+        target: str,
+        expected: tuple[str, int],
     ) -> None:
         """Parsing a valid target yields the host string and integer port."""
         tm.that(u.Grpc.parse_target(target), eq=expected)
 
     @staticmethod
     @pytest.mark.parametrize(
-        "target", ["invalid", "", "localhost", ":50051", "localhost:99999"],
+        "target",
+        ["invalid", "", "localhost", ":50051", "localhost:99999"],
     )
     def test_parse_target_raises_value_error_on_invalid(target: str) -> None:
         """Parsing a target that fails validation raises ``ValueError``."""

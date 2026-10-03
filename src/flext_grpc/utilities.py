@@ -29,7 +29,8 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         @override
         @staticmethod
         def create_channel_entity(
-            target: str, options: t.JsonMapping | None = None,
+            target: str,
+            options: t.JsonMapping | None = None,
         ) -> p.Result[m.Grpc.Channel]:
             """Create a typed channel entity from validated inputs.
 
@@ -37,13 +38,15 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
                 The resulting ``p.Result[m.Grpc.Channel]``.
             """
             return FlextGrpcUtilitiesGrpc.create_channel_entity(
-                target=target, options=options,
+                target=target,
+                options=options,
             )
 
         @override
         @staticmethod
         def create_client_entity(
-            target: str, options: t.JsonMapping | None = None,
+            target: str,
+            options: t.JsonMapping | None = None,
         ) -> p.Result[m.Grpc.Client]:
             """Create a typed client entity backed by a typed channel entity.
 
@@ -51,7 +54,8 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
                 The resulting ``p.Result[m.Grpc.Client]``.
             """
             return FlextGrpcUtilitiesGrpc.create_client_entity(
-                target=target, options=options,
+                target=target,
+                options=options,
             )
 
         @override
@@ -67,13 +71,16 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
                 The resulting ``p.Result[m.Grpc.Server]``.
             """
             return FlextGrpcUtilitiesGrpc.create_server_entity(
-                host=host, port=port, max_workers=max_workers,
+                host=host,
+                port=port,
+                max_workers=max_workers,
             )
 
         @override
         @staticmethod
         def create_service_entity(
-            name: str, methods: t.StrSequence | None = None,
+            name: str,
+            methods: t.StrSequence | None = None,
         ) -> p.Result[m.Grpc.Service]:
             """Create a typed service entity with a minimal valid method set.
 
@@ -81,13 +88,15 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
                 The resulting ``p.Result[m.Grpc.Service]``.
             """
             return FlextGrpcUtilitiesGrpc.create_service_entity(
-                name=name, methods=methods,
+                name=name,
+                methods=methods,
             )
 
         @override
         @staticmethod
         def create_stream_entity(
-            method_name: str, stream_type: c.Grpc.GrpcOperations | str,
+            method_name: str,
+            stream_type: c.Grpc.GrpcOperations | str,
         ) -> p.Result[m.Grpc.GrpcStream]:
             """Create a typed stream entity from validated inputs.
 
@@ -95,7 +104,8 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
                 The resulting ``p.Result[m.Grpc.GrpcStream]``.
             """
             return FlextGrpcUtilitiesGrpc.create_stream_entity(
-                method_name=method_name, stream_type=stream_type,
+                method_name=method_name,
+                stream_type=stream_type,
             )
 
         @override
