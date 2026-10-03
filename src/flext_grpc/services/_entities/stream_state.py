@@ -1,4 +1,8 @@
-"""Stream runtime state model entity (ENFORCE-067: one class per module)."""
+"""Stream runtime state model entity (ENFORCE-067: one class per module).
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
@@ -11,14 +15,14 @@ class FlextGrpcStreamRuntimeState(m.Value):
     """Bounded runtime state tracked for one open gRPC stream."""
 
     stream: m.Grpc.GrpcStream = u.Field(
-        description="gRPC stream instance being tracked"
+        description="gRPC stream instance being tracked",
     )
     created_at: float = u.Field(
-        description="Stream creation timestamp in epoch seconds"
+        description="Stream creation timestamp in epoch seconds",
     )
     buffer: deque[t.JsonMapping | None] = u.Field(
         default_factory=lambda: deque[t.JsonMapping | None](
-            maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE
+            maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE,
         ),
         description="Bounded message buffer for stream processing",
     )

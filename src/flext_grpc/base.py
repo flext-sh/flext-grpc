@@ -25,7 +25,7 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
     """
 
     _grpc_config: FlextGrpcSettings = m.PrivateAttr(
-        default_factory=lambda: FlextGrpcSettings.model_validate({})
+        default_factory=lambda: FlextGrpcSettings.model_validate({}),
     )
 
     @property
@@ -35,7 +35,11 @@ class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
 
     @override
     def execute(self) -> p.Result[FlextGrpcSettings]:
-        """Default service execution surface."""
+        """Default service execution surface.
+
+        Returns:
+            The resulting ``p.Result[FlextGrpcSettings]``.
+        """
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
 
