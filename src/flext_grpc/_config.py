@@ -1,10 +1,8 @@
-"""FlextGrpcConfig — frozen, validated config singleton for flext-grpc (ADR-005 §7).
+"""FlextGrpcConfig — frozen config singleton for flext-grpc (ADR-005 §7).
 
-Every ``config/*.yaml`` file is auto-discovered and deep-merged at first
-``fetch_global`` call (model-less, ``extra=allow`` at the FlextConfig base). The
-flat YAML is then validated into the pure-Pydantic ``_models.config`` shapes and
-exposed as typed domain objects under ``config.Grpc.<domain>`` — never a
-model-less dict subscript.
+Model-less: business rules live in ``config/*.yaml`` under the ``Grpc:`` key and
+are exposed through the open ``config.Grpc`` namespace (``extra="allow"``), with
+no per-domain model. Access is ``config.Grpc.<domain>[<key>...]``.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -12,32 +10,28 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from functools import cached_property
-from pathlib import Path
-from typing import TYPE_CHECKING, ClassVar
+from typing import Annotated
 
-from flext_core import FlextConfig
-from flext_grpc._models.config import FlextGrpcConfigModels
+from flext_cli import FlextCliConfig, m
 
-# NOTE (multi-agent): accessor typed by PROTOCOL (p), never the model
-# class; the protocol module enters under TYPE_CHECKING only (§2.5/§3.4).
-
-if TYPE_CHECKING:
-    from flext_grpc._protocols.config import FlextGrpcProtocolsConfig
+from flext_core import FlextSettings
 
 
-class FlextGrpcConfig(FlextConfig):
-    """Grpc config auto-loaded from ``config/*.yaml`` and validated via models."""
+class _GrpcNamespace(m.BaseModel):
+    """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
 
-    # NOTE (multi-agent): anchored to the project root so the YAML SSOT loads
-    # regardless of the caller's CWD (library code must not depend on CWD).
-    CONFIG_DIR: ClassVar[str] = str(Path(__file__).resolve().parents[2] / "config")
+    model_config = m.ConfigDict(extra="allow", frozen=True)
 
-    @cached_property
-    def Grpc(self) -> FlextGrpcProtocolsConfig.Grpc:
-        """Validated ``Grpc`` business-rule config namespace."""
-        root = FlextGrpcConfigModels.Root.model_validate(dict(self.model_extra or {}))
-        return root.Grpc
+
+class FlextGrpcConfig(FlextSettings, FlextCliConfig):
+    """Grpc config auto-loaded model-less from ``config/*.yaml``."""
+
+    Grpc: Annotated[
+        _GrpcNamespace,
+        m.Field(
+            description="Open namespace exposing ``config/*.yaml`` under ``Grpc``.",
+        ),
+    ] = _GrpcNamespace()
 
 
 config: FlextGrpcConfig = FlextGrpcConfig.fetch_global()

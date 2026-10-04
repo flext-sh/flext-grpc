@@ -9,7 +9,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import e
+from flext_core import e
 
 
 class FlextGrpcErrors(e):
@@ -26,16 +26,19 @@ class FlextGrpcErrors(e):
             super().__init__(message)
             self.field = field
 
-    class GrpcConnectionError(e.ConnectionError):
+    class GrpcConnectionError(e.FlextConnectionError):
         """Connection error for gRPC channel failures."""
 
-    class GrpcTimeoutError(e.TimeoutError):
+    class GrpcTimeoutError(e.FlextTimeoutError):
         """Timeout error for gRPC operations that exceed time limits."""
 
     class ConfigurationError(e.ConfigurationError):
         """Configuration error for gRPC settings issues."""
 
+        def __init__(self, message: str, *, config_key: str | None = None) -> None:
+            """Initialize with optional settings key."""
+            super().__init__(message)
+            self.config_key = config_key
 
-e = FlextGrpcErrors
 
-__all__: list[str] = ["FlextGrpcErrors", "e"]
+__all__: list[str] = ["FlextGrpcErrors"]

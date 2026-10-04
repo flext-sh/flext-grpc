@@ -1,18 +1,24 @@
-"""FLEXT gRPC utilities facade."""
+"""FLEXT gRPC utilities facade.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
 
 from __future__ import annotations
 
 from typing import override
 
-from flext_cli import u
-from flext_grpc import c, p, t
+from flext_cli import FlextCliUtilities
+
+from flext_grpc import c, m, p, t
+from flext_grpc._utilities.base import FlextGrpcUtilitiesBase
 from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
 
 
-class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
+class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
-    class Grpc(FlextGrpcUtilitiesGrpc):
+    class Grpc(FlextGrpcUtilitiesGrpc, FlextGrpcUtilitiesBase):
         """Public gRPC utility namespace with explicit local signatures.
 
         This nested class re-exports the factory/validation helpers from
@@ -23,21 +29,33 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
         @override
         @staticmethod
         def create_channel_entity(
-            target: str, options: t.JsonMapping | None = None
-        ) -> p.Result[p.Grpc.Channel]:
-            """Create a typed channel entity from validated inputs."""
+            target: str,
+            options: t.JsonMapping | None = None,
+        ) -> p.Result[m.Grpc.Channel]:
+            """Create a typed channel entity from validated inputs.
+
+            Returns:
+                The resulting ``p.Result[m.Grpc.Channel]``.
+            """
             return FlextGrpcUtilitiesGrpc.create_channel_entity(
-                target=target, options=options
+                target=target,
+                options=options,
             )
 
         @override
         @staticmethod
         def create_client_entity(
-            target: str, options: t.JsonMapping | None = None
-        ) -> p.Result[p.Grpc.Client]:
-            """Create a typed client entity backed by a typed channel entity."""
+            target: str,
+            options: t.JsonMapping | None = None,
+        ) -> p.Result[m.Grpc.Client]:
+            """Create a typed client entity backed by a typed channel entity.
+
+            Returns:
+                The resulting ``p.Result[m.Grpc.Client]``.
+            """
             return FlextGrpcUtilitiesGrpc.create_client_entity(
-                target=target, options=options
+                target=target,
+                options=options,
             )
 
         @override
@@ -46,36 +64,58 @@ class FlextGrpcUtilities(u, FlextGrpcUtilitiesGrpc):
             host: str = c.Grpc.NETWORK_DEFAULT_HOST,
             port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
             max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
-        ) -> p.Result[p.Grpc.Server]:
-            """Create a typed server entity from validated inputs."""
+        ) -> p.Result[m.Grpc.Server]:
+            """Create a typed server entity from validated inputs.
+
+            Returns:
+                The resulting ``p.Result[m.Grpc.Server]``.
+            """
             return FlextGrpcUtilitiesGrpc.create_server_entity(
-                host=host, port=port, max_workers=max_workers
+                host=host,
+                port=port,
+                max_workers=max_workers,
             )
 
         @override
         @staticmethod
         def create_service_entity(
-            name: str, methods: t.StrSequence | None = None
-        ) -> p.Result[p.Grpc.Service]:
-            """Create a typed service entity with a minimal valid method set."""
+            name: str,
+            methods: t.StrSequence | None = None,
+        ) -> p.Result[m.Grpc.Service]:
+            """Create a typed service entity with a minimal valid method set.
+
+            Returns:
+                The resulting ``p.Result[m.Grpc.Service]``.
+            """
             return FlextGrpcUtilitiesGrpc.create_service_entity(
-                name=name, methods=methods
+                name=name,
+                methods=methods,
             )
 
         @override
         @staticmethod
         def create_stream_entity(
-            method_name: str, stream_type: c.Grpc.GrpcOperations | str
-        ) -> p.Result[p.Grpc.GrpcStream]:
-            """Create a typed stream entity from validated inputs."""
+            method_name: str,
+            stream_type: c.Grpc.GrpcOperations | str,
+        ) -> p.Result[m.Grpc.GrpcStream]:
+            """Create a typed stream entity from validated inputs.
+
+            Returns:
+                The resulting ``p.Result[m.Grpc.GrpcStream]``.
+            """
             return FlextGrpcUtilitiesGrpc.create_stream_entity(
-                method_name=method_name, stream_type=stream_type
+                method_name=method_name,
+                stream_type=stream_type,
             )
 
         @override
         @staticmethod
         def validate_target(target: str) -> bool:
-            """Validate a gRPC target string in the form host:port."""
+            """Validate a gRPC target string in the form host:port.
+
+            Returns:
+                The resulting ``bool``.
+            """
             return FlextGrpcUtilitiesGrpc.validate_target(target)
 
 

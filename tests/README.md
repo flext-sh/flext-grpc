@@ -36,7 +36,7 @@ Testing suite for the FLEXT gRPC communication platform with quality standards.
 
 ### Test Organization
 
-```
+```text
 tests/
 ├── unit/                    # Unit tests (isolated component testing)
 │   ├── test_entities.py     # Domain entity testing
@@ -158,13 +158,18 @@ pytest tests/e2e/ --benchmark-only
 
 **Available Markers**:
 
-```text
-@pytest.mark.unit          # Unit tests (fast, isolated)
-@pytest.mark.integration   # Integration tests (component interaction)
-@pytest.mark.e2e           # End-to-end tests (complete workflows)
-@pytest.mark.grpc          # gRPC-specific functionality tests
-@pytest.mark.performance   # Performance and benchmark tests
-@pytest.mark.slow          # Slower tests (can be skipped for quick feedback)
+```python
+from __future__ import annotations
+
+import pytest
+
+
+@pytest.mark.unit  # Unit tests (fast, isolated)
+@pytest.mark.integration  # Integration tests (component interaction)
+@pytest.mark.e2e  # End-to-end tests (complete workflows)
+@pytest.mark.slow  # Slower tests (can be skipped for quick feedback)
+def _example_markers() -> None:
+    """Illustrative marker usage for gRPC tests."""
 ```
 
 ## Coverage Analysis
@@ -194,8 +199,10 @@ pytest tests/e2e/ --benchmark-only
 - ✅ **test_services.py**: Complete enterprise docstrings for service operation testing
 - ✅ **test_api.py**: Complete enterprise docstrings for public API function testing
 - ✅ **test_types.py**: Complete enterprise docstrings for type system testing
-- ✅ **test_errors_complete.py**: Complete enterprise docstrings for error hierarchy testing
-- ✅ **test_platform_integration.py**: Complete enterprise docstrings for integration testing
+- ✅ **test_errors_complete.py**: Complete enterprise docstrings for error hierarchy
+  testing
+- ✅ **test_platform_integration.py**: Complete enterprise docstrings for integration
+  testing
 
 **Documentation Standards Applied**:
 
@@ -232,6 +239,10 @@ pytest --cov=src --cov-report=term-missing
 ### Entity Testing Pattern
 
 ```python notest
+from __future__ import annotations
+from flext_core import t
+
+
 def test_entity_creation_and_validation():
     """Test entity creation with domain validation."""
     # Arrange
@@ -249,6 +260,10 @@ def test_entity_creation_and_validation():
 ### Service Testing Pattern
 
 ```python notest
+from __future__ import annotations
+from flext_core import t
+
+
 def test_service_operation_success():
     """Test service operation with successful execution."""
     # Arrange
@@ -266,6 +281,10 @@ def test_service_operation_success():
 ### Error Testing Pattern
 
 ```python notest
+from __future__ import annotations
+from flext_core import t
+
+
 def test_operation_failure_handling():
     """Test proper error handling for invalid operations."""
     # Arrange
@@ -311,7 +330,7 @@ def test_operation_failure_handling():
 
 ```bash
 # Complete validation pipeline
-make val
+make check
 
 # Quick validation for development
 make check
@@ -353,4 +372,5 @@ pytest -m "not slow"
 pytest -n auto
 ```
 
-For current testing gaps and improvement priorities, see [../docs/TODO.md](../docs/TODO.md).
+For current testing gaps and improvement priorities, see
+[../docs/TODO.md](../docs/TODO.md).
