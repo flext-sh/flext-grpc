@@ -60,8 +60,7 @@ class TestsFlextGrpcConstantsUnit:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "host",
-        ["127.0.0.1", "localhost", "grpc-server", "example.com"],
+        "host", ["127.0.0.1", "localhost", "grpc-server", "example.com"]
     )
     def test_host_pattern_accepts_valid_hosts(host: str) -> None:
         """The compiled host pattern matches syntactically valid hosts."""
@@ -69,8 +68,7 @@ class TestsFlextGrpcConstantsUnit:
 
     @staticmethod
     @pytest.mark.parametrize(
-        "host",
-        ["bad host", "under_score!", "with/slash", "colon:port"],
+        "host", ["bad host", "under_score!", "with/slash", "colon:port"]
     )
     def test_host_pattern_rejects_invalid_hosts(host: str) -> None:
         """The compiled host pattern rejects hosts with illegal characters."""

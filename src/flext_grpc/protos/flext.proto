@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package flext.grpc.v1;
+
+// mro-wkii.17.26 (codex): this schema is the sole source for Python gRPC modules.
+service FlextGrpcService {
+  rpc Echo(EchoRequest) returns (EchoResponse);
+  rpc HealthCheck(HealthRequest) returns (HealthResponse);
+}
+
+message EchoRequest {
+  string message = 1;
+}
+
+message EchoResponse {
+  string message = 1;
+  string server_id = 2;
+  string timestamp = 3;
+}
+
+message HealthRequest {
+  string service = 1;
+}
+
+message HealthResponse {
+  string status = 1;
+  string message = 2;
+}

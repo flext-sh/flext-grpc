@@ -35,8 +35,7 @@
 
 <!-- TOC END -->
 
-Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for
-enterprise development.
+Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
 
 ## Example Structure
 
@@ -44,9 +43,9 @@ enterprise development.
 
 ```
 examples/
-├── basic_usage.py           # Core functionality and entity usage
-├── advanced_usage.py        # Complex scenarios with streaming
-├── error_handling_patterns.py # Comprehensive error handling
+├── 01_basic_usage.py           # Core functionality and entity usage
+├── 02_advanced_usage.py        # Complex scenarios with streaming
+├── 03_error_handling_patterns.py # Comprehensive error handling
 └── README.md                   # This documentation
 ```
 
@@ -62,8 +61,7 @@ examples/
 ### Server Lifecycle Management
 
 **File**: `basic_usage.py`\
-**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle
-management
+**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
 
 **Key Concepts**:
 
@@ -76,10 +74,10 @@ management
 
 ```bash
 # Run basic usage example
-python examples/basic_usage.py
+poetry run python examples/basic_usage.py
 
 # Run with debug output
-FLEXT_LOG_LEVEL=debug python examples/basic_usage.py
+FLEXT_LOG_LEVEL=debug poetry run python examples/basic_usage.py
 ```
 
 ### Client Connection Management
@@ -112,10 +110,10 @@ FLEXT_LOG_LEVEL=debug python examples/basic_usage.py
 
 ```bash
 # Run advanced usage example
-python examples/advanced_usage.py
+poetry run python examples/advanced_usage.py
 
 # Run with performance monitoring
-FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
+FLEXT_GRPC_MONITOR=true poetry run python examples/advanced_usage.py
 ```
 
 ### Platform Integration
@@ -134,7 +132,7 @@ FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
 
 ### Comprehensive Error Patterns
 
-**File**: `error_handling_patterns.py`\
+**File**: `03_error_handling_patterns.py`\
 **Purpose**: Demonstrates enterprise-grade error handling using r patterns
 
 **Key Concepts**:
@@ -148,15 +146,15 @@ FLEXT_GRPC_MONITOR=true python examples/advanced_usage.py
 
 ```bash
 # Run error handling examples
-python examples/error_handling_patterns.py
+poetry run python examples/03_error_handling_patterns.py
 
 # Run with error tracing
-FLEXT_TRACE_ERRORS=true python examples/error_handling_patterns.py
+FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 ```
 
 ### Recovery Strategies
 
-**File**: `error_handling_patterns.py`\
+**File**: `03_error_handling_patterns.py`\
 **Purpose**: Shows error recovery and resilience patterns
 
 **Key Concepts**:
@@ -181,8 +179,7 @@ FLEXT_TRACE_ERRORS=true python examples/error_handling_patterns.py
 
 **Example Usage**:
 
-```python
-from __future__ import annotations
+```python notest
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
 from datetime import datetime, timezone
@@ -216,8 +213,7 @@ service_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python
-from __future__ import annotations
+```python notest
 from flext_grpc import FlextGrpcSettings
 
 # Production configuration
@@ -272,11 +268,11 @@ make diagnose
 # Run all examples
 for example in examples/*.py; do
     echo "Running $example"
-    python "$example"
+    poetry run python "$example"
 done
 
 # Run specific example
-python examples/basic_usage.py
+poetry run python examples/basic_usage.py
 ```
 
 **Debug Mode**:
@@ -286,7 +282,7 @@ python examples/basic_usage.py
 FLEXT_LOG_LEVEL=debug \
 GRPC_VERBOSITY=debug \
 GRPC_TRACE=all \
-python examples/basic_usage.py
+poetry run python examples/basic_usage.py
 ```
 
 **Performance Monitoring**:
@@ -295,15 +291,14 @@ python examples/basic_usage.py
 # Run with performance metrics
 FLEXT_GRPC_MONITOR=true \
 FLEXT_PERFORMANCE_METRICS=true \
-python examples/advanced_usage.py
+poetry run python examples/advanced_usage.py
 ```
 
 ## Example Patterns
 
 ### Entity Creation Pattern
 
-```python
-from __future__ import annotations
+```python notest
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
 
@@ -327,9 +322,7 @@ print(f"Server created: {server.id}")
 
 ### Service Operation Pattern
 
-```python
-from __future__ import annotations
-from flext_core import t
+```python notest
 from flext_grpc import FlextGrpcServerService
 
 # Service operations with r handling
@@ -345,9 +338,7 @@ else:
 
 ### Platform Usage Pattern
 
-```python
-from __future__ import annotations
-from flext_core import t
+```python notest
 from flext_grpc import FlextGrpcPlatform
 
 # Platform operations for unified management
@@ -419,8 +410,7 @@ if server_result.success:
 - Real streaming examples with data flow
 - Integration with external gRPC services
 
-For current development gaps and realistic timelines, see
-[../docs/TODO.md](../docs/TODO.md).
+For current development gaps and realistic timelines, see [../docs/TODO.md](../docs/TODO.md).
 
 ## Contributing Examples
 
@@ -441,9 +431,7 @@ For current development gaps and realistic timelines, see
 
 ### Example Template
 
-```python
-from __future__ import annotations
-
+```python notest
 """
 Example: [Brief Description]
 
@@ -455,14 +443,32 @@ Key Concepts:
     - [Concept 2]: [Brief explanation]
 
 Usage:
-    python examples/[filename].py
+    poetry run python examples/[filename].py
 
 Author: FLEXT Development Team
-Version: 0.12.0-dev
+Version: 0.20.0-dev
 """
 
 from flext_grpc import FlextGrpcPlatform, FlextGrpcServer, FlextGrpcSettings
+from flext_core import FlextBus
 from flext_core import FlextSettings
+from flext_core import FlextConstants
+from flext_core import FlextContainer
+from flext_core import FlextContext
+from flext_core import d
+from flext_core import FlextDispatcher
+from flext_core import e
+from flext_core import h
+from flext_core import x
+from flext_core import FlextModels
+from flext_core import FlextProcessors
+from flext_core import p
+from flext_core import FlextRegistry
+from flext_core import r, p
+from flext_core import u
+from flext_core import s
+from flext_core import p, t
+from flext_core import u
 from datetime import datetime, timezone
 
 
