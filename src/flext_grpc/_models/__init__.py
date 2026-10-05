@@ -14,13 +14,17 @@ from flext_core import build_lazy_import_map, install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc._models.base import FlextGrpcModelsBase
+    from flext_grpc._models.config import FlextGrpcConfigModels
 
 
-__all__: tuple[str, ...] = ("FlextGrpcModelsBase",)
+__all__: tuple[str, ...] = ("FlextGrpcConfigModels", "FlextGrpcModelsBase")
 
 _LAZY_IMPORTS = MappingProxyType(
     build_lazy_import_map(
-        MappingProxyType({".base": ("FlextGrpcModelsBase",)}),
+        MappingProxyType({
+            ".base": ("FlextGrpcModelsBase",),
+            ".config": ("FlextGrpcConfigModels",),
+        }),
         alias_groups=MappingProxyType({}),
         sort_keys=False,
     ),
