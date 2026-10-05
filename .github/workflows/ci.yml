@@ -174,7 +174,7 @@ jobs:
         run: |
           CI=Y make gen
           git status --short
-          test -z "$(git status --porcelain --untracked-files=all --ignore-submodules=none)"
+          test -z "$(git status --porcelain --untracked-files=all --ignore-submodules=none || true)"
 
       # Setup installs frozen from the committed uv.lock (`uv sync --locked`)
       # and never rewrites it; the deps audit proves that locked graph.
@@ -197,6 +197,7 @@ jobs:
       - name: Candidate cleanliness (blocking)
         run: |
           git status --short
+<<<<<<< HEAD
           test -z "$(git status --porcelain --untracked-files=all --ignore-submodules=none)"
 
       # Why (flext-7jnr0): save on every outcome — including a failing gate — so
@@ -218,6 +219,9 @@ jobs:
             ~/.local/share/mise
           key: ${{ runner.os }}-3.13-tools-${{ hashFiles('uv.lock', 'mise.lock', 'pyproject.toml') }}
 
+=======
+          test -z "$(git status --porcelain --untracked-files=all --ignore-submodules=none || true)"
+>>>>>>> origin/0.12.0-dev
   # End SECTION: ci job
 
   # === SECTION: release-plan job (managed) ===
