@@ -49,7 +49,7 @@ class TestsFlextGrpcModelsUnit:
         request = m.Grpc.EchoRequest(message="x")
 
         with pytest.raises(pydantic.ValidationError):
-            setattr(request, "message", "y")
+            request.message = "y"
 
     # ------------------------------------------------------------------
     # StreamInfo: validation via model_validate and numeric constraints
@@ -122,7 +122,7 @@ class TestsFlextGrpcModelsUnit:
     def test_request_valid_true_for_named_operation(self) -> None:
         """Request.valid computed field is True when the operation is named."""
         request = m.Grpc.Request(
-            operation=m.Grpc.OperationSpec(name="op", entity_type="server")
+            operation=m.Grpc.OperationSpec(name="op", entity_type="server"),
         )
 
         tm.that(request.valid, eq=True)
@@ -137,7 +137,11 @@ class TestsFlextGrpcModelsUnit:
         ],
     )
     def test_response_has_error_reflects_success_and_error(
-        self, *, success: bool, error: str | None, expected: bool
+        self,
+        *,
+        success: bool,
+        error: str | None,
+        expected: bool,
     ) -> None:
         """Response.has_error is True on failure or whenever an error is set."""
         response = m.Grpc.Response(success=success, error=error)

@@ -38,7 +38,9 @@ class TestsFlextGrpcErrors:
         ],
     )
     def test_every_error_raises_as_base_and_reports_message(
-        self, factory: type[Exception], message: str
+        self,
+        factory: type[Exception],
+        message: str,
     ) -> None:
         """Each error is raisable, an Exception, and echoes its message."""
         with pytest.raises(e.BaseError) as caught:
@@ -56,7 +58,9 @@ class TestsFlextGrpcErrors:
         ],
     )
     def test_specialized_error_keeps_its_semantic_category(
-        self, factory: type[Exception], semantic_parent: type[Exception]
+        self,
+        factory: type[Exception],
+        semantic_parent: type[Exception],
     ) -> None:
         """A specialized error is-a its core semantic category, not a sibling."""
         error = factory("boom")
@@ -86,11 +90,13 @@ class TestsFlextGrpcErrors:
 
     @pytest.mark.parametrize("config_key", ["port", "complex_setting", None])
     def test_configuration_error_exposes_config_key_state(
-        self, config_key: str | None
+        self,
+        config_key: str | None,
     ) -> None:
         """ConfigurationError publishes the config_key it was constructed with."""
         error = FlextGrpcErrors.ConfigurationError(
-            "Invalid configuration", config_key=config_key
+            "Invalid configuration",
+            config_key=config_key,
         )
         tm.that(str(error), has="Invalid configuration")
         if config_key is None:

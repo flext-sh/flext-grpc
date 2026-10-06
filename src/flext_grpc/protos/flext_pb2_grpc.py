@@ -13,25 +13,29 @@ try:
     from grpc._utilities import first_version_is_lower
 
     _version_not_supported = first_version_is_lower(
-        GRPC_VERSION, GRPC_GENERATED_VERSION
+        GRPC_VERSION,
+        GRPC_GENERATED_VERSION,
     )
 except ImportError:
     _version_not_supported = True
 
 if _version_not_supported:
-    raise RuntimeError(
+    msg = (
         f"The grpc package installed is at version {GRPC_VERSION},"
-        + " but the generated code in flext_grpc/protos/flext_pb2_grpc.py depends on"
-        + f" grpcio>={GRPC_GENERATED_VERSION}."
-        + f" Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}"
-        + f" or downgrade your generated code using grpcio-tools<={GRPC_VERSION}."
+        " but the generated code in flext_grpc/protos/flext_pb2_grpc.py depends on"
+        f" grpcio>={GRPC_GENERATED_VERSION}."
+        f" Please upgrade your grpc module to grpcio>={GRPC_GENERATED_VERSION}"
+        f" or downgrade your generated code using grpcio-tools<={GRPC_VERSION}."
+    )
+    raise RuntimeError(
+        msg,
     )
 
 
 class FlextGrpcServiceStub:
     """mro-wkii.17.26 (codex): this schema is the sole source for Python gRPC modules."""
 
-    def __init__(self, channel):
+    def __init__(self, channel) -> None:
         """Constructor.
 
         Args:
@@ -58,16 +62,18 @@ class FlextGrpcServiceServicer:
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        msg = "Method not implemented!"
+        raise NotImplementedError(msg)
 
     def HealthCheck(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
-        raise NotImplementedError("Method not implemented!")
+        msg = "Method not implemented!"
+        raise NotImplementedError(msg)
 
 
-def add_FlextGrpcServiceServicer_to_server(servicer, server):
+def add_FlextGrpcServiceServicer_to_server(servicer, server) -> None:
     rpc_method_handlers = {
         "Echo": grpc.unary_unary_rpc_method_handler(
             servicer.Echo,
@@ -81,11 +87,13 @@ def add_FlextGrpcServiceServicer_to_server(servicer, server):
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-        "flext.grpc.v1.FlextGrpcService", rpc_method_handlers
+        "flext.grpc.v1.FlextGrpcService",
+        rpc_method_handlers,
     )
     server.add_generic_rpc_handlers((generic_handler,))
     server.add_registered_method_handlers(
-        "flext.grpc.v1.FlextGrpcService", rpc_method_handlers
+        "flext.grpc.v1.FlextGrpcService",
+        rpc_method_handlers,
     )
 
 

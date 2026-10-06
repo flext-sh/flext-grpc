@@ -38,7 +38,7 @@ class TestsFlextGrpcConfig:
     def test_constructor_sets_namespaced_fields(self) -> None:
         """Nested namespace values are surfaced through settings.Grpc.*."""
         cfg = FlextGrpcSettings.model_validate({
-            "Grpc": {"host": "0.0.0.0", "port": 8080, "max_workers": 5}
+            "Grpc": {"host": "0.0.0.0", "port": 8080, "max_workers": 5},
         })
         tm.that(cfg.Grpc.host, eq="0.0.0.0")
         tm.that(cfg.Grpc.port, eq=8080)
@@ -69,7 +69,7 @@ class TestsFlextGrpcConfig:
     def test_model_dump_round_trips_through_model_validate(self) -> None:
         """Dumping and re-validating reproduces the same namespaced state."""
         original = FlextGrpcSettings.model_validate({
-            "Grpc": {"host": "10.0.0.5", "port": 6000, "max_workers": 7}
+            "Grpc": {"host": "10.0.0.5", "port": 6000, "max_workers": 7},
         })
         restored = FlextGrpcSettings.model_validate(original.model_dump())
         tm.that(restored.Grpc.host, eq="10.0.0.5")
