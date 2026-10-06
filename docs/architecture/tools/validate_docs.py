@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Copyright (c) 2025 FLEXT Team. All rights reserved.
 """FLEXT-gRPC Architecture Documentation Validation.
 
 Validates architecture documentation for completeness, consistency, and accuracy.
