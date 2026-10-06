@@ -11,9 +11,11 @@ from typing import override
 from flext_cli import FlextCliUtilities
 
 from flext_grpc import c, m, p, t
-from flext_grpc._utilities.base import FlextGrpcUtilitiesBase
-from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
-from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
+from flext_grpc._utilities import (
+    FlextGrpcUtilitiesBase,
+    FlextGrpcUtilitiesGrpc,
+    FlextGrpcUtilitiesGrpcRuntime,
+)
 
 
 class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):

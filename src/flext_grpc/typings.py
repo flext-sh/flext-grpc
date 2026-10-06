@@ -13,7 +13,7 @@ from typing import Literal
 
 from flext_cli import FlextCliTypes
 
-from flext_grpc._typings.base import FlextGrpcTypingsBase
+from flext_grpc._typings import FlextGrpcTypingsBase
 
 
 class FlextGrpcTypes(FlextCliTypes):

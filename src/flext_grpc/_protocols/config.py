@@ -16,7 +16,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from flext_grpc._models.config import FlextGrpcConfigModels
+    from flext_grpc._models import FlextGrpcConfigModels
 
 
 class FlextGrpcProtocolsConfig:
@@ -112,7 +112,7 @@ class FlextGrpcProtocolsConfig:
         @property
         def performance(self) -> FlextGrpcConfigModels.Performance: ...
         @property
-        def service(self) -> FlextGrpcConfigModels.Service: ...
+        def service(self) -> FlextGrpcConfigModels.ServicePolicy: ...
         @property
         def streaming(self) -> FlextGrpcConfigModels.Streaming: ...
         @property

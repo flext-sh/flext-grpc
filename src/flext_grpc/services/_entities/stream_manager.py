@@ -10,12 +10,7 @@ import time
 from collections import deque
 from typing import TYPE_CHECKING
 
-from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, t
-from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
-from flext_grpc.errors import FlextGrpcErrors
-from flext_grpc.services._entities.metrics_collector import (
-    FlextGrpcMetricsCollectorImpl,
-)
+from flext_grpc import c, e, m, p, r, t
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -30,6 +25,11 @@ class FlextGrpcStreamManagerImpl:
 
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
+        from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
+        from flext_grpc.services._entities.metrics_collector import (
+            FlextGrpcMetricsCollectorImpl,
+        )
+
         super().__init__()
         self._active_streams: MutableMapping[str, FlextGrpcStreamRuntimeState] = {}
         self._metrics = FlextGrpcMetricsCollectorImpl()
@@ -54,6 +54,9 @@ class FlextGrpcStreamManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+        from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
+
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
         stream_type = str(kwargs.get("stream_type", "unary"))
         stream_result = FlextGrpcUtilities.Grpc.create_stream_entity(
@@ -86,6 +89,9 @@ class FlextGrpcStreamManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
         """
+        from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
+        from flext_grpc.errors import FlextGrpcErrors
+
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key not in self._active_streams:
             return e.fail_not_found("stream", stream.id)

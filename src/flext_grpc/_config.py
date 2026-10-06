@@ -16,7 +16,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from flext_core import FlextConfig
-from flext_grpc.models import m
+from flext_grpc import m
 
 
 class FlextGrpcConfig(FlextConfig):

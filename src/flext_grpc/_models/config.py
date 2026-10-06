@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc.models import m
+from flext_cli import m
 
 
 class FlextGrpcConfigModels:
@@ -80,7 +80,7 @@ class FlextGrpcConfigModels:
             description="Absolute minimum thread-pool size.",
         )
 
-    class Service(m.BaseModel):
+    class ServicePolicy(m.BaseModel):
         """gRPC server/worker policy defaults."""
 
         model_config = m.ConfigDict(frozen=True, extra="forbid")
@@ -148,7 +148,7 @@ class FlextGrpcConfigModels:
         performance: FlextGrpcConfigModels.Performance = m.Field(
             description="Message and thread-pool performance limits.",
         )
-        service: FlextGrpcConfigModels.Service = m.Field(
+        service: FlextGrpcConfigModels.ServicePolicy = m.Field(
             description="Server/worker policy defaults.",
         )
         streaming: FlextGrpcConfigModels.Streaming = m.Field(

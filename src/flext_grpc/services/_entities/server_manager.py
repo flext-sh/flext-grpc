@@ -11,11 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 from flext_core import r
-from flext_grpc import FlextGrpcModels, FlextGrpcUtilities, c, p
-from flext_grpc.proto.servicer import FlextGrpcProtoServicer
-from flext_grpc.services._entities.metrics_collector import (
-    FlextGrpcMetricsCollectorImpl,
-)
+from flext_grpc import FlextGrpcModels, c, p
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -26,6 +22,10 @@ class FlextGrpcServerManagerImpl:
 
     def __init__(self) -> None:
         """Initialize server manager with metrics tracking."""
+        from flext_grpc.services._entities.metrics_collector import (
+            FlextGrpcMetricsCollectorImpl,
+        )
+
         super().__init__()
         self._active_servers: MutableMapping[str, p.Grpc.GrpcServer] = {}
         self._metrics = FlextGrpcMetricsCollectorImpl()
@@ -41,6 +41,8 @@ class FlextGrpcServerManagerImpl:
         Returns:
             The resulting ``p.Grpc.GrpcServicer``.
         """
+        from flext_grpc.proto.servicer import FlextGrpcProtoServicer
+
         return FlextGrpcProtoServicer.Servicer()
 
     def server_metrics(
@@ -116,6 +118,8 @@ class FlextGrpcServerManagerImpl:
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+
         starting_result = server.start()
         if starting_result.failure:
             return starting_result
@@ -139,6 +143,8 @@ class FlextGrpcServerManagerImpl:
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcServer]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+
         server_result = FlextGrpcUtilities.Grpc.create_runtime_server(self._thread_pool)
         if server_result.failure:
             return r[p.Grpc.GrpcServer].fail(
@@ -164,6 +170,8 @@ class FlextGrpcServerManagerImpl:
         grpc_server: p.Grpc.GrpcServer,
     ) -> None:
         """Register configured services on the runtime server."""
+        from flext_grpc.proto.servicer import FlextGrpcProtoServicer
+
         for _service in starting_server.services:
             real_servicer = self._create_real_servicer(server_key)
             FlextGrpcProtoServicer.add_flext_grpc_service_servicer_to_server(
@@ -182,6 +190,8 @@ class FlextGrpcServerManagerImpl:
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+
         start_result = FlextGrpcUtilities.Grpc.run_runtime(grpc_server.start)
         if start_result.failure:
             return r[FlextGrpcModels.Grpc.Server].fail(
@@ -202,6 +212,8 @@ class FlextGrpcServerManagerImpl:
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+
         stopping_result: p.Result[FlextGrpcModels.Grpc.Server] = server.stop()
         if stopping_result.failure:
             return stopping_result

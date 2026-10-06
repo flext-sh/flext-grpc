@@ -10,7 +10,7 @@ from collections import deque
 from typing import TYPE_CHECKING
 
 from flext_core import m, t, u
-from flext_grpc.constants import c
+from flext_grpc import c
 
 if TYPE_CHECKING:
     from flext_grpc.models import FlextGrpcModels

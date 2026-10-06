@@ -18,11 +18,9 @@ from typing import Annotated, Self, override
 
 from flext_cli import FlextCliModels
 
-from flext_core import r, u
+from flext_core import r
+from flext_grpc import c, p, t
 from flext_grpc._models import FlextGrpcConfigModels, FlextGrpcModelsBase
-from flext_grpc.constants import c
-from flext_grpc.protocols import p
-from flext_grpc.typings import t
 
 
 class FlextGrpcModels(FlextCliModels):
@@ -294,7 +292,7 @@ class FlextGrpcModels(FlextCliModels):
                 ) -> t.JsonValue | None:
                     if value is None:
                         return ""
-                    if u.primitive(value):
+                    if isinstance(value, c.PRIMITIVES_TYPES):
                         return value
                     return str(value)
 
@@ -320,8 +318,7 @@ class FlextGrpcModels(FlextCliModels):
                     lambda: self.model_copy(update=kwargs),
                 )
 
-            @staticmethod
-            def validate_business_rules() -> p.Result[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation.
 
                 Returns:

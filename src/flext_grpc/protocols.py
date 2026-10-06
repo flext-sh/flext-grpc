@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc._protocols.base import FlextGrpcProtocolsBase
+from flext_grpc._protocols import FlextGrpcProtocolsBase
 
 if TYPE_CHECKING:
     import threading

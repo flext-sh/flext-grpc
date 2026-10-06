@@ -11,8 +11,7 @@ from typing import TYPE_CHECKING
 import grpc
 
 from flext_core import r, u
-from flext_grpc.constants import c
-from flext_grpc.protocols import p
+from flext_grpc import c, p
 
 if TYPE_CHECKING:
     from collections.abc import Callable

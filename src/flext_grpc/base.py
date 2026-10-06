@@ -17,10 +17,8 @@ from abc import ABC
 from typing import override
 
 from flext_core import FlextService, r
+from flext_grpc import m, p, t
 from flext_grpc._settings import FlextGrpcSettings
-from flext_grpc.models import m
-from flext_grpc.protocols import p
-from flext_grpc.typings import t
 
 
 class FlextGrpcServiceBase(FlextService[FlextGrpcSettings], ABC):
