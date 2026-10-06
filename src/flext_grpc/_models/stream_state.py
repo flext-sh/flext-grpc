@@ -9,25 +9,23 @@ from __future__ import annotations
 from collections import deque
 from typing import TYPE_CHECKING
 
-from flext_cli import FlextCliModels
-
+from flext_core import m, t, u
 from flext_grpc.constants import c
-from flext_grpc.typings import t
 
 if TYPE_CHECKING:
-    from flext_grpc.models import GrpcStream
+    from flext_grpc.models import FlextGrpcModels
 
 
-class FlextGrpcStreamRuntimeState(FlextCliModels.Value):
+class FlextGrpcStreamRuntimeState(m.Value):
     """Bounded runtime state tracked for one open gRPC stream."""
 
-    stream: GrpcStream = FlextCliModels.Field(
+    stream: FlextGrpcModels.Grpc.GrpcStream = u.Field(
         description="gRPC stream instance being tracked",
     )
-    created_at: float = FlextCliModels.Field(
+    created_at: float = u.Field(
         description="Stream creation timestamp in epoch seconds",
     )
-    buffer: deque[t.JsonMapping | None] = FlextCliModels.Field(
+    buffer: deque[t.JsonMapping | None] = u.Field(
         default_factory=lambda: deque[t.JsonMapping | None](
             maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE,
         ),

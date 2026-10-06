@@ -6,15 +6,13 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import FlextCliModels
-
-from flext_grpc.typings import t
+from flext_core import m, t, u
 
 
-class FlextGrpcMetricValueModel(FlextCliModels.Value):
+class FlextGrpcMetricValueModel(m.Value):
     """Normalized metric measurement value model."""
 
-    value: t.JsonValue | None = FlextCliModels.Field(
+    value: t.JsonValue | None = u.Field(
         description="Normalized metric measurement value",
     )
 

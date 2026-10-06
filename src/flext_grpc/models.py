@@ -18,7 +18,7 @@ from typing import Annotated, Self, override
 
 from flext_cli import FlextCliModels
 
-from flext_core import c as core_c, r
+from flext_core import r, u
 from flext_grpc._models import FlextGrpcConfigModels, FlextGrpcModelsBase
 from flext_grpc.constants import c
 from flext_grpc.protocols import p
@@ -294,7 +294,7 @@ class FlextGrpcModels(FlextCliModels):
                 ) -> t.JsonValue | None:
                     if value is None:
                         return ""
-                    if isinstance(value, core_c.PRIMITIVES_TYPES):
+                    if u.primitive(value):
                         return value
                     return str(value)
 
