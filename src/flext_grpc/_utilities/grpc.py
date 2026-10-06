@@ -200,17 +200,14 @@ class FlextGrpcUtilitiesGrpc:
     @staticmethod
     def system_info() -> t.JsonMapping:
         """Return gRPC utility system info."""
-        channel_states: t.JsonValueList = list(c.Grpc.CHANNEL_STATES)
-        server_states: t.JsonValueList = list(c.Grpc.SERVER_STATES)
-        info: t.JsonMapping = {
+        return {
             "default_host": c.Grpc.NETWORK_DEFAULT_HOST,
             "default_port": c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
             "min_port": c.Grpc.NETWORK_MIN_PORT,
             "max_port": c.Grpc.NETWORK_MAX_PORT,
-            "channel_states": channel_states,
-            "server_states": server_states,
+            "channel_states": [str(state) for state in c.Grpc.CHANNEL_STATES],
+            "server_states": [str(state) for state in c.Grpc.SERVER_STATES],
         }
-        return info
 
 
 __all__: list[str] = ["FlextGrpcUtilitiesGrpc"]
