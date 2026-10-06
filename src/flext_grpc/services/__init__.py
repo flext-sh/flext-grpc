@@ -10,7 +10,7 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_core import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc.services import _entities
@@ -50,27 +50,24 @@ __all__: tuple[str, ...] = (
     "_entities",
 )
 
-_LAZY_IMPORTS = MappingProxyType(
-    build_lazy_import_map(
-        MappingProxyType({
-            "._entities": ("_entities",),
-            "._entities.client_manager": ("FlextGrpcClientManagerImpl",),
-            "._entities.connection_pool_impl": ("FlextGrpcConnectionPoolImpl",),
-            "._entities.metric_value": ("FlextGrpcMetricValueModel",),
-            "._entities.metrics_collector": ("FlextGrpcMetricsCollectorImpl",),
-            "._entities.server_manager": ("FlextGrpcServerManagerImpl",),
-            "._entities.stream_manager": ("FlextGrpcStreamManagerImpl",),
-            "._entities.stream_state": ("FlextGrpcStreamRuntimeState",),
-            ".api_runtime": ("FlextGrpcApiRuntime",),
-            ".client": ("FlextGrpcClient",),
-            ".connection_pool": ("FlextGrpcConnectionPool",),
-            ".metrics": ("FlextGrpcMetrics",),
-            ".server": ("FlextGrpcServer",),
-            ".stream": ("FlextGrpcStream",),
-        }),
-        alias_groups=MappingProxyType({}),
-        sort_keys=False,
-    ),
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType({
+        "FlextGrpcApiRuntime": ".api_runtime",
+        "FlextGrpcClient": ".client",
+        "FlextGrpcClientManagerImpl": "._entities.client_manager",
+        "FlextGrpcConnectionPool": ".connection_pool",
+        "FlextGrpcConnectionPoolImpl": "._entities.connection_pool_impl",
+        "FlextGrpcMetricValueModel": "._entities.metric_value",
+        "FlextGrpcMetrics": ".metrics",
+        "FlextGrpcMetricsCollectorImpl": "._entities.metrics_collector",
+        "FlextGrpcServer": ".server",
+        "FlextGrpcServerManagerImpl": "._entities.server_manager",
+        "FlextGrpcStream": ".stream",
+        "FlextGrpcStreamManagerImpl": "._entities.stream_manager",
+        "FlextGrpcStreamRuntimeState": "._entities.stream_state",
+        "_entities": "._entities",
+    }),
+    public_exports=__all__,
 )
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

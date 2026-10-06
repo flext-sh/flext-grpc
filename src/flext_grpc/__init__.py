@@ -10,7 +10,7 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_core import install_lazy_exports
 from flext_grpc.__version__ import (
     __author__,
     __author_email__,
@@ -93,35 +93,46 @@ __all__: tuple[str, ...] = (
     "x",
 )
 
-_LAZY_IMPORTS = MappingProxyType(
-    build_lazy_import_map(
-        MappingProxyType({
-            "._config": ("FlextGrpcConfig", "config"),
-            "._settings": ("FlextGrpcSettings", "settings"),
-            ".api": ("FlextGrpc", "grpc"),
-            ".base": ("FlextGrpcServiceBase", "s"),
-            ".cli": ("FlextGrpcCli", "main"),
-            ".constants": ("FlextGrpcConstants", "c"),
-            ".errors": ("FlextGrpcErrors",),
-            ".models": ("FlextGrpcModels", "m"),
-            ".proto": ("proto",),
-            ".proto.servicer": ("FlextGrpcProtoServicer",),
-            ".proto.stub": ("FlextGrpcServiceStub",),
-            ".protocols": ("FlextGrpcProtocols", "p"),
-            ".services": ("services",),
-            ".services.api_runtime": ("FlextGrpcApiRuntime",),
-            ".services.client": ("FlextGrpcClient",),
-            ".services.connection_pool": ("FlextGrpcConnectionPool",),
-            ".services.metrics": ("FlextGrpcMetrics",),
-            ".services.server": ("FlextGrpcServer",),
-            ".services.stream": ("FlextGrpcStream",),
-            ".typings": ("FlextGrpcTypes", "t"),
-            ".utilities": ("FlextGrpcUtilities", "u"),
-            "flext_core": ("d", "e", "h", "r", "x"),
-        }),
-        alias_groups=MappingProxyType({}),
-        sort_keys=False,
-    ),
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType({
+        "FlextGrpc": ".api",
+        "FlextGrpcApiRuntime": ".services.api_runtime",
+        "FlextGrpcCli": ".cli",
+        "FlextGrpcClient": ".services.client",
+        "FlextGrpcConfig": "._config",
+        "FlextGrpcConnectionPool": ".services.connection_pool",
+        "FlextGrpcConstants": ".constants",
+        "FlextGrpcErrors": ".errors",
+        "FlextGrpcMetrics": ".services.metrics",
+        "FlextGrpcModels": ".models",
+        "FlextGrpcProtoServicer": ".proto.servicer",
+        "FlextGrpcProtocols": ".protocols",
+        "FlextGrpcServer": ".services.server",
+        "FlextGrpcServiceBase": ".base",
+        "FlextGrpcServiceStub": ".proto.stub",
+        "FlextGrpcSettings": "._settings",
+        "FlextGrpcStream": ".services.stream",
+        "FlextGrpcTypes": ".typings",
+        "FlextGrpcUtilities": ".utilities",
+        "c": ".constants",
+        "config": "._config",
+        "d": "flext_core",
+        "e": "flext_core",
+        "grpc": ".api",
+        "h": "flext_core",
+        "m": ".models",
+        "main": ".cli",
+        "p": ".protocols",
+        "proto": ".proto",
+        "r": "flext_core",
+        "s": ".base",
+        "services": ".services",
+        "settings": "._settings",
+        "t": ".typings",
+        "u": ".utilities",
+        "x": "flext_core",
+    }),
+    public_exports=__all__,
 )
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)

@@ -5,6 +5,10 @@ These tests exercise only the observable public behavior of
 return values, ``r[T]`` outcomes, raised exceptions and public model
 state. No private attributes, internal collaborators or implementation
 details are inspected.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+tests/unit/test_utilities
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -22,7 +26,8 @@ class TestsFlextGrpcUtilitiesUnit:
     # Facade instantiation
     # ------------------------------------------------------------------
 
-    def test_facade_exposes_grpc_namespace(self) -> None:
+    @staticmethod
+    def test_facade_exposes_grpc_namespace() -> None:
         # Coord-note (settings/facade lane): the utilities facade is a namespace,
         # not a bare-instantiable object (FlextUtilitiesLogging now requires name);
         # assert the real contract — the Grpc namespace + its static helpers exist.
@@ -34,6 +39,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # parse_address / parse_target
     # ------------------------------------------------------------------
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("address", "expected_host", "expected_port"),
         [
@@ -43,7 +49,6 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_parse_address_returns_host_and_int_port(
-        self,
         address: str,
         expected_host: str,
         expected_port: int,
@@ -54,23 +59,26 @@ class TestsFlextGrpcUtilitiesUnit:
         tm.that(port, eq=expected_port)
         tm.that(port, is_=int)
 
-    def test_parse_address_matches_parse_target(self) -> None:
+    @staticmethod
+    def test_parse_address_matches_parse_target() -> None:
         """parse_address and parse_target agree on the same valid input."""
         tm.that(
             u.Grpc.parse_address("localhost:50051"),
             eq=u.Grpc.parse_target("localhost:50051"),
         )
 
+    @staticmethod
     @pytest.mark.parametrize(
         "bad_address",
         ["nocolon", "", "host:", ":50051", "host:notaport", "host:0"],
     )
-    def test_parse_address_rejects_invalid_target(self, bad_address: str) -> None:
+    def test_parse_address_rejects_invalid_target(bad_address: str) -> None:
         """Parsing an invalid target raises ValueError naming the target."""
         with pytest.raises(ValueError, match="Invalid gRPC target"):
             u.Grpc.parse_address(bad_address)
 
-    def test_format_then_parse_is_round_trip(self) -> None:
+    @staticmethod
+    def test_format_then_parse_is_round_trip() -> None:
         """format_address and parse_address are inverse operations."""
         formatted = u.Grpc.format_address("localhost", 50051)
         tm.that(u.Grpc.parse_address(formatted), eq=("localhost", 50051))
@@ -79,6 +87,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # validate_target
     # ------------------------------------------------------------------
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("target", "expected"),
         [
@@ -94,7 +103,6 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_validate_target_reflects_host_port_validity(
-        self,
         target: str,
         expected: bool,
     ) -> None:
@@ -105,6 +113,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # validate_port / validate_host
     # ------------------------------------------------------------------
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("port", "expected"),
         [
@@ -117,18 +126,18 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_validate_port_enforces_inclusive_range(
-        self,
         port: int,
         expected: bool,
     ) -> None:
         """Ports are valid only within the inclusive 1..65535 range."""
         tm.that(u.Grpc.validate_port(port), eq=expected)
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("host", "expected"),
         [("localhost", True), ("127.0.0.1", True), ("", False), ("   ", False)],
     )
-    def test_validate_host_requires_non_blank(self, host: str, expected: bool) -> None:
+    def test_validate_host_requires_non_blank(host: str, expected: bool) -> None:
         """A host is valid only when it is non-empty after stripping."""
         tm.that(u.Grpc.validate_host(host), eq=expected)
 
@@ -136,7 +145,8 @@ class TestsFlextGrpcUtilitiesUnit:
     # format_address
     # ------------------------------------------------------------------
 
-    def test_format_address_joins_host_and_port(self) -> None:
+    @staticmethod
+    def test_format_address_joins_host_and_port() -> None:
         """format_address renders the canonical host:port form."""
         tm.that(u.Grpc.format_address("localhost", 50051), eq="localhost:50051")
 
@@ -144,6 +154,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # channel_state_name / server_state_name
     # ------------------------------------------------------------------
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("state", "expected"),
         [
@@ -154,13 +165,13 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_channel_state_name_normalizes_known_states(
-        self,
         state: str,
         expected: str,
     ) -> None:
         """Known channel states normalize to lowercase; others map to unknown."""
         tm.that(u.Grpc.channel_state_name(state), eq=expected)
 
+    @staticmethod
     @pytest.mark.parametrize(
         ("state", "expected"),
         [
@@ -171,7 +182,6 @@ class TestsFlextGrpcUtilitiesUnit:
         ],
     )
     def test_server_state_name_normalizes_known_states(
-        self,
         state: str,
         expected: str,
     ) -> None:
@@ -182,7 +192,8 @@ class TestsFlextGrpcUtilitiesUnit:
     # system_info
     # ------------------------------------------------------------------
 
-    def test_system_info_exposes_network_defaults_and_states(self) -> None:
+    @staticmethod
+    def test_system_info_exposes_network_defaults_and_states() -> None:
         """system_info returns the documented public configuration mapping."""
         info = u.Grpc.system_info()
         tm.that(info, is_=dict)
@@ -204,37 +215,43 @@ class TestsFlextGrpcUtilitiesUnit:
     # Entity factories — success paths (r[T] outcomes + public state)
     # ------------------------------------------------------------------
 
-    def test_create_channel_entity_carries_target(self) -> None:
+    @staticmethod
+    def test_create_channel_entity_carries_target() -> None:
         """A created channel entity exposes the requested target."""
         channel: p.Grpc.Channel = tm.ok(u.Grpc.create_channel_entity("localhost:50051"))
         tm.that(channel.target, eq="localhost:50051")
 
-    def test_create_client_entity_wraps_channel_with_target(self) -> None:
+    @staticmethod
+    def test_create_client_entity_wraps_channel_with_target() -> None:
         """A created client entity is backed by a channel on the same target."""
         client: p.Grpc.Client = tm.ok(u.Grpc.create_client_entity("localhost:50051"))
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq="localhost:50051")
 
-    def test_create_server_entity_carries_host_and_port(self) -> None:
+    @staticmethod
+    def test_create_server_entity_carries_host_and_port() -> None:
         """A created server entity exposes the requested host and port."""
         server: p.Grpc.Server = tm.ok(u.Grpc.create_server_entity("localhost", 50051))
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
 
-    def test_create_service_entity_defaults_to_minimal_method_set(self) -> None:
+    @staticmethod
+    def test_create_service_entity_defaults_to_minimal_method_set() -> None:
         """A service created without methods gets a minimal valid method set."""
         service: p.Grpc.Service = tm.ok(u.Grpc.create_service_entity("TestService"))
         tm.that(service.name, eq="TestService")
         tm.that(service.methods, empty=False)
 
-    def test_create_service_entity_preserves_supplied_methods(self) -> None:
+    @staticmethod
+    def test_create_service_entity_preserves_supplied_methods() -> None:
         """Explicit methods are preserved on the created service entity."""
         service: p.Grpc.Service = tm.ok(
             u.Grpc.create_service_entity("Svc", methods=["A", "B"]),
         )
         tm.that(service.methods, eq=["A", "B"])
 
-    def test_create_stream_entity_carries_method_and_type(self) -> None:
+    @staticmethod
+    def test_create_stream_entity_carries_method_and_type() -> None:
         """A created stream entity exposes its method name and stream type."""
         stream: p.Grpc.GrpcStream = tm.ok(
             u.Grpc.create_stream_entity("test_method", "unary"),
@@ -246,15 +263,16 @@ class TestsFlextGrpcUtilitiesUnit:
     # Entity factories — error paths
     # ------------------------------------------------------------------
 
+    @staticmethod
     @pytest.mark.parametrize("bad_port", [0, 65536])
     def test_create_server_entity_rejects_out_of_range_port(
-        self,
         bad_port: int,
     ) -> None:
         """An out-of-range port yields a failed result (not an invented entity)."""
         tm.fail(u.Grpc.create_server_entity("localhost", bad_port))
 
-    def test_create_stream_entity_rejects_unknown_stream_type(self) -> None:
+    @staticmethod
+    def test_create_stream_entity_rejects_unknown_stream_type() -> None:
         """An unsupported stream type raises ValueError from the enum contract."""
         with pytest.raises(ValueError, match="GrpcOperations"):
             u.Grpc.create_stream_entity("m", "server_streaming")

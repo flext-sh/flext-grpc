@@ -2,7 +2,12 @@
 # NO CHECKED-IN PROTOBUF GENCODE
 # source: flext_grpc/protos/flext.proto
 # Protobuf Python Version: 6.33.5
-"""Generated protocol buffer code."""
+"""Generated protocol buffer code.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_grpc/protos/flext_pb2
+SPDX-License-Identifier: MIT
+"""
 
 from google.protobuf import (
     descriptor as _descriptor,
