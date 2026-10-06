@@ -58,8 +58,8 @@ class TestsFlextGrpcErrors:
         ("factory", "semantic_parent"),
         [
             (FlextGrpcErrors.ValidationError, e.ValidationError),
-            (FlextGrpcErrors.GrpcConnectionError, e.ConnectionError),
-            (FlextGrpcErrors.GrpcTimeoutError, e.TimeoutError),
+            (FlextGrpcErrors.GrpcConnectionError, e.FlextConnectionError),
+            (FlextGrpcErrors.GrpcTimeoutError, e.FlextTimeoutError),
             (FlextGrpcErrors.ConfigurationError, e.ConfigurationError),
         ],
     )
@@ -79,7 +79,7 @@ class TestsFlextGrpcErrors:
             GrpcConnectionError: If channel down.
         """
         message = "channel down"
-        with pytest.raises(e.ConnectionError) as caught:
+        with pytest.raises(e.FlextConnectionError) as caught:
             raise FlextGrpcErrors.GrpcConnectionError(message)
         assert not isinstance(caught.value, e.ValidationError)
 

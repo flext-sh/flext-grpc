@@ -9,7 +9,7 @@ from __future__ import annotations
 import threading
 
 from flext_grpc import m, t, u
-from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
+from flext_grpc._models.metric_value import FlextGrpcMetricValueModel
 
 
 class FlextGrpcMetricsCollectorImpl:

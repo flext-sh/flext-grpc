@@ -15,9 +15,14 @@ from flext_core import install_lazy_exports
 if TYPE_CHECKING:
     from flext_grpc._utilities.base import FlextGrpcUtilitiesBase
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+    from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
 
 
-__all__: tuple[str, ...] = ("FlextGrpcUtilitiesBase", "FlextGrpcUtilitiesGrpc")
+__all__: tuple[str, ...] = (
+    "FlextGrpcUtilitiesBase",
+    "FlextGrpcUtilitiesGrpc",
+    "FlextGrpcUtilitiesGrpcRuntime",
+)
 
 install_lazy_exports(
     __name__,
@@ -25,6 +30,7 @@ install_lazy_exports(
     MappingProxyType({
         "FlextGrpcUtilitiesBase": ".base",
         "FlextGrpcUtilitiesGrpc": ".grpc",
+        "FlextGrpcUtilitiesGrpcRuntime": ".grpc_runtime",
     }),
     public_exports=__all__,
 )

@@ -87,7 +87,7 @@ class TestsFlextGrpcTypesUnit:
         ["localhost:50051", "127.0.0.1:8080", "invalid", "localhost:99999", ""],
     )
     def test_parse_target_succeeds_iff_validate_target_true(target: str) -> None:
-        """Invariant: ``parse_target`` returns cleanly exactly when validation passes."""
+        """Invariant: ``parse_target`` returns cleanly iff validation passes."""
         is_valid = u.Grpc.validate_target(target)
         if is_valid:
             host, port = u.Grpc.parse_target(target)

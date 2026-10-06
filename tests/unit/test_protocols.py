@@ -21,6 +21,11 @@ from flext_tests import tm
 from flext_grpc import FlextGrpcProtocols, t
 from tests import p
 
+
+class DuckInstance(Protocol):
+    """Opaque duck-typed instance used for runtime protocol checks."""
+
+
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
 # satisfy the runtime-checkable protocol (verified via isinstance below).
@@ -79,21 +84,25 @@ _PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
 _PROTOCOL_NAMES: t.VariadicTuple[str] = tuple(_PROTOCOL_CONTRACTS)
 
 
-def _build_conforming_instance(members: t.VariadicTuple[str]) -> object:
-    """Create an object exposing exactly ``members`` as callables.
+def _build_conforming_instance(members: t.VariadicTuple[str]) -> DuckInstance:
+    """Create a duck-typed instance exposing exactly ``members`` as callables.
 
     Returns:
-        The resulting ``object``.
+        The resulting ``DuckInstance``.
     """
     namespace = {name: (lambda: None) for name in members}
     return type("Conforming", (), namespace)()
 
 
-def _build_partial_instance(members: t.VariadicTuple[str], *, omit: str) -> object:
-    """Create an object exposing every member except ``omit``.
+def _build_partial_instance(
+    members: t.VariadicTuple[str],
+    *,
+    omit: str,
+) -> DuckInstance:
+    """Create a duck-typed instance exposing every member except ``omit``.
 
     Returns:
-        The resulting ``object``.
+        The resulting ``DuckInstance``.
     """
     namespace = {name: (lambda: None) for name in members if name != omit}
     return type("Partial", (), namespace)()

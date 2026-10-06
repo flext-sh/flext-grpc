@@ -18,13 +18,11 @@ if TYPE_CHECKING:
     from flext_grpc.services._entities.connection_pool_impl import (
         FlextGrpcConnectionPoolImpl,
     )
-    from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
     from flext_grpc.services._entities.metrics_collector import (
         FlextGrpcMetricsCollectorImpl,
     )
     from flext_grpc.services._entities.server_manager import FlextGrpcServerManagerImpl
     from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
-    from flext_grpc.services._entities.stream_state import FlextGrpcStreamRuntimeState
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
@@ -39,14 +37,12 @@ __all__: tuple[str, ...] = (
     "FlextGrpcClientManagerImpl",
     "FlextGrpcConnectionPool",
     "FlextGrpcConnectionPoolImpl",
-    "FlextGrpcMetricValueModel",
     "FlextGrpcMetrics",
     "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcServer",
     "FlextGrpcServerManagerImpl",
     "FlextGrpcStream",
     "FlextGrpcStreamManagerImpl",
-    "FlextGrpcStreamRuntimeState",
     "_entities",
 )
 
@@ -59,14 +55,12 @@ install_lazy_exports(
         "FlextGrpcClientManagerImpl": "._entities.client_manager",
         "FlextGrpcConnectionPool": ".connection_pool",
         "FlextGrpcConnectionPoolImpl": "._entities.connection_pool_impl",
-        "FlextGrpcMetricValueModel": "._entities.metric_value",
         "FlextGrpcMetrics": ".metrics",
         "FlextGrpcMetricsCollectorImpl": "._entities.metrics_collector",
         "FlextGrpcServer": ".server",
         "FlextGrpcServerManagerImpl": "._entities.server_manager",
         "FlextGrpcStream": ".stream",
         "FlextGrpcStreamManagerImpl": "._entities.stream_manager",
-        "FlextGrpcStreamRuntimeState": "._entities.stream_state",
         "_entities": "._entities",
     }),
     public_exports=__all__,

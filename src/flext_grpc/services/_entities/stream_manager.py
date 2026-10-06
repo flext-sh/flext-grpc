@@ -11,11 +11,11 @@ from collections import deque
 from typing import TYPE_CHECKING
 
 from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, t
+from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
 from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
-from flext_grpc.services._entities.stream_state import FlextGrpcStreamRuntimeState
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping

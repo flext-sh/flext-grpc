@@ -9,8 +9,8 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import c, e, m, p, r, s, t
+from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
 from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
-from flext_grpc.services._entities.stream_state import FlextGrpcStreamRuntimeState
 
 
 class FlextGrpcStream(s):

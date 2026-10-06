@@ -13,11 +13,14 @@ from __future__ import annotations
 from abc import ABC
 from typing import override
 
-from flext_core import s
-from flext_grpc import FlextGrpcSettings, m, p, r, t
+from flext_core import FlextService, r
+from flext_grpc._settings import FlextGrpcSettings
+from flext_grpc.models import m
+from flext_grpc.protocols import p
+from flext_grpc.typings import t
 
 
-class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
+class FlextGrpcServiceBase(FlextService[FlextGrpcSettings], ABC):
     """Base class for flext-grpc services with typed configuration access.
 
     Provides typed settings access and a default execute() surface for

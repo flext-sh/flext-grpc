@@ -12,10 +12,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from typing import Final
+
 import pytest
 from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings, settings
+from tests import c
+
+_TIMEOUT_TOLERANCE: Final[float] = 0.01
 
 
 class TestsFlextGrpcConfig:
@@ -28,9 +33,11 @@ class TestsFlextGrpcConfig:
         tm_grpc = cfg.Grpc
         tm.that(tm_grpc.host, is_=str)
         tm.that(tm_grpc.host.strip(), ne="")
-        assert 1 <= tm_grpc.port <= 65535
+        assert 1 <= tm_grpc.port <= c.Grpc.NETWORK_MAX_PORT
         assert tm_grpc.max_workers >= 1
-        assert abs(tm_grpc.timeout - 30.0) < 0.01
+        assert (
+            abs(tm_grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE
+        )
 
     @staticmethod
     def test_default_namespace_values() -> None:
@@ -39,22 +46,30 @@ class TestsFlextGrpcConfig:
         tm.that(grpc.host, eq="127.0.0.1")
         tm.that(grpc.port, eq=50051)
         tm.that(grpc.max_workers, eq=100)
-        assert abs(grpc.timeout - 30.0) < 0.01
+        assert abs(grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE
 
     @staticmethod
     def test_constructor_sets_namespaced_fields() -> None:
         """Nested namespace values are surfaced through settings.Grpc.*."""
         cfg = FlextGrpcSettings.model_validate({
-            "Grpc": {"host": "0.0.0.0", "port": 8080, "max_workers": 5},
+            "Grpc": {
+                "host": "10.0.0.5",
+                "port": 8080,
+                "max_workers": 5,
+            },
         })
-        tm.that(cfg.Grpc.host, eq="0.0.0.0")
+        tm.that(cfg.Grpc.host, eq="10.0.0.5")
         tm.that(cfg.Grpc.port, eq=8080)
         tm.that(cfg.Grpc.max_workers, eq=5)
 
     @staticmethod
     @pytest.mark.parametrize(
         ("host", "port"),
-        [("127.0.0.1", 9090), ("192.168.1.100", 9090), ("0.0.0.0", 50051)],
+        [
+            ("127.0.0.1", 9090),
+            ("192.168.1.100", 9090),
+            ("10.0.0.5", 50051),
+        ],
     )
     def test_network_fields_round_trip(host: str, port: int) -> None:
         """Network host/port provided at construction are preserved."""

@@ -8,7 +8,10 @@ from __future__ import annotations
 
 from collections import deque
 
-from flext_grpc import c, m, t, u
+from flext_grpc.constants import c
+from flext_grpc.models import m
+from flext_grpc.typings import t
+from flext_grpc.utilities import u
 
 
 class FlextGrpcStreamRuntimeState(m.Value):

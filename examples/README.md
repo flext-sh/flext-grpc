@@ -27,7 +27,7 @@
 - [Current Status and Limitations](#current-status-and-limitations)
   - [Development Status (Honest Assessment)](#development-status-honest-assessment)
   - [What Examples Actually Demonstrate](#what-examples-actually-demonstrate)
-  - [Planned Enhancements (Realistic Timeline)](#planned-enhancements-realistic-timeline)
+  - [Planned Enhancements](#planned-enhancements)
 - [Contributing Examples](#contributing-examples)
   - [Adding New Examples](#adding-new-examples)
   - [Example Quality Standards](#example-quality-standards)
@@ -35,7 +35,8 @@
 
 <!-- TOC END -->
 
-Practical examples demonstrating FLEXT gRPC usage patterns and integration scenarios for enterprise development.
+Practical examples demonstrating FLEXT gRPC usage patterns and integration
+scenarios for enterprise development.
 
 ## Example Structure
 
@@ -61,7 +62,8 @@ examples/
 ### Server Lifecycle Management
 
 **File**: `basic_usage.py`\
-**Purpose**: Demonstrates fundamental server entity creation, validation, and lifecycle management
+**Purpose**: Demonstrates fundamental server entity creation, validation,
+and lifecycle management
 
 **Key Concepts**:
 
@@ -395,7 +397,7 @@ if server_result.success:
 1. **Client-Server Communication**: No request/response examples
 1. **Service Methods**: No actual gRPC service method implementations
 
-### Planned Enhancements (Realistic Timeline)
+### Planned Enhancements
 
 **Documentation Enhancement** (Immediate - 1-2 days):
 
@@ -410,7 +412,8 @@ if server_result.success:
 - Real streaming examples with data flow
 - Integration with external gRPC services
 
-For current development gaps and realistic timelines, see [../docs/TODO.md](../docs/TODO.md).
+For current development gaps and realistic timelines, see
+[../docs/TODO.md](../docs/TODO.md).
 
 ## Contributing Examples
 
