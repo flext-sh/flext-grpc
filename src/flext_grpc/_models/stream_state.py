@@ -7,23 +7,27 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections import deque
+from typing import TYPE_CHECKING
+
+from flext_cli import FlextCliModels
 
 from flext_grpc.constants import c
-from flext_grpc.models import m
 from flext_grpc.typings import t
-from flext_grpc.utilities import u
+
+if TYPE_CHECKING:
+    from flext_grpc.models import GrpcStream
 
 
-class FlextGrpcStreamRuntimeState(m.Value):
+class FlextGrpcStreamRuntimeState(FlextCliModels.Value):
     """Bounded runtime state tracked for one open gRPC stream."""
 
-    stream: m.Grpc.GrpcStream = u.Field(
+    stream: GrpcStream = FlextCliModels.Field(
         description="gRPC stream instance being tracked",
     )
-    created_at: float = u.Field(
+    created_at: float = FlextCliModels.Field(
         description="Stream creation timestamp in epoch seconds",
     )
-    buffer: deque[t.JsonMapping | None] = u.Field(
+    buffer: deque[t.JsonMapping | None] = FlextCliModels.Field(
         default_factory=lambda: deque[t.JsonMapping | None](
             maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE,
         ),

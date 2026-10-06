@@ -1,14 +1,10 @@
-# Copyright (c) 2025 FLEXT Team. All rights reserved.
-# Copyright 2026 FLEXT
-"""Publish a Mise lock with its native sidecars from one physical stage.
+"""AI Hub governance hook projection: mise lock transaction.
 
-This bootstrap runs with the Python selected by the staged Mise lock, before
-the project's virtual environment exists. It intentionally uses only stdlib.
-Its journal and project-scoped mutex recover process interruption on every
-platform. Directory fsync is POSIX-only; Windows power-loss durability is not
-promised by this transaction.
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
+# Copyright (c) 2025 FLEXT Team. All rights reserved.
 from __future__ import annotations
 
 import hashlib
@@ -23,6 +19,16 @@ import tomllib
 from collections.abc import Generator
 from contextlib import contextmanager
 from pathlib import Path, PurePosixPath
+
+"""Publish a Mise lock with its native sidecars from one physical stage.
+
+This bootstrap runs with the Python selected by the staged Mise lock, before
+the project's virtual environment exists. It intentionally uses only stdlib.
+Its journal and project-scoped mutex recover process interruption on every
+platform. Directory fsync is POSIX-only; Windows power-loss durability is not
+promised by this transaction.
+"""
+
 
 if os.name == "nt":
     import msvcrt

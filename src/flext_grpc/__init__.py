@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from flext_grpc._settings import FlextGrpcSettings, settings
     from flext_grpc.api import FlextGrpc, grpc
     from flext_grpc.base import FlextGrpcServiceBase, s
-    from flext_grpc.cli import FlextGrpcCli, main
+    from flext_grpc.cli import main
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import FlextGrpcErrors
     from flext_grpc.models import FlextGrpcModels, m
@@ -49,7 +49,6 @@ if TYPE_CHECKING:
 __all__: tuple[str, ...] = (
     "FlextGrpc",
     "FlextGrpcApiRuntime",
-    "FlextGrpcCli",
     "FlextGrpcClient",
     "FlextGrpcConfig",
     "FlextGrpcConnectionPool",
@@ -99,7 +98,6 @@ install_lazy_exports(
     MappingProxyType({
         "FlextGrpc": ".api",
         "FlextGrpcApiRuntime": ".services.api_runtime",
-        "FlextGrpcCli": ".cli",
         "FlextGrpcClient": ".services.client",
         "FlextGrpcConfig": "._config",
         "FlextGrpcConnectionPool": ".services.connection_pool",

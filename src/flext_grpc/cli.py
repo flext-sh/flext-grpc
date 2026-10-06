@@ -1,6 +1,9 @@
-"""CLI facade for flext-grpc — thin transport adapter.
+"""CLI entrypoint for flext-grpc — preserves the declared console script.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
 
@@ -8,14 +11,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_cli import FlextCliCli
-
 if TYPE_CHECKING:
     from flext_core import t
-
-
-class FlextGrpcCli(FlextCliCli):
-    """Flext-grpc CLI facade — extends flext-cli CLI."""
 
 
 def main(args: t.StrSequence | None = None) -> int:
@@ -28,4 +25,4 @@ def main(args: t.StrSequence | None = None) -> int:
     return 0
 
 
-__all__: t.VariadicTuple[str] = ("FlextGrpcCli", "main")
+__all__: t.VariadicTuple[str] = ("main",)

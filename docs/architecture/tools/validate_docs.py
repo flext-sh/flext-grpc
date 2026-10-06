@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-# Copyright (c) 2025 FLEXT Team. All rights reserved.
-"""FLEXT-gRPC Architecture Documentation Validation.
+"""AI Hub governance hook projection: validate_docs.
 
-Validates architecture documentation for completeness, consistency, and accuracy.
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
+# Copyright (c) 2025 FLEXT Team. All rights reserved.
 from __future__ import annotations
 
 import json
@@ -16,6 +17,11 @@ from typing import Annotated
 from flext_cli import cli
 
 from flext_grpc import c, m, p, r, t
+
+"""FLEXT-gRPC Architecture Documentation Validation.
+
+Validates architecture documentation for completeness, consistency, and accuracy.
+"""
 
 
 class _ValidationParams(m.Value):

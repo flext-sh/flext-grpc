@@ -6,6 +6,8 @@ All domain models consolidated into a single class with nested structures.
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -16,8 +18,8 @@ from typing import Annotated, Self, override
 
 from flext_cli import FlextCliModels
 
-from flext_core import r, u
-from flext_grpc._models import FlextGrpcModelsBase
+from flext_core import c as core_c, r
+from flext_grpc._models import FlextGrpcConfigModels, FlextGrpcModelsBase
 from flext_grpc.constants import c
 from flext_grpc.protocols import p
 from flext_grpc.typings import t
@@ -34,7 +36,7 @@ class FlextGrpcModels(FlextCliModels):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Grpc(FlextGrpcModelsBase):
+    class Grpc(FlextGrpcConfigModels, FlextGrpcModelsBase):
         """Domain models for gRPC core business entities."""
 
         # =========================================================================
@@ -292,7 +294,7 @@ class FlextGrpcModels(FlextCliModels):
                 ) -> t.JsonValue | None:
                     if value is None:
                         return ""
-                    if u.primitive(value):
+                    if isinstance(value, core_c.PRIMITIVES_TYPES):
                         return value
                     return str(value)
 
@@ -534,7 +536,7 @@ class FlextGrpcModels(FlextCliModels):
                 FlextCliModels.Field(description="Service name identifier"),
             ] = ""
             methods: t.StrSequence = FlextCliModels.Field(
-                default_factory=tuple,
+                default_factory=tuple[str, ...],
                 description="Registered RPC method names",
             )
 

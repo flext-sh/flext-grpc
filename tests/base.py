@@ -11,7 +11,7 @@ from typing import override
 
 from flext_tests import FlextTestsServiceBase
 
-from flext_grpc import m, p
+from flext_grpc import m
 from tests.settings import TestsFlextGrpcSettings
 
 
@@ -22,7 +22,7 @@ class TestsFlextGrpcServiceBase(FlextTestsServiceBase):
     # declares only its more-specific bootstrap settings type.
     @classmethod
     @override
-    def runtime_bootstrap_options(cls) -> p.RuntimeBootstrapOptions:
+    def runtime_bootstrap_options(cls) -> m.RuntimeBootstrapOptions:
         return m.RuntimeBootstrapOptions(settings_type=TestsFlextGrpcSettings)
 
 
