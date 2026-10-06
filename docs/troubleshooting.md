@@ -163,29 +163,34 @@ if start_result.failure:
 
 ### gRPC Service Development
 
-1. **Always use r patterns**:
+**Always use r patterns** — explicit error handling, no exceptions:
 
-   ```python
-   def my_grpc_method() -> p.Result[ResponseType]:
-       # Explicit error handling, no exceptions
-   ```
+```python
+from __future__ import annotations
 
-2. **Validate inputs using Pydantic models**:
+from flext_core import p
 
-   ```python
-   from flext_grpc import FlextGrpcSettings
 
-   settings = FlextGrpcSettings(host="localhost", port=50051, max_workers=10)
-   ```
+def my_grpc_method() -> p.Result[bool]:
+    """Handle one gRPC request with explicit error handling."""
+```
 
-3. **Use platform for complex operations**:
+**Validate inputs using Pydantic models**:
 
-   ```python
-   from flext_grpc import FlextGrpcPlatform
+```python
+from flext_grpc import FlextGrpcSettings
 
-   platform = FlextGrpcPlatform()
-   # Use platform methods for lifecycle management
-   ```
+settings = FlextGrpcSettings(host="localhost", port=50051, max_workers=10)
+```
+
+**Use platform for complex operations**:
+
+```python
+from flext_grpc import FlextGrpcPlatform
+
+platform = FlextGrpcPlatform()
+# Use platform methods for lifecycle management
+```
 
 ### Performance Considerations
 
