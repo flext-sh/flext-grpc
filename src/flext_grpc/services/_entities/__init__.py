@@ -10,7 +10,7 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core import build_lazy_import_map, install_lazy_exports
+from flext_core import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc.services._entities.client_manager import FlextGrpcClientManagerImpl
@@ -36,20 +36,17 @@ __all__: tuple[str, ...] = (
     "FlextGrpcStreamRuntimeState",
 )
 
-_LAZY_IMPORTS = MappingProxyType(
-    build_lazy_import_map(
-        MappingProxyType({
-            ".client_manager": ("FlextGrpcClientManagerImpl",),
-            ".connection_pool_impl": ("FlextGrpcConnectionPoolImpl",),
-            ".metric_value": ("FlextGrpcMetricValueModel",),
-            ".metrics_collector": ("FlextGrpcMetricsCollectorImpl",),
-            ".server_manager": ("FlextGrpcServerManagerImpl",),
-            ".stream_manager": ("FlextGrpcStreamManagerImpl",),
-            ".stream_state": ("FlextGrpcStreamRuntimeState",),
-        }),
-        alias_groups=MappingProxyType({}),
-        sort_keys=False,
-    ),
+install_lazy_exports(
+    __name__,
+    globals(),
+    MappingProxyType({
+        "FlextGrpcClientManagerImpl": ".client_manager",
+        "FlextGrpcConnectionPoolImpl": ".connection_pool_impl",
+        "FlextGrpcMetricValueModel": ".metric_value",
+        "FlextGrpcMetricsCollectorImpl": ".metrics_collector",
+        "FlextGrpcServerManagerImpl": ".server_manager",
+        "FlextGrpcStreamManagerImpl": ".stream_manager",
+        "FlextGrpcStreamRuntimeState": ".stream_state",
+    }),
+    public_exports=__all__,
 )
-
-install_lazy_exports(__name__, globals(), _LAZY_IMPORTS, public_exports=__all__)
