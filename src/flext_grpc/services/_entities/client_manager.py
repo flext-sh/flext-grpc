@@ -9,7 +9,14 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from flext_grpc import c, e, m, p, r, t
+from flext_grpc import c, e, m, p, r, t, u
+from flext_grpc.proto.stub import FlextGrpcServiceStub
+from flext_grpc.services._entities.connection_pool_impl import (
+    FlextGrpcConnectionPoolImpl,
+)
+from flext_grpc.services._entities.metrics_collector import (
+    FlextGrpcMetricsCollectorImpl,
+)
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -20,13 +27,6 @@ class FlextGrpcClientManagerImpl:
 
     def __init__(self) -> None:
         """Initialize client manager with connection pooling."""
-        from flext_grpc.services._entities.connection_pool_impl import (
-            FlextGrpcConnectionPoolImpl,
-        )
-        from flext_grpc.services._entities.metrics_collector import (
-            FlextGrpcMetricsCollectorImpl,
-        )
-
         super().__init__()
         self._active_channels: MutableMapping[str, p.Grpc.GrpcChannel] = {}
         self._connection_pool = FlextGrpcConnectionPoolImpl(
@@ -40,22 +40,20 @@ class FlextGrpcClientManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
-        from flext_grpc import FlextGrpcUtilities
-
         if target in self._active_channels:
-            return FlextGrpcUtilities.Grpc.create_client_entity(target=target)
-        channel_result = FlextGrpcUtilities.Grpc.open_insecure_channel(target)
+            return u.Grpc.create_client_entity(target=target)
+        channel_result = u.Grpc.open_insecure_channel(target)
         if channel_result.failure:
             return r[m.Grpc.Client].fail_op(
                 "Connection",
-                FlextGrpcUtilities.Grpc.runtime_failure_message(channel_result),
+                u.Grpc.runtime_failure_message(channel_result),
             )
         grpc_channel = channel_result.value
         self._active_channels[target] = grpc_channel
         self._metrics.record_metric(f"{target}_connected_at", time.time())
-        client_result = FlextGrpcUtilities.Grpc.create_client_entity(target=target)
+        client_result = u.Grpc.create_client_entity(target=target)
         if client_result.failure:
-            _ = FlextGrpcUtilities.Grpc.run_runtime(grpc_channel.close)
+            _ = u.Grpc.run_runtime(grpc_channel.close)
             del self._active_channels[target]
             return r[m.Grpc.Client].from_failure(client_result)
         return client_result
@@ -66,18 +64,16 @@ class FlextGrpcClientManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
-        from flext_grpc import FlextGrpcUtilities
-
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
         if target and target in self._active_channels:
             grpc_channel = self._active_channels[target]
-            closing_result = FlextGrpcUtilities.Grpc.run_runtime(grpc_channel.close)
+            closing_result = u.Grpc.run_runtime(grpc_channel.close)
             if closing_result.failure:
                 return r[m.Grpc.Client].fail_op(
                     "Disconnect",
-                    FlextGrpcUtilities.Grpc.runtime_failure_message(closing_result),
+                    u.Grpc.runtime_failure_message(closing_result),
                 )
             del self._active_channels[target]
         return r[m.Grpc.Client].ok(client)
@@ -112,9 +108,6 @@ class FlextGrpcClientManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
         """
-        from flext_grpc import FlextGrpcUtilities
-        from flext_grpc.proto.stub import FlextGrpcServiceStub
-
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
@@ -127,13 +120,13 @@ class FlextGrpcClientManagerImpl:
         stub = FlextGrpcServiceStub(grpc_channel)
         result: p.Result[m.Grpc.Payload]
         if method == c.Grpc.ServiceMethod.ECHO.value:
-            echo_result = FlextGrpcUtilities.Grpc.call_runtime(
+            echo_result = u.Grpc.call_runtime(
                 lambda: stub.echo(m.Grpc.EchoRequest(message=str(request))),
             )
             if echo_result.failure:
                 result = r[m.Grpc.Payload].fail_op(
                     "gRPC call",
-                    FlextGrpcUtilities.Grpc.runtime_failure_message(echo_result),
+                    u.Grpc.runtime_failure_message(echo_result),
                 )
             else:
                 echo_response = echo_result.value
@@ -146,7 +139,7 @@ class FlextGrpcClientManagerImpl:
                     ),
                 )
         elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
-            health_result = FlextGrpcUtilities.Grpc.call_runtime(
+            health_result = u.Grpc.call_runtime(
                 lambda: stub.health_check(
                     m.Grpc.HealthRequest(service="FlextGrpcService"),
                 ),
@@ -154,7 +147,7 @@ class FlextGrpcClientManagerImpl:
             if health_result.failure:
                 result = r[m.Grpc.Payload].fail_op(
                     "gRPC call",
-                    FlextGrpcUtilities.Grpc.runtime_failure_message(health_result),
+                    u.Grpc.runtime_failure_message(health_result),
                 )
             else:
                 health_response = health_result.value

@@ -50,7 +50,6 @@ class FlextGrpcMetricsCollectorImpl:
         value: Metric value (JSON-serializable: str, int, float, bool, list, dict, None)
 
         """
-        from flext_grpc._models.metric_value import FlextGrpcMetricValueModel
 
         def _normalize_value(val: t.JsonValue | None) -> t.JsonValue | None:
             if val is None:
@@ -60,8 +59,8 @@ class FlextGrpcMetricsCollectorImpl:
             return str(val)
 
         with self._lock:
-            normalized = FlextGrpcMetricValueModel(value=value)
-            json_val = _normalize_value(normalized.value)
+            normalized = m.Grpc.Payload(values={key: value})
+            json_val = _normalize_value(normalized.values[key])
             existing = self._metrics.values
             updated_values: t.MutableMappingKV[str, t.JsonValue | None] = dict(existing)
             updated_values[key] = json_val
