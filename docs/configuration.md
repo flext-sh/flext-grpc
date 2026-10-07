@@ -52,7 +52,7 @@ needs an explicit override:
 from flext_grpc import FlextGrpcSettings, settings
 
 configured = FlextGrpcSettings.model_validate({
-    "Grpc": {"host": settings.Grpc.host, "port": settings.Grpc.port}
+    "Grpc": {"host": settings.Grpc.host, "port": settings.Grpc.port},
 })
 print(configured.Grpc.host, configured.Grpc.port)
 ```

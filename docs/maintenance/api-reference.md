@@ -2,8 +2,6 @@
 
 <!-- TOC START -->
 
-- No sections found
-
 <!-- TOC END -->
 
 FLEXT-gRPC does not expose a Python documentation-maintenance API. The

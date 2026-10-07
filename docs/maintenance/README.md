@@ -2,8 +2,6 @@
 
 <!-- TOC START -->
 
-- No sections found
-
 <!-- TOC END -->
 
 Run documentation maintenance from the active `flext-grpc` worktree root:
