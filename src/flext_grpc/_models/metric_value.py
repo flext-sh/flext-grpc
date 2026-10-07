@@ -6,7 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc import m, t, u
+from flext_core import m, t, u
 
 
 class FlextGrpcMetricValueModel(m.Value):

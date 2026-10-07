@@ -3,6 +3,8 @@
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -11,7 +13,7 @@ from typing import Literal
 
 from flext_cli import FlextCliTypes
 
-from flext_grpc._typings.base import FlextGrpcTypingsBase
+from flext_grpc._typings import FlextGrpcTypingsBase
 
 
 class FlextGrpcTypes(FlextCliTypes):

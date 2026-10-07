@@ -26,7 +26,7 @@ dependencies = [
   "flext-core",
   "grpcio>=1.84.0",
   "packaging>=26.3",
-  "pydantic>=2.13.5",
+  "pydantic>=2.13.5,<3",
   "pydantic-settings>=2.15.0",
   "pyyaml>=6.0.3",
   "structlog>=25.5.0,<27",
@@ -168,7 +168,7 @@ include = ["/src/flext_grpc/**"]
 [tool.mypy]
 mypy_path = ["src"]
 plugins = ["pydantic.mypy"]
-disable_error_code = ["prop-decorator", "call-arg", "attr-defined"]
+disable_error_code = ["prop-decorator", "call-arg"]
 python_version = "3.13"
 allow_redefinition = true
 check_untyped_defs = true
@@ -189,10 +189,6 @@ follow_imports = "normal"
 [[tool.mypy.overrides]]
 module = ["rope.*"]
 follow_untyped_imports = true
-
-[[tool.mypy.overrides]]
-module = ["flext_grpc.base"]
-disable_error_code = ["misc", "no-redef", "assignment"]
 
 [tool.pydantic-mypy]
 init_forbid_extra = true
@@ -329,7 +325,7 @@ include = ["src", "tests"]
 extraPaths = ["src", "."]
 pythonPlatform = "Linux"
 pythonVersion = "3.13"
-reportCallIssue = "none"
+reportCallIssue = "error"
 reportConstantRedefinition = "error"
 reportIncompatibleMethodOverride = "error"
 reportInconsistentConstructor = "error"
@@ -368,6 +364,7 @@ asyncio_default_fixture_loop_scope = "function"
 filterwarnings = [
   "error",
   "module::flext_core._constants.enforcement.FlextMroViolation",
+  "once::pytest.PytestAssertRewriteWarning",
 ]
 markers = [
   "smoke: public-interface smoke tests",
@@ -393,7 +390,15 @@ python_files = ["*_test.py", "*_tests.py", "test_*.py"]
 testpaths = ["tests"]
 
 [tool.ruff]
-extend-exclude = []
+extend-exclude = [
+  "**/.archive/**",
+  "**/protos/**",
+  "**/.agents/aihub-hooks/**",
+  "**/.claude/aihub-hooks/**",
+  "**/.codex/aihub-hooks/**",
+  "**/.cursor/aihub-hooks/**",
+  "**/.gemini/aihub-hooks/**",
+]
 fix = false
 line-length = 88
 namespace-packages = ["tests", "examples", "scripts"]
@@ -443,20 +448,20 @@ notice-rgx = "Copyright \\(c\\) \\d{4} \\S[^\\n]*\\. All rights reserved\\."
 
 [tool.ruff.lint.flake8-type-checking]
 runtime-evaluated-base-classes = [
-  "flext_cli.FlextCliConfig",
   "flext_cli.FlextCliModels.BaseModel",
   "flext_cli.FlextCliModels.Entity",
   "flext_cli.FlextCliModels.Value",
   "flext_cli.m.BaseModel",
-  "flext_cli.services.cli.FlextCliCli",
+  "flext_core.FlextConfig",
+  "flext_core.FlextService",
   "flext_core.FlextSettings",
-  "flext_core.s",
+  "flext_core.m.BaseModel",
+  "flext_core.m.Value",
   "flext_grpc.FlextGrpcSettings",
   "flext_grpc.base.FlextGrpcServiceBase",
-  "flext_grpc.m.Value",
+  "flext_grpc.m.BaseModel",
   "flext_grpc.models.Entity",
   "flext_grpc.models.StateMachine",
-  "flext_grpc.models.m.BaseModel",
   "flext_grpc.s",
   "flext_grpc.services.api_runtime.FlextGrpcApiRuntime",
   "flext_grpc.services.client.FlextGrpcClient",
@@ -464,8 +469,8 @@ runtime-evaluated-base-classes = [
   "flext_grpc.services.metrics.FlextGrpcMetrics",
   "flext_grpc.services.server.FlextGrpcServer",
   "flext_grpc.services.stream.FlextGrpcStream",
+  "flext_tests.FlextTestsServiceBase",
   "flext_tests.FlextTestsSettings",
-  "flext_tests.s",
   "pydantic.BaseModel",
 ]
 
@@ -496,12 +501,37 @@ split-on-trailing-comma = false
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["line-too-long", "non-empty-init-module", "unused-import"]
 "**/_config.py" = ["invalid-function-name"]
+"**/bin/**" = [
+  "docstring-missing-exception",
+  "docstring-missing-returns",
+  "import-outside-top-level",
+  "line-too-long",
+  "magic-value-comparison",
+  "missing-copyright-notice",
+  "print",
+  "start-process-with-partial-path",
+  "subprocess-without-shell-equals-true",
+  "suspicious-subprocess-import",
+  "type-check-without-type-error",
+  "undocumented-public-method",
+  "unused-class-method-argument",
+]
 "**/docx.py" = ["import-outside-top-level"]
 "**/file_test_helpers.py" = ["line-too-long"]
 "**/flextcliutilitiesfiletesthelpersmixin_part_03.py" = ["line-too-long"]
 "**/framework.py" = ["banned-api", "import-outside-top-level"]
 "**/pptx.py" = ["import-outside-top-level"]
 "**/test_public_contracts_cov.py" = ["line-too-long"]
+"**/tests/**" = [
+  "boolean-positional-value-in-call",
+  "compare-to-empty-string",
+  "magic-value-comparison",
+  "mutable-class-default",
+  "no-self-use",
+  "private-member-access",
+  "pytest-fixture-autouse",
+  "too-many-public-methods",
+]
 "**/tests/python/**" = [
   "raise-vanilla-args",
   "start-process-with-partial-path",

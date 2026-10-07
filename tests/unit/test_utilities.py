@@ -16,7 +16,7 @@ from __future__ import annotations
 import pytest
 from flext_tests import tm
 
-from tests import p, u
+from tests import m, u
 
 
 class TestsFlextGrpcUtilitiesUnit:
@@ -104,6 +104,7 @@ class TestsFlextGrpcUtilitiesUnit:
     )
     def test_validate_target_reflects_host_port_validity(
         target: str,
+        *,
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port strings."""
@@ -127,6 +128,7 @@ class TestsFlextGrpcUtilitiesUnit:
     )
     def test_validate_port_enforces_inclusive_range(
         port: int,
+        *,
         expected: bool,
     ) -> None:
         """Ports are valid only within the inclusive 1..65535 range."""
@@ -137,7 +139,7 @@ class TestsFlextGrpcUtilitiesUnit:
         ("host", "expected"),
         [("localhost", True), ("127.0.0.1", True), ("", False), ("   ", False)],
     )
-    def test_validate_host_requires_non_blank(host: str, expected: bool) -> None:
+    def test_validate_host_requires_non_blank(host: str, *, expected: bool) -> None:
         """A host is valid only when it is non-empty after stripping."""
         tm.that(u.Grpc.validate_host(host), eq=expected)
 
@@ -218,34 +220,34 @@ class TestsFlextGrpcUtilitiesUnit:
     @staticmethod
     def test_create_channel_entity_carries_target() -> None:
         """A created channel entity exposes the requested target."""
-        channel: p.Grpc.Channel = tm.ok(u.Grpc.create_channel_entity("localhost:50051"))
+        channel: m.Grpc.Channel = tm.ok(u.Grpc.create_channel_entity("localhost:50051"))
         tm.that(channel.target, eq="localhost:50051")
 
     @staticmethod
     def test_create_client_entity_wraps_channel_with_target() -> None:
         """A created client entity is backed by a channel on the same target."""
-        client: p.Grpc.Client = tm.ok(u.Grpc.create_client_entity("localhost:50051"))
+        client: m.Grpc.Client = tm.ok(u.Grpc.create_client_entity("localhost:50051"))
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq="localhost:50051")
 
     @staticmethod
     def test_create_server_entity_carries_host_and_port() -> None:
         """A created server entity exposes the requested host and port."""
-        server: p.Grpc.Server = tm.ok(u.Grpc.create_server_entity("localhost", 50051))
+        server: m.Grpc.Server = tm.ok(u.Grpc.create_server_entity("localhost", 50051))
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
 
     @staticmethod
     def test_create_service_entity_defaults_to_minimal_method_set() -> None:
         """A service created without methods gets a minimal valid method set."""
-        service: p.Grpc.Service = tm.ok(u.Grpc.create_service_entity("TestService"))
+        service: m.Grpc.Service = tm.ok(u.Grpc.create_service_entity("TestService"))
         tm.that(service.name, eq="TestService")
         tm.that(service.methods, empty=False)
 
     @staticmethod
     def test_create_service_entity_preserves_supplied_methods() -> None:
         """Explicit methods are preserved on the created service entity."""
-        service: p.Grpc.Service = tm.ok(
+        service: m.Grpc.Service = tm.ok(
             u.Grpc.create_service_entity("Svc", methods=["A", "B"]),
         )
         tm.that(service.methods, eq=["A", "B"])
@@ -253,7 +255,7 @@ class TestsFlextGrpcUtilitiesUnit:
     @staticmethod
     def test_create_stream_entity_carries_method_and_type() -> None:
         """A created stream entity exposes its method name and stream type."""
-        stream: p.Grpc.GrpcStream = tm.ok(
+        stream: m.Grpc.GrpcStream = tm.ok(
             u.Grpc.create_stream_entity("test_method", "unary"),
         )
         tm.that(stream.method_name, eq="test_method")

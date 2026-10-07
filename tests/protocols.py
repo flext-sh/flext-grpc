@@ -2,9 +2,14 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
+
+from typing import Protocol, runtime_checkable
 
 from flext_tests import FlextTestsProtocols
 
@@ -19,6 +24,10 @@ class TestsFlextGrpcProtocols(FlextTestsProtocols, FlextGrpcProtocols):
 
         class Tests:
             """Test-specific protocols."""
+
+            @runtime_checkable
+            class DuckInstance(Protocol):
+                """Opaque duck-typed instance used for runtime protocol checks."""
 
 
 p = TestsFlextGrpcProtocols

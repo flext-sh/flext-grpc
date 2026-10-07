@@ -7,12 +7,17 @@ inheritance.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
 from enum import StrEnum, unique
 from typing import Final
+
+from flext_core import t
 
 
 class FlextGrpcConstantsBase:
@@ -92,12 +97,12 @@ class FlextGrpcConstantsBase:
         ROUND_ROBIN = "round_robin"
 
     # ===== Enum-derived frozensets (immutable collections) =====
-    CHANNEL_STATES: Final[frozenset[str]] = frozenset(
+    CHANNEL_STATES: Final[frozenset[t.JsonValue]] = frozenset(
         member.value for member in ChannelState.__members__.values()
     )
     """Channel states frozenset - generated from ChannelState StrEnum."""
 
-    SERVER_STATES: Final[frozenset[str]] = frozenset(
+    SERVER_STATES: Final[frozenset[t.JsonValue]] = frozenset(
         member.value for member in ServerState.__members__.values()
     )
     """Server states frozenset - generated from ServerState StrEnum."""

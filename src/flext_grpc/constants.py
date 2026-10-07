@@ -8,6 +8,9 @@ module is forbidden.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -16,7 +19,7 @@ import re
 from typing import TYPE_CHECKING, ClassVar
 
 from flext_core import FlextConstants
-from flext_grpc._constants.base import FlextGrpcConstantsBase
+from flext_grpc._constants import FlextGrpcConstantsBase
 
 if TYPE_CHECKING:
     from flext_grpc import t

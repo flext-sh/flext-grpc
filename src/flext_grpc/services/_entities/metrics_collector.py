@@ -9,7 +9,6 @@ from __future__ import annotations
 import threading
 
 from flext_grpc import m, t, u
-from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
 
 
 class FlextGrpcMetricsCollectorImpl:
@@ -60,8 +59,8 @@ class FlextGrpcMetricsCollectorImpl:
             return str(val)
 
         with self._lock:
-            normalized = FlextGrpcMetricValueModel(value=value)
-            json_val = _normalize_value(normalized.value)
+            normalized = m.Grpc.Payload(values={key: value})
+            json_val = _normalize_value(normalized.values[key])
             existing = self._metrics.values
             updated_values: t.MutableMappingKV[str, t.JsonValue | None] = dict(existing)
             updated_values[key] = json_val

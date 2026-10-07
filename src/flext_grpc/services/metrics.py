@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import m, s
-from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
+from flext_grpc._models.metric_value import FlextGrpcMetricValueModel
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
@@ -30,4 +30,4 @@ class FlextGrpcMetrics(s):
     )
 
 
-__all__: list[str] = ["FlextGrpcMetrics"]
+__all__: list[str] = ["FlextGrpcMetrics", "FlextGrpcMetricsCollectorImpl"]

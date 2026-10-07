@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""FLEXT-gRPC Architecture Documentation Validation.
+"""AI Hub governance hook projection: validate_docs.
 
-Validates architecture documentation for completeness, consistency, and accuracy.
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
+# Copyright (c) 2025 FLEXT Team. All rights reserved.
 from __future__ import annotations
 
 import json
@@ -15,6 +17,11 @@ from typing import Annotated
 from flext_cli import cli
 
 from flext_grpc import c, m, p, r, t
+
+"""FLEXT-gRPC Architecture Documentation Validation.
+
+Validates architecture documentation for completeness, consistency, and accuracy.
+"""
 
 
 class _ValidationParams(m.Value):
@@ -112,7 +119,12 @@ class ArchitectureValidator:
         self.recommendations: list[_IssueRow] = []
 
     def validate_all(self) -> ValidationResults:
-        """Run all validation checks."""
+        """Run all validation checks.
+
+        Returns:
+            Aggregated validation results.
+
+        """
         # Reset collections
         self.issues = []
         self.warnings = []
@@ -153,7 +165,9 @@ class ArchitectureValidator:
             self.issues.append({
                 "type": "c4_model_incomplete",
                 "severity": "high",
-                "message": f"C4 model missing required views: {', '.join(missing_files)}",
+                "message": (
+                    f"C4 model missing required views: {', '.join(missing_files)}"
+                ),
                 "files": missing_files,
             })
 
@@ -207,7 +221,10 @@ class ArchitectureValidator:
             self.warnings.append({
                 "type": "few_adrs",
                 "severity": "medium",
-                "message": f"Only {len(adr_files)} ADRs found, recommend at least 3 for major architectural decisions",
+                "message": (
+                    f"Only {len(adr_files)} ADRs found, recommend at least 3 "
+                    "for major architectural decisions"
+                ),
             })
 
         # Validate ADR format
@@ -229,7 +246,10 @@ class ArchitectureValidator:
                 self.warnings.append({
                     "type": "adr_format_incomplete",
                     "severity": "medium",
-                    "message": f"ADR {adr_file.name} missing required fields: {', '.join(missing_fields)}",
+                    "message": (
+                        f"ADR {adr_file.name} missing required fields: "
+                        f"{', '.join(missing_fields)}"
+                    ),
                     "file": str(adr_file),
                 })
 
@@ -254,7 +274,10 @@ class ArchitectureValidator:
             self.issues.append({
                 "type": "diagrams_missing",
                 "severity": "high",
-                "message": f"Required architecture diagrams missing: {', '.join(missing_diagrams)}",
+                "message": (
+                    f"Required architecture diagrams missing: "
+                    f"{', '.join(missing_diagrams)}"
+                ),
             })
 
         # Check if generation script exists
@@ -280,7 +303,9 @@ class ArchitectureValidator:
                 self.warnings.append({
                     "type": "cross_references_missing",
                     "severity": "low",
-                    "message": "Architecture documentation should reference C4 model and ADRs",
+                    "message": (
+                        "Architecture documentation should reference C4 model and ADRs"
+                    ),
                 })
 
     def _validate_content_freshness(self) -> None:
@@ -304,7 +329,10 @@ class ArchitectureValidator:
                     self.warnings.append({
                         "type": "documentation_stale",
                         "severity": "low",
-                        "message": f"Documentation file {file_path} is {age_days} days old (review recommended)",
+                        "message": (
+                            f"Documentation file {file_path} is {age_days} days "
+                            "old (review recommended)"
+                        ),
                         "file": file_path,
                         "age_days": age_days,
                     })
@@ -345,11 +373,19 @@ class ArchitectureValidator:
                 self.warnings.append({
                     "type": "outdated_metrics",
                     "severity": "medium",
-                    "message": "Architecture documentation contains outdated test coverage metrics",
+                    "message": (
+                        "Architecture documentation contains outdated test "
+                        "coverage metrics"
+                    ),
                 })
 
     def _generate_summary(self) -> ValidationSummary:
-        """Generate validation summary."""
+        """Generate validation summary.
+
+        Returns:
+            Computed validation summary.
+
+        """
         total_issues = len(self.issues)
         total_warnings = len(self.warnings)
         total_recommendations = len(self.recommendations)
@@ -411,7 +447,15 @@ def save_report(results: ValidationResults, output_path: Path | None = None) -> 
 
 
 def _run_validation(params: _ValidationParams) -> p.Result[bool]:
-    """Run the validation flow as a railway-style ``r[bool]`` result."""
+    """Run the validation flow as a railway-style ``r[bool]`` result.
+
+    Args:
+        params: Validation parameters.
+
+    Returns:
+        Success when documentation quality is acceptable.
+
+    """
     validator = ArchitectureValidator(params.path)
     results = validator.validate_all()
     output_path = Path(params.output) if params.output else None
@@ -430,7 +474,12 @@ def _run_validation(params: _ValidationParams) -> p.Result[bool]:
 
 
 def main() -> int:
-    """Validate architecture documentation from the command line."""
+    """Validate architecture documentation from the command line.
+
+    Returns:
+        Process exit status.
+
+    """
     app = cli.create_app_with_common_params(
         name="flext-grpc-validate-docs",
         help_text="FLEXT-gRPC Architecture Documentation Validation",

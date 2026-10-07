@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_grpc import FlextGrpcSettings, FlextGrpcUtilities, c, m, p, r, t, u
+from flext_grpc import FlextGrpcSettings, c, m, p, r, t, u
 from flext_grpc.base import FlextGrpcServiceBase
 
 
@@ -25,7 +25,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Channel]``.
         """
-        return FlextGrpcUtilities.Grpc.create_channel_entity(
+        return m.Grpc.create_channel_entity(
             target=target,
             options={} if options is None else options,
         )
@@ -40,7 +40,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
-        return FlextGrpcUtilities.Grpc.create_client_entity(
+        return m.Grpc.create_client_entity(
             target=target,
             options=options,
         )
@@ -95,7 +95,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
         """
-        return FlextGrpcUtilities.Grpc.create_server_entity(
+        return m.Grpc.create_server_entity(
             host=host,
             port=port,
             max_workers=max_workers,
@@ -111,7 +111,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Service]``.
         """
-        return FlextGrpcUtilities.Grpc.create_service_entity(
+        return m.Grpc.create_service_entity(
             name=name,
             methods=[] if methods is None else methods,
         )
@@ -158,7 +158,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[tuple[str, int]]``.
         """
-        if not FlextGrpcUtilities.Grpc.validate_target(address):
+        if not m.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
         return r[tuple[str, int]].ok(u.Grpc.parse_target(address))
 
@@ -169,7 +169,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``bool``.
         """
-        return FlextGrpcUtilities.Grpc.validate_target(target)
+        return m.Grpc.validate_target(target)
 
 
 __all__: list[str] = ["FlextGrpcApiRuntime"]

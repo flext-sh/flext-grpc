@@ -6,6 +6,9 @@ across gRPC services.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -13,11 +16,12 @@ from __future__ import annotations
 from abc import ABC
 from typing import override
 
-from flext_core import s
-from flext_grpc import FlextGrpcSettings, m, p, r, t
+from flext_core import FlextService, r
+from flext_grpc import m, p, t
+from flext_grpc._settings import FlextGrpcSettings
 
 
-class FlextGrpcServiceBase(s[FlextGrpcSettings], ABC):
+class FlextGrpcServiceBase(FlextService[FlextGrpcSettings], ABC):
     """Base class for flext-grpc services with typed configuration access.
 
     Provides typed settings access and a default execute() surface for
