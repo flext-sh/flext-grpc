@@ -6,14 +6,16 @@ built by consumers from these scalars, not stored as complex settings fields.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Annotated
 
-from flext_core import FlextSettings
-from flext_grpc.models import m
+from flext_core import FlextSettings, m
 
 
 class FlextGrpcSettings(FlextSettings):

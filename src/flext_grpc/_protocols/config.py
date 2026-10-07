@@ -6,19 +6,23 @@ shape consumed by ``_config.py`` and typed consumers.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol
+from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from flext_grpc._models.config import FlextGrpcConfigModels
+    from flext_grpc._models import FlextGrpcConfigModels
 
 
 class FlextGrpcProtocolsConfig:
     """Namespace of config protocol interfaces for flext-grpc."""
 
+    @runtime_checkable
     class Network(Protocol):
         """gRPC network defaults and validation thresholds."""
 
@@ -43,6 +47,7 @@ class FlextGrpcProtocolsConfig:
         @property
         def min_port(self) -> int: ...
 
+    @runtime_checkable
     class Performance(Protocol):
         """gRPC message and thread-pool performance limits."""
 
@@ -59,6 +64,7 @@ class FlextGrpcProtocolsConfig:
         @property
         def min_thread_pool_size(self) -> int: ...
 
+    @runtime_checkable
     class Service(Protocol):
         """gRPC server/worker policy defaults."""
 
@@ -71,6 +77,7 @@ class FlextGrpcProtocolsConfig:
         @property
         def min_workers(self) -> int: ...
 
+    @runtime_checkable
     class Streaming(Protocol):
         """gRPC streaming buffer and concurrency policy."""
 
@@ -89,12 +96,14 @@ class FlextGrpcProtocolsConfig:
         @property
         def server_batch_size(self) -> int: ...
 
+    @runtime_checkable
     class ConnectionPool(Protocol):
         """gRPC connection-pool defaults."""
 
         @property
         def default_pool_size(self) -> int: ...
 
+    @runtime_checkable
     class Grpc(Protocol):
         """Root gRPC business-rule namespace."""
 
@@ -103,7 +112,7 @@ class FlextGrpcProtocolsConfig:
         @property
         def performance(self) -> FlextGrpcConfigModels.Performance: ...
         @property
-        def service(self) -> FlextGrpcConfigModels.Service: ...
+        def service(self) -> FlextGrpcConfigModels.ServicePolicy: ...
         @property
         def streaming(self) -> FlextGrpcConfigModels.Streaming: ...
         @property

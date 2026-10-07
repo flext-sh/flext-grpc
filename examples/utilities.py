@@ -1,4 +1,4 @@
-"""Utility functions for flextgrpc.
+"""Example utilities for flext-grpc.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -10,7 +10,13 @@ from flext_grpc import FlextGrpcUtilities
 
 
 class ExamplesFlextGrpcUtilities(FlextGrpcUtilities):
-    """Utility functions for flextgrpc."""
+    """Example utilities for flext-grpc."""
+
+    class Grpc(FlextGrpcUtilities.Grpc):
+        """Grpc domain example utilities."""
+
+        class Examples:
+            """Example-specific utilities."""
 
 
 __all__: list[str] = ["ExamplesFlextGrpcUtilities"]

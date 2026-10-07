@@ -7,6 +7,9 @@ Clean Architecture and Domain-Driven Design principles.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -162,7 +165,9 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
         result = scenario_func()
         if result.failure:
             logger.warning(
-                f"⚠️ {scenario_name} scenario failed as expected: {result.error}",
+                "⚠️ %s scenario failed as expected: %s",
+                scenario_name,
+                result.error,
             )
     return r[str].ok("Pipeline completed with graceful error handling")
 
@@ -177,9 +182,15 @@ def error_recovery_patterns() -> p.Result[str]:
     for attempt in range(3):
         connection_result = simulate_connection_error()
         if connection_result.success:
-            logger.info(f"✅ Connection succeeded on attempt {attempt + 1}")
+            logger.info(
+                "✅ Connection succeeded on attempt %s",
+                attempt + 1,
+            )
             break
-        logger.warning(f"⚠️ Connection attempt {attempt + 1} failed, retrying...")
+        logger.warning(
+            "⚠️ Connection attempt %s failed, retrying...",
+            attempt + 1,
+        )
         last_attempt = 2
         if attempt == last_attempt:
             logger.error("❌ All connection attempts failed")
@@ -255,22 +266,40 @@ def main() -> None:
     logger.info("\n🔄 2. Comprehensive Error Handling Pipeline")
     pipeline_result = comprehensive_error_handling_pipeline()
     if pipeline_result.success:
-        logger.info(f"✅ Pipeline result: {pipeline_result.value}")
+        logger.info(
+            "✅ Pipeline result: %s",
+            pipeline_result.value,
+        )
     else:
-        logger.error(f"❌ Pipeline failed: {pipeline_result.error}")
+        logger.error(
+            "❌ Pipeline failed: %s",
+            pipeline_result.error,
+        )
     logger.info("\n🔧 3. Error Recovery Patterns")
     recovery_result = error_recovery_patterns()
     if recovery_result.success:
-        logger.info(f"✅ Recovery result: {recovery_result.value}")
+        logger.info(
+            "✅ Recovery result: %s",
+            recovery_result.value,
+        )
     else:
-        logger.error(f"❌ Recovery failed: {recovery_result.error}")
+        logger.error(
+            "❌ Recovery failed: %s",
+            recovery_result.error,
+        )
     logger.info("\n⚡ 4. Error Handling")
     try:
         result = error_handling()
         if result.success:
-            logger.info(f"✅ result: {result.value}")
+            logger.info(
+                "✅ result: %s",
+                result.value,
+            )
         else:
-            logger.error(f"❌ failed: {result.error}")
+            logger.error(
+                "❌ failed: %s",
+                result.error,
+            )
     except (ValueError, RuntimeError, OSError):
         logger.exception("❌ exception occurred")
     logger.info("\n🎉 Error handling examples completed!")

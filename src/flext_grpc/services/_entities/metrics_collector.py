@@ -9,7 +9,6 @@ from __future__ import annotations
 import threading
 
 from flext_grpc import m, t, u
-from flext_grpc.services._entities.metric_value import FlextGrpcMetricValueModel
 
 
 class FlextGrpcMetricsCollectorImpl:
@@ -51,6 +50,7 @@ class FlextGrpcMetricsCollectorImpl:
         value: Metric value (JSON-serializable: str, int, float, bool, list, dict, None)
 
         """
+        from flext_grpc._models.metric_value import FlextGrpcMetricValueModel
 
         def _normalize_value(val: t.JsonValue | None) -> t.JsonValue | None:
             if val is None:

@@ -26,4 +26,4 @@ class FlextGrpcConnectionPool(s):
     )
 
 
-__all__: list[str] = ["FlextGrpcConnectionPool"]
+__all__: list[str] = ["FlextGrpcConnectionPool", "FlextGrpcConnectionPoolImpl"]

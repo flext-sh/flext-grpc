@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     from flext_grpc._settings import FlextGrpcSettings, settings
     from flext_grpc.api import FlextGrpc, grpc
     from flext_grpc.base import FlextGrpcServiceBase, s
-    from flext_grpc.cli import FlextGrpcCli, main
+    from flext_grpc.cli import main
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import FlextGrpcErrors
     from flext_grpc.models import FlextGrpcModels, m
@@ -38,8 +38,14 @@ if TYPE_CHECKING:
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from flext_grpc.services.connection_pool import (
+        FlextGrpcConnectionPool,
+        FlextGrpcConnectionPoolImpl,
+    )
+    from flext_grpc.services.metrics import (
+        FlextGrpcMetrics,
+        FlextGrpcMetricsCollectorImpl,
+    )
     from flext_grpc.services.server import FlextGrpcServer
     from flext_grpc.services.stream import FlextGrpcStream
     from flext_grpc.typings import FlextGrpcTypes, t
@@ -49,13 +55,14 @@ if TYPE_CHECKING:
 __all__: tuple[str, ...] = (
     "FlextGrpc",
     "FlextGrpcApiRuntime",
-    "FlextGrpcCli",
     "FlextGrpcClient",
     "FlextGrpcConfig",
     "FlextGrpcConnectionPool",
+    "FlextGrpcConnectionPoolImpl",
     "FlextGrpcConstants",
     "FlextGrpcErrors",
     "FlextGrpcMetrics",
+    "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcModels",
     "FlextGrpcProtoServicer",
     "FlextGrpcProtocols",
@@ -99,13 +106,14 @@ install_lazy_exports(
     MappingProxyType({
         "FlextGrpc": ".api",
         "FlextGrpcApiRuntime": ".services.api_runtime",
-        "FlextGrpcCli": ".cli",
         "FlextGrpcClient": ".services.client",
         "FlextGrpcConfig": "._config",
         "FlextGrpcConnectionPool": ".services.connection_pool",
+        "FlextGrpcConnectionPoolImpl": ".services.connection_pool",
         "FlextGrpcConstants": ".constants",
         "FlextGrpcErrors": ".errors",
         "FlextGrpcMetrics": ".services.metrics",
+        "FlextGrpcMetricsCollectorImpl": ".services.metrics",
         "FlextGrpcModels": ".models",
         "FlextGrpcProtoServicer": ".proto.servicer",
         "FlextGrpcProtocols": ".protocols",

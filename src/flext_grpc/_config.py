@@ -6,25 +6,26 @@ no per-domain model. Access is ``config.Grpc.<domain>[<key>...]``.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
 
 from typing import Annotated
 
-from flext_cli import FlextCliConfig, m
-
-from flext_core import FlextSettings
-
-
-class _GrpcNamespace(m.BaseModel):
-    """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
-
-    model_config = m.ConfigDict(extra="allow", frozen=True)
+from flext_core import FlextConfig
+from flext_grpc import m
 
 
-class FlextGrpcConfig(FlextSettings, FlextCliConfig):
+class FlextGrpcConfig(FlextConfig):
     """Grpc config auto-loaded model-less from ``config/*.yaml``."""
+
+    class _GrpcNamespace(m.BaseModel):
+        """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
+
+        model_config = m.ConfigDict(extra="allow", frozen=True)
 
     Grpc: Annotated[
         _GrpcNamespace,

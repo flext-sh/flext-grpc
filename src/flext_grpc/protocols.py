@@ -2,6 +2,9 @@
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -10,7 +13,7 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc._protocols.base import FlextGrpcProtocolsBase
+from flext_grpc._protocols import FlextGrpcProtocolsBase
 
 if TYPE_CHECKING:
     import threading

@@ -9,14 +9,7 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from flext_grpc import FlextGrpcUtilities, c, e, m, p, r, t
-from flext_grpc.proto.stub import FlextGrpcServiceStub
-from flext_grpc.services._entities.connection_pool_impl import (
-    FlextGrpcConnectionPoolImpl,
-)
-from flext_grpc.services._entities.metrics_collector import (
-    FlextGrpcMetricsCollectorImpl,
-)
+from flext_grpc import c, e, m, p, r, t
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -27,6 +20,13 @@ class FlextGrpcClientManagerImpl:
 
     def __init__(self) -> None:
         """Initialize client manager with connection pooling."""
+        from flext_grpc.services._entities.connection_pool_impl import (
+            FlextGrpcConnectionPoolImpl,
+        )
+        from flext_grpc.services._entities.metrics_collector import (
+            FlextGrpcMetricsCollectorImpl,
+        )
+
         super().__init__()
         self._active_channels: MutableMapping[str, p.Grpc.GrpcChannel] = {}
         self._connection_pool = FlextGrpcConnectionPoolImpl(
@@ -40,6 +40,8 @@ class FlextGrpcClientManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+
         if target in self._active_channels:
             return FlextGrpcUtilities.Grpc.create_client_entity(target=target)
         channel_result = FlextGrpcUtilities.Grpc.open_insecure_channel(target)
@@ -64,6 +66,8 @@ class FlextGrpcClientManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
@@ -108,6 +112,9 @@ class FlextGrpcClientManagerImpl:
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
         """
+        from flext_grpc import FlextGrpcUtilities
+        from flext_grpc.proto.stub import FlextGrpcServiceStub
+
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""

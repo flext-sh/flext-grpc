@@ -20,8 +20,8 @@ from flext_tests import tm
 from flext_grpc import FlextGrpc, c, t
 
 if TYPE_CHECKING:
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from flext_grpc.services.connection_pool import FlextGrpcConnectionPoolImpl
+    from flext_grpc.services.metrics import FlextGrpcMetricsCollectorImpl
 
 
 class TestsFlextGrpcServices:
@@ -144,6 +144,7 @@ class TestsFlextGrpcServices:
     def test_validate_target_recognizes_host_port_form(
         grpc_facade: FlextGrpc,
         target: str,
+        *,
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
@@ -175,7 +176,7 @@ class TestsFlextGrpcServices:
 
     @staticmethod
     def test_connection_pool_cleanup_succeeds_when_empty(
-        connection_pool: FlextGrpcConnectionPool.ConnectionPool,
+        connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Cleanup succeeds and reports True even with no active channels."""
         result = connection_pool.cleanup()
@@ -185,7 +186,7 @@ class TestsFlextGrpcServices:
 
     @staticmethod
     def test_connection_pool_acquire_on_empty_pool_fails_not_found(
-        connection_pool: FlextGrpcConnectionPool.ConnectionPool,
+        connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Acquire on an empty pool fails with a not-found error code."""
         result = connection_pool.acquire()
@@ -195,7 +196,7 @@ class TestsFlextGrpcServices:
 
     @staticmethod
     def test_connection_pool_cleanup_is_idempotent(
-        connection_pool: FlextGrpcConnectionPool.ConnectionPool,
+        connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Repeated cleanup calls keep succeeding (idempotent invariant)."""
         tm.ok(connection_pool.cleanup())
@@ -205,7 +206,7 @@ class TestsFlextGrpcServices:
 
     @staticmethod
     def test_metrics_record_then_retrieve_roundtrip(
-        metrics_collector: FlextGrpcMetrics.MetricsCollector,
+        metrics_collector: FlextGrpcMetricsCollectorImpl,
     ) -> None:
         """A recorded metric is retrievable by key and exposed in the payload."""
         metrics_collector.record_metric("test_key", "test_value")
@@ -216,7 +217,7 @@ class TestsFlextGrpcServices:
 
     @staticmethod
     def test_metrics_unknown_key_returns_none(
-        metrics_collector: FlextGrpcMetrics.MetricsCollector,
+        metrics_collector: FlextGrpcMetricsCollectorImpl,
     ) -> None:
         """Retrieving an unrecorded key returns None."""
         tm.that(metrics_collector.metric("absent"), none=True)
@@ -227,7 +228,7 @@ class TestsFlextGrpcServices:
         [("v", "v"), (5, 5), (True, True), (None, ""), ([1, 2], "[1, 2]")],
     )
     def test_metrics_value_normalization(
-        metrics_collector: FlextGrpcMetrics.MetricsCollector,
+        metrics_collector: FlextGrpcMetricsCollectorImpl,
         value: t.JsonValue | None,
         expected: t.JsonValue,
     ) -> None:
@@ -238,7 +239,7 @@ class TestsFlextGrpcServices:
 
     @staticmethod
     def test_metrics_all_metrics_returns_independent_snapshot(
-        metrics_collector: FlextGrpcMetrics.MetricsCollector,
+        metrics_collector: FlextGrpcMetricsCollectorImpl,
     ) -> None:
         """all_metrics returns a snapshot that later records do not mutate."""
         metrics_collector.record_metric("first", "1")

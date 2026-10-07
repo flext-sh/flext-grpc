@@ -9,6 +9,9 @@ structural ``isinstance`` narrowing -- never through private attributes.
 
 Copyright (c) 2025 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
 """
 
 from __future__ import annotations
@@ -79,24 +82,32 @@ _PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
 _PROTOCOL_NAMES: t.VariadicTuple[str] = tuple(_PROTOCOL_CONTRACTS)
 
 
-def _build_conforming_instance(members: t.VariadicTuple[str]) -> object:
-    """Create an object exposing exactly ``members`` as callables.
+def _build_conforming_instance(
+    members: t.VariadicTuple[str],
+) -> p.Grpc.Tests.DuckInstance:
+    """Create a duck-typed instance exposing exactly ``members`` as callables.
 
     Returns:
-        The resulting ``object``.
+        The resulting ``p.Grpc.Tests.DuckInstance``.
     """
     namespace = {name: (lambda: None) for name in members}
-    return type("Conforming", (), namespace)()
+    instance: p.Grpc.Tests.DuckInstance = type("Conforming", (), namespace)()
+    return instance
 
 
-def _build_partial_instance(members: t.VariadicTuple[str], *, omit: str) -> object:
-    """Create an object exposing every member except ``omit``.
+def _build_partial_instance(
+    members: t.VariadicTuple[str],
+    *,
+    omit: str,
+) -> p.Grpc.Tests.DuckInstance:
+    """Create a duck-typed instance exposing every member except ``omit``.
 
     Returns:
-        The resulting ``object``.
+        The resulting ``p.Grpc.Tests.DuckInstance``.
     """
     namespace = {name: (lambda: None) for name in members if name != omit}
-    return type("Partial", (), namespace)()
+    instance: p.Grpc.Tests.DuckInstance = type("Partial", (), namespace)()
+    return instance
 
 
 class TestsFlextGrpcProtocolsUnit:
