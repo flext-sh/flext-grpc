@@ -38,8 +38,14 @@ if TYPE_CHECKING:
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from flext_grpc.services.connection_pool import (
+        FlextGrpcConnectionPool,
+        FlextGrpcConnectionPoolImpl,
+    )
+    from flext_grpc.services.metrics import (
+        FlextGrpcMetrics,
+        FlextGrpcMetricsCollectorImpl,
+    )
     from flext_grpc.services.server import FlextGrpcServer
     from flext_grpc.services.stream import FlextGrpcStream
     from flext_grpc.typings import FlextGrpcTypes, t
@@ -52,9 +58,11 @@ __all__: tuple[str, ...] = (
     "FlextGrpcClient",
     "FlextGrpcConfig",
     "FlextGrpcConnectionPool",
+    "FlextGrpcConnectionPoolImpl",
     "FlextGrpcConstants",
     "FlextGrpcErrors",
     "FlextGrpcMetrics",
+    "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcModels",
     "FlextGrpcProtoServicer",
     "FlextGrpcProtocols",
@@ -101,9 +109,11 @@ install_lazy_exports(
         "FlextGrpcClient": ".services.client",
         "FlextGrpcConfig": "._config",
         "FlextGrpcConnectionPool": ".services.connection_pool",
+        "FlextGrpcConnectionPoolImpl": ".services.connection_pool",
         "FlextGrpcConstants": ".constants",
         "FlextGrpcErrors": ".errors",
         "FlextGrpcMetrics": ".services.metrics",
+        "FlextGrpcMetricsCollectorImpl": ".services.metrics",
         "FlextGrpcModels": ".models",
         "FlextGrpcProtoServicer": ".proto.servicer",
         "FlextGrpcProtocols": ".protocols",

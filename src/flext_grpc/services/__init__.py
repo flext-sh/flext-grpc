@@ -15,18 +15,18 @@ from flext_core import install_lazy_exports
 if TYPE_CHECKING:
     from flext_grpc.services import _entities
     from flext_grpc.services._entities.client_manager import FlextGrpcClientManagerImpl
-    from flext_grpc.services._entities.connection_pool_impl import (
-        FlextGrpcConnectionPoolImpl,
-    )
-    from flext_grpc.services._entities.metrics_collector import (
-        FlextGrpcMetricsCollectorImpl,
-    )
     from flext_grpc.services._entities.server_manager import FlextGrpcServerManagerImpl
     from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPool
-    from flext_grpc.services.metrics import FlextGrpcMetrics
+    from flext_grpc.services.connection_pool import (
+        FlextGrpcConnectionPool,
+        FlextGrpcConnectionPoolImpl,
+    )
+    from flext_grpc.services.metrics import (
+        FlextGrpcMetrics,
+        FlextGrpcMetricsCollectorImpl,
+    )
     from flext_grpc.services.server import FlextGrpcServer
     from flext_grpc.services.stream import FlextGrpcStream
 
@@ -54,9 +54,9 @@ install_lazy_exports(
         "FlextGrpcClient": ".client",
         "FlextGrpcClientManagerImpl": "._entities.client_manager",
         "FlextGrpcConnectionPool": ".connection_pool",
-        "FlextGrpcConnectionPoolImpl": "._entities.connection_pool_impl",
+        "FlextGrpcConnectionPoolImpl": ".connection_pool",
         "FlextGrpcMetrics": ".metrics",
-        "FlextGrpcMetricsCollectorImpl": "._entities.metrics_collector",
+        "FlextGrpcMetricsCollectorImpl": ".metrics",
         "FlextGrpcServer": ".server",
         "FlextGrpcServerManagerImpl": "._entities.server_manager",
         "FlextGrpcStream": ".stream",
