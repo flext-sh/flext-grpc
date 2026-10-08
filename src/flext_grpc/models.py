@@ -15,7 +15,7 @@ from __future__ import annotations
 from collections import deque
 from datetime import datetime
 from types import MappingProxyType
-from typing import Annotated, Self, override
+from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
 
@@ -319,14 +319,6 @@ class FlextGrpcModels(FlextCliModels):
                     lambda: self.model_copy(update=kwargs),
                 )
 
-            def validate_business_rules(self) -> p.Result[bool]:
-                """Override in subclasses for specific validation.
-
-                Returns:
-                    The resulting ``p.Result[bool]``.
-                """
-                return r[bool].ok(value=True)
-
         class Channel(Entity, StateMachine):
             """Generic gRPC channel with state machine delegation."""
 
@@ -395,7 +387,6 @@ class FlextGrpcModels(FlextCliModels):
                     {"connecting": {"ready"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
-            @override
             def validate_business_rules(self) -> p.Result[bool]:
                 """Functional validation composition.
 
@@ -505,7 +496,6 @@ class FlextGrpcModels(FlextCliModels):
                     {"running": {"stopping"}},
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
-            @override
             def validate_business_rules(self) -> p.Result[bool]:
                 """Delegate validation to generic validators.
 
@@ -628,7 +618,6 @@ class FlextGrpcModels(FlextCliModels):
                     self.model_copy(update={"channel": channel}),
                 )
 
-            @override
             def validate_business_rules(self) -> p.Result[bool]:
                 """Delegate validation.
 
