@@ -25,7 +25,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Channel]``.
         """
-        return m.Grpc.create_channel_entity(
+        return u.Grpc.create_channel_entity(
             target=target,
             options={} if options is None else options,
         )
@@ -40,7 +40,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
-        return m.Grpc.create_client_entity(
+        return u.Grpc.create_client_entity(
             target=target,
             options=options,
         )
@@ -95,7 +95,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
         """
-        return m.Grpc.create_server_entity(
+        return u.Grpc.create_server_entity(
             host=host,
             port=port,
             max_workers=max_workers,
@@ -111,7 +111,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[m.Grpc.Service]``.
         """
-        return m.Grpc.create_service_entity(
+        return u.Grpc.create_service_entity(
             name=name,
             methods=[] if methods is None else methods,
         )
@@ -158,7 +158,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``p.Result[tuple[str, int]]``.
         """
-        if not m.Grpc.validate_target(address):
+        if not u.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
         return r[tuple[str, int]].ok(u.Grpc.parse_target(address))
 
@@ -169,7 +169,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         Returns:
             The resulting ``bool``.
         """
-        return m.Grpc.validate_target(target)
+        return u.Grpc.validate_target(target)
 
 
 __all__: list[str] = ["FlextGrpcApiRuntime"]

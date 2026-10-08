@@ -318,7 +318,8 @@ class FlextGrpcModels(FlextCliModels):
                     lambda: self.model_copy(update=kwargs),
                 )
 
-            def validate_business_rules(self) -> p.Result[bool]:
+            @staticmethod
+            def validate_business_rules() -> p.Result[bool]:
                 """Override in subclasses for specific validation.
 
                 Returns:

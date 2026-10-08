@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
 
-from flext_cli import cli
+from flext_cli import cli, m as cli_models
 
 from flext_grpc import c, m, p, r, t
 
@@ -486,10 +486,12 @@ def main() -> int:
     )
     cli.register_result_command(
         app,
-        name="run",
-        help_text="Run architecture documentation validation",
-        model_cls=_ValidationParams,
-        handler=_run_validation,
+        route=cli_models.Cli.ResultCommandRoute(
+            name="run",
+            help_text="Run architecture documentation validation",
+            model_cls=_ValidationParams,
+            handler=_run_validation,
+        ),
     )
     result = cli.execute_app(app, prog_name="flext-grpc-validate-docs")
     return cli.finalize_result(result)
