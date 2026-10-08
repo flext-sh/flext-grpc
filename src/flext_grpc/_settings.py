@@ -13,7 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Annotated
+from typing import Annotated
 
 from flext_core import FlextSettings, m
 
@@ -27,30 +27,31 @@ class FlextGrpcSettings(FlextSettings):
         extra="ignore",
     )
 
-    class _Grpc(m.BaseModel):
-        """Namespaced gRPC runtime settings."""
+    class GrpcSettings(m.BaseModel):
+        """Namespaced gRPC runtime settings.
 
-        host: Annotated[str, m.Field(default="127.0.0.1", description="gRPC bind host")]
+        Defaults live on the assignment side (checker-visible optional
+        constructor parameters).
+        """
+
+        host: Annotated[str, m.Field(description="gRPC bind host")] = "127.0.0.1"
         port: Annotated[
             int,
-            m.Field(default=50051, ge=1, le=65535, description="gRPC bind port"),
-        ]
+            m.Field(ge=1, le=65535, description="gRPC bind port"),
+        ] = 50051
         max_workers: Annotated[
             int,
-            m.Field(default=100, ge=1, description="Max worker threads"),
-        ]
+            m.Field(ge=1, description="Max worker threads"),
+        ] = 100
         timeout: Annotated[
             float,
-            m.Field(default=30.0, gt=0, description="Request timeout (s)"),
-        ]
+            m.Field(gt=0, description="Request timeout (s)"),
+        ] = 30.0
 
-    if TYPE_CHECKING:
-        Grpc: _Grpc
-    else:
-        Grpc: _Grpc = m.Field(
-            default_factory=_Grpc,
-            description="Namespaced gRPC settings.",
-        )
+    Grpc: GrpcSettings = m.Field(
+        default_factory=GrpcSettings,
+        description="Namespaced gRPC settings.",
+    )
 
 
 settings: FlextGrpcSettings = FlextGrpcSettings.fetch_global()

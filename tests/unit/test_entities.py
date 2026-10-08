@@ -281,14 +281,14 @@ class TestsFlextGrpcEntitiesRelations:
 
     @staticmethod
     def test_stream_exposes_identity_and_type() -> None:
-        """GrpcStream surfaces its id, method name and stream type."""
+        """GrpcStream surfaces its identity, method name and stream type."""
         stream = m.Grpc.GrpcStream(
-            unique_id="test_stream",
             method_name="test_method",
             stream_type=c.Grpc.GrpcOperations.UNARY,
             domain_events=[],
         )
-        tm.that(stream.unique_id, eq="test_stream")
+        tm.that(stream.unique_id, is_=str)
+        tm.that(stream.unique_id.strip(), ne="")
         tm.that(stream.method_name, eq="test_method")
         tm.that(stream.stream_type, eq="unary")
 
@@ -300,7 +300,6 @@ class TestsFlextGrpcEntitiesRelations:
         """GrpcStream requires a non-empty method_name."""
         with pytest.raises(m.ValidationError):
             m.Grpc.GrpcStream(
-                unique_id="s",
                 method_name=method_name,
                 stream_type=c.Grpc.GrpcOperations.UNARY,
                 domain_events=[],

@@ -319,8 +319,7 @@ class FlextGrpcModels(FlextCliModels):
                     lambda: self.model_copy(update=kwargs),
                 )
 
-            @staticmethod
-            def validate_business_rules() -> p.Result[bool]:
+            def validate_business_rules(self) -> p.Result[bool]:
                 """Override in subclasses for specific validation.
 
                 Returns:
@@ -366,9 +365,8 @@ class FlextGrpcModels(FlextCliModels):
                 Returns:
                     The resulting ``p.Result[Self]``.
                 """
-                return r[Self](
-                    value=self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}),
-                    success=True,
+                return r[Self].ok(
+                    self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}),
                 )
 
             def ready(self) -> bool:
@@ -447,11 +445,10 @@ class FlextGrpcModels(FlextCliModels):
                 Returns:
                     The resulting ``p.Result[Self]``.
                 """
-                return r[Self](
-                    value=self.model_copy(
+                return r[Self].ok(
+                    self.model_copy(
                         update={"services": [*self.services, service]},
                     ),
-                    success=True,
                 )
 
             def mark_running(self) -> p.Result[Self]:
@@ -478,11 +475,10 @@ class FlextGrpcModels(FlextCliModels):
                         .fail(f"Cannot mark stopped from {self.state}")
                         .map(lambda _unused: self)
                     )
-                return r[Self](
-                    value=self.model_copy(
+                return r[Self].ok(
+                    self.model_copy(
                         update={"state": c.Grpc.ServerState.STOPPED.value},
                     ),
-                    success=True,
                 )
 
             def start(self) -> p.Result[Self]:
@@ -584,11 +580,10 @@ class FlextGrpcModels(FlextCliModels):
                 """
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
-                return r[Self](
-                    value=self.model_copy(
+                return r[Self].ok(
+                    self.model_copy(
                         update={"methods": [*self.methods, method_name]},
                     ),
-                    success=True,
                 )
 
             def has_method(self, method_name: str) -> bool:
@@ -629,9 +624,8 @@ class FlextGrpcModels(FlextCliModels):
                     options={},
                     domain_events=[],
                 )
-                return r[Self](
-                    value=self.model_copy(update={"channel": channel}),
-                    success=True,
+                return r[Self].ok(
+                    self.model_copy(update={"channel": channel}),
                 )
 
             @override
