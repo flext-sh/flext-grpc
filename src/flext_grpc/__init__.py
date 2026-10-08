@@ -24,7 +24,7 @@ from flext_grpc.__version__ import (
 
 if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
-    from flext_grpc import proto, services
+    from flext_grpc import services
     from flext_grpc._config import FlextGrpcConfig, config
     from flext_grpc._settings import FlextGrpcSettings, settings
     from flext_grpc.api import FlextGrpc, grpc
@@ -33,8 +33,6 @@ if TYPE_CHECKING:
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import FlextGrpcErrors
     from flext_grpc.models import FlextGrpcModels, m
-    from flext_grpc.proto.servicer import FlextGrpcProtoServicer
-    from flext_grpc.proto.stub import FlextGrpcServiceStub
     from flext_grpc.protocols import FlextGrpcProtocols, p
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
@@ -64,11 +62,9 @@ __all__: tuple[str, ...] = (
     "FlextGrpcMetrics",
     "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcModels",
-    "FlextGrpcProtoServicer",
     "FlextGrpcProtocols",
     "FlextGrpcServer",
     "FlextGrpcServiceBase",
-    "FlextGrpcServiceStub",
     "FlextGrpcSettings",
     "FlextGrpcStream",
     "FlextGrpcTypes",
@@ -90,7 +86,6 @@ __all__: tuple[str, ...] = (
     "m",
     "main",
     "p",
-    "proto",
     "r",
     "s",
     "services",
@@ -115,11 +110,9 @@ install_lazy_exports(
         "FlextGrpcMetrics": ".services.metrics",
         "FlextGrpcMetricsCollectorImpl": ".services.metrics",
         "FlextGrpcModels": ".models",
-        "FlextGrpcProtoServicer": ".proto.servicer",
         "FlextGrpcProtocols": ".protocols",
         "FlextGrpcServer": ".services.server",
         "FlextGrpcServiceBase": ".base",
-        "FlextGrpcServiceStub": ".proto.stub",
         "FlextGrpcSettings": "._settings",
         "FlextGrpcStream": ".services.stream",
         "FlextGrpcTypes": ".typings",
@@ -133,7 +126,6 @@ install_lazy_exports(
         "m": ".models",
         "main": ".cli",
         "p": ".protocols",
-        "proto": ".proto",
         "r": "flext_core",
         "s": ".base",
         "services": ".services",

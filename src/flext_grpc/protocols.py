@@ -447,6 +447,14 @@ class FlextGrpcProtocols(FlextCliProtocols):
                 ...
 
         @runtime_checkable
+        class GrpcServicerContext(Protocol):
+            """Protocol for the per-RPC servicer context (grpc.ServicerContext)."""
+
+            def peer(self) -> str:
+                """Return the address of the calling peer."""
+                ...
+
+        @runtime_checkable
         class GrpcStub(Protocol):
             """Protocol for gRPC client stub (duck typing for grpc stubs)."""
 

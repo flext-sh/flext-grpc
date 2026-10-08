@@ -74,6 +74,20 @@ class FlextGrpcConstantsBase:
         HEALTH_CHECK = "HealthCheck"
 
     @unique
+    class ServingStatus(StrEnum):
+        """gRPC health-checking serving states (grpc.health.v1 wire names).
+
+        DRY Pattern:
+            StrEnum is the single source of truth. Use ServingStatus.SERVING.value
+            or ServingStatus.SERVING directly - no base strings needed.
+        """
+
+        UNKNOWN = "UNKNOWN"
+        SERVING = "SERVING"
+        NOT_SERVING = "NOT_SERVING"
+        SERVICE_UNKNOWN = "SERVICE_UNKNOWN"
+
+    @unique
     class CompressionTypes(StrEnum):
         """gRPC compression types (single source of truth).
 
@@ -129,6 +143,8 @@ class FlextGrpcConstantsBase:
 
     # ===== Service constants =====
     SERVICE_DEFAULT_MAX_WORKERS: Final[int] = 10
+    SERVICE_PROTO_NAME: Final[str] = "FlextGrpcService"
+    """Service name declared in ``protos/flext.proto``."""
 
     # ===== Streaming configuration =====
     BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000

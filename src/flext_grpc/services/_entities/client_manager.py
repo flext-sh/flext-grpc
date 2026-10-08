@@ -10,7 +10,6 @@ import time
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, t, u
-from flext_grpc.proto.stub import FlextGrpcServiceStub
 from flext_grpc.services._entities.connection_pool_impl import (
     FlextGrpcConnectionPoolImpl,
 )
@@ -117,54 +116,65 @@ class FlextGrpcClientManagerImpl:
                 options=m.ExceptionFactoryOptions(error="client not connected"),
             )
         grpc_channel = self._active_channels[target]
-        stub = FlextGrpcServiceStub(grpc_channel)
-        result: p.Result[m.Grpc.Payload]
         if method == c.Grpc.ServiceMethod.ECHO.value:
-            echo_request = u.validate_value(m.Grpc.EchoRequest, request)
-            if echo_request.failure:
-                return r[m.Grpc.Payload].from_failure(echo_request)
-            echo_message = echo_request.value
-            echo_result = u.Grpc.call_runtime(lambda: stub.echo(echo_message))
-            if echo_result.failure:
-                result = r[m.Grpc.Payload].fail_op(
-                    "gRPC call",
-                    u.Grpc.runtime_failure_message(echo_result),
-                )
-            else:
-                echo_response = echo_result.value
-                result = r[m.Grpc.Payload].ok(
-                    m.Grpc.Payload.from_values(
-                        method="Echo",
-                        message=echo_response.message,
-                        server_id=echo_response.server_id,
-                        timestamp=echo_response.timestamp,
-                    ),
-                )
-        elif method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
-            health_request = u.validate_value(m.Grpc.HealthRequest, request or {})
-            if health_request.failure:
-                return r[m.Grpc.Payload].from_failure(health_request)
-            health_message = health_request.value
-            health_result = u.Grpc.call_runtime(
-                lambda: stub.health_check(health_message),
-            )
-            if health_result.failure:
-                result = r[m.Grpc.Payload].fail_op(
-                    "gRPC call",
-                    u.Grpc.runtime_failure_message(health_result),
-                )
-            else:
-                health_response = health_result.value
-                result = r[m.Grpc.Payload].ok(
-                    m.Grpc.Payload.from_values(
-                        method="HealthCheck",
-                        status=health_response.status,
-                        message=health_response.message,
-                    ),
-                )
-        else:
-            result = r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
-        return result
+            return self._call_echo(grpc_channel, request)
+        if method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
+            return self._call_health_check(grpc_channel, request)
+        return r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
 
+    @staticmethod
+    def _call_echo(
+        channel: p.Grpc.GrpcChannel,
+        request: t.JsonMapping | None,
+    ) -> p.Result[m.Grpc.Payload]:
+        """Run the generated Echo RPC and expose its reply as a payload.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Payload]``.
+        """
+        echo_request = u.validate_value(m.Grpc.EchoRequest, request)
+        if echo_request.failure:
+            return r[m.Grpc.Payload].from_failure(echo_request)
+        echo_result = u.Grpc.invoke_unary(
+            channel,
+            c.Grpc.ServiceMethod.ECHO,
+            echo_request.value,
+            m.Grpc.EchoResponse,
+        )
+        return echo_result.map(
+            lambda echo_response: m.Grpc.Payload.from_values(
+                method=c.Grpc.ServiceMethod.ECHO.value,
+                message=echo_response.message,
+                server_id=echo_response.server_id,
+                timestamp=echo_response.timestamp,
+            ),
+        )
+
+    @staticmethod
+    def _call_health_check(
+        channel: p.Grpc.GrpcChannel,
+        request: t.JsonMapping | None,
+    ) -> p.Result[m.Grpc.Payload]:
+        """Run the generated HealthCheck RPC and expose its reply as a payload.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Payload]``.
+        """
+        health_request = u.validate_value(m.Grpc.HealthRequest, request or {})
+        if health_request.failure:
+            return r[m.Grpc.Payload].from_failure(health_request)
+        health_result = u.Grpc.invoke_unary(
+            channel,
+            c.Grpc.ServiceMethod.HEALTH_CHECK,
+            health_request.value,
+            m.Grpc.HealthResponse,
+        )
+        return health_result.map(
+            lambda health_response: m.Grpc.Payload.from_values(
+                method=c.Grpc.ServiceMethod.HEALTH_CHECK.value,
+                status=health_response.status,
+                message=health_response.message,
+            ),
+        )
 
 __all__: list[str] = ["FlextGrpcClientManagerImpl"]

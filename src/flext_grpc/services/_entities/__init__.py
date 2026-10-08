@@ -21,6 +21,9 @@ if TYPE_CHECKING:
         FlextGrpcMetricsCollectorImpl,
     )
     from flext_grpc.services._entities.server_manager import FlextGrpcServerManagerImpl
+    from flext_grpc.services._entities.service_handler import (
+        FlextGrpcServiceHandlerImpl,
+    )
     from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
 
 
@@ -29,6 +32,7 @@ __all__: tuple[str, ...] = (
     "FlextGrpcConnectionPoolImpl",
     "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcServerManagerImpl",
+    "FlextGrpcServiceHandlerImpl",
     "FlextGrpcStreamManagerImpl",
 )
 
@@ -40,6 +44,7 @@ install_lazy_exports(
         "FlextGrpcConnectionPoolImpl": ".connection_pool_impl",
         "FlextGrpcMetricsCollectorImpl": ".metrics_collector",
         "FlextGrpcServerManagerImpl": ".server_manager",
+        "FlextGrpcServiceHandlerImpl": ".service_handler",
         "FlextGrpcStreamManagerImpl": ".stream_manager",
     }),
     public_exports=__all__,
