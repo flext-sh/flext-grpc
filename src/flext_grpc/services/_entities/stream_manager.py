@@ -11,7 +11,6 @@ from collections import deque
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, t
-from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
 from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
@@ -32,7 +31,7 @@ class FlextGrpcStreamManagerImpl:
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: MutableMapping[str, FlextGrpcStreamRuntimeState] = {}
+        self._active_streams: MutableMapping[str, m.Grpc.StreamRuntimeState] = {}
         self._metrics = FlextGrpcMetricsCollectorImpl()
 
     def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
@@ -65,7 +64,7 @@ class FlextGrpcStreamManagerImpl:
             return stream_result
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
-        self._active_streams[stream_key] = FlextGrpcStreamRuntimeState(
+        self._active_streams[stream_key] = m.Grpc.StreamRuntimeState(
             stream=stream,
             created_at=time.time(),
             buffer=self._new_stream_buffer(),
@@ -92,7 +91,7 @@ class FlextGrpcStreamManagerImpl:
             return e.fail_not_found("stream", stream.id)
         stream_info = self._active_streams[stream_key]
         try:
-            stream_state = FlextGrpcStreamRuntimeState.model_validate(stream_info)
+            stream_state = m.Grpc.StreamRuntimeState.model_validate(stream_info)
             stream_state.buffer.append(data)
             self._active_streams[stream_key] = stream_state
             return r[m.Grpc.Payload].ok(

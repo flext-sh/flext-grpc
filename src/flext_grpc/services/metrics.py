@@ -9,7 +9,6 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import m, s
-from flext_grpc._models.metric_value import FlextGrpcMetricValueModel
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
@@ -18,9 +17,6 @@ from flext_grpc.services._entities.metrics_collector import (
 class FlextGrpcMetrics(s):
     """Mixin providing metrics collection for FlextGrpc facade."""
 
-    _FlextGrpcMetricValueModel: ClassVar[type[FlextGrpcMetricValueModel]] = (
-        FlextGrpcMetricValueModel
-    )
     MetricsCollector: ClassVar[type[FlextGrpcMetricsCollectorImpl]] = (
         FlextGrpcMetricsCollectorImpl
     )

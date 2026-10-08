@@ -457,7 +457,6 @@ runtime-evaluated-base-classes = [
   "flext_core.FlextService",
   "flext_core.FlextSettings",
   "flext_core.m.BaseModel",
-  "flext_core.m.Value",
   "flext_grpc.FlextGrpcSettings",
   "flext_grpc.base.FlextGrpcServiceBase",
   "flext_grpc.m.BaseModel",
