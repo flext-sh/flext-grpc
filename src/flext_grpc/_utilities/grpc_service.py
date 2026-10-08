@@ -81,11 +81,12 @@ class FlextGrpcUtilitiesGrpcService:
         """
         return u.validate_value(
             target,
-            json_format.MessageToDict(
+            json_format.MessageToJson(
                 message,
-                always_print_fields_with_no_presence=True,
                 preserving_proto_field_name=True,
+                always_print_fields_with_no_presence=True,
             ),
+            from_json=True,
         )
 
     @staticmethod

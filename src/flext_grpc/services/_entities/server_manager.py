@@ -14,9 +14,7 @@ from flext_grpc import c, m, p, r, u
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
-from flext_grpc.services._entities.service_handler import (
-    FlextGrpcServiceHandlerImpl,
-)
+from flext_grpc.services._entities.service_handler import FlextGrpcServiceHandlerImpl
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
