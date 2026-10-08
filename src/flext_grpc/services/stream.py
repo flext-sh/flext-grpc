@@ -9,16 +9,12 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import c, e, m, p, r, s, t
-from flext_grpc._models.stream_state import FlextGrpcStreamRuntimeState
 from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
 
 
 class FlextGrpcStream(s):
     """Mixin providing stream processing for FlextGrpc facade."""
 
-    _FlextGrpcStreamRuntimeState: ClassVar[type[FlextGrpcStreamRuntimeState]] = (
-        FlextGrpcStreamRuntimeState
-    )
     GrpcStreamManager: ClassVar[type[FlextGrpcStreamManagerImpl]] = (
         FlextGrpcStreamManagerImpl
     )

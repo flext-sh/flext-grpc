@@ -16,12 +16,14 @@ if TYPE_CHECKING:
     from flext_grpc._utilities.base import FlextGrpcUtilitiesBase
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
     from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
+    from flext_grpc._utilities.grpc_service import FlextGrpcUtilitiesGrpcService
 
 
 __all__: tuple[str, ...] = (
     "FlextGrpcUtilitiesBase",
     "FlextGrpcUtilitiesGrpc",
     "FlextGrpcUtilitiesGrpcRuntime",
+    "FlextGrpcUtilitiesGrpcService",
 )
 
 install_lazy_exports(
@@ -31,6 +33,7 @@ install_lazy_exports(
         "FlextGrpcUtilitiesBase": ".base",
         "FlextGrpcUtilitiesGrpc": ".grpc",
         "FlextGrpcUtilitiesGrpcRuntime": ".grpc_runtime",
+        "FlextGrpcUtilitiesGrpcService": ".grpc_service",
     }),
     public_exports=__all__,
 )

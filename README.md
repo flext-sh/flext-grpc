@@ -57,7 +57,7 @@ verification).
   classes listed under Module Map above.
 - Public extensions exposed by this project: `FlextGrpc`, `FlextGrpcApiRuntime`,
   `FlextGrpcClient`, `FlextGrpcConfig`, `FlextGrpcConnectionPool`,
-  `FlextGrpcConnectionPoolImpl` (+14 more).
+  `FlextGrpcConnectionPoolImpl` (+12 more).
 - Library abstraction boundaries: see AGENTS.md §2.7.
 
 ## Quality Gates

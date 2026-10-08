@@ -16,6 +16,9 @@ if TYPE_CHECKING:
     from flext_grpc.services import _entities
     from flext_grpc.services._entities.client_manager import FlextGrpcClientManagerImpl
     from flext_grpc.services._entities.server_manager import FlextGrpcServerManagerImpl
+    from flext_grpc.services._entities.service_handler import (
+        FlextGrpcServiceHandlerImpl,
+    )
     from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
@@ -41,6 +44,7 @@ __all__: tuple[str, ...] = (
     "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcServer",
     "FlextGrpcServerManagerImpl",
+    "FlextGrpcServiceHandlerImpl",
     "FlextGrpcStream",
     "FlextGrpcStreamManagerImpl",
     "_entities",
@@ -59,6 +63,7 @@ install_lazy_exports(
         "FlextGrpcMetricsCollectorImpl": ".metrics",
         "FlextGrpcServer": ".server",
         "FlextGrpcServerManagerImpl": "._entities.server_manager",
+        "FlextGrpcServiceHandlerImpl": "._entities.service_handler",
         "FlextGrpcStream": ".stream",
         "FlextGrpcStreamManagerImpl": "._entities.stream_manager",
         "_entities": "._entities",

@@ -10,12 +10,11 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
-from flext_core import r
-from flext_grpc import c, m, p, u
-from flext_grpc.proto.servicer import FlextGrpcProtoServicer
+from flext_grpc import c, m, p, r, u
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
+from flext_grpc.services._entities.service_handler import FlextGrpcServiceHandlerImpl
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -33,15 +32,6 @@ class FlextGrpcServerManagerImpl:
             max_workers=50,
             thread_name_prefix="flext-grpc-server",
         )
-
-    @staticmethod
-    def _create_real_servicer(_server_key: str) -> p.Grpc.GrpcServicer:
-        """Create runtime gRPC servicer instance for server registration.
-
-        Returns:
-            The resulting ``p.Grpc.GrpcServicer``.
-        """
-        return FlextGrpcProtoServicer.Servicer()
 
     def server_metrics(
         self,
@@ -126,7 +116,15 @@ class FlextGrpcServerManagerImpl:
                 f"Server start failed: {u.Grpc.runtime_failure_message(bound_result)}",
             )
         grpc_server = bound_result.value
-        self._register_services(server_key, starting_server, grpc_server)
+        registration_result = u.Grpc.register_service(
+            grpc_server,
+            FlextGrpcServiceHandlerImpl(server_id=server_key).rpc_handlers(),
+        )
+        if registration_result.failure:
+            return r[m.Grpc.Server].fail(
+                "Server start failed: "
+                f"{u.Grpc.runtime_failure_message(registration_result)}",
+            )
         return self._activate_runtime_server(server_key, starting_server, grpc_server)
 
     def _create_bound_runtime_server(
@@ -155,20 +153,6 @@ class FlextGrpcServerManagerImpl:
                 exception=bind_result.exception,
             )
         return r[p.Grpc.GrpcServer].ok(grpc_server)
-
-    def _register_services(
-        self,
-        server_key: str,
-        starting_server: m.Grpc.Server,
-        grpc_server: p.Grpc.GrpcServer,
-    ) -> None:
-        """Register configured services on the runtime server."""
-        for _service in starting_server.services:
-            real_servicer = self._create_real_servicer(server_key)
-            FlextGrpcProtoServicer.add_flext_grpc_service_servicer_to_server(
-                real_servicer,
-                grpc_server,
-            )
 
     def _activate_runtime_server(
         self,
