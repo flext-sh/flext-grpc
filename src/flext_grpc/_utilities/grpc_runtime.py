@@ -6,9 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import importlib
 from typing import TYPE_CHECKING
-
-import grpc
 
 from flext_core import r, u
 from flext_grpc import c, p
@@ -113,7 +112,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
             The resulting ``p.Result[p.Grpc.GrpcRuntime]``.
         """
         runtime_result = u.try_(
-            lambda: grpc,
+            lambda: importlib.import_module("grpc"),
             catch=(ImportError, ModuleNotFoundError),
         )
         if runtime_result.failure:

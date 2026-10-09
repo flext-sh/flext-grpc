@@ -16,6 +16,7 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
 from google.protobuf import json_format, message_factory
+from google.protobuf.descriptor import Descriptor, MethodDescriptor
 from google.protobuf.message import Message
 
 from flext_core import r, u
@@ -26,8 +27,6 @@ from flext_grpc.protos import flext_pb2, flext_pb2_grpc
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
     from types import ModuleType
-
-    from google.protobuf.descriptor import Descriptor, MethodDescriptor
 
 
 class FlextGrpcUtilitiesGrpcService:
@@ -65,9 +64,12 @@ class FlextGrpcUtilitiesGrpcService:
 
         def _encode() -> Message:
             message_type = message_factory.GetMessageClass(descriptor)
-            return json_format.ParseDict(model.model_dump(mode="json"), message_type())
+            return json_format.ParseDict(
+                model.model_dump(mode="json"),
+                message_type(),
+            )
 
-        return u.try_(_encode, catch=(json_format.ParseError,))
+        return u.try_(_encode, catch=(json_format.ParseError, TypeError))
 
     @staticmethod
     def decode_message[TModel: m.BaseModel](
