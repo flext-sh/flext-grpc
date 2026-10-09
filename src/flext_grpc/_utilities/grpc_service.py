@@ -47,16 +47,9 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The generated ``MethodDescriptor`` of ``method``.
-
-        Raises:
-            TypeError: If ``not isinstance(descriptor, MethodDescriptor)``.
         """
         service = flext_pb2.DESCRIPTOR.services_by_name[c.Grpc.SERVICE_PROTO_NAME]
-        descriptor = service.methods_by_name[method.value]
-        if not isinstance(descriptor, MethodDescriptor):
-            msg = f"{method.value} did not resolve to a MethodDescriptor"
-            raise TypeError(msg)
-        return descriptor
+        return service.methods_by_name[method.value]
 
     @staticmethod
     def encode_message(
@@ -71,14 +64,10 @@ class FlextGrpcUtilitiesGrpcService:
 
         def _encode() -> Message:
             message_type = message_factory.GetMessageClass(descriptor)
-            message = json_format.ParseDict(
+            return json_format.ParseDict(
                 model.model_dump(mode="json"),
                 message_type(),
             )
-            if not isinstance(message, Message):
-                msg = "generated payload did not produce a protobuf Message"
-                raise TypeError(msg)
-            return message
 
         return u.try_(_encode, catch=(json_format.ParseError, TypeError))
 
