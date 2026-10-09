@@ -4,9 +4,6 @@ Asserts observable behavior only: field defaults, validators, computed
 fields, immutability, and the r[T] outcomes of model methods and state
 transitions. No private attribute access, no internal spying.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

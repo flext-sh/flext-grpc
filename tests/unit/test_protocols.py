@@ -7,9 +7,6 @@ The set of declared members per protocol is the public structural contract,
 so it is exercised through the only mechanism callers actually rely on --
 structural ``isinstance`` narrowing -- never through private attributes.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

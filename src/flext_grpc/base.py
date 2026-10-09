@@ -4,9 +4,6 @@ Centralizes access to configuration singleton while maintaining inheritance
 aligned with `s` from flext-core, avoiding duplication of initialization
 across gRPC services.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

@@ -5,9 +5,6 @@ facade module never declares a bare literal class attribute directly
 (ENFORCE-079); the facade re-exports them via ``c.Grpc.*`` through
 inheritance.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

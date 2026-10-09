@@ -6,8 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import importlib
 from typing import TYPE_CHECKING
+
+import grpc
 
 from flext_core import r, u
 from flext_grpc import c, p
@@ -106,22 +107,13 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
     @staticmethod
     def resolve_runtime() -> p.Result[p.Grpc.GrpcRuntime]:
-        """Load the grpc runtime through the typed adapter boundary.
+        """Adapt the grpc runtime through the typed adapter boundary.
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcRuntime]``.
         """
-        runtime_result = u.try_(
-            lambda: importlib.import_module("grpc"),
-            catch=(ImportError, ModuleNotFoundError),
-        )
-        if runtime_result.failure:
-            return r[p.Grpc.GrpcRuntime].fail(
-                runtime_result.error or "gRPC runtime unavailable",
-                exception=runtime_result.exception,
-            )
         return r[p.Grpc.GrpcRuntime].ok(
-            FlextGrpcUtilitiesGrpcRuntime._GrpcRuntimeAdapter(runtime_result.value),
+            FlextGrpcUtilitiesGrpcRuntime._GrpcRuntimeAdapter(grpc),
         )
 
     @staticmethod

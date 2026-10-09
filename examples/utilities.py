@@ -19,4 +19,6 @@ class ExamplesFlextGrpcUtilities(FlextGrpcUtilities):
             """Example-specific utilities."""
 
 
-__all__: list[str] = ["ExamplesFlextGrpcUtilities"]
+u = ExamplesFlextGrpcUtilities
+
+__all__: list[str] = ["ExamplesFlextGrpcUtilities", "u"]

@@ -4,9 +4,6 @@ Typed, frozen shapes for the ``config/*.yaml`` business-rule SSOT. The
 ``_config.py`` facade validates the model-less YAML slices into these classes
 and exposes the ready objects under ``config.Grpc.<domain>``.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """
