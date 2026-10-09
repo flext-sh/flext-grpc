@@ -16,6 +16,7 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
 from google.protobuf import json_format, message_factory
+from google.protobuf.descriptor import Descriptor, MethodDescriptor
 from google.protobuf.message import Message
 
 from flext_core import r, u
@@ -26,8 +27,6 @@ from flext_grpc.protos import flext_pb2, flext_pb2_grpc
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
     from types import ModuleType
-
-    from google.protobuf.descriptor import Descriptor, MethodDescriptor
 
 
 class FlextGrpcUtilitiesGrpcService:
@@ -48,9 +47,16 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The generated ``MethodDescriptor`` of ``method``.
+
+        Raises:
+            TypeError: If ``not isinstance(descriptor, MethodDescriptor)``.
         """
         service = flext_pb2.DESCRIPTOR.services_by_name[c.Grpc.SERVICE_PROTO_NAME]
-        return service.methods_by_name[method.value]
+        descriptor = service.methods_by_name[method.value]
+        if not isinstance(descriptor, MethodDescriptor):
+            msg = f"{method.value} did not resolve to a MethodDescriptor"
+            raise TypeError(msg)
+        return descriptor
 
     @staticmethod
     def encode_message(
@@ -65,9 +71,16 @@ class FlextGrpcUtilitiesGrpcService:
 
         def _encode() -> Message:
             message_type = message_factory.GetMessageClass(descriptor)
-            return json_format.ParseDict(model.model_dump(mode="json"), message_type())
+            message = json_format.ParseDict(
+                model.model_dump(mode="json"),
+                message_type(),
+            )
+            if not isinstance(message, Message):
+                msg = "generated payload did not produce a protobuf Message"
+                raise TypeError(msg)
+            return message
 
-        return u.try_(_encode, catch=(json_format.ParseError,))
+        return u.try_(_encode, catch=(json_format.ParseError, TypeError))
 
     @staticmethod
     def decode_message[TModel: m.BaseModel](
