@@ -5,9 +5,6 @@ propagation via ``str(error)``, the public ``field`` / ``config_key`` state,
 and the semantic inheritance each specialized error promises (validation,
 connection, timeout, configuration).
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT.
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

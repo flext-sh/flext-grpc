@@ -5,9 +5,6 @@ for the FLEXT gRPC communication platform, showcasing robust error management,
 validation error handling, and enterprise-grade error recovery patterns following
 Clean Architecture and Domain-Driven Design principles.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

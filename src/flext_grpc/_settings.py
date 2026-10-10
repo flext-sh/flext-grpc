@@ -4,9 +4,6 @@ Universal fields via MRO; project fields in the ``Grpc`` group with simple
 scalar types (env-settable). Advanced per-domain gRPC configuration objects are
 built by consumers from these scalars, not stored as complex settings fields.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

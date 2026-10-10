@@ -4,9 +4,6 @@ Protocol interfaces for the validated ``config.Grpc.*`` business-rule SSOT.
 Models are defined in ``_models/config.py``; this module only declares the
 shape consumed by ``_config.py`` and typed consumers.
 
-Copyright (c) 2025 FLEXT Team. All rights reserved.
-SPDX-License-Identifier: MIT
-
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
 """

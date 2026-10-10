@@ -17,9 +17,9 @@ if TYPE_CHECKING:
     from examples.models import ExamplesFlextGrpcModels
     from examples.protocols import ExamplesFlextGrpcProtocols
     from examples.typings import ExamplesFlextGrpcTypes, t
-    from examples.utilities import ExamplesFlextGrpcUtilities
+    from examples.utilities import ExamplesFlextGrpcUtilities, u
     from flext_core import d, e, h, r, x
-    from flext_grpc import c, m, p, s, u
+    from flext_grpc import c, m, p, s
 
 
 __all__: tuple[str, ...] = (
@@ -59,7 +59,7 @@ install_lazy_exports(
         "r": "flext_core",
         "s": "flext_grpc",
         "t": ".typings",
-        "u": "flext_grpc",
+        "u": ".utilities",
         "x": "flext_core",
     }),
     public_exports=__all__,
