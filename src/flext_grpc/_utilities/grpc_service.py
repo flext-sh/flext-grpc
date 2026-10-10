@@ -16,7 +16,7 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
 from google.protobuf import json_format, message_factory
-from google.protobuf.descriptor import Descriptor, MethodDescriptor
+from google.protobuf.descriptor import Descriptor, MethodDescriptor, ServiceDescriptor
 from google.protobuf.message import Message
 
 from flext_core import r, u
@@ -48,8 +48,11 @@ class FlextGrpcUtilitiesGrpcService:
         Returns:
             The generated ``MethodDescriptor`` of ``method``.
         """
-        service = flext_pb2.DESCRIPTOR.services_by_name[c.Grpc.SERVICE_PROTO_NAME]
-        return service.methods_by_name[method.value]
+        service: ServiceDescriptor = flext_pb2.DESCRIPTOR.services_by_name[
+            c.Grpc.SERVICE_PROTO_NAME
+        ]
+        resolved: MethodDescriptor = service.methods_by_name[method.value]
+        return resolved
 
     @staticmethod
     def encode_message(
@@ -64,10 +67,11 @@ class FlextGrpcUtilitiesGrpcService:
 
         def _encode() -> Message:
             message_type = message_factory.GetMessageClass(descriptor)
-            return json_format.ParseDict(
+            built: Message = json_format.ParseDict(
                 model.model_dump(mode="json"),
                 message_type(),
             )
+            return built
 
         return u.try_(_encode, catch=(json_format.ParseError, TypeError))
 
