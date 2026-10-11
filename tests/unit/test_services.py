@@ -15,9 +15,9 @@ from socket import AF_INET, SOCK_STREAM, socket
 from typing import TYPE_CHECKING
 
 import pytest
-from flext_tests import tm
 
 from flext_grpc import FlextGrpc, c, t
+from tests import tm
 
 if TYPE_CHECKING:
     from flext_grpc.services.connection_pool import FlextGrpcConnectionPoolImpl

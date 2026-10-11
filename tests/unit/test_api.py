@@ -10,10 +10,9 @@ from __future__ import annotations
 from datetime import UTC, datetime
 
 import pytest
-from flext_tests import tm
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests import m, t
+from tests import m, t, tm
 
 
 class TestsFlextGrpcApi:
