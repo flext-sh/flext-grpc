@@ -173,7 +173,7 @@ class TestsFlextGrpcProtocolsUnit:
     @staticmethod
     def test_test_protocol_namespace_composes_source_namespace() -> None:
         """The tests Grpc namespace inherits the source Grpc protocols."""
-        tm.that(p.Grpc.__mro__, has=FlextGrpcProtocols.Grpc)
+        tm.that(issubclass(p.Grpc, FlextGrpcProtocols.Grpc), eq=True)
 
     @staticmethod
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
