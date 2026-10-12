@@ -27,8 +27,8 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
-  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConnectionPoolImpl` (+12 more)
+- Primary facades: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConstants`,
+  `FlextGrpcErrors`, `FlextGrpcModels`, `FlextGrpcProtocols` (+5 more)
 - Generated module pages: `9`
 
 Back to [project docs](../index.md).

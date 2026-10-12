@@ -10,21 +10,29 @@ from __future__ import annotations
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import install_lazy_exports
-from flext_grpc.__version__ import (
-    __author__,
-    __author_email__,
-    __description__,
-    __license__,
-    __title__,
-    __url__,
-    __version__,
-    __version_info__,
-)
+from flext_core import install_lazy_exports
+from flext_grpc.__version__ import __version__
 
 if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
-    from flext_grpc import services
+    from flext_grpc import (
+        _constants,
+        _models,
+        _protocols,
+        _typings,
+        _utilities,
+        services,
+    )
+    from flext_grpc.__version__ import (
+        FlextGrpcVersion,
+        __author__,
+        __author_email__,
+        __description__,
+        __license__,
+        __title__,
+        __url__,
+        __version_info__,
+    )
     from flext_grpc._config import FlextGrpcConfig, config
     from flext_grpc._settings import FlextGrpcSettings, settings
     from flext_grpc.api import FlextGrpc, grpc
@@ -34,41 +42,22 @@ if TYPE_CHECKING:
     from flext_grpc.errors import FlextGrpcErrors
     from flext_grpc.models import FlextGrpcModels, m
     from flext_grpc.protocols import FlextGrpcProtocols, p
-    from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
-    from flext_grpc.services.client import FlextGrpcClient
-    from flext_grpc.services.connection_pool import (
-        FlextGrpcConnectionPool,
-        FlextGrpcConnectionPoolImpl,
-    )
-    from flext_grpc.services.metrics import (
-        FlextGrpcMetrics,
-        FlextGrpcMetricsCollectorImpl,
-    )
-    from flext_grpc.services.server import FlextGrpcServer
-    from flext_grpc.services.stream import FlextGrpcStream
     from flext_grpc.typings import FlextGrpcTypes, t
     from flext_grpc.utilities import FlextGrpcUtilities, u
 
 
 __all__: tuple[str, ...] = (
     "FlextGrpc",
-    "FlextGrpcApiRuntime",
-    "FlextGrpcClient",
     "FlextGrpcConfig",
-    "FlextGrpcConnectionPool",
-    "FlextGrpcConnectionPoolImpl",
     "FlextGrpcConstants",
     "FlextGrpcErrors",
-    "FlextGrpcMetrics",
-    "FlextGrpcMetricsCollectorImpl",
     "FlextGrpcModels",
     "FlextGrpcProtocols",
-    "FlextGrpcServer",
     "FlextGrpcServiceBase",
     "FlextGrpcSettings",
-    "FlextGrpcStream",
     "FlextGrpcTypes",
     "FlextGrpcUtilities",
+    "FlextGrpcVersion",
     "__author__",
     "__author_email__",
     "__description__",
@@ -77,6 +66,11 @@ __all__: tuple[str, ...] = (
     "__url__",
     "__version__",
     "__version_info__",
+    "_constants",
+    "_models",
+    "_protocols",
+    "_typings",
+    "_utilities",
     "c",
     "config",
     "d",
@@ -100,23 +94,28 @@ install_lazy_exports(
     globals(),
     MappingProxyType({
         "FlextGrpc": ".api",
-        "FlextGrpcApiRuntime": ".services.api_runtime",
-        "FlextGrpcClient": ".services.client",
         "FlextGrpcConfig": "._config",
-        "FlextGrpcConnectionPool": ".services.connection_pool",
-        "FlextGrpcConnectionPoolImpl": ".services.connection_pool",
         "FlextGrpcConstants": ".constants",
         "FlextGrpcErrors": ".errors",
-        "FlextGrpcMetrics": ".services.metrics",
-        "FlextGrpcMetricsCollectorImpl": ".services.metrics",
         "FlextGrpcModels": ".models",
         "FlextGrpcProtocols": ".protocols",
-        "FlextGrpcServer": ".services.server",
         "FlextGrpcServiceBase": ".base",
         "FlextGrpcSettings": "._settings",
-        "FlextGrpcStream": ".services.stream",
         "FlextGrpcTypes": ".typings",
         "FlextGrpcUtilities": ".utilities",
+        "FlextGrpcVersion": ".__version__",
+        "__author__": ".__version__",
+        "__author_email__": ".__version__",
+        "__description__": ".__version__",
+        "__license__": ".__version__",
+        "__title__": ".__version__",
+        "__url__": ".__version__",
+        "__version_info__": ".__version__",
+        "_constants": "._constants",
+        "_models": "._models",
+        "_protocols": "._protocols",
+        "_typings": "._typings",
+        "_utilities": "._utilities",
         "c": ".constants",
         "config": "._config",
         "d": "flext_core",

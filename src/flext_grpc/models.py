@@ -18,7 +18,8 @@ from flext_cli import FlextCliModels
 
 from flext_core import r
 from flext_grpc import c, p, t
-from flext_grpc._models import FlextGrpcConfigModels, FlextGrpcModelsBase
+from flext_grpc._models.base import FlextGrpcModelsBase
+from flext_grpc._models.config import FlextGrpcConfigModels
 
 
 class FlextGrpcModels(FlextCliModels):
