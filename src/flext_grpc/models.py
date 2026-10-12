@@ -33,7 +33,7 @@ class FlextGrpcModels(FlextCliModels):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Grpc(FlextGrpcConfigModels, FlextGrpcModelsBase):
+    class Grpc(FlextGrpcModelsBase, FlextGrpcConfigModels):
         """Domain models for gRPC core business entities."""
 
         # =========================================================================

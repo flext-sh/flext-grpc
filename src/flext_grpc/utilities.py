@@ -21,10 +21,10 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(
+        FlextGrpcUtilitiesBase,
         FlextGrpcUtilitiesGrpc,
         FlextGrpcUtilitiesGrpcRuntime,
         FlextGrpcUtilitiesGrpcService,
-        FlextGrpcUtilitiesBase,
     ):
         """Public gRPC utility namespace with explicit local signatures.
 
