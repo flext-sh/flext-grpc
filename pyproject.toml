@@ -363,6 +363,7 @@ addopts = [
   "--strict-markers",
   "--markdown-docs",
   "--durations=10",
+  "--flext-enforce-strict",
   "--timeout=10",
 ]
 flext_slow_timeout_seconds = "30"
@@ -436,6 +437,7 @@ ignore = [
   "typing-only-first-party-import",
   "typing-only-standard-library-import",
   "typing-only-third-party-import",
+  "unsorted-imports",
 ]
 select = ["ALL"]
 unfixable = [
@@ -463,7 +465,7 @@ runtime-evaluated-base-classes = [
   "flext_core.FlextService",
   "flext_core.FlextSettings",
   "flext_core.m.BaseModel",
-  "flext_grpc._settings.FlextGrpcSettings",
+  "flext_grpc.FlextGrpcSettings",
   "flext_grpc.base.FlextGrpcServiceBase",
   "flext_grpc.models.Entity",
   "flext_grpc.models.StateMachine",
