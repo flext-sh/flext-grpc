@@ -11,7 +11,6 @@ from collections import deque
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, t
-from flext_grpc.errors import FlextGrpcErrors
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
@@ -96,20 +95,15 @@ class FlextGrpcStreamManagerImpl:
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key not in self._active_streams:
             return e.fail_not_found("stream", stream.id)
-        stream_info = self._active_streams[stream_key]
-        try:
-            stream_state = m.Grpc.StreamRuntimeState.model_validate(stream_info)
-            stream_state.buffer.append(data)
-            self._active_streams[stream_key] = stream_state
-            return r[m.Grpc.Payload].ok(
-                m.Grpc.Payload.from_values(
-                    stream_id=stream.id,
-                    data_sent=str(data),
-                    buffer_size=len(stream_state.buffer),
-                ),
-            )
-        except FlextGrpcErrors.ValidationError as exc:
-            return e.fail_validation("stream_state", error=exc)
+        stream_state = self._active_streams[stream_key]
+        stream_state.buffer.append(data)
+        return r[m.Grpc.Payload].ok(
+            m.Grpc.Payload.from_values(
+                stream_id=stream.id,
+                data_sent=str(data),
+                buffer_size=len(stream_state.buffer),
+            ),
+        )
 
 
 __all__: list[str] = ["FlextGrpcStreamManagerImpl"]

@@ -37,34 +37,24 @@ class TestsFlextGrpcServices:
                 available_port.bind(("127.0.0.1", 0))
                 port = available_port.getsockname()[1]
 
-            server_result = grpc_facade.create_server(host="127.0.0.1", port=port)
-            tm.ok(server_result)
-            server = server_result.unwrap()
-            start_result = grpc_facade.start_server(server)
-            tm.ok(start_result)
-            started_server = start_result.unwrap()
+            server = tm.ok(grpc_facade.create_server(host="127.0.0.1", port=port))
+            started_server = tm.ok(grpc_facade.start_server(server))
             try:
-                client_result = grpc_facade.connect_client(f"127.0.0.1:{port}")
-                tm.ok(client_result)
-                client = client_result.unwrap()
+                client = tm.ok(grpc_facade.connect_client(f"127.0.0.1:{port}"))
                 try:
-                    echo_result = grpc_facade.make_call(
+                    echo = tm.ok(grpc_facade.make_call(
                         client,
                         c.Grpc.ServiceMethod.ECHO.value,
                         {"message": "flext-round-trip"},
-                    )
-                    tm.ok(echo_result)
-                    echo = echo_result.unwrap()
+                    ))
                     tm.that(echo.values["message"], eq="flext-round-trip")
                     tm.that(echo.values["server_id"], eq=f"127.0.0.1:{port}")
 
-                    health_result = grpc_facade.make_call(
+                    health = tm.ok(grpc_facade.make_call(
                         client,
                         c.Grpc.ServiceMethod.HEALTH_CHECK.value,
                         {"service": "FlextGrpcService"},
-                    )
-                    tm.ok(health_result)
-                    health = health_result.unwrap()
+                    ))
                     tm.that(health.values["status"], eq="SERVING")
                 finally:
                     tm.ok(grpc_facade.disconnect_client(client))
@@ -77,17 +67,22 @@ class TestsFlextGrpcServices:
     def test_create_stream_succeeds_and_carries_method_name(
         grpc_facade: FlextGrpc,
     ) -> None:
-        """create_stream returns a success carrying the requested method name."""
-        result = grpc_facade.create_stream(method_name="test_method")
-
-        tm.ok(result)
-        stream = result.unwrap()
+        """The created stream retains its buffer until public closure."""
+        stream = tm.ok(grpc_facade.create_stream(method_name="test_method"))
         tm.that(stream.method_name, eq="test_method")
+        for count in range(1, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE + 3):
+            sent = tm.ok(grpc_facade.send_data(stream, None))
+            tm.that(
+                sent.values["buffer_size"],
+                eq=min(count, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE),
+            )
+        tm.that(tm.ok(grpc_facade.close_stream(stream)) is stream)
+        tm.fail(grpc_facade.send_data(stream, None))
 
     @staticmethod
     def test_create_stream_defaults_are_applied(grpc_facade: FlextGrpc) -> None:
         """create_stream applies documented defaults when no args are passed."""
-        stream = grpc_facade.create_stream().unwrap()
+        stream = tm.ok(grpc_facade.create_stream())
 
         tm.that(stream.method_name, eq="DefaultMethod")
         tm.that(stream.stream_type.value, eq="unary")
@@ -97,22 +92,15 @@ class TestsFlextGrpcServices:
         grpc_facade: FlextGrpc,
     ) -> None:
         """close_stream succeeds and returns a stream with the same method name."""
-        stream = grpc_facade.create_stream(method_name="to_close").unwrap()
-
-        closed = grpc_facade.close_stream(stream)
-
-        tm.ok(closed)
-        tm.that(closed.unwrap().method_name, eq="to_close")
+        stream = tm.ok(grpc_facade.create_stream(method_name="to_close"))
+        tm.that(tm.ok(grpc_facade.close_stream(stream)).method_name, eq="to_close")
 
     # -- Facade: execute --------------------------------------------------
 
     @staticmethod
     def test_execute_returns_configured_settings(grpc_facade: FlextGrpc) -> None:
         """Execute succeeds and yields the facade's settings object."""
-        result = grpc_facade.execute()
-
-        tm.ok(result)
-        tm.that(result.unwrap(), none=False)
+        tm.that(tm.ok(grpc_facade.execute()), none=False)
 
     # -- Facade: connect_client ------------------------------------------
 
@@ -155,10 +143,9 @@ class TestsFlextGrpcServices:
     @staticmethod
     def test_parse_address_splits_host_and_port(grpc_facade: FlextGrpc) -> None:
         """parse_address returns the (host, port) tuple for a valid address."""
-        result = grpc_facade.parse_address("localhost:50051")
-
-        tm.ok(result)
-        tm.that(result.unwrap(), eq=("localhost", 50051))
+        tm.that(
+            tm.ok(grpc_facade.parse_address("localhost:50051")), eq=("localhost", 50051)
+        )
 
     @staticmethod
     @pytest.mark.parametrize("address", ["host", "bad:x", ""])
@@ -179,10 +166,7 @@ class TestsFlextGrpcServices:
         connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Cleanup succeeds and reports True even with no active channels."""
-        result = connection_pool.cleanup()
-
-        tm.ok(result)
-        tm.that(result.unwrap(), eq=True)
+        tm.that(tm.ok(connection_pool.cleanup()), eq=True)
 
     @staticmethod
     def test_connection_pool_acquire_on_empty_pool_fails_not_found(
