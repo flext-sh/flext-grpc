@@ -68,19 +68,26 @@ class TestsFlextGrpcServices:
     # -- Facade: create_stream -------------------------------------------
 
     @staticmethod
+    @pytest.mark.parametrize(
+        ("method_name", "send_count"),
+        [("test_method", c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE + 2), ("to_close", 0)],
+    )
     def test_create_stream_succeeds_and_carries_method_name(
         grpc_facade: FlextGrpc,
+        method_name: str,
+        send_count: int,
     ) -> None:
         """The created stream retains its buffer until public closure."""
-        stream = tm.ok(grpc_facade.create_stream(method_name="test_method"))
-        tm.that(stream.method_name, eq="test_method")
-        for count in range(1, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE + 3):
+        stream = tm.ok(grpc_facade.create_stream(method_name=method_name))
+        tm.that(stream.method_name, eq=method_name)
+        for count in range(1, send_count + 1):
             sent = tm.ok(grpc_facade.send_data(stream, None))
             tm.that(
                 sent.values["buffer_size"],
                 eq=min(count, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE),
             )
-        tm.that(tm.ok(grpc_facade.close_stream(stream)) is stream)
+        tm.that(tm.ok(grpc_facade.close_stream(stream)) is stream, eq=True)
+        tm.that(stream.method_name, eq=method_name)
         tm.fail(grpc_facade.send_data(stream, None))
 
     @staticmethod
@@ -90,14 +97,6 @@ class TestsFlextGrpcServices:
 
         tm.that(stream.method_name, eq="DefaultMethod")
         tm.that(stream.stream_type.value, eq="unary")
-
-    @staticmethod
-    def test_close_stream_returns_same_stream_identity(
-        grpc_facade: FlextGrpc,
-    ) -> None:
-        """close_stream succeeds and returns a stream with the same method name."""
-        stream = tm.ok(grpc_facade.create_stream(method_name="to_close"))
-        tm.that(tm.ok(grpc_facade.close_stream(stream)).method_name, eq="to_close")
 
     # -- Facade: execute --------------------------------------------------
 
