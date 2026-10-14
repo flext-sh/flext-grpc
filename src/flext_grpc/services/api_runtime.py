@@ -22,6 +22,10 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     ) -> p.Result[m.Grpc.Channel]:
         """Create typed channel entity from validated inputs.
 
+        Args:
+            target: gRPC server target address.
+            options: Optional channel options mapping.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Channel]``.
         """
@@ -36,6 +40,10 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         options: t.JsonMapping | None = None,
     ) -> p.Result[m.Grpc.Client]:
         """Create typed client entity from validated inputs.
+
+        Args:
+            target: gRPC server target address.
+            options: Optional client options mapping.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
@@ -53,6 +61,13 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         methods: t.StrSequence | None = None,
     ) -> p.Result[m.Grpc.CompleteSetup]:
         """Complete setup using functional composition.
+
+        Args:
+            host: Server bind host address.
+            port: Server listen port number.
+            service_name: Name of the service definition to create.
+            methods: RPC method names for the service; defaults to
+                ``["HealthCheck"]``.
 
         Returns:
             The resulting ``p.Result[m.Grpc.CompleteSetup]``.
@@ -92,6 +107,11 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     ) -> p.Result[m.Grpc.Server]:
         """Create typed server entity from validated inputs.
 
+        Args:
+            host: Server bind host address.
+            port: Server listen port number.
+            max_workers: Maximum worker threads for request handling.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
         """
@@ -107,6 +127,10 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         methods: t.StrSequence | None = None,
     ) -> p.Result[m.Grpc.Service]:
         """Create typed service entity from validated inputs.
+
+        Args:
+            name: Service name identifier.
+            methods: Optional RPC method names; defaults to an empty set.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Service]``.
@@ -130,6 +154,10 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         request: m.Grpc.OperationExecutionRequest,
     ) -> p.Result[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring.
+
+        Args:
+            request: Operation execution request naming the operation and
+                its keyword arguments.
 
         Returns:
             The resulting ``p.Result[FlextGrpcSettings]``.
@@ -155,6 +183,9 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     def parse_address(address: str) -> p.Result[tuple[str, int]]:
         """Parse gRPC address string.
 
+        Args:
+            address: Address in the form ``host:port``.
+
         Returns:
             The resulting ``p.Result[tuple[str, int]]``.
         """
@@ -165,6 +196,9 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     @staticmethod
     def validate_target(target: str) -> bool:
         """Validate gRPC target string.
+
+        Args:
+            target: Target address candidate.
 
         Returns:
             The resulting ``bool``.

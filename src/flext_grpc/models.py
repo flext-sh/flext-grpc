@@ -281,6 +281,10 @@ class FlextGrpcModels(FlextCliModels):
             def from_values(cls, **values: t.JsonPayload | None) -> Self:
                 """Build payload from keyword values.
 
+                Args:
+                    **values: Payload entries keyed by name; ``None`` and
+                        non-primitive values are normalized to strings.
+
                 Returns:
                     The resulting ``Self``.
                 """
@@ -527,6 +531,9 @@ class FlextGrpcModels(FlextCliModels):
             def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
                 """Validate methods list is not empty with valid items.
 
+                Args:
+                    v: Methods sequence candidate.
+
                 Returns:
                     The validated methods sequence.
 
@@ -547,6 +554,9 @@ class FlextGrpcModels(FlextCliModels):
             @classmethod
             def validate_name(cls, v: str) -> str:
                 """Validate name is not empty or whitespace.
+
+                Args:
+                    v: Name candidate.
 
                 Returns:
                     The validated name.
@@ -659,6 +669,9 @@ class FlextGrpcModels(FlextCliModels):
             @classmethod
             def validate_method_name(cls, v: str) -> str:
                 """Validate method_name is not empty or whitespace.
+
+                Args:
+                    v: Method name candidate.
 
                 Returns:
                     The validated method name.

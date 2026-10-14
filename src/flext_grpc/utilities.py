@@ -41,6 +41,10 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Channel]:
             """Create a typed channel entity from validated inputs.
 
+            Args:
+                target: gRPC server target address.
+                options: Optional channel options mapping.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Channel]``.
             """
@@ -56,6 +60,10 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
             options: t.JsonMapping | None = None,
         ) -> p.Result[m.Grpc.Client]:
             """Create a typed client entity backed by a typed channel entity.
+
+            Args:
+                target: gRPC server target address.
+                options: Optional client options mapping.
 
             Returns:
                 The resulting ``p.Result[m.Grpc.Client]``.
@@ -74,6 +82,11 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Server]:
             """Create a typed server entity from validated inputs.
 
+            Args:
+                host: Server bind host address.
+                port: Server listen port number.
+                max_workers: Maximum worker threads for request handling.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Server]``.
             """
@@ -91,6 +104,10 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Service]:
             """Create a typed service entity with a minimal valid method set.
 
+            Args:
+                name: Service name identifier.
+                methods: Optional RPC method names.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Service]``.
             """
@@ -107,6 +124,10 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.GrpcStream]:
             """Create a typed stream entity from validated inputs.
 
+            Args:
+                method_name: RPC method name backing the stream.
+                stream_type: Stream communication pattern.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.GrpcStream]``.
             """
@@ -119,6 +140,9 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         @staticmethod
         def validate_target(target: str) -> bool:
             """Validate a gRPC target string in the form host:port.
+
+            Args:
+                target: Target address candidate.
 
             Returns:
                 The resulting ``bool``.

@@ -25,6 +25,9 @@ class FlextGrpcServer(s):
     ) -> p.Result[FlextGrpcModels.Grpc.Server]:
         """Start a server through the dedicated lifecycle manager.
 
+        Args:
+            server: Server entity to transition to running.
+
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
         """
@@ -36,6 +39,9 @@ class FlextGrpcServer(s):
     ) -> p.Result[FlextGrpcModels.Grpc.Server]:
         """Stop a server through the dedicated lifecycle manager.
 
+        Args:
+            server: Server entity to transition to stopped.
+
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
         """
@@ -46,6 +52,9 @@ class FlextGrpcServer(s):
         server: FlextGrpcModels.Grpc.Server,
     ) -> p.Result[FlextGrpcModels.Grpc.Payload]:
         """Fetch server runtime metrics through the dedicated manager.
+
+        Args:
+            server: Server entity to inspect.
 
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Payload]``.

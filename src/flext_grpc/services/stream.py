@@ -26,6 +26,10 @@ class FlextGrpcStream(s):
     ) -> p.Result[m.Grpc.GrpcStream]:
         """Create and register stream runtime state using the dedicated manager.
 
+        Args:
+            method_name: RPC method name backing the stream.
+            stream_type: Stream communication pattern name.
+
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
         """
@@ -41,6 +45,9 @@ class FlextGrpcStream(s):
     def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
         """Close stream runtime state via the dedicated manager.
 
+        Args:
+            stream: Stream entity to close.
+
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
         """
@@ -52,6 +59,10 @@ class FlextGrpcStream(s):
         data: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
         """Send stream data via the dedicated stream manager.
+
+        Args:
+            stream: Stream entity that receives the data.
+            data: Optional payload mapping to send.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
