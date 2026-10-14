@@ -42,19 +42,23 @@ class TestsFlextGrpcServices:
             try:
                 client = tm.ok(grpc_facade.connect_client(f"127.0.0.1:{port}"))
                 try:
-                    echo = tm.ok(grpc_facade.make_call(
-                        client,
-                        c.Grpc.ServiceMethod.ECHO.value,
-                        {"message": "flext-round-trip"},
-                    ))
+                    echo = tm.ok(
+                        grpc_facade.make_call(
+                            client,
+                            c.Grpc.ServiceMethod.ECHO.value,
+                            {"message": "flext-round-trip"},
+                        ),
+                    )
                     tm.that(echo.values["message"], eq="flext-round-trip")
                     tm.that(echo.values["server_id"], eq=f"127.0.0.1:{port}")
 
-                    health = tm.ok(grpc_facade.make_call(
-                        client,
-                        c.Grpc.ServiceMethod.HEALTH_CHECK.value,
-                        {"service": "FlextGrpcService"},
-                    ))
+                    health = tm.ok(
+                        grpc_facade.make_call(
+                            client,
+                            c.Grpc.ServiceMethod.HEALTH_CHECK.value,
+                            {"service": "FlextGrpcService"},
+                        ),
+                    )
                     tm.that(health.values["status"], eq="SERVING")
                 finally:
                     tm.ok(grpc_facade.disconnect_client(client))

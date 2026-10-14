@@ -7,10 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from collections import deque
 from typing import TYPE_CHECKING
 
-from flext_grpc import c, e, m, p, r, t
+from flext_grpc import e, m, p, r, t
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
@@ -22,10 +21,6 @@ if TYPE_CHECKING:
 
 class FlextGrpcStreamManagerImpl:
     """Dedicated stream processing with buffering."""
-
-    @staticmethod
-    def _new_stream_buffer() -> deque[t.JsonMapping | None]:
-        return deque(maxlen=c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE)
 
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
@@ -73,7 +68,6 @@ class FlextGrpcStreamManagerImpl:
         self._active_streams[stream_key] = m.Grpc.StreamRuntimeState(
             stream=stream,
             created_at=time.time(),
-            buffer=self._new_stream_buffer(),
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
         return r[m.Grpc.GrpcStream].ok(stream)
