@@ -48,6 +48,10 @@ class FlextGrpcServiceHandlerImpl:
     ) -> Message:
         """Echo the request message tagged with this server's bound target.
 
+        Args:
+            request: Encoded ``EchoRequest`` protobuf message.
+            _context: gRPC servicer context (unused).
+
         Returns:
             The generated ``EchoResponse`` message.
         """
@@ -66,6 +70,10 @@ class FlextGrpcServiceHandlerImpl:
         _context: p.Grpc.GrpcServicerContext,
     ) -> Message:
         """Report the serving status of the requested service.
+
+        Args:
+            request: Encoded ``HealthRequest`` protobuf message.
+            _context: gRPC servicer context (unused).
 
         Returns:
             The generated ``HealthResponse`` message.

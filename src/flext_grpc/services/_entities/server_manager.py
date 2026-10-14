@@ -39,6 +39,9 @@ class FlextGrpcServerManagerImpl:
     ) -> p.Result[m.Grpc.Payload]:
         """Get server metrics.
 
+        Args:
+            server: Server entity to inspect.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
         """
@@ -59,7 +62,10 @@ class FlextGrpcServerManagerImpl:
         self,
         server: m.Grpc.Server,
     ) -> p.Result[m.Grpc.Server]:
-        """Start gRPC server with proper lifecycle.
+        """Start a gRPC server with proper lifecycle.
+
+        Args:
+            server: Server entity to transition to running.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
@@ -81,7 +87,10 @@ class FlextGrpcServerManagerImpl:
         self,
         server: m.Grpc.Server,
     ) -> p.Result[m.Grpc.Server]:
-        """Stop gRPC server gracefully.
+        """Stop a gRPC server gracefully.
+
+        Args:
+            server: Server entity to transition to stopped.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
@@ -102,6 +111,10 @@ class FlextGrpcServerManagerImpl:
         server: m.Grpc.Server,
     ) -> p.Result[m.Grpc.Server]:
         """Start a server that is not already registered as active.
+
+        Args:
+            server_key: Registry key tracking the active server.
+            server: Server entity to start.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
@@ -132,6 +145,10 @@ class FlextGrpcServerManagerImpl:
         starting_server: m.Grpc.Server,
     ) -> p.Result[p.Grpc.GrpcServer]:
         """Create a runtime server and bind it to the configured address.
+
+        Args:
+            starting_server: Server entity providing the bind address and
+                services.
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcServer]``.

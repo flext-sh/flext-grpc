@@ -16,10 +16,10 @@ class FlextGrpcConnectionPoolImpl:
     """Generic connection pool with resource management."""
 
     def __init__(self, max_size: int = 10) -> None:
-        """Initialize connection pool.
+        """Initialize the connection pool.
 
         Args:
-        max_size: Maximum pool size
+            max_size: Maximum number of pooled connections.
 
         """
         super().__init__()
@@ -28,7 +28,7 @@ class FlextGrpcConnectionPoolImpl:
         self._lock = threading.RLock()
 
     def acquire(self) -> p.Result[p.Grpc.GrpcChannel]:
-        """Acquire connection from pool.
+        """Acquire a connection from the pool.
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcChannel]``.
@@ -41,7 +41,7 @@ class FlextGrpcConnectionPoolImpl:
             return e.fail_not_found("connection", "available")
 
     def cleanup(self) -> p.Result[bool]:
-        """Cleanup all connections.
+        """Close and drop all pooled connections.
 
         Returns:
             The resulting ``p.Result[bool]``.
@@ -53,7 +53,10 @@ class FlextGrpcConnectionPoolImpl:
         return r[bool].ok(value=True)
 
     def release(self, connection: p.Grpc.GrpcChannel) -> p.Result[bool]:
-        """Release connection back to pool.
+        """Release a connection back to the pool.
+
+        Args:
+            connection: Channel previously acquired from the pool.
 
         Returns:
             The resulting ``p.Result[bool]``.

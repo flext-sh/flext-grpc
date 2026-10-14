@@ -36,6 +36,9 @@ class FlextGrpcClientManagerImpl:
     def connect(self, target: str) -> p.Result[m.Grpc.Client]:
         """Establish client connection with pooling.
 
+        Args:
+            target: gRPC server target address to connect to.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
@@ -60,6 +63,9 @@ class FlextGrpcClientManagerImpl:
     def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
         """Disconnect client and cleanup resources.
 
+        Args:
+            client: Client entity whose connection is closed.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
         """
@@ -80,6 +86,9 @@ class FlextGrpcClientManagerImpl:
     def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
         """Get client connection status.
 
+        Args:
+            client: Client entity to inspect.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
         """
@@ -97,12 +106,12 @@ class FlextGrpcClientManagerImpl:
         method: str,
         request: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
-        """Execute gRPC call through client.
+        """Execute a gRPC call through the client.
 
         Args:
-        client: Client entity
-        method: gRPC method name
-        request: Request message (gRPC protocol message - dynamic type)
+            client: Client entity used for the call.
+            method: RPC method name to invoke.
+            request: Optional request payload mapping.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.

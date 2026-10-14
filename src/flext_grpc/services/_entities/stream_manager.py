@@ -35,7 +35,10 @@ class FlextGrpcStreamManagerImpl:
         self._metrics = FlextGrpcMetricsCollectorImpl()
 
     def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
-        """Close stream and cleanup.
+        """Close a stream and clean up its runtime state.
+
+        Args:
+            stream: Stream entity to close.
 
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
@@ -49,7 +52,11 @@ class FlextGrpcStreamManagerImpl:
         self,
         **kwargs: t.JsonValue | None,
     ) -> p.Result[m.Grpc.GrpcStream]:
-        """Create stream with proper setup.
+        """Create a stream with proper setup.
+
+        Args:
+            **kwargs: Stream fields including ``method_name`` and
+                ``stream_type``.
 
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
@@ -77,11 +84,11 @@ class FlextGrpcStreamManagerImpl:
         stream: m.Grpc.GrpcStream,
         data: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
-        """Send data with buffering strategy.
+        """Send data using a bounded buffering strategy.
 
         Args:
-        stream: Stream entity
-        data: Message data (gRPC protocol message - dynamic type)
+            stream: Stream entity receiving the data.
+            data: Optional payload mapping to send.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
