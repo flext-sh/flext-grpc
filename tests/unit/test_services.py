@@ -16,12 +16,14 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from flext_grpc import FlextGrpc, c, t
-from tests import tm
+from flext_grpc import FlextGrpc
+from tests import c, t, tm
 
 if TYPE_CHECKING:
-    from flext_grpc.services.connection_pool import FlextGrpcConnectionPoolImpl
-    from flext_grpc.services.metrics import FlextGrpcMetricsCollectorImpl
+    from flext_grpc.services import (
+        FlextGrpcConnectionPoolImpl,
+        FlextGrpcMetricsCollectorImpl,
+    )
 
 
 class TestsFlextGrpcServices:

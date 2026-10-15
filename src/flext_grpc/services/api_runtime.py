@@ -8,8 +8,7 @@ from __future__ import annotations
 
 from typing import override
 
-from flext_grpc import FlextGrpcSettings, c, m, p, r, t, u
-from flext_grpc.base import FlextGrpcServiceBase
+from flext_grpc import FlextGrpcServiceBase, FlextGrpcSettings, c, m, p, r, t, u
 
 
 class FlextGrpcApiRuntime(FlextGrpcServiceBase):

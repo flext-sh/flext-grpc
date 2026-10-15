@@ -14,16 +14,8 @@ from __future__ import annotations
 
 from flext_cli import cli
 
-from flext_grpc import (
-    FlextGrpc,
-    FlextGrpcConstants,
-    FlextGrpcModels,
-    FlextGrpcSettings,
-    c,
-    p,
-    r,
-    t,
-)
+from examples import c, p, r, t
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
 
 
 class ExamplesFlextGrpcAdvancedUsage:

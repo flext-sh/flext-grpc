@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import e
+from flext_grpc import e
 
 
 class FlextGrpcErrors(e):

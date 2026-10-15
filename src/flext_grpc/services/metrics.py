@@ -9,9 +9,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import m, s
-from flext_grpc.services._entities.metrics_collector import (
-    FlextGrpcMetricsCollectorImpl,
-)
+from flext_grpc.services._entities import FlextGrpcMetricsCollectorImpl
 
 
 class FlextGrpcMetrics(s):
