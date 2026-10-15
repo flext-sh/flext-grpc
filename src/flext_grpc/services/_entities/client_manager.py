@@ -10,10 +10,8 @@ import time
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, t, u
-from flext_grpc.services._entities.connection_pool_impl import (
+from flext_grpc.services._entities import (
     FlextGrpcConnectionPoolImpl,
-)
-from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
 

@@ -11,10 +11,10 @@ from concurrent.futures import ThreadPoolExecutor
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, m, p, r, u
-from flext_grpc.services._entities.metrics_collector import (
+from flext_grpc.services._entities import (
     FlextGrpcMetricsCollectorImpl,
+    FlextGrpcServiceHandlerImpl,
 )
-from flext_grpc.services._entities.service_handler import FlextGrpcServiceHandlerImpl
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping

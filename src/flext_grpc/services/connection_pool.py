@@ -9,9 +9,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import m, s
-from flext_grpc.services._entities.connection_pool_impl import (
-    FlextGrpcConnectionPoolImpl,
-)
+from flext_grpc.services._entities import FlextGrpcConnectionPoolImpl
 
 
 class FlextGrpcConnectionPool(s):

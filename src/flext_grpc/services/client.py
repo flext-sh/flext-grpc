@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import ClassVar
 
 from flext_grpc import m, p, s, t
-from flext_grpc.services._entities.client_manager import FlextGrpcClientManagerImpl
+from flext_grpc.services._entities import FlextGrpcClientManagerImpl
 
 
 class FlextGrpcClient(s):

@@ -9,8 +9,10 @@ from __future__ import annotations
 import pytest
 
 from flext_grpc import FlextGrpc
-from flext_grpc.services.connection_pool import FlextGrpcConnectionPoolImpl
-from flext_grpc.services.metrics import FlextGrpcMetricsCollectorImpl
+from flext_grpc.services import (
+    FlextGrpcConnectionPoolImpl,
+    FlextGrpcMetricsCollectorImpl,
+)
 
 
 @pytest.fixture(name="grpc_facade")
