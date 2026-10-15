@@ -15,8 +15,8 @@ from types import MappingProxyType
 from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
-
 from flext_core import r
+
 from flext_grpc import c, p, t
 from flext_grpc._models.base import FlextGrpcModelsBase
 from flext_grpc._models.config import FlextGrpcConfigModels
@@ -186,6 +186,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     Result wrapping the state transition on success.
+
                 """
                 if (
                     current not in allowed_transitions
@@ -287,6 +288,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``Self``.
+
                 """
 
                 def normalize_payload_value(
@@ -315,6 +317,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     Result wrapping the updated entity copy.
+
                 """
                 return r[Self].create_from_callable(
                     lambda: self.model_copy(update=kwargs),
@@ -345,6 +348,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -357,6 +361,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return r[Self].ok(
                     self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}),
@@ -367,6 +372,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``bool``.
+
                 """
                 # ChannelState is a StrEnum, so its members compare as plain strings.
                 # `c.Grpc` widens to Any through the facade MRO for mypy, which would
@@ -381,6 +387,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -393,6 +400,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[bool]``.
+
                 """
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
@@ -436,6 +444,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     Result wrapping the server with the service added.
+
                 """
                 return r[Self].ok(
                     self.model_copy(
@@ -448,6 +457,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -460,6 +470,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 if self.state not in {"stopping", "running"}:
                     return (
@@ -478,6 +489,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -490,6 +502,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -502,6 +515,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     Result holding the validation verdict.
+
                 """
                 if not self.host.strip():
                     return r[bool].fail("Server host cannot be empty")
@@ -540,6 +554,7 @@ class FlextGrpcModels(FlextCliModels):
                 Raises:
                     ValueError: If the methods list is empty or a method is
                         blank.
+
                 """
                 if not v:
                     msg = "methods cannot be empty"
@@ -563,6 +578,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Raises:
                     ValueError: If the name is empty or whitespace.
+
                 """
                 if not v or not v.strip():
                     msg = "name cannot be empty"
@@ -578,6 +594,7 @@ class FlextGrpcModels(FlextCliModels):
                 Returns:
                     Result wrapping the service with the method added, or a
                     failure result for blank or duplicate names.
+
                 """
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
@@ -595,6 +612,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     ``True`` when the method name is registered.
+
                 """
                 return method_name in self.methods
 
@@ -624,6 +642,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     Result wrapping the client with the channel attached.
+
                 """
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
@@ -640,6 +659,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     Result holding the validation verdict.
+
                 """
                 if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")
@@ -678,6 +698,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Raises:
                     ValueError: If the method name is empty or whitespace.
+
                 """
                 if not v or not v.strip():
                     msg = "method_name cannot be empty"

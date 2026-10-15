@@ -19,6 +19,7 @@ def fixture_grpc_facade() -> FlextGrpc:
 
     Returns:
         The resulting ``FlextGrpc``.
+
     """
     return FlextGrpc()
 
@@ -29,6 +30,7 @@ def fixture_connection_pool() -> FlextGrpcConnectionPoolImpl:
 
     Returns:
         The resulting ``FlextGrpcConnectionPoolImpl``.
+
     """
     return FlextGrpcConnectionPoolImpl(max_size=5)
 
@@ -39,5 +41,6 @@ def fixture_metrics_collector() -> FlextGrpcMetricsCollectorImpl:
 
     Returns:
         The resulting ``FlextGrpcMetricsCollectorImpl``.
+
     """
     return FlextGrpcMetricsCollectorImpl()

@@ -15,11 +15,11 @@ from __future__ import annotations
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
+from flext_core import r, u
 from google.protobuf import json_format, message_factory
 from google.protobuf.descriptor import Descriptor, MethodDescriptor, ServiceDescriptor
 from google.protobuf.message import Message
 
-from flext_core import r, u
 from flext_grpc import c, m, p
 from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
 from flext_grpc.protos import flext_pb2, flext_pb2_grpc
@@ -38,6 +38,7 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The generated ``flext_pb2_grpc`` module.
+
         """
         return flext_pb2_grpc
 
@@ -47,6 +48,7 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The generated ``MethodDescriptor`` of ``method``.
+
         """
         service: ServiceDescriptor = flext_pb2.DESCRIPTOR.services_by_name[
             c.Grpc.SERVICE_PROTO_NAME
@@ -63,6 +65,7 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The resulting ``p.Result[Message]``.
+
         """
 
         def _encode() -> Message:
@@ -84,6 +87,7 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The resulting ``p.Result[TModel]``.
+
         """
         return u.validate_value(
             target,
@@ -106,6 +110,7 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The resulting ``p.Result[TModel]``.
+
         """
         descriptor = FlextGrpcUtilitiesGrpcService.method_descriptor(method)
         request_result = FlextGrpcUtilitiesGrpcService.encode_message(
@@ -154,6 +159,7 @@ class FlextGrpcUtilitiesGrpcService:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
         missing = frozenset(c.Grpc.ServiceMethod).difference(handlers)
         if missing:

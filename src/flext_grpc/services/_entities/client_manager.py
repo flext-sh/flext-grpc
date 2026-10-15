@@ -41,6 +41,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         if target in self._active_channels:
             return u.Grpc.create_client_entity(target=target)
@@ -68,6 +69,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         target = ""
         if client.channel is not None:
@@ -91,6 +93,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         target = ""
         if client.channel is not None:
@@ -115,6 +118,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         target = ""
         if client.channel is not None:
@@ -140,6 +144,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         echo_request = u.validate_value(m.Grpc.EchoRequest, request)
         if echo_request.failure:
@@ -168,6 +173,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         health_request = u.validate_value(m.Grpc.HealthRequest, request or {})
         if health_request.failure:

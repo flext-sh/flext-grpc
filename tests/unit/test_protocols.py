@@ -85,6 +85,7 @@ def _build_conforming_instance(
 
     Returns:
         The resulting ``p.Grpc.Tests.DuckInstance``.
+
     """
     namespace = {name: (lambda: None) for name in members}
     instance: p.Grpc.Tests.DuckInstance = type("Conforming", (), namespace)()
@@ -100,6 +101,7 @@ def _build_partial_instance(
 
     Returns:
         The resulting ``p.Grpc.Tests.DuckInstance``.
+
     """
     namespace = {name: (lambda: None) for name in members if name != omit}
     instance: p.Grpc.Tests.DuckInstance = type("Partial", (), namespace)()

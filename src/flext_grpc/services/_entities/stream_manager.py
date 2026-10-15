@@ -36,6 +36,7 @@ class FlextGrpcStreamManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key in self._active_streams:
@@ -54,6 +55,7 @@ class FlextGrpcStreamManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
         """
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
         stream_type = str(kwargs.get("stream_type", "unary"))
@@ -85,6 +87,7 @@ class FlextGrpcStreamManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key not in self._active_streams:

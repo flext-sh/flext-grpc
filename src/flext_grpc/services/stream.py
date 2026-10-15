@@ -32,6 +32,7 @@ class FlextGrpcStream(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
         """
         if not method_name.strip():
             return e.fail_validation("method_name", error="cannot be empty")
@@ -50,6 +51,7 @@ class FlextGrpcStream(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
         """
         return self._stream_manager.close_stream(stream)
 
@@ -66,6 +68,7 @@ class FlextGrpcStream(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         return self._stream_manager.send_data(stream, data)
 

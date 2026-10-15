@@ -32,6 +32,7 @@ class FlextGrpcConnectionPoolImpl:
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcChannel]``.
+
         """
         with self._lock:
             if not self._pool.empty():
@@ -45,6 +46,7 @@ class FlextGrpcConnectionPoolImpl:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
         with self._lock:
             self._active.clear()
@@ -60,6 +62,7 @@ class FlextGrpcConnectionPoolImpl:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
         with self._lock:
             if connection in self._active:

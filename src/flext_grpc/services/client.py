@@ -31,6 +31,7 @@ class FlextGrpcClient(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         return self._client_manager.connect(target)
 
@@ -42,6 +43,7 @@ class FlextGrpcClient(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         return self._client_manager.disconnect(client)
 
@@ -53,6 +55,7 @@ class FlextGrpcClient(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         return self._client_manager.client_status(client)
 
@@ -71,6 +74,7 @@ class FlextGrpcClient(s):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         return self._client_manager.make_call(client, method, request)
 

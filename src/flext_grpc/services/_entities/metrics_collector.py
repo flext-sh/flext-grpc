@@ -25,6 +25,7 @@ class FlextGrpcMetricsCollectorImpl:
 
         Returns:
             The resulting ``m.Grpc.Payload``.
+
         """
         with self._lock:
             vals = self._metrics.values
@@ -38,6 +39,7 @@ class FlextGrpcMetricsCollectorImpl:
 
         Returns:
             Metric value, or ``None`` when the key is unknown.
+
         """
         with self._lock:
             vals = self._metrics.values

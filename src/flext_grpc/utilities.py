@@ -47,6 +47,7 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
             Returns:
                 The resulting ``p.Result[m.Grpc.Channel]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_channel_entity(
                 target=target,
@@ -67,6 +68,7 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
             Returns:
                 The resulting ``p.Result[m.Grpc.Client]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_client_entity(
                 target=target,
@@ -89,6 +91,7 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
             Returns:
                 The resulting ``p.Result[m.Grpc.Server]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_server_entity(
                 host=host,
@@ -110,6 +113,7 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
             Returns:
                 The resulting ``p.Result[m.Grpc.Service]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_service_entity(
                 name=name,
@@ -130,6 +134,7 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
             Returns:
                 The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_stream_entity(
                 method_name=method_name,
@@ -146,6 +151,7 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
             Returns:
                 The resulting ``bool``.
+
             """
             return FlextGrpcUtilitiesGrpc.validate_target(target)
 

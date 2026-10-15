@@ -9,8 +9,8 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 import grpc
-
 from flext_core import r, u
+
 from flext_grpc import c, p
 
 if TYPE_CHECKING:
@@ -51,6 +51,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
             Raises:
                 TypeError: If grpc.
+
             """
             if issubclass(value, Exception):
                 return value
@@ -65,6 +66,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
             Raises:
                 TypeError: If grpc.insecure_channel returned an invalid channel.
+
             """
             channel = self._runtime_module.insecure_channel(target)
             if not isinstance(channel, p.Grpc.GrpcChannel):
@@ -83,6 +85,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
             Raises:
                 TypeError: If grpc.channel_ready_future returned an invalid future.
+
             """
             ready_future = self._runtime_module.channel_ready_future(channel)
             if not isinstance(ready_future, p.Grpc.GrpcReadyFuture):
@@ -98,6 +101,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
             Raises:
                 TypeError: If grpc.server returned an invalid server.
+
             """
             grpc_server = self._runtime_module.server(thread_pool)
             if not isinstance(grpc_server, p.Grpc.GrpcServer):
@@ -111,6 +115,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcRuntime]``.
+
         """
         return r[p.Grpc.GrpcRuntime].ok(
             FlextGrpcUtilitiesGrpcRuntime._GrpcRuntimeAdapter(grpc),
@@ -122,6 +127,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``str``.
+
         """
         if exception is None:
             return "Unknown gRPC error"
@@ -158,6 +164,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``p.Result[TValue]``.
+
         """
         runtime_result = FlextGrpcUtilitiesGrpcRuntime.resolve_runtime()
         if runtime_result.failure:
@@ -177,6 +184,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``p.Result[bool]``.
+
         """
 
         def _run() -> bool:
@@ -195,6 +203,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcChannel]``.
+
         """
         runtime_result = FlextGrpcUtilitiesGrpcRuntime.resolve_runtime()
         if runtime_result.failure:
@@ -230,6 +239,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcServer]``.
+
         """
         runtime_result = FlextGrpcUtilitiesGrpcRuntime.resolve_runtime()
         if runtime_result.failure:
@@ -249,6 +259,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
 
         Returns:
             The resulting ``p.Result[int]``.
+
         """
         return FlextGrpcUtilitiesGrpcRuntime.call_runtime(
             lambda: server.add_insecure_port(address),

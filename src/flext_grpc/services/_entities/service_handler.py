@@ -35,6 +35,7 @@ class FlextGrpcServiceHandlerImpl:
 
         Returns:
             The handler of each ``c.Grpc.ServiceMethod``.
+
         """
         return MappingProxyType({
             c.Grpc.ServiceMethod.ECHO: self.echo,
@@ -54,6 +55,7 @@ class FlextGrpcServiceHandlerImpl:
 
         Returns:
             The generated ``EchoResponse`` message.
+
         """
         echo_request = u.Grpc.decode_message(m.Grpc.EchoRequest, request).unwrap()
         return u.Grpc.encode_message(
@@ -77,6 +79,7 @@ class FlextGrpcServiceHandlerImpl:
 
         Returns:
             The generated ``HealthResponse`` message.
+
         """
         health_request = u.Grpc.decode_message(
             m.Grpc.HealthRequest,

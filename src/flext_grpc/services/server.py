@@ -30,6 +30,7 @@ class FlextGrpcServer(s):
 
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
+
         """
         return self._server_manager.start_server(server)
 
@@ -44,6 +45,7 @@ class FlextGrpcServer(s):
 
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
+
         """
         return self._server_manager.stop_server(server)
 
@@ -58,6 +60,7 @@ class FlextGrpcServer(s):
 
         Returns:
             The resulting ``p.Result[FlextGrpcModels.Grpc.Payload]``.
+
         """
         return self._server_manager.server_metrics(server)
 

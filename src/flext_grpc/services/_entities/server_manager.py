@@ -44,6 +44,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         server_key = f"{server.host}:{server.port}"
         started_at_raw = self._metrics.metric(f"{server_key}_started_at")
@@ -69,6 +70,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
+
         """
         server_key = f"{server.host}:{server.port}"
         result: p.Result[m.Grpc.Server]
@@ -94,6 +96,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
+
         """
         server_key = f"{server.host}:{server.port}"
         if server_key not in self._active_servers:
@@ -118,6 +121,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
+
         """
         starting_result = server.start()
         if starting_result.failure:
@@ -152,6 +156,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[p.Grpc.GrpcServer]``.
+
         """
         server_result = u.Grpc.create_runtime_server(self._thread_pool)
         if server_result.failure:
@@ -181,6 +186,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
+
         """
         start_result = u.Grpc.run_runtime(grpc_server.start)
         if start_result.failure:
@@ -200,6 +206,7 @@ class FlextGrpcServerManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
+
         """
         stopping_result: p.Result[m.Grpc.Server] = server.stop()
         if stopping_result.failure:

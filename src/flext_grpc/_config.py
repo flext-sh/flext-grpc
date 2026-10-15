@@ -13,6 +13,7 @@ from __future__ import annotations
 from typing import Annotated
 
 from flext_core import FlextConfig, m
+
 from flext_grpc._models.base import FlextGrpcModelsBase
 
 

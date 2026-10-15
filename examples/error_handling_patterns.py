@@ -25,6 +25,7 @@ def validate_user_input(username: str, email: str) -> p.Result[t.Grpc.Headers]:
 
     Returns:
         The resulting ``p.Result[t.Grpc.Headers]``.
+
     """
 
     def _raise_username_error() -> NoReturn:
@@ -51,6 +52,7 @@ def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]
 
     Returns:
         The resulting ``p.Result[t.Grpc.ConfigDict]``.
+
     """
 
     def _raise_port_error() -> NoReturn:
@@ -86,6 +88,7 @@ def simulate_connection_error() -> p.Result[str]:
 
     Returns:
         The resulting ``p.Result[str]``.
+
     """
 
     def _raise_connection_error() -> NoReturn:
@@ -104,6 +107,7 @@ def simulate_timeout_error() -> p.Result[str]:
 
     Returns:
         The resulting ``p.Result[str]``.
+
     """
 
     def _raise_timeout_error() -> NoReturn:
@@ -122,6 +126,7 @@ def handle_generic_grpc_error() -> p.Result[str]:
 
     Returns:
         The resulting ``p.Result[str]``.
+
     """
 
     def _raise_generic_error() -> NoReturn:
@@ -140,6 +145,7 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
 
     Returns:
         The resulting ``p.Result[str]``.
+
     """
     logger.info("Starting comprehensive error handling pipeline")
     validation_result = validate_user_input("john_doe", "john@example.com")
@@ -174,6 +180,7 @@ def error_recovery_patterns() -> p.Result[str]:
 
     Returns:
         The resulting ``p.Result[str]``.
+
     """
     logger.info("Testing error recovery patterns")
     for attempt in range(3):
@@ -237,6 +244,7 @@ def error_handling() -> p.Result[str]:
 
     Returns:
         The resulting ``p.Result[str]``.
+
     """
     logger.info("Testing error handling patterns")
 

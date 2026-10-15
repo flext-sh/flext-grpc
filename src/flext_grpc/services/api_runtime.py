@@ -28,6 +28,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Channel]``.
+
         """
         return u.Grpc.create_channel_entity(
             target=target,
@@ -47,6 +48,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         return u.Grpc.create_client_entity(
             target=target,
@@ -71,6 +73,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[m.Grpc.CompleteSetup]``.
+
         """
         resolved_methods = ["HealthCheck"] if methods is None else methods
         target = f"{host}:{port}"
@@ -114,6 +117,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Server]``.
+
         """
         return u.Grpc.create_server_entity(
             host=host,
@@ -134,6 +138,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[m.Grpc.Service]``.
+
         """
         return u.Grpc.create_service_entity(
             name=name,
@@ -146,6 +151,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[FlextGrpcSettings]``.
+
         """
         return r[FlextGrpcSettings].ok(self.grpc_config)
 
@@ -161,6 +167,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[FlextGrpcSettings]``.
+
         """
         kwargs = request.keyword_arguments
         match request.operation_name:
@@ -188,6 +195,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``p.Result[tuple[str, int]]``.
+
         """
         if not u.Grpc.validate_target(address):
             return r[tuple[str, int]].fail(f"Invalid address: {address}")
@@ -202,6 +210,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         Returns:
             The resulting ``bool``.
+
         """
         return u.Grpc.validate_target(target)
 
