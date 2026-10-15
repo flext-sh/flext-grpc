@@ -13,12 +13,13 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
+    from flext_core import d, e, h, r, x
+
     from examples.constants import ExamplesFlextGrpcConstants
     from examples.models import ExamplesFlextGrpcModels
     from examples.protocols import ExamplesFlextGrpcProtocols
     from examples.typings import ExamplesFlextGrpcTypes, t
     from examples.utilities import ExamplesFlextGrpcUtilities, u
-    from flext_core import d, e, h, r, x
     from flext_grpc import c, m, p, s
 
 
