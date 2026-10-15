@@ -1,8 +1,9 @@
 """Flext-grpc config protocols.
 
-Protocol interfaces for the validated ``config.Grpc.*`` business-rule SSOT.
-Models are defined in ``_models/config.py``; this module only declares the
-shape consumed by ``_config.py`` and typed consumers.
+Protocol interfaces for the ``config.Grpc.*`` business-rule SSOT. Models are
+defined in ``_models/config.py``; this module only declares the typed shapes.
+The current model-less ``_config.py`` facade validates into
+``FlextGrpcModelsBase.GrpcNamespace`` and does not consume these protocols.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT

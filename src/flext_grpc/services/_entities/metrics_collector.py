@@ -25,16 +25,20 @@ class FlextGrpcMetricsCollectorImpl:
 
         Returns:
             The resulting ``m.Grpc.Payload``.
+
         """
         with self._lock:
             vals = self._metrics.values
             return m.Grpc.Payload(values=dict(vals))
 
     def metric(self, key: str) -> t.JsonValue | None:
-        """Thread-safe metric retrieval.
+        """Retrieve one metric by key in a thread-safe manner.
+
+        Args:
+            key: Metric identifier.
 
         Returns:
-        Metric value or None if not found
+            Metric value, or ``None`` when the key is unknown.
 
         """
         with self._lock:
@@ -43,11 +47,11 @@ class FlextGrpcMetricsCollectorImpl:
             return value
 
     def record_metric(self, key: str, value: t.JsonValue | None) -> None:
-        """Thread-safe metric recording.
+        """Record one metric value in a thread-safe manner.
 
         Args:
-        key: Metric identifier
-        value: Metric value (JSON-serializable: str, int, float, bool, list, dict, None)
+            key: Metric identifier.
+            value: JSON-serializable metric value.
 
         """
 

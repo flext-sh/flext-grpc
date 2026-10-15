@@ -55,9 +55,9 @@ verification).
 - Parent FLEXT chain: read this project's `pyproject.toml` `dependencies` array filtered
   by `flext-*`. The FLEXT cascade is encoded in the inheritance lists of the facade
   classes listed under Module Map above.
-- Public extensions exposed by this project: `FlextGrpc`, `FlextGrpcApiRuntime`,
-  `FlextGrpcClient`, `FlextGrpcConfig`, `FlextGrpcConnectionPool`,
-  `FlextGrpcConnectionPoolImpl` (+12 more).
+- Public extensions exposed by this project: `FlextGrpc`, `FlextGrpcConfig`,
+  `FlextGrpcConstants`, `FlextGrpcErrors`, `FlextGrpcModels`, `FlextGrpcProtocols` (+5
+  more).
 - Library abstraction boundaries: see AGENTS.md §2.7.
 
 ## Quality Gates

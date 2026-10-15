@@ -8,9 +8,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from flext_tests import tm
 
-from tests import c, m
+from tests import c, m, tm
 
 
 @pytest.fixture
@@ -19,6 +18,7 @@ def channel() -> m.Grpc.Channel:
 
     Returns:
         The resulting ``m.Grpc.Channel``.
+
     """
     return m.Grpc.Channel(
         target="localhost:50051",
@@ -34,6 +34,7 @@ def server() -> m.Grpc.Server:
 
     Returns:
         The resulting ``m.Grpc.Server``.
+
     """
     return m.Grpc.Server(
         host="localhost",

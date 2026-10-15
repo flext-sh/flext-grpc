@@ -26,6 +26,7 @@ class TestsFlextGrpcErrors:
 
         Raises:
             Error: If Base gRPC error occurred.
+
         """
         message = "Base gRPC error occurred"
         with pytest.raises(e.BaseError) as caught:
@@ -77,6 +78,7 @@ class TestsFlextGrpcErrors:
 
         Raises:
             GrpcConnectionError: If channel down.
+
         """
         message = "channel down"
         with pytest.raises(e.FlextConnectionError) as caught:

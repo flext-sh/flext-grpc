@@ -26,24 +26,36 @@ class FlextGrpcClient(s):
     def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
         """Establish a client connection through the dedicated manager.
 
+        Args:
+            target: gRPC server target address to connect to.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         return self._client_manager.connect(target)
 
     def disconnect_client(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
         """Disconnect a client connection through the dedicated manager.
 
+        Args:
+            client: Client entity whose connection is closed.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         return self._client_manager.disconnect(client)
 
     def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
         """Fetch client connection status via the dedicated manager.
 
+        Args:
+            client: Client entity to inspect.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         return self._client_manager.client_status(client)
 
@@ -55,8 +67,14 @@ class FlextGrpcClient(s):
     ) -> p.Result[m.Grpc.Payload]:
         """Execute an RPC call through the dedicated client manager.
 
+        Args:
+            client: Client entity used for the call.
+            method: RPC method name to invoke.
+            request: Optional request payload mapping.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         return self._client_manager.make_call(client, method, request)
 

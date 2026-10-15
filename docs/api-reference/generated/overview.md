@@ -18,14 +18,13 @@
   Topic :: Software Development :: Libraries :: Python Modules, Typing :: Typed
 - Project class: `domain`
 - Keywords: `enterprise`, `flext`, `grpc`, `microservices`, `protobuf`, `typed`
-- Main facades: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
-  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConnectionPoolImpl`,
-  `FlextGrpcConstants`, `FlextGrpcErrors` (+10 more)
+- Main facades: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConstants`, `FlextGrpcErrors`,
+  `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcServiceBase`, `FlextGrpcSettings`
+  (+3 more)
 - Alias exports: `c`, `d`, `e`, `h`, `m`, `p`, `r`, `s`, `t`, `u`, `x`
-- Public symbol exports: `FlextGrpc`, `FlextGrpcApiRuntime`, `FlextGrpcClient`,
-  `FlextGrpcConfig`, `FlextGrpcConnectionPool`, `FlextGrpcConnectionPoolImpl`,
-  `FlextGrpcConstants`, `FlextGrpcErrors`, `FlextGrpcMetrics`,
-  `FlextGrpcMetricsCollectorImpl` (+12 more)
+- Public symbol exports: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConstants`,
+  `FlextGrpcErrors`, `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcServiceBase`,
+  `FlextGrpcSettings`, `FlextGrpcTypes`, `FlextGrpcUtilities` (+5 more)
 - Exported module shortcuts: `services`
 - Generated module pages: `9`
 

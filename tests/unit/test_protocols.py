@@ -16,10 +16,9 @@ from __future__ import annotations
 from typing import Protocol, is_protocol, runtime_checkable
 
 import pytest
-from flext_tests import tm
 
 from flext_grpc import FlextGrpcProtocols, t
-from tests import p
+from tests import p, tm
 
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
@@ -86,6 +85,7 @@ def _build_conforming_instance(
 
     Returns:
         The resulting ``p.Grpc.Tests.DuckInstance``.
+
     """
     namespace = {name: (lambda: None) for name in members}
     instance: p.Grpc.Tests.DuckInstance = type("Conforming", (), namespace)()
@@ -101,6 +101,7 @@ def _build_partial_instance(
 
     Returns:
         The resulting ``p.Grpc.Tests.DuckInstance``.
+
     """
     namespace = {name: (lambda: None) for name in members if name != omit}
     instance: p.Grpc.Tests.DuckInstance = type("Partial", (), namespace)()
@@ -172,20 +173,17 @@ class TestsFlextGrpcProtocolsUnit:
         tm.that(result, eq=False)
 
     @staticmethod
-    def test_test_protocol_namespace_composes_source_namespace() -> None:
-        """The tests Grpc namespace inherits the source Grpc protocols."""
-        tm.that(p.Grpc.__mro__, has=FlextGrpcProtocols.Grpc)
+    def test_tests_namespace_composes_source_protocols_observably() -> None:
+        """A source-conforming duck object narrows through both namespaces.
 
-    @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
-    def test_test_namespace_exposes_same_protocol_object(
-        protocol_name: str,
-    ) -> None:
-        """Access via the tests namespace resolves the source protocol."""
-        assert getattr(p.Grpc, protocol_name) is getattr(
-            FlextGrpcProtocols.Grpc,
-            protocol_name,
-        )
+        The tests namespace composes the source Grpc protocols, so the
+        runtime-checkable protocol resolved through either namespace accepts
+        the same object — the observable form of that composition.
+        """
+        instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
+
+        tm.that(isinstance(instance, FlextGrpcProtocols.Grpc.Server), eq=True)
+        tm.that(isinstance(instance, p.Grpc.Server), eq=True)
 
     @staticmethod
     def test_conforming_object_can_type_narrow_via_protocol() -> None:

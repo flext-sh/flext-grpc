@@ -16,6 +16,7 @@ import re
 from typing import TYPE_CHECKING, ClassVar
 
 from flext_core import FlextConstants
+
 from flext_grpc._constants import FlextGrpcConstantsBase
 
 if TYPE_CHECKING:

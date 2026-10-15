@@ -2,7 +2,7 @@
 # @flext-owner: flext-infra/config/codegen.yaml + flext-infra/src/flext_infra/templates/project/base/pyproject.toml.j2
 # @flext-adjust: MANAGED=conflict_sections + overwrite_project_keys. CUSTOM=preserve_project_keys and [tool.*] outside conflict_sections. Never edit this projection.
 # @flext-regenerate: make gen
-
+# @flext-rendered-by: flext-infra 0.12.0
 [build-system]
 build-backend = "hatchling.build"
 requires = ["hatchling"]
@@ -27,7 +27,7 @@ dependencies = [
   "grpcio>=1.84.0",
   "packaging>=26.3",
   "protobuf>=7.36.2",
-  "pydantic>=2.14.0,<3",
+  "pydantic>=2.14.1,<3",
   "pydantic-settings>=2.15.0",
   "pyyaml>=6.0.3",
   "structlog>=25.5.0,<27",
@@ -57,10 +57,9 @@ Documentation = "https://github.com/flext-sh/flext/blob/main/README.md"
 Homepage = "https://github.com/flext-sh/flext"
 Repository = "https://github.com/flext-sh/flext"
 
+[project.optional-dependencies]
+
 [dependency-groups]
-codegen = [
-  "flext-infra @ git+https://github.com/flext-sh/flext-infra.git@0.12.0-dev",
-]
 dev = [
   "actionlint-py>=1.7.12.24",
   "bandit>=1.9.4",
@@ -102,7 +101,6 @@ dev = [
   "types-click>=7.1.8",
   "types-defusedxml>=0.7.0.20260504",
   "types-docker>=7.2.0.20260827",
-  "types-flask>=1.1.6",
   "types-grpcio",
   "types-jsonschema>=4.26.0.20260518",
   "types-ldap3>=2.9.13.20260827",
@@ -122,6 +120,9 @@ dev = [
   "types-toml>=0.10.8.20260518",
   "vulture>=2.16",
   "yamlfix>=1.19.1",
+]
+codegen = [
+  "flext-infra @ git+https://github.com/flext-sh/flext-infra.git@0.12.0-dev",
 ]
 
 [tool.codespell]
@@ -147,8 +148,8 @@ omit = [
 ]
 
 [tool.deptry]
-known_first_party = ["flext_core", "flext_grpc"]
-pep621_dev_dependency_groups = ["dev"]
+known_first_party = ["flext_grpc"]
+optional_dependencies_dev_groups = ["dev"]
 
 [tool.flext.docs]
 package_name = "flext_grpc"
@@ -165,8 +166,14 @@ include = ["/src/flext_grpc/**"]
 [tool.hatch.build.targets.wheel.sources]
 "src/flext_grpc" = "flext_grpc"
 
+[tool.hatch.build.targets.wheel.force-include]
+"pyproject.toml" = "flext_grpc/pyproject.toml"
+
 [tool.hatch.build.targets.sdist]
 include = ["/src/flext_grpc/**"]
+
+[tool.hatch.build.targets.sdist.force-include]
+"pyproject.toml" = "pyproject.toml"
 
 [tool.mypy]
 mypy_path = ["src"]
@@ -364,7 +371,7 @@ addopts = [
   "--strict-markers",
   "--markdown-docs",
   "--durations=10",
-  "--timeout=10",
+  "--flext-enforce-strict",
 ]
 flext_slow_timeout_seconds = "30"
 asyncio_default_fixture_loop_scope = "function"
@@ -428,6 +435,7 @@ extend-safe-fixes = [
   "relative-imports",
   "typing-only-first-party-import",
 ]
+extend-select = ["missing-blank-line-after-last-section"]
 ignore = [
   "camelcase-imported-as-lowercase",
   "implicit-namespace-package",
@@ -440,15 +448,11 @@ ignore = [
 ]
 select = ["ALL"]
 unfixable = [
-  "duplicate-value",
   "multi-value-repeated-key-literal",
   "multi-value-repeated-key-variable",
-  "outdated-version-block",
   "p-print",
   "print",
   "pytest-duplicate-parametrize-test-cases",
-  "redefined-while-unused",
-  "unused-variable",
 ]
 
 [tool.ruff.lint.flake8-copyright]
@@ -464,7 +468,7 @@ runtime-evaluated-base-classes = [
   "flext_core.FlextService",
   "flext_core.FlextSettings",
   "flext_core.m.BaseModel",
-  "flext_grpc._settings.FlextGrpcSettings",
+  "flext_grpc.FlextGrpcSettings",
   "flext_grpc.base.FlextGrpcServiceBase",
   "flext_grpc.models.Entity",
   "flext_grpc.models.StateMachine",
@@ -501,7 +505,7 @@ msg = "Use cli.create_app_with_common_params / cli.register_command from flext_c
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-single-line = false
-known-first-party = ["flext_core", "flext_grpc"]
+known-first-party = ["flext_grpc"]
 split-on-trailing-comma = false
 
 [tool.ruff.lint.per-file-ignores]
@@ -601,6 +605,6 @@ section_whitelines = 1
 whitelines = 1
 
 [tool.uv]
-link-mode = "copy"
 constraint-dependencies = ["mypy<2.4.0"]
 environments = ["sys_platform == 'linux'", "sys_platform == 'darwin'"]
+link-mode = "copy"
