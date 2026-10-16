@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """FLEXT gRPC Models - Consolidated Pydantic v2 Models.
 
 Unified namespace with nested classes following FLEXT principles and SOLID design.
@@ -18,8 +19,7 @@ from flext_cli import FlextCliModels
 from flext_core import r
 
 from flext_grpc import c, p, t
-from flext_grpc._models.base import FlextGrpcModelsBase
-from flext_grpc._models.config import FlextGrpcConfigModels
+from flext_grpc._models import FlextGrpcConfigModels, FlextGrpcModelsBase
 
 
 class FlextGrpcModels(FlextCliModels):
