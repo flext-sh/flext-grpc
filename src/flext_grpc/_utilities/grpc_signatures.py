@@ -1,0 +1,147 @@
+"""FLEXT gRPC utility namespace signature overrides.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+SPDX-License-Identifier: MIT
+"""
+
+from __future__ import annotations
+
+from typing import override
+
+from flext_grpc import c, m, p, t
+from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+
+
+class FlextGrpcUtilitiesGrpcSignatures:
+    """Concrete static signatures re-exported on the public namespace.
+
+    Composed ahead of ``FlextGrpcUtilitiesGrpc`` in the namespace MRO so
+    static type checkers see concrete return types for ``u.Grpc.*`` calls
+    inside ``flext_grpc`` services while the implementations stay delegated
+    to the owner mixin.
+    """
+
+    @override
+    @staticmethod
+    def create_channel_entity(
+        target: str,
+        options: t.JsonMapping | None = None,
+    ) -> p.Result[m.Grpc.Channel]:
+        """Create a typed channel entity from validated inputs.
+
+        Args:
+            target: gRPC server target address.
+            options: Optional channel options mapping.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Channel]``.
+
+        """
+        return FlextGrpcUtilitiesGrpc.create_channel_entity(
+            target=target,
+            options=options,
+        )
+
+    @override
+    @staticmethod
+    def create_client_entity(
+        target: str,
+        options: t.JsonMapping | None = None,
+    ) -> p.Result[m.Grpc.Client]:
+        """Create a typed client entity backed by a typed channel entity.
+
+        Args:
+            target: gRPC server target address.
+            options: Optional client options mapping.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Client]``.
+
+        """
+        return FlextGrpcUtilitiesGrpc.create_client_entity(
+            target=target,
+            options=options,
+        )
+
+    @override
+    @staticmethod
+    def create_server_entity(
+        host: str = c.Grpc.NETWORK_DEFAULT_HOST,
+        port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
+        max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
+    ) -> p.Result[m.Grpc.Server]:
+        """Create a typed server entity from validated inputs.
+
+        Args:
+            host: Server bind host address.
+            port: Server listen port number.
+            max_workers: Maximum worker threads for request handling.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Server]``.
+
+        """
+        return FlextGrpcUtilitiesGrpc.create_server_entity(
+            host=host,
+            port=port,
+            max_workers=max_workers,
+        )
+
+    @override
+    @staticmethod
+    def create_service_entity(
+        name: str,
+        methods: t.StrSequence | None = None,
+    ) -> p.Result[m.Grpc.Service]:
+        """Create a typed service entity with a minimal valid method set.
+
+        Args:
+            name: Service name identifier.
+            methods: Optional RPC method names.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.Service]``.
+
+        """
+        return FlextGrpcUtilitiesGrpc.create_service_entity(
+            name=name,
+            methods=methods,
+        )
+
+    @override
+    @staticmethod
+    def create_stream_entity(
+        method_name: str,
+        stream_type: c.Grpc.GrpcOperations | str,
+    ) -> p.Result[m.Grpc.GrpcStream]:
+        """Create a typed stream entity from validated inputs.
+
+        Args:
+            method_name: RPC method name backing the stream.
+            stream_type: Stream communication pattern.
+
+        Returns:
+            The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
+        """
+        return FlextGrpcUtilitiesGrpc.create_stream_entity(
+            method_name=method_name,
+            stream_type=stream_type,
+        )
+
+    @override
+    @staticmethod
+    def validate_target(target: str) -> bool:
+        """Validate a gRPC target string in the form host:port.
+
+        Args:
+            target: Target address candidate.
+
+        Returns:
+            The resulting ``bool``.
+
+        """
+        return FlextGrpcUtilitiesGrpc.validate_target(target)
+
+
+__all__: list[str] = ["FlextGrpcUtilitiesGrpcSignatures"]

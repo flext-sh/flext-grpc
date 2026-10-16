@@ -12,12 +12,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import re
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
 from flext_core import FlextConstants
 
 from flext_grpc._constants import FlextGrpcConstantsBase
+from flext_grpc._constants.derived import FlextGrpcConstantsDerived
 
 if TYPE_CHECKING:
     from flext_grpc import t
@@ -41,7 +41,7 @@ class FlextGrpcConstants(FlextConstants):
     ```
     """
 
-    class Grpc(FlextGrpcConstantsBase):
+    class Grpc(FlextGrpcConstantsDerived, FlextGrpcConstantsBase):
         """gRPC domain constants namespace.
 
         All gRPC-specific scalar constants are owned by ``FlextGrpcConstantsBase``
@@ -50,17 +50,6 @@ class FlextGrpcConstants(FlextConstants):
         This class adds only derived/composite values that cannot be plain
         literals: computed sizes, compiled patterns, enums, and frozensets.
         """
-
-        # ===== Network constants (derived — not a plain literal) =====
-        NETWORK_HOST_RE: ClassVar[t.RegexPattern] = re.compile(
-            FlextGrpcConstantsBase.NETWORK_HOST_PATTERN,
-        )
-
-        # ===== Validation constants (derived — not a plain literal) =====
-        VALIDATION_VERSION_RE: ClassVar[t.RegexPattern] = re.compile(
-            FlextGrpcConstantsBase.VALIDATION_VERSION_PATTERN,
-            re.IGNORECASE,
-        )
 
         # ===== Error messages =====
 

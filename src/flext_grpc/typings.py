@@ -6,11 +6,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Literal
-
 from flext_cli import FlextCliTypes
 
-from flext_grpc._typings import FlextGrpcTypingsBase
+from flext_grpc._typings import FlextGrpcTypingsBase, grpc as _grpc_types
 
 
 class FlextGrpcTypes(FlextCliTypes):
@@ -19,12 +17,9 @@ class FlextGrpcTypes(FlextCliTypes):
     class Grpc(FlextGrpcTypingsBase):
         """gRPC domain namespace (flat members per AGENTS.md §149)."""
 
-        type EntityKind = Literal["server", "client", "channel", "service", "stream"]
-        type Headers = FlextCliTypes.StrMapping
-        type ConfigDict = FlextCliTypes.MappingKV[
-            str,
-            FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None,
-        ]
+        EntityKind = _grpc_types.EntityKind
+        Headers = _grpc_types.Headers
+        ConfigDict = _grpc_types.ConfigDict
 
 
 t = FlextGrpcTypes
