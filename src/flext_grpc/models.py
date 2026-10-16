@@ -11,13 +11,11 @@ from __future__ import annotations
 
 from flext_cli import FlextCliModels
 
-from flext_grpc._models import (
-    channel_models as _channel_models,
-    message_models as _message_models,
-    runtime_models as _runtime_models,
-)
 from flext_grpc._models.base import FlextGrpcModelsBase
+from flext_grpc._models.channel_models import FlextGrpcModelsChannel
 from flext_grpc._models.config import FlextGrpcConfigModels
+from flext_grpc._models.message_models import FlextGrpcModelsMessage
+from flext_grpc._models.runtime_models import FlextGrpcModelsRuntime
 
 
 class FlextGrpcModels(FlextCliModels):
@@ -38,29 +36,29 @@ class FlextGrpcModels(FlextCliModels):
         # PROTO MESSAGE MODELS - RPC request/response messages
         # =====================================================================
 
-        EchoRequest = _message_models.EchoRequest
-        EchoResponse = _message_models.EchoResponse
-        HealthRequest = _message_models.HealthRequest
-        HealthResponse = _message_models.HealthResponse
-        StreamInfo = _message_models.StreamInfo
-        HealthCheck = _message_models.HealthCheck
-        OperationExecutionRequest = _message_models.OperationExecutionRequest
-        ClientConfig = _channel_models.ClientConfig
-        ChannelConfig = _channel_models.ChannelConfig
-        StateTransition = _channel_models.StateTransition
-        StateMachine = _channel_models.StateMachine
-        OperationSpec = _channel_models.OperationSpec
-        Request = _channel_models.Request
-        Response = _channel_models.Response
-        Payload = _message_models.Payload
-        Entity = _channel_models.Entity
-        Channel = _channel_models.Channel
-        Server = _runtime_models.Server
-        Service = _runtime_models.Service
-        Client = _runtime_models.Client
-        GrpcStream = _runtime_models.GrpcStream
-        StreamRuntimeState = _runtime_models.StreamRuntimeState
-        CompleteSetup = _runtime_models.CompleteSetup
+        EchoRequest = FlextGrpcModelsMessage.EchoRequest
+        EchoResponse = FlextGrpcModelsMessage.EchoResponse
+        HealthRequest = FlextGrpcModelsMessage.HealthRequest
+        HealthResponse = FlextGrpcModelsMessage.HealthResponse
+        StreamInfo = FlextGrpcModelsMessage.StreamInfo
+        HealthCheck = FlextGrpcModelsMessage.HealthCheck
+        OperationExecutionRequest = FlextGrpcModelsMessage.OperationExecutionRequest
+        ClientConfig = FlextGrpcModelsChannel.ClientConfig
+        ChannelConfig = FlextGrpcModelsChannel.ChannelConfig
+        StateTransition = FlextGrpcModelsChannel.StateTransition
+        StateMachine = FlextGrpcModelsChannel.StateMachine
+        OperationSpec = FlextGrpcModelsChannel.OperationSpec
+        Request = FlextGrpcModelsChannel.Request
+        Response = FlextGrpcModelsChannel.Response
+        Payload = FlextGrpcModelsMessage.Payload
+        Entity = FlextGrpcModelsChannel.Entity
+        Channel = FlextGrpcModelsChannel.Channel
+        Server = FlextGrpcModelsRuntime.Server
+        Service = FlextGrpcModelsRuntime.Service
+        Client = FlextGrpcModelsRuntime.Client
+        GrpcStream = FlextGrpcModelsRuntime.GrpcStream
+        StreamRuntimeState = FlextGrpcModelsRuntime.StreamRuntimeState
+        CompleteSetup = FlextGrpcModelsRuntime.CompleteSetup
 
 
 m = FlextGrpcModels

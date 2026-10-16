@@ -10,15 +10,13 @@ from typing import Protocol, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc._protocols import (
-    FlextGrpcProtocolsBase,
-    channel_protocols as _channel_protocols,
-    connection_protocols as _connection_protocols,
-    resource_protocols as _resource_protocols,
-    server_protocols as _server_protocols,
-    service_protocols as _service_protocols,
-    stream_protocols as _stream_protocols,
-)
+from flext_grpc._protocols import FlextGrpcProtocolsBase
+from flext_grpc._protocols.channel_protocols import FlextGrpcProtocolsChannel
+from flext_grpc._protocols.connection_protocols import FlextGrpcProtocolsConnection
+from flext_grpc._protocols.resource_protocols import FlextGrpcProtocolsResource
+from flext_grpc._protocols.server_protocols import FlextGrpcProtocolsServer
+from flext_grpc._protocols.service_protocols import FlextGrpcProtocolsService
+from flext_grpc._protocols.stream_protocols import FlextGrpcProtocolsStream
 
 
 class FlextGrpcProtocols(FlextCliProtocols):
@@ -53,34 +51,34 @@ class FlextGrpcProtocols(FlextCliProtocols):
         metrics collection, and configuration.
         """
 
-        ClientConnection = _connection_protocols.ClientConnection
-        ServerLifecycle = _server_protocols.ServerLifecycle
-        StreamProcessor = _stream_protocols.StreamProcessor
-        GrpcServicer = _server_protocols.GrpcServicer
-        Server = _server_protocols.Server
-        GrpcMessage = _stream_protocols.GrpcMessage
-        Client = _connection_protocols.Client
-        GrpcStream = _stream_protocols.GrpcStream
-        Streaming = _stream_protocols.Streaming
-        GrpcMethodHandler = _service_protocols.GrpcMethodHandler
-        Service = _service_protocols.Service
-        Channel = _channel_protocols.Channel
-        Metrics = _service_protocols.Metrics
-        Configuration = _service_protocols.Configuration
-        GrpcResource = _resource_protocols.GrpcResource
-        ResourceManager = _resource_protocols.ResourceManager
-        GrpcCallbackFunction = _resource_protocols.GrpcCallbackFunction
-        GrpcChannel = _channel_protocols.GrpcChannel
-        GrpcRpcHandler = _server_protocols.GrpcRpcHandler
-        GrpcReadyFuture = _channel_protocols.GrpcReadyFuture
-        GrpcServer = _server_protocols.GrpcServer
-        GrpcServicerContext = _server_protocols.GrpcServicerContext
-        GrpcStub = _connection_protocols.GrpcStub
-        GrpcChannelCredentials = _channel_protocols.GrpcChannelCredentials
-        GrpcCallFailure = _connection_protocols.GrpcCallFailure
-        GrpcRuntime = _resource_protocols.GrpcRuntime
-        EntityFactory = _resource_protocols.EntityFactory
-        OperationHandler = _resource_protocols.OperationHandler
+        ClientConnection = FlextGrpcProtocolsConnection.ClientConnection
+        ServerLifecycle = FlextGrpcProtocolsServer.ServerLifecycle
+        StreamProcessor = FlextGrpcProtocolsStream.StreamProcessor
+        GrpcServicer = FlextGrpcProtocolsServer.GrpcServicer
+        Server = FlextGrpcProtocolsServer.Server
+        GrpcMessage = FlextGrpcProtocolsStream.GrpcMessage
+        Client = FlextGrpcProtocolsConnection.Client
+        GrpcStream = FlextGrpcProtocolsStream.GrpcStream
+        Streaming = FlextGrpcProtocolsStream.Streaming
+        GrpcMethodHandler = FlextGrpcProtocolsService.GrpcMethodHandler
+        Service = FlextGrpcProtocolsService.Service
+        Channel = FlextGrpcProtocolsChannel.Channel
+        Metrics = FlextGrpcProtocolsService.Metrics
+        Configuration = FlextGrpcProtocolsService.Configuration
+        GrpcResource = FlextGrpcProtocolsResource.GrpcResource
+        ResourceManager = FlextGrpcProtocolsResource.ResourceManager
+        GrpcCallbackFunction = FlextGrpcProtocolsResource.GrpcCallbackFunction
+        GrpcChannel = FlextGrpcProtocolsChannel.GrpcChannel
+        GrpcRpcHandler = FlextGrpcProtocolsServer.GrpcRpcHandler
+        GrpcReadyFuture = FlextGrpcProtocolsChannel.GrpcReadyFuture
+        GrpcServer = FlextGrpcProtocolsServer.GrpcServer
+        GrpcServicerContext = FlextGrpcProtocolsServer.GrpcServicerContext
+        GrpcStub = FlextGrpcProtocolsConnection.GrpcStub
+        GrpcChannelCredentials = FlextGrpcProtocolsChannel.GrpcChannelCredentials
+        GrpcCallFailure = FlextGrpcProtocolsConnection.GrpcCallFailure
+        GrpcRuntime = FlextGrpcProtocolsResource.GrpcRuntime
+        EntityFactory = FlextGrpcProtocolsResource.EntityFactory
+        OperationHandler = FlextGrpcProtocolsResource.OperationHandler
 
 
 p = FlextGrpcProtocols
