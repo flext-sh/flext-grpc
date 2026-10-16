@@ -14,6 +14,7 @@ from abc import ABC
 from typing import override
 
 from flext_core import FlextService, r
+
 from flext_grpc import m, p, t
 from flext_grpc._settings import FlextGrpcSettings
 
@@ -40,6 +41,7 @@ class FlextGrpcServiceBase(FlextService[FlextGrpcSettings], ABC):
 
         Returns:
             The resulting ``p.Result[FlextGrpcSettings]``.
+
         """
         return r[FlextGrpcSettings].ok(self.grpc_config)
 

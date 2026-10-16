@@ -35,6 +35,7 @@ class FlextGrpcServiceHandlerImpl:
 
         Returns:
             The handler of each ``c.Grpc.ServiceMethod``.
+
         """
         return MappingProxyType({
             c.Grpc.ServiceMethod.ECHO: self.echo,
@@ -48,8 +49,13 @@ class FlextGrpcServiceHandlerImpl:
     ) -> Message:
         """Echo the request message tagged with this server's bound target.
 
+        Args:
+            request: Encoded ``EchoRequest`` protobuf message.
+            _context: gRPC servicer context (unused).
+
         Returns:
             The generated ``EchoResponse`` message.
+
         """
         echo_request = u.Grpc.decode_message(m.Grpc.EchoRequest, request).unwrap()
         return u.Grpc.encode_message(
@@ -67,8 +73,13 @@ class FlextGrpcServiceHandlerImpl:
     ) -> Message:
         """Report the serving status of the requested service.
 
+        Args:
+            request: Encoded ``HealthRequest`` protobuf message.
+            _context: gRPC servicer context (unused).
+
         Returns:
             The generated ``HealthResponse`` message.
+
         """
         health_request = u.Grpc.decode_message(
             m.Grpc.HealthRequest,

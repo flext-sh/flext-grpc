@@ -9,8 +9,10 @@ from __future__ import annotations
 import pytest
 
 from flext_grpc import FlextGrpc
-from flext_grpc.services.connection_pool import FlextGrpcConnectionPoolImpl
-from flext_grpc.services.metrics import FlextGrpcMetricsCollectorImpl
+from flext_grpc.services import (
+    FlextGrpcConnectionPoolImpl,
+    FlextGrpcMetricsCollectorImpl,
+)
 
 
 @pytest.fixture(name="grpc_facade")
@@ -19,6 +21,7 @@ def fixture_grpc_facade() -> FlextGrpc:
 
     Returns:
         The resulting ``FlextGrpc``.
+
     """
     return FlextGrpc()
 
@@ -29,6 +32,7 @@ def fixture_connection_pool() -> FlextGrpcConnectionPoolImpl:
 
     Returns:
         The resulting ``FlextGrpcConnectionPoolImpl``.
+
     """
     return FlextGrpcConnectionPoolImpl(max_size=5)
 
@@ -39,5 +43,6 @@ def fixture_metrics_collector() -> FlextGrpcMetricsCollectorImpl:
 
     Returns:
         The resulting ``FlextGrpcMetricsCollectorImpl``.
+
     """
     return FlextGrpcMetricsCollectorImpl()

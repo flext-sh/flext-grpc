@@ -14,16 +14,8 @@ from __future__ import annotations
 
 from flext_cli import cli
 
-from flext_grpc import (
-    FlextGrpc,
-    FlextGrpcConstants,
-    FlextGrpcModels,
-    FlextGrpcSettings,
-    c,
-    p,
-    r,
-    t,
-)
+from examples import c, p, r, t
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcModels, FlextGrpcSettings
 
 
 class ExamplesFlextGrpcAdvancedUsage:
@@ -98,6 +90,7 @@ class ExamplesFlextGrpcAdvancedUsage:
 
             Returns:
                 The resulting ``list[p.Result[FlextGrpcModels.Grpc.Server]]``.
+
             """
             server_results: list[p.Result[FlextGrpcModels.Grpc.Server]] = []
             for i in range(count):
@@ -127,6 +120,7 @@ class ExamplesFlextGrpcAdvancedUsage:
 
             Returns:
                 The resulting ``t.MappingKV[str, t.MappingKV[str, str]]``.
+
             """
             status: t.MutableMappingKV[str, t.MappingKV[str, str]] = {}
             for server_id, server in self.servers.items():
@@ -146,6 +140,7 @@ class ExamplesFlextGrpcAdvancedUsage:
 
             Returns:
                 The resulting ``t.MappingKV[str, bool]``.
+
             """
             results: t.MutableMappingKV[str, bool] = {}
             for server_id, server in self.servers.items():
@@ -162,6 +157,7 @@ class ExamplesFlextGrpcAdvancedUsage:
 
             Returns:
                 The resulting ``t.MappingKV[str, bool]``.
+
             """
             results: t.MutableMappingKV[str, bool] = {}
             for server_id, server in self.servers.items():
@@ -195,6 +191,7 @@ class ExamplesFlextGrpcAdvancedUsage:
 
             Returns:
                 The resulting ``p.Result[FlextGrpcModels.Grpc.CompleteSetup]``.
+
             """
             c_facade = self._outer.c
             if host is None:

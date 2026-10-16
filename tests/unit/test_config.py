@@ -15,10 +15,9 @@ from __future__ import annotations
 from typing import Final
 
 import pytest
-from flext_tests import tm
 
 from flext_grpc import FlextGrpcSettings, settings
-from tests import c
+from tests import c, tm
 
 _TIMEOUT_TOLERANCE: Final[float] = 0.01
 

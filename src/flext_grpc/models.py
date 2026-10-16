@@ -15,10 +15,11 @@ from types import MappingProxyType
 from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
-
 from flext_core import r
+
 from flext_grpc import c, p, t
-from flext_grpc._models import FlextGrpcConfigModels, FlextGrpcModelsBase
+from flext_grpc._models.base import FlextGrpcModelsBase
+from flext_grpc._models.config import FlextGrpcConfigModels
 
 
 class FlextGrpcModels(FlextCliModels):
@@ -32,7 +33,7 @@ class FlextGrpcModels(FlextCliModels):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Grpc(FlextGrpcConfigModels, FlextGrpcModelsBase):
+    class Grpc(FlextGrpcModelsBase, FlextGrpcConfigModels):
         """Domain models for gRPC core business entities."""
 
         # =========================================================================
@@ -179,12 +180,12 @@ class FlextGrpcModels(FlextCliModels):
                 """Perform a generic state transition with validation.
 
                 Args:
-                    current: Current state
-                    target: Target state
-                    allowed_transitions: Map of allowed transitions
+                    current: Current state.
+                    target: Target state.
+                    allowed_transitions: Map of allowed transitions.
 
                 Returns:
-                    r with state update dict on success
+                    Result wrapping the state transition on success.
 
                 """
                 if (
@@ -281,8 +282,13 @@ class FlextGrpcModels(FlextCliModels):
             def from_values(cls, **values: t.JsonPayload | None) -> Self:
                 """Build payload from keyword values.
 
+                Args:
+                    **values: Payload entries keyed by name; ``None`` and
+                        non-primitive values are normalized to strings.
+
                 Returns:
                     The resulting ``Self``.
+
                 """
 
                 def normalize_payload_value(
@@ -304,13 +310,14 @@ class FlextGrpcModels(FlextCliModels):
             """Generic base entity with functional patterns."""
 
             def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
-                """Functional copy using r.
+                """Copy the entity with field updates applied.
 
                 Args:
-                **kwargs: u.Field updates for the entity
+                    **kwargs: Field updates applied to the entity copy.
 
                 Returns:
-                    The resulting ``p.Result[Self]``.
+                    Result wrapping the updated entity copy.
+
                 """
                 return r[Self].create_from_callable(
                     lambda: self.model_copy(update=kwargs),
@@ -341,6 +348,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -353,6 +361,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return r[Self].ok(
                     self.model_copy(update={"state": c.Grpc.ChannelState.IDLE}),
@@ -363,6 +372,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``bool``.
+
                 """
                 # ChannelState is a StrEnum, so its members compare as plain strings.
                 # `c.Grpc` widens to Any through the facade MRO for mypy, which would
@@ -377,6 +387,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -389,6 +400,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[bool]``.
+
                 """
                 if not self.target.strip():
                     return r[bool].fail("Channel target cannot be empty")
@@ -425,13 +437,14 @@ class FlextGrpcModels(FlextCliModels):
             ] = None
 
             def add_service(self, service: p.Grpc.GrpcServicer) -> p.Result[Self]:
-                """Add service functionally.
+                """Add a gRPC servicer to the server.
 
                 Args:
-                service: gRPC service t.JsonValue (dynamic type from grpc library)
+                    service: gRPC servicer to register on the server.
 
                 Returns:
-                    The resulting ``p.Result[Self]``.
+                    Result wrapping the server with the service added.
+
                 """
                 return r[Self].ok(
                     self.model_copy(
@@ -444,6 +457,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -456,6 +470,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 if self.state not in {"stopping", "running"}:
                     return (
@@ -474,6 +489,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -486,6 +502,7 @@ class FlextGrpcModels(FlextCliModels):
 
                 Returns:
                     The resulting ``p.Result[Self]``.
+
                 """
                 return self.transition(
                     self.state,
@@ -494,10 +511,11 @@ class FlextGrpcModels(FlextCliModels):
                 ).map(lambda update: self.model_copy(update={"state": update.state}))
 
             def validate_business_rules(self) -> p.Result[bool]:
-                """Delegate validation to generic validators.
+                """Validate the server host, port range, and worker bound.
 
                 Returns:
-                    The resulting ``p.Result[bool]``.
+                    Result holding the validation verdict.
+
                 """
                 if not self.host.strip():
                     return r[bool].fail("Server host cannot be empty")
@@ -527,12 +545,16 @@ class FlextGrpcModels(FlextCliModels):
             def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
                 """Validate methods list is not empty with valid items.
 
+                Args:
+                    v: Methods sequence candidate.
+
                 Returns:
-                    The resulting ``t.StrSequence``.
+                    The validated methods sequence.
 
                 Raises:
-                    ValueError: If methods cannot be empty; or if method cannot be
-                        empty.
+                    ValueError: If the methods list is empty or a method is
+                        blank.
+
                 """
                 if not v:
                     msg = "methods cannot be empty"
@@ -548,11 +570,15 @@ class FlextGrpcModels(FlextCliModels):
             def validate_name(cls, v: str) -> str:
                 """Validate name is not empty or whitespace.
 
+                Args:
+                    v: Name candidate.
+
                 Returns:
-                    The resulting ``str``.
+                    The validated name.
 
                 Raises:
-                    ValueError: If name cannot be empty.
+                    ValueError: If the name is empty or whitespace.
+
                 """
                 if not v or not v.strip():
                     msg = "name cannot be empty"
@@ -560,10 +586,15 @@ class FlextGrpcModels(FlextCliModels):
                 return v
 
             def add_method(self, method_name: str) -> p.Result[Self]:
-                """Add method functionally.
+                """Add an RPC method name to the service.
+
+                Args:
+                    method_name: Method name to register.
 
                 Returns:
-                    The resulting ``p.Result[Self]``.
+                    Result wrapping the service with the method added, or a
+                    failure result for blank or duplicate names.
+
                 """
                 if not method_name.strip() or method_name in self.methods:
                     return r[Self].fail("Invalid method").map(lambda _unused: self)
@@ -574,10 +605,14 @@ class FlextGrpcModels(FlextCliModels):
                 )
 
             def has_method(self, method_name: str) -> bool:
-                """Check method existence.
+                """Check whether the method name is registered.
+
+                Args:
+                    method_name: Method name to look up.
 
                 Returns:
-                    The resulting ``bool``.
+                    ``True`` when the method name is registered.
+
                 """
                 return method_name in self.methods
 
@@ -600,10 +635,14 @@ class FlextGrpcModels(FlextCliModels):
             ] = None
 
             def connect_to(self, target: str) -> p.Result[Self]:
-                """Connect functionally.
+                """Connect the client to the target by creating a channel.
+
+                Args:
+                    target: gRPC server target address.
 
                 Returns:
-                    The resulting ``p.Result[Self]``.
+                    Result wrapping the client with the channel attached.
+
                 """
                 channel = FlextGrpcModels.Grpc.Channel(
                     target=target,
@@ -616,10 +655,11 @@ class FlextGrpcModels(FlextCliModels):
                 )
 
             def validate_business_rules(self) -> p.Result[bool]:
-                """Delegate validation.
+                """Validate the client business rules through its channel.
 
                 Returns:
-                    The resulting ``p.Result[bool]``.
+                    Result holding the validation verdict.
+
                 """
                 if self.channel and self.channel.validate_business_rules().failure:
                     return r[bool].fail("Invalid channel")
@@ -650,11 +690,15 @@ class FlextGrpcModels(FlextCliModels):
             def validate_method_name(cls, v: str) -> str:
                 """Validate method_name is not empty or whitespace.
 
+                Args:
+                    v: Method name candidate.
+
                 Returns:
-                    The resulting ``str``.
+                    The validated method name.
 
                 Raises:
-                    ValueError: If method_name cannot be empty.
+                    ValueError: If the method name is empty or whitespace.
+
                 """
                 if not v or not v.strip():
                     msg = "method_name cannot be empty"

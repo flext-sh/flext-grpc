@@ -10,10 +10,8 @@ import time
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, t, u
-from flext_grpc.services._entities.connection_pool_impl import (
+from flext_grpc.services._entities import (
     FlextGrpcConnectionPoolImpl,
-)
-from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
 
@@ -36,8 +34,12 @@ class FlextGrpcClientManagerImpl:
     def connect(self, target: str) -> p.Result[m.Grpc.Client]:
         """Establish client connection with pooling.
 
+        Args:
+            target: gRPC server target address to connect to.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         if target in self._active_channels:
             return u.Grpc.create_client_entity(target=target)
@@ -60,8 +62,12 @@ class FlextGrpcClientManagerImpl:
     def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
         """Disconnect client and cleanup resources.
 
+        Args:
+            client: Client entity whose connection is closed.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Client]``.
+
         """
         target = ""
         if client.channel is not None:
@@ -80,8 +86,12 @@ class FlextGrpcClientManagerImpl:
     def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
         """Get client connection status.
 
+        Args:
+            client: Client entity to inspect.
+
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         target = ""
         if client.channel is not None:
@@ -97,15 +107,16 @@ class FlextGrpcClientManagerImpl:
         method: str,
         request: t.JsonMapping | None,
     ) -> p.Result[m.Grpc.Payload]:
-        """Execute gRPC call through client.
+        """Execute a gRPC call through the client.
 
         Args:
-        client: Client entity
-        method: gRPC method name
-        request: Request message (gRPC protocol message - dynamic type)
+            client: Client entity used for the call.
+            method: RPC method name to invoke.
+            request: Optional request payload mapping.
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         target = ""
         if client.channel is not None:
@@ -131,6 +142,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         echo_request = u.validate_value(m.Grpc.EchoRequest, request)
         if echo_request.failure:
@@ -159,6 +171,7 @@ class FlextGrpcClientManagerImpl:
 
         Returns:
             The resulting ``p.Result[m.Grpc.Payload]``.
+
         """
         health_request = u.validate_value(m.Grpc.HealthRequest, request or {})
         if health_request.failure:

@@ -11,22 +11,20 @@ from typing import override
 from flext_cli import FlextCliUtilities
 
 from flext_grpc import c, m, p, t
-from flext_grpc._utilities import (
-    FlextGrpcUtilitiesBase,
-    FlextGrpcUtilitiesGrpc,
-    FlextGrpcUtilitiesGrpcRuntime,
-    FlextGrpcUtilitiesGrpcService,
-)
+from flext_grpc._utilities.base import FlextGrpcUtilitiesBase
+from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
+from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
+from flext_grpc._utilities.grpc_service import FlextGrpcUtilitiesGrpcService
 
 
 class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(
+        FlextGrpcUtilitiesBase,
         FlextGrpcUtilitiesGrpc,
         FlextGrpcUtilitiesGrpcRuntime,
         FlextGrpcUtilitiesGrpcService,
-        FlextGrpcUtilitiesBase,
     ):
         """Public gRPC utility namespace with explicit local signatures.
 
@@ -43,8 +41,13 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Channel]:
             """Create a typed channel entity from validated inputs.
 
+            Args:
+                target: gRPC server target address.
+                options: Optional channel options mapping.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Channel]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_channel_entity(
                 target=target,
@@ -59,8 +62,13 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Client]:
             """Create a typed client entity backed by a typed channel entity.
 
+            Args:
+                target: gRPC server target address.
+                options: Optional client options mapping.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Client]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_client_entity(
                 target=target,
@@ -76,8 +84,14 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Server]:
             """Create a typed server entity from validated inputs.
 
+            Args:
+                host: Server bind host address.
+                port: Server listen port number.
+                max_workers: Maximum worker threads for request handling.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Server]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_server_entity(
                 host=host,
@@ -93,8 +107,13 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.Service]:
             """Create a typed service entity with a minimal valid method set.
 
+            Args:
+                name: Service name identifier.
+                methods: Optional RPC method names.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.Service]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_service_entity(
                 name=name,
@@ -109,8 +128,13 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         ) -> p.Result[m.Grpc.GrpcStream]:
             """Create a typed stream entity from validated inputs.
 
+            Args:
+                method_name: RPC method name backing the stream.
+                stream_type: Stream communication pattern.
+
             Returns:
                 The resulting ``p.Result[m.Grpc.GrpcStream]``.
+
             """
             return FlextGrpcUtilitiesGrpc.create_stream_entity(
                 method_name=method_name,
@@ -122,8 +146,12 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         def validate_target(target: str) -> bool:
             """Validate a gRPC target string in the form host:port.
 
+            Args:
+                target: Target address candidate.
+
             Returns:
                 The resulting ``bool``.
+
             """
             return FlextGrpcUtilitiesGrpc.validate_target(target)
 

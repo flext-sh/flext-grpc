@@ -11,9 +11,8 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import pytest
-from flext_tests import tm
 
-from tests import m
+from tests import m, tm
 
 
 class TestsFlextGrpcModelsUnit:
