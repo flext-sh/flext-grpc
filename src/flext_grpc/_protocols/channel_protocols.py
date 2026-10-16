@@ -14,129 +14,130 @@ if TYPE_CHECKING:
     from flext_grpc import t
 
 
-@runtime_checkable
-class GrpcChannel(Protocol):
-    """Protocol for gRPC channel operations (duck typing for grpc.Channel)."""
+class FlextGrpcProtocolsChannel:
+    """gRPC channel protocol contracts composed into ``p.Grpc``."""
 
-    def close(self) -> None:
-        """Close the channel."""
-        ...
+    @runtime_checkable
+    class GrpcChannel(Protocol):
+        """Protocol for gRPC channel operations (duck typing for grpc.Channel)."""
 
-    def unsubscribe(self, callback: Callable[..., None]) -> None:
-        """Remove a subscription callback from the channel.
+        def close(self) -> None:
+            """Close the channel."""
+            ...
 
-        Args:
-            callback: Callback previously registered on the channel.
+        def unsubscribe(self, callback: Callable[..., None]) -> None:
+            """Remove a subscription callback from the channel.
 
+            Args:
+                callback: Callback previously registered on the channel.
+
+            """
+            ...
+
+    @runtime_checkable
+    class GrpcChannelCredentials(Protocol):
+        """Protocol for gRPC channel credentials.
+
+        Duck typing for ``grpc.ChannelCredentials``.
         """
-        ...
 
+    @runtime_checkable
+    class Channel(Protocol):
+        """Protocol for gRPC channel management operations."""
 
-@runtime_checkable
-class GrpcChannelCredentials(Protocol):
-    """Protocol for gRPC channel credentials.
+        def close_channel(
+            self,
+            channel: FlextGrpcProtocolsChannel.GrpcChannel,
+        ) -> p.Result[bool]:
+            """Close gRPC channel.
 
-    Duck typing for ``grpc.ChannelCredentials``.
-    """
+            Args:
+                channel: Channel to close.
 
+            Returns:
+                The resulting ``p.Result[bool]``.
 
-@runtime_checkable
-class Channel(Protocol):
-    """Protocol for gRPC channel management operations."""
+            """
+            ...
 
-    def close_channel(
-        self,
-        channel: GrpcChannel,
-    ) -> p.Result[bool]:
-        """Close gRPC channel.
+        def create_channel(
+            self,
+            target: str,
+            options: t.MappingKV[str, t.JsonValue | None] | None = None,
+        ) -> p.Result[FlextGrpcProtocolsChannel.GrpcChannel]:
+            """Create gRPC channel.
 
-        Args:
-            channel: Channel to close.
+            Args:
+                target: gRPC server target address.
+                options: Optional channel options keyed by name.
 
-        Returns:
-            The resulting ``p.Result[bool]``.
+            Returns:
+                The resulting ``p.Result[GrpcChannel]``.
 
-        """
-        ...
+            """
+            ...
 
-    def create_channel(
-        self,
-        target: str,
-        options: t.MappingKV[str, t.JsonValue | None] | None = None,
-    ) -> p.Result[GrpcChannel]:
-        """Create gRPC channel.
+        def channel_state(
+            self,
+            channel: FlextGrpcProtocolsChannel.GrpcChannel,
+        ) -> p.Result[str]:
+            """Get gRPC channel connection state.
 
-        Args:
-            target: gRPC server target address.
-            options: Optional channel options keyed by name.
+            Args:
+                channel: Channel to inspect.
 
-        Returns:
-            The resulting ``p.Result[GrpcChannel]``.
+            Returns:
+                The resulting ``p.Result[str]``.
 
-        """
-        ...
+            """
+            ...
 
-    def channel_state(
-        self,
-        channel: GrpcChannel,
-    ) -> p.Result[str]:
-        """Get gRPC channel connection state.
+        def wait_for_state_change(
+            self,
+            channel: FlextGrpcProtocolsChannel.GrpcChannel,
+            last_state: str,
+            *,
+            timeout: float = 30.0,
+        ) -> p.Result[bool]:
+            """Wait for channel state change.
 
-        Args:
-            channel: Channel to inspect.
+            Args:
+                channel: Channel to observe.
+                last_state: Previously observed state name.
+                timeout: Maximum wait in seconds.
 
-        Returns:
-            The resulting ``p.Result[str]``.
+            Returns:
+                The resulting ``p.Result[bool]``.
 
-        """
-        ...
+            """
+            ...
 
-    def wait_for_state_change(
-        self,
-        channel: GrpcChannel,
-        last_state: str,
-        *,
-        timeout: float = 30.0,
-    ) -> p.Result[bool]:
-        """Wait for channel state change.
+    @runtime_checkable
+    class GrpcReadyFuture(Protocol):
+        """Protocol for gRPC ready futures."""
 
-        Args:
-            channel: Channel to observe.
-            last_state: Previously observed state name.
-            timeout: Maximum wait in seconds.
+        def result(self, timeout: float | None = None) -> None:
+            """Wait until the underlying operation is ready.
 
-        Returns:
-            The resulting ``p.Result[bool]``.
+            Args:
+                timeout: Maximum wait in seconds, or ``None`` to wait indefinitely.
 
-        """
-        ...
+            """
+            ...
 
+        def cancel(self) -> bool:
+            """Release the channel subscription when readiness ends.
 
-@runtime_checkable
-class GrpcReadyFuture(Protocol):
-    """Protocol for gRPC ready futures."""
+            Returns:
+                ``True`` when the pending readiness attempt was cancelled.
 
-    def result(self, timeout: float | None = None) -> None:
-        """Wait until the underlying operation is ready.
-
-        Args:
-            timeout: Maximum wait in seconds, or ``None`` to wait indefinitely.
-
-        """
-        ...
-
-    def cancel(self) -> bool:
-        """Release the channel subscription when readiness ends.
-
-        Returns:
-            ``True`` when the pending readiness attempt was cancelled.
-
-        """
-        ...
+            """
+            ...
 
 
 __all__: list[str] = [
     "Channel",
+    "FlextGrpcProtocolsChannel",
     "GrpcChannel",
     "GrpcChannelCredentials",
     "GrpcReadyFuture",
