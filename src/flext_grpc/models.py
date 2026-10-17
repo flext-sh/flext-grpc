@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """FLEXT gRPC Models - Consolidated Pydantic v2 Models.
 
 Unified namespace with nested classes following FLEXT principles and SOLID design.
@@ -11,11 +12,13 @@ from __future__ import annotations
 
 from flext_cli import FlextCliModels
 
-from flext_grpc._models.base import FlextGrpcModelsBase
-from flext_grpc._models.channel_models import FlextGrpcModelsChannel
-from flext_grpc._models.config import FlextGrpcConfigModels
-from flext_grpc._models.message_models import FlextGrpcModelsMessage
-from flext_grpc._models.runtime_models import FlextGrpcModelsRuntime
+from flext_grpc._models import (
+    FlextGrpcConfigModels,
+    FlextGrpcModelsBase,
+    FlextGrpcModelsChannel,
+    FlextGrpcModelsMessage,
+    FlextGrpcModelsRuntime,
+)
 
 
 class FlextGrpcModels(FlextCliModels):
@@ -29,7 +32,13 @@ class FlextGrpcModels(FlextCliModels):
     # DOMAIN MODELS - Core business entities
     # =========================================================================
 
-    class Grpc(FlextGrpcModelsBase, FlextGrpcConfigModels):
+    class Grpc(
+        FlextGrpcModelsBase,
+        FlextGrpcModelsChannel,
+        FlextGrpcConfigModels,
+        FlextGrpcModelsMessage,
+        FlextGrpcModelsRuntime,
+    ):
         """Domain models for gRPC core business entities."""
 
         # =====================================================================

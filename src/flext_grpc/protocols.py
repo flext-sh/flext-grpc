@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """gRPC protocols for FLEXT ecosystem.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
@@ -10,13 +11,15 @@ from typing import Protocol, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc._protocols import FlextGrpcProtocolsBase
-from flext_grpc._protocols.channel_protocols import FlextGrpcProtocolsChannel
-from flext_grpc._protocols.connection_protocols import FlextGrpcProtocolsConnection
-from flext_grpc._protocols.resource_protocols import FlextGrpcProtocolsResource
-from flext_grpc._protocols.server_protocols import FlextGrpcProtocolsServer
-from flext_grpc._protocols.service_protocols import FlextGrpcProtocolsService
-from flext_grpc._protocols.stream_protocols import FlextGrpcProtocolsStream
+from flext_grpc._protocols import (
+    FlextGrpcProtocolsBase,
+    FlextGrpcProtocolsChannel,
+    FlextGrpcProtocolsConnection,
+    FlextGrpcProtocolsResource,
+    FlextGrpcProtocolsServer,
+    FlextGrpcProtocolsService,
+    FlextGrpcProtocolsStream,
+)
 
 
 class FlextGrpcProtocols(FlextCliProtocols):

@@ -14,13 +14,17 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc._constants.base import FlextGrpcConstantsBase
+    from flext_grpc._constants.derived import FlextGrpcConstantsDerived
 
 
-__all__: tuple[str, ...] = ("FlextGrpcConstantsBase",)
+__all__: tuple[str, ...] = ("FlextGrpcConstantsBase", "FlextGrpcConstantsDerived")
 
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({"FlextGrpcConstantsBase": ".base"}),
+    MappingProxyType({
+        "FlextGrpcConstantsBase": ".base",
+        "FlextGrpcConstantsDerived": ".derived",
+    }),
     public_exports=__all__,
 )

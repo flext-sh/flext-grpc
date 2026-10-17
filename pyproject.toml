@@ -61,6 +61,7 @@ Repository = "https://github.com/flext-sh/flext"
 
 [dependency-groups]
 dev = [
+  "flext-infra @ git+https://github.com/flext-sh/flext-infra.git@0.12.0-dev",
   "mkdocstrings-python>=2.0.9",
   "actionlint-py>=1.7.12.24",
   "bandit>=1.9.4",
@@ -469,8 +470,10 @@ runtime-evaluated-base-classes = [
   "flext_core.m.BaseModel",
   "flext_grpc.FlextGrpcServiceBase",
   "flext_grpc.FlextGrpcSettings",
-  "flext_grpc.models.Entity",
-  "flext_grpc.models.StateMachine",
+  "flext_grpc._models.channel_models.Entity",
+  "flext_grpc._models.channel_models.FlextGrpcModelsChannel.Entity",
+  "flext_grpc._models.channel_models.FlextGrpcModelsChannel.StateMachine",
+  "flext_grpc._models.channel_models.StateMachine",
   "flext_grpc.s",
   "flext_grpc.services.FlextGrpcApiRuntime",
   "flext_grpc.services.FlextGrpcClient",
