@@ -250,10 +250,4 @@ class FlextGrpcProtocolsService:
             ...
 
 
-__all__: list[str] = [
-    "Configuration",
-    "FlextGrpcProtocolsService",
-    "GrpcMethodHandler",
-    "Metrics",
-    "Service",
-]
+__all__: list[str] = ["FlextGrpcProtocolsService"]

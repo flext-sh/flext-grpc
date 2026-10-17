@@ -142,10 +142,4 @@ class FlextGrpcProtocolsConnection:
             ...
 
 
-__all__: list[str] = [
-    "Client",
-    "ClientConnection",
-    "FlextGrpcProtocolsConnection",
-    "GrpcCallFailure",
-    "GrpcStub",
-]
+__all__: list[str] = ["FlextGrpcProtocolsConnection"]

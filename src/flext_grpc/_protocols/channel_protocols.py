@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
+from flext_cli import p
+
 if TYPE_CHECKING:
     from collections.abc import Callable
 
@@ -135,10 +137,4 @@ class FlextGrpcProtocolsChannel:
             ...
 
 
-__all__: list[str] = [
-    "Channel",
-    "FlextGrpcProtocolsChannel",
-    "GrpcChannel",
-    "GrpcChannelCredentials",
-    "GrpcReadyFuture",
-]
+__all__: list[str] = ["FlextGrpcProtocolsChannel"]

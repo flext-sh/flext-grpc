@@ -160,12 +160,4 @@ class FlextGrpcProtocolsResource:
             ...
 
 
-__all__: list[str] = [
-    "EntityFactory",
-    "FlextGrpcProtocolsResource",
-    "GrpcCallbackFunction",
-    "GrpcResource",
-    "GrpcRuntime",
-    "OperationHandler",
-    "ResourceManager",
-]
+__all__: list[str] = ["FlextGrpcProtocolsResource"]

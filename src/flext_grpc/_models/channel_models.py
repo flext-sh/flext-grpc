@@ -10,9 +10,8 @@ from types import MappingProxyType
 from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
-from flext_core import r
 
-from flext_grpc import c, p, t
+from flext_grpc import c, p, r, t
 
 
 class FlextGrpcModelsChannel:
@@ -258,15 +257,4 @@ class FlextGrpcModelsChannel:
             return r[bool].ok(value=True)
 
 
-__all__: list[str] = [
-    "Channel",
-    "ChannelConfig",
-    "ClientConfig",
-    "Entity",
-    "FlextGrpcModelsChannel",
-    "OperationSpec",
-    "Request",
-    "Response",
-    "StateMachine",
-    "StateTransition",
-]
+__all__: list[str] = ["FlextGrpcModelsChannel"]

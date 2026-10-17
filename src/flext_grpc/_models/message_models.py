@@ -146,14 +146,4 @@ class FlextGrpcModelsMessage:
             return cls(values=normalized_values)
 
 
-__all__: list[str] = [
-    "EchoRequest",
-    "EchoResponse",
-    "FlextGrpcModelsMessage",
-    "HealthCheck",
-    "HealthRequest",
-    "HealthResponse",
-    "OperationExecutionRequest",
-    "Payload",
-    "StreamInfo",
-]
+__all__: list[str] = ["FlextGrpcModelsMessage"]
