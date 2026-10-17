@@ -27,11 +27,8 @@ class TestsFlextGrpcConstantsUnit:
         [
             ("NETWORK_DEFAULT_HOST", "127.0.0.1"),
             ("NETWORK_DEFAULT_GRPC_PORT", 50051),
-            ("NETWORK_MIN_PORT", 1),
-            ("NETWORK_MAX_PORT", 65535),
             ("SERVICE_DEFAULT_MAX_WORKERS", 10),
             ("VALIDATION_ADDRESS_PARTS_COUNT", 2),
-            ("VALIDATION_MAX_PORT_NUMBER", 65535),
             ("CLIENT_STREAMING_BUFFER_THRESHOLD", 10),
             ("SERVER_STREAMING_BATCH_SIZE", 100),
             ("BIDIRECTIONAL_STREAMING_QUEUE_SIZE", 1000),
@@ -43,19 +40,14 @@ class TestsFlextGrpcConstantsUnit:
 
     @staticmethod
     def test_port_bounds_are_ordered() -> None:
-        """The minimum port stays strictly below the maximum port."""
-        assert Grpc.NETWORK_MIN_PORT < Grpc.NETWORK_MAX_PORT
+        """The core port bounds stay strictly ordered through the facade MRO."""
+        assert c.MIN_PORT < c.MAX_PORT
 
     @staticmethod
     def test_default_grpc_port_within_valid_port_range() -> None:
         """The default port is a valid TCP port within the declared range."""
-        assert Grpc.NETWORK_MIN_PORT <= Grpc.NETWORK_DEFAULT_GRPC_PORT
-        assert Grpc.NETWORK_DEFAULT_GRPC_PORT <= Grpc.NETWORK_MAX_PORT
-
-    @staticmethod
-    def test_max_port_matches_validation_max() -> None:
-        """Network max port and validation max port express the same limit."""
-        tm.that(Grpc.NETWORK_MAX_PORT, eq=Grpc.VALIDATION_MAX_PORT_NUMBER)
+        assert c.MIN_PORT <= Grpc.NETWORK_DEFAULT_GRPC_PORT
+        assert Grpc.NETWORK_DEFAULT_GRPC_PORT <= c.MAX_PORT
 
     @staticmethod
     @pytest.mark.parametrize(

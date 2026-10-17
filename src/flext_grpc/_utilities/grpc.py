@@ -171,7 +171,7 @@ class FlextGrpcUtilitiesGrpc:
             The resulting ``bool``.
 
         """
-        return c.Grpc.NETWORK_MIN_PORT <= port <= c.Grpc.NETWORK_MAX_PORT
+        return c.MIN_PORT <= port <= c.MAX_PORT
 
     @staticmethod
     def validate_host(host: str) -> bool:
@@ -215,8 +215,8 @@ class FlextGrpcUtilitiesGrpc:
         return {
             "default_host": c.Grpc.NETWORK_DEFAULT_HOST,
             "default_port": c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
-            "min_port": c.Grpc.NETWORK_MIN_PORT,
-            "max_port": c.Grpc.NETWORK_MAX_PORT,
+            "min_port": c.MIN_PORT,
+            "max_port": c.MAX_PORT,
             "channel_states": [str(state) for state in c.Grpc.CHANNEL_STATES],
             "server_states": [str(state) for state in c.Grpc.SERVER_STATES],
         }

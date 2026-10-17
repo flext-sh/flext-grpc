@@ -32,7 +32,7 @@ class TestsFlextGrpcConfig:
         tm_grpc = cfg.Grpc
         tm.that(tm_grpc.host, is_=str)
         tm.that(tm_grpc.host.strip(), ne="")
-        assert 1 <= tm_grpc.port <= c.Grpc.NETWORK_MAX_PORT
+        assert 1 <= tm_grpc.port <= c.MAX_PORT
         assert tm_grpc.max_workers >= 1
         assert (
             abs(tm_grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE
