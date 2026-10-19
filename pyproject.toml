@@ -19,19 +19,10 @@ classifiers = [
   "Typing :: Typed",
 ]
 dependencies = [
-  "annotated-types>=0.8.0",
-  "beartype>=0.22.9",
-  "dependency-injector>=4.49.1",
   "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
   "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
   "grpcio>=1.84.0",
-  "packaging>=26.3",
   "protobuf>=7.36.2",
-  "pydantic>=2.14.1,<3",
-  "pydantic-settings>=2.15.0",
-  "pyyaml>=6.0.3",
-  "structlog>=25.5.0,<27",
-  "typing-extensions>=4.16.0",
 ]
 description = "FLEXT gRPC - High-Performance gRPC Services"
 keywords = ["enterprise", "flext", "grpc", "microservices", "protobuf", "typed"]
