@@ -14,7 +14,6 @@ from flext_grpc._utilities import (
     FlextGrpcUtilitiesGrpc,
     FlextGrpcUtilitiesGrpcRuntime,
     FlextGrpcUtilitiesGrpcService,
-    FlextGrpcUtilitiesGrpcSignatures,
 )
 
 
@@ -26,7 +25,6 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
         FlextGrpcUtilitiesGrpc,
         FlextGrpcUtilitiesGrpcRuntime,
         FlextGrpcUtilitiesGrpcService,
-        FlextGrpcUtilitiesGrpcSignatures,
     ):
         """Public gRPC utility namespace with explicit local signatures.
 

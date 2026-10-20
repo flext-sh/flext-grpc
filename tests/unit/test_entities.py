@@ -248,7 +248,7 @@ class TestsFlextGrpcEntitiesRelations:
             domain_events=[],
         )
         tm.that(service.name, eq="TestService")
-        tm.that(list(service.methods), eq=["m1", "m2"])
+        assert list(service.methods) == ["m1", "m2"]
 
     @staticmethod
     @pytest.mark.parametrize(

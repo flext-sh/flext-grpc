@@ -17,7 +17,6 @@ if TYPE_CHECKING:
     from flext_grpc._utilities.grpc import FlextGrpcUtilitiesGrpc
     from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
     from flext_grpc._utilities.grpc_service import FlextGrpcUtilitiesGrpcService
-    from flext_grpc._utilities.grpc_signatures import FlextGrpcUtilitiesGrpcSignatures
 
 
 __all__: tuple[str, ...] = (
@@ -25,7 +24,6 @@ __all__: tuple[str, ...] = (
     "FlextGrpcUtilitiesGrpc",
     "FlextGrpcUtilitiesGrpcRuntime",
     "FlextGrpcUtilitiesGrpcService",
-    "FlextGrpcUtilitiesGrpcSignatures",
 )
 
 install_lazy_exports(
@@ -36,7 +34,6 @@ install_lazy_exports(
         "FlextGrpcUtilitiesGrpc": ".grpc",
         "FlextGrpcUtilitiesGrpcRuntime": ".grpc_runtime",
         "FlextGrpcUtilitiesGrpcService": ".grpc_service",
-        "FlextGrpcUtilitiesGrpcSignatures": ".grpc_signatures",
     }),
     public_exports=__all__,
 )
