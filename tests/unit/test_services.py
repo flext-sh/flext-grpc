@@ -88,7 +88,7 @@ class TestsFlextGrpcServices:
                 sent.values["buffer_size"],
                 eq=min(count, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE),
             )
-        tm.that(tm.ok(grpc_facade.close_stream(stream)) is stream, eq=True)
+        tm.ok(tm.ok(grpc_facade.close_stream(stream)) is stream)
         tm.that(stream.method_name, eq=method_name)
         tm.fail(grpc_facade.send_data(stream, None))
 
@@ -171,7 +171,7 @@ class TestsFlextGrpcServices:
         connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Cleanup succeeds and reports True even with no active channels."""
-        tm.that(tm.ok(connection_pool.cleanup()), eq=True)
+        tm.ok(tm.ok(connection_pool.cleanup()))
 
     @staticmethod
     def test_connection_pool_acquire_on_empty_pool_fails_not_found(

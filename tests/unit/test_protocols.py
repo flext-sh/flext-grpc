@@ -117,7 +117,7 @@ class TestsFlextGrpcProtocolsUnit:
         """Each Grpc member is reported as a typing Protocol."""
         protocol = getattr(p.Grpc, protocol_name)
 
-        tm.that(is_protocol(protocol), eq=True)
+        tm.ok(is_protocol(protocol))
 
     @staticmethod
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
@@ -128,7 +128,7 @@ class TestsFlextGrpcProtocolsUnit:
 
         instance = _build_conforming_instance(members)
 
-        tm.that(isinstance(instance, protocol), eq=True)
+        tm.ok(isinstance(instance, protocol))
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -149,7 +149,7 @@ class TestsFlextGrpcProtocolsUnit:
 
         instance = _build_partial_instance(members, omit=missing_member)
 
-        tm.that(isinstance(instance, protocol), eq=False)
+        tm.fail(isinstance(instance, protocol))
 
     @staticmethod
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
@@ -157,7 +157,7 @@ class TestsFlextGrpcProtocolsUnit:
         """A plain object with none of the members fails isinstance."""
         protocol = getattr(p.Grpc, protocol_name)
 
-        tm.that(isinstance(object(), protocol), eq=False)
+        tm.fail(isinstance(object(), protocol))
 
     @staticmethod
     @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
@@ -170,7 +170,7 @@ class TestsFlextGrpcProtocolsUnit:
         # the observable runtime-checkability contract.
         result = isinstance(object(), protocol)
 
-        tm.that(result, eq=False)
+        tm.fail(result)
 
     @staticmethod
     def test_tests_namespace_composes_source_protocols_observably() -> None:
@@ -182,8 +182,8 @@ class TestsFlextGrpcProtocolsUnit:
         """
         instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
 
-        tm.that(isinstance(instance, FlextGrpcProtocols.Grpc.Server), eq=True)
-        tm.that(isinstance(instance, p.Grpc.Server), eq=True)
+        tm.ok(isinstance(instance, FlextGrpcProtocols.Grpc.Server))
+        tm.ok(isinstance(instance, p.Grpc.Server))
 
     @staticmethod
     def test_conforming_object_can_type_narrow_via_protocol() -> None:
@@ -197,4 +197,4 @@ class TestsFlextGrpcProtocolsUnit:
         # protocol machinery accepts, independent of the source definitions.
         instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
 
-        tm.that(isinstance(instance, _Marker), eq=True)
+        tm.ok(isinstance(instance, _Marker))

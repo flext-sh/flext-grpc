@@ -64,7 +64,7 @@ class TestsFlextGrpcApi:
     @pytest.mark.parametrize("target", ["localhost:50051"], ids=["valid"])
     def test_validate_target_valid(target: str) -> None:
         """Valid targets pass validation."""
-        tm.that(FlextGrpc().validate_target(target), eq=True)
+        tm.ok(FlextGrpc().validate_target(target))
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -73,7 +73,7 @@ class TestsFlextGrpcApi:
     )
     def test_validate_target_invalid(target: str) -> None:
         """Invalid targets fail validation."""
-        tm.that(FlextGrpc().validate_target(target), eq=False)
+        tm.fail(FlextGrpc().validate_target(target))
 
     @staticmethod
     def test_parse_address() -> None:
@@ -164,7 +164,7 @@ class TestsFlextGrpcApi:
         )
         tm.that(request.data, eq={"value": "test"})
         tm.that(request.operation.name, eq="test_operation")
-        tm.that(request.model_dump().get("valid"), eq=True)
+        tm.ok(request.model_dump().get("valid"))
 
     @staticmethod
     def test_response_creation() -> None:
@@ -180,5 +180,5 @@ class TestsFlextGrpcApi:
         )
         response = m.Grpc.Response(success=True, data=data, error=None, metadata={})
         tm.that(response.data, eq=data)
-        tm.that(response.success, eq=True)
-        tm.that(response.model_dump().get("has_error"), eq=False)
+        tm.ok(response.success)
+        tm.fail(response.model_dump().get("has_error"))

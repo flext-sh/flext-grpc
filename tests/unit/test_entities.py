@@ -166,7 +166,7 @@ class TestsFlextGrpcEntitiesChannel:
         """Connect -> mark_ready -> disconnect drives the readiness cycle."""
         ready = tm.ok(tm.ok(channel.connect()).mark_ready())
         tm.that(ready.state, eq="ready")
-        tm.that(ready.ready(), eq=True)
+        tm.ok(ready.ready())
         tm.that(tm.ok(ready.disconnect()).state, eq="idle")
 
     @staticmethod
@@ -269,8 +269,8 @@ class TestsFlextGrpcEntitiesRelations:
         """add_method returns a service exposing the new method via has_method."""
         service = m.Grpc.Service(name="S", methods=["m1"], domain_events=[])
         updated = tm.ok(service.add_method("m2"))
-        tm.that(updated.has_method("m2"), eq=True)
-        tm.that(service.has_method("m2"), eq=False)
+        tm.ok(updated.has_method("m2"))
+        tm.fail(service.has_method("m2"))
 
     @staticmethod
     def test_service_add_method_rejects_duplicate() -> None:
