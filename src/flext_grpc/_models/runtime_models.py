@@ -87,11 +87,7 @@ class FlextGrpcModelsRuntime:
 
             """
             if self.state not in {"stopping", "running"}:
-                return (
-                    r[Self]
-                    .fail(f"Cannot mark stopped from {self.state}")
-                    .map(lambda _unused: self)
-                )
+                return r[Self].fail(f"Cannot mark stopped from {self.state}")
             return r[Self].ok(
                 self.model_copy(
                     update={"state": c.Grpc.ServerState.STOPPED.value},
@@ -211,7 +207,7 @@ class FlextGrpcModelsRuntime:
 
             """
             if not method_name.strip() or method_name in self.methods:
-                return r[Self].fail("Invalid method").map(lambda _unused: self)
+                return r[Self].fail("Invalid method")
             return r[Self].ok(
                 self.model_copy(
                     update={"methods": [*self.methods, method_name]},

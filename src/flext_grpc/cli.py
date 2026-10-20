@@ -6,24 +6,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from flext_grpc import t
-
-
-def main(args: t.StrSequence | None = None) -> int:
+def main() -> int:
     """Console-script entry point — commands are not implemented yet.
-
-    Args:
-        args: Raw CLI argument sequence, accepted and ignored.
 
     Returns:
         Process exit code.
 
     """
-    _ = args
     return 0
 
 
-__all__: t.VariadicTuple[str] = ("main",)
+__all__: list[str] = ["main"]
