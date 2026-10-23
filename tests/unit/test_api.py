@@ -164,7 +164,7 @@ class TestsFlextGrpcApi:
         )
         tm.that(request.data, eq={"value": "test"})
         tm.that(request.operation.name, eq="test_operation")
-        tm.ok(request.model_dump().get("valid"))
+        tm.ok(request.valid)
 
     @staticmethod
     def test_response_creation() -> None:
@@ -181,4 +181,4 @@ class TestsFlextGrpcApi:
         response = m.Grpc.Response(success=True, data=data, error=None, metadata={})
         tm.that(response.data, eq=data)
         tm.ok(response.success)
-        tm.fail(response.model_dump().get("has_error"))
+        tm.fail(response.has_error)
