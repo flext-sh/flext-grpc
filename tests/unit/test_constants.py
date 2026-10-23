@@ -41,13 +41,13 @@ class TestsFlextGrpcConstantsUnit:
     @staticmethod
     def test_port_bounds_are_ordered() -> None:
         """The core port bounds stay strictly ordered through the facade MRO."""
-        assert c.MIN_PORT < c.MAX_PORT
+        tm.that(c.MIN_PORT < c.MAX_PORT, truth=True)
 
     @staticmethod
     def test_default_grpc_port_within_valid_port_range() -> None:
         """The default port is a valid TCP port within the declared range."""
-        assert c.MIN_PORT <= Grpc.NETWORK_DEFAULT_GRPC_PORT
-        assert Grpc.NETWORK_DEFAULT_GRPC_PORT <= c.MAX_PORT
+        tm.that(c.MIN_PORT <= Grpc.NETWORK_DEFAULT_GRPC_PORT, truth=True)
+        tm.that(Grpc.NETWORK_DEFAULT_GRPC_PORT <= c.MAX_PORT, truth=True)
 
     @staticmethod
     @pytest.mark.parametrize(

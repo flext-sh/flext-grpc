@@ -117,7 +117,7 @@ class TestsFlextGrpcServices:
         result = grpc_facade.connect_client("127.0.0.1:1")
 
         tm.fail(result)
-        assert result.error
+        tm.that(result.error, truth=True)
 
     # -- Facade: validate_target -----------------------------------------
 
@@ -141,7 +141,10 @@ class TestsFlextGrpcServices:
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
-        assert grpc_facade.validate_target(target) is expected
+        tm.that(
+            grpc_facade.validate_target(target),
+            where=lambda value: value is expected,
+        )
 
     # -- Facade: parse_address -------------------------------------------
 

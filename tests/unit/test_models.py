@@ -169,7 +169,7 @@ class TestsFlextGrpcModelsUnit:
         values = dict(payload.values)
         tm.that(values["missing"], eq="")
         tm.that(values["count"], eq=1)
-        assert values["items"] == "[1, 2]"
+        tm.that(values["items"], eq="[1, 2]")
 
     # ------------------------------------------------------------------
     # StateMachine: transition returns r[T] with correct outcome

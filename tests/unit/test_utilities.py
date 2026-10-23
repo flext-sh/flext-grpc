@@ -80,7 +80,7 @@ class TestsFlextGrpcUtilitiesUnit:
     def test_format_then_parse_is_round_trip() -> None:
         """format_address and parse_address are inverse operations."""
         formatted = u.Grpc.format_address("localhost", 50051)
-        assert u.Grpc.parse_address(formatted) == ("localhost", 50051)
+        tm.that(u.Grpc.parse_address(formatted), eq=("localhost", 50051))
 
     # ------------------------------------------------------------------
     # validate_target
@@ -249,7 +249,7 @@ class TestsFlextGrpcUtilitiesUnit:
         service: m.Grpc.Service = tm.ok(
             u.Grpc.create_service_entity("Svc", methods=["A", "B"]),
         )
-        assert service.methods == ["A", "B"]
+        tm.that(service.methods, eq=["A", "B"])
 
     @staticmethod
     def test_create_stream_entity_carries_method_and_type() -> None:
