@@ -189,7 +189,7 @@ class FlextGrpcModelsChannel:
             description="Channel configuration options",
         )
         grpc_channel: Annotated[
-            p.Grpc.GrpcChannel | None,
+            t.Port[p.Grpc.GrpcChannel] | None,
             FlextCliModels.Field(description="Underlying gRPC channel instance"),
         ] = None
 
