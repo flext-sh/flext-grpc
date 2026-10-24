@@ -42,11 +42,11 @@ class FlextGrpcModelsRuntime:
             ),
         ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
         services: Annotated[
-            t.SequenceOf[p.Grpc.GrpcServicer],
+            t.SequenceOf[t.Port[p.Grpc.GrpcServicer]],
             FlextCliModels.Field(description="gRPC services"),
         ] = FlextCliModels.Field(default_factory=tuple)
         grpc_server: Annotated[
-            p.Grpc.GrpcServer | None,
+            t.Port[p.Grpc.GrpcServer] | None,
             FlextCliModels.Field(description="Underlying gRPC server instance"),
         ] = None
 
@@ -240,7 +240,7 @@ class FlextGrpcModelsRuntime:
             description="Client configuration options",
         )
         grpc_stub: Annotated[
-            p.Grpc.GrpcStub | None,
+            t.Port[p.Grpc.GrpcStub] | None,
             FlextCliModels.Field(description="gRPC client stub for RPC calls"),
         ] = None
 
@@ -291,7 +291,7 @@ class FlextGrpcModelsRuntime:
             FlextCliModels.Field(description="Stream communication pattern type"),
         ] = c.Grpc.GrpcOperations.UNARY
         grpc_stub: Annotated[
-            p.Grpc.GrpcStub | None,
+            t.Port[p.Grpc.GrpcStub] | None,
             FlextCliModels.Field(description="gRPC stub used by this stream"),
         ] = None
 
