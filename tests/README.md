@@ -254,7 +254,7 @@ def test_entity_creation_and_validation():
 
     # Assert
     assert validation_result.success
-    assert entity.id == "test-entity"
+    tm.that(entity.id, eq="test-entity")
 ```
 
 ### Service Testing Pattern
@@ -274,8 +274,8 @@ def test_service_operation_success():
     result = service.execute("start", server)
 
     # Assert
-    assert result.success
-    assert result.data.state == "starting"
+    tm.ok(result.success)
+    tm.that(result.data.state, eq="starting")
 ```
 
 ### Error Testing Pattern

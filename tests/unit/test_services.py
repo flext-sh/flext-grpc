@@ -88,7 +88,7 @@ class TestsFlextGrpcServices:
                 sent.values["buffer_size"],
                 eq=min(count, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE),
             )
-        tm.that(tm.ok(grpc_facade.close_stream(stream)) is stream, eq=True)
+        tm.ok(tm.ok(grpc_facade.close_stream(stream)) is stream)
         tm.that(stream.method_name, eq=method_name)
         tm.fail(grpc_facade.send_data(stream, None))
 
@@ -117,7 +117,7 @@ class TestsFlextGrpcServices:
         result = grpc_facade.connect_client("127.0.0.1:1")
 
         tm.fail(result)
-        assert result.error
+        tm.that(result.error, truth=True)
 
     # -- Facade: validate_target -----------------------------------------
 
@@ -141,7 +141,10 @@ class TestsFlextGrpcServices:
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
-        assert grpc_facade.validate_target(target) is expected
+        tm.that(
+            grpc_facade.validate_target(target),
+            where=lambda value: value is expected,
+        )
 
     # -- Facade: parse_address -------------------------------------------
 
@@ -171,7 +174,7 @@ class TestsFlextGrpcServices:
         connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Cleanup succeeds and reports True even with no active channels."""
-        tm.that(tm.ok(connection_pool.cleanup()), eq=True)
+        tm.ok(tm.ok(connection_pool.cleanup()))
 
     @staticmethod
     def test_connection_pool_acquire_on_empty_pool_fails_not_found(
@@ -231,10 +234,10 @@ class TestsFlextGrpcServices:
         metrics_collector: FlextGrpcMetricsCollectorImpl,
     ) -> None:
         """all_metrics returns a snapshot that later records do not mutate."""
-        metrics_collector.record_metric("first", "1")
+        metrics_collector.record_metric("first", c.ParserBooleanToken.ONE)
         snapshot = metrics_collector.all_metrics()
 
         metrics_collector.record_metric("second", "2")
 
         tm.that(snapshot.values, lacks="second")
-        tm.that(snapshot.values["first"], eq="1")
+        tm.that(snapshot.values["first"], eq=c.ParserBooleanToken.ONE)

@@ -9,11 +9,10 @@ from __future__ import annotations
 import time
 from typing import TYPE_CHECKING
 
-from flext_grpc import e, m, p, r, t
+from flext_grpc import c, e, m, p, r, t, u
 from flext_grpc.services._entities.metrics_collector import (
     FlextGrpcMetricsCollectorImpl,
 )
-from flext_grpc.utilities import FlextGrpcUtilities
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
@@ -59,7 +58,7 @@ class FlextGrpcStreamManagerImpl:
         """
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
         stream_type = str(kwargs.get("stream_type", "unary"))
-        stream_result = FlextGrpcUtilities.Grpc.create_stream_entity(
+        stream_result = u.Grpc.create_stream_entity(
             method_name,
             stream_type,
         )
@@ -91,7 +90,7 @@ class FlextGrpcStreamManagerImpl:
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key not in self._active_streams:
-            return e.fail_not_found("stream", stream.id)
+            return e.fail_not_found(c.ProcessingMode.STREAM, stream.id)
         stream_state = self._active_streams[stream_key]
         stream_state.buffer.append(data)
         return r[m.Grpc.Payload].ok(

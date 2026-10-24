@@ -14,10 +14,19 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc._models.base import FlextGrpcModelsBase
+    from flext_grpc._models.channel_models import FlextGrpcModelsChannel
     from flext_grpc._models.config import FlextGrpcConfigModels
+    from flext_grpc._models.message_models import FlextGrpcModelsMessage
+    from flext_grpc._models.runtime_models import FlextGrpcModelsRuntime
 
 
-__all__: tuple[str, ...] = ("FlextGrpcConfigModels", "FlextGrpcModelsBase")
+__all__: tuple[str, ...] = (
+    "FlextGrpcConfigModels",
+    "FlextGrpcModelsBase",
+    "FlextGrpcModelsChannel",
+    "FlextGrpcModelsMessage",
+    "FlextGrpcModelsRuntime",
+)
 
 install_lazy_exports(
     __name__,
@@ -25,6 +34,9 @@ install_lazy_exports(
     MappingProxyType({
         "FlextGrpcConfigModels": ".config",
         "FlextGrpcModelsBase": ".base",
+        "FlextGrpcModelsChannel": ".channel_models",
+        "FlextGrpcModelsMessage": ".message_models",
+        "FlextGrpcModelsRuntime": ".runtime_models",
     }),
     public_exports=__all__,
 )

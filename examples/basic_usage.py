@@ -13,7 +13,7 @@ from __future__ import annotations
 
 from flext_cli import cli
 
-from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings, c
 
 
 class ExamplesFlextGrpcBasicUsage:
@@ -110,7 +110,7 @@ class ExamplesFlextGrpcBasicUsage:
                 call_result = grpc.make_call(
                     connected_client,
                     "GetServerInfo",
-                    {"request_id": "12345"},
+                    {c.ContextKey.REQUEST_ID: "12345"},
                 )
                 if call_result.success:
                     self._emit(f"Call result: {call_result.value}")

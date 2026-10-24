@@ -32,7 +32,7 @@ class TestsFlextGrpcUtilitiesUnit:
         # assert the real contract — the Grpc namespace + its static helpers exist.
         """The utilities facade exposes a usable ``Grpc`` helper namespace."""
         tm.that(u.Grpc, none=False)
-        tm.that(callable(u.Grpc.parse_address), eq=True)
+        tm.ok(callable(u.Grpc.parse_address))
 
     # ------------------------------------------------------------------
     # parse_address / parse_target

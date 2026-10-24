@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_grpc import FlextGrpcModels, m, p, s
+from flext_grpc import m, p, s
 from flext_grpc.services._entities import FlextGrpcServerManagerImpl
 
 
@@ -21,45 +21,45 @@ class FlextGrpcServer(s):
 
     def start_server(
         self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> p.Result[FlextGrpcModels.Grpc.Server]:
+        server: m.Grpc.Server,
+    ) -> p.Result[m.Grpc.Server]:
         """Start a server through the dedicated lifecycle manager.
 
         Args:
             server: Server entity to transition to running.
 
         Returns:
-            The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
+            The resulting ``p.Result[m.Grpc.Server]``.
 
         """
         return self._server_manager.start_server(server)
 
     def stop_server(
         self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> p.Result[FlextGrpcModels.Grpc.Server]:
+        server: m.Grpc.Server,
+    ) -> p.Result[m.Grpc.Server]:
         """Stop a server through the dedicated lifecycle manager.
 
         Args:
             server: Server entity to transition to stopped.
 
         Returns:
-            The resulting ``p.Result[FlextGrpcModels.Grpc.Server]``.
+            The resulting ``p.Result[m.Grpc.Server]``.
 
         """
         return self._server_manager.stop_server(server)
 
     def server_status(
         self,
-        server: FlextGrpcModels.Grpc.Server,
-    ) -> p.Result[FlextGrpcModels.Grpc.Payload]:
+        server: m.Grpc.Server,
+    ) -> p.Result[m.Grpc.Payload]:
         """Fetch server runtime metrics through the dedicated manager.
 
         Args:
             server: Server entity to inspect.
 
         Returns:
-            The resulting ``p.Result[FlextGrpcModels.Grpc.Payload]``.
+            The resulting ``p.Result[m.Grpc.Payload]``.
 
         """
         return self._server_manager.server_metrics(server)
