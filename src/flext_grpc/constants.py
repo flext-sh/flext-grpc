@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """FLEXT gRPC Constants.
 
 gRPC-specific constants including network settings, service configuration,
@@ -16,8 +17,7 @@ from typing import TYPE_CHECKING
 
 from flext_core import FlextConstants
 
-from flext_grpc._constants import FlextGrpcConstantsBase
-from flext_grpc._constants.derived import FlextGrpcConstantsDerived
+from flext_grpc._constants import FlextGrpcConstantsBase, FlextGrpcConstantsDerived
 
 if TYPE_CHECKING:
     from flext_grpc import t
@@ -41,7 +41,7 @@ class FlextGrpcConstants(FlextConstants):
     ```
     """
 
-    class Grpc(FlextGrpcConstantsDerived, FlextGrpcConstantsBase):
+    class Grpc(FlextGrpcConstantsBase, FlextGrpcConstantsDerived):
         """gRPC domain constants namespace.
 
         All gRPC-specific scalar constants are owned by ``FlextGrpcConstantsBase``

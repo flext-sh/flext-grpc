@@ -1,3 +1,4 @@
+# AUTO-GENERATED FILE — Regenerate with: make gen
 """FLEXT gRPC Types.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.

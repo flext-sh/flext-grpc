@@ -41,34 +41,6 @@ class FlextGrpcModels(FlextCliModels):
     ):
         """Domain models for gRPC core business entities."""
 
-        # =====================================================================
-        # PROTO MESSAGE MODELS - RPC request/response messages
-        # =====================================================================
-
-        EchoRequest = FlextGrpcModelsMessage.EchoRequest
-        EchoResponse = FlextGrpcModelsMessage.EchoResponse
-        HealthRequest = FlextGrpcModelsMessage.HealthRequest
-        HealthResponse = FlextGrpcModelsMessage.HealthResponse
-        StreamInfo = FlextGrpcModelsMessage.StreamInfo
-        HealthCheck = FlextGrpcModelsMessage.HealthCheck
-        OperationExecutionRequest = FlextGrpcModelsMessage.OperationExecutionRequest
-        ClientConfig = FlextGrpcModelsChannel.ClientConfig
-        ChannelConfig = FlextGrpcModelsChannel.ChannelConfig
-        StateTransition = FlextGrpcModelsChannel.StateTransition
-        StateMachine = FlextGrpcModelsChannel.StateMachine
-        OperationSpec = FlextGrpcModelsChannel.OperationSpec
-        Request = FlextGrpcModelsChannel.Request
-        Response = FlextGrpcModelsChannel.Response
-        Payload = FlextGrpcModelsMessage.Payload
-        Entity = FlextGrpcModelsChannel.Entity
-        Channel = FlextGrpcModelsChannel.Channel
-        Server = FlextGrpcModelsRuntime.Server
-        Service = FlextGrpcModelsRuntime.Service
-        Client = FlextGrpcModelsRuntime.Client
-        GrpcStream = FlextGrpcModelsRuntime.GrpcStream
-        StreamRuntimeState = FlextGrpcModelsRuntime.StreamRuntimeState
-        CompleteSetup = FlextGrpcModelsRuntime.CompleteSetup
-
 
 m = FlextGrpcModels
 
