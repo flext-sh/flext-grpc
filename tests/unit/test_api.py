@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 import pytest
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests import m, t, tm
+from tests import c, m, t, tm
 
 
 class TestsFlextGrpcApi:
