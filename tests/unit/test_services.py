@@ -234,10 +234,10 @@ class TestsFlextGrpcServices:
         metrics_collector: FlextGrpcMetricsCollectorImpl,
     ) -> None:
         """all_metrics returns a snapshot that later records do not mutate."""
-        metrics_collector.record_metric("first", "1")
+        metrics_collector.record_metric("first", c.ParserBooleanToken.ONE)
         snapshot = metrics_collector.all_metrics()
 
         metrics_collector.record_metric("second", "2")
 
         tm.that(snapshot.values, lacks="second")
-        tm.that(snapshot.values["first"], eq="1")
+        tm.that(snapshot.values["first"], eq=c.ParserBooleanToken.ONE)

@@ -127,7 +127,7 @@ class TestsFlextGrpcApi:
     @staticmethod
     @pytest.mark.parametrize(
         "entity_type",
-        ["server", "client", "channel", "service", "stream"],
+        ["server", "client", "channel", "service", c.ProcessingMode.STREAM],
     )
     def test_validate_entity_type_accepts(entity_type: t.Grpc.EntityKind) -> None:
         """OperationSpec accepts every canonical entity_type literal."""

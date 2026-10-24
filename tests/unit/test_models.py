@@ -168,7 +168,7 @@ class TestsFlextGrpcModelsUnit:
 
         values = dict(payload.values)
         tm.that(values["missing"], eq="")
-        tm.that(values["count"], eq=1)
+        tm.that(values[c.Aggregation.COUNT], eq=1)
         tm.that(values["items"], eq="[1, 2]")
 
     # ------------------------------------------------------------------

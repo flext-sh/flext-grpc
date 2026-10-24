@@ -10,7 +10,9 @@ from typing import Literal
 
 from flext_cli import FlextCliTypes
 
-type EntityKind = Literal["server", "client", "channel", "service", "stream"]
+type EntityKind = Literal[
+    "server", "client", "channel", "service", c.ProcessingMode.STREAM
+]
 type Headers = FlextCliTypes.StrMapping
 type ConfigDict = FlextCliTypes.MappingKV[
     str,

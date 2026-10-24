@@ -90,7 +90,7 @@ class FlextGrpcStreamManagerImpl:
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key not in self._active_streams:
-            return e.fail_not_found("stream", stream.id)
+            return e.fail_not_found(c.ProcessingMode.STREAM, stream.id)
         stream_state = self._active_streams[stream_key]
         stream_state.buffer.append(data)
         return r[m.Grpc.Payload].ok(
