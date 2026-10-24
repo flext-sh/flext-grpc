@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from tests import m, tm
+from tests import c, m, tm
 
 
 class TestsFlextGrpcModelsUnit:
