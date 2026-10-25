@@ -35,5 +35,4 @@ class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
 
 
 u = FlextGrpcUtilities
-
 __all__: list[str] = ["FlextGrpcUtilities", "u"]

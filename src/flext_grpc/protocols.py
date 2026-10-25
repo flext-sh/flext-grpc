@@ -61,5 +61,4 @@ class FlextGrpcProtocols(FlextCliProtocols):
 
 
 p = FlextGrpcProtocols
-
 __all__: list[str] = ["FlextGrpcProtocols", "p"]

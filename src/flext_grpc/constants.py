@@ -13,14 +13,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 from flext_core import FlextConstants
 
 from flext_grpc._constants import FlextGrpcConstantsBase, FlextGrpcConstantsDerived
-
-if TYPE_CHECKING:
-    from flext_grpc import t
 
 
 class FlextGrpcConstants(FlextConstants):
@@ -64,5 +59,4 @@ class FlextGrpcConstants(FlextConstants):
 
 
 c = FlextGrpcConstants
-
-__all__: t.StrSequence = ("FlextGrpcConstants", "c")
+__all__: list[str] = ["FlextGrpcConstants", "c"]

@@ -13,7 +13,6 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc.services import _entities as _entities
     from flext_grpc.services._entities import (
         FlextGrpcClientManagerImpl,
         FlextGrpcServerManagerImpl,
@@ -47,7 +46,6 @@ __all__: tuple[str, ...] = (
     "FlextGrpcServiceHandlerImpl",
     "FlextGrpcStream",
     "FlextGrpcStreamManagerImpl",
-    "_entities",
 )
 
 install_lazy_exports(
@@ -66,7 +64,6 @@ install_lazy_exports(
         "FlextGrpcServiceHandlerImpl": "._entities.service_handler",
         "FlextGrpcStream": ".stream",
         "FlextGrpcStreamManagerImpl": "._entities.stream_manager",
-        "_entities": "._entities",
     }),
     public_exports=__all__,
 )

@@ -43,5 +43,4 @@ class FlextGrpcModels(FlextCliModels):
 
 
 m = FlextGrpcModels
-
 __all__: list[str] = ["FlextGrpcModels", "m"]

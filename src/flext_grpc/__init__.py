@@ -15,7 +15,6 @@ from flext_core.lazy import install_lazy_exports
 if TYPE_CHECKING:
     from flext_core import d, e, h, r, x
 
-    from flext_grpc import services as services
     from flext_grpc.__version__ import (
         FlextGrpcVersion,
         __author__,
@@ -71,7 +70,6 @@ __all__: tuple[str, ...] = (
     "p",
     "r",
     "s",
-    "services",
     "settings",
     "t",
     "u",
@@ -111,7 +109,6 @@ install_lazy_exports(
         "p": ".protocols",
         "r": "flext_core",
         "s": ".base",
-        "services": ".services",
         "settings": "._settings",
         "t": ".typings",
         "u": ".utilities",
