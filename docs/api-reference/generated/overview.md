@@ -25,7 +25,7 @@
 - Public symbol exports: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConstants`,
   `FlextGrpcErrors`, `FlextGrpcModels`, `FlextGrpcProtocols`, `FlextGrpcServiceBase`,
   `FlextGrpcSettings`, `FlextGrpcTypes`, `FlextGrpcUtilities` (+5 more)
-- Exported module shortcuts: `services`
+- Exported module shortcuts: _none_
 - Generated module pages: `9`
 
 ## Next Pages

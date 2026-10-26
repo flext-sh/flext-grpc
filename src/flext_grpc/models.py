@@ -10,7 +10,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import FlextCliModels
+from flext_cli import m
 
 from flext_grpc._models import (
     FlextGrpcConfigModels,
@@ -21,7 +21,7 @@ from flext_grpc._models import (
 )
 
 
-class FlextGrpcModels(FlextCliModels):
+class FlextGrpcModels(m):
     """gRPC domain models extending flext-core m.
 
     Consolidated namespace class containing all gRPC domain models as nested classes.

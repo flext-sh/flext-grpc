@@ -7,12 +7,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import FlextCliTypes
+from flext_cli import t
 
 from flext_grpc._typings import FlextGrpcTypingsBase, grpc as _grpc_types
 
 
-class FlextGrpcTypes(FlextCliTypes):
+class FlextGrpcTypes(t):
     """gRPC-specific type definitions extending t via MRO."""
 
     class Grpc(FlextGrpcTypingsBase):

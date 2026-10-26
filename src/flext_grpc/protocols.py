@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import FlextCliProtocols
+from flext_cli import p
 
 from flext_grpc._protocols import (
     FlextGrpcProtocolsBase,
@@ -20,7 +20,7 @@ from flext_grpc._protocols import (
 )
 
 
-class FlextGrpcProtocols(FlextCliProtocols):
+class FlextGrpcProtocols(p):
     """Unified gRPC protocols extending p.
 
     Extends p to inherit all foundation protocols (Result, Service, etc.)

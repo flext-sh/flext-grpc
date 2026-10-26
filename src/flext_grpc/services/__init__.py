@@ -13,12 +13,12 @@ from typing import TYPE_CHECKING
 from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
-    from flext_grpc.services._entities import (
-        FlextGrpcClientManagerImpl,
-        FlextGrpcServerManagerImpl,
+    from flext_grpc.services._entities.client_manager import FlextGrpcClientManagerImpl
+    from flext_grpc.services._entities.server_manager import FlextGrpcServerManagerImpl
+    from flext_grpc.services._entities.service_handler import (
         FlextGrpcServiceHandlerImpl,
-        FlextGrpcStreamManagerImpl,
     )
+    from flext_grpc.services._entities.stream_manager import FlextGrpcStreamManagerImpl
     from flext_grpc.services.api_runtime import FlextGrpcApiRuntime
     from flext_grpc.services.client import FlextGrpcClient
     from flext_grpc.services.connection_pool import (
