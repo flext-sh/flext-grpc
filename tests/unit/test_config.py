@@ -17,7 +17,7 @@ from typing import Final
 import pytest
 
 from flext_grpc import FlextGrpcSettings, settings
-from tests import c, tm
+from tests import c, tm, u
 
 _TIMEOUT_TOLERANCE: Final[float] = 0.01
 
@@ -113,10 +113,34 @@ class TestsFlextGrpcConfig:
 
     @staticmethod
     def test_singleton_lifecycle_helpers() -> None:
-        """fetch_global returns the shared instance; reset recreates it."""
+        """Reload sources in place without invalidating published handles."""
         first = FlextGrpcSettings.fetch_global()
-        second = FlextGrpcSettings.fetch_global()
-        tm.that(first, where=lambda value: value is second)
-        FlextGrpcSettings.reset_for_testing()
-        third = FlextGrpcSettings.fetch_global()
-        tm.that(third, where=lambda value: value is not first)
+        tm.that(first is FlextGrpcSettings.fetch_global(), eq=True)
+        debug = first.debug
+        prefix = tm.not_none(FlextGrpcSettings.model_config.get("env_prefix"))
+        try:
+            with u.Tests.env_vars_context(
+                env_vars={f"{prefix}DEBUG": str(not debug).lower()},
+            ):
+                FlextGrpcSettings.reset_for_testing()
+                tm.that(FlextGrpcSettings.fetch_global() is first, eq=True)
+                tm.that(first is settings, eq=True)
+                tm.that(first.debug, eq=not debug)
+        finally:
+            FlextGrpcSettings.reset_for_testing()
+        tm.that(FlextGrpcSettings.fetch_global() is first, eq=True)
+        tm.that(first.debug, eq=debug)
+
+    @staticmethod
+    def test_invalid_reload_preserves_published_settings() -> None:
+        """Reject invalid sources without changing the published instance or state."""
+        original = FlextGrpcSettings.fetch_global()
+        state = original.model_dump(round_trip=True)
+        prefix = tm.not_none(FlextGrpcSettings.model_config.get("env_prefix"))
+        with u.Tests.env_vars_context(
+            env_vars={f"{prefix}DEBUG": "not-a-boolean"},
+        ):
+            with pytest.raises(ValueError, match="debug"):
+                FlextGrpcSettings.reset_for_testing()
+            tm.that(FlextGrpcSettings.fetch_global() is original, eq=True)
+            tm.that(original.model_dump(round_trip=True), eq=state)
