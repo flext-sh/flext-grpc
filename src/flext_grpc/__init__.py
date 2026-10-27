@@ -47,6 +47,7 @@ if TYPE_CHECKING:
     from flext_grpc.api import FlextGrpc, grpc
     from flext_grpc.base import FlextGrpcServiceBase, s
     from flext_grpc.cli import main
+    from flext_grpc.config_models import FlextGrpcConfigNamespaceModels
     from flext_grpc.constants import FlextGrpcConstants, c
     from flext_grpc.errors import FlextGrpcErrors
     from flext_grpc.models import FlextGrpcModels, m
@@ -58,6 +59,7 @@ if TYPE_CHECKING:
 __all__: tuple[str, ...] = (
     "FlextGrpc",
     "FlextGrpcConfig",
+    "FlextGrpcConfigNamespaceModels",
     "FlextGrpcConstants",
     "FlextGrpcErrors",
     "FlextGrpcModels",
@@ -108,6 +110,7 @@ install_lazy_exports(
     MappingProxyType({
         "FlextGrpc": ".api",
         "FlextGrpcConfig": "._config",
+        "FlextGrpcConfigNamespaceModels": ".config_models",
         "FlextGrpcConstants": ".constants",
         "FlextGrpcErrors": ".errors",
         "FlextGrpcModels": ".models",

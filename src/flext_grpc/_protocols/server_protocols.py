@@ -12,7 +12,9 @@ if TYPE_CHECKING:
     import threading
     from collections.abc import Iterable
 
-    from flext_grpc import p, t
+    from flext_core._protocols import FlextProtocolsResult
+
+    from flext_grpc import t
 
 
 class FlextGrpcProtocolsServer:
@@ -34,7 +36,7 @@ class FlextGrpcProtocolsServer:
             self,
             service: FlextGrpcProtocolsServer.GrpcServicer,
             server: FlextGrpcProtocolsServer.GrpcServer,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Add gRPC service to server.
 
             Args:
@@ -54,7 +56,7 @@ class FlextGrpcProtocolsServer:
             port: int,
             *,
             secure: bool = False,
-        ) -> p.Result[int]:
+        ) -> FlextProtocolsResult.Result[int]:
             """Configure the server port binding.
 
             Args:
@@ -69,7 +71,7 @@ class FlextGrpcProtocolsServer:
             """
             ...
 
-        def server_status(self) -> p.Result[t.JsonValue | None]:
+        def server_status(self) -> FlextProtocolsResult.Result[t.JsonValue | None]:
             """Get gRPC server status information.
 
             Returns:
@@ -83,7 +85,7 @@ class FlextGrpcProtocolsServer:
             host: str,
             port: int,
             services: t.SequenceOf[FlextGrpcProtocolsServer.GrpcServicer] | None = None,
-        ) -> p.Result[FlextGrpcProtocolsServer.GrpcServer]:
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsServer.GrpcServer]:
             """Start gRPC server.
 
             Args:
@@ -97,7 +99,11 @@ class FlextGrpcProtocolsServer:
             """
             ...
 
-        def stop_server(self, *, grace_period: float = 30.0) -> p.Result[bool]:
+        def stop_server(
+            self,
+            *,
+            grace_period: float = 30.0,
+        ) -> FlextProtocolsResult.Result[bool]:
             """Stop gRPC server.
 
             Args:

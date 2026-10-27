@@ -8,7 +8,7 @@ SPDX-License-Identifier: MIT
 
 import grpc
 
-from flext_grpc.protos import flext_pb2 as flext__grpc_dot_protos_dot_flext__pb2
+from flext_grpc.protos import flext_pb2
 
 GRPC_GENERATED_VERSION = "1.81.1"
 GRPC_VERSION = grpc.__version__
@@ -48,14 +48,14 @@ class FlextGrpcServiceStub:
         """
         self.Echo = channel.unary_unary(
             "/flext.grpc.v1.FlextGrpcService/Echo",
-            request_serializer=flext__grpc_dot_protos_dot_flext__pb2.EchoRequest.SerializeToString,
-            response_deserializer=flext__grpc_dot_protos_dot_flext__pb2.EchoResponse.FromString,
+            request_serializer=flext_pb2.EchoRequest.SerializeToString,
+            response_deserializer=flext_pb2.EchoResponse.FromString,
             _registered_method=True,
         )
         self.HealthCheck = channel.unary_unary(
             "/flext.grpc.v1.FlextGrpcService/HealthCheck",
-            request_serializer=flext__grpc_dot_protos_dot_flext__pb2.HealthRequest.SerializeToString,
-            response_deserializer=flext__grpc_dot_protos_dot_flext__pb2.HealthResponse.FromString,
+            request_serializer=flext_pb2.HealthRequest.SerializeToString,
+            response_deserializer=flext_pb2.HealthResponse.FromString,
             _registered_method=True,
         )
 
@@ -85,13 +85,13 @@ def add_FlextGrpcServiceServicer_to_server(servicer, server) -> None:
     rpc_method_handlers = {
         "Echo": grpc.unary_unary_rpc_method_handler(
             servicer.Echo,
-            request_deserializer=flext__grpc_dot_protos_dot_flext__pb2.EchoRequest.FromString,
-            response_serializer=flext__grpc_dot_protos_dot_flext__pb2.EchoResponse.SerializeToString,
+            request_deserializer=flext_pb2.EchoRequest.FromString,
+            response_serializer=flext_pb2.EchoResponse.SerializeToString,
         ),
         "HealthCheck": grpc.unary_unary_rpc_method_handler(
             servicer.HealthCheck,
-            request_deserializer=flext__grpc_dot_protos_dot_flext__pb2.HealthRequest.FromString,
-            response_serializer=flext__grpc_dot_protos_dot_flext__pb2.HealthResponse.SerializeToString,
+            request_deserializer=flext_pb2.HealthRequest.FromString,
+            response_serializer=flext_pb2.HealthResponse.SerializeToString,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -131,8 +131,8 @@ class FlextGrpcService:
             request,
             target,
             "/flext.grpc.v1.FlextGrpcService/Echo",
-            flext__grpc_dot_protos_dot_flext__pb2.EchoRequest.SerializeToString,
-            flext__grpc_dot_protos_dot_flext__pb2.EchoResponse.FromString,
+            flext_pb2.EchoRequest.SerializeToString,
+            flext_pb2.EchoResponse.FromString,
             options,
             channel_credentials,
             insecure,
@@ -166,8 +166,8 @@ class FlextGrpcService:
             request,
             target,
             "/flext.grpc.v1.FlextGrpcService/HealthCheck",
-            flext__grpc_dot_protos_dot_flext__pb2.HealthRequest.SerializeToString,
-            flext__grpc_dot_protos_dot_flext__pb2.HealthResponse.FromString,
+            flext_pb2.HealthRequest.SerializeToString,
+            flext_pb2.HealthResponse.FromString,
             options,
             channel_credentials,
             insecure,

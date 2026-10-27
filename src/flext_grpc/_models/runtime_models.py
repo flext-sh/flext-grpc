@@ -11,10 +11,9 @@ from types import MappingProxyType
 from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
-from flext_core import r
 
-from flext_grpc import c, p, t
-from flext_grpc._models.channel_models import FlextGrpcModelsChannel
+from flext_grpc import c, p, r, t
+from flext_grpc._models import FlextGrpcModelsChannel
 
 
 class FlextGrpcModelsRuntime:

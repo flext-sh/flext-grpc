@@ -8,9 +8,7 @@ from __future__ import annotations
 
 from uuid import uuid4
 
-from flext_core import r
-
-from flext_grpc import c, m, p, t
+from flext_grpc import c, m, p, r, t
 
 
 class FlextGrpcUtilitiesGrpc:

@@ -12,20 +12,21 @@ from __future__ import annotations
 
 from typing import Annotated
 
-from flext_core import FlextConfig, m
+from flext_core import FlextConfig
+from pydantic import Field
 
-from flext_grpc._models.base import FlextGrpcModelsBase
+from flext_grpc.config_models import FlextGrpcConfigNamespaceModels
 
 
 class FlextGrpcConfig(FlextConfig):
     """Grpc config auto-loaded model-less from ``config/*.yaml``."""
 
     Grpc: Annotated[
-        FlextGrpcModelsBase.GrpcNamespace,
-        m.Field(
+        FlextGrpcConfigNamespaceModels.GrpcNamespace,
+        Field(
             description="Open namespace exposing ``config/*.yaml`` under ``Grpc``.",
         ),
-    ] = FlextGrpcModelsBase.GrpcNamespace()
+    ] = FlextGrpcConfigNamespaceModels.GrpcNamespace()
 
 
 config: FlextGrpcConfig = FlextGrpcConfig.fetch_global()

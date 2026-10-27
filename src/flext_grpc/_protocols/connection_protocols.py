@@ -8,11 +8,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-from flext_grpc._protocols.channel_protocols import FlextGrpcProtocolsChannel
-from flext_grpc._protocols.stream_protocols import FlextGrpcProtocolsStream
+from flext_grpc._protocols import FlextGrpcProtocolsChannel, FlextGrpcProtocolsStream
 
 if TYPE_CHECKING:
-    from flext_grpc import c, p, t
+    from flext_core._protocols import FlextProtocolsResult
+
+    from flext_grpc import c, t
 
 
 class FlextGrpcProtocolsConnection:
@@ -31,7 +32,7 @@ class FlextGrpcProtocolsConnection:
             target: str,
             *,
             timeout: float = 30.0,
-        ) -> p.Result[FlextGrpcProtocolsChannel.GrpcChannel]:
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsChannel.GrpcChannel]:
             """Connect gRPC client to server.
 
             Args:
@@ -47,7 +48,7 @@ class FlextGrpcProtocolsConnection:
         def disconnect_client(
             self,
             channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Disconnect gRPC client.
 
             Args:
@@ -62,7 +63,7 @@ class FlextGrpcProtocolsConnection:
         def client_status(
             self,
             channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> p.Result[t.JsonValue | None]:
+        ) -> FlextProtocolsResult.Result[t.JsonValue | None]:
             """Get gRPC client status information.
 
             Args:
@@ -81,7 +82,7 @@ class FlextGrpcProtocolsConnection:
             request: FlextGrpcProtocolsStream.GrpcMessage,
             *,
             timeout: float = 30.0,
-        ) -> p.Result[FlextGrpcProtocolsStream.GrpcMessage]:
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsStream.GrpcMessage]:
             """Make gRPC method call.
 
             Args:
@@ -99,7 +100,7 @@ class FlextGrpcProtocolsConnection:
         def validate_connection(
             self,
             channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Validate gRPC client connection.
 
             Args:

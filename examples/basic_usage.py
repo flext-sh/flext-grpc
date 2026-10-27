@@ -13,7 +13,8 @@ from __future__ import annotations
 
 from flext_cli import cli
 
-from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings, c
+from examples import c
+from flext_grpc import FlextGrpc, FlextGrpcConstants, FlextGrpcSettings
 
 
 class ExamplesFlextGrpcBasicUsage:

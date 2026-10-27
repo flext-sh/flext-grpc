@@ -10,9 +10,7 @@ import time
 from typing import TYPE_CHECKING
 
 from flext_grpc import c, e, m, p, r, t, u
-from flext_grpc.services._entities.metrics_collector import (
-    FlextGrpcMetricsCollectorImpl,
-)
+from flext_grpc.services._entities import FlextGrpcMetricsCollectorImpl
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping

@@ -8,13 +8,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-from flext_grpc._protocols.channel_protocols import FlextGrpcProtocolsChannel
-from flext_grpc._protocols.server_protocols import FlextGrpcProtocolsServer
+from flext_grpc._protocols import FlextGrpcProtocolsChannel, FlextGrpcProtocolsServer
 
 if TYPE_CHECKING:
     from concurrent.futures import Executor
 
-    from flext_grpc import p, t
+    from flext_core._protocols import FlextProtocolsResult
+
+    from flext_grpc import t
 
 
 class FlextGrpcProtocolsResource:
@@ -28,7 +29,9 @@ class FlextGrpcProtocolsResource:
     class ResourceManager(Protocol):
         """Protocol for gRPC resource management operations."""
 
-        def acquire(self) -> p.Result[FlextGrpcProtocolsResource.GrpcResource]:
+        def acquire(
+            self,
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsResource.GrpcResource]:
             """Acquire a resource.
 
             Returns:
@@ -37,7 +40,7 @@ class FlextGrpcProtocolsResource:
             """
             ...
 
-        def cleanup(self) -> p.Result[bool]:
+        def cleanup(self) -> FlextProtocolsResult.Result[bool]:
             """Cleanup all resources.
 
             Returns:
@@ -49,7 +52,7 @@ class FlextGrpcProtocolsResource:
         def release(
             self,
             resource: FlextGrpcProtocolsResource.GrpcResource,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Release a resource.
 
             Args:
@@ -128,7 +131,7 @@ class FlextGrpcProtocolsResource:
         def __call__(
             self,
             **kwargs: t.Scalar,
-        ) -> p.Result[FlextGrpcProtocolsResource.GrpcResource]:
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsResource.GrpcResource]:
             """Create entity with given arguments.
 
             Args:
@@ -147,7 +150,7 @@ class FlextGrpcProtocolsResource:
         def __call__(
             self,
             **kwargs: t.Scalar,
-        ) -> p.Result[FlextGrpcProtocolsResource.GrpcResource]:
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsResource.GrpcResource]:
             """Execute operation with given arguments.
 
             Args:

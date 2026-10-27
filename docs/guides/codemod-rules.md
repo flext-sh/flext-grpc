@@ -25,6 +25,14 @@ is declared by the flext-infra owner cited next to it; that owner wins over this
 
 ## Catalogs and layers
 
+Layer-zero own-helper admission is derived from the same native candidate proof
+used by import normalization (ADR-005 §2 and ADR-028 Decision 1). The declarative
+producer captures the complete workspace sources and asks that owner to authenticate
+each imported helper and its dependency closure, including type-checking imports.
+Only proven exact module identities enter the generated constraint; a regex does
+not establish ownership or acyclicity. Own root and family imports remain forbidden.
+Generation and native-scan agreement require runtime validation after source changes.
+
 | Layer | ast-grep rules | Text rules |
 |---|---|---|
 | Universal (every project) | `flext-infra/src/flext_infra/config/rules/ast-grep/` (`sgconfig.yml` with `scope: universal`) | `flext-infra/src/flext_infra/config/rules/mod/sed.yaml` |

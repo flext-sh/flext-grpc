@@ -9,7 +9,8 @@ from __future__ import annotations
 from typing import Literal
 
 from flext_cli import FlextCliTypes
-from flext_core import c
+
+from flext_grpc import c
 
 type EntityKind = Literal[
     "server", "client", "channel", "service", c.ProcessingMode.STREAM

@@ -5,30 +5,6 @@
 
 config_version = "0"
 
-exclude_patterns = [
-  "**/protos/**",
-  "**/conftest.py",
-  "**/docs/architecture/tools/__init__.py",
-  "**/examples/__init__.py",
-  "**/src/flext_grpc/__init__.py",
-  "**/src/flext_grpc/__version__.py",
-  "**/src/flext_grpc/_constants/__init__.py",
-  "**/src/flext_grpc/_models/__init__.py",
-  "**/src/flext_grpc/_protocols/__init__.py",
-  "**/src/flext_grpc/_typings/__init__.py",
-  "**/src/flext_grpc/_utilities/__init__.py",
-  "**/src/flext_grpc/constants.py",
-  "**/src/flext_grpc/models.py",
-  "**/src/flext_grpc/protocols.py",
-  "**/src/flext_grpc/protos/__init__.py",
-  "**/src/flext_grpc/services/__init__.py",
-  "**/src/flext_grpc/services/_entities/__init__.py",
-  "**/src/flext_grpc/typings.py",
-  "**/src/flext_grpc/utilities.py",
-  "**/tests/__init__.py",
-  "**/tests/unit/__init__.py",
-]
-
 [smells]
 mode = "block"
 

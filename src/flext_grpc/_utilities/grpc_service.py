@@ -15,13 +15,13 @@ from __future__ import annotations
 from types import SimpleNamespace
 from typing import TYPE_CHECKING
 
-from flext_core import r, u
+from flext_core import u
 from google.protobuf import json_format, message_factory
 from google.protobuf.descriptor import Descriptor, MethodDescriptor, ServiceDescriptor
 from google.protobuf.message import Message
 
-from flext_grpc import c, m, p
-from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
+from flext_grpc import c, m, p, r
+from flext_grpc._utilities import FlextGrpcUtilitiesGrpcRuntime
 from flext_grpc.protos import flext_pb2, flext_pb2_grpc
 
 if TYPE_CHECKING:

@@ -8,14 +8,18 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-from flext_grpc._protocols.channel_protocols import FlextGrpcProtocolsChannel
-from flext_grpc._protocols.server_protocols import FlextGrpcProtocolsServer
-from flext_grpc._protocols.stream_protocols import FlextGrpcProtocolsStream
+from flext_grpc._protocols import (
+    FlextGrpcProtocolsChannel,
+    FlextGrpcProtocolsServer,
+    FlextGrpcProtocolsStream,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-    from flext_grpc import p, t
+    from flext_core._protocols import FlextProtocolsResult
+
+    from flext_grpc import t
 
 
 class FlextGrpcProtocolsService:
@@ -33,7 +37,7 @@ class FlextGrpcProtocolsService:
             self,
             service_name: str,
             methods: t.MappingKV[str, FlextGrpcProtocolsService.GrpcMethodHandler],
-        ) -> p.Result[FlextGrpcProtocolsServer.GrpcServicer]:
+        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsServer.GrpcServicer]:
             """Create gRPC service definition.
 
             Args:
@@ -49,7 +53,7 @@ class FlextGrpcProtocolsService:
         def service_methods(
             self,
             service: FlextGrpcProtocolsServer.GrpcServicer,
-        ) -> p.Result[t.StrSequence]:
+        ) -> FlextProtocolsResult.Result[t.StrSequence]:
             """Get list of service methods.
 
             Args:
@@ -65,7 +69,7 @@ class FlextGrpcProtocolsService:
             self,
             service: FlextGrpcProtocolsServer.GrpcServicer,
             server: FlextGrpcProtocolsServer.GrpcServer,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Register gRPC service with server.
 
             Args:
@@ -81,7 +85,7 @@ class FlextGrpcProtocolsService:
         def validate_service(
             self,
             service: FlextGrpcProtocolsServer.GrpcServicer,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Validate gRPC service definition.
 
             Args:
@@ -100,7 +104,7 @@ class FlextGrpcProtocolsService:
         def collect_client_metrics(
             self,
             channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> p.Result[Mapping[str, t.Numeric | str]]:
+        ) -> FlextProtocolsResult.Result[Mapping[str, t.Numeric | str]]:
             """Collect gRPC client metrics.
 
             Args:
@@ -115,7 +119,7 @@ class FlextGrpcProtocolsService:
         def collect_server_metrics(
             self,
             server: FlextGrpcProtocolsServer.GrpcServer,
-        ) -> p.Result[Mapping[str, t.Numeric | str]]:
+        ) -> FlextProtocolsResult.Result[Mapping[str, t.Numeric | str]]:
             """Collect gRPC server metrics.
 
             Args:
@@ -130,7 +134,7 @@ class FlextGrpcProtocolsService:
         def collect_stream_metrics(
             self,
             stream: FlextGrpcProtocolsStream.GrpcStream,
-        ) -> p.Result[Mapping[str, t.Numeric | str]]:
+        ) -> FlextProtocolsResult.Result[Mapping[str, t.Numeric | str]]:
             """Collect gRPC stream metrics.
 
             Args:
@@ -142,7 +146,9 @@ class FlextGrpcProtocolsService:
             """
             ...
 
-        def global_metrics(self) -> p.Result[Mapping[str, t.Numeric | str]]:
+        def global_metrics(
+            self,
+        ) -> FlextProtocolsResult.Result[Mapping[str, t.Numeric | str]]:
             """Get global gRPC metrics.
 
             Returns:
@@ -155,7 +161,7 @@ class FlextGrpcProtocolsService:
             self,
             *,
             interval: float = 60.0,
-        ) -> p.Result[bool]:
+        ) -> FlextProtocolsResult.Result[bool]:
             """Start automatic metrics collection.
 
             Args:
@@ -167,7 +173,7 @@ class FlextGrpcProtocolsService:
             """
             ...
 
-        def stop_metrics_collection(self) -> p.Result[bool]:
+        def stop_metrics_collection(self) -> FlextProtocolsResult.Result[bool]:
             """Stop automatic metrics collection.
 
             Returns:
@@ -184,7 +190,7 @@ class FlextGrpcProtocolsService:
             self,
             target: str,
             options: t.MappingKV[str, t.JsonValue | None] | None = None,
-        ) -> p.Result[t.ScalarMapping]:
+        ) -> FlextProtocolsResult.Result[t.ScalarMapping]:
             """Create gRPC client configuration.
 
             Args:
@@ -202,7 +208,7 @@ class FlextGrpcProtocolsService:
             host: str,
             port: int,
             options: t.MappingKV[str, t.JsonValue | None] | None = None,
-        ) -> p.Result[t.ScalarMapping]:
+        ) -> FlextProtocolsResult.Result[t.ScalarMapping]:
             """Create gRPC server configuration.
 
             Args:
@@ -216,7 +222,10 @@ class FlextGrpcProtocolsService:
             """
             ...
 
-        def parse_address(self, address: str) -> p.Result[tuple[str, int]]:
+        def parse_address(
+            self,
+            address: str,
+        ) -> FlextProtocolsResult.Result[tuple[str, int]]:
             """Parse gRPC address string.
 
             Args:
@@ -228,7 +237,7 @@ class FlextGrpcProtocolsService:
             """
             ...
 
-        def validate_address(self, address: str) -> p.Result[bool]:
+        def validate_address(self, address: str) -> FlextProtocolsResult.Result[bool]:
             """Validate gRPC address format.
 
             Args:
@@ -240,7 +249,7 @@ class FlextGrpcProtocolsService:
             """
             ...
 
-        def validate_config(self) -> p.Result[bool]:
+        def validate_config(self) -> FlextProtocolsResult.Result[bool]:
             """Validate gRPC configuration.
 
             Returns:
