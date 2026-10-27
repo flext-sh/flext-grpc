@@ -59,6 +59,35 @@ contracts. Use `p.Grpc` for dependency contracts, `m.Grpc` for payloads, and `r`
 outcomes for operational boundaries. Keep gRPC transport details behind the
 implementation and depend on the facade from application code.
 
+### Wire-code generation admission
+
+`src/flext_grpc/protos/flext.proto` owns the wire schema. The protobuf compiler
+produces `flext_pb2.py`; the gRPC Python compiler plugin produces
+`flext_pb2_grpc.py`. These outputs remain in the complete source population for
+lint and strict typing. Their directory name does not establish third-party
+ownership or authorize an exclusion.
+
+The [upstream generated-code contract](https://grpc.io/docs/languages/python/generated-code/)
+defines dynamically installed message classes, RPC-named stub attributes, a
+servicer, and its registration function. The stock service output includes
+unannotated parameters and returns. Typed application wrappers cannot repair
+diagnostics inside those generated declarations. Changing schema comments can
+change generated docstrings, but cannot supply Python parameter annotations.
+
+The repository's `config/codegen.yaml` currently declares namespace discovery,
+not a protobuf producer integration. ADR-003 remains blocked and its historical
+Docker examples are not evidence of an implemented canonical generation route.
+Producer integration must preserve the public wire and registration contracts,
+emit source admitted by the complete configured gates, and regenerate through
+the canonical generation owner. Hand-edited outputs, owned typing stubs,
+suppression directives, and gate exclusions do not satisfy this requirement.
+
+Before accepting a producer repair, prove regeneration is repeatable and exercise
+both `Echo` and `HealthCheck` through a real listener and client using the public
+facade. Verify serialized request and response fields against the schema, then
+run the complete source admission and native incremental tests. Import success
+or typed wrapper checks alone do not prove productive RPC behavior.
+
 ## Tests and review
 
 Tests exercise public runtime behavior with real collaborators. The current examples are
