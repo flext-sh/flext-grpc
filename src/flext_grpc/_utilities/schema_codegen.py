@@ -39,6 +39,7 @@ class FlextGrpcUtilitiesSchemaCodegen:
         r"[A-Z]?[a-z0-9]+|[A-Z]+(?![a-z])",
     )
     _DESCRIPTOR_CHUNK_WIDTH: ClassVar[int] = 64
+    _RELEASE_PART_COUNT: ClassVar[int] = 3
     _CHANNEL_CALLS: ClassVar[MappingProxyType[tuple[bool, bool], str]] = (
         MappingProxyType({
             (False, False): "unary_unary",
@@ -154,12 +155,15 @@ class FlextGrpcUtilitiesSchemaCodegen:
                 f"--descriptor_set_out={descriptor_set}",
                 *(str(relative) for relative in relatives),
             ]
-            compiled = u.try_(lambda: protoc.main(arguments), catch=SystemExit)
-            if compiled.failure:
-                return result_type.from_failure(compiled)
-            if compiled.value != 0:
+            try:
+                code = protoc.main(arguments)
+            except SystemExit as exit_error:  # protoc signals CLI errors via SystemExit
                 return result_type.fail(
-                    f"protoc failed with exit code {compiled.value}",
+                    f"protoc aborted with system exit {exit_error.code}",
+                )
+            if code != 0:
+                return result_type.fail(
+                    f"protoc failed with exit code {code}",
                 )
             return u.try_(descriptor_set.read_bytes, catch=OSError)
 
@@ -328,12 +332,12 @@ class FlextGrpcUtilitiesSchemaCodegen:
                 "RPC_PYTHON_METHOD_NAMES: Final[MappingProxyType[str, str]] = "
                 "MappingProxyType({"
             ),
-            *(
-                f'    "{method.wire_name}": "{method.python_name}",'
-                for method in methods
-            ),
+            *(f'    "{wire}": "{python}",' for wire, python, *_rest in methods),
             "})",
-            '"""Wire RPC name to Python method name for the generated service surface."""',
+            (
+                '"""Wire RPC name to Python method name for the generated'
+                ' service surface."""'
+            ),
             "",
         ])
         lines.extend(cls._stub_class(service_full_name, methods))
@@ -470,7 +474,10 @@ class FlextGrpcUtilitiesSchemaCodegen:
             kind = cls._CHANNEL_CALLS[client_streaming, server_streaming]
             serializer = f"flext_pb2.{request}.SerializeToString"
             lines.extend([
-                f"        self.{python}: grpc.{cls._CALLABLE_NAMES[client, server]}[",
+                (
+                    f"        self.{python}: grpc."
+                    f"{cls._CALLABLE_NAMES[client_streaming, server_streaming]}["
+                ),
                 f"            flext_pb2.{request},",
                 f"            flext_pb2.{response},",
                 f"        ] = channel.{kind}(",
@@ -647,12 +654,12 @@ class FlextGrpcUtilitiesSchemaCodegen:
             The numeric release prefix.
 
         """
-        release = tuple(
-            int(part) for part in version(distribution).split(".")[:3] if part.isdigit()
-        )
-        while len(release) < 3:
-            release = (*release, 0)
-        return release
+        parts = [
+            int(part) for part in version(distribution).split(".") if part.isdigit()
+        ]
+        while len(parts) < cls._RELEASE_PART_COUNT:
+            parts.append(0)
+        return (parts[0], parts[1], parts[2])
 
     @staticmethod
     def _projection_path(stem: str) -> Path:
