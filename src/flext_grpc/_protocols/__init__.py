@@ -17,6 +17,9 @@ if TYPE_CHECKING:
     from flext_grpc._protocols.channel_protocols import FlextGrpcProtocolsChannel
     from flext_grpc._protocols.config import FlextGrpcProtocolsConfig
     from flext_grpc._protocols.connection_protocols import FlextGrpcProtocolsConnection
+    from flext_grpc._protocols.generated_models_grpc_completesetup import (
+        FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup,
+    )
     from flext_grpc._protocols.resource_protocols import FlextGrpcProtocolsResource
     from flext_grpc._protocols.server_protocols import FlextGrpcProtocolsServer
     from flext_grpc._protocols.service_protocols import FlextGrpcProtocolsService
@@ -24,6 +27,7 @@ if TYPE_CHECKING:
 
 
 __all__: tuple[str, ...] = (
+    "FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup",
     "FlextGrpcProtocolsBase",
     "FlextGrpcProtocolsChannel",
     "FlextGrpcProtocolsConfig",
@@ -38,6 +42,9 @@ install_lazy_exports(
     __name__,
     globals(),
     MappingProxyType({
+        "FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup": (
+            ".generated_models_grpc_completesetup"
+        ),
         "FlextGrpcProtocolsBase": ".base",
         "FlextGrpcProtocolsChannel": ".channel_protocols",
         "FlextGrpcProtocolsConfig": ".config",

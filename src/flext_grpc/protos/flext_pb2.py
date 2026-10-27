@@ -34,16 +34,19 @@ _runtime_version.ValidateProtobufRuntimeVersion(
 _sym_db = _symbol_database.Default()
 
 DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(
-    b'\n\x1d\x66lext_grpc/protos/flext.proto\x12\rflext.grpc.v1"'
-    b'\x1e\n\x0b\x45\x63hoRequest\x12\x0f\n\x07message\x18\x01 \x01(\t"'
-    b"E\n\x0c\x45\x63hoResponse\x12\x0f\n\x07message\x18\x01 \x01(\t"
-    b'\x12\x11\n\tserver_id\x18\x02 \x01(\t\x12\x11\n\ttimestamp\x18\x03 \x01(\t"'
-    b' \n\rHealthRequest\x12\x0f\n\x07service\x18\x01 \x01(\t"'
-    b"1\n\x0eHealthResponse\x12\x0e\n\x06status\x18\x01 \x01(\t\x12\x0f\n"
-    b"\x07message\x18\x02 \x01(\t2\x9f\x01\n\x10\x46lextGrpcService\x12?\n"
-    b"\x04\x45\x63ho\x12\x1a.flext.grpc.v1.EchoRequest\x1a\x1b.flext.grpc"
-    b".v1.EchoResponse\x12J\n\x0bHealthCheck\x12\x1c.flext.grpc.v1.HealthRequest"
-    b"\x1a\x1d.flext.grpc.v1.HealthResponseb\x06proto3",
+    b'\n\x1dflext_grpc/protos/flext.proto\x12\rflext.grpc.v1"\'\n\x0bEchoRequest\x12\x18\n'
+    b'\x07message\x18\x01 '
+    b'\x01(\tR\x07message"c\n\x0cEchoResponse\x12\x18\n\x07message\x18\x01 '
+    b'\x01(\tR\x07messag'
+    b'e\x12\x1b\n\tserver_id\x18\x02 \x01(\tR\x08serverId\x12\x1c\n\ttimestamp\x18\x03 '
+    b'\x01(\tR\ttimestamp")\n\r'
+    b'HealthRequest\x12\x18\n\x07service\x18\x01 '
+    b'\x01(\tR\x07service"B\n\x0eHealthResponse\x12\x16\n\x06sta'
+    b'tus\x18\x01 \x01(\tR\x06status\x12\x18\n\x07message\x18\x02 '
+    b'\x01(\tR\x07message2\x9f\x01\n\x10FlextGrpcService'
+    b'\x12?\n\x04Echo\x12\x1a.flext.grpc.v1.EchoRequest\x1a\x1b.flext.grpc.v1.EchoRespons'
+    b'e\x12J\n\x0bHealthCheck\x12\x1c.flext.grpc.v1.HealthRequest\x1a\x1d.flext.grpc.v1.H'
+    b'ealthResponseb\x06proto3'
 )
 
 _globals = globals()

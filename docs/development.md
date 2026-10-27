@@ -4,6 +4,7 @@
 
 - [Local cycle](#local-cycle)
 - [Package boundaries](#package-boundaries)
+  - [Wire-code generation admission](#wire-code-generation-admission)
 - [Tests and review](#tests-and-review)
 
 <!-- TOC END -->

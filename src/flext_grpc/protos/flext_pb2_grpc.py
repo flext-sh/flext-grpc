@@ -24,7 +24,7 @@ import grpc
 
 from flext_grpc.protos import flext_pb2
 
-GRPC_GENERATED_VERSION: Final[str] = "1.84.0"
+GRPC_GENERATED_VERSION: Final[str] = "1.85.0"
 """Minimum ``grpcio`` release the surface was compiled against."""
 
 
@@ -39,7 +39,9 @@ def _installed_release_at_least(required: str) -> bool:
 
     """
     installed = tuple(
-        int(part) for part in grpc.__version__.split(".")[:3] if part.isdigit()
+        int(part)
+        for part in grpc.__version__.split(".")[:3]
+        if part.isdigit()
     )
     required_release = tuple(
         int(part) for part in required.split(".")[:3] if part.isdigit()
@@ -109,9 +111,6 @@ class FlextGrpcServiceServicer:
             request: The decoded request message.
             context: The servicer context of the call.
 
-        Returns:
-            Never returns normally.
-
         Raises:
             NotImplementedError: Always, with the unimplemented
                 status set.
@@ -119,7 +118,7 @@ class FlextGrpcServiceServicer:
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
-        msg = "Method not implemented!"
+        msg = f"Method not implemented! Request: {type(request).__name__}"
         raise NotImplementedError(msg)
 
     @staticmethod
@@ -136,9 +135,6 @@ class FlextGrpcServiceServicer:
             request: The decoded request message.
             context: The servicer context of the call.
 
-        Returns:
-            Never returns normally.
-
         Raises:
             NotImplementedError: Always, with the unimplemented
                 status set.
@@ -146,7 +142,7 @@ class FlextGrpcServiceServicer:
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details("Method not implemented!")
-        msg = "Method not implemented!"
+        msg = f"Method not implemented! Request: {type(request).__name__}"
         raise NotImplementedError(msg)
 
 
