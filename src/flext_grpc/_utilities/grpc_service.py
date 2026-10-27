@@ -14,7 +14,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, override
 
 import grpc
 from flext_core import u
@@ -51,13 +51,11 @@ class FlextGrpcUtilitiesGrpcService:
             """
             self._handlers = handlers
 
+        @override
         def echo(
             self,
             request: flext_pb2.EchoRequest,
-            context: grpc.ServicerContext[
-                flext_pb2.EchoRequest,
-                flext_pb2.EchoResponse,
-            ],
+            context: grpc.ServicerContext,
         ) -> flext_pb2.EchoResponse:
             """Handle ``Echo`` through its registered handler.
 
@@ -74,13 +72,11 @@ class FlextGrpcUtilitiesGrpcService:
                 flext_pb2.EchoResponse,
             )
 
+        @override
         def health_check(
             self,
             request: flext_pb2.HealthRequest,
-            context: grpc.ServicerContext[
-                flext_pb2.HealthRequest,
-                flext_pb2.HealthResponse,
-            ],
+            context: grpc.ServicerContext,
         ) -> flext_pb2.HealthResponse:
             """Handle ``HealthCheck`` through its registered handler.
 
