@@ -22,6 +22,7 @@ dependencies = [
   "flext-cli @ git+https://github.com/flext-sh/flext-cli.git@0.12.0-dev",
   "flext-core @ git+https://github.com/flext-sh/flext-core.git@0.12.0-dev",
   "grpcio>=1.84.0",
+  "grpcio-tools>=1.84.0",
   "protobuf>=7.36.2",
   "pydantic>=2.14.1,<3",
 ]
@@ -117,7 +118,6 @@ dev = [
 ]
 codegen = [
   "flext-infra @ git+https://github.com/flext-sh/flext-infra.git@0.12.0-dev",
-  "grpcio-tools>=1.84.0",
 ]
 
 [tool.flext.docs]
@@ -627,6 +627,9 @@ combine-as-imports = true
 force-single-line = false
 known-first-party = ["flext_grpc"]
 split-on-trailing-comma = false
+
+[tool.ruff.lint.pep8-naming]
+ignore-names = ["Ldif"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"

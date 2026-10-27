@@ -526,9 +526,6 @@ class FlextGrpcUtilitiesSchemaCodegen:
                 "            request: The decoded request message.",
                 "            context: The servicer context of the call.",
                 "",
-                "        Returns:",
-                "            Never returns normally.",
-                "",
                 "        Raises:",
                 "            NotImplementedError: Always, with the unimplemented",
                 "                status set.",
@@ -536,7 +533,10 @@ class FlextGrpcUtilitiesSchemaCodegen:
                 '        """',
                 "        context.set_code(grpc.StatusCode.UNIMPLEMENTED)",
                 '        context.set_details("Method not implemented!")',
-                '        msg = "Method not implemented!"',
+                (
+                    '        msg = f"Method not implemented! Request: '
+                    '{type(request).__name__}"'
+                ),
                 "        raise NotImplementedError(msg)",
             ])
         return lines

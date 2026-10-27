@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from flext_cli import t
 
-from flext_grpc._typings import FlextGrpcTypingsBase, grpc as _grpc_types
+from flext_grpc._typings import FlextGrpcTypingsBase, domain as _grpc_types
 
 
 class FlextGrpcTypes(t):
