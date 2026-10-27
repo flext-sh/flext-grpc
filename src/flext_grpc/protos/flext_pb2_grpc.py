@@ -39,9 +39,7 @@ def _installed_release_at_least(required: str) -> bool:
 
     """
     installed = tuple(
-        int(part)
-        for part in grpc.__version__.split(".")[:3]
-        if part.isdigit()
+        int(part) for part in grpc.__version__.split(".")[:3] if part.isdigit()
     )
     required_release = tuple(
         int(part) for part in required.split(".")[:3] if part.isdigit()
