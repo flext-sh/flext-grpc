@@ -83,6 +83,35 @@ def create_server_config(port: int, workers: int) -> p.Result[t.Grpc.ConfigDict]
         return r[t.Grpc.ConfigDict].fail(f"Configuration error: {e}", exception=e)
 
 
+def _simulate_failure(
+    error_type: type[Exception],
+    message: str,
+    log_message: str,
+    failure_label: str,
+) -> p.Result[str]:
+    """Raise, catch and convert one gRPC failure into a failed result.
+
+    Args:
+        error_type: The gRPC error type raised by the simulation.
+        message: The message carried by the raised error.
+        log_message: The log record emitted while catching.
+        failure_label: The label prefixed to the failure details.
+
+    Returns:
+        The resulting failed ``p.Result[str]``.
+
+    """
+
+    def _raise() -> NoReturn:
+        raise error_type(message)
+
+    try:
+        _raise()
+    except error_type as e:
+        logger.exception(log_message, error=str(e))
+        return r[str].fail(f"{failure_label}: {e}", exception=e)
+
+
 def simulate_connection_error() -> p.Result[str]:
     """Simulate a connection error scenario.
 
@@ -90,16 +119,12 @@ def simulate_connection_error() -> p.Result[str]:
         The resulting ``p.Result[str]``.
 
     """
-
-    def _raise_connection_error() -> NoReturn:
-        msg = "Failed to connect to gRPC server"
-        raise FlextGrpcErrors.GrpcConnectionError(msg)
-
-    try:
-        _raise_connection_error()
-    except FlextGrpcErrors.GrpcConnectionError as e:
-        logger.exception("Connection failed", error=str(e))
-        return r[str].fail(f"Connection error: {e}", exception=e)
+    return _simulate_failure(
+        FlextGrpcErrors.GrpcConnectionError,
+        "Failed to connect to gRPC server",
+        "Connection failed",
+        "Connection error",
+    )
 
 
 def simulate_timeout_error() -> p.Result[str]:
@@ -109,16 +134,12 @@ def simulate_timeout_error() -> p.Result[str]:
         The resulting ``p.Result[str]``.
 
     """
-
-    def _raise_timeout_error() -> NoReturn:
-        msg = "Request timed out after 30 seconds"
-        raise FlextGrpcErrors.GrpcTimeoutError(msg)
-
-    try:
-        _raise_timeout_error()
-    except FlextGrpcErrors.GrpcTimeoutError as e:
-        logger.exception("Request timed out", error=str(e))
-        return r[str].fail(f"Timeout error: {e}", exception=e)
+    return _simulate_failure(
+        FlextGrpcErrors.GrpcTimeoutError,
+        "Request timed out after 30 seconds",
+        "Request timed out",
+        "Timeout error",
+    )
 
 
 def handle_generic_grpc_error() -> p.Result[str]:
@@ -128,16 +149,12 @@ def handle_generic_grpc_error() -> p.Result[str]:
         The resulting ``p.Result[str]``.
 
     """
-
-    def _raise_generic_error() -> NoReturn:
-        msg = "Unknown gRPC error occurred"
-        raise FlextGrpcErrors.Error(msg)
-
-    try:
-        _raise_generic_error()
-    except FlextGrpcErrors.Error as e:
-        logger.exception("Generic gRPC error", error=str(e))
-        return r[str].fail(f"gRPC error: {e}", exception=e)
+    return _simulate_failure(
+        FlextGrpcErrors.Error,
+        "Unknown gRPC error occurred",
+        "Generic gRPC error",
+        "gRPC error",
+    )
 
 
 def comprehensive_error_handling_pipeline() -> p.Result[str]:

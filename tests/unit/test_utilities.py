@@ -13,6 +13,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Callable
+
 import pytest
 
 from tests import m, tm, u
@@ -157,37 +159,25 @@ class TestsFlextGrpcUtilitiesUnit:
 
     @staticmethod
     @pytest.mark.parametrize(
-        ("state", "expected"),
+        ("normalizer", "state", "expected"),
         [
-            ("ready", "ready"),
-            ("IDLE", "idle"),
-            ("Ready", "ready"),
-            ("bogus", "unknown"),
+            (u.Grpc.channel_state_name, "ready", "ready"),
+            (u.Grpc.channel_state_name, "IDLE", "idle"),
+            (u.Grpc.channel_state_name, "Ready", "ready"),
+            (u.Grpc.channel_state_name, "bogus", "unknown"),
+            (u.Grpc.server_state_name, "running", "running"),
+            (u.Grpc.server_state_name, "STOPPED", "stopped"),
+            (u.Grpc.server_state_name, "Starting", "starting"),
+            (u.Grpc.server_state_name, "nope", "unknown"),
         ],
     )
-    def test_channel_state_name_normalizes_known_states(
+    def test_state_name_normalizes_known_states(
+        normalizer: Callable[[str], str],
         state: str,
         expected: str,
     ) -> None:
-        """Known channel states normalize to lowercase; others map to unknown."""
-        tm.that(u.Grpc.channel_state_name(state), eq=expected)
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        ("state", "expected"),
-        [
-            ("running", "running"),
-            ("STOPPED", "stopped"),
-            ("Starting", "starting"),
-            ("nope", "unknown"),
-        ],
-    )
-    def test_server_state_name_normalizes_known_states(
-        state: str,
-        expected: str,
-    ) -> None:
-        """Known server states normalize to lowercase; others map to unknown."""
-        tm.that(u.Grpc.server_state_name(state), eq=expected)
+        """Known states normalize to lowercase; others map to unknown."""
+        tm.that(normalizer(state), eq=expected)
 
     # ------------------------------------------------------------------
     # system_info
