@@ -24,7 +24,7 @@ import grpc
 
 from flext_grpc.protos import flext_pb2
 
-GRPC_GENERATED_VERSION: Final[str] = "1.85.0"
+GRPC_GENERATED_VERSION: Final[str] = "1.84.0"
 """Minimum ``grpcio`` release the surface was compiled against."""
 
 
@@ -79,7 +79,6 @@ class FlextGrpcServiceStub:
             "/flext.grpc.v1.FlextGrpcService/Echo",
             request_serializer=flext_pb2.EchoRequest.SerializeToString,
             response_deserializer=flext_pb2.EchoResponse.FromString,
-            _registered_method=True,
         )
         self.health_check: grpc.UnaryUnaryMultiCallable[
             flext_pb2.HealthRequest,
@@ -88,7 +87,6 @@ class FlextGrpcServiceStub:
             "/flext.grpc.v1.FlextGrpcService/HealthCheck",
             request_serializer=flext_pb2.HealthRequest.SerializeToString,
             response_deserializer=flext_pb2.HealthResponse.FromString,
-            _registered_method=True,
         )
 
 
@@ -98,10 +96,7 @@ class FlextGrpcServiceServicer:
     @staticmethod
     def echo(
         request: flext_pb2.EchoRequest,
-        context: grpc.ServicerContext[
-            flext_pb2.EchoRequest,
-            flext_pb2.EchoResponse,
-        ],
+        context: grpc.ServicerContext,
     ) -> flext_pb2.EchoResponse:
         """Report the ``Echo`` RPC as unimplemented.
 
@@ -122,10 +117,7 @@ class FlextGrpcServiceServicer:
     @staticmethod
     def health_check(
         request: flext_pb2.HealthRequest,
-        context: grpc.ServicerContext[
-            flext_pb2.HealthRequest,
-            flext_pb2.HealthResponse,
-        ],
+        context: grpc.ServicerContext,
     ) -> flext_pb2.HealthResponse:
         """Report the ``HealthCheck`` RPC as unimplemented.
 
@@ -144,6 +136,58 @@ class FlextGrpcServiceServicer:
         raise NotImplementedError(msg)
 
 
+def _deserialize_echo(payload: bytes) -> flext_pb2.EchoRequest:
+    """Decode one ``Echo`` request payload.
+
+    Args:
+        payload: The serialized request bytes.
+
+    Returns:
+        The decoded ``flext_pb2.EchoRequest`` message.
+
+    """
+    return flext_pb2.EchoRequest.FromString(payload)
+
+
+def _serialize_echo(message: flext_pb2.EchoResponse) -> bytes:
+    """Encode one ``Echo`` response message.
+
+    Args:
+        message: The response message.
+
+    Returns:
+        The serialized response bytes.
+
+    """
+    return message.SerializeToString()
+
+
+def _deserialize_health_check(payload: bytes) -> flext_pb2.HealthRequest:
+    """Decode one ``HealthCheck`` request payload.
+
+    Args:
+        payload: The serialized request bytes.
+
+    Returns:
+        The decoded ``flext_pb2.HealthRequest`` message.
+
+    """
+    return flext_pb2.HealthRequest.FromString(payload)
+
+
+def _serialize_health_check(message: flext_pb2.HealthResponse) -> bytes:
+    """Encode one ``HealthCheck`` response message.
+
+    Args:
+        message: The response message.
+
+    Returns:
+        The serialized response bytes.
+
+    """
+    return message.SerializeToString()
+
+
 def add_flext_grpc_service_servicer_to_server(
     servicer: FlextGrpcServiceServicer,
     server: grpc.Server,
@@ -155,16 +199,16 @@ def add_flext_grpc_service_servicer_to_server(
         server: The server receiving the handlers.
 
     """
-    rpc_method_handlers: dict[str, grpc.RpcMethodHandler] = {
+    rpc_method_handlers = {
         "Echo": grpc.unary_unary_rpc_method_handler(
             servicer.echo,
-            request_deserializer=flext_pb2.EchoRequest.FromString,
-            response_serializer=flext_pb2.EchoResponse.SerializeToString,
+            request_deserializer=_deserialize_echo,
+            response_serializer=_serialize_echo,
         ),
         "HealthCheck": grpc.unary_unary_rpc_method_handler(
             servicer.health_check,
-            request_deserializer=flext_pb2.HealthRequest.FromString,
-            response_serializer=flext_pb2.HealthResponse.SerializeToString,
+            request_deserializer=_deserialize_health_check,
+            response_serializer=_serialize_health_check,
         ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
