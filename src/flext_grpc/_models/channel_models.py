@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from types import MappingProxyType
 from typing import Annotated, Self
 
@@ -78,7 +79,7 @@ class FlextGrpcModelsChannel:
         def transition(
             current: str,
             target: str,
-            allowed_transitions: t.MappingKV[str, set[str]],
+            allowed_transitions: Mapping[str, set[str]],
         ) -> p.Result[FlextGrpcModelsChannel.StateTransition]:
             """Perform a generic state transition with validation.
 
@@ -118,7 +119,7 @@ class FlextGrpcModelsChannel:
             FlextCliModels.Field(description="Method to invoke on entity"),
         ] = None
         parameters: Annotated[
-            t.MappingKV[str, t.JsonMapping | None],
+            Mapping[str, t.JsonMapping | None],
             FlextCliModels.Field(description="Operation parameters"),
         ] = FlextCliModels.Field(
             default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({}),
@@ -161,7 +162,7 @@ class FlextGrpcModelsChannel:
             FlextCliModels.Field(description="Error message if failed"),
         ] = None
         metadata: Annotated[
-            t.MappingKV[str, t.JsonMapping | None],
+            Mapping[str, t.JsonMapping | None],
             FlextCliModels.Field(description="Response metadata"),
         ] = FlextCliModels.Field(
             default_factory=lambda: MappingProxyType[str, t.JsonMapping | None]({}),

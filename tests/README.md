@@ -161,6 +161,15 @@ pytest tests/e2e/ --benchmark-only
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 import pytest
 
 
@@ -240,6 +249,15 @@ pytest --cov=src --cov-report=term-missing
 
 ```python notest
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from flext_core import t
 
 
@@ -261,6 +279,15 @@ def test_entity_creation_and_validation():
 
 ```python notest
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from flext_core import t
 
 
@@ -282,6 +309,15 @@ def test_service_operation_success():
 
 ```python notest
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from flext_core import t
 
 

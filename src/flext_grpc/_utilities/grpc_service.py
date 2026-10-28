@@ -14,6 +14,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, override
 
 import grpc
@@ -27,7 +28,7 @@ from flext_grpc._utilities import FlextGrpcUtilitiesGrpcRuntime
 from flext_grpc.protos import flext_pb2, flext_pb2_grpc
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
+    from collections.abc import Callable
 
 
 class FlextGrpcUtilitiesGrpcService:

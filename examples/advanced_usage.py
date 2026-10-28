@@ -12,6 +12,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import MutableMapping, Sequence
+
 from flext_cli import cli
 
 from examples import c, p, r, t
@@ -78,8 +80,8 @@ class ExamplesFlextGrpcAdvancedUsage:
             """Initialize the gRPC server manager with facade."""
             self._outer = outer
             self.grpc = outer.grpc
-            self.servers: t.MutableMappingKV[str, FlextGrpcModels.Grpc.Server] = {}
-            self.server_configs: t.MutableMappingKV[str, FlextGrpcSettings] = {}
+            self.servers: MutableMapping[str, FlextGrpcModels.Grpc.Server] = {}
+            self.server_configs: MutableMapping[str, FlextGrpcSettings] = {}
 
         def create_server_pool(
             self,
@@ -115,14 +117,14 @@ class ExamplesFlextGrpcAdvancedUsage:
                 server_results.append(server_result)
             return server_results
 
-        def server_status(self) -> t.MappingKV[str, t.MappingKV[str, str]]:
+        def server_status(self) -> Mapping[str, Mapping[str, str]]:
             """Get status of all servers through facade.
 
             Returns:
-                The resulting ``t.MappingKV[str, t.MappingKV[str, str]]``.
+                The resulting ``Mapping[str, Mapping[str, str]]``.
 
             """
-            status: t.MutableMappingKV[str, t.MappingKV[str, str]] = {}
+            status: MutableMapping[str, Mapping[str, str]] = {}
             for server_id, server in self.servers.items():
                 settings = self.server_configs[server_id]
                 status[server_id] = {
@@ -135,14 +137,14 @@ class ExamplesFlextGrpcAdvancedUsage:
                 }
             return status
 
-        def start_all_servers(self) -> t.MappingKV[str, bool]:
+        def start_all_servers(self) -> Mapping[str, bool]:
             """Start all servers in the pool through facade.
 
             Returns:
-                The resulting ``t.MappingKV[str, bool]``.
+                The resulting ``Mapping[str, bool]``.
 
             """
-            results: t.MutableMappingKV[str, bool] = {}
+            results: MutableMapping[str, bool] = {}
             for server_id, server in self.servers.items():
                 start_result = self.grpc.start_server(server)
                 if start_result.success:
@@ -152,14 +154,14 @@ class ExamplesFlextGrpcAdvancedUsage:
                     results[server_id] = False
             return results
 
-        def stop_all_servers(self) -> t.MappingKV[str, bool]:
+        def stop_all_servers(self) -> Mapping[str, bool]:
             """Stop all servers in the pool through facade.
 
             Returns:
-                The resulting ``t.MappingKV[str, bool]``.
+                The resulting ``Mapping[str, bool]``.
 
             """
-            results: t.MutableMappingKV[str, bool] = {}
+            results: MutableMapping[str, bool] = {}
             for server_id, server in self.servers.items():
                 if server.state == "running":
                     stop_result = self.grpc.stop_server(server)
@@ -185,7 +187,7 @@ class ExamplesFlextGrpcAdvancedUsage:
             host: str | None = None,
             port: int = 8080,
             service_name: str = "AdvancedService",
-            methods: t.StrSequence | None = None,
+            methods: Sequence[str] | None = None,
         ) -> p.Result[FlextGrpcModels.Grpc.CompleteSetup]:
             """Create a complete gRPC setup through facade.
 
@@ -211,7 +213,7 @@ class ExamplesFlextGrpcAdvancedUsage:
 
         def demonstrate_streaming(self) -> None:
             """Demonstrate streaming operations through facade."""
-            stream_configs: t.SequenceOf[tuple[str, str]] = [
+            stream_configs: Sequence[tuple[str, str]] = [
                 ("UnaryMethod", "unary"),
                 ("ServerStreamingMethod", "server_streaming"),
                 ("ClientStreamingMethod", "client_streaming"),
@@ -289,7 +291,7 @@ class ExamplesFlextGrpcAdvancedUsage:
     def example_4_streaming(self) -> None:
         """Run streaming operations through the facade."""
         grpc = self.grpc
-        stream_configs: t.SequenceOf[tuple[str, str]] = [
+        stream_configs: Sequence[tuple[str, str]] = [
             ("GetUser", "unary"),
             ("StreamMessages", "server_streaming"),
             ("UploadData", "client_streaming"),

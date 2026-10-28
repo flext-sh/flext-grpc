@@ -15,8 +15,8 @@ from flext_grpc import c
 type EntityKind = Literal[
     "server", "client", "channel", "service", c.ProcessingMode.STREAM
 ]
-type Headers = FlextCliTypes.StrMapping
-type ConfigDict = FlextCliTypes.MappingKV[
+type Headers = FlextCliTypes.Mapping[str, str]
+type ConfigDict = FlextCliTypes.Mapping[
     str,
     FlextCliTypes.Scalar | FlextCliTypes.JsonValue | None,
 ]

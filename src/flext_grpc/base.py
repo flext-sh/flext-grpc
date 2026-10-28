@@ -11,11 +11,12 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from abc import ABC
+from collections.abc import MutableSequence
 from typing import override
 
 from flext_core import FlextService
 
-from flext_grpc import FlextGrpcSettings, m, p, r, t
+from flext_grpc import FlextGrpcSettings, m, p, r
 
 
 class FlextGrpcServiceBase(FlextService[FlextGrpcSettings], ABC):
@@ -47,4 +48,4 @@ class FlextGrpcServiceBase(FlextService[FlextGrpcSettings], ABC):
 
 s = FlextGrpcServiceBase
 
-__all__: t.MutableSequenceOf[str] = ["FlextGrpcServiceBase", "s"]
+__all__: MutableSequence[str] = ["FlextGrpcServiceBase", "s"]

@@ -6,11 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Iterable, Sequence
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
     import threading
-    from collections.abc import Iterable
 
     from flext_core._protocols import FlextProtocolsResult
 
@@ -84,7 +84,7 @@ class FlextGrpcProtocolsServer:
             self,
             host: str,
             port: int,
-            services: t.SequenceOf[FlextGrpcProtocolsServer.GrpcServicer] | None = None,
+            services: Sequence[FlextGrpcProtocolsServer.GrpcServicer] | None = None,
         ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsServer.GrpcServer]:
             """Start gRPC server.
 

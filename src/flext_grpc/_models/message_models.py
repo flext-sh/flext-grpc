@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from datetime import datetime
 from types import MappingProxyType
 from typing import Annotated, Self
@@ -100,11 +101,11 @@ class FlextGrpcModelsMessage:
             str,
             FlextCliModels.Field(description="Operation name to execute"),
         ]
-        arguments: t.ScalarMapping = FlextCliModels.Field(
+        arguments: Mapping[str, t.Scalar] = FlextCliModels.Field(
             default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
             description="Positional arguments as dict",
         )
-        keyword_arguments: t.ScalarMapping = FlextCliModels.Field(
+        keyword_arguments: Mapping[str, t.Scalar] = FlextCliModels.Field(
             default_factory=lambda: MappingProxyType[str, t.Scalar]({}),
             description="Keyword arguments",
         )

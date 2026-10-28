@@ -98,6 +98,15 @@ print(f'Server: {server.address}, state: {server.state}')
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from flext_grpc import create_server
 
 # Create gRPC server
@@ -111,6 +120,15 @@ print(f"Server state: {server.state}")
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from flext_grpc import create_client
 
 # Create gRPC client
@@ -123,6 +141,15 @@ print(f"Client created: {type(client).__name__}")
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from flext_grpc import FlextGrpcPlatform
 
 # Create platform for advanced operations
@@ -134,6 +161,15 @@ print(f"Platform ready: {type(platform).__name__}")
 
 ```python
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 
 from flext_grpc import FlextGrpcSettings
 

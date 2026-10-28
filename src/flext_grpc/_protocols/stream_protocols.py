@@ -6,13 +6,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_grpc._protocols import FlextGrpcProtocolsChannel
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
-
     from flext_core._protocols import FlextProtocolsResult
 
     from flext_grpc import c, t
@@ -89,7 +88,7 @@ class FlextGrpcProtocolsStream:
         def handle_client_streaming(
             self,
             stream: FlextGrpcProtocolsStream.GrpcStream,
-            data_list: t.SequenceOf[FlextGrpcProtocolsStream.GrpcMessage],
+            data_list: Sequence[FlextGrpcProtocolsStream.GrpcMessage],
         ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsStream.GrpcMessage]:
             """Handle client-side streaming.
 

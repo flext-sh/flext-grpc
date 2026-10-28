@@ -7,6 +7,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections import deque
+from collections.abc import Sequence
 from types import MappingProxyType
 from typing import Annotated, Self
 
@@ -41,7 +42,7 @@ class FlextGrpcModelsRuntime:
             ),
         ] = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS
         services: Annotated[
-            t.SequenceOf[t.Port[p.Grpc.GrpcServicer]],
+            Sequence[t.Port[p.Grpc.GrpcServicer]],
             FlextCliModels.Field(description="gRPC services"),
         ] = FlextCliModels.Field(default_factory=tuple)
         grpc_server: Annotated[
@@ -144,14 +145,14 @@ class FlextGrpcModelsRuntime:
             str,
             FlextCliModels.Field(description="Service name identifier"),
         ] = ""
-        methods: t.StrSequence = FlextCliModels.Field(
+        methods: Sequence[str] = FlextCliModels.Field(
             default_factory=tuple[str, ...],
             description="Registered RPC method names",
         )
 
         @FlextCliModels.field_validator("methods")
         @classmethod
-        def validate_methods(cls, v: t.StrSequence) -> t.StrSequence:
+        def validate_methods(cls, v: Sequence[str]) -> Sequence[str]:
             """Validate methods list is not empty with valid items.
 
             Args:

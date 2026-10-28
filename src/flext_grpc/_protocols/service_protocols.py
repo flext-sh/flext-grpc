@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping, Sequence
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_grpc._protocols import (
@@ -15,8 +16,6 @@ from flext_grpc._protocols import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
-
     from flext_core._protocols import FlextProtocolsResult
 
     from flext_grpc import t
@@ -36,7 +35,7 @@ class FlextGrpcProtocolsService:
         def create_service(
             self,
             service_name: str,
-            methods: t.MappingKV[str, FlextGrpcProtocolsService.GrpcMethodHandler],
+            methods: Mapping[str, FlextGrpcProtocolsService.GrpcMethodHandler],
         ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsServer.GrpcServicer]:
             """Create gRPC service definition.
 
@@ -53,14 +52,14 @@ class FlextGrpcProtocolsService:
         def service_methods(
             self,
             service: FlextGrpcProtocolsServer.GrpcServicer,
-        ) -> FlextProtocolsResult.Result[t.StrSequence]:
+        ) -> FlextProtocolsResult.Result[Sequence[str]]:
             """Get list of service methods.
 
             Args:
                 service: Servicer to inspect.
 
             Returns:
-                The resulting ``p.Result[t.StrSequence]``.
+                The resulting ``p.Result[Sequence[str]]``.
 
             """
             ...
@@ -189,8 +188,8 @@ class FlextGrpcProtocolsService:
         def create_client_config(
             self,
             target: str,
-            options: t.MappingKV[str, t.JsonValue | None] | None = None,
-        ) -> FlextProtocolsResult.Result[t.ScalarMapping]:
+            options: Mapping[str, t.JsonValue | None] | None = None,
+        ) -> FlextProtocolsResult.Result[Mapping[str, t.Scalar]]:
             """Create gRPC client configuration.
 
             Args:
@@ -198,7 +197,7 @@ class FlextGrpcProtocolsService:
                 options: Optional client options keyed by name.
 
             Returns:
-                The resulting ``p.Result[t.ScalarMapping]``.
+                The resulting ``p.Result[Mapping[str, t.Scalar]]``.
 
             """
             ...
@@ -207,8 +206,8 @@ class FlextGrpcProtocolsService:
             self,
             host: str,
             port: int,
-            options: t.MappingKV[str, t.JsonValue | None] | None = None,
-        ) -> FlextProtocolsResult.Result[t.ScalarMapping]:
+            options: Mapping[str, t.JsonValue | None] | None = None,
+        ) -> FlextProtocolsResult.Result[Mapping[str, t.Scalar]]:
             """Create gRPC server configuration.
 
             Args:
@@ -217,7 +216,7 @@ class FlextGrpcProtocolsService:
                 options: Optional server options keyed by name.
 
             Returns:
-                The resulting ``p.Result[t.ScalarMapping]``.
+                The resulting ``p.Result[Mapping[str, t.Scalar]]``.
 
             """
             ...

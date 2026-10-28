@@ -115,7 +115,7 @@ def _simulate_failure(
         return r[str].fail(f"{failure_label}: {e}", exception=e)
 
 
-_simulated_failures: Final[t.MappingKV[str, Callable[[], p.Result[str]]]] = (
+_simulated_failures: Final[Mapping[str, Callable[[], p.Result[str]]]] = (
     MappingProxyType({
         "connection": partial(
             _simulate_failure,

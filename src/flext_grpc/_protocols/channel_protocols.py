@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 from flext_cli import p
@@ -65,7 +66,7 @@ class FlextGrpcProtocolsChannel:
         def create_channel(
             self,
             target: str,
-            options: t.MappingKV[str, t.JsonValue | None] | None = None,
+            options: Mapping[str, t.JsonValue | None] | None = None,
         ) -> p.Result[FlextGrpcProtocolsChannel.GrpcChannel]:
             """Create gRPC channel.
 
