@@ -11,17 +11,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Iterable,
-    Iterator,
-    Mapping,
-    MutableMapping,
-    MutableSequence,
-    Sequence,
-)
-
 import time
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from functools import partial
 from types import MappingProxyType
 from typing import Final, NoReturn

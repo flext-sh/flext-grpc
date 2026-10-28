@@ -13,15 +13,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Iterable,
-    Iterator,
-    Mapping,
-    MutableMapping,
-    MutableSequence,
-    Sequence,
-)
-
+from collections.abc import Mapping
 from typing import Protocol, is_protocol, runtime_checkable
 
 import pytest

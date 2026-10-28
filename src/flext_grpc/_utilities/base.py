@@ -6,15 +6,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Iterable,
-    Iterator,
-    Mapping,
-    MutableMapping,
-    MutableSequence,
-    Sequence,
-)
-
 
 class FlextGrpcUtilitiesBase:
     """Base utilities for flext-grpc."""

@@ -13,15 +13,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import (
-    Iterable,
-    Iterator,
-    Mapping,
-    MutableMapping,
-    MutableSequence,
-    Sequence,
-)
-
 from flext_core import c as flext_core_c
 
 from flext_grpc._constants import FlextGrpcConstantsBase, FlextGrpcConstantsDerived

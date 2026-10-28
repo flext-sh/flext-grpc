@@ -8,15 +8,6 @@ SPDX-License-Identifier: MIT
 # Copyright (c) 2025 FLEXT Team. All rights reserved.
 from __future__ import annotations
 
-from collections.abc import (
-    Iterable,
-    Iterator,
-    Mapping,
-    MutableMapping,
-    MutableSequence,
-    Sequence,
-)
-
 import json
 import sys
 from collections.abc import Sequence
