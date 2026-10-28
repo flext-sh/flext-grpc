@@ -419,6 +419,8 @@ reportUnusedImport = "error"
 reportUnusedVariable = "error"
 typeCheckingMode = "strict"
 useLibraryCodeForTypes = true
+venv = ".venv"
+venvPath = ".."
 
 [[tool.pyright.executionEnvironments]]
 extraPaths = ["src", "."]

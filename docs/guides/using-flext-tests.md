@@ -62,11 +62,12 @@ With the settings plugin loaded, its `pytest_runtest_setup` and
 `pytest_runtest_teardown` hooks perform automatic isolation. The two explicit fixtures
 above are not declared with `autouse=True`.
 
-```python
+```{.python .notest}
 from __future__ import annotations
 
-from flext_core import FlextSettings
 from flext_tests import FlextTestsSettings, tm
+
+from flext_core import FlextSettings
 
 
 def test_settings_isolation(settings: FlextTestsSettings) -> None:
@@ -80,9 +81,10 @@ def test_settings_isolation(settings: FlextTestsSettings) -> None:
 
 When a fixture is not enough:
 
-```python
-from flext_core import FlextContainer, FlextSettings
+```{.python .notest}
 from flext_tests import FlextTestsSettings
+
+from flext_core import FlextContainer, FlextSettings
 
 FlextSettings.reset_for_testing()
 FlextTestsSettings.reset_for_testing()
@@ -112,14 +114,24 @@ Inspect a container through `FlextTestsDocker.fetch_container_info(name)`; it is
 single owner of container status and fails `NOT_PROVISIONED` for an absent
 container.
 
-Use the `r` alias instead of importing from `returns` directly. The
-`safe_divide` function under test is the example from
-[Using flext-core](using-flext-core.md) unchanged; only the test harness differs:
+Use the `r` alias instead of importing from `returns` directly:
 
 ```python
 from math import isclose
 
-from flext_tests import tm
+from flext_tests import p, r, tm
+
+
+def safe_divide(a: float, b: float) -> p.Result[float]:
+    """Divide ``a`` by ``b`` and fail explicitly on a zero divisor.
+
+    Returns:
+        The quotient, or a ``division_by_zero`` failure.
+
+    """
+    if b == 0:
+        return r[float].fail("division_by_zero")
+    return r[float].ok(a / b)
 
 
 def test_safe_divide() -> None:
@@ -210,7 +222,7 @@ exercise the public `r` facade used by the production consumer.
 For a standalone test without the settings plugin, keep the reset on both sides of the
 mutation, including assertion failure:
 
-```python
+```{.python .notest}
 from flext_core import FlextSettings
 from flext_tests import tm
 
