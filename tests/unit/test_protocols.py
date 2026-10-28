@@ -23,7 +23,7 @@ from tests import p, t, tm
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
 # satisfy the runtime-checkable protocol (verified via isinstance below).
-_PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
+_PROTOCOL_CONTRACTS: t.MappingKV[str, tuple[str, ...]] = {
     "Server": (
         "add_service",
         "configure_port",
@@ -75,11 +75,11 @@ _PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
     ),
 }
 
-_PROTOCOL_NAMES: t.VariadicTuple[str] = tuple(_PROTOCOL_CONTRACTS)
+_PROTOCOL_NAMES: tuple[str, ...] = tuple(_PROTOCOL_CONTRACTS)
 
 
 def _build_conforming_instance(
-    members: t.VariadicTuple[str],
+    members: tuple[str, ...],
 ) -> p.Grpc.Tests.DuckInstance:
     """Create a duck-typed instance exposing exactly ``members`` as callables.
 
@@ -93,7 +93,7 @@ def _build_conforming_instance(
 
 
 def _build_partial_instance(
-    members: t.VariadicTuple[str],
+    members: tuple[str, ...],
     *,
     omit: str,
 ) -> p.Grpc.Tests.DuckInstance:

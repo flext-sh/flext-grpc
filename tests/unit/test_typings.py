@@ -64,8 +64,7 @@ class TestsFlextGrpcTypesUnit:
         ],
     )
     def test_parse_target_splits_into_host_and_int_port(
-        target: str,
-        expected: tuple[str, int],
+        target: str, expected: tuple[str, ...]
     ) -> None:
         """Parsing a valid target yields the host string and integer port."""
         tm.that(u.Grpc.parse_target(target), eq=expected)
