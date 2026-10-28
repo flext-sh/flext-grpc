@@ -30,10 +30,17 @@ class TestsFlextGrpcConfig:
         """An empty configuration yields sane, in-range namespaced field values."""
         cfg = FlextGrpcSettings()
         tm_grpc = cfg.Grpc
+
+        def port_in_range(value: int) -> bool:
+            return 1 <= value <= c.MAX_PORT
+
+        def workers_valid(value: int) -> bool:
+            return value >= 1
+
         tm.that(tm_grpc.host, is_=str)
         tm.that(tm_grpc.host.strip(), ne="")
-        tm.that(tm_grpc.port, where=lambda value: 1 <= value <= c.MAX_PORT)
-        tm.that(tm_grpc.max_workers, where=lambda value: value >= 1)
+        tm.that(tm_grpc.port, where=port_in_range)
+        tm.that(tm_grpc.max_workers, where=workers_valid)
         tm.that(
             abs(tm_grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE,
             truth=True,

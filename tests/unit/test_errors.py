@@ -83,9 +83,13 @@ class TestsFlextGrpcErrors:
         message = "channel down"
         with pytest.raises(e.FlextConnectionError) as caught:
             raise FlextGrpcErrors.GrpcConnectionError(message)
+
+        def not_validation_error(value: object) -> bool:
+            return not isinstance(value, e.ValidationError)
+
         tm.that(
             caught.value,
-            where=lambda value: not isinstance(value, e.ValidationError),
+            where=not_validation_error,
         )
 
     @staticmethod

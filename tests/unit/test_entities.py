@@ -107,7 +107,11 @@ class TestsFlextGrpcEntitiesServer:
         updated = tm.ok(server.add_service(service))
         updated_services = list(updated.services)
         tm.that(len(updated_services), eq=1)
-        tm.that(updated_services[0], where=lambda value: value is service)
+
+        def is_registered_service(value: object) -> bool:
+            return value is service
+
+        tm.that(updated_services[0], where=is_registered_service)
         tm.that(list(server.services), eq=[])
 
     @staticmethod

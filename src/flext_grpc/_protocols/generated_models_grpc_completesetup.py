@@ -1,3 +1,10 @@
+"""Generated models grpc completesetup module.
+
+Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_grpc/_protocols/generated_models_grpc_completesetup
+SPDX-License-Identifier: MIT
+"""
+
 # AUTO-GENERATED FILE — Regenerate with: make gen
 from __future__ import annotations
 
