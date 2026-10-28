@@ -11,6 +11,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from socket import AF_INET, SOCK_STREAM, socket
 from typing import TYPE_CHECKING
 

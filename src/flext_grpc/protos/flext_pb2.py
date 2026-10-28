@@ -14,6 +14,15 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from google.protobuf import (
     descriptor_pool as _descriptor_pool,
     message as _message,
