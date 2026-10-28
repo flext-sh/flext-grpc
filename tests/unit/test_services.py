@@ -137,7 +137,6 @@ class TestsFlextGrpcServices:
     def test_validate_target_recognizes_host_port_form(
         grpc_facade: FlextGrpc,
         target: str,
-        *,
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
