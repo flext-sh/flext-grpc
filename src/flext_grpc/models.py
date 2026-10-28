@@ -13,9 +13,9 @@ from __future__ import annotations
 from flext_cli import m as flext_cli_m
 
 from flext_grpc._models import (
-    FlextGrpcConfigModels,
     FlextGrpcModelsBase,
     FlextGrpcModelsChannel,
+    FlextGrpcModelsConfig,
     FlextGrpcModelsMessage,
     FlextGrpcModelsRuntime,
 )
@@ -35,7 +35,7 @@ class FlextGrpcModels(flext_cli_m):
     class Grpc(
         FlextGrpcModelsBase,
         FlextGrpcModelsChannel,
-        FlextGrpcConfigModels,
+        FlextGrpcModelsConfig,
         FlextGrpcModelsMessage,
         FlextGrpcModelsRuntime,
     ):

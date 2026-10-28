@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     )
 
 
-class FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup:
+class FlextGrpcModelsProtocolsGrpcGeneratedCompleteSetup:
     @runtime_checkable
     class CompleteSetup(Protocol):
         server: FlextGrpcProtocolsServer.Server
@@ -27,4 +27,4 @@ class FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup:
         target: str
 
 
-__all__ = ["FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup"]
+__all__ = ["FlextGrpcModelsProtocolsGrpcGeneratedCompleteSetup"]

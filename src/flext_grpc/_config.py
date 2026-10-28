@@ -15,18 +15,18 @@ from typing import Annotated
 from flext_core import FlextConfig
 from pydantic import Field
 
-from flext_grpc.config_models import FlextGrpcConfigNamespaceModels
+from flext_grpc.config_models import FlextGrpcModelsConfigNamespace
 
 
 class FlextGrpcConfig(FlextConfig):
     """Grpc config auto-loaded model-less from ``config/*.yaml``."""
 
     Grpc: Annotated[
-        FlextGrpcConfigNamespaceModels.GrpcNamespace,
+        FlextGrpcModelsConfigNamespace.GrpcNamespace,
         Field(
             description="Open namespace exposing ``config/*.yaml`` under ``Grpc``.",
         ),
-    ] = FlextGrpcConfigNamespaceModels.GrpcNamespace()
+    ] = FlextGrpcModelsConfigNamespace.GrpcNamespace()
 
 
 config: FlextGrpcConfig = FlextGrpcConfig.fetch_global()

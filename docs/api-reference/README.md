@@ -27,7 +27,7 @@ This section is generated from public exports and real docstrings.
 
 ## Surface Summary
 
-- Primary facades: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcConfigNamespaceModels`,
+- Primary facades: `FlextGrpc`, `FlextGrpcConfig`, `FlextGrpcModelsConfigNamespace`,
   `FlextGrpcConstants`, `FlextGrpcErrors`, `FlextGrpcModels` (+6 more)
 - Generated module pages: `10`
 

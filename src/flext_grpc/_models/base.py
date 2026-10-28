@@ -6,10 +6,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_grpc.config_models import FlextGrpcConfigNamespaceModels
+from flext_grpc.config_models import FlextGrpcModelsConfigNamespace
 
 
-class FlextGrpcModelsBase(FlextGrpcConfigNamespaceModels):
+class FlextGrpcModelsBase(FlextGrpcModelsConfigNamespace):
     """Base models for flext-grpc."""
 
 

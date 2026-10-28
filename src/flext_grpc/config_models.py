@@ -10,7 +10,7 @@ from __future__ import annotations
 from pydantic import BaseModel, ConfigDict
 
 
-class FlextGrpcConfigNamespaceModels:
+class FlextGrpcModelsConfigNamespace:
     """Configuration declarations independent of the model facade."""
 
     class GrpcNamespace(BaseModel):
@@ -19,4 +19,4 @@ class FlextGrpcConfigNamespaceModels:
         model_config = ConfigDict(extra="allow", frozen=True)
 
 
-__all__: list[str] = ["FlextGrpcConfigNamespaceModels"]
+__all__: list[str] = ["FlextGrpcModelsConfigNamespace"]
