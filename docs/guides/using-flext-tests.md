@@ -112,24 +112,14 @@ Inspect a container through `FlextTestsDocker.fetch_container_info(name)`; it is
 single owner of container status and fails `NOT_PROVISIONED` for an absent
 container.
 
-Use the `r` alias instead of importing from `returns` directly:
+Use the `r` alias instead of importing from `returns` directly. The
+`safe_divide` function under test is the example from
+[Using flext-core](using-flext-core.md) unchanged; only the test harness differs:
 
 ```python
 from math import isclose
 
-from flext_tests import p, r, tm
-
-
-def safe_divide(a: float, b: float) -> p.Result[float]:
-    """Divide ``a`` by ``b`` and fail explicitly on a zero divisor.
-
-    Returns:
-        The quotient, or a ``division_by_zero`` failure.
-
-    """
-    if b == 0:
-        return r[float].fail("division_by_zero")
-    return r[float].ok(a / b)
+from flext_tests import tm
 
 
 def test_safe_divide() -> None:

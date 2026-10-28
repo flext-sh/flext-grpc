@@ -12,7 +12,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from typing import NoReturn
+from collections.abc import Callable
+from functools import partial
+from types import MappingProxyType
+from typing import Final, NoReturn
 
 from examples import p, r, t, u
 from flext_grpc import FlextGrpcConstants, FlextGrpcErrors
@@ -112,49 +115,31 @@ def _simulate_failure(
         return r[str].fail(f"{failure_label}: {e}", exception=e)
 
 
-def simulate_connection_error() -> p.Result[str]:
-    """Simulate a connection error scenario.
-
-    Returns:
-        The resulting ``p.Result[str]``.
-
-    """
-    return _simulate_failure(
-        FlextGrpcErrors.GrpcConnectionError,
-        "Failed to connect to gRPC server",
-        "Connection failed",
-        "Connection error",
-    )
-
-
-def simulate_timeout_error() -> p.Result[str]:
-    """Simulate a timeout error scenario.
-
-    Returns:
-        The resulting ``p.Result[str]``.
-
-    """
-    return _simulate_failure(
-        FlextGrpcErrors.GrpcTimeoutError,
-        "Request timed out after 30 seconds",
-        "Request timed out",
-        "Timeout error",
-    )
-
-
-def handle_generic_grpc_error() -> p.Result[str]:
-    """Handle generic gRPC errors.
-
-    Returns:
-        The resulting ``p.Result[str]``.
-
-    """
-    return _simulate_failure(
-        FlextGrpcErrors.Error,
-        "Unknown gRPC error occurred",
-        "Generic gRPC error",
-        "gRPC error",
-    )
+_simulated_failures: Final[t.MappingKV[str, Callable[[], p.Result[str]]]] = (
+    MappingProxyType({
+        "connection": partial(
+            _simulate_failure,
+            FlextGrpcErrors.GrpcConnectionError,
+            "Failed to connect to gRPC server",
+            "Connection failed",
+            "Connection error",
+        ),
+        "timeout": partial(
+            _simulate_failure,
+            FlextGrpcErrors.GrpcTimeoutError,
+            "Request timed out after 30 seconds",
+            "Request timed out",
+            "Timeout error",
+        ),
+        "generic": partial(
+            _simulate_failure,
+            FlextGrpcErrors.Error,
+            "Unknown gRPC error occurred",
+            "Generic gRPC error",
+            "gRPC error",
+        ),
+    })
+)
 
 
 def comprehensive_error_handling_pipeline() -> p.Result[str]:
@@ -176,11 +161,7 @@ def comprehensive_error_handling_pipeline() -> p.Result[str]:
     if config_result.failure:
         return r[str].fail(f"Pipeline failed at configuration: {config_result.error}")
     logger.info("✅ Server configuration created")
-    scenarios = [
-        ("connection", simulate_connection_error),
-        ("timeout", simulate_timeout_error),
-        ("generic", handle_generic_grpc_error),
-    ]
+    scenarios = list(_simulated_failures.items())
     for scenario_name, scenario_func in scenarios:
         result = scenario_func()
         if result.failure:
@@ -201,7 +182,7 @@ def error_recovery_patterns() -> p.Result[str]:
     """
     logger.info("Testing error recovery patterns")
     for attempt in range(3):
-        connection_result = simulate_connection_error()
+        connection_result = _simulated_failures["connection"]()
         if connection_result.success:
             logger.info(
                 "✅ Connection succeeded on attempt %s",
