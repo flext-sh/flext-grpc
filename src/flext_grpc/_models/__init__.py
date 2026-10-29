@@ -32,9 +32,9 @@ install_lazy_exports(
     __name__,
     globals(),
     MappingProxyType({
-        "FlextGrpcModelsConfig": ".config",
         "FlextGrpcModelsBase": ".base",
         "FlextGrpcModelsChannel": ".channel_models",
+        "FlextGrpcModelsConfig": ".config",
         "FlextGrpcModelsMessage": ".message_models",
         "FlextGrpcModelsRuntime": ".runtime_models",
     }),

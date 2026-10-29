@@ -110,10 +110,10 @@ install_lazy_exports(
     MappingProxyType({
         "FlextGrpc": ".api",
         "FlextGrpcConfig": "._config",
-        "FlextGrpcModelsConfigNamespace": ".config_models",
         "FlextGrpcConstants": ".constants",
         "FlextGrpcErrors": ".errors",
         "FlextGrpcModels": ".models",
+        "FlextGrpcModelsConfigNamespace": ".config_models",
         "FlextGrpcProtocols": ".protocols",
         "FlextGrpcServiceBase": ".base",
         "FlextGrpcSettings": "._settings",

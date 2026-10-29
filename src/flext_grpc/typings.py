@@ -9,18 +9,14 @@ from __future__ import annotations
 
 from flext_cli import t as flext_cli_t
 
-from flext_grpc._typings import FlextGrpcTypingsBase, domain as _grpc_types
+from flext_grpc._typings import FlextGrpcTypesDomain, FlextGrpcTypingsBase
 
 
 class FlextGrpcTypes(flext_cli_t):
     """gRPC-specific type definitions extending t via MRO."""
 
-    class Grpc(FlextGrpcTypingsBase):
+    class Grpc(FlextGrpcTypingsBase, FlextGrpcTypesDomain):
         """gRPC domain namespace (flat members per AGENTS.md §149)."""
-
-        EntityKind = _grpc_types.EntityKind
-        Headers = _grpc_types.Headers
-        ConfigDict = _grpc_types.ConfigDict
 
 
 t = FlextGrpcTypes

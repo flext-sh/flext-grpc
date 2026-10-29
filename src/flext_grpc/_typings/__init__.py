@@ -14,24 +14,17 @@ from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc._typings.base import FlextGrpcTypingsBase
-    from flext_grpc._typings.domain import ConfigDict, EntityKind, Headers
+    from flext_grpc._typings.domain import FlextGrpcTypesDomain
 
 
-__all__: tuple[str, ...] = (
-    "ConfigDict",
-    "EntityKind",
-    "FlextGrpcTypingsBase",
-    "Headers",
-)
+__all__: tuple[str, ...] = ("FlextGrpcTypesDomain", "FlextGrpcTypingsBase")
 
 install_lazy_exports(
     __name__,
     globals(),
     MappingProxyType({
-        "ConfigDict": ".domain",
-        "EntityKind": ".domain",
+        "FlextGrpcTypesDomain": ".domain",
         "FlextGrpcTypingsBase": ".base",
-        "Headers": ".domain",
     }),
     public_exports=__all__,
 )

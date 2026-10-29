@@ -10,6 +10,7 @@
 - [Catalogs and layers](#catalogs-and-layers)
 - [Make verbs](#make-verbs)
 - [ast-grep rules](#ast-grep-rules)
+  - [Pyrefly strict-typing cures (campaign flext-osru9, census 2026-10-28)](#pyrefly-strict-typing-cures-campaign-flext-osru9-census-2026-10-28)
   - [One rule per law](#one-rule-per-law)
 - [Text rules](#text-rules)
 - [Tests and snapshots](#tests-and-snapshots)
@@ -23,6 +24,29 @@ consolidation) is the `codemod` skill. This guide covers the FLEXT engine:
 where rules live, the keys it reads, and the verbs that run it. Every value named here
 is declared by the flext-infra owner cited next to it; that owner wins over this guide.
 
+The exhaustive-enum migration is an accepted target, not a validated rollout.
+An exhaustive `Literal` of members from one `StrEnum` may become that enum's direct
+Pydantic field annotation only after native Rope identities prove its complete
+canonical domain and references prove that it is not a discriminator. Preserve
+`Annotated` metadata, defaults, aliases and proper subsets. Unresolved ownership,
+mixed domains or unproved safety fail before effects, rather than disappearing
+from the accounted migration. The current rule must complete that proof and
+public-boundary coverage before application can establish acceptance.
+
+Metadata protection follows the annotation's native declaring scope. A local
+binding in a function body must not shadow `Annotated` or `Literal` in that
+function's header. Imported aliases and generic declaration contexts retain
+their native identities; lexical spelling alone cannot authorize a rewrite.
+
+The latest operator revision elects `use_enum_values=False` for governed presets,
+superseding the intermediate primitive-storage contract (ADR-005 and ADR-028
+Decision 14).
+Validation retains the input domain and the effective preset's strictness;
+validated `StrEnum` attributes retain enum members and the enum type in generated
+protocols. Writable properties retain their accepted enum input type. Python construction, default
+validation, JSON ingress, output values and consumer migration are separate proofs;
+the annotation alone does not establish any of them.
+
 ## Catalogs and layers
 
 Layer-zero own-helper admission is derived from the same native candidate proof
@@ -31,7 +55,9 @@ producer captures the complete workspace sources and asks that owner to authenti
 each imported helper and its dependency closure, including type-checking imports.
 
 Only proven exact module identities enter the generated constraint; a regex does
-not establish ownership or acyclicity. Own root and family imports remain forbidden.
+not establish ownership or acyclicity. For those layer-zero owners, own root and
+family imports remain forbidden. Family declarations composing upstream same-letter
+facades follow ADR-028 Decision 10; they are not layer-zero self-imports.
 Generation and native-scan agreement require runtime validation after source changes.
 
 | Layer | ast-grep rules | Text rules |
@@ -175,6 +201,42 @@ terminating public matcher without rebinding a referenced name or changing the
 exception category. Runtime comparisons against the original snippets validate
 these properties; snapshot text alone does not prove them.
 
+### Pyrefly strict-typing cures (campaign flext-osru9, census 2026-10-28)
+
+Fleet pyrefly findings reduce to a small set of root causes; each has one
+canonical cure, applied at the origin and never by suppression or rule change
+(the lint-rule SSOT stays frozen):
+
+- **`implicit-any-lambda`** — Pyrefly cannot infer a lambda parameter from a
+  generic `Callable[[SubjectT], bool]` parameter (`tm.that(..., where=...)`,
+  `tm.ok(..., where=...)`, `Result.map(...)`). Cure: replace the lambda with a
+  local typed function (`def pred(value: <concrete subject type>) -> bool`)
+  and pass it by name. Lambdas cannot carry parameter annotations in Python,
+  so no call-site annotation exists; the typed def is the strict form.
+- **`missing-attribute` / `missing-module-attribute` on consumed APIs** — a
+  consumer names an attribute that a refactor removed or moved (for example
+  `u.chk`, `cli.ensure_dir`). Cure: rewire the consumer to the current owner
+  found by source search; never recreate the removed attribute.
+- **`missing-module-attribute` / `missing-import` on generated packages** — a
+  stale generated lazy `__init__.py` re-exports modules or letters that moved.
+  Cure: regenerate at the owner (`make gen`); hand-editing a managed
+  projection is prohibited.
+- **`invalid-annotation` on test fixtures** — a fixture declares
+  `self: SomeSettings` while its test class does not subclass that settings
+  type. Cure: drop the false self-type and inject legitimate settings
+  (conftest fixture or the canonical settings constructor).
+- **Bare generic containers** (`list[dict]`, `dict` literals as data
+  contracts) — cure with a Pydantic model per payload shape (see the root
+  `scripts/modularize_*` FleetMove/ModularizationMove repair) plus explicit
+  element-type annotations on every empty container.
+- **AST optionality** — `node.end_lineno`, `node.end_col_offset` and friends
+  are `int | None`; guard with an explicit `if ... is None: continue` before
+  arithmetic instead of asserting or casting.
+
+The railway-result and rewire-test-assert families above remain the model for
+turning each cure into one generalized, budgeted rule once the census reaches
+zero; detection-only candidates first, with `expected` receipts.
+
 The universal `railroad-result.yml` rule family implements Railway-Oriented
 Programming (ROP) normalization over `FlextResult` (`r`): terminal `if res.failure:
 return ...` passthrough guards collapse to `return res`, single-argument transform
@@ -208,6 +270,14 @@ The engine reads these `metadata` keys, declared in
 | Workspace declaration | Accepted decision |
 | --- | --- |
 | This section, One rule per law; the generated Infra copy links back here. | FLEXT ADR-028 Decision 18 |
+
+Rope is the only accepted Python interpreter in FLEXT's own code ([ADR-028
+Decision 17, amendment
+2026-10-28](../../docs/architecture/adr/028-facade-boundary-orchestrators-declarative-enforcement.md#decision-17)):
+the engine never parses, analyzes or rewrites Python source with the `ast`
+module, `libcst`, or `re` applied to code — analysis and transforms go through
+rope's PyModules from the single indexed project. ast-grep (declarative rules),
+sed (text) and the generator (projections) keep their canonical domains.
 
 Operator order of 2026-10-25, verbatim (tracker memory
 `operator-order-2026-10-25-rules-generalized-min-count`; ADR-028 Decision 18):

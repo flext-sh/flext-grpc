@@ -8,23 +8,26 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from types import MappingProxyType
+from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
 
-from flext_grpc.protos.flext_pb2 import (
-    DESCRIPTOR,
-    EchoRequest,
-    EchoResponse,
-    HealthRequest,
-    HealthResponse,
-)
-from flext_grpc.protos.flext_pb2_grpc import (
-    GRPC_GENERATED_VERSION,
-    RPC_PYTHON_METHOD_NAMES,
-    FlextGrpcServiceServicer,
-    FlextGrpcServiceStub,
-    add_flext_grpc_service_servicer_to_server,
-)
+if TYPE_CHECKING:
+    from flext_grpc.protos.flext_pb2 import (
+        DESCRIPTOR,
+        EchoRequest,
+        EchoResponse,
+        HealthRequest,
+        HealthResponse,
+    )
+    from flext_grpc.protos.flext_pb2_grpc import (
+        GRPC_GENERATED_VERSION,
+        RPC_PYTHON_METHOD_NAMES,
+        FlextGrpcServiceServicer,
+        FlextGrpcServiceStub,
+        add_flext_grpc_service_servicer_to_server,
+    )
+
 
 __all__: tuple[str, ...] = (
     "DESCRIPTOR",
