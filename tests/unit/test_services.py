@@ -137,16 +137,13 @@ class TestsFlextGrpcServices:
     def test_validate_target_recognizes_host_port_form(
         grpc_facade: FlextGrpc,
         target: str,
+        *,
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
-
-        def matches_expectation(value: bool) -> bool:
-            return value is expected
-
         tm.that(
             grpc_facade.validate_target(target),
-            where=matches_expectation,
+            where=lambda value: value is expected,
         )
 
     # -- Facade: parse_address -------------------------------------------

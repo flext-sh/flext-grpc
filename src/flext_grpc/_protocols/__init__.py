@@ -42,7 +42,9 @@ install_lazy_exports(
     __name__,
     globals(),
     MappingProxyType({
-        "FlextGrpcProtocolsModelsGrpcGeneratedCompleteSetup": ".generated_models_grpc_completesetup",
+        "FlextGrpcProtocolsModelsGrpcGeneratedCompleteSetup": (
+            ".generated_models_grpc_completesetup"
+        ),
         "FlextGrpcProtocolsBase": ".base",
         "FlextGrpcProtocolsChannel": ".channel_protocols",
         "FlextGrpcProtocolsConfig": ".config",
