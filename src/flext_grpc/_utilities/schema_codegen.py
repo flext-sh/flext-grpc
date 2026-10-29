@@ -29,13 +29,13 @@ from flext_core import u
 from google.protobuf import descriptor_pb2
 from grpc_tools import protoc
 
-from flext_grpc import p, r
+from flext_grpc import p, r, t
 
 
 class FlextGrpcUtilitiesSchemaCodegen:
     """Canonical producer of the typed gRPC wire-schema projections."""
 
-    _SNAKE_PARTS: ClassVar[re.Pattern[str]] = re.compile(
+    _SNAKE_PARTS: ClassVar[t.RegexPattern] = re.compile(
         r"[A-Z]?[a-z0-9]+|[A-Z]+(?![a-z])",
     )
     _DESCRIPTOR_CHUNK_WIDTH: ClassVar[int] = 64
