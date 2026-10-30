@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import override
 
 from flext_grpc import FlextGrpcServiceBase, FlextGrpcSettings, c, m, p, r, t, u
@@ -59,7 +60,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         host: str = c.Grpc.NETWORK_DEFAULT_HOST,
         port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
-        methods: t.StrSequence | None = None,
+        methods: Sequence[str] | None = None,
     ) -> p.Result[m.Grpc.CompleteSetup]:
         """Complete setup using functional composition.
 
@@ -127,7 +128,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     @staticmethod
     def create_service(
         name: str,
-        methods: t.StrSequence | None = None,
+        methods: Sequence[str] | None = None,
     ) -> p.Result[m.Grpc.Service]:
         """Create typed service entity from validated inputs.
 

@@ -31,7 +31,7 @@ class TestsFlextGrpcTypesUnit:
     )
     def test_validate_target_accepts_wellformed_host_port(target: str) -> None:
         """A syntactically valid host:port with an in-range port validates true."""
-        tm.that(u.Grpc.validate_target(target), eq=True)
+        tm.ok(u.Grpc.validate_target(target))
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -52,7 +52,7 @@ class TestsFlextGrpcTypesUnit:
         target: str,
     ) -> None:
         """Missing host/port, bad host chars, or out-of-range ports validate false."""
-        tm.that(u.Grpc.validate_target(target), eq=False)
+        tm.fail(u.Grpc.validate_target(target))
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -64,8 +64,7 @@ class TestsFlextGrpcTypesUnit:
         ],
     )
     def test_parse_target_splits_into_host_and_int_port(
-        target: str,
-        expected: tuple[str, int],
+        target: str, expected: tuple[str, ...]
     ) -> None:
         """Parsing a valid target yields the host string and integer port."""
         tm.that(u.Grpc.parse_target(target), eq=expected)

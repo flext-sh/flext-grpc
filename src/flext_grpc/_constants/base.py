@@ -14,7 +14,7 @@ from __future__ import annotations
 from enum import StrEnum, unique
 from typing import Final
 
-from flext_core import t
+from flext_core import c, t
 
 
 class FlextGrpcConstantsBase:
@@ -129,13 +129,11 @@ class FlextGrpcConstantsBase:
     """Load balancing policies frozenset from LoadBalancingPolicies StrEnum."""
 
     # ===== Network constants =====
-    NETWORK_DEFAULT_TIMEOUT: Final[float] = 30.0
+    NETWORK_DEFAULT_TIMEOUT: Final[int] = c.DEFAULT_TIMEOUT_SECONDS
     NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT: Final[float] = 5.0
     NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: Final[float] = 2.0
     NETWORK_DEFAULT_GRPC_PORT: Final[int] = 50051
     NETWORK_DEFAULT_HOST: Final[str] = "127.0.0.1"
-    NETWORK_MAX_PORT: Final[int] = 65535
-    NETWORK_MIN_PORT: Final[int] = 1
     NETWORK_HOST_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
 
     # ===== Service constants =====
@@ -154,7 +152,6 @@ class FlextGrpcConstantsBase:
 
     # ===== Validation constants =====
     VALIDATION_ADDRESS_PARTS_COUNT: Final[int] = 2
-    VALIDATION_MAX_PORT_NUMBER: Final[int] = 65535
     VALIDATION_VERSION_PATTERN: Final[str] = r"Version.*(\d+\.\d+\.\d+)"
 
 

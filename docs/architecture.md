@@ -150,6 +150,15 @@ All components integrate with flext-core patterns.
 ```{.python .notest}
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from flext_core import p
 
 
@@ -307,25 +316,8 @@ flext-core patterns.
 
 # Related Documentation
 
-**Within Project**:
+Project and ecosystem navigation is owned by
+[Getting Started → Related Documentation](getting-started.md#related-documentation).
+Architecture-specific entry point:
 
 - [Getting Started](getting-started.md) - Installation and basic usage
-- [API Reference](api-reference/README.md) - Generated API documentation
-- [Development](development.md) - Development workflow
-- [Integration](integration.md) - FLEXT ecosystem usage
-- [Configuration](configuration.md) - Advanced settings
-- [Troubleshooting](troubleshooting.md) - Common issues
-
-**Across Projects**:
-
-- [flext-core Foundation](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/architecture/overview.md) -
-  Clean architecture and CQRS patterns
-- [flext-core Service Patterns](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-core/docs/guides/service-patterns.md) -
-  Service patterns and dependency injection
-- [flext-api HTTP Framework](https://github.com/flext-sh/flext/tree/0.12.0-dev/flext-api/AGENTS.md) -
-  HTTP foundation patterns
-
-**External Resources**:
-
-- [PEP 257 - Docstring Conventions](https://peps.python.org/pep-0257/)
-- [Google Python Style Guide](https://google.github.io/styleguide/pyguide.html)

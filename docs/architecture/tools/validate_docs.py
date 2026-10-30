@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import sys
+from collections.abc import Sequence
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Annotated
@@ -81,15 +82,15 @@ class ValidationResults(m.Value):
         m.Field(description="Aggregate documentation validation summary."),
     ]
     issues: Annotated[
-        t.SequenceOf[_IssueRow],
+        Sequence[_IssueRow],
         m.Field(description="Validation issues requiring correction."),
     ]
     warnings: Annotated[
-        t.SequenceOf[_IssueRow],
+        Sequence[_IssueRow],
         m.Field(description="Validation warnings requiring review."),
     ]
     recommendations: Annotated[
-        t.SequenceOf[_IssueRow],
+        Sequence[_IssueRow],
         m.Field(description="Recommended documentation improvements."),
     ]
 

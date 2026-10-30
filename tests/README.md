@@ -161,6 +161,15 @@ pytest tests/e2e/ --benchmark-only
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 import pytest
 
 
@@ -240,6 +249,15 @@ pytest --cov=src --cov-report=term-missing
 
 ```python notest
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from flext_core import t
 
 
@@ -254,13 +272,22 @@ def test_entity_creation_and_validation():
 
     # Assert
     assert validation_result.success
-    assert entity.id == "test-entity"
+    tm.that(entity.id, eq="test-entity")
 ```
 
 ### Service Testing Pattern
 
 ```python notest
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from flext_core import t
 
 
@@ -274,14 +301,23 @@ def test_service_operation_success():
     result = service.execute("start", server)
 
     # Assert
-    assert result.success
-    assert result.data.state == "starting"
+    tm.ok(result.success)
+    tm.that(result.data.state, eq="starting")
 ```
 
 ### Error Testing Pattern
 
 ```python notest
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 from flext_core import t
 
 

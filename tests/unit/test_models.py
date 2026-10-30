@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import pytest
 
-from tests import m, tm
+from tests import c, m, tm
 
 
 class TestsFlextGrpcModelsUnit:
@@ -134,7 +134,7 @@ class TestsFlextGrpcModelsUnit:
             operation=m.Grpc.OperationSpec(name="op", entity_type="server"),
         )
 
-        tm.that(request.valid, eq=True)
+        tm.ok(request.valid)
 
     @staticmethod
     @pytest.mark.parametrize(
@@ -168,7 +168,7 @@ class TestsFlextGrpcModelsUnit:
 
         values = dict(payload.values)
         tm.that(values["missing"], eq="")
-        tm.that(values["count"], eq=1)
+        tm.that(values[c.Aggregation.COUNT], eq=1)
         tm.that(values["items"], eq="[1, 2]")
 
     # ------------------------------------------------------------------
@@ -182,7 +182,7 @@ class TestsFlextGrpcModelsUnit:
 
         result = machine.transition("idle", "ready", {"idle": {"ready"}})
 
-        tm.that(result.success, eq=True)
+        tm.ok(result.success)
         tm.that(result.unwrap().state, eq="ready")
 
     @staticmethod
@@ -192,7 +192,7 @@ class TestsFlextGrpcModelsUnit:
 
         result = machine.transition("idle", "running", {"idle": {"ready"}})
 
-        tm.that(result.success, eq=False)
+        tm.fail(result.success)
         tm.that(result.error, none=False)
         tm.that(result.error, has="running")
 
@@ -211,7 +211,7 @@ class TestsFlextGrpcModelsEntities:
 
         result = channel.connect()
 
-        tm.that(result.success, eq=True)
+        tm.ok(result.success)
         tm.that(result.unwrap().state, eq="connecting")
 
     @staticmethod
@@ -219,12 +219,12 @@ class TestsFlextGrpcModelsEntities:
         """mark_ready() fails from idle but succeeds after connect()."""
         channel = m.Grpc.Channel(target="localhost:50051")
 
-        tm.that(channel.mark_ready().success, eq=False)
+        tm.fail(channel.mark_ready().success)
 
         connecting = channel.connect().unwrap()
         ready = connecting.mark_ready()
-        tm.that(ready.success, eq=True)
-        tm.that(ready.unwrap().ready(), eq=True)
+        tm.ok(ready.success)
+        tm.ok(ready.unwrap().ready())
 
     @staticmethod
     def test_channel_rejects_empty_target_business_rule() -> None:
@@ -233,14 +233,14 @@ class TestsFlextGrpcModelsEntities:
 
         result = channel.validate_business_rules()
 
-        tm.that(result.success, eq=False)
+        tm.fail(result.success)
 
     @staticmethod
     def test_channel_accepts_valid_target_business_rule() -> None:
         """validate_business_rules succeeds for a non-empty target."""
         channel = m.Grpc.Channel(target="localhost:50051")
 
-        tm.that(channel.validate_business_rules().success, eq=True)
+        tm.ok(channel.validate_business_rules().success)
 
     # ------------------------------------------------------------------
     # Server: lifecycle transitions and validation
@@ -253,7 +253,7 @@ class TestsFlextGrpcModelsEntities:
 
         result = server.start()
 
-        tm.that(result.success, eq=True)
+        tm.ok(result.success)
         tm.that(result.unwrap().state, eq="starting")
 
     @staticmethod
@@ -261,21 +261,21 @@ class TestsFlextGrpcModelsEntities:
         """mark_stopped() is rejected from a stopped state."""
         server = m.Grpc.Server(host="localhost", port=50051)
 
-        tm.that(server.mark_stopped().success, eq=False)
+        tm.fail(server.mark_stopped().success)
 
     @staticmethod
     def test_server_rejects_blank_host_business_rule() -> None:
         """validate_business_rules fails when the bind host is blank."""
         server = m.Grpc.Server(host="   ", port=50051)
 
-        tm.that(server.validate_business_rules().success, eq=False)
+        tm.fail(server.validate_business_rules().success)
 
     @staticmethod
     def test_server_accepts_valid_configuration() -> None:
         """validate_business_rules succeeds for a well-formed server."""
         server = m.Grpc.Server(host="localhost", port=50051)
 
-        tm.that(server.validate_business_rules().success, eq=True)
+        tm.ok(server.validate_business_rules().success)
 
     # ------------------------------------------------------------------
     # Service: field validators and functional method management
@@ -299,18 +299,18 @@ class TestsFlextGrpcModelsEntities:
         service = m.Grpc.Service(name="svc", methods=("a",))
 
         added = service.add_method("b")
-        tm.that(added.success, eq=True)
+        tm.ok(added.success)
         tm.that(added.unwrap().methods, has="b")
 
-        tm.that(service.add_method("a").success, eq=False)
+        tm.fail(service.add_method("a").success)
 
     @staticmethod
     def test_service_has_method_reflects_membership() -> None:
         """has_method reports whether a method name is registered."""
         service = m.Grpc.Service(name="svc", methods=("a",))
 
-        tm.that(service.has_method("a"), eq=True)
-        tm.that(service.has_method("z"), eq=False)
+        tm.ok(service.has_method("a"))
+        tm.fail(service.has_method("z"))
 
     # ------------------------------------------------------------------
     # Client / GrpcStream: connect delegation and validators
@@ -321,7 +321,7 @@ class TestsFlextGrpcModelsEntities:
         """connect_to attaches a channel bound to the requested target."""
         result = m.Grpc.Client().connect_to("localhost:50051")
 
-        tm.that(result.success, eq=True)
+        tm.ok(result.success)
         client = result.unwrap()
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq="localhost:50051")

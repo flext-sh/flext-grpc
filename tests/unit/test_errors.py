@@ -83,7 +83,14 @@ class TestsFlextGrpcErrors:
         message = "channel down"
         with pytest.raises(e.FlextConnectionError) as caught:
             raise FlextGrpcErrors.GrpcConnectionError(message)
-        assert not isinstance(caught.value, e.ValidationError)
+
+        def not_validation_error(value: object) -> bool:
+            return not isinstance(value, e.ValidationError)
+
+        tm.that(
+            caught.value,
+            where=not_validation_error,
+        )
 
     @staticmethod
     @pytest.mark.parametrize("field", ["username", "データ", None])

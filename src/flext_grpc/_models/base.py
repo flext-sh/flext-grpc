@@ -6,16 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import m
+from flext_grpc.config_models import FlextGrpcModelsConfigNamespace
 
 
-class FlextGrpcModelsBase:
+class FlextGrpcModelsBase(FlextGrpcModelsConfigNamespace):
     """Base models for flext-grpc."""
-
-    class GrpcNamespace(m.BaseModel):
-        """Open, frozen namespace exposing every ``config/*.yaml`` domain model-less."""
-
-        model_config = m.ConfigDict(extra="allow", frozen=True)
 
 
 __all__: list[str] = ["FlextGrpcModelsBase"]

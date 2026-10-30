@@ -7,17 +7,14 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
+from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
-from typing import TYPE_CHECKING
 
 from flext_grpc import c, m, p, r, u
 from flext_grpc.services._entities import (
     FlextGrpcMetricsCollectorImpl,
     FlextGrpcServiceHandlerImpl,
 )
-
-if TYPE_CHECKING:
-    from collections.abc import MutableMapping
 
 
 class FlextGrpcServerManagerImpl:

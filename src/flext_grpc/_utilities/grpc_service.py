@@ -2,9 +2,11 @@
 
 The generated ``protos/flext_pb2*.py`` modules are the only wire contract.
 Message classes are resolved from the generated file descriptor, payloads are
-parsed once at the protobuf boundary into the ``m.Grpc`` models, and the
-untyped generated stub/registration API is reached only through a module
-handle so every value crossing back is narrowed to a typed protobuf message.
+parsed once at the protobuf boundary into the ``m.Grpc`` models, and every
+value crossing back is narrowed to a typed protobuf message. The generated
+stub and registration surface is typed by the wire-schema compiler; the
+Python RPC names are reached through its emitted wire-to-Python name
+projection.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
 SPDX-License-Identifier: MIT
@@ -12,35 +14,111 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from types import SimpleNamespace
-from typing import TYPE_CHECKING
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, override
 
-from flext_core import r, u
+import grpc
+from flext_core import u
 from google.protobuf import json_format, message_factory
 from google.protobuf.descriptor import Descriptor, MethodDescriptor, ServiceDescriptor
 from google.protobuf.message import Message
 
-from flext_grpc import c, m, p
-from flext_grpc._utilities.grpc_runtime import FlextGrpcUtilitiesGrpcRuntime
+from flext_grpc import c, m, p, r
+from flext_grpc._utilities import FlextGrpcUtilitiesGrpcRuntime
 from flext_grpc.protos import flext_pb2, flext_pb2_grpc
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Mapping
-    from types import ModuleType
+    from collections.abc import Callable
 
 
 class FlextGrpcUtilitiesGrpcService:
     """Typed client/server bindings over the generated FlextGrpcService code."""
 
-    @staticmethod
-    def _service_module() -> ModuleType:
-        """Return the generated service module behind its untyped surface.
+    class _HandlerServicer(flext_pb2_grpc.FlextGrpcServiceServicer):
+        """Servicer view of the registered RPC handlers."""
 
-        Returns:
-            The generated ``flext_pb2_grpc`` module.
+        def __init__(
+            self,
+            handlers: Mapping[
+                c.Grpc.ServiceMethod,
+                Callable[[Message, p.Grpc.GrpcServicerContext], Message],
+            ],
+        ) -> None:
+            """Store one handler per RPC.
 
-        """
-        return flext_pb2_grpc
+            Args:
+                handlers: The RPC handlers keyed by service method.
+
+            """
+            self._handlers = handlers
+
+        @override
+        def echo(
+            self,
+            request: flext_pb2.EchoRequest,
+            context: grpc.ServicerContext,
+        ) -> flext_pb2.EchoResponse:
+            """Handle ``Echo`` through its registered handler.
+
+            Args:
+                request: The decoded request message.
+                context: The servicer context of the call.
+
+            Returns:
+                The narrowed handler reply.
+
+            """
+            return self._reply(
+                self._handlers[c.Grpc.ServiceMethod.ECHO](request, context),
+                flext_pb2.EchoResponse,
+            )
+
+        @override
+        def health_check(
+            self,
+            request: flext_pb2.HealthRequest,
+            context: grpc.ServicerContext,
+        ) -> flext_pb2.HealthResponse:
+            """Handle ``HealthCheck`` through its registered handler.
+
+            Args:
+                request: The decoded request message.
+                context: The servicer context of the call.
+
+            Returns:
+                The narrowed handler reply.
+
+            """
+            return self._reply(
+                self._handlers[c.Grpc.ServiceMethod.HEALTH_CHECK](request, context),
+                flext_pb2.HealthResponse,
+            )
+
+        @staticmethod
+        def _reply[ResponseT: Message](
+            reply: Message,
+            expected: type[ResponseT],
+        ) -> ResponseT:
+            """Narrow one handler reply to the declared protobuf message type.
+
+            Args:
+                reply: The raw handler reply.
+                expected: The message type declared for the RPC.
+
+            Returns:
+                The narrowed reply.
+
+            Raises:
+                TypeError: If the handler returned a different message type.
+
+            """
+            if not isinstance(reply, expected):
+                msg = (
+                    f"RPC handler returned {type(reply).__name__},"
+                    f" expected {expected.__name__}"
+                )
+                raise TypeError(msg)
+            return reply
 
     @staticmethod
     def method_descriptor(method: c.Grpc.ServiceMethod) -> MethodDescriptor:
@@ -119,11 +197,16 @@ class FlextGrpcUtilitiesGrpcService:
         )
         if request_result.failure:
             return r[TModel].from_failure(request_result)
+        if not isinstance(channel, grpc.Channel):
+            return r[TModel].fail(
+                "Channel does not implement the grpc.Channel contract",
+            )
         request_message = request_result.value
-        stub = FlextGrpcUtilitiesGrpcService._service_module().FlextGrpcServiceStub(
-            channel,
+        stub = flext_pb2_grpc.FlextGrpcServiceStub(channel)
+        rpc = getattr(
+            stub,
+            flext_pb2_grpc.RPC_PYTHON_METHOD_NAMES[method.value],
         )
-        rpc = getattr(stub, method.value)
 
         def _call() -> Message:
             reply = rpc(request_message, timeout=c.Grpc.NETWORK_DEFAULT_TIMEOUT)
@@ -153,9 +236,10 @@ class FlextGrpcUtilitiesGrpcService:
     ) -> p.Result[bool]:
         """Register one handler per RPC through the generated registration.
 
-        The generated ``add_..._to_server`` reads each RPC handler as an
-        attribute named after the RPC, so the servicer is the attribute view
-        of ``handlers`` keyed by ``c.Grpc.ServiceMethod`` values.
+        The generated ``add_..._to_server`` reads each RPC handler as the
+        snake-case Python projection of the RPC name; the servicer bridges
+        the handlers keyed by ``c.Grpc.ServiceMethod`` onto those names and
+        narrows each reply to the declared protobuf message type.
 
         Returns:
             The resulting ``p.Result[bool]``.
@@ -166,12 +250,13 @@ class FlextGrpcUtilitiesGrpcService:
             return r[bool].fail(
                 f"Missing RPC handlers: {sorted(method.value for method in missing)}",
             )
-        servicer = SimpleNamespace(**{
-            method.value: handler for method, handler in handlers.items()
-        })
-        service_module = FlextGrpcUtilitiesGrpcService._service_module()
+        if not isinstance(server, grpc.Server):
+            return r[bool].fail(
+                "Server does not implement the grpc.Server contract",
+            )
+        servicer = FlextGrpcUtilitiesGrpcService._HandlerServicer(handlers)
         return FlextGrpcUtilitiesGrpcRuntime.run_runtime(
-            lambda: service_module.add_FlextGrpcServiceServicer_to_server(
+            lambda: flext_pb2_grpc.add_flext_grpc_service_servicer_to_server(
                 servicer,
                 server,
             ),

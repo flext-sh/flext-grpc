@@ -128,52 +128,9 @@ within the FLEXT data integration platform.
 
 ## System Context Diagram
 
-```plantuml
-@startuml FLEXT-gRPC Context Diagram
-!include <C4/C4_Context>
-
-title FLEXT-gRPC System Context
-
-Person(user, "FLEXT Developer", "Develops microservices using FLEXT ecosystem")
-Person(architect, "System Architect", "Designs microservices architecture")
-
-System(flext_grpc, "FLEXT-gRPC",
-     "Enterprise gRPC communication library over grpcio/protobuf")
-
-System_Boundary(flext_ecosystem, "FLEXT Ecosystem") {
-    System(flext_core, "FLEXT-Core", "Foundation library with r,
-     FlextContainer, s patterns")
-    System(flext_observability, "FLEXT-Observability", "Monitoring, metrics, tracing")
-    System(flext_cli, "FLEXT-CLI", "Command-line interface and plugin system")
-    System(flext_api, "FLEXT-API", "REST API framework")
-    System(flext_auth, "FLEXT-Auth", "Authentication and authorization services")
-    System(flext_ldap, "FLEXT-LDAP", "LDAP directory services")
-}
-
-System_Ext(grpc_clients, "gRPC Client Services", "Other microservices using gRPC")
-System_Ext(rest_clients, "REST Client Services", "Services using REST APIs")
-System_Ext(monitoring, "Monitoring Systems", "Prometheus, Grafana, ELK stack")
-System_Ext(registry, "Service Registry", "Consul, etcd, Kubernetes DNS")
-System_Ext(security, "Security Services", "Identity providers, certificate authorities")
-
-Rel(user, flext_grpc, "Uses", "Python API for gRPC communication")
-Rel(architect, flext_grpc, "Designs with", "Architecture patterns and best practices")
-
-Rel(flext_grpc, flext_core, "Depends on", "r patterns, dependency injection")
-Rel(flext_grpc, flext_observability, "Integrates with", "Metrics collection, tracing")
-Rel(flext_grpc, flext_cli, "Used by", "CLI diagnostic commands")
-
-Rel(flext_grpc, grpc_clients, "Communicates with", "gRPC protocol (unary, streaming)")
-Rel(flext_grpc, monitoring, "Exports metrics to", "Prometheus format")
-Rel(flext_grpc, registry, "Registers services in", "Service discovery")
-Rel(flext_grpc, security, "Authenticates via", "mTLS, JWT tokens")
-
-Rel_Back(flext_api, flext_grpc, "May use", "For internal gRPC communication")
-Rel_Back(flext_auth, flext_grpc, "May use", "For secure service communication")
-Rel_Back(flext_ldap, flext_grpc, "May use", "For directory service integration")
-
-@enduml
-```
+The canonical C4 context diagram source lives at
+[diagrams/context.puml](../diagrams/context.puml) and is rendered from that
+single source by the PlantUML tooling.
 
 ## System Scope and Boundaries
 
