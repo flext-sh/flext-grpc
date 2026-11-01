@@ -147,7 +147,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 
 All components integrate with flext-core patterns.
 
-```{.python .notest}
+```python
 from __future__ import annotations
 
 from collections.abc import (

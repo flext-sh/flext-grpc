@@ -247,7 +247,7 @@ pytest --cov=src --cov-report=term-missing
 
 ### Entity Testing Pattern
 
-```python notest
+```python
 from __future__ import annotations
 
 from collections.abc import (
@@ -277,7 +277,7 @@ def test_entity_creation_and_validation():
 
 ### Service Testing Pattern
 
-```python notest
+```python
 from __future__ import annotations
 
 from collections.abc import (
@@ -307,7 +307,7 @@ def test_service_operation_success():
 
 ### Error Testing Pattern
 
-```python notest
+```python
 from __future__ import annotations
 
 from collections.abc import (
