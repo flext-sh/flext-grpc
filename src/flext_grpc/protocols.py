@@ -10,6 +10,7 @@ from __future__ import annotations
 from flext_cli import p as flext_cli_p
 
 from flext_grpc._protocols import (
+    FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup,
     FlextGrpcProtocolsBase,
     FlextGrpcProtocolsChannel,
     FlextGrpcProtocolsConnection,
@@ -51,6 +52,7 @@ class FlextGrpcProtocols(flext_cli_p):
         FlextGrpcProtocolsResource,
         FlextGrpcProtocolsStream,
         FlextGrpcProtocolsServer,
+        FlextGrpcGrpcProtocolsGeneratedModelsCompleteSetup,
     ):
         """gRPC domain-specific protocols.
 
