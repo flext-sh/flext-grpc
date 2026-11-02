@@ -23,7 +23,7 @@ from google.protobuf import json_format, message_factory
 from google.protobuf.descriptor import Descriptor, MethodDescriptor, ServiceDescriptor
 from google.protobuf.message import Message
 
-from flext_grpc import c, m, p, r
+from flext_grpc import c, p, r
 from flext_grpc._utilities import FlextGrpcUtilitiesGrpcRuntime
 from flext_grpc.protos import flext_pb2, flext_pb2_grpc
 
@@ -137,7 +137,7 @@ class FlextGrpcUtilitiesGrpcService:
     @staticmethod
     def encode_message(
         descriptor: Descriptor,
-        model: m.BaseModel,
+        model: p.BaseModel,
     ) -> p.Result[Message]:
         """Build the generated protobuf message carrying ``model``.
 
@@ -157,7 +157,7 @@ class FlextGrpcUtilitiesGrpcService:
         return u.try_(_encode, catch=(json_format.ParseError, TypeError))
 
     @staticmethod
-    def decode_message[TModel: m.BaseModel](
+    def decode_message[TModel: p.BaseModel](
         target: type[TModel],
         message: Message,
     ) -> p.Result[TModel]:
@@ -178,10 +178,10 @@ class FlextGrpcUtilitiesGrpcService:
         )
 
     @staticmethod
-    def invoke_unary[TModel: m.BaseModel](
+    def invoke_unary[TModel: p.BaseModel](
         channel: p.Grpc.GrpcChannel,
         method: c.Grpc.ServiceMethod,
-        request: m.BaseModel,
+        request: p.BaseModel,
         response_type: type[TModel],
     ) -> p.Result[TModel]:
         """Call one unary RPC through the generated stub over ``channel``.

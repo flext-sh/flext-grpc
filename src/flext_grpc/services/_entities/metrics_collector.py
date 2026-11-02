@@ -9,7 +9,7 @@ from __future__ import annotations
 import threading
 from collections.abc import MutableMapping
 
-from flext_grpc import m, t, u
+from flext_grpc import m, p, t, u
 
 
 class FlextGrpcMetricsCollectorImpl:
@@ -21,7 +21,7 @@ class FlextGrpcMetricsCollectorImpl:
         self._metrics = m.Grpc.Payload(values={})
         self._lock = threading.RLock()
 
-    def all_metrics(self) -> m.Grpc.Payload:
+    def all_metrics(self) -> p.Grpc.Payload:
         """Get all metrics snapshot.
 
         Returns:

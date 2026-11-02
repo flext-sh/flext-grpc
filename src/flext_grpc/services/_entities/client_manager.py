@@ -28,21 +28,21 @@ class FlextGrpcClientManagerImpl:
         )
         self._metrics = FlextGrpcMetricsCollectorImpl()
 
-    def connect(self, target: str) -> p.Result[m.Grpc.Client]:
+    def connect(self, target: str) -> p.Result[p.Grpc.Client]:
         """Establish client connection with pooling.
 
         Args:
             target: gRPC server target address to connect to.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Client]``.
+            The resulting ``p.Result[p.Grpc.Client]``.
 
         """
         if target in self._active_channels:
             return u.Grpc.create_client_entity(target=target)
         channel_result = u.Grpc.open_insecure_channel(target)
         if channel_result.failure:
-            return r[m.Grpc.Client].fail_op(
+            return r[p.Grpc.Client].fail_op(
                 "Connection",
                 u.Grpc.runtime_failure_message(channel_result),
             )
@@ -53,17 +53,17 @@ class FlextGrpcClientManagerImpl:
         if client_result.failure:
             _ = u.Grpc.run_runtime(grpc_channel.close)
             del self._active_channels[target]
-            return r[m.Grpc.Client].from_failure(client_result)
+            return r[p.Grpc.Client].from_failure(client_result)
         return client_result
 
-    def disconnect(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
+    def disconnect(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Client]:
         """Disconnect client and cleanup resources.
 
         Args:
             client: Client entity whose connection is closed.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Client]``.
+            The resulting ``p.Result[p.Grpc.Client]``.
 
         """
         target = ""
@@ -73,37 +73,37 @@ class FlextGrpcClientManagerImpl:
             grpc_channel = self._active_channels[target]
             closing_result = u.Grpc.run_runtime(grpc_channel.close)
             if closing_result.failure:
-                return r[m.Grpc.Client].fail_op(
+                return r[p.Grpc.Client].fail_op(
                     "Disconnect",
                     u.Grpc.runtime_failure_message(closing_result),
                 )
             del self._active_channels[target]
-        return r[m.Grpc.Client].ok(client)
+        return r[p.Grpc.Client].ok(client)
 
-    def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
+    def client_status(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Payload]:
         """Get client connection status.
 
         Args:
             client: Client entity to inspect.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         target = ""
         if client.channel is not None:
             target = client.channel.target or ""
         is_connected = bool(target and target in self._active_channels)
-        return r[m.Grpc.Payload].ok(
+        return r[p.Grpc.Payload].ok(
             m.Grpc.Payload.from_values(connected=is_connected, target=target),
         )
 
     def make_call(
         self,
-        client: m.Grpc.Client,
+        client: p.Grpc.Client,
         method: str,
         request: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
+    ) -> p.Result[p.Grpc.Payload]:
         """Execute a gRPC call through the client.
 
         Args:
@@ -112,7 +112,7 @@ class FlextGrpcClientManagerImpl:
             request: Optional request payload mapping.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         target = ""
@@ -128,22 +128,22 @@ class FlextGrpcClientManagerImpl:
             return self._call_echo(grpc_channel, request)
         if method == c.Grpc.ServiceMethod.HEALTH_CHECK.value:
             return self._call_health_check(grpc_channel, request)
-        return r[m.Grpc.Payload].fail(f"Unsupported method: {method}")
+        return r[p.Grpc.Payload].fail(f"Unsupported method: {method}")
 
     @staticmethod
     def _call_echo(
         channel: p.Grpc.GrpcChannel,
         request: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
+    ) -> p.Result[p.Grpc.Payload]:
         """Run the generated Echo RPC and expose its reply as a payload.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         echo_request = u.validate_value(m.Grpc.EchoRequest, request)
         if echo_request.failure:
-            return r[m.Grpc.Payload].from_failure(echo_request)
+            return r[p.Grpc.Payload].from_failure(echo_request)
         echo_result = u.Grpc.invoke_unary(
             channel,
             c.Grpc.ServiceMethod.ECHO,
@@ -151,7 +151,7 @@ class FlextGrpcClientManagerImpl:
             m.Grpc.EchoResponse,
         )
         return echo_result.map(
-            lambda echo_response: m.Grpc.Payload.from_values(
+            lambda echo_response: p.Grpc.Payload.from_values(
                 method=c.Grpc.ServiceMethod.ECHO.value,
                 message=echo_response.message,
                 server_id=echo_response.server_id,
@@ -163,16 +163,16 @@ class FlextGrpcClientManagerImpl:
     def _call_health_check(
         channel: p.Grpc.GrpcChannel,
         request: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
+    ) -> p.Result[p.Grpc.Payload]:
         """Run the generated HealthCheck RPC and expose its reply as a payload.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         health_request = u.validate_value(m.Grpc.HealthRequest, request or {})
         if health_request.failure:
-            return r[m.Grpc.Payload].from_failure(health_request)
+            return r[p.Grpc.Payload].from_failure(health_request)
         health_result = u.Grpc.invoke_unary(
             channel,
             c.Grpc.ServiceMethod.HEALTH_CHECK,
@@ -180,7 +180,7 @@ class FlextGrpcClientManagerImpl:
             m.Grpc.HealthResponse,
         )
         return health_result.map(
-            lambda health_response: m.Grpc.Payload.from_values(
+            lambda health_response: p.Grpc.Payload.from_values(
                 method=c.Grpc.ServiceMethod.HEALTH_CHECK.value,
                 status=health_response.status,
                 message=health_response.message,

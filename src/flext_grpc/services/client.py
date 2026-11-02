@@ -23,48 +23,48 @@ class FlextGrpcClient(s):
         default_factory=FlextGrpcClientManagerImpl,
     )
 
-    def connect_client(self, target: str) -> p.Result[m.Grpc.Client]:
+    def connect_client(self, target: str) -> p.Result[p.Grpc.Client]:
         """Establish a client connection through the dedicated manager.
 
         Args:
             target: gRPC server target address to connect to.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Client]``.
+            The resulting ``p.Result[p.Grpc.Client]``.
 
         """
         return self._client_manager.connect(target)
 
-    def disconnect_client(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Client]:
+    def disconnect_client(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Client]:
         """Disconnect a client connection through the dedicated manager.
 
         Args:
             client: Client entity whose connection is closed.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Client]``.
+            The resulting ``p.Result[p.Grpc.Client]``.
 
         """
         return self._client_manager.disconnect(client)
 
-    def client_status(self, client: m.Grpc.Client) -> p.Result[m.Grpc.Payload]:
+    def client_status(self, client: p.Grpc.Client) -> p.Result[p.Grpc.Payload]:
         """Fetch client connection status via the dedicated manager.
 
         Args:
             client: Client entity to inspect.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         return self._client_manager.client_status(client)
 
     def make_call(
         self,
-        client: m.Grpc.Client,
+        client: p.Grpc.Client,
         method: str,
         request: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
+    ) -> p.Result[p.Grpc.Payload]:
         """Execute an RPC call through the dedicated client manager.
 
         Args:
@@ -73,7 +73,7 @@ class FlextGrpcClient(s):
             request: Optional request payload mapping.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         return self._client_manager.make_call(client, method, request)

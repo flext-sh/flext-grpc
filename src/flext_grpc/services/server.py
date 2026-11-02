@@ -21,45 +21,45 @@ class FlextGrpcServer(s):
 
     def start_server(
         self,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Server]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Server]:
         """Start a server through the dedicated lifecycle manager.
 
         Args:
             server: Server entity to transition to running.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         return self._server_manager.start_server(server)
 
     def stop_server(
         self,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Server]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Server]:
         """Stop a server through the dedicated lifecycle manager.
 
         Args:
             server: Server entity to transition to stopped.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         return self._server_manager.stop_server(server)
 
     def server_status(
         self,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Payload]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Payload]:
         """Fetch server runtime metrics through the dedicated manager.
 
         Args:
             server: Server entity to inspect.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         return self._server_manager.server_metrics(server)
