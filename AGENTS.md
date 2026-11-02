@@ -1,4 +1,13 @@
-# AGENTS.md — Project Pointer
+# AGENTS.md — flext-grpc
+
+Read the branch-matched [FLEXT root](../AGENTS.md) and its local flext-law through
+that root's authority entry point. In standalone mode resolve the same branch or
+release; a coincidental parent instruction file does not establish FLEXT authority.
+This file adds only this package's domain delta. Command routing, architecture
+and universal execution stay with their parent owners.
+
+The embedded portable block below is retired generated material; it is not
+active law. AI Hub owns its withdrawal and installed delivery evidence.
 
 <!-- BEGIN UNIVERSAL AGENT LAW (portable; regenerable; do not edit inside) -->
 ## Universal Agent Law (portable core)
@@ -105,9 +114,9 @@ Prefer non-destructive moves: archive a file as `<file>.bak` instead of deleting
 shell commands.
 <!-- END UNIVERSAL AGENT LAW -->
 
-Canonical source: [../AGENTS.md](../AGENTS.md).
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-BEGIN -->
 
-- Read and follow [../AGENTS.md](../AGENTS.md) first.
-- Load scoped rules only from [../.agents/skills/](../.agents/skills/).
-- Never use fallback instruction paths.
-- Keep this file pointer-only and concise.
+The gRPC transport consumes the public FLEXT service/API contracts. Resolve its
+public entry points from package metadata and the member README.
+
+<!-- AIHUB-AGENTS-SCOPE-LOCAL-END -->
