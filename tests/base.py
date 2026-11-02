@@ -11,7 +11,7 @@ from typing import override
 
 from flext_tests import FlextTestsServiceBase
 
-from tests import TestsFlextGrpcSettings, m
+from tests import TestsFlextGrpcSettings, m, p
 
 
 class TestsFlextGrpcServiceBase(FlextTestsServiceBase):
