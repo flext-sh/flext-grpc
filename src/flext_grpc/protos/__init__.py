@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
@@ -45,7 +44,7 @@ __all__: tuple[str, ...] = (
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({
+    {
         "DESCRIPTOR": ".flext_pb2",
         "GRPC_GENERATED_VERSION": ".flext_pb2_grpc",
         "RPC_PYTHON_METHOD_NAMES": ".flext_pb2_grpc",
@@ -56,6 +55,6 @@ install_lazy_exports(
         "HealthRequest": ".flext_pb2",
         "HealthResponse": ".flext_pb2",
         "add_flext_grpc_service_servicer_to_server": ".flext_pb2_grpc",
-    }),
+    },
     public_exports=__all__,
 )

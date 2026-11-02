@@ -146,7 +146,7 @@ class FlextGrpcModelsRuntime:
             FlextCliModels.Field(description="Service name identifier"),
         ] = ""
         methods: Sequence[str] = FlextCliModels.Field(
-            default_factory=tuple[str, ...],
+            default_factory=tuple,
             description="Registered RPC method names",
         )
 
