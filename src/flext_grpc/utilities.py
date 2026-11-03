@@ -26,7 +26,6 @@ class FlextGrpcUtilities(flext_cli_u, FlextGrpcUtilitiesBase):
         FlextGrpcUtilitiesGrpcRuntime,
         FlextGrpcUtilitiesGrpcService,
         FlextGrpcUtilitiesSchemaCodegen,
-        FlextGrpcUtilitiesBase,
     ):
         """Public gRPC utility namespace with explicit local signatures.
 

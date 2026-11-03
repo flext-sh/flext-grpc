@@ -6,19 +6,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
-from flext_grpc._protocols import (
-    FlextGrpcProtocolsChannel,
-    FlextGrpcProtocolsServer,
-    FlextGrpcProtocolsStream,
-)
+from flext_grpc._protocols import FlextGrpcProtocolsChannel, FlextGrpcProtocolsServer
 
 if TYPE_CHECKING:
     from flext_core._protocols import FlextProtocolsResult
 
     from flext_grpc import t
+    from flext_grpc._protocols import FlextGrpcProtocolsRuntimeModels
 
 
 class FlextGrpcProtocolsService:
@@ -27,74 +24,6 @@ class FlextGrpcProtocolsService:
     @runtime_checkable
     class GrpcMethodHandler(Protocol):
         """Protocol for gRPC method handlers (duck typing)."""
-
-    @runtime_checkable
-    class Service(Protocol):
-        """Protocol for gRPC service definition and management."""
-
-        def create_service(
-            self,
-            service_name: str,
-            methods: Mapping[str, FlextGrpcProtocolsService.GrpcMethodHandler],
-        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsServer.GrpcServicer]:
-            """Create gRPC service definition.
-
-            Args:
-                service_name: Service name identifier.
-                methods: Method handlers keyed by method name.
-
-            Returns:
-                The resulting ``p.Result[GrpcServicer]``.
-
-            """
-            ...
-
-        def service_methods(
-            self,
-            service: FlextGrpcProtocolsServer.GrpcServicer,
-        ) -> FlextProtocolsResult.Result[Sequence[str]]:
-            """Get list of service methods.
-
-            Args:
-                service: Servicer to inspect.
-
-            Returns:
-                The resulting ``p.Result[Sequence[str]]``.
-
-            """
-            ...
-
-        def register_service(
-            self,
-            service: FlextGrpcProtocolsServer.GrpcServicer,
-            server: FlextGrpcProtocolsServer.GrpcServer,
-        ) -> FlextProtocolsResult.Result[bool]:
-            """Register gRPC service with server.
-
-            Args:
-                service: Servicer to register.
-                server: Server receiving the registration.
-
-            Returns:
-                The resulting ``p.Result[bool]``.
-
-            """
-            ...
-
-        def validate_service(
-            self,
-            service: FlextGrpcProtocolsServer.GrpcServicer,
-        ) -> FlextProtocolsResult.Result[bool]:
-            """Validate gRPC service definition.
-
-            Args:
-                service: Servicer to validate.
-
-            Returns:
-                The resulting ``p.Result[bool]``.
-
-            """
-            ...
 
     @runtime_checkable
     class Metrics(Protocol):
@@ -132,7 +61,7 @@ class FlextGrpcProtocolsService:
 
         def collect_stream_metrics(
             self,
-            stream: FlextGrpcProtocolsStream.GrpcStream,
+            stream: FlextGrpcProtocolsRuntimeModels.GrpcStream,
         ) -> FlextProtocolsResult.Result[Mapping[str, t.Numeric | str]]:
             """Collect gRPC stream metrics.
 

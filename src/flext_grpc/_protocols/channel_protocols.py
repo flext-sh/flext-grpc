@@ -6,15 +6,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
-
-from flext_cli import p
 
 if TYPE_CHECKING:
     from collections.abc import Callable
-
-    from flext_grpc import t
 
 
 class FlextGrpcProtocolsChannel:
@@ -43,77 +38,6 @@ class FlextGrpcProtocolsChannel:
 
         Duck typing for ``grpc.ChannelCredentials``.
         """
-
-    @runtime_checkable
-    class Channel(Protocol):
-        """Protocol for gRPC channel management operations."""
-
-        def close_channel(
-            self,
-            channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> p.Result[bool]:
-            """Close gRPC channel.
-
-            Args:
-                channel: Channel to close.
-
-            Returns:
-                The resulting ``p.Result[bool]``.
-
-            """
-            ...
-
-        def create_channel(
-            self,
-            target: str,
-            options: Mapping[str, t.JsonValue | None] | None = None,
-        ) -> p.Result[FlextGrpcProtocolsChannel.GrpcChannel]:
-            """Create gRPC channel.
-
-            Args:
-                target: gRPC server target address.
-                options: Optional channel options keyed by name.
-
-            Returns:
-                The resulting ``p.Result[GrpcChannel]``.
-
-            """
-            ...
-
-        def channel_state(
-            self,
-            channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> p.Result[str]:
-            """Get gRPC channel connection state.
-
-            Args:
-                channel: Channel to inspect.
-
-            Returns:
-                The resulting ``p.Result[str]``.
-
-            """
-            ...
-
-        def wait_for_state_change(
-            self,
-            channel: FlextGrpcProtocolsChannel.GrpcChannel,
-            last_state: str,
-            *,
-            timeout: float = 30.0,
-        ) -> p.Result[bool]:
-            """Wait for channel state change.
-
-            Args:
-                channel: Channel to observe.
-                last_state: Previously observed state name.
-                timeout: Maximum wait in seconds.
-
-            Returns:
-                The resulting ``p.Result[bool]``.
-
-            """
-            ...
 
     @runtime_checkable
     class GrpcReadyFuture(Protocol):

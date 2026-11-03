@@ -6,15 +6,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
     import threading
-
-    from flext_core._protocols import FlextProtocolsResult
-
-    from flext_grpc import t
 
 
 class FlextGrpcProtocolsServer:
@@ -27,93 +23,6 @@ class FlextGrpcProtocolsServer:
     @runtime_checkable
     class GrpcServicer(Protocol):
         """Protocol for gRPC service implementations (duck typing)."""
-
-    @runtime_checkable
-    class Server(Protocol):
-        """Protocol for gRPC server management operations."""
-
-        def add_service(
-            self,
-            service: FlextGrpcProtocolsServer.GrpcServicer,
-            server: FlextGrpcProtocolsServer.GrpcServer,
-        ) -> FlextProtocolsResult.Result[bool]:
-            """Add gRPC service to server.
-
-            Args:
-                service: Servicer implementing the service methods.
-                server: Server receiving the service registration.
-
-            Returns:
-                The resulting ``p.Result[bool]``.
-
-            """
-            ...
-
-        def configure_port(
-            self,
-            server: FlextGrpcProtocolsServer.GrpcServer,
-            host: str,
-            port: int,
-            *,
-            secure: bool = False,
-        ) -> FlextProtocolsResult.Result[int]:
-            """Configure the server port binding.
-
-            Args:
-                server: Server to bind.
-                host: Host address to bind.
-                port: Port number to bind.
-                secure: Whether to bind a secure port.
-
-            Returns:
-                The resulting ``p.Result[int]``.
-
-            """
-            ...
-
-        def server_status(self) -> FlextProtocolsResult.Result[t.JsonValue | None]:
-            """Get gRPC server status information.
-
-            Returns:
-                The resulting ``p.Result[t.JsonValue | None]``.
-
-            """
-            ...
-
-        def start_server(
-            self,
-            host: str,
-            port: int,
-            services: Sequence[FlextGrpcProtocolsServer.GrpcServicer] | None = None,
-        ) -> FlextProtocolsResult.Result[FlextGrpcProtocolsServer.GrpcServer]:
-            """Start gRPC server.
-
-            Args:
-                host: Host address to bind.
-                port: Port number to bind.
-                services: Optional servicers to register before starting.
-
-            Returns:
-                The resulting ``p.Result[GrpcServer]``.
-
-            """
-            ...
-
-        def stop_server(
-            self,
-            *,
-            grace_period: float = 30.0,
-        ) -> FlextProtocolsResult.Result[bool]:
-            """Stop gRPC server.
-
-            Args:
-                grace_period: Grace period in seconds for in-flight RPCs.
-
-            Returns:
-                The resulting ``p.Result[bool]``.
-
-            """
-            ...
 
     @runtime_checkable
     class GrpcRpcHandler(Protocol):
