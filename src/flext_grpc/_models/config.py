@@ -11,7 +11,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import m
+from typing import Annotated
+
+from flext_cli import m, t
+
+from flext_grpc._protocols import FlextGrpcProtocolsConfig
 
 
 class FlextGrpcModelsConfig:
@@ -161,7 +165,10 @@ class FlextGrpcModelsConfig:
 
         model_config = m.ConfigDict(frozen=True, extra="ignore")
 
-        Grpc: FlextGrpcModelsConfig.Grpc = m.Field(
+        Grpc: Annotated[
+            FlextGrpcProtocolsConfig.Grpc,
+            t.schema_for_model(FlextGrpcModelsConfig.Grpc),
+        ] = m.Field(
             description="gRPC business-rule config namespace.",
         )
 

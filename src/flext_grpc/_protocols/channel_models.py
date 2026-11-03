@@ -13,11 +13,10 @@ from typing import TYPE_CHECKING, Protocol, Self, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc import t
-
 if TYPE_CHECKING:
     from flext_cli import p
 
+    from flext_grpc import t
     from flext_grpc._constants import FlextGrpcConstantsBase
     from flext_grpc._protocols import FlextGrpcProtocolsChannel
 
@@ -147,18 +146,10 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class Channel(FlextCliProtocols.Model, Protocol):
+    class Channel(Entity, StateMachine, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def domain_events(self) -> Sequence[p.DomainEvent]:
-            """List of uncommitted domain events for event sourcing."""
-            ...
-
-        @property
-        def target(self) -> str:
-            """GRPC server target address."""
-            ...
+        target: str
 
         @property
         def state(self) -> FlextGrpcConstantsBase.ChannelState:
@@ -170,10 +161,6 @@ class FlextGrpcProtocolsChannelModels:
         @property
         def grpc_channel(self) -> FlextGrpcProtocolsChannel.GrpcChannel | None:
             """Underlying gRPC channel instance."""
-            ...
-
-        def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
-            """Copy the entity with field updates applied."""
             ...
 
         def connect(self) -> p.Result[Self]:

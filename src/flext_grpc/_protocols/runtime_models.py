@@ -14,18 +14,16 @@ from typing import TYPE_CHECKING, Protocol, Self, runtime_checkable
 
 from flext_cli import FlextCliProtocols
 
-from flext_grpc import t
+from flext_grpc._protocols import FlextGrpcProtocolsChannelModels
 
 if TYPE_CHECKING:
     from flext_cli import p
 
+    from flext_grpc import t
     from flext_grpc._constants import FlextGrpcConstantsBase
     from flext_grpc._protocols import (
-        FlextGrpcProtocolsChannel,
         FlextGrpcProtocolsConnection,
         FlextGrpcProtocolsServer,
-        FlextGrpcProtocolsService,
-        FlextGrpcProtocolsStream,
     )
 
 
@@ -33,33 +31,22 @@ class FlextGrpcProtocolsRuntimeModels:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class Server(FlextCliProtocols.Model, Protocol):
+    class Server(
+        FlextGrpcProtocolsChannelModels.Entity,
+        FlextGrpcProtocolsChannelModels.StateMachine,
+        Protocol,
+    ):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def domain_events(self) -> Sequence[p.DomainEvent]:
-            """List of uncommitted domain events for event sourcing."""
-            ...
-
-        @property
-        def host(self) -> str:
-            """Server bind host address."""
-            ...
-
-        @property
-        def port(self) -> t.PortNumber:
-            """Server listen port number."""
-            ...
+        host: str
+        port: t.PortNumber
 
         @property
         def state(self) -> FlextGrpcConstantsBase.ServerState:
             """Current server lifecycle state."""
             ...
 
-        @property
-        def max_workers(self) -> t.WorkerCount:
-            """Maximum worker threads for request handling."""
-            ...
+        max_workers: t.WorkerCount
 
         @property
         def services(self) -> Sequence[FlextGrpcProtocolsServer.GrpcServicer]:
@@ -69,10 +56,6 @@ class FlextGrpcProtocolsRuntimeModels:
         @property
         def grpc_server(self) -> FlextGrpcProtocolsServer.GrpcServer | None:
             """Underlying gRPC server instance."""
-            ...
-
-        def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
-            """Copy the entity with field updates applied."""
             ...
 
         def add_service(
@@ -102,24 +85,11 @@ class FlextGrpcProtocolsRuntimeModels:
             ...
 
     @runtime_checkable
-    class Service(FlextCliProtocols.Model, Protocol):
+    class Service(FlextGrpcProtocolsChannelModels.Entity, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def domain_events(self) -> Sequence[p.DomainEvent]:
-            """List of uncommitted domain events for event sourcing."""
-            ...
-
-        @property
-        def name(self) -> str:
-            """Service name identifier."""
-            ...
-
+        name: str
         methods: Sequence[str]
-
-        def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
-            """Copy the entity with field updates applied."""
-            ...
 
         def add_method(self, method_name: str) -> p.Result[Self]:
             """Add an RPC method name to the service."""
@@ -130,16 +100,11 @@ class FlextGrpcProtocolsRuntimeModels:
             ...
 
     @runtime_checkable
-    class Client(FlextCliProtocols.Model, Protocol):
+    class Client(FlextGrpcProtocolsChannelModels.Entity, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
-        def domain_events(self) -> Sequence[p.DomainEvent]:
-            """List of uncommitted domain events for event sourcing."""
-            ...
-
-        @property
-        def channel(self) -> FlextGrpcProtocolsChannel.Channel | None:
+        def channel(self) -> FlextGrpcProtocolsChannelModels.Channel | None:
             """Associated gRPC channel for communication."""
             ...
 
@@ -148,10 +113,6 @@ class FlextGrpcProtocolsRuntimeModels:
         @property
         def grpc_stub(self) -> FlextGrpcProtocolsConnection.GrpcStub | None:
             """GRPC client stub for RPC calls."""
-            ...
-
-        def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
-            """Copy the entity with field updates applied."""
             ...
 
         def connect_to(self, target: str) -> p.Result[Self]:
@@ -163,23 +124,11 @@ class FlextGrpcProtocolsRuntimeModels:
             ...
 
     @runtime_checkable
-    class GrpcStream(FlextCliProtocols.Model, Protocol):
+    class GrpcStream(FlextGrpcProtocolsChannelModels.Entity, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def domain_events(self) -> Sequence[p.DomainEvent]:
-            """List of uncommitted domain events for event sourcing."""
-            ...
-
-        @property
-        def id(self) -> str:
-            """Unique stream identifier."""
-            ...
-
-        @property
-        def method_name(self) -> str:
-            """RPC method name for this stream."""
-            ...
+        id: str
+        method_name: str
 
         @property
         def stream_type(self) -> FlextGrpcConstantsBase.GrpcOperations:
@@ -191,16 +140,12 @@ class FlextGrpcProtocolsRuntimeModels:
             """GRPC stub used by this stream."""
             ...
 
-        def copy_with(self, **kwargs: t.Scalar | None) -> p.Result[Self]:
-            """Copy the entity with field updates applied."""
-            ...
-
     @runtime_checkable
     class StreamRuntimeState(FlextCliProtocols.Model, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
-        def stream(self) -> FlextGrpcProtocolsStream.GrpcStream:
+        def stream(self) -> FlextGrpcProtocolsRuntimeModels.GrpcStream:
             """GRPC stream instance being tracked."""
             ...
 
@@ -219,17 +164,17 @@ class FlextGrpcProtocolsRuntimeModels:
         """Structural data contract projected from the owning model."""
 
         @property
-        def server(self) -> FlextGrpcProtocolsServer.Server:
+        def server(self) -> FlextGrpcProtocolsRuntimeModels.Server:
             """Configured gRPC server instance."""
             ...
 
         @property
-        def client(self) -> FlextGrpcProtocolsConnection.Client:
+        def client(self) -> FlextGrpcProtocolsRuntimeModels.Client:
             """Configured gRPC client instance."""
             ...
 
         @property
-        def service(self) -> FlextGrpcProtocolsService.Service:
+        def service(self) -> FlextGrpcProtocolsRuntimeModels.Service:
             """Configured gRPC service definition."""
             ...
 

@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING, Protocol, runtime_checkable
 from flext_cli import FlextCliProtocols
 
 if TYPE_CHECKING:
-    from flext_grpc._protocols import FlextGrpcProtocolsStream
+    from flext_grpc._protocols import FlextGrpcProtocolsConfig
 
 
 class FlextGrpcProtocolsConfig:
@@ -199,7 +199,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
         @property
-        def streaming(self) -> FlextGrpcProtocolsStream.Streaming:
+        def streaming(self) -> FlextGrpcProtocolsConfig.Streaming:
             """Streaming buffer and concurrency policy."""
             ...
 
@@ -212,10 +212,7 @@ class FlextGrpcProtocolsConfig:
     class Root(FlextCliProtocols.Model, Protocol):
         """Structural data contract projected from the owning model."""
 
-        @property
-        def Grpc(self) -> FlextGrpcProtocolsConfig.Grpc:
-            """GRPC business-rule config namespace."""
-            ...
+        Grpc: FlextGrpcProtocolsConfig.Grpc
 
 
 __all__: list[str] = [
