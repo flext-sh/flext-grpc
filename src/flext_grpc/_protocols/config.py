@@ -20,7 +20,7 @@ class FlextGrpcProtocolsConfig:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class Network(FlextCliProtocols.Model, Protocol):
+    class Network(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -74,7 +74,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
     @runtime_checkable
-    class Performance(FlextCliProtocols.Model, Protocol):
+    class Performance(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -108,7 +108,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
     @runtime_checkable
-    class ServicePolicy(FlextCliProtocols.Model, Protocol):
+    class ServicePolicy(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -132,7 +132,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
     @runtime_checkable
-    class Streaming(FlextCliProtocols.Model, Protocol):
+    class Streaming(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -171,7 +171,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
     @runtime_checkable
-    class ConnectionPool(FlextCliProtocols.Model, Protocol):
+    class ConnectionPool(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -180,7 +180,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
     @runtime_checkable
-    class Grpc(FlextCliProtocols.Model, Protocol):
+    class Grpc(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -209,7 +209,7 @@ class FlextGrpcProtocolsConfig:
             ...
 
     @runtime_checkable
-    class Root(FlextCliProtocols.Model, Protocol):
+    class Root(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         Grpc: FlextGrpcProtocolsConfig.Grpc

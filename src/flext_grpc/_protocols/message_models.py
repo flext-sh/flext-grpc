@@ -22,7 +22,7 @@ class FlextGrpcProtocolsMessageModels:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class EchoRequest(FlextCliProtocols.Model, Protocol):
+    class EchoRequest(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -31,7 +31,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class EchoResponse(FlextCliProtocols.Model, Protocol):
+    class EchoResponse(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -50,7 +50,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class HealthRequest(FlextCliProtocols.Model, Protocol):
+    class HealthRequest(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -59,7 +59,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class HealthResponse(FlextCliProtocols.Model, Protocol):
+    class HealthResponse(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -73,7 +73,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class StreamInfo(FlextCliProtocols.Model, Protocol):
+    class StreamInfo(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -112,7 +112,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class HealthCheck(FlextCliProtocols.Model, Protocol):
+    class HealthCheck(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -131,7 +131,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class OperationExecutionRequest(FlextCliProtocols.Model, Protocol):
+    class OperationExecutionRequest(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -150,7 +150,7 @@ class FlextGrpcProtocolsMessageModels:
             ...
 
     @runtime_checkable
-    class Payload(FlextCliProtocols.Model, Protocol):
+    class Payload(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         values: t.JsonMapping

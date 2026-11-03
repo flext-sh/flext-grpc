@@ -141,7 +141,7 @@ class FlextGrpcProtocolsRuntimeModels:
             ...
 
     @runtime_checkable
-    class StreamRuntimeState(FlextCliProtocols.Model, Protocol):
+    class StreamRuntimeState(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -160,7 +160,7 @@ class FlextGrpcProtocolsRuntimeModels:
             ...
 
     @runtime_checkable
-    class CompleteSetup(FlextCliProtocols.Model, Protocol):
+    class CompleteSetup(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property

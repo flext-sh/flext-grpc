@@ -25,7 +25,7 @@ class FlextGrpcProtocolsChannelModels:
     """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class ClientConfig(FlextCliProtocols.Model, Protocol):
+    class ClientConfig(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -39,7 +39,7 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class ChannelConfig(FlextCliProtocols.Model, Protocol):
+    class ChannelConfig(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -53,7 +53,7 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class Entity(FlextCliProtocols.Model, Protocol):
+    class Entity(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -66,7 +66,7 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class StateTransition(FlextCliProtocols.Model, Protocol):
+    class StateTransition(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -75,11 +75,11 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class StateMachine(FlextCliProtocols.Model, Protocol):
+    class StateMachine(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
     @runtime_checkable
-    class OperationSpec(FlextCliProtocols.Model, Protocol):
+    class OperationSpec(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -103,7 +103,7 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class Request(FlextCliProtocols.Model, Protocol):
+    class Request(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
@@ -122,7 +122,7 @@ class FlextGrpcProtocolsChannelModels:
             ...
 
     @runtime_checkable
-    class Response(FlextCliProtocols.Model, Protocol):
+    class Response(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
         @property
