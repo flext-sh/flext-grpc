@@ -11,16 +11,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
-from tests import tm, u
+from tests import c, tm, u
 
 
 class TestsFlextGrpcTypesUnit:
     """Behavioral contract for the gRPC ``host:port`` target helpers."""
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         [
             "localhost:50051",
@@ -34,7 +32,7 @@ class TestsFlextGrpcTypesUnit:
         tm.ok(u.Grpc.validate_target(target))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         [
             "",
@@ -55,7 +53,7 @@ class TestsFlextGrpcTypesUnit:
         tm.fail(u.Grpc.validate_target(target))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("target", "expected"),
         [
             ("localhost:50051", ("localhost", 50051)),
@@ -70,7 +68,7 @@ class TestsFlextGrpcTypesUnit:
         tm.that(u.Grpc.parse_target(target), eq=expected)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         ["invalid", "", "localhost", ":50051", "localhost:99999"],
     )
@@ -80,7 +78,7 @@ class TestsFlextGrpcTypesUnit:
             u.Grpc.parse_target(target)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         ["localhost:50051", "127.0.0.1:8080", "invalid", "localhost:99999", ""],
     )

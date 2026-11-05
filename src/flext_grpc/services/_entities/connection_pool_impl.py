@@ -9,9 +9,7 @@ from __future__ import annotations
 import threading
 from queue import Queue
 
-from flext_grpc.exceptions import e
-from flext_grpc.protocols import p
-from flext_grpc.result import r
+from flext_grpc import e, p, r
 
 
 class FlextGrpcConnectionPoolImpl:

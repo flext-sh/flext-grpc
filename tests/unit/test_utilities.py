@@ -15,9 +15,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 
-import pytest
-
-from tests import p, tm, u
+from tests import c, p, tm, u
 
 
 class TestsFlextGrpcUtilitiesUnit:
@@ -41,7 +39,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("address", "expected_host", "expected_port"),
         [
             ("localhost:50051", "localhost", 50051),
@@ -69,7 +67,7 @@ class TestsFlextGrpcUtilitiesUnit:
         )
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "bad_address",
         ["nocolon", "", "host:", ":50051", "host:notaport", "host:0"],
     )
@@ -89,7 +87,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("target", "expected"),
         [
             ("localhost:50051", True),
@@ -116,7 +114,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("port", "expected"),
         [
             (1, True),
@@ -136,7 +134,7 @@ class TestsFlextGrpcUtilitiesUnit:
         tm.that(u.Grpc.validate_port(port), eq=expected)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("host", "expected"),
         [("localhost", True), ("127.0.0.1", True), ("", False), ("   ", False)],
     )
@@ -158,7 +156,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("normalizer", "state", "expected"),
         [
             (u.Grpc.channel_state_name, "ready", "ready"),
@@ -255,7 +253,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize("bad_port", [0, 65536])
+    @c.Tests.MARK.parametrize("bad_port", [0, 65536])
     def test_create_server_entity_rejects_out_of_range_port(
         bad_port: int,
     ) -> None:

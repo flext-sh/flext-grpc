@@ -25,13 +25,11 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import ClassVar
 
+from flext_cli import u
 from google.protobuf import descriptor_pb2
 from grpc_tools import protoc
 
-from flext_grpc.protocols import p
-from flext_grpc.result import r
-from flext_grpc.typings import t
-from flext_grpc.utilities import u
+from flext_grpc import p, r, t
 
 
 class FlextGrpcUtilitiesSchemaCodegen:

@@ -11,8 +11,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, tm
 
 Grpc = c.Grpc
@@ -22,7 +20,7 @@ class TestsFlextGrpcConstantsUnit:
     """Public-contract tests for FlextGrpcConstants."""
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("name", "expected"),
         [
             ("NETWORK_DEFAULT_HOST", "127.0.0.1"),
@@ -50,7 +48,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.NETWORK_DEFAULT_GRPC_PORT <= c.MAX_PORT, truth=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "host",
         ["127.0.0.1", "localhost", "grpc-server", "example.com"],
     )
@@ -59,7 +57,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.NETWORK_HOST_RE.match(host), none=False)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "host",
         ["bad host", "under_score!", "with/slash", "colon:port"],
     )
@@ -68,7 +66,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.NETWORK_HOST_RE.match(host), none=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("text", "expected_group"),
         [("Version 1.2.3", "1.2.3"), ("version 4.5.6 build", "4.5.6")],
     )
@@ -86,7 +84,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.VALIDATION_VERSION_RE.search("no digits here"), none=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("member", "value"),
         [
             (Grpc.ChannelState.IDLE, "idle"),
@@ -105,7 +103,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(member, is_=str)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("frozenset_attr", "enum_attr"),
         [
             ("CHANNEL_STATES", "ChannelState"),

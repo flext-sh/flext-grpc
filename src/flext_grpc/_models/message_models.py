@@ -13,8 +13,7 @@ from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
 
-from flext_grpc.constants import c
-from flext_grpc.typings import t
+from flext_grpc import c, t
 
 
 class FlextGrpcModelsMessage:

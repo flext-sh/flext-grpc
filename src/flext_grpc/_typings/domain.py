@@ -11,7 +11,7 @@ from typing import Literal
 
 from flext_cli import FlextCliTypes
 
-from flext_grpc.constants import c
+from flext_grpc import c
 
 
 class FlextGrpcTypesDomain:

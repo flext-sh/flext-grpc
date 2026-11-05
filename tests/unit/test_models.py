@@ -10,8 +10,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, m, tm, u
 
 
@@ -79,7 +77,7 @@ class TestsFlextGrpcModelsUnit:
         tm.that(info.average_latency_ms, eq=0.0)
 
     @staticmethod
-    @pytest.mark.parametrize("field", ["total_requests_sent", "error_count"])
+    @c.Tests.MARK.parametrize("field", ["total_requests_sent", "error_count"])
     def test_stream_info_rejects_negative_counters(field: str) -> None:
         """Non-negative counter constraints reject negative values."""
         with u.Tests.raises(m.ValidationError):
@@ -137,7 +135,7 @@ class TestsFlextGrpcModelsUnit:
         tm.ok(request.valid)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("success", "error", "expected"),
         [
             (True, None, False),

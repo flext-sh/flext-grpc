@@ -14,8 +14,6 @@ from __future__ import annotations
 from socket import AF_INET, SOCK_STREAM, socket
 from typing import TYPE_CHECKING
 
-import pytest
-
 from flext_grpc import FlextGrpc
 from tests import c, t, tm
 
@@ -70,7 +68,7 @@ class TestsFlextGrpcServices:
     # -- Facade: create_stream -------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("method_name", "send_count"),
         [("test_method", c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE + 2), ("to_close", 0)],
     )
@@ -122,7 +120,7 @@ class TestsFlextGrpcServices:
     # -- Facade: validate_target -----------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("target", "expected"),
         [
             ("localhost:50051", True),
@@ -156,7 +154,7 @@ class TestsFlextGrpcServices:
         )
 
     @staticmethod
-    @pytest.mark.parametrize("address", ["host", "bad:x", ""])
+    @c.Tests.MARK.parametrize("address", ["host", "bad:x", ""])
     def test_parse_address_fails_for_malformed_input(
         grpc_facade: FlextGrpc,
         address: str,
@@ -215,7 +213,7 @@ class TestsFlextGrpcServices:
         tm.that(metrics_collector.metric("absent"), none=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("value", "expected"),
         [("v", "v"), (5, 5), (True, True), (None, ""), ([1, 2], "[1, 2]")],
     )

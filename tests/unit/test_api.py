@@ -9,8 +9,6 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-import pytest
-
 from flext_grpc import FlextGrpc, FlextGrpcSettings
 from tests import c, m, p, t, tm, u
 
@@ -33,7 +31,7 @@ class TestsFlextGrpcApi:
         )
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("host", "port"),
         [("localhost", 50051), ("127.0.0.1", 8080)],
     )
@@ -44,7 +42,7 @@ class TestsFlextGrpcApi:
         tm.that(server.port, eq=port)
 
     @staticmethod
-    @pytest.mark.parametrize("target", ["localhost:50051", "127.0.0.1:8080"])
+    @c.Tests.MARK.parametrize("target", ["localhost:50051", "127.0.0.1:8080"])
     def test_create_client(target: str) -> None:
         """Test client creation across canonical address shapes."""
         client: p.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
@@ -61,13 +59,13 @@ class TestsFlextGrpcApi:
         tm.that(stream.stream_type, eq="unary")
 
     @staticmethod
-    @pytest.mark.parametrize("target", ["localhost:50051"], ids=["valid"])
+    @c.Tests.MARK.parametrize("target", ["localhost:50051"], ids=["valid"])
     def test_validate_target_valid(target: str) -> None:
         """Valid targets pass validation."""
         tm.ok(FlextGrpc().validate_target(target))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         ["", "no_port", "localhost", ":50051", "localhost:99999", "invalid"],
     )
@@ -107,7 +105,7 @@ class TestsFlextGrpcApi:
         tm.that(channel.options, eq=options)
 
     @staticmethod
-    @pytest.mark.parametrize("name", ["TestService", "DefaultService"])
+    @c.Tests.MARK.parametrize("name", ["TestService", "DefaultService"])
     def test_create_service(name: str) -> None:
         """Test service creation across method shapes."""
         methods = (
@@ -125,7 +123,7 @@ class TestsFlextGrpcApi:
         tm.ok(FlextGrpc().execute(), is_=FlextGrpcSettings)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "entity_type",
         ["server", "client", "channel", "service", c.ProcessingMode.STREAM],
     )
