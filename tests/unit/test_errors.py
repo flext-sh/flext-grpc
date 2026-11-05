@@ -14,7 +14,7 @@ from __future__ import annotations
 import pytest
 
 from flext_grpc import FlextGrpcErrors
-from tests import e, tm
+from tests import e, tm, u
 
 
 class TestsFlextGrpcErrors:
@@ -29,7 +29,7 @@ class TestsFlextGrpcErrors:
 
         """
         message = "Base gRPC error occurred"
-        with pytest.raises(e.BaseError) as caught:
+        with u.Tests.raises(e.BaseError) as caught:
             raise FlextGrpcErrors.Error(message)
         tm.that(str(caught.value), has=message)
 
@@ -49,7 +49,7 @@ class TestsFlextGrpcErrors:
         message: str,
     ) -> None:
         """Each error is raisable, an Exception, and echoes its message."""
-        with pytest.raises(e.BaseError) as caught:
+        with u.Tests.raises(e.BaseError) as caught:
             raise factory(message)
         tm.that(caught.value, is_=Exception)
         tm.that(str(caught.value), has=message)
@@ -81,7 +81,7 @@ class TestsFlextGrpcErrors:
 
         """
         message = "channel down"
-        with pytest.raises(e.FlextConnectionError) as caught:
+        with u.Tests.raises(e.FlextConnectionError) as caught:
             raise FlextGrpcErrors.GrpcConnectionError(message)
 
         def not_validation_error(value: object) -> bool:

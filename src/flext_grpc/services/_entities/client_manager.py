@@ -9,11 +9,17 @@ from __future__ import annotations
 import time
 from collections.abc import MutableMapping
 
-from flext_grpc import c, e, m, p, r, t, u
+from flext_grpc.constants import c
+from flext_grpc.exceptions import e
+from flext_grpc.models import m
+from flext_grpc.protocols import p
+from flext_grpc.result import r
 from flext_grpc.services._entities import (
     FlextGrpcConnectionPoolImpl,
     FlextGrpcMetricsCollectorImpl,
 )
+from flext_grpc.typings import t
+from flext_grpc.utilities import u
 
 
 class FlextGrpcClientManagerImpl:

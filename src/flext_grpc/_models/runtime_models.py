@@ -13,8 +13,11 @@ from typing import Annotated, Self
 
 from flext_cli import FlextCliModels
 
-from flext_grpc import c, p, r, t
 from flext_grpc._models import FlextGrpcModelsChannel
+from flext_grpc.constants import c
+from flext_grpc.protocols import p
+from flext_grpc.result import r
+from flext_grpc.typings import t
 
 
 class FlextGrpcModelsRuntime:

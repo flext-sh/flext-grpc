@@ -75,7 +75,7 @@ class TestsFlextGrpcUtilitiesUnit:
     )
     def test_parse_address_rejects_invalid_target(bad_address: str) -> None:
         """Parsing an invalid target raises ValueError naming the target."""
-        with pytest.raises(ValueError, match="Invalid gRPC target"):
+        with u.Tests.raises(ValueError, match="Invalid gRPC target"):
             u.Grpc.parse_address(bad_address)
 
     @staticmethod
@@ -265,5 +265,5 @@ class TestsFlextGrpcUtilitiesUnit:
     @staticmethod
     def test_create_stream_entity_rejects_unknown_stream_type() -> None:
         """An unsupported stream type raises ValueError from the enum contract."""
-        with pytest.raises(ValueError, match="GrpcOperations"):
+        with u.Tests.raises(ValueError, match="GrpcOperations"):
             u.Grpc.create_stream_entity("m", "server_streaming")

@@ -8,7 +8,9 @@ from __future__ import annotations
 
 from typing import ClassVar
 
-from flext_grpc import m, p, s
+from flext_grpc.models import m
+from flext_grpc.protocols import p
+from flext_grpc.service import s
 from flext_grpc.services._entities import FlextGrpcServerManagerImpl
 
 

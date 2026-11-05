@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 import pytest
 
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests import c, m, p, t, tm
+from tests import c, m, p, t, tm, u
 
 
 class TestsFlextGrpcApi:
@@ -142,7 +142,7 @@ class TestsFlextGrpcApi:
     @staticmethod
     def test_validate_entity_type_rejects_invalid() -> None:
         """OperationSpec rejects unknown entity_type values."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",

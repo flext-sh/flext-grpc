@@ -76,7 +76,7 @@ class TestsFlextGrpcTypesUnit:
     )
     def test_parse_target_raises_value_error_on_invalid(target: str) -> None:
         """Parsing a target that fails validation raises ``ValueError``."""
-        with pytest.raises(ValueError, match="Invalid gRPC target"):
+        with u.Tests.raises(ValueError, match="Invalid gRPC target"):
             u.Grpc.parse_target(target)
 
     @staticmethod
@@ -91,5 +91,5 @@ class TestsFlextGrpcTypesUnit:
             host, port = u.Grpc.parse_target(target)
             tm.that(f"{host}:{port}", eq=target)
         else:
-            with pytest.raises(ValueError, match="Invalid gRPC target"):
+            with u.Tests.raises(ValueError, match="Invalid gRPC target"):
                 u.Grpc.parse_target(target)

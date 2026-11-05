@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from tests import c, m, p, tm
+from tests import c, m, p, tm, u
 
 
 @pytest.fixture
@@ -131,7 +131,7 @@ class TestsFlextGrpcEntitiesServer:
         max_workers: int,
     ) -> None:
         """Port and worker-count bounds are enforced at construction time."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.Server(
                 host="localhost",
                 port=port,
@@ -265,7 +265,7 @@ class TestsFlextGrpcEntitiesRelations:
         methods: list[str],
     ) -> None:
         """Service construction raises on empty/blank name or method entries."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.Service(name=name, methods=methods, domain_events=[])
 
     @staticmethod
@@ -303,7 +303,7 @@ class TestsFlextGrpcEntitiesRelations:
         method_name: str,
     ) -> None:
         """GrpcStream requires a non-empty method_name."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.GrpcStream(
                 method_name=method_name,
                 stream_type=c.Grpc.GrpcOperations.UNARY,

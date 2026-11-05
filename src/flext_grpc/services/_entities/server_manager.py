@@ -10,11 +10,15 @@ import time
 from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
 
-from flext_grpc import c, m, p, r, u
+from flext_grpc.constants import c
+from flext_grpc.models import m
+from flext_grpc.protocols import p
+from flext_grpc.result import r
 from flext_grpc.services._entities import (
     FlextGrpcMetricsCollectorImpl,
     FlextGrpcServiceHandlerImpl,
 )
+from flext_grpc.utilities import u
 
 
 class FlextGrpcServerManagerImpl:

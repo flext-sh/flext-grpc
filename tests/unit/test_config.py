@@ -91,14 +91,14 @@ class TestsFlextGrpcConfig:
     @pytest.mark.parametrize("bad_port", [0, -1, 65536, 70000])
     def test_out_of_range_port_is_rejected(bad_port: int) -> None:
         """Ports outside 1..65535 fail validation (ValidationError <: ValueError)."""
-        with pytest.raises(ValueError, match=r".*"):
+        with u.Tests.raises(ValueError, match=r".*"):
             FlextGrpcSettings.model_validate({"Grpc": {"port": bad_port}})
 
     @staticmethod
     @pytest.mark.parametrize("bad_workers", [0, -1])
     def test_non_positive_max_workers_is_rejected(bad_workers: int) -> None:
         """max_workers below 1 fails validation."""
-        with pytest.raises(ValueError, match=r".*"):
+        with u.Tests.raises(ValueError, match=r".*"):
             FlextGrpcSettings.model_validate({"Grpc": {"max_workers": bad_workers}})
 
     @staticmethod
@@ -147,7 +147,7 @@ class TestsFlextGrpcConfig:
         with u.Tests.env_vars_context(
             env_vars={f"{prefix}DEBUG": "not-a-boolean"},
         ):
-            with pytest.raises(ValueError, match="debug"):
+            with u.Tests.raises(ValueError, match="debug"):
                 FlextGrpcSettings.reset_for_testing()
             tm.that(FlextGrpcSettings.fetch_global() is original, eq=True)
             tm.that(original.model_dump(round_trip=True), eq=state)
