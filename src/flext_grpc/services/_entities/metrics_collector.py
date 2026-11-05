@@ -9,10 +9,7 @@ from __future__ import annotations
 import threading
 from collections.abc import MutableMapping
 
-from flext_grpc.models import m
-from flext_grpc.protocols import p
-from flext_grpc.typings import t
-from flext_grpc.utilities import u
+from flext_grpc import m, p, t, u
 
 
 class FlextGrpcMetricsCollectorImpl:

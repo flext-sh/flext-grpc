@@ -23,11 +23,9 @@ from google.protobuf import json_format, message_factory
 from google.protobuf.descriptor import Descriptor, MethodDescriptor, ServiceDescriptor
 from google.protobuf.message import Message
 
+from flext_grpc import c, p, r
 from flext_grpc._utilities import FlextGrpcUtilitiesGrpcRuntime
-from flext_grpc.constants import c
-from flext_grpc.protocols import p
 from flext_grpc.protos import flext_pb2, flext_pb2_grpc
-from flext_grpc.result import r
 
 if TYPE_CHECKING:
     from collections.abc import Callable

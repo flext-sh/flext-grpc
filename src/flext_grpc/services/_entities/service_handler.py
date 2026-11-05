@@ -10,10 +10,7 @@ from collections.abc import Mapping
 from types import MappingProxyType
 from typing import TYPE_CHECKING
 
-from flext_grpc.constants import c
-from flext_grpc.models import m
-from flext_grpc.protocols import p
-from flext_grpc.utilities import u
+from flext_grpc import c, m, p, u
 
 if TYPE_CHECKING:
     from collections.abc import Callable

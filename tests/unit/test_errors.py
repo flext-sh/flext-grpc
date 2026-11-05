@@ -11,10 +11,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from flext_grpc import FlextGrpcErrors
-from tests import e, tm, u
+from tests import c, e, tm, u
 
 
 class TestsFlextGrpcErrors:
@@ -34,7 +32,7 @@ class TestsFlextGrpcErrors:
         tm.that(str(caught.value), has=message)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("factory", "message"),
         [
             (FlextGrpcErrors.Error, "base failure"),
@@ -55,7 +53,7 @@ class TestsFlextGrpcErrors:
         tm.that(str(caught.value), has=message)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("factory", "semantic_parent"),
         [
             (FlextGrpcErrors.ValidationError, e.ValidationError),
@@ -93,7 +91,7 @@ class TestsFlextGrpcErrors:
         )
 
     @staticmethod
-    @pytest.mark.parametrize("field", ["username", "データ", None])
+    @c.Tests.MARK.parametrize("field", ["username", "データ", None])
     def test_validation_error_exposes_field_state(field: str | None) -> None:
         """ValidationError publishes the field it was constructed with."""
         error = FlextGrpcErrors.ValidationError("Invalid field value", field=field)
@@ -110,7 +108,7 @@ class TestsFlextGrpcErrors:
         tm.that(error.field, none=True)
 
     @staticmethod
-    @pytest.mark.parametrize("config_key", ["port", "complex_setting", None])
+    @c.Tests.MARK.parametrize("config_key", ["port", "complex_setting", None])
     def test_configuration_error_exposes_config_key_state(
         config_key: str | None,
     ) -> None:

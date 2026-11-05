@@ -14,8 +14,6 @@ from __future__ import annotations
 
 from typing import Final
 
-import pytest
-
 from flext_grpc import FlextGrpcSettings, settings
 from tests import c, tm, u
 
@@ -73,7 +71,7 @@ class TestsFlextGrpcConfig:
         tm.that(cfg.Grpc.max_workers, eq=5)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("host", "port"),
         [
             ("127.0.0.1", 9090),
@@ -88,14 +86,14 @@ class TestsFlextGrpcConfig:
         tm.that(cfg.Grpc.port, eq=port)
 
     @staticmethod
-    @pytest.mark.parametrize("bad_port", [0, -1, 65536, 70000])
+    @c.Tests.MARK.parametrize("bad_port", [0, -1, 65536, 70000])
     def test_out_of_range_port_is_rejected(bad_port: int) -> None:
         """Ports outside 1..65535 fail validation (ValidationError <: ValueError)."""
         with u.Tests.raises(ValueError, match=r".*"):
             FlextGrpcSettings.model_validate({"Grpc": {"port": bad_port}})
 
     @staticmethod
-    @pytest.mark.parametrize("bad_workers", [0, -1])
+    @c.Tests.MARK.parametrize("bad_workers", [0, -1])
     def test_non_positive_max_workers_is_rejected(bad_workers: int) -> None:
         """max_workers below 1 fails validation."""
         with u.Tests.raises(ValueError, match=r".*"):

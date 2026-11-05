@@ -16,10 +16,8 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, is_protocol, runtime_checkable
 
-import pytest
-
 from flext_grpc import FlextGrpcProtocols
-from tests import p, tm
+from tests import c, p, tm
 
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
@@ -113,7 +111,7 @@ class TestsFlextGrpcProtocolsUnit:
     """Behavioral contract tests for the ``p.Grpc.*`` protocols."""
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_grpc_protocol_is_a_protocol(protocol_name: str) -> None:
         """Each Grpc member is reported as a typing Protocol."""
         protocol = getattr(p.Grpc, protocol_name)
@@ -121,7 +119,7 @@ class TestsFlextGrpcProtocolsUnit:
         tm.ok(is_protocol(protocol))
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_conforming_object_satisfies_protocol(protocol_name: str) -> None:
         """An object exposing all required members passes isinstance."""
         members = _PROTOCOL_CONTRACTS[protocol_name]
@@ -132,7 +130,7 @@ class TestsFlextGrpcProtocolsUnit:
         tm.ok(isinstance(instance, protocol))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("protocol_name", "missing_member"),
         [
             (name, member)
@@ -153,7 +151,7 @@ class TestsFlextGrpcProtocolsUnit:
         tm.fail(isinstance(instance, protocol))
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_unrelated_object_fails_protocol(protocol_name: str) -> None:
         """A plain object with none of the members fails isinstance."""
         protocol = getattr(p.Grpc, protocol_name)
@@ -161,7 +159,7 @@ class TestsFlextGrpcProtocolsUnit:
         tm.fail(isinstance(object(), protocol))
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_protocol_is_runtime_checkable(protocol_name: str) -> None:
         """The protocol supports isinstance without raising (runtime_checkable)."""
         protocol = getattr(p.Grpc, protocol_name)

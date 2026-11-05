@@ -9,11 +9,7 @@ from __future__ import annotations
 from collections.abc import Sequence
 from uuid import uuid4
 
-from flext_grpc.constants import c
-from flext_grpc.models import m
-from flext_grpc.protocols import p
-from flext_grpc.result import r
-from flext_grpc.typings import t
+from flext_grpc import c, m, p, r, t
 
 
 class FlextGrpcUtilitiesGrpc:

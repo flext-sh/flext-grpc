@@ -7,12 +7,10 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, m, p, tm, u
 
 
-@pytest.fixture
+@u.Tests.fixture
 def channel() -> p.Grpc.Channel:
     """Idle channel bound to a concrete target.
 
@@ -28,7 +26,7 @@ def channel() -> p.Grpc.Channel:
     )
 
 
-@pytest.fixture
+@u.Tests.fixture
 def server() -> p.Grpc.Server:
     """Return a stopped server with no registered services.
 
@@ -121,7 +119,7 @@ class TestsFlextGrpcEntitiesServer:
         tm.fail(entity.validate_business_rules(), has="host cannot be empty")
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("port", "max_workers"),
         [(70000, 10), (50051, 0)],
         ids=["out-of-range-port", "zero-workers"],
@@ -255,7 +253,7 @@ class TestsFlextGrpcEntitiesRelations:
         tm.that(list(service.methods), eq=["m1", "m2"])
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("name", "methods"),
         [("TestService", []), ("", ["m1"]), ("  ", ["m1"]), ("S", [" "])],
         ids=["empty-methods", "empty-name", "blank-name", "blank-method"],
@@ -298,7 +296,7 @@ class TestsFlextGrpcEntitiesRelations:
         tm.that(stream.stream_type, eq="unary")
 
     @staticmethod
-    @pytest.mark.parametrize("method_name", ["", "   "], ids=["empty", "blank"])
+    @c.Tests.MARK.parametrize("method_name", ["", "   "], ids=["empty", "blank"])
     def test_stream_construction_rejects_empty_method_name(
         method_name: str,
     ) -> None:
