@@ -9,6 +9,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping, Sequence
+from datetime import datetime
 from typing import TYPE_CHECKING, Protocol, Self, runtime_checkable
 
 from flext_cli import FlextCliProtocols
@@ -16,8 +17,7 @@ from flext_cli import FlextCliProtocols
 if TYPE_CHECKING:
     from flext_cli import p
 
-    from flext_grpc import t
-    from flext_grpc._constants import FlextGrpcConstantsBase
+    from flext_grpc import c, t
     from flext_grpc._protocols import FlextGrpcProtocolsChannel
 
 
@@ -55,6 +55,16 @@ class FlextGrpcProtocolsChannelModels:
     @runtime_checkable
     class Entity(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
+
+        version: t.NonNegativeInt
+        unique_id: t.NonEmptyStr
+
+        @property
+        def created_at(self) -> datetime:
+            """Creation timestamp (configured timezone)."""
+            ...
+
+        updated_at: datetime | None
 
         @property
         def domain_events(self) -> Sequence[p.DomainEvent]:
@@ -150,12 +160,7 @@ class FlextGrpcProtocolsChannelModels:
         """Structural data contract projected from the owning model."""
 
         target: str
-
-        @property
-        def state(self) -> FlextGrpcConstantsBase.ChannelState:
-            """Current channel connection state."""
-            ...
-
+        state: c.Grpc.ChannelState
         options: t.JsonMapping | None
 
         @property

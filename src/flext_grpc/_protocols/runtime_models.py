@@ -19,8 +19,7 @@ from flext_grpc._protocols import FlextGrpcProtocolsChannelModels
 if TYPE_CHECKING:
     from flext_cli import p
 
-    from flext_grpc import t
-    from flext_grpc._constants import FlextGrpcConstantsBase
+    from flext_grpc import c, t
     from flext_grpc._protocols import (
         FlextGrpcProtocolsConnection,
         FlextGrpcProtocolsServer,
@@ -40,12 +39,7 @@ class FlextGrpcProtocolsRuntimeModels:
 
         host: str
         port: t.PortNumber
-
-        @property
-        def state(self) -> FlextGrpcConstantsBase.ServerState:
-            """Current server lifecycle state."""
-            ...
-
+        state: c.Grpc.ServerState
         max_workers: t.WorkerCount
 
         @property
@@ -129,11 +123,7 @@ class FlextGrpcProtocolsRuntimeModels:
 
         id: str
         method_name: str
-
-        @property
-        def stream_type(self) -> FlextGrpcConstantsBase.GrpcOperations:
-            """Stream communication pattern type."""
-            ...
+        stream_type: c.Grpc.GrpcOperations
 
         @property
         def grpc_stub(self) -> FlextGrpcProtocolsConnection.GrpcStub | None:

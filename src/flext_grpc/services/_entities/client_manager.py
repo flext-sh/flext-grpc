@@ -151,7 +151,7 @@ class FlextGrpcClientManagerImpl:
             m.Grpc.EchoResponse,
         )
         return echo_result.map(
-            lambda echo_response: p.Grpc.Payload.from_values(
+            lambda echo_response: m.Grpc.Payload.from_values(
                 method=c.Grpc.ServiceMethod.ECHO.value,
                 message=echo_response.message,
                 server_id=echo_response.server_id,
@@ -180,7 +180,7 @@ class FlextGrpcClientManagerImpl:
             m.Grpc.HealthResponse,
         )
         return health_result.map(
-            lambda health_response: p.Grpc.Payload.from_values(
+            lambda health_response: m.Grpc.Payload.from_values(
                 method=c.Grpc.ServiceMethod.HEALTH_CHECK.value,
                 status=health_response.status,
                 message=health_response.message,
