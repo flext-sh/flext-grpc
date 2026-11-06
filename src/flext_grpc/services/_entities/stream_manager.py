@@ -62,7 +62,7 @@ class FlextGrpcStreamManagerImpl:
         stream = stream_result.value
         stream_key = f"{stream.id}_{stream.stream_type}"
         self._active_streams[stream_key] = m.Grpc.StreamRuntimeState(
-            stream=stream,
+            stream=m.Grpc.GrpcStream.model_validate(stream),
             created_at=time.time(),
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
