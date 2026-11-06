@@ -1,48 +1,68 @@
-# Triagem Semgrep — flext-sh/flext-grpc
+# Semgrep Triage — flext-sh/flext-grpc
 
 <!-- TOC START -->
 
-- [Resumo](#resumo)
-- [Como usar](#como-usar)
+- [Summary](#summary)
+- [How to use](#how-to-use)
+- [Shared rule descriptions](#shared-rule-descriptions)
+  - [dependabot-missing-cooldown](#dependabot-missing-cooldown)
+  - [uv-missing-dependency-cooldown](#uv-missing-dependency-cooldown)
 - [Findings](#findings)
-  - [1 · 🟡 MEDIUM · conf high · package\_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown](#1-medium-conf-high-package_managersdependabotdependabot-missing-cooldowndependabot-missing-cooldown)
-  - [2 · 🟡 MEDIUM · conf high · package\_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown](#2-medium-conf-high-package_managersdependabotdependabot-missing-cooldowndependabot-missing-cooldown)
-  - [3 · 🟡 MEDIUM · conf high · package\_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown](#3-medium-conf-high-package_managersdependabotdependabot-missing-cooldowndependabot-missing-cooldown)
-  - [4 · 🟡 MEDIUM · conf high · package\_managers.uv.uv-missing-dependency-cooldown.uv-missing-dependency-cooldown](#4-medium-conf-high-package_managersuvuv-missing-dependency-cooldownuv-missing-dependency-cooldown)
+  - [1 · MEDIUM · conf high · dependabot-missing-cooldown](#1-medium-conf-high-dependabot-missing-cooldown)
+  - [2 · MEDIUM · conf high · dependabot-missing-cooldown](#2-medium-conf-high-dependabot-missing-cooldown)
+  - [3 · MEDIUM · conf high · dependabot-missing-cooldown](#3-medium-conf-high-dependabot-missing-cooldown)
+  - [4 · MEDIUM · conf high · uv-missing-dependency-cooldown](#4-medium-conf-high-uv-missing-dependency-cooldown)
 
 <!-- TOC END -->
 
-Gerado do dump da plataforma Semgrep (deployment `datacosmos`, 2026-08-06).
+Generated from the Semgrep platform dump (deployment `datacosmos`, 2026-08-06).
 
 Bead: `mro-p57t.11`
 
-## Resumo
+## Summary
 
-**4 findings** — high 0, medium 4, low 0 Confiança: high 4, medium 0, low 0
+**4 findings** — high 0, medium 4, low 0. Confidence: high 4, medium 0, low 0.
 
-| regra                                                                                 | achados |
-| ------------------------------------------------------------------------------------- | ------- |
-| `package_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown` | 3       |
-| `package_managers.uv.uv-missing-dependency-cooldown.uv-missing-dependency-cooldown`   | 1       |
+| Rule                                                                                  | Count |
+| ------------------------------------------------------------------------------------- | ----- |
+| `package_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown` | 3     |
+| `package_managers.uv.uv-missing-dependency-cooldown.uv-missing-dependency-cooldown`   | 1     |
 
-## Como usar
+## How to use
 
-Cada finding traz a **mensagem completa da regra** (o Semgrep descreve o problema e
-frequentemente o fix), o **código real** (linha `>>>`), classe de vulnerabilidade,
-CWE/OWASP. **Decisão**: `corrigir` / `falso-positivo` (`nosemgrep` ou `.semgrepignore`
-com justificativa) / `risco-aceito`. Priorizar high com confidence=high.
+Each finding carries a pointer to the shared rule description below, the real code
+(line marked `>>>`), the vulnerability class, and CWE/OWASP data. **Decision** per
+finding: `fix` / `false-positive` (`nosemgrep` or `.semgrepignore` with justification) /
+`accepted-risk`. Prioritize high severity with confidence=high.
 
-## Findings
+## Shared rule descriptions
 
-### 1 · 🟡 MEDIUM · conf high · `package_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown`
-
-**Classe**: Insecure Configuration · **Local**: `.github/dependabot.yml:4`
+### dependabot-missing-cooldown
 
 > This Dependabot configuration does not set a cooldown period. Newly published packages
 > can be malicious or unstable. Add a `cooldown` block with `default-days: 7` to each
 > `package-ecosystem` entry under `updates` to wait 7 days before proposing updates to
 > newly published package versions. Reference:
 > <https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-option>
+
+Class: Insecure Configuration.
+
+### uv-missing-dependency-cooldown
+
+> This pyproject.toml configures uv but does not set a dependency cooldown. Newly
+> published packages can be malicious or unstable. Add `exclude-newer = "7 days"` under
+> `[tool.uv]` to wait 7 days before resolving newly published package versions. Added
+> in: 0.9.17 Reference:
+> <https://docs.astral.sh/uv/concepts/resolution/#dependency-cooldowns>
+
+Class: Insecure Configuration.
+
+## Findings
+
+### 1 · MEDIUM · conf high · `dependabot-missing-cooldown`
+
+**Location**: `.github/dependabot.yml:4` — rule description:
+[dependabot-missing-cooldown](#dependabot-missing-cooldown)
 
 ```yaml
         1  # Generated by `flext-infra codegen conform` for flext-grpc — DO NOT EDIT.
@@ -55,17 +75,12 @@ com justificativa) / `risco-aceito`. Priorizar high com confidence=high.
         8      open-pull-requests-limit: 5
 ```
 
-**Decisão**: pendente
+**Decision**: pending
 
-### 2 · 🟡 MEDIUM · conf high · `package_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown`
+### 2 · MEDIUM · conf high · `dependabot-missing-cooldown`
 
-**Classe**: Insecure Configuration · **Local**: `.github/dependabot.yml:11`
-
-> This Dependabot configuration does not set a cooldown period. Newly published packages
-> can be malicious or unstable. Add a `cooldown` block with `default-days: 7` to each
-> `package-ecosystem` entry under `updates` to wait 7 days before proposing updates to
-> newly published package versions. Reference:
-> <https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-option>
+**Location**: `.github/dependabot.yml:11` — rule description:
+[dependabot-missing-cooldown](#dependabot-missing-cooldown)
 
 ```yaml
         7        interval: weekly
@@ -79,17 +94,12 @@ com justificativa) / `risco-aceito`. Priorizar high com confidence=high.
        15      open-pull-requests-limit: 5
 ```
 
-**Decisão**: pendente
+**Decision**: pending
 
-### 3 · 🟡 MEDIUM · conf high · `package_managers.dependabot.dependabot-missing-cooldown.dependabot-missing-cooldown`
+### 3 · MEDIUM · conf high · `dependabot-missing-cooldown`
 
-**Classe**: Insecure Configuration · **Local**: `.github/dependabot.yml:18`
-
-> This Dependabot configuration does not set a cooldown period. Newly published packages
-> can be malicious or unstable. Add a `cooldown` block with `default-days: 7` to each
-> `package-ecosystem` entry under `updates` to wait 7 days before proposing updates to
-> newly published package versions. Reference:
-> <https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-option>
+**Location**: `.github/dependabot.yml:18` — rule description:
+[dependabot-missing-cooldown](#dependabot-missing-cooldown)
 
 ```yaml
        14        interval: weekly
@@ -103,28 +113,25 @@ com justificativa) / `risco-aceito`. Priorizar high com confidence=high.
        22      open-pull-requests-limit: 5
 ```
 
-**Decisão**: pendente
+**Decision**: pending
 
-### 4 · 🟡 MEDIUM · conf high · `package_managers.uv.uv-missing-dependency-cooldown.uv-missing-dependency-cooldown`
+### 4 · MEDIUM · conf high · `uv-missing-dependency-cooldown`
 
-**Classe**: Insecure Configuration · **Local**: `pyproject.toml:609`
-
-> This pyproject.toml configures uv but does not set a dependency cooldown. Newly
-> published packages can be malicious or unstable. Add `exclude-newer = "7 days"` under
-> `[tool.uv]` to wait 7 days before resolving newly published package versions. Added
-> in: 0.9.17 Reference:
-> <https://docs.astral.sh/uv/concepts/resolution/#dependency-cooldowns>
+**Location**: `pyproject.toml:609` — rule description:
+[uv-missing-dependency-cooldown](#uv-missing-dependency-cooldown)
 
 ```toml
 605  all = true
 606  in_place = true
 607  sort_first = ["build-system", "dependency-groups", "project", "tool"]
 608
+
 >>>   609  [tool.uv]
 610  link-mode = "copy"
 611
-      612  [tool.vulture]
+
+612  [tool.vulture]
 613  exclude = ["*/_protocols/*"]
 ```
 
-**Decisão**: pendente
+**Decision**: pending

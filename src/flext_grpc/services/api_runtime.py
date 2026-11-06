@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import override
 
 from flext_grpc import FlextGrpcServiceBase, FlextGrpcSettings, c, m, p, r, t, u
@@ -18,7 +19,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     def create_channel(
         target: str,
         options: t.JsonMapping | None = None,
-    ) -> p.Result[m.Grpc.Channel]:
+    ) -> p.Result[p.Grpc.Channel]:
         """Create typed channel entity from validated inputs.
 
         Args:
@@ -26,7 +27,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             options: Optional channel options mapping.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Channel]``.
+            The resulting ``p.Result[p.Grpc.Channel]``.
 
         """
         return u.Grpc.create_channel_entity(
@@ -38,7 +39,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     def create_client(
         target: str,
         options: t.JsonMapping | None = None,
-    ) -> p.Result[m.Grpc.Client]:
+    ) -> p.Result[p.Grpc.Client]:
         """Create typed client entity from validated inputs.
 
         Args:
@@ -46,7 +47,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             options: Optional client options mapping.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Client]``.
+            The resulting ``p.Result[p.Grpc.Client]``.
 
         """
         return u.Grpc.create_client_entity(
@@ -59,8 +60,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         host: str = c.Grpc.NETWORK_DEFAULT_HOST,
         port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         service_name: str = "DefaultService",
-        methods: t.StrSequence | None = None,
-    ) -> p.Result[m.Grpc.CompleteSetup]:
+        methods: Sequence[str] | None = None,
+    ) -> p.Result[p.Grpc.CompleteSetup]:
         """Complete setup using functional composition.
 
         Args:
@@ -71,7 +72,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
                 ``["HealthCheck"]``.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.CompleteSetup]``.
+            The resulting ``p.Result[p.Grpc.CompleteSetup]``.
 
         """
         resolved_methods = ["HealthCheck"] if methods is None else methods
@@ -79,20 +80,20 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
         server_result = self.create_server(host=host, port=port)
         if server_result.failure:
-            return r[m.Grpc.CompleteSetup].from_failure(server_result)
+            return r[p.Grpc.CompleteSetup].from_failure(server_result)
 
         client_result = self.create_client(target=target)
         if client_result.failure:
-            return r[m.Grpc.CompleteSetup].from_failure(client_result)
+            return r[p.Grpc.CompleteSetup].from_failure(client_result)
 
         service_result = self.create_service(
             name=service_name,
             methods=resolved_methods,
         )
         if service_result.failure:
-            return r[m.Grpc.CompleteSetup].from_failure(service_result)
+            return r[p.Grpc.CompleteSetup].from_failure(service_result)
 
-        return r[m.Grpc.CompleteSetup].ok(
+        return r[p.Grpc.CompleteSetup].ok(
             m.Grpc.CompleteSetup(
                 server=server_result.value,
                 client=client_result.value,
@@ -106,7 +107,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
         host: str = c.Grpc.NETWORK_DEFAULT_HOST,
         port: int = c.Grpc.NETWORK_DEFAULT_GRPC_PORT,
         max_workers: int = c.Grpc.SERVICE_DEFAULT_MAX_WORKERS,
-    ) -> p.Result[m.Grpc.Server]:
+    ) -> p.Result[p.Grpc.Server]:
         """Create typed server entity from validated inputs.
 
         Args:
@@ -115,7 +116,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             max_workers: Maximum worker threads for request handling.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         return u.Grpc.create_server_entity(
@@ -127,8 +128,8 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
     @staticmethod
     def create_service(
         name: str,
-        methods: t.StrSequence | None = None,
-    ) -> p.Result[m.Grpc.Service]:
+        methods: Sequence[str] | None = None,
+    ) -> p.Result[p.Grpc.Service]:
         """Create typed service entity from validated inputs.
 
         Args:
@@ -136,7 +137,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
             methods: Optional RPC method names; defaults to an empty set.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Service]``.
+            The resulting ``p.Result[p.Grpc.Service]``.
 
         """
         return u.Grpc.create_service_entity(
@@ -156,7 +157,7 @@ class FlextGrpcApiRuntime(FlextGrpcServiceBase):
 
     def execute_operation(
         self,
-        request: m.Grpc.OperationExecutionRequest,
+        request: p.Grpc.OperationExecutionRequest,
     ) -> p.Result[FlextGrpcSettings]:
         """Execute operation with validation, timeout, retry, and monitoring.
 

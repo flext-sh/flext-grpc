@@ -1,11 +1,8 @@
-"""Flext-grpc config protocols.
-
-Protocol interfaces for the ``config.Grpc.*`` business-rule SSOT. Models are
-defined in ``_models/config.py``; this module only declares the typed shapes.
-The current model-less ``_config.py`` facade validates into
-``FlextGrpcModelsBase.GrpcNamespace`` and does not consume these protocols.
+# AUTO-GENERATED FILE — Regenerate with: make gen
+"""Source-derived structural model contracts.
 
 Copyright (c) 2026 FLEXT Team. All rights reserved.
+src/flext_grpc/_protocols/config
 SPDX-License-Identifier: MIT
 """
 
@@ -13,108 +10,211 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Protocol, runtime_checkable
 
+from flext_cli import FlextCliProtocols
+
 if TYPE_CHECKING:
-    from flext_grpc._models import FlextGrpcConfigModels
+    from flext_grpc._protocols import FlextGrpcProtocolsConfig
 
 
 class FlextGrpcProtocolsConfig:
-    """Namespace of config protocol interfaces for flext-grpc."""
+    """Own the structural contracts declared by its model source."""
 
     @runtime_checkable
-    class Network(Protocol):
-        """gRPC network defaults and validation thresholds."""
+    class Network(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
 
         @property
-        def default_channel_ready_timeout(self) -> float: ...
-        @property
-        def default_graceful_shutdown_timeout(self) -> float: ...
-        @property
-        def default_host(self) -> str: ...
-        @property
-        def default_keepalive_time_ms(self) -> int: ...
-        @property
-        def default_keepalive_timeout_ms(self) -> int: ...
-        @property
-        def default_port(self) -> int: ...
-        @property
-        def default_timeout(self) -> float: ...
-        @property
-        def host_pattern(self) -> str: ...
-        @property
-        def max_port(self) -> int: ...
-        @property
-        def min_port(self) -> int: ...
-
-    @runtime_checkable
-    class Performance(Protocol):
-        """gRPC message and thread-pool performance limits."""
+        def default_channel_ready_timeout(self) -> float:
+            """Seconds to wait for a channel to become ready."""
+            ...
 
         @property
-        def default_message_length(self) -> int: ...
-        @property
-        def default_thread_pool_size(self) -> int: ...
-        @property
-        def max_message_length(self) -> int: ...
-        @property
-        def max_thread_pool_size(self) -> int: ...
-        @property
-        def min_message_length(self) -> int: ...
-        @property
-        def min_thread_pool_size(self) -> int: ...
-
-    @runtime_checkable
-    class Service(Protocol):
-        """gRPC server/worker policy defaults."""
+        def default_graceful_shutdown_timeout(self) -> float:
+            """Seconds to wait during graceful shutdown."""
+            ...
 
         @property
-        def default_max_concurrent_rpcs(self) -> int: ...
-        @property
-        def default_max_workers(self) -> int: ...
-        @property
-        def max_workers(self) -> int: ...
-        @property
-        def min_workers(self) -> int: ...
-
-    @runtime_checkable
-    class Streaming(Protocol):
-        """gRPC streaming buffer and concurrency policy."""
+        def default_host(self) -> str:
+            """Default bind/connect host."""
+            ...
 
         @property
-        def bidirectional_queue_size(self) -> int: ...
+        def default_keepalive_time_ms(self) -> int:
+            """Keepalive probe interval in milliseconds."""
+            ...
+
         @property
-        def client_buffer_threshold(self) -> int: ...
+        def default_keepalive_timeout_ms(self) -> int:
+            """Keepalive probe timeout in milliseconds."""
+            ...
+
         @property
-        def default_buffer_size(self) -> int: ...
+        def default_port(self) -> int:
+            """Default gRPC port."""
+            ...
+
         @property
-        def default_max_concurrent_streams(self) -> int: ...
+        def default_timeout(self) -> float:
+            """Default request timeout in seconds."""
+            ...
+
         @property
-        def max_buffer_size(self) -> int: ...
+        def host_pattern(self) -> str:
+            """Regex validating a host name."""
+            ...
+
         @property
-        def min_buffer_size(self) -> int: ...
+        def max_port(self) -> int:
+            """Maximum valid port."""
+            ...
+
         @property
-        def server_batch_size(self) -> int: ...
+        def min_port(self) -> int:
+            """Minimum valid port."""
+            ...
 
     @runtime_checkable
-    class ConnectionPool(Protocol):
-        """gRPC connection-pool defaults."""
+    class Performance(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
 
         @property
-        def default_pool_size(self) -> int: ...
+        def default_message_length(self) -> int:
+            """Default maximum message length in bytes."""
+            ...
+
+        @property
+        def default_thread_pool_size(self) -> int:
+            """Default executor thread-pool size."""
+            ...
+
+        @property
+        def max_message_length(self) -> int:
+            """Absolute maximum message length in bytes."""
+            ...
+
+        @property
+        def max_thread_pool_size(self) -> int:
+            """Absolute maximum thread-pool size."""
+            ...
+
+        @property
+        def min_message_length(self) -> int:
+            """Absolute minimum message length in bytes."""
+            ...
+
+        @property
+        def min_thread_pool_size(self) -> int:
+            """Absolute minimum thread-pool size."""
+            ...
 
     @runtime_checkable
-    class Grpc(Protocol):
-        """Root gRPC business-rule namespace."""
+    class ServicePolicy(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
 
         @property
-        def network(self) -> FlextGrpcConfigModels.Network: ...
+        def default_max_concurrent_rpcs(self) -> int:
+            """Default RPC concurrency limit."""
+            ...
+
         @property
-        def performance(self) -> FlextGrpcConfigModels.Performance: ...
+        def default_max_workers(self) -> int:
+            """Default worker pool size."""
+            ...
+
         @property
-        def service(self) -> FlextGrpcConfigModels.ServicePolicy: ...
+        def max_workers(self) -> int:
+            """Maximum worker pool size."""
+            ...
+
         @property
-        def streaming(self) -> FlextGrpcConfigModels.Streaming: ...
+        def min_workers(self) -> int:
+            """Minimum worker pool size."""
+            ...
+
+    @runtime_checkable
+    class Streaming(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
+
         @property
-        def connection_pool(self) -> FlextGrpcConfigModels.ConnectionPool: ...
+        def bidirectional_queue_size(self) -> int:
+            """Bidirectional stream queue size."""
+            ...
+
+        @property
+        def client_buffer_threshold(self) -> int:
+            """Client-stream buffer threshold."""
+            ...
+
+        @property
+        def default_buffer_size(self) -> int:
+            """Default per-stream buffer size."""
+            ...
+
+        @property
+        def default_max_concurrent_streams(self) -> int:
+            """Default concurrent stream limit."""
+            ...
+
+        @property
+        def max_buffer_size(self) -> int:
+            """Absolute maximum buffer size."""
+            ...
+
+        @property
+        def min_buffer_size(self) -> int:
+            """Absolute minimum buffer size."""
+            ...
+
+        @property
+        def server_batch_size(self) -> int:
+            """Server-stream batch size."""
+            ...
+
+    @runtime_checkable
+    class ConnectionPool(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
+
+        @property
+        def default_pool_size(self) -> int:
+            """Default number of pooled channels."""
+            ...
+
+    @runtime_checkable
+    class Grpc(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
+
+        @property
+        def network(self) -> FlextGrpcProtocolsConfig.Network:
+            """Network defaults and validation thresholds."""
+            ...
+
+        @property
+        def performance(self) -> FlextGrpcProtocolsConfig.Performance:
+            """Message and thread-pool performance limits."""
+            ...
+
+        @property
+        def service(self) -> FlextGrpcProtocolsConfig.ServicePolicy:
+            """Server/worker policy defaults."""
+            ...
+
+        @property
+        def streaming(self) -> FlextGrpcProtocolsConfig.Streaming:
+            """Streaming buffer and concurrency policy."""
+            ...
+
+        @property
+        def connection_pool(self) -> FlextGrpcProtocolsConfig.ConnectionPool:
+            """Connection-pool defaults."""
+            ...
+
+    @runtime_checkable
+    class Root(FlextCliProtocols.BaseModel, Protocol):
+        """Structural data contract projected from the owning model."""
+
+        Grpc: FlextGrpcProtocolsConfig.Grpc
 
 
-__all__: list[str] = ["FlextGrpcProtocolsConfig"]
+__all__: list[str] = [
+    "FlextGrpcProtocolsConfig",
+]

@@ -13,9 +13,9 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
+from collections.abc import Callable
 
-from tests import m, tm, u
+from tests import c, p, tm, u
 
 
 class TestsFlextGrpcUtilitiesUnit:
@@ -32,14 +32,14 @@ class TestsFlextGrpcUtilitiesUnit:
         # assert the real contract — the Grpc namespace + its static helpers exist.
         """The utilities facade exposes a usable ``Grpc`` helper namespace."""
         tm.that(u.Grpc, none=False)
-        tm.that(callable(u.Grpc.parse_address), eq=True)
+        tm.ok(callable(u.Grpc.parse_address))
 
     # ------------------------------------------------------------------
     # parse_address / parse_target
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("address", "expected_host", "expected_port"),
         [
             ("localhost:50051", "localhost", 50051),
@@ -67,13 +67,13 @@ class TestsFlextGrpcUtilitiesUnit:
         )
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "bad_address",
         ["nocolon", "", "host:", ":50051", "host:notaport", "host:0"],
     )
     def test_parse_address_rejects_invalid_target(bad_address: str) -> None:
         """Parsing an invalid target raises ValueError naming the target."""
-        with pytest.raises(ValueError, match="Invalid gRPC target"):
+        with u.Tests.raises(ValueError, match="Invalid gRPC target"):
             u.Grpc.parse_address(bad_address)
 
     @staticmethod
@@ -87,7 +87,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("target", "expected"),
         [
             ("localhost:50051", True),
@@ -114,7 +114,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("port", "expected"),
         [
             (1, True),
@@ -134,7 +134,7 @@ class TestsFlextGrpcUtilitiesUnit:
         tm.that(u.Grpc.validate_port(port), eq=expected)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("host", "expected"),
         [("localhost", True), ("127.0.0.1", True), ("", False), ("   ", False)],
     )
@@ -156,38 +156,26 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
-        ("state", "expected"),
+    @c.Tests.MARK.parametrize(
+        ("normalizer", "state", "expected"),
         [
-            ("ready", "ready"),
-            ("IDLE", "idle"),
-            ("Ready", "ready"),
-            ("bogus", "unknown"),
+            (u.Grpc.channel_state_name, "ready", "ready"),
+            (u.Grpc.channel_state_name, "IDLE", "idle"),
+            (u.Grpc.channel_state_name, "Ready", "ready"),
+            (u.Grpc.channel_state_name, "bogus", "unknown"),
+            (u.Grpc.server_state_name, "running", "running"),
+            (u.Grpc.server_state_name, "STOPPED", "stopped"),
+            (u.Grpc.server_state_name, "Starting", "starting"),
+            (u.Grpc.server_state_name, "nope", "unknown"),
         ],
     )
-    def test_channel_state_name_normalizes_known_states(
+    def test_state_name_normalizes_known_states(
+        normalizer: Callable[[str], str],
         state: str,
         expected: str,
     ) -> None:
-        """Known channel states normalize to lowercase; others map to unknown."""
-        tm.that(u.Grpc.channel_state_name(state), eq=expected)
-
-    @staticmethod
-    @pytest.mark.parametrize(
-        ("state", "expected"),
-        [
-            ("running", "running"),
-            ("STOPPED", "stopped"),
-            ("Starting", "starting"),
-            ("nope", "unknown"),
-        ],
-    )
-    def test_server_state_name_normalizes_known_states(
-        state: str,
-        expected: str,
-    ) -> None:
-        """Known server states normalize to lowercase; others map to unknown."""
-        tm.that(u.Grpc.server_state_name(state), eq=expected)
+        """Known states normalize to lowercase; others map to unknown."""
+        tm.that(normalizer(state), eq=expected)
 
     # ------------------------------------------------------------------
     # system_info
@@ -219,34 +207,34 @@ class TestsFlextGrpcUtilitiesUnit:
     @staticmethod
     def test_create_channel_entity_carries_target() -> None:
         """A created channel entity exposes the requested target."""
-        channel: m.Grpc.Channel = tm.ok(u.Grpc.create_channel_entity("localhost:50051"))
+        channel: p.Grpc.Channel = tm.ok(u.Grpc.create_channel_entity("localhost:50051"))
         tm.that(channel.target, eq="localhost:50051")
 
     @staticmethod
     def test_create_client_entity_wraps_channel_with_target() -> None:
         """A created client entity is backed by a channel on the same target."""
-        client: m.Grpc.Client = tm.ok(u.Grpc.create_client_entity("localhost:50051"))
+        client: p.Grpc.Client = tm.ok(u.Grpc.create_client_entity("localhost:50051"))
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq="localhost:50051")
 
     @staticmethod
     def test_create_server_entity_carries_host_and_port() -> None:
         """A created server entity exposes the requested host and port."""
-        server: m.Grpc.Server = tm.ok(u.Grpc.create_server_entity("localhost", 50051))
+        server: p.Grpc.Server = tm.ok(u.Grpc.create_server_entity("localhost", 50051))
         tm.that(server.host, eq="localhost")
         tm.that(server.port, eq=50051)
 
     @staticmethod
     def test_create_service_entity_defaults_to_minimal_method_set() -> None:
         """A service created without methods gets a minimal valid method set."""
-        service: m.Grpc.Service = tm.ok(u.Grpc.create_service_entity("TestService"))
+        service: p.Grpc.Service = tm.ok(u.Grpc.create_service_entity("TestService"))
         tm.that(service.name, eq="TestService")
         tm.that(service.methods, empty=False)
 
     @staticmethod
     def test_create_service_entity_preserves_supplied_methods() -> None:
         """Explicit methods are preserved on the created service entity."""
-        service: m.Grpc.Service = tm.ok(
+        service: p.Grpc.Service = tm.ok(
             u.Grpc.create_service_entity("Svc", methods=["A", "B"]),
         )
         tm.that(service.methods, eq=["A", "B"])
@@ -254,7 +242,7 @@ class TestsFlextGrpcUtilitiesUnit:
     @staticmethod
     def test_create_stream_entity_carries_method_and_type() -> None:
         """A created stream entity exposes its method name and stream type."""
-        stream: m.Grpc.GrpcStream = tm.ok(
+        stream: p.Grpc.GrpcStream = tm.ok(
             u.Grpc.create_stream_entity("test_method", "unary"),
         )
         tm.that(stream.method_name, eq="test_method")
@@ -265,7 +253,7 @@ class TestsFlextGrpcUtilitiesUnit:
     # ------------------------------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize("bad_port", [0, 65536])
+    @c.Tests.MARK.parametrize("bad_port", [0, 65536])
     def test_create_server_entity_rejects_out_of_range_port(
         bad_port: int,
     ) -> None:
@@ -275,5 +263,5 @@ class TestsFlextGrpcUtilitiesUnit:
     @staticmethod
     def test_create_stream_entity_rejects_unknown_stream_type() -> None:
         """An unsupported stream type raises ValueError from the enum contract."""
-        with pytest.raises(ValueError, match="GrpcOperations"):
+        with u.Tests.raises(ValueError, match="GrpcOperations"):
             u.Grpc.create_stream_entity("m", "server_streaming")

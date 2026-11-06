@@ -14,10 +14,8 @@ from __future__ import annotations
 
 from typing import Final
 
-import pytest
-
 from flext_grpc import FlextGrpcSettings, settings
-from tests import c, tm
+from tests import c, tm, u
 
 _TIMEOUT_TOLERANCE: Final[float] = 0.01
 
@@ -30,12 +28,20 @@ class TestsFlextGrpcConfig:
         """An empty configuration yields sane, in-range namespaced field values."""
         cfg = FlextGrpcSettings()
         tm_grpc = cfg.Grpc
+
+        def port_in_range(value: int) -> bool:
+            return 1 <= value <= c.MAX_PORT
+
+        def workers_valid(value: int) -> bool:
+            return value >= 1
+
         tm.that(tm_grpc.host, is_=str)
         tm.that(tm_grpc.host.strip(), ne="")
-        assert 1 <= tm_grpc.port <= c.Grpc.NETWORK_MAX_PORT
-        assert tm_grpc.max_workers >= 1
-        assert (
-            abs(tm_grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE
+        tm.that(tm_grpc.port, where=port_in_range)
+        tm.that(tm_grpc.max_workers, where=workers_valid)
+        tm.that(
+            abs(tm_grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE,
+            truth=True,
         )
 
     @staticmethod
@@ -45,7 +51,10 @@ class TestsFlextGrpcConfig:
         tm.that(grpc.host, eq="127.0.0.1")
         tm.that(grpc.port, eq=50051)
         tm.that(grpc.max_workers, eq=100)
-        assert abs(grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE
+        tm.that(
+            abs(grpc.timeout - c.Grpc.NETWORK_DEFAULT_TIMEOUT) < _TIMEOUT_TOLERANCE,
+            truth=True,
+        )
 
     @staticmethod
     def test_constructor_sets_namespaced_fields() -> None:
@@ -62,7 +71,7 @@ class TestsFlextGrpcConfig:
         tm.that(cfg.Grpc.max_workers, eq=5)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("host", "port"),
         [
             ("127.0.0.1", 9090),
@@ -77,17 +86,17 @@ class TestsFlextGrpcConfig:
         tm.that(cfg.Grpc.port, eq=port)
 
     @staticmethod
-    @pytest.mark.parametrize("bad_port", [0, -1, 65536, 70000])
+    @c.Tests.MARK.parametrize("bad_port", [0, -1, 65536, 70000])
     def test_out_of_range_port_is_rejected(bad_port: int) -> None:
         """Ports outside 1..65535 fail validation (ValidationError <: ValueError)."""
-        with pytest.raises(ValueError, match=r".*"):
+        with u.Tests.raises(ValueError, match=r".*"):
             FlextGrpcSettings.model_validate({"Grpc": {"port": bad_port}})
 
     @staticmethod
-    @pytest.mark.parametrize("bad_workers", [0, -1])
+    @c.Tests.MARK.parametrize("bad_workers", [0, -1])
     def test_non_positive_max_workers_is_rejected(bad_workers: int) -> None:
         """max_workers below 1 fails validation."""
-        with pytest.raises(ValueError, match=r".*"):
+        with u.Tests.raises(ValueError, match=r".*"):
             FlextGrpcSettings.model_validate({"Grpc": {"max_workers": bad_workers}})
 
     @staticmethod
@@ -109,10 +118,34 @@ class TestsFlextGrpcConfig:
 
     @staticmethod
     def test_singleton_lifecycle_helpers() -> None:
-        """fetch_global returns the shared instance; reset recreates it."""
+        """Reload sources in place without invalidating published handles."""
         first = FlextGrpcSettings.fetch_global()
-        second = FlextGrpcSettings.fetch_global()
-        assert first is second
-        FlextGrpcSettings.reset_for_testing()
-        third = FlextGrpcSettings.fetch_global()
-        assert third is not first
+        tm.that(first is FlextGrpcSettings.fetch_global(), eq=True)
+        debug = first.debug
+        prefix = tm.not_none(FlextGrpcSettings.model_config.get("env_prefix"))
+        try:
+            with u.Tests.env_vars_context(
+                env_vars={f"{prefix}DEBUG": str(not debug).lower()},
+            ):
+                FlextGrpcSettings.reset_for_testing()
+                tm.that(FlextGrpcSettings.fetch_global() is first, eq=True)
+                tm.that(first is settings, eq=True)
+                tm.that(first.debug, eq=not debug)
+        finally:
+            FlextGrpcSettings.reset_for_testing()
+        tm.that(FlextGrpcSettings.fetch_global() is first, eq=True)
+        tm.that(first.debug, eq=debug)
+
+    @staticmethod
+    def test_invalid_reload_preserves_published_settings() -> None:
+        """Reject invalid sources without changing the published instance or state."""
+        original = FlextGrpcSettings.fetch_global()
+        state = original.model_dump(round_trip=True)
+        prefix = tm.not_none(FlextGrpcSettings.model_config.get("env_prefix"))
+        with u.Tests.env_vars_context(
+            env_vars={f"{prefix}DEBUG": "not-a-boolean"},
+        ):
+            with u.Tests.raises(ValueError, match="debug"):
+                FlextGrpcSettings.reset_for_testing()
+            tm.that(FlextGrpcSettings.fetch_global() is original, eq=True)
+            tm.that(original.model_dump(round_trip=True), eq=state)

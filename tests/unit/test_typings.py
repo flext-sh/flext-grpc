@@ -11,16 +11,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
-from tests import tm, u
+from tests import c, tm, u
 
 
 class TestsFlextGrpcTypesUnit:
     """Behavioral contract for the gRPC ``host:port`` target helpers."""
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         [
             "localhost:50051",
@@ -31,10 +29,10 @@ class TestsFlextGrpcTypesUnit:
     )
     def test_validate_target_accepts_wellformed_host_port(target: str) -> None:
         """A syntactically valid host:port with an in-range port validates true."""
-        tm.that(u.Grpc.validate_target(target), eq=True)
+        tm.ok(u.Grpc.validate_target(target))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         [
             "",
@@ -52,10 +50,10 @@ class TestsFlextGrpcTypesUnit:
         target: str,
     ) -> None:
         """Missing host/port, bad host chars, or out-of-range ports validate false."""
-        tm.that(u.Grpc.validate_target(target), eq=False)
+        tm.fail(u.Grpc.validate_target(target))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("target", "expected"),
         [
             ("localhost:50051", ("localhost", 50051)),
@@ -64,24 +62,23 @@ class TestsFlextGrpcTypesUnit:
         ],
     )
     def test_parse_target_splits_into_host_and_int_port(
-        target: str,
-        expected: tuple[str, int],
+        target: str, expected: tuple[str, ...]
     ) -> None:
         """Parsing a valid target yields the host string and integer port."""
         tm.that(u.Grpc.parse_target(target), eq=expected)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         ["invalid", "", "localhost", ":50051", "localhost:99999"],
     )
     def test_parse_target_raises_value_error_on_invalid(target: str) -> None:
         """Parsing a target that fails validation raises ``ValueError``."""
-        with pytest.raises(ValueError, match="Invalid gRPC target"):
+        with u.Tests.raises(ValueError, match="Invalid gRPC target"):
             u.Grpc.parse_target(target)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         ["localhost:50051", "127.0.0.1:8080", "invalid", "localhost:99999", ""],
     )
@@ -92,5 +89,5 @@ class TestsFlextGrpcTypesUnit:
             host, port = u.Grpc.parse_target(target)
             tm.that(f"{host}:{port}", eq=target)
         else:
-            with pytest.raises(ValueError, match="Invalid gRPC target"):
+            with u.Tests.raises(ValueError, match="Invalid gRPC target"):
                 u.Grpc.parse_target(target)

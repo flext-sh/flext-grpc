@@ -9,10 +9,8 @@ from __future__ import annotations
 
 from datetime import UTC, datetime
 
-import pytest
-
 from flext_grpc import FlextGrpc, FlextGrpcSettings
-from tests import m, t, tm
+from tests import c, m, p, t, tm, u
 
 
 class TestsFlextGrpcApi:
@@ -33,47 +31,47 @@ class TestsFlextGrpcApi:
         )
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("host", "port"),
         [("localhost", 50051), ("127.0.0.1", 8080)],
     )
     def test_create_server(host: str, port: int) -> None:
         """Test server creation across canonical address shapes."""
-        server: m.Grpc.Server = tm.ok(FlextGrpc().create_server(host=host, port=port))
+        server: p.Grpc.Server = tm.ok(FlextGrpc().create_server(host=host, port=port))
         tm.that(server.host, eq=host)
         tm.that(server.port, eq=port)
 
     @staticmethod
-    @pytest.mark.parametrize("target", ["localhost:50051", "127.0.0.1:8080"])
+    @c.Tests.MARK.parametrize("target", ["localhost:50051", "127.0.0.1:8080"])
     def test_create_client(target: str) -> None:
         """Test client creation across canonical address shapes."""
-        client: m.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
+        client: p.Grpc.Client = tm.ok(FlextGrpc().create_client(target=target))
         channel = tm.not_none(client.channel)
         tm.that(channel.target, eq=target)
 
     @staticmethod
     def test_create_stream() -> None:
         """Test stream creation."""
-        stream: m.Grpc.GrpcStream = tm.ok(
+        stream: p.Grpc.GrpcStream = tm.ok(
             FlextGrpc().create_stream(method_name="test_method", stream_type="unary"),
         )
         tm.that(stream.method_name, eq="test_method")
         tm.that(stream.stream_type, eq="unary")
 
     @staticmethod
-    @pytest.mark.parametrize("target", ["localhost:50051"], ids=["valid"])
+    @c.Tests.MARK.parametrize("target", ["localhost:50051"], ids=["valid"])
     def test_validate_target_valid(target: str) -> None:
         """Valid targets pass validation."""
-        tm.that(FlextGrpc().validate_target(target), eq=True)
+        tm.ok(FlextGrpc().validate_target(target))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "target",
         ["", "no_port", "localhost", ":50051", "localhost:99999", "invalid"],
     )
     def test_validate_target_invalid(target: str) -> None:
         """Invalid targets fail validation."""
-        tm.that(FlextGrpc().validate_target(target), eq=False)
+        tm.fail(FlextGrpc().validate_target(target))
 
     @staticmethod
     def test_parse_address() -> None:
@@ -91,7 +89,7 @@ class TestsFlextGrpcApi:
     @staticmethod
     def test_create_channel() -> None:
         """Test channel creation."""
-        channel: m.Grpc.Channel = tm.ok(
+        channel: p.Grpc.Channel = tm.ok(
             FlextGrpc().create_channel(target="localhost:50051"),
         )
         tm.that(channel.target, eq="localhost:50051")
@@ -101,19 +99,19 @@ class TestsFlextGrpcApi:
     def test_create_channel_with_options() -> None:
         """Test channel creation with custom options."""
         options: t.JsonMapping | None = {"timeout": 30, "compression": "gzip"}
-        channel: m.Grpc.Channel = tm.ok(
+        channel: p.Grpc.Channel = tm.ok(
             FlextGrpc().create_channel(target="localhost:50051", options=options),
         )
         tm.that(channel.options, eq=options)
 
     @staticmethod
-    @pytest.mark.parametrize("name", ["TestService", "DefaultService"])
+    @c.Tests.MARK.parametrize("name", ["TestService", "DefaultService"])
     def test_create_service(name: str) -> None:
         """Test service creation across method shapes."""
         methods = (
             ["method1", "method2"] if name == "TestService" else ["default_method"]
         )
-        service: m.Grpc.Service = tm.ok(
+        service: p.Grpc.Service = tm.ok(
             FlextGrpc().create_service(name=name, methods=methods),
         )
         tm.that(service.name, eq=name)
@@ -125,9 +123,9 @@ class TestsFlextGrpcApi:
         tm.ok(FlextGrpc().execute(), is_=FlextGrpcSettings)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "entity_type",
-        ["server", "client", "channel", "service", "stream"],
+        ["server", "client", "channel", "service", c.ProcessingMode.STREAM],
     )
     def test_validate_entity_type_accepts(entity_type: t.Grpc.EntityKind) -> None:
         """OperationSpec accepts every canonical entity_type literal."""
@@ -142,7 +140,7 @@ class TestsFlextGrpcApi:
     @staticmethod
     def test_validate_entity_type_rejects_invalid() -> None:
         """OperationSpec rejects unknown entity_type values."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.OperationSpec.model_validate({
                 "name": "op",
                 "entity_type": "invalid",
@@ -164,7 +162,7 @@ class TestsFlextGrpcApi:
         )
         tm.that(request.data, eq={"value": "test"})
         tm.that(request.operation.name, eq="test_operation")
-        tm.that(request.model_dump().get("valid"), eq=True)
+        tm.ok(request.valid)
 
     @staticmethod
     def test_response_creation() -> None:
@@ -180,5 +178,5 @@ class TestsFlextGrpcApi:
         )
         response = m.Grpc.Response(success=True, data=data, error=None, metadata={})
         tm.that(response.data, eq=data)
-        tm.that(response.success, eq=True)
-        tm.that(response.model_dump().get("has_error"), eq=False)
+        tm.ok(response.success)
+        tm.fail(response.has_error)

@@ -13,17 +13,16 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+from collections.abc import Mapping
 from typing import Protocol, is_protocol, runtime_checkable
 
-import pytest
-
 from flext_grpc import FlextGrpcProtocols
-from tests import p, t, tm
+from tests import c, p, tm
 
 # Public structural contract: protocol name -> required method members.
 # Each row states the methods a concrete implementation MUST provide to
 # satisfy the runtime-checkable protocol (verified via isinstance below).
-_PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
+_PROTOCOL_CONTRACTS: Mapping[str, tuple[str, ...]] = {
     "Server": (
         "add_service",
         "configure_port",
@@ -75,11 +74,11 @@ _PROTOCOL_CONTRACTS: t.MappingKV[str, t.VariadicTuple[str]] = {
     ),
 }
 
-_PROTOCOL_NAMES: t.VariadicTuple[str] = tuple(_PROTOCOL_CONTRACTS)
+_PROTOCOL_NAMES: tuple[str, ...] = tuple(_PROTOCOL_CONTRACTS)
 
 
 def _build_conforming_instance(
-    members: t.VariadicTuple[str],
+    members: tuple[str, ...],
 ) -> p.Grpc.Tests.DuckInstance:
     """Create a duck-typed instance exposing exactly ``members`` as callables.
 
@@ -93,7 +92,7 @@ def _build_conforming_instance(
 
 
 def _build_partial_instance(
-    members: t.VariadicTuple[str],
+    members: tuple[str, ...],
     *,
     omit: str,
 ) -> p.Grpc.Tests.DuckInstance:
@@ -112,15 +111,15 @@ class TestsFlextGrpcProtocolsUnit:
     """Behavioral contract tests for the ``p.Grpc.*`` protocols."""
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_grpc_protocol_is_a_protocol(protocol_name: str) -> None:
         """Each Grpc member is reported as a typing Protocol."""
         protocol = getattr(p.Grpc, protocol_name)
 
-        tm.that(is_protocol(protocol), eq=True)
+        tm.ok(is_protocol(protocol))
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_conforming_object_satisfies_protocol(protocol_name: str) -> None:
         """An object exposing all required members passes isinstance."""
         members = _PROTOCOL_CONTRACTS[protocol_name]
@@ -128,10 +127,10 @@ class TestsFlextGrpcProtocolsUnit:
 
         instance = _build_conforming_instance(members)
 
-        tm.that(isinstance(instance, protocol), eq=True)
+        tm.ok(isinstance(instance, protocol))
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("protocol_name", "missing_member"),
         [
             (name, member)
@@ -149,18 +148,18 @@ class TestsFlextGrpcProtocolsUnit:
 
         instance = _build_partial_instance(members, omit=missing_member)
 
-        tm.that(isinstance(instance, protocol), eq=False)
+        tm.fail(isinstance(instance, protocol))
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_unrelated_object_fails_protocol(protocol_name: str) -> None:
         """A plain object with none of the members fails isinstance."""
         protocol = getattr(p.Grpc, protocol_name)
 
-        tm.that(isinstance(object(), protocol), eq=False)
+        tm.fail(isinstance(object(), protocol))
 
     @staticmethod
-    @pytest.mark.parametrize("protocol_name", _PROTOCOL_NAMES)
+    @c.Tests.MARK.parametrize("protocol_name", _PROTOCOL_NAMES)
     def test_protocol_is_runtime_checkable(protocol_name: str) -> None:
         """The protocol supports isinstance without raising (runtime_checkable)."""
         protocol = getattr(p.Grpc, protocol_name)
@@ -170,7 +169,7 @@ class TestsFlextGrpcProtocolsUnit:
         # the observable runtime-checkability contract.
         result = isinstance(object(), protocol)
 
-        tm.that(result, eq=False)
+        tm.fail(result)
 
     @staticmethod
     def test_tests_namespace_composes_source_protocols_observably() -> None:
@@ -182,8 +181,8 @@ class TestsFlextGrpcProtocolsUnit:
         """
         instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
 
-        tm.that(isinstance(instance, FlextGrpcProtocols.Grpc.Server), eq=True)
-        tm.that(isinstance(instance, p.Grpc.Server), eq=True)
+        tm.ok(isinstance(instance, FlextGrpcProtocols.Grpc.Server))
+        tm.ok(isinstance(instance, p.Grpc.Server))
 
     @staticmethod
     def test_conforming_object_can_type_narrow_via_protocol() -> None:
@@ -197,4 +196,4 @@ class TestsFlextGrpcProtocolsUnit:
         # protocol machinery accepts, independent of the source definitions.
         instance = _build_conforming_instance(_PROTOCOL_CONTRACTS["Server"])
 
-        tm.that(isinstance(instance, _Marker), eq=True)
+        tm.ok(isinstance(instance, _Marker))

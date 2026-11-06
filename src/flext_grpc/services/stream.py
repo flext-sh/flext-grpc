@@ -23,7 +23,7 @@ class FlextGrpcStream(s):
         self,
         method_name: str = "DefaultMethod",
         stream_type: str = "unary",
-    ) -> p.Result[m.Grpc.GrpcStream]:
+    ) -> p.Result[p.Grpc.GrpcStream]:
         """Create and register stream runtime state using the dedicated manager.
 
         Args:
@@ -31,35 +31,35 @@ class FlextGrpcStream(s):
             stream_type: Stream communication pattern name.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.GrpcStream]``.
+            The resulting ``p.Result[p.Grpc.GrpcStream]``.
 
         """
         if not method_name.strip():
             return e.fail_validation("method_name", error="cannot be empty")
         if stream_type not in c.Grpc.STREAM_TYPES:
-            return r[m.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
+            return r[p.Grpc.GrpcStream].fail(f"Invalid stream type: {stream_type}")
         return self._stream_manager.create_stream(
             method_name=method_name,
             stream_type=stream_type,
         )
 
-    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
+    def close_stream(self, stream: p.Grpc.GrpcStream) -> p.Result[p.Grpc.GrpcStream]:
         """Close stream runtime state via the dedicated manager.
 
         Args:
             stream: Stream entity to close.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.GrpcStream]``.
+            The resulting ``p.Result[p.Grpc.GrpcStream]``.
 
         """
         return self._stream_manager.close_stream(stream)
 
     def send_data(
         self,
-        stream: m.Grpc.GrpcStream,
+        stream: p.Grpc.GrpcStream,
         data: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
+    ) -> p.Result[p.Grpc.Payload]:
         """Send stream data via the dedicated stream manager.
 
         Args:
@@ -67,7 +67,7 @@ class FlextGrpcStream(s):
             data: Optional payload mapping to send.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         return self._stream_manager.send_data(stream, data)

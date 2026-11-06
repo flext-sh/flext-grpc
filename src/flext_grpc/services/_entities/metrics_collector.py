@@ -7,8 +7,9 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import threading
+from collections.abc import MutableMapping
 
-from flext_grpc import m, t, u
+from flext_grpc import m, p, t, u
 
 
 class FlextGrpcMetricsCollectorImpl:
@@ -20,7 +21,7 @@ class FlextGrpcMetricsCollectorImpl:
         self._metrics = m.Grpc.Payload(values={})
         self._lock = threading.RLock()
 
-    def all_metrics(self) -> m.Grpc.Payload:
+    def all_metrics(self) -> p.Grpc.Payload:
         """Get all metrics snapshot.
 
         Returns:
@@ -66,7 +67,7 @@ class FlextGrpcMetricsCollectorImpl:
             normalized = m.Grpc.Payload(values={key: value})
             json_val = _normalize_value(normalized.values[key])
             existing = self._metrics.values
-            updated_values: t.MutableMappingKV[str, t.JsonValue | None] = dict(existing)
+            updated_values: MutableMapping[str, t.JsonValue | None] = dict(existing)
             updated_values[key] = json_val
             self._metrics = m.Grpc.Payload(values=updated_values)
 

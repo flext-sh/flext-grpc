@@ -7,7 +7,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from flext_core.lazy import install_lazy_exports
@@ -20,7 +19,7 @@ if TYPE_CHECKING:
     from examples.protocols import ExamplesFlextGrpcProtocols
     from examples.typings import ExamplesFlextGrpcTypes, t
     from examples.utilities import ExamplesFlextGrpcUtilities, u
-    from flext_grpc import c, m, p, s
+    from flext_grpc import c, config, grpc, m, main, p, s, settings
 
 
 __all__: tuple[str, ...] = (
@@ -30,13 +29,17 @@ __all__: tuple[str, ...] = (
     "ExamplesFlextGrpcTypes",
     "ExamplesFlextGrpcUtilities",
     "c",
+    "config",
     "d",
     "e",
+    "grpc",
     "h",
     "m",
+    "main",
     "p",
     "r",
     "s",
+    "settings",
     "t",
     "u",
     "x",
@@ -45,23 +48,27 @@ __all__: tuple[str, ...] = (
 install_lazy_exports(
     __name__,
     globals(),
-    MappingProxyType({
+    {
         "ExamplesFlextGrpcConstants": ".constants",
         "ExamplesFlextGrpcModels": ".models",
         "ExamplesFlextGrpcProtocols": ".protocols",
         "ExamplesFlextGrpcTypes": ".typings",
         "ExamplesFlextGrpcUtilities": ".utilities",
         "c": "flext_grpc",
+        "config": "flext_grpc",
         "d": "flext_core",
         "e": "flext_core",
+        "grpc": "flext_grpc",
         "h": "flext_core",
         "m": "flext_grpc",
+        "main": "flext_grpc",
         "p": "flext_grpc",
         "r": "flext_core",
         "s": "flext_grpc",
+        "settings": "flext_grpc",
         "t": ".typings",
         "u": ".utilities",
         "x": "flext_core",
-    }),
+    },
     public_exports=__all__,
 )

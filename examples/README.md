@@ -181,7 +181,7 @@ FLEXT_TRACE_ERRORS=true poetry run python examples/03_error_handling_patterns.py
 
 **Example Usage**:
 
-```python notest
+```python
 from flext_grpc import FlextGrpcPlatform, FlextGrpcClient
 from flext_core import get_flext_container
 from datetime import datetime, timezone
@@ -215,7 +215,7 @@ service_client = FlextGrpcClient(
 
 **Example Usage**:
 
-```python notest
+```python
 from flext_grpc import FlextGrpcSettings
 
 # Production configuration
@@ -300,7 +300,7 @@ poetry run python examples/advanced_usage.py
 
 ### Entity Creation Pattern
 
-```python notest
+```python
 from flext_grpc import FlextGrpcServer
 from datetime import datetime, timezone
 
@@ -324,7 +324,7 @@ print(f"Server created: {server.id}")
 
 ### Service Operation Pattern
 
-```python notest
+```python
 from flext_grpc import FlextGrpcServerService
 
 # Service operations with r handling
@@ -340,7 +340,7 @@ else:
 
 ### Platform Usage Pattern
 
-```python notest
+```python
 from flext_grpc import FlextGrpcPlatform
 
 # Platform operations for unified management
@@ -434,7 +434,7 @@ For current development gaps and realistic timelines, see
 
 ### Example Template
 
-```python notest
+```python
 """
 Example: [Brief Description]
 

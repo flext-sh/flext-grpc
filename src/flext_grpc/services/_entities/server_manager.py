@@ -7,17 +7,14 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
+from collections.abc import MutableMapping
 from concurrent.futures import ThreadPoolExecutor
-from typing import TYPE_CHECKING
 
 from flext_grpc import c, m, p, r, u
 from flext_grpc.services._entities import (
     FlextGrpcMetricsCollectorImpl,
     FlextGrpcServiceHandlerImpl,
 )
-
-if TYPE_CHECKING:
-    from collections.abc import MutableMapping
 
 
 class FlextGrpcServerManagerImpl:
@@ -35,15 +32,15 @@ class FlextGrpcServerManagerImpl:
 
     def server_metrics(
         self,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Payload]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Payload]:
         """Get server metrics.
 
         Args:
             server: Server entity to inspect.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         server_key = f"{server.host}:{server.port}"
@@ -51,7 +48,7 @@ class FlextGrpcServerManagerImpl:
         stopped_at_raw = self._metrics.metric(f"{server_key}_stopped_at")
         started_at_str: str = str(started_at_raw) if started_at_raw is not None else ""
         stopped_at_str: str = str(stopped_at_raw) if stopped_at_raw is not None else ""
-        return r[m.Grpc.Payload].ok(
+        return r[p.Grpc.Payload].ok(
             m.Grpc.Payload.from_values(
                 is_active=server_key in self._active_servers,
                 started_at=started_at_str,
@@ -61,58 +58,58 @@ class FlextGrpcServerManagerImpl:
 
     def start_server(
         self,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Server]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Server]:
         """Start a gRPC server with proper lifecycle.
 
         Args:
             server: Server entity to transition to running.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         server_key = f"{server.host}:{server.port}"
-        result: p.Result[m.Grpc.Server]
+        result: p.Result[p.Grpc.Server]
         if server_key in self._active_servers:
-            result = r[m.Grpc.Server].fail(
+            result = r[p.Grpc.Server].fail(
                 f"Server already running: {server_key}",
             )
         else:
             try:
                 result = self._start_new_server(server_key, server)
             except (ConnectionError, TimeoutError) as e:
-                result = r[m.Grpc.Server].fail_op("Server start", e)
+                result = r[p.Grpc.Server].fail_op("Server start", e)
         return result
 
     def stop_server(
         self,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Server]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Server]:
         """Stop a gRPC server gracefully.
 
         Args:
             server: Server entity to transition to stopped.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         server_key = f"{server.host}:{server.port}"
         if server_key not in self._active_servers:
-            return r[m.Grpc.Server].fail(
+            return r[p.Grpc.Server].fail(
                 f"No active server: {server_key}",
             )
         try:
             return self._stop_active_server(server_key, server)
         except (ConnectionError, TimeoutError) as e:
-            return r[m.Grpc.Server].fail_op("Server stop", e)
+            return r[p.Grpc.Server].fail_op("Server stop", e)
 
     def _start_new_server(
         self,
         server_key: str,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Server]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Server]:
         """Start a server that is not already registered as active.
 
         Args:
@@ -120,7 +117,7 @@ class FlextGrpcServerManagerImpl:
             server: Server entity to start.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         starting_result = server.start()
@@ -129,7 +126,7 @@ class FlextGrpcServerManagerImpl:
         starting_server = starting_result.value
         bound_result = self._create_bound_runtime_server(starting_server)
         if bound_result.failure:
-            return r[m.Grpc.Server].fail(
+            return r[p.Grpc.Server].fail(
                 f"Server start failed: {u.Grpc.runtime_failure_message(bound_result)}",
             )
         grpc_server = bound_result.value
@@ -138,7 +135,7 @@ class FlextGrpcServerManagerImpl:
             FlextGrpcServiceHandlerImpl(server_id=server_key).rpc_handlers(),
         )
         if registration_result.failure:
-            return r[m.Grpc.Server].fail(
+            return r[p.Grpc.Server].fail(
                 "Server start failed: "
                 f"{u.Grpc.runtime_failure_message(registration_result)}",
             )
@@ -146,7 +143,7 @@ class FlextGrpcServerManagerImpl:
 
     def _create_bound_runtime_server(
         self,
-        starting_server: m.Grpc.Server,
+        starting_server: p.Grpc.Server,
     ) -> p.Result[p.Grpc.GrpcServer]:
         """Create a runtime server and bind it to the configured address.
 
@@ -179,18 +176,18 @@ class FlextGrpcServerManagerImpl:
     def _activate_runtime_server(
         self,
         server_key: str,
-        starting_server: m.Grpc.Server,
+        starting_server: p.Grpc.Server,
         grpc_server: p.Grpc.GrpcServer,
-    ) -> p.Result[m.Grpc.Server]:
+    ) -> p.Result[p.Grpc.Server]:
         """Start the runtime server and mark the domain server as running.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
         start_result = u.Grpc.run_runtime(grpc_server.start)
         if start_result.failure:
-            return r[m.Grpc.Server].fail(
+            return r[p.Grpc.Server].fail(
                 f"Server start failed: {u.Grpc.runtime_failure_message(start_result)}",
             )
         self._active_servers[server_key] = grpc_server
@@ -200,15 +197,15 @@ class FlextGrpcServerManagerImpl:
     def _stop_active_server(
         self,
         server_key: str,
-        server: m.Grpc.Server,
-    ) -> p.Result[m.Grpc.Server]:
+        server: p.Grpc.Server,
+    ) -> p.Result[p.Grpc.Server]:
         """Stop a registered active server and record stop metrics.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Server]``.
+            The resulting ``p.Result[p.Grpc.Server]``.
 
         """
-        stopping_result: p.Result[m.Grpc.Server] = server.stop()
+        stopping_result: p.Result[p.Grpc.Server] = server.stop()
         if stopping_result.failure:
             return stopping_result
         stopping_server = stopping_result.value
@@ -219,7 +216,7 @@ class FlextGrpcServerManagerImpl:
             ),
         )
         if stop_result.failure:
-            return r[m.Grpc.Server].fail(
+            return r[p.Grpc.Server].fail(
                 f"Server stop failed: {u.Grpc.runtime_failure_message(stop_result)}",
             )
         del self._active_servers[server_key]

@@ -14,8 +14,6 @@ from __future__ import annotations
 from socket import AF_INET, SOCK_STREAM, socket
 from typing import TYPE_CHECKING
 
-import pytest
-
 from flext_grpc import FlextGrpc
 from tests import c, t, tm
 
@@ -70,7 +68,7 @@ class TestsFlextGrpcServices:
     # -- Facade: create_stream -------------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("method_name", "send_count"),
         [("test_method", c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE + 2), ("to_close", 0)],
     )
@@ -88,7 +86,7 @@ class TestsFlextGrpcServices:
                 sent.values["buffer_size"],
                 eq=min(count, c.Grpc.STREAMING_DEFAULT_BUFFER_SIZE),
             )
-        tm.that(tm.ok(grpc_facade.close_stream(stream)) is stream, eq=True)
+        tm.ok(tm.ok(grpc_facade.close_stream(stream)) is stream)
         tm.that(stream.method_name, eq=method_name)
         tm.fail(grpc_facade.send_data(stream, None))
 
@@ -117,12 +115,12 @@ class TestsFlextGrpcServices:
         result = grpc_facade.connect_client("127.0.0.1:1")
 
         tm.fail(result)
-        assert result.error
+        tm.that(result.error, truth=True)
 
     # -- Facade: validate_target -----------------------------------------
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("target", "expected"),
         [
             ("localhost:50051", True),
@@ -141,7 +139,10 @@ class TestsFlextGrpcServices:
         expected: bool,
     ) -> None:
         """validate_target accepts only well-formed host:port within range."""
-        assert grpc_facade.validate_target(target) is expected
+        tm.that(
+            grpc_facade.validate_target(target),
+            where=lambda value: value is expected,
+        )
 
     # -- Facade: parse_address -------------------------------------------
 
@@ -153,7 +154,7 @@ class TestsFlextGrpcServices:
         )
 
     @staticmethod
-    @pytest.mark.parametrize("address", ["host", "bad:x", ""])
+    @c.Tests.MARK.parametrize("address", ["host", "bad:x", ""])
     def test_parse_address_fails_for_malformed_input(
         grpc_facade: FlextGrpc,
         address: str,
@@ -171,7 +172,7 @@ class TestsFlextGrpcServices:
         connection_pool: FlextGrpcConnectionPoolImpl,
     ) -> None:
         """Cleanup succeeds and reports True even with no active channels."""
-        tm.that(tm.ok(connection_pool.cleanup()), eq=True)
+        tm.ok(tm.ok(connection_pool.cleanup()))
 
     @staticmethod
     def test_connection_pool_acquire_on_empty_pool_fails_not_found(
@@ -212,7 +213,7 @@ class TestsFlextGrpcServices:
         tm.that(metrics_collector.metric("absent"), none=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("value", "expected"),
         [("v", "v"), (5, 5), (True, True), (None, ""), ([1, 2], "[1, 2]")],
     )
@@ -231,10 +232,10 @@ class TestsFlextGrpcServices:
         metrics_collector: FlextGrpcMetricsCollectorImpl,
     ) -> None:
         """all_metrics returns a snapshot that later records do not mutate."""
-        metrics_collector.record_metric("first", "1")
+        metrics_collector.record_metric("first", c.ParserBooleanToken.ONE)
         snapshot = metrics_collector.all_metrics()
 
         metrics_collector.record_metric("second", "2")
 
         tm.that(snapshot.values, lacks="second")
-        tm.that(snapshot.values["first"], eq="1")
+        tm.that(snapshot.values["first"], eq=c.ParserBooleanToken.ONE)

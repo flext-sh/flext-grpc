@@ -7,13 +7,11 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
-from tests import c, m, tm
+from tests import c, m, p, tm, u
 
 
-@pytest.fixture
-def channel() -> m.Grpc.Channel:
+@u.Tests.fixture
+def channel() -> p.Grpc.Channel:
     """Idle channel bound to a concrete target.
 
     Returns:
@@ -28,8 +26,8 @@ def channel() -> m.Grpc.Channel:
     )
 
 
-@pytest.fixture
-def server() -> m.Grpc.Server:
+@u.Tests.fixture
+def server() -> p.Grpc.Server:
     """Return a stopped server with no registered services.
 
     Returns:
@@ -74,7 +72,7 @@ class TestsFlextGrpcEntitiesServer:
 
     @staticmethod
     def test_server_lifecycle_transitions_through_running_and_stopped(
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """Start -> mark_running -> stop -> mark_stopped walks the full lifecycle."""
         starting = tm.ok(server.start())
@@ -86,28 +84,32 @@ class TestsFlextGrpcEntitiesServer:
         tm.that(tm.ok(stopping.mark_stopped()).state, eq="stopped")
 
     @staticmethod
-    def test_server_start_does_not_mutate_original(server: m.Grpc.Server) -> None:
+    def test_server_start_does_not_mutate_original(server: p.Grpc.Server) -> None:
         """Transitions return a new entity; the source stays stopped."""
         tm.ok(server.start())
         tm.that(server.state, eq="stopped")
 
     @staticmethod
     def test_server_mark_stopped_rejected_from_stopped(
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """mark_stopped from a stopped server fails with an explanatory error."""
         tm.fail(server.mark_stopped(), has="Cannot mark stopped")
 
     @staticmethod
     def test_server_add_service_appends_to_public_services(
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """add_service returns a server whose services include the added entry."""
         service = object()
         updated = tm.ok(server.add_service(service))
         updated_services = list(updated.services)
         tm.that(len(updated_services), eq=1)
-        assert updated_services[0] is service
+
+        def is_registered_service(value: object) -> bool:
+            return value is service
+
+        tm.that(updated_services[0], where=is_registered_service)
         tm.that(list(server.services), eq=[])
 
     @staticmethod
@@ -117,7 +119,7 @@ class TestsFlextGrpcEntitiesServer:
         tm.fail(entity.validate_business_rules(), has="host cannot be empty")
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("port", "max_workers"),
         [(70000, 10), (50051, 0)],
         ids=["out-of-range-port", "zero-workers"],
@@ -127,7 +129,7 @@ class TestsFlextGrpcEntitiesServer:
         max_workers: int,
     ) -> None:
         """Port and worker-count bounds are enforced at construction time."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.Server(
                 host="localhost",
                 port=port,
@@ -138,7 +140,7 @@ class TestsFlextGrpcEntitiesServer:
 
     @staticmethod
     def test_server_business_rules_pass_for_valid_config(
-        server: m.Grpc.Server,
+        server: p.Grpc.Server,
     ) -> None:
         """A well-formed server validates successfully."""
         tm.ok(server.validate_business_rules())
@@ -148,37 +150,37 @@ class TestsFlextGrpcEntitiesChannel:
     """Public-contract behavior of the gRPC channel entity."""
 
     @staticmethod
-    def test_channel_exposes_target(channel: m.Grpc.Channel) -> None:
+    def test_channel_exposes_target(channel: p.Grpc.Channel) -> None:
         """Channel surfaces its configured target address."""
         tm.that(channel.target, eq="localhost:50051")
 
     @staticmethod
     def test_channel_connect_transitions_idle_to_connecting(
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """Connect moves an idle channel to the connecting state."""
         tm.that(tm.ok(channel.connect()).state, eq="connecting")
 
     @staticmethod
     def test_channel_reaches_ready_then_returns_to_idle(
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """Connect -> mark_ready -> disconnect drives the readiness cycle."""
         ready = tm.ok(tm.ok(channel.connect()).mark_ready())
         tm.that(ready.state, eq="ready")
-        tm.that(ready.ready(), eq=True)
+        tm.ok(ready.ready())
         tm.that(tm.ok(ready.disconnect()).state, eq="idle")
 
     @staticmethod
     def test_channel_mark_ready_rejected_from_idle(
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """mark_ready requires a connecting channel; idle input fails."""
         tm.fail(channel.mark_ready())
 
     @staticmethod
     def test_channel_business_rules_pass_with_target(
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """A channel with a non-empty target validates successfully."""
         tm.ok(channel.validate_business_rules())
@@ -190,7 +192,7 @@ class TestsFlextGrpcEntitiesChannel:
         tm.fail(entity.validate_business_rules(), has="cannot be empty")
 
     @staticmethod
-    def test_channel_copy_with_overrides_target(channel: m.Grpc.Channel) -> None:
+    def test_channel_copy_with_overrides_target(channel: p.Grpc.Channel) -> None:
         """copy_with returns a new channel carrying the overridden target."""
         tm.that(
             tm.ok(channel.copy_with(target="127.0.0.1:8080")).target,
@@ -209,7 +211,7 @@ class TestsFlextGrpcEntitiesRelations:
         tm.that(m.Grpc.Client(options={}, domain_events=[]).channel, none=True)
 
     @staticmethod
-    def test_client_retains_attached_channel(channel: m.Grpc.Channel) -> None:
+    def test_client_retains_attached_channel(channel: p.Grpc.Channel) -> None:
         """A channel passed at construction is exposed via the public field."""
         client = m.Grpc.Client(channel=channel, options={}, domain_events=[])
         tm.that(client.channel, eq=channel)
@@ -224,7 +226,7 @@ class TestsFlextGrpcEntitiesRelations:
 
     @staticmethod
     def test_client_business_rules_pass_with_valid_channel(
-        channel: m.Grpc.Channel,
+        channel: p.Grpc.Channel,
     ) -> None:
         """A client holding a valid channel validates successfully."""
         client = m.Grpc.Client(channel=channel, options={}, domain_events=[])
@@ -251,7 +253,7 @@ class TestsFlextGrpcEntitiesRelations:
         tm.that(list(service.methods), eq=["m1", "m2"])
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("name", "methods"),
         [("TestService", []), ("", ["m1"]), ("  ", ["m1"]), ("S", [" "])],
         ids=["empty-methods", "empty-name", "blank-name", "blank-method"],
@@ -261,7 +263,7 @@ class TestsFlextGrpcEntitiesRelations:
         methods: list[str],
     ) -> None:
         """Service construction raises on empty/blank name or method entries."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.Service(name=name, methods=methods, domain_events=[])
 
     @staticmethod
@@ -269,8 +271,8 @@ class TestsFlextGrpcEntitiesRelations:
         """add_method returns a service exposing the new method via has_method."""
         service = m.Grpc.Service(name="S", methods=["m1"], domain_events=[])
         updated = tm.ok(service.add_method("m2"))
-        tm.that(updated.has_method("m2"), eq=True)
-        tm.that(service.has_method("m2"), eq=False)
+        tm.ok(updated.has_method("m2"))
+        tm.fail(service.has_method("m2"))
 
     @staticmethod
     def test_service_add_method_rejects_duplicate() -> None:
@@ -294,12 +296,12 @@ class TestsFlextGrpcEntitiesRelations:
         tm.that(stream.stream_type, eq="unary")
 
     @staticmethod
-    @pytest.mark.parametrize("method_name", ["", "   "], ids=["empty", "blank"])
+    @c.Tests.MARK.parametrize("method_name", ["", "   "], ids=["empty", "blank"])
     def test_stream_construction_rejects_empty_method_name(
         method_name: str,
     ) -> None:
         """GrpcStream requires a non-empty method_name."""
-        with pytest.raises(m.ValidationError):
+        with u.Tests.raises(m.ValidationError):
             m.Grpc.GrpcStream(
                 method_name=method_name,
                 stream_type=c.Grpc.GrpcOperations.UNARY,

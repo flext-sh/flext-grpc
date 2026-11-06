@@ -11,8 +11,6 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-import pytest
-
 from tests import c, tm
 
 Grpc = c.Grpc
@@ -22,16 +20,13 @@ class TestsFlextGrpcConstantsUnit:
     """Public-contract tests for FlextGrpcConstants."""
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("name", "expected"),
         [
             ("NETWORK_DEFAULT_HOST", "127.0.0.1"),
             ("NETWORK_DEFAULT_GRPC_PORT", 50051),
-            ("NETWORK_MIN_PORT", 1),
-            ("NETWORK_MAX_PORT", 65535),
             ("SERVICE_DEFAULT_MAX_WORKERS", 10),
             ("VALIDATION_ADDRESS_PARTS_COUNT", 2),
-            ("VALIDATION_MAX_PORT_NUMBER", 65535),
             ("CLIENT_STREAMING_BUFFER_THRESHOLD", 10),
             ("SERVER_STREAMING_BATCH_SIZE", 100),
             ("BIDIRECTIONAL_STREAMING_QUEUE_SIZE", 1000),
@@ -43,22 +38,17 @@ class TestsFlextGrpcConstantsUnit:
 
     @staticmethod
     def test_port_bounds_are_ordered() -> None:
-        """The minimum port stays strictly below the maximum port."""
-        assert Grpc.NETWORK_MIN_PORT < Grpc.NETWORK_MAX_PORT
+        """The core port bounds stay strictly ordered through the facade MRO."""
+        tm.that(c.MIN_PORT < c.MAX_PORT, truth=True)
 
     @staticmethod
     def test_default_grpc_port_within_valid_port_range() -> None:
         """The default port is a valid TCP port within the declared range."""
-        assert Grpc.NETWORK_MIN_PORT <= Grpc.NETWORK_DEFAULT_GRPC_PORT
-        assert Grpc.NETWORK_DEFAULT_GRPC_PORT <= Grpc.NETWORK_MAX_PORT
+        tm.that(c.MIN_PORT <= Grpc.NETWORK_DEFAULT_GRPC_PORT, truth=True)
+        tm.that(Grpc.NETWORK_DEFAULT_GRPC_PORT <= c.MAX_PORT, truth=True)
 
     @staticmethod
-    def test_max_port_matches_validation_max() -> None:
-        """Network max port and validation max port express the same limit."""
-        tm.that(Grpc.NETWORK_MAX_PORT, eq=Grpc.VALIDATION_MAX_PORT_NUMBER)
-
-    @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "host",
         ["127.0.0.1", "localhost", "grpc-server", "example.com"],
     )
@@ -67,7 +57,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.NETWORK_HOST_RE.match(host), none=False)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         "host",
         ["bad host", "under_score!", "with/slash", "colon:port"],
     )
@@ -76,7 +66,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.NETWORK_HOST_RE.match(host), none=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("text", "expected_group"),
         [("Version 1.2.3", "1.2.3"), ("version 4.5.6 build", "4.5.6")],
     )
@@ -94,7 +84,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(Grpc.VALIDATION_VERSION_RE.search("no digits here"), none=True)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("member", "value"),
         [
             (Grpc.ChannelState.IDLE, "idle"),
@@ -113,7 +103,7 @@ class TestsFlextGrpcConstantsUnit:
         tm.that(member, is_=str)
 
     @staticmethod
-    @pytest.mark.parametrize(
+    @c.Tests.MARK.parametrize(
         ("frozenset_attr", "enum_attr"),
         [
             ("CHANNEL_STATES", "ChannelState"),

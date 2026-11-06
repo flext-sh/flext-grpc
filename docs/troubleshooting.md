@@ -119,6 +119,15 @@ make test tests/ -v
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 import sys
 
 sys.path.insert(0, "src")  # For development
@@ -145,6 +154,15 @@ make status grpcio grpcio-tools protobuf  # Check versions
 ```python
 from __future__ import annotations
 
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
+
 from flext_grpc import FlextGrpcPlatform, create_server
 
 server = create_server("localhost", 50051, 10)
@@ -167,6 +185,15 @@ if start_result.failure:
 
 ```python
 from __future__ import annotations
+
+from collections.abc import (
+    Iterable,
+    Iterator,
+    Mapping,
+    MutableMapping,
+    MutableSequence,
+    Sequence,
+)
 
 from flext_core import p
 

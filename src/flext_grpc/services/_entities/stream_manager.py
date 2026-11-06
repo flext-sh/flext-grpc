@@ -7,16 +7,10 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 import time
-from typing import TYPE_CHECKING
+from collections.abc import MutableMapping
 
-from flext_grpc import e, m, p, r, t
-from flext_grpc.services._entities.metrics_collector import (
-    FlextGrpcMetricsCollectorImpl,
-)
-from flext_grpc.utilities import FlextGrpcUtilities
-
-if TYPE_CHECKING:
-    from collections.abc import MutableMapping
+from flext_grpc import c, e, m, p, r, t, u
+from flext_grpc.services._entities import FlextGrpcMetricsCollectorImpl
 
 
 class FlextGrpcStreamManagerImpl:
@@ -28,25 +22,25 @@ class FlextGrpcStreamManagerImpl:
         self._active_streams: MutableMapping[str, m.Grpc.StreamRuntimeState] = {}
         self._metrics = FlextGrpcMetricsCollectorImpl()
 
-    def close_stream(self, stream: m.Grpc.GrpcStream) -> p.Result[m.Grpc.GrpcStream]:
+    def close_stream(self, stream: p.Grpc.GrpcStream) -> p.Result[p.Grpc.GrpcStream]:
         """Close a stream and clean up its runtime state.
 
         Args:
             stream: Stream entity to close.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.GrpcStream]``.
+            The resulting ``p.Result[p.Grpc.GrpcStream]``.
 
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key in self._active_streams:
             del self._active_streams[stream_key]
-        return r[m.Grpc.GrpcStream].ok(stream)
+        return r[p.Grpc.GrpcStream].ok(stream)
 
     def create_stream(
         self,
         **kwargs: t.JsonValue | None,
-    ) -> p.Result[m.Grpc.GrpcStream]:
+    ) -> p.Result[p.Grpc.GrpcStream]:
         """Create a stream with proper setup.
 
         Args:
@@ -54,12 +48,12 @@ class FlextGrpcStreamManagerImpl:
                 ``stream_type``.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.GrpcStream]``.
+            The resulting ``p.Result[p.Grpc.GrpcStream]``.
 
         """
         method_name = str(kwargs.get("method_name", "DefaultMethod"))
         stream_type = str(kwargs.get("stream_type", "unary"))
-        stream_result = FlextGrpcUtilities.Grpc.create_stream_entity(
+        stream_result = u.Grpc.create_stream_entity(
             method_name,
             stream_type,
         )
@@ -72,13 +66,13 @@ class FlextGrpcStreamManagerImpl:
             created_at=time.time(),
         )
         self._metrics.record_metric(f"{stream_key}_created", time.time())
-        return r[m.Grpc.GrpcStream].ok(stream)
+        return r[p.Grpc.GrpcStream].ok(stream)
 
     def send_data(
         self,
-        stream: m.Grpc.GrpcStream,
+        stream: p.Grpc.GrpcStream,
         data: t.JsonMapping | None,
-    ) -> p.Result[m.Grpc.Payload]:
+    ) -> p.Result[p.Grpc.Payload]:
         """Send data using a bounded buffering strategy.
 
         Args:
@@ -86,15 +80,15 @@ class FlextGrpcStreamManagerImpl:
             data: Optional payload mapping to send.
 
         Returns:
-            The resulting ``p.Result[m.Grpc.Payload]``.
+            The resulting ``p.Result[p.Grpc.Payload]``.
 
         """
         stream_key = f"{stream.id}_{stream.stream_type}"
         if stream_key not in self._active_streams:
-            return e.fail_not_found("stream", stream.id)
+            return e.fail_not_found(c.ProcessingMode.STREAM, stream.id)
         stream_state = self._active_streams[stream_key]
         stream_state.buffer.append(data)
-        return r[m.Grpc.Payload].ok(
+        return r[p.Grpc.Payload].ok(
             m.Grpc.Payload.from_values(
                 stream_id=stream.id,
                 data_sent=str(data),

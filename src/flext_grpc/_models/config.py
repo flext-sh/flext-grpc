@@ -11,10 +11,14 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import m
+from typing import Annotated
+
+from flext_cli import m, t
+
+from flext_grpc._protocols import FlextGrpcProtocolsConfig
 
 
-class FlextGrpcConfigModels:
+class FlextGrpcModelsConfig:
     """Namespace of typed flext-grpc config models (pure Pydantic)."""
 
     class Network(m.BaseModel):
@@ -140,19 +144,19 @@ class FlextGrpcConfigModels:
 
         model_config = m.ConfigDict(frozen=True, extra="forbid")
 
-        network: FlextGrpcConfigModels.Network = m.Field(
+        network: FlextGrpcModelsConfig.Network = m.Field(
             description="Network defaults and validation thresholds.",
         )
-        performance: FlextGrpcConfigModels.Performance = m.Field(
+        performance: FlextGrpcModelsConfig.Performance = m.Field(
             description="Message and thread-pool performance limits.",
         )
-        service: FlextGrpcConfigModels.ServicePolicy = m.Field(
+        service: FlextGrpcModelsConfig.ServicePolicy = m.Field(
             description="Server/worker policy defaults.",
         )
-        streaming: FlextGrpcConfigModels.Streaming = m.Field(
+        streaming: FlextGrpcModelsConfig.Streaming = m.Field(
             description="Streaming buffer and concurrency policy.",
         )
-        connection_pool: FlextGrpcConfigModels.ConnectionPool = m.Field(
+        connection_pool: FlextGrpcModelsConfig.ConnectionPool = m.Field(
             description="Connection-pool defaults.",
         )
 
@@ -161,9 +165,12 @@ class FlextGrpcConfigModels:
 
         model_config = m.ConfigDict(frozen=True, extra="ignore")
 
-        Grpc: FlextGrpcConfigModels.Grpc = m.Field(
+        Grpc: Annotated[
+            FlextGrpcProtocolsConfig.Grpc,
+            t.schema_for_model(FlextGrpcModelsConfig.Grpc),
+        ] = m.Field(
             description="gRPC business-rule config namespace.",
         )
 
 
-__all__: list[str] = ["FlextGrpcConfigModels"]
+__all__: list[str] = ["FlextGrpcModelsConfig"]
