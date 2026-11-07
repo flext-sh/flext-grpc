@@ -362,7 +362,7 @@ jobs:
 This ADR is currently BLOCKED due to the immediate need to resolve import errors. The
 protobuf version mismatch is preventing the library from functioning,
 
-```
+```text
  which blocks all other development work.
 ```
 

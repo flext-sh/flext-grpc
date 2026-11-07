@@ -37,7 +37,7 @@ Architecture and Domain-Driven Design principles.
 
 ### Core Implementation
 
-```
+```text
 src/flext_grpc/
 ├── __init__.py              # Public API and module exports
 ├── entities.py              # Domain entities (Server, Client, Channel, Service, Stream)
