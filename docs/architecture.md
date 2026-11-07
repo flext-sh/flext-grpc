@@ -4,7 +4,7 @@
 
 <!-- TOC END -->
 
-# Table of Contents
+## Table of Contents
 
 - [flext-grpc Architecture](#flext-grpc-architecture)
 
@@ -12,9 +12,9 @@
 
 Architectural design and patterns for the flext-grpc library within the FLEXT ecosystem.
 
-# Architectural Principles
+## Architectural Principles
 
-# Clean Architecture Implementation
+## Clean Architecture Implementation
 
 flext-grpc follows Clean Architecture principles with clear layer separation and
 dependency inversion:
@@ -44,7 +44,7 @@ dependency inversion:
 └─────────────────────────────────────────┘
 ```
 
-# Domain-Driven Design Patterns
+## Domain-Driven Design Patterns
 
 Each domain entity encapsulates business logic and maintains state consistency:
 
@@ -53,9 +53,9 @@ Each domain entity encapsulates business logic and maintains state consistency:
 - **Services** - Business logic orchestration
 - **Aggregates** - Consistency boundaries for related entities
 
-# Core Components
+## Core Components
 
-# Domain Entities (entities.py - 1,163 lines)
+## Domain Entities (entities.py - 1,163 lines)
 
 **FlextGrpcServer**
 
@@ -89,7 +89,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
   - Client streaming (stream requests, one response)
   - Bidirectional streaming (stream both ways)
 
-# Service Layer (services.py - 1,635 lines)
+## Service Layer (services.py - 1,635 lines)
 
 **FlextGrpcServerService**
 
@@ -115,7 +115,7 @@ Each domain entity encapsulates business logic and maintains state consistency:
 - Simplifies common use cases
 - Integration point for FLEXT ecosystem
 
-# Infrastructure Layer
+## Infrastructure Layer
 
 **Configuration (settings.py - 228 lines)**
 
@@ -141,9 +141,9 @@ Each domain entity encapsulates business logic and maintains state consistency:
 - Message types for requests/responses
 - Generated Python bindings
 
-# FLEXT Ecosystem Integration
+## FLEXT Ecosystem Integration
 
-# flext-core Foundation
+## flext-core Foundation
 
 All components integrate with flext-core patterns.
 
@@ -170,11 +170,11 @@ def create_server(settings: FlextGrpcSettings) -> p.Result[FlextGrpcServer]:
     )
 ```
 
-# Service Architecture
+## Service Architecture
 
 Services follow the Service pattern from flext-core.
 
-# Type Safety
+## Type Safety
 
 Complete integration with Python 3.13+ type system:
 
@@ -182,33 +182,33 @@ Complete integration with Python 3.13+ type system:
 - Custom type definitions for gRPC-specific types
 - Protocol definitions for interfaces
 
-# State Management
+## State Management
 
-# Server State Machine
+## Server State Machine
 
-```
+```text
 stopped ──start()──> starting ──started()──> running
    ↑                                           │
    └───stopped()───< stopping <──stop()───────┘
 ```
 
-# Client State Machine
+## Client State Machine
 
-```
+```text
 disconnected ──connect()──> connecting ──connected()──> connected
       ↑                                                      │
       └───disconnected()───< disconnecting <──disconnect()──┘
 ```
 
-# Channel State Management
+## Channel State Management
 
-```
+```text
 idle ──open()──> connecting ──ready()──> ready ──close()──> shutdown
 ```
 
-# Memory Management
+## Memory Management
 
-# Adaptive Buffers
+## Adaptive Buffers
 
 The service layer implements adaptive buffer management:
 
@@ -216,7 +216,7 @@ The service layer implements adaptive buffer management:
 - Memory pressure detection
 - Garbage collection triggers for long-running services
 
-# Resource Cleanup
+## Resource Cleanup
 
 Proper resource lifecycle management:
 
@@ -224,9 +224,9 @@ Proper resource lifecycle management:
 - Stream resource management
 - Memory leak prevention
 
-# Performance Considerations
+## Performance Considerations
 
-# Connection Pooling
+## Connection Pooling
 
 Efficient resource usage through connection pooling:
 
@@ -234,7 +234,7 @@ Efficient resource usage through connection pooling:
 - Automatic connection lifecycle management
 - Load balancing across multiple connections
 
-# Streaming Optimizations
+## Streaming Optimizations
 
 High-throughput streaming patterns:
 
@@ -242,47 +242,47 @@ High-throughput streaming patterns:
 - Flow control to prevent resource exhaustion
 - Backpressure handling for client protection
 
-# Quality Attributes
+## Quality Attributes
 
-# Reliability
+## Reliability
 
 - Comprehensive error handling with typed exceptions
 - State validation at all levels
 - Resource cleanup and lifecycle management
 - Integration with monitoring systems
 
-# Maintainability
+## Maintainability
 
 - Clear layer separation with defined boundaries
 - Domain logic encapsulated in entities
 - Service coordination through dedicated service classes
 - Comprehensive documentation and type annotations
 
-# Testability
+## Testability
 
 - Clean separation enables easy unit testing
 - Dependency injection supports test doubles
 - State machines are deterministic and testable
 - Comprehensive test suite structure
 
-# Current Limitations
+## Current Limitations
 
-# Deployment Issues
+## Deployment Issues
 
 - **Protobuf Version Conflict**: Generated code (6.31.1) vs runtime (5.29.5)
 - **Import Failures**: Cannot load modules due to version mismatch
 - **Test Execution**: Test suite blocked by import issues
 
-# Missing Features
+## Missing Features
 
 - Health checking service implementation
 - Interceptor patterns for cross-cutting concerns
 - Service discovery integration
 - Production monitoring capabilities
 
-# Future Architecture Enhancements
+## Future Architecture Enhancements
 
-# OpenTelemetry Integration
+## OpenTelemetry Integration
 
 Modern observability patterns:
 
@@ -290,7 +290,7 @@ Modern observability patterns:
 - Metrics collection with Prometheus export
 - Request correlation and performance analytics
 
-# Security Architecture
+## Security Architecture
 
 Enterprise security patterns:
 
@@ -299,7 +299,7 @@ Enterprise security patterns:
 - Authorization patterns
 - Security audit capabilities
 
-# Service Discovery
+## Service Discovery
 
 Production deployment patterns:
 
@@ -314,7 +314,7 @@ This architecture provides a solid foundation for gRPC communication within the 
 ecosystem while maintaining Clean Architecture principles and full integration with
 flext-core patterns.
 
-# Related Documentation
+## Related Documentation
 
 Project and ecosystem navigation is owned by
 [Getting Started → Related Documentation](getting-started.md#related-documentation).

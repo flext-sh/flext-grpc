@@ -256,7 +256,7 @@ When updating an ADR:
 
 ### ADR Lifecycle
 
-```
+```text
 Proposed → Accepted → Implemented → Reviewed → [Superseded|Deprecated]
 ```
 

@@ -187,7 +187,7 @@ operations.
 
 ### **Clean Architecture Layers**
 
-```
+```text
 ┌─────────────────────────────────────────┐
 │  Interface Layer (api.py, __init__.py)  │  ← Public API and exports
 ├─────────────────────────────────────────┤

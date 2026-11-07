@@ -42,7 +42,7 @@ scenarios for enterprise development.
 
 ### Available Examples
 
-```
+```text
 examples/
 ├── 01_basic_usage.py           # Core functionality and entity usage
 ├── 02_advanced_usage.py        # Complex scenarios with streaming

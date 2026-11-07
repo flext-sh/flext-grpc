@@ -82,7 +82,7 @@ FLEXT-gRPC is a production-ready gRPC communication library for the FLEXT ecosys
 providing enterprise-grade gRPC patterns with Clean Architecture and Domain-Driven
 Design. Core functionality is operational with working server/client creation,
 
-```
+```text
  but requires test coverage improvement and bug fixes before production deployment.
 ```
 
@@ -171,7 +171,7 @@ Design. Core functionality is operational with working server/client creation,
 
 ### Test Coverage by Module
 
-```
+```text
 TOTAL                                          1798    956    380     14    39%
 ├── src/flext_grpc/api.py                           144    100     26      0    26%
 ├── src/flext_grpc/entities.py                      213    116     62      2    36%
