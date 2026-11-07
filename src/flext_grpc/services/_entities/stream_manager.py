@@ -19,7 +19,7 @@ class FlextGrpcStreamManagerImpl:
     def __init__(self) -> None:
         """Initialize stream manager with metrics tracking."""
         super().__init__()
-        self._active_streams: MutableMapping[str, m.Grpc.StreamRuntimeState] = {}
+        self._active_streams: MutableMapping[str, p.Grpc.StreamRuntimeState] = {}
         self._metrics = FlextGrpcMetricsCollectorImpl()
 
     def close_stream(self, stream: p.Grpc.GrpcStream) -> p.Result[p.Grpc.GrpcStream]:
