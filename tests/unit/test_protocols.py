@@ -14,67 +14,26 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from collections.abc import Mapping
-from typing import Protocol, is_protocol, runtime_checkable
+from typing import Protocol, get_protocol_members, is_protocol, runtime_checkable
 
 from flext_grpc import FlextGrpcProtocols
 from tests import c, p, tm
 
-# Public structural contract: protocol name -> required method members.
-# Each row states the methods a concrete implementation MUST provide to
-# satisfy the runtime-checkable protocol (verified via isinstance below).
+# The protocols under test; each one's members are read from the protocol
+# itself (typing.get_protocol_members), never copied into the test.
+_PROTOCOL_NAMES: tuple[str, ...] = (
+    "Server",
+    "Client",
+    "Streaming",
+    "Service",
+    "Channel",
+    "Metrics",
+    "Configuration",
+)
 _PROTOCOL_CONTRACTS: Mapping[str, tuple[str, ...]] = {
-    "Server": (
-        "add_service",
-        "configure_port",
-        "server_status",
-        "start_server",
-        "stop_server",
-    ),
-    "Client": (
-        "client_status",
-        "connect_client",
-        "disconnect_client",
-        "make_call",
-        "validate_connection",
-    ),
-    "Streaming": (
-        "close_stream",
-        "create_stream",
-        "handle_bidirectional_streaming",
-        "handle_client_streaming",
-        "handle_server_streaming",
-        "send_data",
-    ),
-    "Service": (
-        "create_service",
-        "register_service",
-        "service_methods",
-        "validate_service",
-    ),
-    "Channel": (
-        "channel_state",
-        "close_channel",
-        "create_channel",
-        "wait_for_state_change",
-    ),
-    "Metrics": (
-        "collect_client_metrics",
-        "collect_server_metrics",
-        "collect_stream_metrics",
-        "global_metrics",
-        "start_metrics_collection",
-        "stop_metrics_collection",
-    ),
-    "Configuration": (
-        "create_client_config",
-        "create_server_config",
-        "parse_address",
-        "validate_address",
-        "validate_config",
-    ),
+    name: tuple(sorted(get_protocol_members(getattr(p.Grpc, name))))
+    for name in _PROTOCOL_NAMES
 }
-
-_PROTOCOL_NAMES: tuple[str, ...] = tuple(_PROTOCOL_CONTRACTS)
 
 
 def _build_conforming_instance(
@@ -190,7 +149,7 @@ class TestsFlextGrpcProtocolsUnit:
 
         @runtime_checkable
         class _Marker(Protocol):
-            def start_server(self) -> None: ...
+            def start(self) -> None: ...
 
         # Sanity guard that our conforming builder yields real callables the
         # protocol machinery accepts, independent of the source definitions.
