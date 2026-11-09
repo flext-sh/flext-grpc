@@ -13,12 +13,12 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_core import c as flext_core_c
+from flext_core import FlextConstants
 
 from flext_grpc._constants import FlextGrpcConstantsBase, FlextGrpcConstantsDerived
 
 
-class FlextGrpcConstants(flext_core_c):
+class FlextGrpcConstants(FlextConstants):
     """gRPC-specific constants following FLEXT unified single-class pattern.
 
     Defines ALL constants used by the flext-grpc project, including inherited
