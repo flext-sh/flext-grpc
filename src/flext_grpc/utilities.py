@@ -7,7 +7,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from flext_cli import u as flext_cli_u
+from flext_cli import FlextCliUtilities
 
 from flext_grpc._utilities import (
     FlextGrpcUtilitiesBase,
@@ -18,7 +18,7 @@ from flext_grpc._utilities import (
 )
 
 
-class FlextGrpcUtilities(flext_cli_u, FlextGrpcUtilitiesBase):
+class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(

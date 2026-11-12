@@ -162,11 +162,7 @@ class FlextGrpcProtocolsChannelModels:
         target: str
         state: c.Grpc.ChannelState
         options: t.JsonMapping | None
-
-        @property
-        def grpc_channel(self) -> FlextGrpcProtocolsChannel.GrpcChannel | None:
-            """Underlying gRPC channel instance."""
-            ...
+        grpc_channel: FlextGrpcProtocolsChannel.GrpcChannel | None
 
         def connect(self) -> p.Result[Self]:
             """Transition to connecting."""

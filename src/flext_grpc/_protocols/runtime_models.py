@@ -41,16 +41,8 @@ class FlextGrpcProtocolsRuntimeModels:
         port: t.PortNumber
         state: c.Grpc.ServerState
         max_workers: t.WorkerCount
-
-        @property
-        def services(self) -> Sequence[FlextGrpcProtocolsServer.GrpcServicer]:
-            """GRPC services."""
-            ...
-
-        @property
-        def grpc_server(self) -> FlextGrpcProtocolsServer.GrpcServer | None:
-            """Underlying gRPC server instance."""
-            ...
+        services: Sequence[FlextGrpcProtocolsServer.GrpcServicer]
+        grpc_server: FlextGrpcProtocolsServer.GrpcServer | None
 
         def add_service(
             self, service: FlextGrpcProtocolsServer.GrpcServicer
@@ -103,11 +95,7 @@ class FlextGrpcProtocolsRuntimeModels:
             ...
 
         options: t.JsonMapping | None
-
-        @property
-        def grpc_stub(self) -> FlextGrpcProtocolsConnection.GrpcStub | None:
-            """GRPC client stub for RPC calls."""
-            ...
+        grpc_stub: FlextGrpcProtocolsConnection.GrpcStub | None
 
         def connect_to(self, target: str) -> p.Result[Self]:
             """Connect the client to the target by creating a channel."""
@@ -124,11 +112,7 @@ class FlextGrpcProtocolsRuntimeModels:
         id: str
         method_name: str
         stream_type: c.Grpc.GrpcOperations
-
-        @property
-        def grpc_stub(self) -> FlextGrpcProtocolsConnection.GrpcStub | None:
-            """GRPC stub used by this stream."""
-            ...
+        grpc_stub: FlextGrpcProtocolsConnection.GrpcStub | None
 
     @runtime_checkable
     class StreamRuntimeState(FlextCliProtocols.BaseModel, Protocol):

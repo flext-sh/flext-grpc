@@ -209,7 +209,10 @@ class FlextGrpcProtocolsConfig:
     class Root(FlextCliProtocols.BaseModel, Protocol):
         """Structural data contract projected from the owning model."""
 
-        Grpc: FlextGrpcProtocolsConfig.Grpc
+        @property
+        def Grpc(self) -> FlextGrpcProtocolsConfig.Grpc:
+            """GRPC business-rule config namespace."""
+            ...
 
 
 __all__: list[str] = [
