@@ -6,10 +6,8 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
-from typing import Protocol
 
-
-class FlextGrpcProtocolsBase(Protocol):
+class FlextGrpcProtocolsBase:
     """Base protocols for flext-grpc."""
 
 
