@@ -15,7 +15,7 @@
 
 <!-- TOC END -->
 
-Generated from the Semgrep platform dump (deployment `datacosmos`, 2026-08-06).
+Generated from the organization's Semgrep platform dump (2026-08-06).
 
 Bead: `mro-p57t.11`
 
