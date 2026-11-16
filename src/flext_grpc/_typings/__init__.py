@@ -23,4 +23,11 @@ install_lazy_exports(
     globals(),
     {"FlextGrpcTypesDomain": ".domain", "FlextGrpcTypingsBase": ".base"},
     public_exports=__all__,
+    deferred_members={
+        "FlextGrpcTypesDomain": (
+            "EntityKind",
+            "Headers",
+            "ConfigDict",
+        ),
+    },
 )

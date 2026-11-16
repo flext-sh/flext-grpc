@@ -26,7 +26,7 @@
   `FlextGrpcErrors`, `FlextGrpcModels`, `FlextGrpcModelsConfigNamespace`,
   `FlextGrpcProtocols`, `FlextGrpcServiceBase`, `FlextGrpcSettings`, `FlextGrpcTypes`
   (+6 more)
-- Exported module shortcuts: _none_
+- Exported module shortcuts: *none*
 - Generated module pages: `10`
 
 ## Next Pages

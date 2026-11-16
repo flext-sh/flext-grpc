@@ -117,6 +117,9 @@ install_lazy_exports(
         "x": "flext_core",
     },
     public_exports=__all__,
+    deferred_members={
+        "FlextGrpcModelsConfigNamespace": ("GrpcNamespace",),
+    },
 )
 
 if not TYPE_CHECKING:
