@@ -12,7 +12,7 @@ SPDX-License-Identifier: MIT
 from __future__ import annotations
 
 from enum import StrEnum, unique
-from typing import Final
+from typing import ClassVar
 
 from flext_core import c, t
 
@@ -108,51 +108,51 @@ class FlextGrpcConstantsBase:
         ROUND_ROBIN = "round_robin"
 
     # ===== Enum-derived frozensets (immutable collections) =====
-    CHANNEL_STATES: Final[frozenset[t.JsonValue]] = frozenset(
+    CHANNEL_STATES: ClassVar[frozenset[t.JsonValue]] = frozenset(
         member.value for member in ChannelState.__members__.values()
     )
     """Channel states frozenset - generated from ChannelState StrEnum."""
 
-    SERVER_STATES: Final[frozenset[t.JsonValue]] = frozenset(
+    SERVER_STATES: ClassVar[frozenset[t.JsonValue]] = frozenset(
         member.value for member in ServerState.__members__.values()
     )
     """Server states frozenset - generated from ServerState StrEnum."""
 
-    STREAM_TYPES: Final[frozenset[str]] = frozenset(
+    STREAM_TYPES: ClassVar[frozenset[str]] = frozenset(
         member.value for member in GrpcOperations.__members__.values()
     )
     """Stream types frozenset - generated from GrpcOperations StrEnum."""
 
-    LOAD_BALANCING_POLICIES: Final[frozenset[str]] = frozenset(
+    LOAD_BALANCING_POLICIES: ClassVar[frozenset[str]] = frozenset(
         member.value for member in LoadBalancingPolicies.__members__.values()
     )
     """Load balancing policies frozenset from LoadBalancingPolicies StrEnum."""
 
     # ===== Network constants =====
-    NETWORK_DEFAULT_TIMEOUT: Final[int] = c.DEFAULT_TIMEOUT_SECONDS
-    NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT: Final[float] = 5.0
-    NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: Final[float] = 2.0
-    NETWORK_DEFAULT_GRPC_PORT: Final[int] = 50051
-    NETWORK_DEFAULT_HOST: Final[str] = "127.0.0.1"
-    NETWORK_HOST_PATTERN: Final[str] = r"^[a-zA-Z0-9.-]+$"
+    NETWORK_DEFAULT_TIMEOUT: ClassVar[int] = c.DEFAULT_TIMEOUT_SECONDS
+    NETWORK_DEFAULT_CHANNEL_READY_TIMEOUT: ClassVar[float] = 5.0
+    NETWORK_DEFAULT_GRACEFUL_SHUTDOWN_TIMEOUT: ClassVar[float] = 2.0
+    NETWORK_DEFAULT_GRPC_PORT: ClassVar[int] = 50051
+    NETWORK_DEFAULT_HOST: ClassVar[str] = "127.0.0.1"
+    NETWORK_HOST_PATTERN: ClassVar[str] = r"^[a-zA-Z0-9.-]+$"
 
     # ===== Service constants =====
-    SERVICE_DEFAULT_MAX_WORKERS: Final[int] = 10
-    SERVICE_PROTO_NAME: Final[str] = "FlextGrpcService"
+    SERVICE_DEFAULT_MAX_WORKERS: ClassVar[int] = 10
+    SERVICE_PROTO_NAME: ClassVar[str] = "FlextGrpcService"
     """Service name declared in ``protos/flext.proto``."""
 
     # ===== Streaming configuration =====
-    BIDIRECTIONAL_STREAMING_QUEUE_SIZE: Final[int] = 1000
-    CLIENT_STREAMING_BUFFER_THRESHOLD: Final[int] = 10
-    STREAMING_DEFAULT_BUFFER_SIZE: Final[int] = 500
-    SERVER_STREAMING_BATCH_SIZE: Final[int] = 100
+    BIDIRECTIONAL_STREAMING_QUEUE_SIZE: ClassVar[int] = 1000
+    CLIENT_STREAMING_BUFFER_THRESHOLD: ClassVar[int] = 10
+    STREAMING_DEFAULT_BUFFER_SIZE: ClassVar[int] = 500
+    SERVER_STREAMING_BATCH_SIZE: ClassVar[int] = 100
 
     # ===== Connection pool defaults =====
-    CONNECTION_DEFAULT_POOL_SIZE: Final[int] = 20
+    CONNECTION_DEFAULT_POOL_SIZE: ClassVar[int] = 20
 
     # ===== Validation constants =====
-    VALIDATION_ADDRESS_PARTS_COUNT: Final[int] = 2
-    VALIDATION_VERSION_PATTERN: Final[str] = r"Version.*(\d+\.\d+\.\d+)"
+    VALIDATION_ADDRESS_PARTS_COUNT: ClassVar[int] = 2
+    VALIDATION_VERSION_PATTERN: ClassVar[str] = r"Version.*(\d+\.\d+\.\d+)"
 
 
 __all__: list[str] = ["FlextGrpcConstantsBase"]
