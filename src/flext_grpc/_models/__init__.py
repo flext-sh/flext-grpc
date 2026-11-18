@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from flext_core.lazy import defer_lazy_bases, install_lazy_exports
+from flext_core.lazy import install_lazy_exports
 
 if TYPE_CHECKING:
     from flext_grpc._models.base import FlextGrpcModelsBase
@@ -38,52 +38,11 @@ install_lazy_exports(
         "FlextGrpcModelsRuntime": ".runtime_models",
     },
     public_exports=__all__,
-    deferred_members={
-        "FlextGrpcModelsBase": (),
-        "FlextGrpcModelsChannel": (
-            "ClientConfig",
-            "ChannelConfig",
-            "Entity",
-            "StateTransition",
-            "StateMachine",
-            "OperationSpec",
-            "Request",
-            "Response",
-            "Channel",
-        ),
-        "FlextGrpcModelsConfig": (
-            "Network",
-            "Performance",
-            "ServicePolicy",
-            "Streaming",
-            "ConnectionPool",
-            "Grpc",
-            "Root",
-        ),
-        "FlextGrpcModelsMessage": (
-            "EchoRequest",
-            "EchoResponse",
-            "HealthRequest",
-            "HealthResponse",
-            "StreamInfo",
-            "HealthCheck",
-            "OperationExecutionRequest",
-            "Payload",
-        ),
-        "FlextGrpcModelsRuntime": (
-            "Server",
-            "Service",
-            "Client",
-            "GrpcStream",
-            "StreamRuntimeState",
-            "CompleteSetup",
-        ),
-    },
-)
-
-defer_lazy_bases(
-    __name__,
-    {
-        "FlextGrpcModelsBase": (("flext_grpc", "FlextGrpcModelsConfigNamespace"),),
-    },
+    deferred_members=(
+        "FlextGrpcModelsBase",
+        "FlextGrpcModelsChannel",
+        "FlextGrpcModelsConfig",
+        "FlextGrpcModelsMessage",
+        "FlextGrpcModelsRuntime",
+    ),
 )
