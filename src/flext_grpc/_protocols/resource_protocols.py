@@ -77,7 +77,6 @@ class FlextGrpcProtocolsResource:
         """Protocol for the imported grpc runtime module."""
 
         RpcError: type[Exception]
-        FutureTimeoutError: type[Exception]
 
         def insecure_channel(
             self,
@@ -94,17 +93,16 @@ class FlextGrpcProtocolsResource:
             """
             ...
 
-        def channel_ready_future(
+        def await_channel_ready(
             self,
             channel: FlextGrpcProtocolsChannel.GrpcChannel,
-        ) -> FlextGrpcProtocolsChannel.GrpcReadyFuture:
-            """Create a future used to wait for channel readiness.
+            timeout: float,
+        ) -> None:
+            """Wait until the channel is ready; fail at its first failed attempt.
 
             Args:
                 channel: Channel whose readiness is awaited.
-
-            Returns:
-                The readiness future.
+                timeout: Maximum wait in seconds.
 
             """
             ...

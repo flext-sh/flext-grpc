@@ -23,6 +23,21 @@ class FlextGrpcProtocolsChannel:
             """Close the channel."""
             ...
 
+        def subscribe(
+            self,
+            callback: Callable[..., None],
+            *,
+            try_to_connect: bool = False,
+        ) -> None:
+            """Report every connectivity state change to a callback.
+
+            Args:
+                callback: Callback receiving each connectivity state.
+                try_to_connect: Whether the channel starts connecting now.
+
+            """
+            ...
+
         def unsubscribe(self, callback: Callable[..., None]) -> None:
             """Remove a subscription callback from the channel.
 
@@ -38,28 +53,6 @@ class FlextGrpcProtocolsChannel:
 
         Duck typing for ``grpc.ChannelCredentials``.
         """
-
-    @runtime_checkable
-    class GrpcReadyFuture(Protocol):
-        """Protocol for gRPC ready futures."""
-
-        def result(self, timeout: float | None = None) -> None:
-            """Wait until the underlying operation is ready.
-
-            Args:
-                timeout: Maximum wait in seconds, or ``None`` to wait indefinitely.
-
-            """
-            ...
-
-        def cancel(self) -> bool:
-            """Release the channel subscription when readiness ends.
-
-            Returns:
-                ``True`` when the pending readiness attempt was cancelled.
-
-            """
-            ...
 
 
 __all__: list[str] = ["FlextGrpcProtocolsChannel"]

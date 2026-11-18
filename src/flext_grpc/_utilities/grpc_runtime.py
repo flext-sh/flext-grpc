@@ -6,6 +6,7 @@ SPDX-License-Identifier: MIT
 
 from __future__ import annotations
 
+import threading
 from typing import TYPE_CHECKING
 
 import grpc
@@ -28,7 +29,6 @@ class FlextGrpcUtilitiesGrpcRuntime:
         """Typed adapter that isolates the untyped grpc runtime module."""
 
         RpcError: type[Exception]
-        FutureTimeoutError: type[Exception]
 
         def __init__(self, runtime_module: ModuleType) -> None:
             """Store the imported grpc module."""
@@ -36,10 +36,6 @@ class FlextGrpcUtilitiesGrpcRuntime:
             self.RpcError = self._exception_type(
                 self._runtime_module.RpcError,
                 "RpcError",
-            )
-            self.FutureTimeoutError = self._exception_type(
-                self._runtime_module.FutureTimeoutError,
-                "FutureTimeoutError",
             )
 
         @staticmethod
@@ -74,24 +70,43 @@ class FlextGrpcUtilitiesGrpcRuntime:
                 raise TypeError(msg)
             return channel
 
-        def channel_ready_future(
+        def await_channel_ready(
             self,
             channel: p.Grpc.GrpcChannel,
-        ) -> p.Grpc.GrpcReadyFuture:
-            """Create a typed ready future for the given channel.
+            timeout: float,
+        ) -> None:
+            """Wait until the channel is ready; stop at its first failed attempt.
 
-            Returns:
-                The resulting ``p.Grpc.GrpcReadyFuture``.
+            The native connectivity subscription reports every state change. A
+            ``TRANSIENT_FAILURE`` or ``SHUTDOWN`` ends the wait at once, so an
+            unreachable target fails on its first refused attempt instead of
+            retrying until the timeout.
 
             Raises:
-                TypeError: If grpc.channel_ready_future returned an invalid future.
+                ConnectionError: If the channel reaches a failed state.
+                TimeoutError: If the channel is not ready within ``timeout``.
 
             """
-            ready_future = self._runtime_module.channel_ready_future(channel)
-            if not isinstance(ready_future, p.Grpc.GrpcReadyFuture):
-                msg = "grpc.channel_ready_future returned an invalid future"
-                raise TypeError(msg)
-            return ready_future
+            connectivity = self._runtime_module.ChannelConnectivity
+            failed = {connectivity.TRANSIENT_FAILURE, connectivity.SHUTDOWN}
+            settled = threading.Event()
+            observed: list[object] = []
+
+            def _observe(state: object) -> None:
+                if state is connectivity.READY or state in failed:
+                    observed.append(state)
+                    settled.set()
+
+            channel.subscribe(_observe, try_to_connect=True)
+            try:
+                if not settled.wait(timeout):
+                    msg = f"gRPC channel not ready within {timeout} seconds"
+                    raise TimeoutError(msg)
+            finally:
+                channel.unsubscribe(_observe)
+            if observed[0] is not connectivity.READY:
+                msg = f"gRPC channel failed to connect: {observed[0]}"
+                raise ConnectionError(msg)
 
         def server(self, thread_pool: Executor) -> p.Grpc.GrpcServer:
             """Create a typed gRPC server from the runtime module.
@@ -155,7 +170,6 @@ class FlextGrpcUtilitiesGrpcRuntime:
             ConnectionError,
             TimeoutError,
             runtime.RpcError,
-            runtime.FutureTimeoutError,
         )
 
     @staticmethod
@@ -217,11 +231,7 @@ class FlextGrpcUtilitiesGrpcRuntime:
             grpc_channel = runtime.insecure_channel(target)
             ready = False
             try:
-                future = runtime.channel_ready_future(grpc_channel)
-                try:
-                    future.result(timeout=timeout)
-                finally:
-                    future.cancel()
+                runtime.await_channel_ready(grpc_channel, timeout)
                 ready = True
             finally:
                 if not ready:
