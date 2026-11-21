@@ -15,7 +15,7 @@ from typing import Annotated
 from flext_core import FlextConfig
 from pydantic import Field
 
-from flext_grpc.config_models import FlextGrpcModelsConfigNamespace
+from flext_grpc import FlextGrpcModelsConfigNamespace
 
 
 class FlextGrpcConfig(FlextConfig):
