@@ -10,7 +10,6 @@ from __future__ import annotations
 from flext_cli import FlextCliUtilities
 
 from flext_grpc._utilities import (
-    FlextGrpcUtilitiesBase,
     FlextGrpcUtilitiesGrpc,
     FlextGrpcUtilitiesGrpcRuntime,
     FlextGrpcUtilitiesGrpcService,
@@ -18,7 +17,7 @@ from flext_grpc._utilities import (
 )
 
 
-class FlextGrpcUtilities(FlextCliUtilities, FlextGrpcUtilitiesBase):
+class FlextGrpcUtilities(FlextCliUtilities):
     """Utilities for gRPC operations in the FLEXT ecosystem."""
 
     class Grpc(
