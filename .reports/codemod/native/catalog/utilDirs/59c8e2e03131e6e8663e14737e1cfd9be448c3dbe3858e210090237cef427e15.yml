@@ -1,0 +1,1 @@
+{"id":"exports--examples","language":"Python","rule":{"regex":"^(?:ExamplesFlextGrpcConstants|ExamplesFlextGrpcModels|ExamplesFlextGrpcProtocols|ExamplesFlextGrpcTypes|ExamplesFlextGrpcUtilities|c|config|d|e|grpc|h|m|main|p|r|s|settings|t|u|x)$"}}

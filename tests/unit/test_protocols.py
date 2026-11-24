@@ -16,8 +16,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Protocol, get_protocol_members, is_protocol, runtime_checkable
 
-from flext_grpc import FlextGrpcProtocols
-from tests import c, p, tm
+from tests import FlextGrpcProtocols, c, p, tm
 
 # The protocols under test; each one's members are read from the protocol
 # itself (typing.get_protocol_members), never copied into the test.
@@ -38,15 +37,15 @@ _PROTOCOL_CONTRACTS: Mapping[str, tuple[str, ...]] = {
 
 def _build_conforming_instance(
     members: tuple[str, ...],
-) -> p.Grpc.Tests.DuckInstance:
+) -> p.Tests.DuckInstance:
     """Create a duck-typed instance exposing exactly ``members`` as callables.
 
     Returns:
-        The resulting ``p.Grpc.Tests.DuckInstance``.
+        The resulting ``p.Tests.DuckInstance``.
 
     """
     namespace = {name: (lambda: None) for name in members}
-    instance: p.Grpc.Tests.DuckInstance = type("Conforming", (), namespace)()
+    instance: p.Tests.DuckInstance = type("Conforming", (), namespace)()
     return instance
 
 
@@ -54,15 +53,15 @@ def _build_partial_instance(
     members: tuple[str, ...],
     *,
     omit: str,
-) -> p.Grpc.Tests.DuckInstance:
+) -> p.Tests.DuckInstance:
     """Create a duck-typed instance exposing every member except ``omit``.
 
     Returns:
-        The resulting ``p.Grpc.Tests.DuckInstance``.
+        The resulting ``p.Tests.DuckInstance``.
 
     """
     namespace = {name: (lambda: None) for name in members if name != omit}
-    instance: p.Grpc.Tests.DuckInstance = type("Partial", (), namespace)()
+    instance: p.Tests.DuckInstance = type("Partial", (), namespace)()
     return instance
 
 

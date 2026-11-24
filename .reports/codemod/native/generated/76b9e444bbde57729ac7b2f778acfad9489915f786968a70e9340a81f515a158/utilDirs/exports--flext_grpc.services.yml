@@ -1,0 +1,1 @@
+{"id":"exports--flext_grpc.services","language":"Python","rule":{"regex":"^(?:FlextGrpcApiRuntime|FlextGrpcClient|FlextGrpcConnectionPool|FlextGrpcConnectionPoolImpl|FlextGrpcMetrics|FlextGrpcMetricsCollectorImpl|FlextGrpcServer|FlextGrpcStream)$"}}

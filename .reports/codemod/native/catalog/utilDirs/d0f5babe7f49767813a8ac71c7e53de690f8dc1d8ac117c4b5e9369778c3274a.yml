@@ -1,0 +1,1 @@
+{"id":"exports--flext_grpc._utilities","language":"Python","rule":{"regex":"^(?:FlextGrpcUtilitiesBase|FlextGrpcUtilitiesGrpc|FlextGrpcUtilitiesGrpcRuntime|FlextGrpcUtilitiesGrpcService|FlextGrpcUtilitiesSchemaCodegen)$"}}

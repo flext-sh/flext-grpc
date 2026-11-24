@@ -1,0 +1,1 @@
+{"id":"exports--flext_grpc._models","language":"Python","rule":{"regex":"^(?:FlextGrpcModelsBase|FlextGrpcModelsChannel|FlextGrpcModelsConfig|FlextGrpcModelsMessage|FlextGrpcModelsRuntime)$"}}

@@ -1,0 +1,1 @@
+{"id":"protocol-model-path","language":"Python","rule":{"regex":"^(?:p|m)\\.(?:BaseModel|Cli\\.Cli|DomainEvent|ExceptionFactoryOptions|Grpc\\.Grpc|SettingsConfigDict|Value)$"}}

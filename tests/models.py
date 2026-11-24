@@ -8,17 +8,14 @@ from __future__ import annotations
 
 from flext_tests import FlextTestsModels
 
-from flext_grpc import FlextGrpcModels
+from tests import FlextGrpcModels
 
 
 class TestsFlextGrpcModels(FlextTestsModels, FlextGrpcModels):
     """Test models for flext-grpc."""
 
-    class Grpc(FlextGrpcModels.Grpc):
-        """Grpc domain test models."""
-
-        class Tests:
-            """Test-specific models."""
+    class Tests(FlextTestsModels.Tests):
+        """Test-specific models."""
 
 
 m = TestsFlextGrpcModels

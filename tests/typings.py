@@ -8,17 +8,14 @@ from __future__ import annotations
 
 from flext_tests import FlextTestsTypes
 
-from flext_grpc import FlextGrpcTypes
+from tests import FlextGrpcTypes
 
 
 class TestsFlextGrpcTypes(FlextTestsTypes, FlextGrpcTypes):
     """Test type aliases for flext-grpc."""
 
-    class Grpc(FlextGrpcTypes.Grpc):
-        """Grpc domain test type aliases."""
-
-        class Tests:
-            """Test-specific type aliases."""
+    class Tests(FlextTestsTypes.Tests):
+        """Test-specific type aliases."""
 
 
 t = TestsFlextGrpcTypes

@@ -1,0 +1,1 @@
+{"id":"exports--flext_grpc.protos","language":"Python","rule":{"regex":"^(?:DESCRIPTOR|EchoRequest|EchoResponse|FlextGrpcServiceServicer|FlextGrpcServiceStub|GRPC_GENERATED_VERSION|HealthRequest|HealthResponse|RPC_PYTHON_METHOD_NAMES|add_flext_grpc_service_servicer_to_server)$"}}
