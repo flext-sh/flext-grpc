@@ -440,7 +440,7 @@ padrão.
 
 **Local**: `src/flext_grpc/_utilities/grpc.py:28` · **Effort**: 2min
 
-> Rename this field "RpcError" to match the regular expression ^[\_a-z][_a-z0-9]\*$.
+> Rename this field "RpcError" to match the regular expression `^[_a-z][_a-z0-9]*$`.
 
 ```text
        24
@@ -461,7 +461,7 @@ padrão.
 **Local**: `src/flext_grpc/_utilities/grpc.py:29` · **Effort**: 2min
 
 > Rename this field "FutureTimeoutError" to match the regular expression
-> ^[\_a-z][_a-z0-9]\*$.
+> `^[_a-z][_a-z0-9]*$`.
 
 ```text
        25      class _GrpcRuntimeAdapter:
