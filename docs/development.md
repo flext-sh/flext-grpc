@@ -11,25 +11,25 @@
 
 Work from the active FLEXT workspace root. The root Makefile selects the package and
 owns environment setup, generation, formatting, checks, tests, and builds. Follow the
-current [workspace development contract](../AGENTS.md); use `make help` for the verbs
-available on this branch.
+current [workspace development contract](https://github.com/flext-sh/flext/blob/0.12.0-dev/AGENTS.md);
+use `make help` for the verbs available on this branch.
 
 ## Local cycle
 
 ```bash
 make setup
-make gen
-make fmt
-make check
-make test
+make check CHECK_PHASE=complete
+make tests
 make build
-make docs
 ```
 
-Run each command to completion and retain its exit status and report. A warning, skip,
-missing tool or report, or empty collection is a failure to investigate. Do not call the
-underlying Python tools directly or pass selectors to bare root verbs. Repeated
-generation and formatting must leave no changes on an unchanged candidate.
+Local checks from the current workspace root converge generation and formatting before
+validation; CI checks committed output without applying those repairs. The build command
+creates package and documentation artifacts. Run each command to completion and retain
+its exit status and report. A warning, skip, missing tool or report, or empty
+collection is a failure to investigate. Do not call the underlying Python tools directly
+or pass selectors to bare root verbs. Repeated generation and formatting must leave no
+changes on an unchanged candidate.
 
 ## Package boundaries
 
@@ -97,6 +97,7 @@ outcome and the observable model state or transport effect. Do not assert privat
 construction details or replace a runtime owner with a test double. For network
 behavior, validate the real listener and client interaction with bounded timeouts.
 
-Review generated output, documentation, and the exact changed scope after `make gen`.
+Review generated output, documentation, and the exact changed scope after
+`make check CHECK_PHASE=complete`.
 Run the native gates locally before publishing a PR; rerun at the integration SHA after
 merging.
